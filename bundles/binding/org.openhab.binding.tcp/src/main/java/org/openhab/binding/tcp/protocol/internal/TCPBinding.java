@@ -185,7 +185,7 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
                 timeOut = Integer.parseInt((timeOutString));
             } else {
                 logger.info(
-                        "The maximum time out for blocking write operations will be set to the default vaulue of {}",
+                        "The maximum time out for blocking write operations will be set to the default value of {}",
                         timeOut);
             }
 
@@ -193,7 +193,7 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
             if (StringUtils.isNotBlank(blockingString)) {
                 blocking = Boolean.parseBoolean((blockingString));
             } else {
-                logger.info("The blocking nature of read/write operations will be set to the default vaulue of {}",
+                logger.info("The blocking nature of read/write operations will be set to the default value of {}",
                         blocking);
             }
 
@@ -201,7 +201,7 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
             if (StringUtils.isNotBlank(preambleString)) {
                 preAmble = StringEscapeUtils.unescapeJava(preambleString);
             } else {
-                logger.info("The preamble for all write operations will be set to the default vaulue of \"{}\"",
+                logger.info("The preamble for all write operations will be set to the default value of \"{}\"",
                         preAmble);
             }
 
@@ -209,7 +209,7 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
             if (StringUtils.isNotBlank(postambleString)) {
                 postAmble = StringEscapeUtils.unescapeJava(postambleString);
             } else {
-                logger.info("The postamble for all write operations will be set to the default vaulue of \"{}\"",
+                logger.info("The postamble for all write operations will be set to the default value of \"{}\"",
                         postAmble);
             }
 
@@ -217,7 +217,7 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
             if (StringUtils.isNotBlank(updatewithresponseString)) {
                 updateWithResponse = Boolean.parseBoolean((updatewithresponseString));
             } else {
-                logger.info("Updating states with returned values will be set to the default vaulue of {}",
+                logger.info("Updating states with returned values will be set to the default value of {}",
                         updateWithResponse);
             }
 
@@ -225,7 +225,7 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
             if (StringUtils.isNotBlank(charsetString)) {
                 charset = charsetString;
             } else {
-                logger.info("The characterset will be set to the default vaulue of {}", charset);
+                logger.info("The characterset will be set to the default value of {}", charset);
             }
 
         }

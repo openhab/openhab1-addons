@@ -109,7 +109,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
     };
 
     /**
-     * Gets the endpoint object using it's endpoint ID as key.
+     * Gets the endpoint object using its endpoint ID as key.
      * Returns null if the endpoint is not found.
      *
      * @param endpointId the endpoint ID of the endpoint to get.

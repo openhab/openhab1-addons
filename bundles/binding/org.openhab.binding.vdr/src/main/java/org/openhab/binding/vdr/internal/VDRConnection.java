@@ -61,7 +61,7 @@ public class VDRConnection {
             logger.debug("Try to send VDR command: {}", cmd.getCommand());
 
             res = connection.send(cmd);
-            logger.debug("Recived Message from VDR: {}", res.getMessage());
+            logger.debug("Received Message from VDR: {}", res.getMessage());
         } catch (Exception e) {
             logger.error("Could not connect to VDR on {}: {}", mIp + ":" + mPort, e);
         } finally {

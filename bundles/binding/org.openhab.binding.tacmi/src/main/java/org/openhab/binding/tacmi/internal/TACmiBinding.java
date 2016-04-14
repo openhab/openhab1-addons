@@ -108,7 +108,7 @@ public class TACmiBinding extends AbstractActiveBinding<TACmiBindingProvider> {
         try {
             clientSocket = new DatagramSocket(cmiPort);
         } catch (SocketException e) {
-            logger.error("Failed to create Socket for receiving UDP packts from CMI");
+            logger.error("Failed to create Socket for receiving UDP packets from CMI");
             setProperlyConfigured(true);
             return;
         }

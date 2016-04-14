@@ -253,6 +253,13 @@
         <configfile finalname="${openhab.conf}/services/knx.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/knx</configfile>
     </feature>
 
+    <feature name="openhab-binding-koubachi" description="Koubachi Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.koubachi/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/koubachi.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/koubachi</configfile>
+    </feature>
+
     <feature name="openhab-binding-lcn" description="LCN Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
@@ -389,6 +396,14 @@
         <feature>openhab-runtime-compat1x</feature>
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.owserver/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/owserver.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/owserver</configfile>
+    </feature>
+
+    <feature name="openhab-binding-powermax" description="Visonic PowerMax Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <feature>openhab-transport-serial</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.powermax/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/powermax.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/powermax</configfile>
     </feature>
 
     <feature name="openhab-binding-rwesmarthome" description="RWE SmartHome Binding" version="${project.version}">

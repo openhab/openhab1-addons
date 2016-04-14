@@ -56,6 +56,7 @@
                                 <artifact><file>src/main/resources/conf/jdbc.cfg</file><type>cfg</type><classifier>jdbc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jpa.cfg</file><type>cfg</type><classifier>jpa</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/knx.cfg</file><type>cfg</type><classifier>knx</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/koubachi.cfg</file><type>cfg</type><classifier>koubachi</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/logging.cfg</file><type>cfg</type><classifier>logging</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mail.cfg</file><type>cfg</type><classifier>mail</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mapdb.cfg</file><type>cfg</type><classifier>mapdb</classifier></artifact>
@@ -79,6 +80,7 @@
                                 <artifact><file>src/main/resources/conf/openenergymonitor.cfg</file><type>cfg</type><classifier>openenergymonitor</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/owserver.cfg</file><type>cfg</type><classifier>owserver</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pebble.cfg</file><type>cfg</type><classifier>pebble</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/powermax.cfg</file><type>cfg</type><classifier>powermax</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pushover.cfg</file><type>cfg</type><classifier>pushover</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/rwesmarthome.cfg</file><type>cfg</type><classifier>rwesmarthome</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/rrd4j.cfg</file><type>cfg</type><classifier>rrd4j</classifier></artifact>

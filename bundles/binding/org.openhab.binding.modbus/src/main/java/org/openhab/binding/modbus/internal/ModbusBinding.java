@@ -91,7 +91,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
             if (provider.providesBindingFor(itemName)) {
                 ModbusBindingConfig config = provider.getConfig(itemName);
                 ModbusSlave slave = modbusSlaves.get(config.slaveName);
-                slave.executeCommand(command, config.readRegister, config.writeRegister);
+                slave.executeCommand(command, config);
             }
         }
     }
@@ -116,7 +116,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
             String slaveValueType = modbusSlaves.get(slaveName).getValueType();
             double rawDataMultiplier = modbusSlaves.get(slaveName).getRawDataMultiplier();
 
-            State newState = extractStateFromRegisters(registers, config.readRegister, slaveValueType);
+            State newState = extractStateFromRegisters(registers, config.readIndex, slaveValueType);
             /* receive data manipulation */
             State newStateBoolean = provider.getConfig(itemName)
                     .translateBoolean2State(!newState.equals(DecimalType.ZERO));
@@ -180,7 +180,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
             if (provider.providesBindingFor(itemName)) {
                 ModbusBindingConfig config = provider.getConfig(itemName);
                 if (config.slaveName.equals(slaveName)) {
-                    boolean state = coils.getBit(config.readRegister);
+                    boolean state = coils.getBit(config.readIndex);
                     State currentState = provider.getConfig(itemName).getItemState();
                     State newState = provider.getConfig(itemName).translateBoolean2State(state);
                     if (!newState.equals(currentState)) {

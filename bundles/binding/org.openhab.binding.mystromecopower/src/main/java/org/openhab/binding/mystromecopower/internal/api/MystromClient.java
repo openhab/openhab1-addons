@@ -30,7 +30,7 @@ import com.google.gson.JsonParser;
 /**
  * Manage Json Api call to mystrom Api.
  *
- * @since 1.8.0-SNAPSHOT
+ * @since 1.9.0-SNAPSHOT
  * @author Jordens Christophe
  *
  */
@@ -72,11 +72,9 @@ public class MystromClient implements IMystromClient {
 		logger.debug("Do login for user '{}'", this.userName);
 
 		try {
-			String url = API_URL + "auth?email=" + this.userName + "&password="
-					+ this.password;
+			String url = API_URL + "auth?email=" + this.userName + "&password=" + this.password;
 			HttpURLConnection httpURLConnection;
-			httpURLConnection = (HttpURLConnection) new URL(url)
-					.openConnection();
+			httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
 
 			InputStream inputStream = httpURLConnection.getInputStream();
 			reader = new InputStreamReader(inputStream, "UTF-8");
@@ -104,24 +102,22 @@ public class MystromClient implements IMystromClient {
 			}
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.openhab.binding.mystromecopower.internal.api.IMystromClient#getDevicesState
-	 * ()
+	 * @see org.openhab.binding.mystromecopower.internal.api.IMystromClient#
+	 * getDevicesState ()
 	 */
-	public List<MystromDevice> getDevicesState(){
+	public List<MystromDevice> getDevicesState() {
 		return this.getDevices(true);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.openhab.binding.mystromecopower.internal.api.IMystromClient#getDevices
-	 * ()
+	 * @see org.openhab.binding.mystromecopower.internal.api.IMystromClient#
+	 * getDevices ()
 	 */
 	public List<MystromDevice> getDevices() {
 		return this.getDevices(false);
@@ -130,9 +126,8 @@ public class MystromClient implements IMystromClient {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.openhab.binding.mystromecopower.internal.api.IMystromClient#getDeviceInfo
-	 * (java.lang.String)
+	 * @see org.openhab.binding.mystromecopower.internal.api.IMystromClient#
+	 * getDeviceInfo (java.lang.String)
 	 */
 	public MystromDevice getDeviceInfo(String deviceId) {
 		Reader reader = null;
@@ -140,11 +135,9 @@ public class MystromClient implements IMystromClient {
 		logger.debug("get device info...");
 
 		try {
-			String url = API_URL + "device" + "?authToken=" + this.authToken
-					+ "&id=" + deviceId;
+			String url = API_URL + "device" + "?authToken=" + this.authToken + "&id=" + deviceId;
 			HttpURLConnection httpURLConnection;
-			httpURLConnection = (HttpURLConnection) new URL(url)
-					.openConnection();
+			httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
 
 			httpURLConnection.connect();
 
@@ -161,20 +154,15 @@ public class MystromClient implements IMystromClient {
 
 			String status = jsonObject.get("status").getAsString();
 			if (!status.equals("ok")) {
-				logger.error(
-						"Error while getting device info id: '{}' status '{}'",
-						deviceId, status);
+				logger.error("Error while getting device info id: '{}' status '{}'", deviceId, status);
 				return null;
 			}
 
-			GetDeviceInfoResult result = gson.fromJson(jsonObject,
-					GetDeviceInfoResult.class);
+			GetDeviceInfoResult result = gson.fromJson(jsonObject, GetDeviceInfoResult.class);
 
 			return result.device;
 		} catch (Exception ex) {
-			logger.error(
-					"Error getting device info  with id: '{}', detail '{}'",
-					deviceId, ex.toString());
+			logger.error("Error getting device info  with id: '{}', detail '{}'", deviceId, ex.toString());
 			return null;
 		} finally {
 			if (reader != null) {
@@ -190,23 +178,19 @@ public class MystromClient implements IMystromClient {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.openhab.binding.mystromecopower.internal.api.IMystromClient#ChangeState
-	 * (java.lang.String, java.lang.Boolean)
+	 * @see org.openhab.binding.mystromecopower.internal.api.IMystromClient#
+	 * ChangeState (java.lang.String, java.lang.Boolean)
 	 */
 	@Override
 	public Boolean ChangeState(String deviceId, Boolean newStateIsOn) {
 		Reader reader = null;
-		logger.debug("Change state for device id '{}', new state is on: '{}'",
-				deviceId, newStateIsOn);
+		logger.debug("Change state for device id '{}', new state is on: '{}'", deviceId, newStateIsOn);
 
 		try {
-			String url = API_URL + "device/switch" + "?authToken="
-					+ this.authToken + "&id=" + deviceId + "&on="
+			String url = API_URL + "device/switch" + "?authToken=" + this.authToken + "&id=" + deviceId + "&on="
 					+ newStateIsOn.toString();
 			HttpURLConnection httpURLConnection;
-			httpURLConnection = (HttpURLConnection) new URL(url)
-					.openConnection();
+			httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
 
 			InputStream inputStream = httpURLConnection.getInputStream();
 			reader = new InputStreamReader(inputStream, "UTF-8");
@@ -215,16 +199,12 @@ public class MystromClient implements IMystromClient {
 			String status = jsonObject.get("status").getAsString();
 			if (!status.equals("ok")) {
 				String error = jsonObject.get("error").getAsString();
-				logger.error(
-						"Unable to switch state for device '{}' error '{}'",
-						deviceId, error);
+				logger.error("Unable to switch state for device '{}' error '{}'", deviceId, error);
 				return false;
 			}
 
 			String newState = jsonObject.get("state").getAsString();
-			logger.debug(
-					"Switch state for device '{}' successfull, state is '{}'",
-					deviceId, newState);
+			logger.debug("Switch state for device '{}' successfull, state is '{}'", deviceId, newState);
 
 			return true;
 		} catch (Exception ex) {
@@ -241,20 +221,19 @@ public class MystromClient implements IMystromClient {
 		}
 	}
 
-	private List<MystromDevice> getDevices(boolean minimalMode){
+	private List<MystromDevice> getDevices(boolean minimalMode) {
 		Reader reader = null;
 
 		logger.debug("get all devices state");
 
 		try {
 			String url = API_URL + "devices" + "?authToken=" + this.authToken;
-			if(minimalMode){
+			if (minimalMode) {
 				url = url + "&minimal=true";
 			}
-			
+
 			HttpURLConnection httpURLConnection;
-			httpURLConnection = (HttpURLConnection) new URL(url)
-					.openConnection();
+			httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
 
 			httpURLConnection.connect();
 
@@ -275,10 +254,8 @@ public class MystromClient implements IMystromClient {
 				return new ArrayList<MystromDevice>();
 			}
 
-			GetDevicesResult result = gson.fromJson(jsonObject,
-					GetDevicesResult.class);
-			logger.debug("Devices discovery sucessfull, found '{}' devices",
-					result.devices.size());
+			GetDevicesResult result = gson.fromJson(jsonObject, GetDevicesResult.class);
+			logger.debug("Devices discovery sucessfull, found '{}' devices", result.devices.size());
 
 			return result.devices;
 		} catch (Exception ex) {
@@ -295,41 +272,41 @@ public class MystromClient implements IMystromClient {
 		}
 	}
 
-    @Override
-    public void RestartMaster(String deviceId) {
-        Reader reader = null;
-        logger.debug("Restart master device id '{}'", deviceId);
+	@Override
+	public void RestartMaster(String deviceId) {
+		Reader reader = null;
+		logger.debug("Restart master device id '{}'", deviceId);
 
-        try {
-            String url = API_URL + "device/restart" + "?authToken=" + this.authToken + "&id=" + deviceId;
-            HttpURLConnection httpURLConnection;
-            httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
+		try {
+			String url = API_URL + "device/restart" + "?authToken=" + this.authToken + "&id=" + deviceId;
+			HttpURLConnection httpURLConnection;
+			httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
 
-            InputStream inputStream = httpURLConnection.getInputStream();
-            reader = new InputStreamReader(inputStream, "UTF-8");
-            JsonObject jsonObject = (JsonObject) jsonParser.parse(reader);
+			InputStream inputStream = httpURLConnection.getInputStream();
+			reader = new InputStreamReader(inputStream, "UTF-8");
+			JsonObject jsonObject = (JsonObject) jsonParser.parse(reader);
 
-            String status = jsonObject.get("status").getAsString();
-            if (!status.equals("ok")) {
-                String error = jsonObject.get("error").getAsString();
-                logger.error("Unable to restart master device '{}' error '{}'", deviceId, error);
-            }
-        } catch (Exception ex) {
-            logger.error("Error restart master device: '{}'", ex.toString());
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException ignored) {
+			String status = jsonObject.get("status").getAsString();
+			if (!status.equals("ok")) {
+				String error = jsonObject.get("error").getAsString();
+				logger.error("Unable to restart master device '{}' error '{}'", deviceId, error);
+			}
+		} catch (Exception ex) {
+			logger.error("Error restart master device: '{}'", ex.toString());
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException ignored) {
 
-                }
-            }
-        }
-    }
+				}
+			}
+		}
+	}
 
-    private GsonBuilder createGsonBuilder() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
+	private GsonBuilder createGsonBuilder() {
+		GsonBuilder gsonBuilder = new GsonBuilder();
 
-        return gsonBuilder;
-    }
+		return gsonBuilder;
+	}
 }

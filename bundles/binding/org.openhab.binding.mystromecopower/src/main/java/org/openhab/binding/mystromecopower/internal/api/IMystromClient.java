@@ -14,57 +14,57 @@ import org.openhab.binding.mystromecopower.internal.api.model.MystromDevice;
 
 /**
  * @author Jordens Christophe
- * @since 1.8.0-SNAPSHOT Interface for mystrom client API.
+ * @since 1.9.0-SNAPSHOT Interface for mystrom client API.
  */
 public interface IMystromClient {
-    /**
-     * Do login.
-     * 
-     * @return True if login succeeded else false.
-     */
-    public Boolean login();
+	/**
+	 * Do login.
+	 * 
+	 * @return True if login succeeded else false.
+	 */
+	public Boolean login();
 
 	/**
-	 * Get all devices's state on the connected account, needs to call login method
-	 * before.
+	 * Get all devices's state on the connected account, needs to call login
+	 * method before.
 	 * 
 	 * @return List of devices.
 	 */
 	public List<MystromDevice> getDevicesState();
 
-    /**
-     * Search all devices on the connected account, needs to call login method
-     * before.
-     * 
-     * @return List of devices.
-     */
-    public List<MystromDevice> getDevices();
+	/**
+	 * Search all devices on the connected account, needs to call login method
+	 * before.
+	 * 
+	 * @return List of devices.
+	 */
+	public List<MystromDevice> getDevices();
 
-    /**
-     * Returns information about a device by the id.
-     * 
-     * @param deviceId
-     *            The id of the device on the mystrom SRS server.
-     * @return The device information.
-     */
-    public MystromDevice getDeviceInfo(String deviceId);
+	/**
+	 * Returns information about a device by the id.
+	 * 
+	 * @param deviceId
+	 *            The id of the device on the mystrom SRS server.
+	 * @return The device information.
+	 */
+	public MystromDevice getDeviceInfo(String deviceId);
 
-    /**
-     * Change the state of a device on or off.
-     * 
-     * @param deviceId
-     *            The id of the device for which to change state.
-     * @param newStateIsOn
-     *            Indicates if new state must be on or off.
-     * @return True if change is successful else False.
-     */
-    public Boolean ChangeState(String deviceId, Boolean newStateIsOn);
+	/**
+	 * Change the state of a device on or off.
+	 * 
+	 * @param deviceId
+	 *            The id of the device for which to change state.
+	 * @param newStateIsOn
+	 *            Indicates if new state must be on or off.
+	 * @return True if change is successful else False.
+	 */
+	public Boolean ChangeState(String deviceId, Boolean newStateIsOn);
 
-    /**
-     * Restart the master device.
-     * 
-     * @param deviceId
-     *            The id of the master device.
-     */
-    public void RestartMaster(String deviceId);
+	/**
+	 * Restart the master device.
+	 * 
+	 * @param deviceId
+	 *            The id of the master device.
+	 */
+	public void RestartMaster(String deviceId);
 }

@@ -33,7 +33,7 @@ public class DataFrame {
 
     /**
      * Creates a new DataFrame with CommandFrame
-     * 
+     *
      * @param commandFrame
      *            for DataFrame
      */
@@ -43,7 +43,7 @@ public class DataFrame {
 
     /**
      * Sets the UserCode to DataFrame
-     * 
+     *
      * @param userCode
      *            for DataFrame
      */
@@ -53,7 +53,7 @@ public class DataFrame {
 
     /**
      * Sets address to DataFrame
-     * 
+     *
      * @param address
      *            for DataFrame
      */
@@ -119,14 +119,14 @@ public class DataFrame {
 
     /**
      * Returns the Bytes of DataFrame
-     * 
+     *
      * @return bytes of DataFrame
      */
     public List<Byte> getBytes() {
         List<Byte> result = new ArrayList<Byte>();
 
         result.add(Convert.toByte(userCode));
-        result.add(Convert.toByte(home | unit));
+        result.add(Convert.toByte((home << 4) | unit));
 
         if (commandFrame != null) {
             result.addAll(commandFrame.getBytes());
@@ -137,13 +137,13 @@ public class DataFrame {
 
     /**
      * Initializes DataFrame from byte array
-     * 
+     *
      * @param data
      *            byte of DataFrame
      */
     public void parse(byte[] data) {
         userCode = data[0];
-        home = data[1] & 0xF0;
+        home = data[1] >>> 4;
         unit = data[1] & 0x0F;
 
         commandFrame = new CommandFrame();
@@ -152,7 +152,7 @@ public class DataFrame {
 
     /**
      * Gets the first parameter of CommandFrame
-     * 
+     *
      * @return first parameter
      */
     public int getFirstParameter() {
@@ -161,7 +161,7 @@ public class DataFrame {
 
     /**
      * Gets the second parameter of CommandFrame
-     * 
+     *
      * @return second parameter
      */
     public int getSecondParameter() {
@@ -170,7 +170,7 @@ public class DataFrame {
 
     /**
      * Gets the Command of CommandFrame
-     * 
+     *
      * @return Command of CommandFrame
      */
     public Command getCommand() {

@@ -46,11 +46,10 @@ import org.slf4j.LoggerFactory;
  * The mystrom binding class.
  *
  * @author Jordens Christophe
- * @since 1.8.0
+ * @since 1.9.0
  */
-public class MyStromEcoPowerBinding extends
-		AbstractActiveBinding<MyStromEcoPowerBindingProvider> implements
-		ManagedService {
+public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowerBindingProvider>
+		implements ManagedService {
 	/**
 	 * If set to true, use the mystrom client mock to simulate the mystrom
 	 * server.
@@ -75,8 +74,7 @@ public class MyStromEcoPowerBinding extends
 	/**
 	 * The openhab logger.
 	 */
-	private static final Logger logger = LoggerFactory
-			.getLogger(MyStromEcoPowerBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(MyStromEcoPowerBinding.class);
 
 	/**
 	 * List of discovered devices with their names and id.
@@ -144,23 +142,21 @@ public class MyStromEcoPowerBinding extends
 		if (this.devicesMap.isEmpty()) {
 			return;
 		}
-		
+
 		List<MystromDevice> devices = this.mystromClient.getDevicesState();
-		
+
 		for (MyStromEcoPowerBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
-				logger.debug(
-						"Mystrom eco power switch '{}' state will be updated",
-						itemName);
+				logger.debug("Mystrom eco power switch '{}' state will be updated", itemName);
 
 				String friendlyName = provider.getMystromFriendlyName(itemName);
 				String id = this.devicesMap.get(friendlyName);
 
 				if (id != null) {
 					MystromDevice device = null;
-					
-					for(MystromDevice searchDevice : devices){
-						if(searchDevice.id.equals(id)){
+
+					for (MystromDevice searchDevice : devices) {
+						if (searchDevice.id.equals(id)) {
 							device = searchDevice;
 							break;
 						}
@@ -168,25 +164,21 @@ public class MyStromEcoPowerBinding extends
 
 					if (device != null) {
 						if (provider.getIsSwitch(itemName)) {
-							State state = device.state.equals("on") ? OnOffType.ON
-									: OnOffType.OFF;
+							State state = device.state.equals("on") ? OnOffType.ON : OnOffType.OFF;
 							eventPublisher.postUpdate(itemName, state);
 						}
 
 						if (provider.getIsStringItem(itemName)) {
 							// publish state of device, on/off/offline
-							eventPublisher.postUpdate(itemName, new StringType(
-									device.state));
+							eventPublisher.postUpdate(itemName, new StringType(device.state));
 						}
 
 						if (provider.getIsNumberItem(itemName)) {
-							eventPublisher.postUpdate(itemName,
-									new DecimalType(device.power));
+							eventPublisher.postUpdate(itemName, new DecimalType(device.power));
 						}
 					}
 				} else {
-					logger.warn(
-							"The device itemName '{}' not found on discovery verify device is not offline",
+					logger.warn("The device itemName '{}' not found on discovery verify device is not offline",
 							itemName);
 				}
 			}
@@ -205,68 +197,51 @@ public class MyStromEcoPowerBinding extends
 		String deviceId = null;
 
 		for (MyStromEcoPowerBindingProvider provider : providers) {
-			String switchFriendlyName = provider
-					.getMystromFriendlyName(itemName);
+			String switchFriendlyName = provider.getMystromFriendlyName(itemName);
 			deviceId = this.devicesMap.get(switchFriendlyName);
-			logger.debug("item '{}' is configured as '{}'", itemName,
-					switchFriendlyName);
+			logger.debug("item '{}' is configured as '{}'", itemName, switchFriendlyName);
 
 			if (deviceId != null) {
 				if (provider.getIsSwitch(itemName)) {
 					try {
-						logger.debug(
-								"Command '{}' is about to be send to item '{}'",
-								command, itemName);
+						logger.debug("Command '{}' is about to be send to item '{}'", command, itemName);
 
-						if (OnOffType.ON.equals(command)
-								|| OnOffType.OFF.equals(command)) {
+						if (OnOffType.ON.equals(command) || OnOffType.OFF.equals(command)) {
 							// on/off command
 							boolean onOff = OnOffType.ON.equals(command);
-							logger.debug("command '{}' transformed to '{}'",
-									command, onOff ? "on" : "off");
+							logger.debug("command '{}' transformed to '{}'", command, onOff ? "on" : "off");
 
-							boolean actualState = this.mystromClient
-									.getDeviceInfo(deviceId).state.equals("on");
+							boolean actualState = this.mystromClient.getDeviceInfo(deviceId).state.equals("on");
 							if (onOff == actualState) {
 								// mystrom state is the same, may be due to
 								// change state on/off too
 								// rapidly, so postpone change state
 
-								String scheduledCommand = deviceId + ";"
-										+ onOff;
-								logger.debug("Schedule command: "
-										+ scheduledCommand);
+								String scheduledCommand = deviceId + ";" + onOff;
+								logger.debug("Schedule command: " + scheduledCommand);
 
 								JobDetail job = JobBuilder
 										.newJob(org.openhab.binding.mystromecopower.internal.util.ChangeStateJob.class)
 										.usingJobData(
 												org.openhab.binding.mystromecopower.internal.util.ChangeStateJob.JOB_DATA_CONTENT_KEY,
 												scheduledCommand)
-										.withIdentity(itemName,
-												"MYSTROMECOPOWER").build();
+										.withIdentity(itemName, "MYSTROMECOPOWER").build();
 
-								Date dateTrigger = new Date(
-										System.currentTimeMillis() + 5000L);
+								Date dateTrigger = new Date(System.currentTimeMillis() + 5000L);
 
-								Trigger trigger = newTrigger()
-										.forJob(job)
-										.withIdentity(
-												itemName + "_" + dateTrigger
-														+ "_trigger",
-												"MYSTROMECOPOWER")
+								Trigger trigger = newTrigger().forJob(job)
+										.withIdentity(itemName + "_" + dateTrigger + "_trigger", "MYSTROMECOPOWER")
 										.startAt(dateTrigger).build();
 								this.scheduler.scheduleJob(job, trigger);
 							} else {
-								if (this.masterDevice == null || (this.masterDevice != null && deviceId != this.masterDevice.id)) {
+								if (this.masterDevice == null
+										|| (this.masterDevice != null && deviceId != this.masterDevice.id)) {
 									// This is not the master device.
-									if (!this.mystromClient.ChangeState(
-											deviceId, onOff)) {
+									if (!this.mystromClient.ChangeState(deviceId, onOff)) {
 										// Unsuccessful state change, inform bus
 										// that the good
 										// state is the old one.
-										eventPublisher.postUpdate(itemName,
-												onOff ? OnOffType.OFF
-														: OnOffType.ON);
+										eventPublisher.postUpdate(itemName, onOff ? OnOffType.OFF : OnOffType.ON);
 									}
 								} else {
 									// This is the mater device.
@@ -274,8 +249,7 @@ public class MyStromEcoPowerBinding extends
 										// Do a reset if try to set OFF the
 										// master device.
 										logger.debug("Restart master device");
-										this.mystromClient
-												.RestartMaster(deviceId);
+										this.mystromClient.RestartMaster(deviceId);
 									}
 								}
 							}
@@ -285,9 +259,7 @@ public class MyStromEcoPowerBinding extends
 					}
 				}
 			} else {
-				logger.error(
-						"Unable to send command to '{}' device is not in discovery table",
-						itemName);
+				logger.error("Unable to send command to '{}' device is not in discovery table", itemName);
 			}
 		}
 	}
@@ -307,8 +279,7 @@ public class MyStromEcoPowerBinding extends
 	 * @{inheritDoc
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		if (config != null) {
 
 			// to override the default refresh interval one has to add a
@@ -340,8 +311,7 @@ public class MyStromEcoPowerBinding extends
 			if (this.devMode) {
 				this.mystromClient = new MockMystromClient();
 			} else {
-				this.mystromClient = new MystromClient(this.userName,
-						this.password, logger);
+				this.mystromClient = new MystromClient(this.userName, this.password, logger);
 			}
 
 			if (ChangeStateJob.MystromClient == null) {
@@ -386,8 +356,7 @@ public class MyStromEcoPowerBinding extends
 				this.masterDevice = mystromDevice;
 			}
 
-			logger.info("Mystrom device name: '{}', mystrom device id:'{}'",
-					mystromDevice.name, mystromDevice.id);
+			logger.info("Mystrom device name: '{}', mystrom device id:'{}'", mystromDevice.name, mystromDevice.id);
 		}
 	}
 }

@@ -60,7 +60,7 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider>imple
     private ExecutorService statusRequestService = Executors.newSingleThreadExecutor();
 
     public NikobusBinding() {
-        // setup a command receiver in it's own thread
+        // setup a command receiver in its own thread
         commandReceiver = new NikobusCommandReceiver(this);
         commandReceiver.setBufferQueue(serialInterface.getBufferQueue());
         Thread receiverThread = new Thread(commandReceiver);

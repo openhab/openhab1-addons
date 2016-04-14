@@ -158,7 +158,7 @@ public class OneWireConnection {
             if (cvOwConnection == null) {
                 logger.debug("Not connected to owserver yet. Trying to connect...");
                 if (!connect()) {
-                    logger.warn("Inital connection to owserver failed!");
+                    logger.warn("Initial connection to owserver failed!");
                 } else {
                     logger.debug("Success: connected to owserver.");
                 }
@@ -189,7 +189,7 @@ public class OneWireConnection {
         String[] pvDevicePropertyPathParts = pvDevicePropertyPath.trim().split("/");
 
         String lvDevicePath = pvDevicePropertyPathParts[0];
-        logger.debug("check if device exisits '{}': ", new Object[] { lvDevicePath });
+        logger.debug("check if device exists '{}': ", new Object[] { lvDevicePath });
 
         return OneWireConnection.getConnection().exists(lvDevicePath);
     }

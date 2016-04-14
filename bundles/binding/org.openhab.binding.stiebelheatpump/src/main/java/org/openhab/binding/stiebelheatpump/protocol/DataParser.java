@@ -74,7 +74,7 @@ public class DataParser {
         logger.debug("Parse bytes: {}", DataParser.bytesToHex(response));
 
         if (response.length < 2) {
-            logger.error("response does not have a valid length ogf bytes: {}", DataParser.bytesToHex(response));
+            logger.error("response does not have a valid length of bytes: {}", DataParser.bytesToHex(response));
             return map;
         }
 

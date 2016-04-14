@@ -10,6 +10,8 @@ package org.openhab.action.ecobee.internal;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openhab.binding.ecobee.EcobeeActionProvider;
 import org.openhab.binding.ecobee.messages.AbstractFunction;
@@ -25,6 +27,8 @@ import org.openhab.binding.ecobee.messages.SendMessageFunction;
 import org.openhab.binding.ecobee.messages.SetHoldFunction;
 import org.openhab.binding.ecobee.messages.SetOccupiedFunction;
 import org.openhab.binding.ecobee.messages.Temperature;
+import org.openhab.binding.ecobee.messages.Thermostat.Event;
+import org.openhab.binding.ecobee.messages.Thermostat.VentilatorMode;
 import org.openhab.binding.ecobee.messages.UpdateSensorFunction;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
@@ -199,13 +203,98 @@ public class EcobeeAction {
             @ParamDoc(name = "endDateTime", text = "(opt) The end date in thermostat time.") Date endDateTime,
             @ParamDoc(name = "holdType", text = "(opt) The hold duration type. Valid values: dateTime, nextTransition, indefinite, holdHours.") String holdType,
             @ParamDoc(name = "holdHours", text = "(opt) The number of hours to hold for, used and required if holdType='holdHours'.") Number holdHours) {
-        SetHoldFunction function = new SetHoldFunction(
-                (coolHoldTemp == null) ? null
-                        : Temperature.fromLocalTemperature(new BigDecimal(coolHoldTemp.toString())),
-                (heatHoldTemp == null) ? null
-                        : Temperature.fromLocalTemperature(new BigDecimal(heatHoldTemp.toString())),
-                holdClimateRef, startDateTime, endDateTime, (holdType == null) ? null : HoldType.forValue(holdType),
-                (holdHours == null) ? null : holdHours.intValue());
+        Map<String, Object> params = new HashMap<String, Object>();
+        if (coolHoldTemp != null) {
+            params.put("coolHoldTemp", coolHoldTemp);
+        }
+        if (heatHoldTemp != null) {
+            params.put("heatHoldTemp", heatHoldTemp);
+        }
+        if (holdClimateRef != null) {
+            params.put("holdClimateRef", holdClimateRef);
+        }
+        return ecobeeSetHold(selection, params, holdType, holdHours, startDateTime, endDateTime);
+    }
+
+    /**
+     * The set hold function sets the thermostat into a hold with the specified temperature. Creates a hold for the
+     * specified duration. Note that an event is created regardless of whether the program is in the same state as the
+     * requested state.
+     *
+     * There is also support for creating a hold by passing a holdClimateRef request parameter/value pair to this
+     * function (See Event). When an existing and valid Climate.climateRef value is passed to this function, the
+     * coolHoldTemp, heatHoldTemp and fan mode from that Climate are used in the creation of the hold event. The values
+     * from that Climate will take precedence over any coolHoldTemp, heatHoldTemp and fan mode parameters passed into
+     * this function separately.
+     *
+     * To resume from a hold and return to the program, use the ResumeProgram function.
+     *
+     * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/functions/SetHold.shtml">Set Hold</a>
+     */
+    @ActionDoc(text = "The set hold function sets the thermostat into a hold with the specified event parameters.")
+    public static boolean ecobeeSetHold(
+            @ParamDoc(name = "selection", text = "The thermostat selection to set hold.") String selection,
+            @ParamDoc(name = "params", text = "The map of hold parameters.") Map<String, Object> params,
+            @ParamDoc(name = "holdType", text = "(opt) The hold duration type. Valid values: dateTime, nextTransition, indefinite, holdHours.") String holdType,
+            @ParamDoc(name = "holdHours", text = "(opt) The number of hours to hold for, used and required if holdType='holdHours'.") Number holdHours,
+            @ParamDoc(name = "startDateTime", text = "(opt) The start date in thermostat time.") Date startDateTime,
+            @ParamDoc(name = "endDateTime", text = "(opt) The end date in thermostat time.") Date endDateTime) {
+        Event event = new Event();
+        for (String key : params.keySet()) {
+            Object value = params.get(key);
+            switch (key) {
+                case "isOccupied":
+                    event.setOccupied((Boolean) value);
+                    break;
+                case "isCoolOff":
+                    event.setCoolOff((Boolean) value);
+                    break;
+                case "isHeatOff":
+                    event.setHeatOff((Boolean) value);
+                    break;
+                case "coolHoldTemp":
+                    event.setCoolHoldTemp(Temperature.fromLocalTemperature(new BigDecimal(value.toString())));
+                    break;
+                case "heatHoldTemp":
+                    event.setHeatHoldTemp(Temperature.fromLocalTemperature(new BigDecimal(value.toString())));
+                    break;
+                case "fan":
+                    event.setFan(FanMode.forValue((String) value));
+                    break;
+                case "vent":
+                    event.setVent(VentilatorMode.forValue((String) value));
+                    break;
+                case "ventilatorMinOnTime":
+                    event.setVentilatorMinOnTime((Integer) value);
+                    break;
+                case "isOptional":
+                    event.setOptional((Boolean) value);
+                    break;
+                case "isTemperatureRelative":
+                    event.setTemperatureRelative((Boolean) value);
+                    break;
+                case "coolRelativeTemp":
+                    event.setCoolRelativeTemp(Temperature.fromLocalTemperature(new BigDecimal(value.toString())));
+                    break;
+                case "heatRelativeTemp":
+                    event.setHeatRelativeTemp(Temperature.fromLocalTemperature(new BigDecimal(value.toString())));
+                    break;
+                case "isTemperatureAbsolute":
+                    event.setTemperatureAbsolute((Boolean) value);
+                    break;
+                case "fanMinOnTime":
+                    event.setFanMinOnTime((Integer) value);
+                    break;
+                case "holdClimateRef":
+                    event.setHoldClimateRef((String) value);
+                    break;
+                default:
+                    logger.warn("Unrecognized event field '{}' with value '{}' ignored.", key, value);
+                    break;
+            }
+        }
+        SetHoldFunction function = new SetHoldFunction(event, (holdType == null) ? null : HoldType.forValue(holdType),
+                (holdHours == null) ? null : holdHours.intValue(), startDateTime, endDateTime);
         return callEcobeeInternal(selection, function);
     }
 
