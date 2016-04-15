@@ -86,10 +86,10 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     /**
      * A multiplier for the raw incoming data
-     * 
+     *
      * @note rawMultiplier can also be used for divisions, by simply
      *       setting the value smaller than zero.
-     * 
+     *
      *       E.g.:
      *       - data/100 ... rawDataMultiplier=0.01
      */
@@ -97,6 +97,21 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     private Object storage;
     protected ModbusTransaction transaction = null;
+
+    /**
+     * Does the binding post updates even when the item did not change it's state?
+     *
+     * default is "false"
+     */
+    private boolean updateUnchangedItems = false;
+
+    public boolean isUpdateUnchangedItems() {
+        return updateUnchangedItems;
+    }
+
+    public void setUpdateUnchangedItems(boolean updateUnchangedItems) {
+        this.updateUnchangedItems = updateUnchangedItems;
+    }
 
     /**
      * @param slave slave name from cfg file used for item binding
@@ -108,7 +123,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
     /**
      * writes data to Modbus device corresponding to OpenHAB command
      * works only with types "coil" and "holding"
-     * 
+     *
      * @param command OpenHAB command received
      * @param readRegister data from readRegister are used to define value to write to the device
      * @param writeRegister register address to write new data to
@@ -125,7 +140,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
     /**
      * Calculates boolean value that will be written to the device as a result of OpenHAB command
      * Used with item bound to "coil" type slaves
-     * 
+     *
      * @param command OpenHAB command received by the item
      * @return new boolean value to be written to the device
      */
@@ -147,7 +162,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     /**
      * Performs physical write to device when slave type is "coil"
-     * 
+     *
      * @param command command received from OpenHAB
      * @param readRegister reference to the register that stores current value
      * @param writeRegister register reference to write data to
@@ -167,7 +182,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     /**
      * Performs physical write to device when slave type is "holding" using Modbus FC06 function
-     * 
+     *
      * @param command command received from OpenHAB
      * @param readRegister reference to the register that stores current value
      * @param writeRegister register reference to write data to
@@ -241,7 +256,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     /**
      * Sends boolean (bit) data to the device using Modbus FC05 function
-     * 
+     *
      * @param writeRegister
      * @param b
      */
@@ -264,7 +279,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     /**
      * Reads data from the connected device and updates items with the new data
-     * 
+     *
      * @param binding ModbusBindig that stores providers information
      */
     public void update(ModbusBinding binding) {
@@ -320,7 +335,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
     /**
      * Updates OpenHAB item with data read from slave device
      * works only for type "coil" and "holding"
-     * 
+     *
      * @param binding ModbusBinding
      * @param item item to update
      */
@@ -337,7 +352,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     /**
      * Executes Modbus transaction that reads data from the device and returns response data
-     * 
+     *
      * @param request describes what data are requested from the device
      * @return response data
      */

@@ -25,6 +25,9 @@ import org.openhab.binding.modbus.ModbusBindingProvider;
 import org.openhab.binding.modbus.internal.ModbusGenericBindingProvider.ModbusBindingConfig;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.GenericItem;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
@@ -53,7 +56,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
     private static final String TCP_PREFIX = "tcp";
     private static final String SERIAL_PREFIX = "serial";
 
-    private static final String VALID_COFIG_KEYS = "connection|id|start|length|type|valuetype|rawdatamultiplier|writemultipleregisters";
+    private static final String VALID_COFIG_KEYS = "connection|id|start|length|type|valuetype|rawdatamultiplier|writemultipleregisters|updateunchangeditems";
     private static final Pattern EXTRACT_MODBUS_CONFIG_PATTERN = Pattern.compile(
             "^(" + TCP_PREFIX + "|" + UDP_PREFIX + "|" + SERIAL_PREFIX + "|)\\.(.*?)\\.(" + VALID_COFIG_KEYS + ")$");
 
@@ -62,6 +65,24 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
 
     /** slaves update interval in milliseconds, defaults to 200ms */
     public static int pollInterval = 200;
+
+    /**
+     * ModbusBinding uses the ItemRegistry to check for the last Item state and, depending on the slave
+     * configuration, avoid pushing updates of unchanged items.
+     */
+    private ItemRegistry itemRegistry = null;
+
+    protected void setItemRegistry(ItemRegistry itemRegistry) {
+        this.itemRegistry = itemRegistry;
+    }
+
+    protected void unsetItemRegistry(ItemRegistry itemRegistry) {
+        this.itemRegistry = null;
+    }
+
+    public ItemRegistry getItemRegistry() {
+        return itemRegistry;
+    }
 
     @Override
     public void activate() {
@@ -104,6 +125,13 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
      * @param itemName item to update
      */
     protected void internalUpdateItem(String slaveName, InputRegister[] registers, String itemName) {
+        GenericItem item = null;
+        try {
+            item = (GenericItem) (itemRegistry.getItem(itemName));
+        } catch (ItemNotFoundException ex) {
+            logger.error("internalUpdateItem(Register): Item {} not found in registry", itemName);
+            return;
+        }
         for (ModbusBindingProvider provider : providers) {
             if (!provider.providesBindingFor(itemName)) {
                 continue;
@@ -113,23 +141,24 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
                 continue;
             }
 
-            String slaveValueType = modbusSlaves.get(slaveName).getValueType();
-            double rawDataMultiplier = modbusSlaves.get(slaveName).getRawDataMultiplier();
+            ModbusSlave slave = modbusSlaves.get(slaveName);
+            String slaveValueType = slave.getValueType();
+            double rawDataMultiplier = slave.getRawDataMultiplier();
 
             State newState = extractStateFromRegisters(registers, config.readRegister, slaveValueType);
             /* receive data manipulation */
             State newStateBoolean = provider.getConfig(itemName)
-                    .translateBoolean2State(!newState.equals(DecimalType.ZERO));
+                    .translateBoolean2State(!newState.equals(DecimalType.ZERO), item);
             if (!UnDefType.UNDEF.equals(newStateBoolean)) {
                 newState = newStateBoolean;
-            } else if ((rawDataMultiplier != 1) && (config.getItem() instanceof NumberItem)) {
+            } else if ((rawDataMultiplier != 1) && (item instanceof NumberItem)) {
                 double tmpValue = ((DecimalType) newState).doubleValue() * rawDataMultiplier;
                 newState = new DecimalType(String.valueOf(tmpValue));
             }
-
-            State currentState = config.getItemState();
-            if (!newState.equals(currentState)) {
+            State currentState = item.getState();
+            if (slave.isUpdateUnchangedItems() || !newState.equals(currentState)) {
                 eventPublisher.postUpdate(itemName, newState);
+                item.setState(newState);
             }
         }
     }
@@ -176,15 +205,23 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
      * @param item item to update
      */
     protected void internalUpdateItem(String slaveName, BitVector coils, String itemName) {
+        GenericItem item = null;
+        try {
+            item = (GenericItem) (itemRegistry.getItem(itemName));
+        } catch (ItemNotFoundException ex) {
+            logger.error("internalUpdateItem(Bit): Item {} not found in registry", itemName);
+            return;
+        }
         for (ModbusBindingProvider provider : providers) {
             if (provider.providesBindingFor(itemName)) {
                 ModbusBindingConfig config = provider.getConfig(itemName);
                 if (config.slaveName.equals(slaveName)) {
-                    boolean state = coils.getBit(config.readRegister);
-                    State currentState = provider.getConfig(itemName).getItemState();
-                    State newState = provider.getConfig(itemName).translateBoolean2State(state);
-                    if (!newState.equals(currentState)) {
+                    boolean state = coils.getBit(config.readIndex);
+                    State currentState = item.getState();
+                    State newState = provider.getConfig(itemName).translateBoolean2State(state, item);
+                    if (modbusSlaves.get(slaveName).isUpdateUnchangedItems() || !newState.equals(currentState)) {
                         eventPublisher.postUpdate(itemName, newState);
+                        item.setState(newState);
                     }
                 }
             }
@@ -340,6 +377,8 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
                     }
                 } else if ("rawdatamultiplier".equals(configKey)) {
                     modbusSlave.setRawDataMultiplier(Double.valueOf(value.toString()));
+                } else if ("updateunchangeditems".equals(configKey)) {
+                    modbusSlave.setUpdateUnchangedItems(Boolean.valueOf(value.toString()));
                 } else {
                     throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
                 }
