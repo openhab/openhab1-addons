@@ -25,6 +25,7 @@ import org.openhab.binding.modbus.ModbusBindingProvider;
 import org.openhab.binding.modbus.internal.ModbusGenericBindingProvider.ModbusBindingConfig;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.GenericItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
@@ -53,7 +54,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
     private static final String TCP_PREFIX = "tcp";
     private static final String SERIAL_PREFIX = "serial";
 
-    private static final String VALID_COFIG_KEYS = "connection|id|start|length|type|valuetype|rawdatamultiplier|writemultipleregisters";
+    private static final String VALID_COFIG_KEYS = "connection|id|start|length|type|valuetype|rawdatamultiplier|writemultipleregisters|updateunchangeditems";
     private static final Pattern EXTRACT_MODBUS_CONFIG_PATTERN = Pattern.compile(
             "^(" + TCP_PREFIX + "|" + UDP_PREFIX + "|" + SERIAL_PREFIX + "|)\\.(.*?)\\.(" + VALID_COFIG_KEYS + ")$");
 
@@ -113,8 +114,9 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
                 continue;
             }
 
-            String slaveValueType = modbusSlaves.get(slaveName).getValueType();
-            double rawDataMultiplier = modbusSlaves.get(slaveName).getRawDataMultiplier();
+            ModbusSlave slave = modbusSlaves.get(slaveName);
+            String slaveValueType = slave.getValueType();
+            double rawDataMultiplier = slave.getRawDataMultiplier();
 
             State newState = extractStateFromRegisters(registers, config.readRegister, slaveValueType);
             /* receive data manipulation */
@@ -128,8 +130,10 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
             }
 
             State currentState = config.getItemState();
-            if (!newState.equals(currentState)) {
+            if (slave.isUpdateUnchangedItems() || !newState.equals(currentState)) {
                 eventPublisher.postUpdate(itemName, newState);
+                GenericItem item = (GenericItem) config.getItem();
+                item.setState(newState);
             }
         }
     }
@@ -183,8 +187,10 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
                     boolean state = coils.getBit(config.readRegister);
                     State currentState = provider.getConfig(itemName).getItemState();
                     State newState = provider.getConfig(itemName).translateBoolean2State(state);
-                    if (!newState.equals(currentState)) {
+                    if (modbusSlaves.get(slaveName).isUpdateUnchangedItems() || !newState.equals(currentState)) {
                         eventPublisher.postUpdate(itemName, newState);
+                        GenericItem item = (GenericItem) config.getItem();
+                        item.setState(newState);
                     }
                 }
             }
@@ -340,6 +346,8 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
                     }
                 } else if ("rawdatamultiplier".equals(configKey)) {
                     modbusSlave.setRawDataMultiplier(Double.valueOf(value.toString()));
+                } else if ("updateunchangeditems".equals(configKey)) {
+                    modbusSlave.setUpdateUnchangedItems(Boolean.valueOf(value.toString()));
                 } else {
                     throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
                 }
