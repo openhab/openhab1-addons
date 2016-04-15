@@ -37,14 +37,14 @@ public class MockMystromClient implements IMystromClient {
 		this.devices.clear();
 
 		MystromDevice device1 = new MystromDevice();
-		device1.name = "HalogÃ¨ne/Multi prises";
+		device1.name = "Halogène/Multi prises";
 		device1.id = "1";
 		device1.state = "on";
 		devices.put(device1.id, device1);
 		foundDevices.add(device1);
 
 		MystromDevice device2 = new MystromDevice();
-		device2.name = "Tv/HomeCinÃ©ma";
+		device2.name = "Tv/HomeCinéma";
 		device2.id = "2";
 		device2.state = "off";
 		devices.put(device2.id, device2);
@@ -80,6 +80,11 @@ public class MockMystromClient implements IMystromClient {
 
 	@Override
 	public void RestartMaster(String deviceId) {
+	}
+
+	@Override
+	public List<MystromDevice> getDevicesState() {
+		return null;
 	}
 
 }
