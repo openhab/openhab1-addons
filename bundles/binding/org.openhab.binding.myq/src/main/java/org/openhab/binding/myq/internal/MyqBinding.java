@@ -102,7 +102,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 	/**
 	 * Use Craftman URL and APPID
 	 */
-	private boolean useCraftman;
+	private boolean useCraftman = false;
 
 	/**
 	 * Called by the SCR to activate the component with its configuration read
