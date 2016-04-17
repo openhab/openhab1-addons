@@ -13,13 +13,13 @@ import java.util.List;
 /**
  * Structure class for Json deserialization.
  *
- * @since 1.8.0-SNAPSHOT
+ * @since 1.9.0-SNAPSHOT
  * @author Jordens Christophe
  *
  */
 public class GetDevicesResult {
-    /**
-     * List of devices found on the mystrom server.
-     */
-    public List<MystromDevice> devices;
+	/**
+	 * List of devices found on the mystrom server.
+	 */
+	public List<MystromDevice> devices;
 }

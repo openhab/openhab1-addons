@@ -19,67 +19,72 @@ import org.openhab.binding.mystromecopower.internal.api.model.MystromDevice;
 /**
  * Mock used to simulate the mystrom SRS server.
  *
- * @since 1.8.0-SNAPSHOT
+ * @since 1.9.0-SNAPSHOT
  * @author Jordens Christophe
  *
  */
 public class MockMystromClient implements IMystromClient {
-    private Map<String, MystromDevice> devices = new HashMap<String, MystromDevice>();
+	private Map<String, MystromDevice> devices = new HashMap<String, MystromDevice>();
 
-    @Override
-    public Boolean login() {
-        return true;
-    }
+	@Override
+	public Boolean login() {
+		return true;
+	}
 
-    @Override
-    public List<MystromDevice> getDevices() {
-        ArrayList<MystromDevice> foundDevices = new ArrayList<MystromDevice>();
-        this.devices.clear();
+	@Override
+	public List<MystromDevice> getDevices() {
+		ArrayList<MystromDevice> foundDevices = new ArrayList<MystromDevice>();
+		this.devices.clear();
 
-        MystromDevice device1 = new MystromDevice();
-        device1.name = "HalogÃ¨ne/Multi prises";
-        device1.id = "1";
-        device1.state = "on";
-        devices.put(device1.id, device1);
-        foundDevices.add(device1);
+		MystromDevice device1 = new MystromDevice();
+		device1.name = "Halogène/Multi prises";
+		device1.id = "1";
+		device1.state = "on";
+		devices.put(device1.id, device1);
+		foundDevices.add(device1);
 
-        MystromDevice device2 = new MystromDevice();
-        device2.name = "Tv/HomeCinÃ©ma";
-        device2.id = "2";
-        device2.state = "off";
-        devices.put(device2.id, device2);
-        foundDevices.add(device2);
+		MystromDevice device2 = new MystromDevice();
+		device2.name = "Tv/HomeCinéma";
+		device2.id = "2";
+		device2.state = "off";
+		devices.put(device2.id, device2);
+		foundDevices.add(device2);
 
-        MystromDevice device3 = new MystromDevice();
-        device3.name = "Chauffe eau";
-        device3.id = "3";
-        device3.state = "offline";
-        devices.put(device3.id, device3);
-        foundDevices.add(device3);
+		MystromDevice device3 = new MystromDevice();
+		device3.name = "Chauffe eau";
+		device3.id = "3";
+		device3.state = "offline";
+		devices.put(device3.id, device3);
+		foundDevices.add(device3);
 
-        return foundDevices;
-    }
+		return foundDevices;
+	}
 
-    @Override
-    public MystromDevice getDeviceInfo(String deviceId) {
-        MystromDevice device = this.devices.get(deviceId);
-        device.power = Double.toString(Math.random() * 100);
+	@Override
+	public MystromDevice getDeviceInfo(String deviceId) {
+		MystromDevice device = this.devices.get(deviceId);
+		device.power = Double.toString(Math.random() * 100);
 
-        if (device.id == "3") {
-            device.state = "on";
-        }
+		if (device.id == "3") {
+			device.state = "on";
+		}
 
-        return device;
-    }
+		return device;
+	}
 
-    @Override
-    public Boolean ChangeState(String deviceId, Boolean newStateIsOn) {
-        this.devices.get(deviceId).state = newStateIsOn ? "on" : "off";
-        return true;
-    }
+	@Override
+	public Boolean ChangeState(String deviceId, Boolean newStateIsOn) {
+		this.devices.get(deviceId).state = newStateIsOn ? "on" : "off";
+		return true;
+	}
 
-    @Override
-    public void RestartMaster(String deviceId) {
-    }
+	@Override
+	public void RestartMaster(String deviceId) {
+	}
+
+	@Override
+	public List<MystromDevice> getDevicesState() {
+		return null;
+	}
 
 }
