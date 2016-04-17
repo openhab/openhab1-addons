@@ -19,7 +19,7 @@ import org.openhab.binding.mystromecopower.internal.api.model.MystromDevice;
 /**
  * Mock used to simulate the mystrom SRS server.
  *
- * @since 1.8.0-SNAPSHOT
+ * @since 1.8.0
  * @author Jordens Christophe
  *
  */
@@ -82,4 +82,8 @@ public class MockMystromClient implements IMystromClient {
     public void RestartMaster(String deviceId) {
     }
 
+    @Override
+    public List<MystromDevice> getDevicesState() {
+        return null;
+    }
 }
