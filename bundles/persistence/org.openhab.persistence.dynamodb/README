@@ -1,0 +1,10 @@
+1. Create user for openhab with IAM. Record access key and secret key for the user
+2. Set dynamo full access policy
+3. configure openhab:
+
+````ini
+dynamodb:accessKey=foo
+dynamodb:secretKey=bar
+dynamodb:region=eu-west-1
+````
+
