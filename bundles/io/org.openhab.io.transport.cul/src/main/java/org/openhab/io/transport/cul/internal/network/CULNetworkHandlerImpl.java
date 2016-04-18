@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.io.transport.cul.internal;
+package org.openhab.io.transport.cul.internal.network;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,11 +18,11 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
 
 import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULDeviceException;
-import org.openhab.io.transport.cul.CULMode;
+import org.openhab.io.transport.cul.internal.AbstractCULHandler;
+import org.openhab.io.transport.cul.internal.CULConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,16 +33,16 @@ import org.slf4j.LoggerFactory;
  * @author Markus Heberling
  * @since 1.5.0
  */
-public class CULNetworkHandlerImpl extends AbstractCULHandler {
+public class CULNetworkHandlerImpl extends AbstractCULHandler<CULNetworkConfig> {
 
     private static final int CUN_DEFAULT_PORT = 2323;
 
     /**
      * Thread which receives all data from the CUL.
-     * 
+     *
      * @author Markus Heberling
      * @since 1.5.0
-     * 
+     *
      */
     private class ReceiveThread extends Thread {
 
@@ -70,7 +70,7 @@ public class CULNetworkHandlerImpl extends AbstractCULHandler {
                 }
                 logger.debug("ReceiveThread exiting.");
             } catch (CULCommunicationException e) {
-                log.error("Connection to CUL broken, terminating receive thread for " + deviceName);
+                log.error("Connection to CUL broken, terminating receive thread for " + config.getDeviceAddress());
             }
         }
 
@@ -84,27 +84,19 @@ public class CULNetworkHandlerImpl extends AbstractCULHandler {
     private InputStream is;
     private OutputStream os;
 
-    public CULNetworkHandlerImpl(String deviceName, CULMode mode) {
-        this(deviceName, mode, null);
-    }
-
     /**
      * Constructor including property map for specific configuration. Just for
      * compatibility with CulSerialHandlerImpl
      *
-     * @param deviceName
-     *            String representing the device.
-     * @param mode
-     *            The RF mode for which the device will be configured.
-     * @param properties
-     *            Properties are ignored
+     * @param config config for the handler
      */
-    public CULNetworkHandlerImpl(String deviceName, CULMode mode, Map<String, ?> properties) {
-        super(deviceName, mode);
+    public CULNetworkHandlerImpl(CULConfig config) {
+        super((CULNetworkConfig) config);
     }
 
     @Override
     protected void openHardware() throws CULDeviceException {
+        String deviceName = config.getDeviceAddress();
         log.debug("Opening network CUL connection for " + deviceName);
         try {
             URI uri = new URI("cul://" + deviceName);
@@ -137,7 +129,7 @@ public class CULNetworkHandlerImpl extends AbstractCULHandler {
     protected void closeHardware() {
         receiveThread.interrupt();
 
-        log.debug("Closing network device " + deviceName);
+        log.debug("Closing network device " + config.getDeviceAddress());
 
         try {
             if (br != null) {
@@ -157,14 +149,5 @@ public class CULNetworkHandlerImpl extends AbstractCULHandler {
                 }
             }
         }
-    }
-
-    /**
-     * Returns always true, because connection properties are ignored for a
-     * network connection.
-     */
-    @Override
-    public boolean arePropertiesEqual(Map<String, ?> properties) {
-        return true;
     }
 }

@@ -6,16 +6,17 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.io.transport.cul;
+package org.openhab.io.transport.cul.internal;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openhab.io.transport.cul.internal.CULHandlerInternal;
+import org.openhab.io.transport.cul.CULCommunicationException;
+import org.openhab.io.transport.cul.CULDeviceException;
+import org.openhab.io.transport.cul.CULMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,26 +31,25 @@ public class CULManager {
 
     private final static Logger logger = LoggerFactory.getLogger(CULManager.class);
 
-    private static Map<String, CULHandler> openDevices = new HashMap<String, CULHandler>();
+    private static CULManager instance = new CULManager();
 
-    private static Map<String, Class<? extends CULHandler>> deviceTypeClasses = new HashMap<String, Class<? extends CULHandler>>();
+    private Map<String, Class<? extends CULHandlerInternal<?>>> deviceTypeClasses = new HashMap<String, Class<? extends CULHandlerInternal<?>>>();
+    private Map<String, CULConfigFactory> deviceTypeConfigFactories = new HashMap<String, CULConfigFactory>();
+
+    private Map<String, CULHandlerInternal<?>> openDevices = new HashMap<String, CULHandlerInternal<?>>();
+
+    public static CULManager getInstance() {
+        return instance;
+    }
 
     /**
-     * Get CULHandler for the given device in the given mode. The same
-     * CULHandler can be returned multiple times if you ask multiple times for
-     * the same device in the same mode. It is not possible to obtain a
-     * CULHandler of an already openend device for another RF mode.
-     * 
-     * @param deviceName
-     *            String representing the device. Currently only serial ports
-     *            are supported.
-     * @param mode
-     *            The RF mode for which the device will be configured.
-     * @return A CULHandler to communicate with the culfw based device.
-     * @throws CULDeviceException
+     * Retrieve the config factory for a certain device type.
+     *
+     * @param deviceType device type
+     * @return config factory for the device type
      */
-    public static CULHandler getOpenCULHandler(String deviceName, CULMode mode) throws CULDeviceException {
-        return getOpenCULHandler(deviceName, mode, new HashMap<String, Object>());
+    public CULConfigFactory getConfigFactory(String deviceType) {
+        return deviceTypeConfigFactories.get(deviceType);
     }
 
     /**
@@ -57,26 +57,22 @@ public class CULManager {
      * CULHandler can be returned multiple times if you ask multiple times for
      * the same device in the same mode. It is not possible to obtain a
      * CULHandler of an already openend device for another RF mode.
-     * 
-     * @param deviceName
-     *            String representing the device. Currently only serial ports
-     *            are supported.
-     * @param mode
-     *            The RF mode for which the device will be configured.
-     * @param properties
-     *            Map of properties, do configure a specific CUL Handler Implementation.
-     *            For details please reference the Handler it self.
+     *
+     * @param config
+     *            The configuration for the handler.
      * @return A CULHandler to communicate with the culfw based device.
      * @throws CULDeviceException
      */
-    public static CULHandler getOpenCULHandler(String deviceName, CULMode mode, Map<String, ?> properties)
-            throws CULDeviceException {
+    public <T extends CULConfig> CULHandlerInternal<T> getOpenCULHandler(T config) throws CULDeviceException {
+        CULMode mode = config.getMode();
+        String deviceName = config.getDeviceName();
         logger.debug("Trying to open device " + deviceName + " in mode " + mode.toString());
         synchronized (openDevices) {
 
             if (openDevices.containsKey(deviceName)) {
-                CULHandler handler = openDevices.get(deviceName);
-                if ((handler.getCULMode() == mode) && (handler.arePropertiesEqual(properties))) {
+                @SuppressWarnings("unchecked")
+                CULHandlerInternal<T> handler = (CULHandlerInternal<T>) openDevices.get(deviceName);
+                if (handler.getConfig().equals(config)) {
                     logger.debug("Device " + deviceName + " is already open in mode " + mode.toString()
                             + ", returning already openend handler");
                     return handler;
@@ -85,42 +81,30 @@ public class CULManager {
                             "The device " + deviceName + " is already open in mode " + mode.toString());
                 }
             }
-            CULHandler handler = createNewHandler(deviceName, mode, properties);
+            CULHandlerInternal<T> handler = createNewHandler(config);
             openDevices.put(deviceName, handler);
             return handler;
         }
-    }
-
-    private static String getPrefix(String deviceName) {
-        int index = deviceName.indexOf(':');
-        return deviceName.substring(0, index);
-    }
-
-    private static String getRawDeviceName(String deviceName) {
-        int index = deviceName.indexOf(':');
-        return deviceName.substring(index + 1);
     }
 
     /**
      * Return a CULHandler to the manager. The CULHandler will only be closed if
      * there aren't any listeners registered with it. So it is save to call this
      * methods as soon as you don't need the CULHandler any more.
-     * 
+     *
      * @param handler
      */
-    public static void close(CULHandler handler) {
-        synchronized (openDevices) {
-
-            if (handler instanceof CULHandlerInternal) {
-                CULHandlerInternal internalHandler = (CULHandlerInternal) handler;
-                if (!internalHandler.hasListeners()) {
+    public void close(CULHandlerInternal<?> handler) {
+        if (handler != null) {
+            synchronized (openDevices) {
+                if (!handler.hasListeners()) {
                     openDevices.remove(handler);
                     try {
                         handler.send("X00");
                     } catch (CULCommunicationException e) {
                         logger.warn("Couldn't reset rf mode to X00");
                     }
-                    internalHandler.close();
+                    handler.close();
                 } else {
                     logger.warn("Can't close device because it still has listeners");
                 }
@@ -128,38 +112,32 @@ public class CULManager {
         }
     }
 
-    public static void registerHandlerClass(String deviceType, Class<? extends CULHandler> clazz) {
+    public void registerHandlerClass(String deviceType, Class<? extends CULHandlerInternal<?>> clazz,
+            CULConfigFactory configFactory) {
         logger.debug("Registering class " + clazz.getCanonicalName() + " for device type " + deviceType);
         deviceTypeClasses.put(deviceType, clazz);
+        deviceTypeConfigFactories.put(deviceType, configFactory);
     }
 
-    private static CULHandler createNewHandler(String deviceName, CULMode mode, Map<String, ?> properties)
-            throws CULDeviceException {
-        String deviceType = getPrefix(deviceName);
-        String deviceAddress = getRawDeviceName(deviceName);
+    private <T extends CULConfig> CULHandlerInternal<T> createNewHandler(T config) throws CULDeviceException {
+        String deviceType = config.getDeviceType();
+        CULMode mode = config.getMode();
         logger.debug("Searching class for device type " + deviceType);
-        Class<? extends CULHandler> culHandlerclass = deviceTypeClasses.get(deviceType);
+        @SuppressWarnings("unchecked")
+        Class<? extends CULHandlerInternal<T>> culHandlerclass = (Class<? extends CULHandlerInternal<T>>) deviceTypeClasses
+                .get(deviceType);
         if (culHandlerclass == null) {
             throw new CULDeviceException("No class for the device type " + deviceType + " is registred");
         }
 
-        Class<?>[] constructorParametersTypes = { String.class, CULMode.class };
-        Object[] parameters = { deviceAddress, mode };
-
-        if (properties != null) {
-            constructorParametersTypes = Arrays.copyOf(constructorParametersTypes,
-                    constructorParametersTypes.length + 1);
-            constructorParametersTypes[constructorParametersTypes.length - 1] = Map.class;
-
-            parameters = Arrays.copyOf(parameters, parameters.length + 1);
-            parameters[parameters.length - 1] = properties;
-        }
+        Class<?>[] constructorParametersTypes = { CULConfig.class };
+        Object[] parameters = { config };
 
         try {
-            Constructor<? extends CULHandler> culHanlderConstructor = culHandlerclass
+            Constructor<? extends CULHandlerInternal<T>> culHanlderConstructor = culHandlerclass
                     .getConstructor(constructorParametersTypes);
 
-            CULHandler culHandler = culHanlderConstructor.newInstance(parameters);
+            CULHandlerInternal<T> culHandler = culHanlderConstructor.newInstance(parameters);
             List<String> initCommands = mode.getCommands();
             if (!(culHandler instanceof CULHandlerInternal)) {
                 logger.error(
@@ -167,7 +145,7 @@ public class CULManager {
                 throw new CULDeviceException("This CULHandler class does not implement the internal interface: "
                         + culHandlerclass.getCanonicalName());
             }
-            CULHandlerInternal internalHandler = (CULHandlerInternal) culHandler;
+            CULHandlerInternal<?> internalHandler = culHandler;
             internalHandler.open();
             for (String command : initCommands) {
                 internalHandler.sendWithoutCheck(command);
@@ -178,8 +156,7 @@ public class CULManager {
         } catch (NoSuchMethodException e1) {
             throw new CULDeviceException("Can't find the constructor to build the CULHandler", e1);
         } catch (IllegalArgumentException e) {
-            throw new CULDeviceException(
-                    "Invalid arguments for constructor. Device name: " + deviceAddress + " CULMode " + mode, e);
+            throw new CULDeviceException("Invalid arguments for constructor. CULConfig: " + config, e);
         } catch (InstantiationException e) {
             throw new CULDeviceException("Can't instantiate CULHandler object", e);
         } catch (IllegalAccessException e) {
