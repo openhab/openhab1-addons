@@ -73,7 +73,7 @@ public class WeatherTokenResolver implements TokenResolver {
                 throw new RuntimeException("Invalid weather token: " + tokenName);
             }
         } catch (Exception ex) {
-            logger.error(ex.getMessage(), ex);
+            logger.warn(ex.getMessage());
             return null;
         }
     }
@@ -174,7 +174,7 @@ public class WeatherTokenResolver implements TokenResolver {
 
     /**
      * Helper class with the parts of a token.
-     * 
+     *
      * @author Gerhard Riegler
      * @since 1.6.0
      */

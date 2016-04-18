@@ -11,7 +11,7 @@ package org.openhab.binding.mystromecopower.internal.api.model;
 /**
  * Class model for a mystrom eco power device.
  *
- * @since 1.8.0-SNAPSHOT
+ * @since 1.8.0
  * @author Jordens Christophe
  *
  */

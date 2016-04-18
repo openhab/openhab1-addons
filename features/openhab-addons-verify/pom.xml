@@ -31,9 +31,9 @@
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>de.maggu2810.shk</groupId>
-            <artifactId>shk-feature-base</artifactId>
-            <version>${shk.version}</version>
+            <groupId>org.eclipse.smarthome</groupId>
+            <artifactId>karaf-tp</artifactId>
+            <version>${esh.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
@@ -70,7 +70,7 @@
                                 <descriptor>mvn:org.apache.karaf.features/framework/${karaf.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.eclipse.smarthome/karaf/${esh.version}/xml/features</descriptor>
-                                <descriptor>mvn:de.maggu2810.shk/shk-feature-base/${shk.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.eclipse.smarthome/karaf-tp/${esh.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.openhab.core/openhab-core/${ohc.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.openhab.addons/openhab-addons/${project.version}/xml/features</descriptor>
                             </descriptors>

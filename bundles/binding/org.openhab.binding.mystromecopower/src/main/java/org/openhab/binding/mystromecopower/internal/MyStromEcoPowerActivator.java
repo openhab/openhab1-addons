@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  *
  * @author Jordens Christophe
- * @since 1.8.0-SNAPSHOT
+ * @since 1.8.0
  */
 public final class MyStromEcoPowerActivator implements BundleActivator {
 
@@ -45,7 +45,7 @@ public final class MyStromEcoPowerActivator implements BundleActivator {
 
     /**
      * Returns the bundle context of this bundle
-     * 
+     *
      * @return the bundle context
      */
     public static BundleContext getContext() {
