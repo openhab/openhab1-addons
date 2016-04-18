@@ -11,640 +11,636 @@
 -->
 <features name="${project.artifactId}-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
 
-    <repository>mvn:de.maggu2810.kat.features/apache-httpcomponents/${kat.version}/xml/features</repository>
-
-    <!-- action -->
-
-    <feature name="openhab-action-ecobee" description="Ecobee Action" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-binding-ecobee</feature>
-        <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.ecobee/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/ecobee.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecobee</configfile>
-    </feature>
-
-    <feature name="openhab-action-mail" description="Mail Action" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.mail/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/mail.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mail</configfile>
-    </feature>
-
-    <feature name="openhab-action-mios" description="MiOS Action" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-binding-mios</feature>
-        <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.mios/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/mios.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mios</configfile>
-    </feature>
-
-    <feature name="openhab-action-pebble" description="Pebble Action" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.pebble/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/pebble.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/pebble</configfile>
-    </feature>
-
-    <feature name="openhab-action-pushover" description="Pushover Action" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.pushover/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/pushover.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/pushover</configfile>
-    </feature>
-
-    <feature name="openhab-action-telegram" description="Telegram Action" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.telegram/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/telegram.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/telegram</configfile>
-    </feature>
-
-    <feature name="openhab-action-xbmc" description="XBMC Action" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.xbmc/${project.version}</bundle>
-    </feature>
-
-    <feature name="openhab-action-xmpp" description="XMPP Action" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.xmpp/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/xmpp.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/xmpp</configfile>
-    </feature>
-
-    <!-- binding -->
-
-    <feature name="openhab-binding-anel" description="Anel Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.anel/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/anel.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/anel</configfile>
-    </feature>
-
-    <feature name="openhab-binding-astro1" description="Astro1 Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.astro/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/astro.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/astro</configfile>
-    </feature>
-
-    <feature name="openhab-binding-caldav-command" description="CalDAV Binding (command)" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-io-caldav</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.caldav-command/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/caldavCommand.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/caldavCommand</configfile>
-    </feature>
-
-    <feature name="openhab-binding-caldav-personal" description="CalDAV Binding (personal)" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-io-caldav</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.caldav-personal/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/caldavPersonal.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/caldavPersonal</configfile>
-    </feature>
-
-    <feature name="openhab-binding-comfoair" description="ComfoAir Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-serial</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.comfoair/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/comfoair.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/comfoair</configfile>
-    </feature>
-
-    <feature name="openhab-binding-denon" description="Denon Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>kat-apache-httpcomponents-httpclient</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.denon/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/denon.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/denon</configfile>
-    </feature>
-
-    <feature name="openhab-binding-dmx" description="DMX OLA Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.dmx/${project.version}</bundle>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.dmx.ola/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/dmx.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/dmx</configfile>
-    </feature>
-
-    <feature name="openhab-binding-ebus" description="eBUS Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.ebus/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/ebus.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ebus</configfile>
-    </feature>
-
-    <feature name="openhab-binding-ecobee" description="Ecobee Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.ecobee/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/ecobee.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecobee</configfile>
-    </feature>
-
-    <feature name="openhab-binding-energenie" description="Energenie Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.energenie/${project.version}</bundle>
-    </feature>
-
-    <feature name="openhab-binding-enocean" description="EnOcean Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-serial</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.enocean/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/enocean.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/enocean</configfile>
-    </feature>
-
-    <feature name="openhab-binding-enphaseenergy" description="Enphase Energy Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.enphaseenergy/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/enphaseenergy.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/enphaseenergy</configfile>
-    </feature>
-
-    <feature name="openhab-binding-epsonprojector" description="Epson Projector Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-serial</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.epsonprojector/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/epsonprojector.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/epsonprojector</configfile>
-    </feature>
-
-    <feature name="openhab-binding-exec" description="Exec Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.exec/${project.version}</bundle>
-    </feature>
-
-    <feature name="openhab-binding-freeswitch" description="Freeswitch Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.freeswitch/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/freeswitch.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/freeswitch</configfile>
-    </feature>
-
-    <feature name="openhab-binding-fs20" description="FS20 Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-cul</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.fs20/${project.version}</bundle>
-    </feature>
-
-    <feature name="openhab-binding-garadget" description="Garadget Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.garadget/${project.version}</bundle>
-    </feature>
-
-    <feature name="openhab-binding-gc100ir" description="GC100IR Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.gc100ir/${project.version}</bundle>
-    </feature>
-
-    <feature name="openhab-binding-heatmiser" description="Heatmiser Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.heatmiser/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/heatmiser.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/heatmiser</configfile>
-    </feature>
-
-    <feature name="openhab-binding-homematic" description="Homematic Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.homematic/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/homematic.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/homematic</configfile>
-    </feature>
-
-    <feature name="openhab-binding-http" description="HTTP Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.http/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/http.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/http</configfile>
-    </feature>
-
-    <feature name="openhab-binding-ihc" description="IHC Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.ihc/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/ihc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ihc</configfile>
-    </feature>
-
-    <feature name="openhab-binding-insteonplm" description="InsteonPLM Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-serial</feature>
-        <feature>kat-apache-httpcomponents-httpclient</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.insteonplm/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/insteonplm.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/insteonplm</configfile>
-    </feature>
-
-    <feature name="openhab-binding-intertechno" description="Intertechno Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-cul</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.intertechno/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/culintertechno.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/culintertechno</configfile>
-    </feature>
-	
-    <feature name="openhab-binding-knx" description="KNX Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.knx/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/knx.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/knx</configfile>
-    </feature>
-
-    <feature name="openhab-binding-koubachi" description="Koubachi Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.koubachi/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/koubachi.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/koubachi</configfile>
-    </feature>
-
-    <feature name="openhab-binding-lcn" description="LCN Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.lcn/${project.version}</bundle>
-    </feature>
-
-    <feature name="openhab-binding-milight" description="Milight Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.milight/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/milight.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/milight</configfile>
-    </feature>
-
-    <feature name="openhab-binding-mios" description="MiOS Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.mios/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/mios.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mios</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosArmedCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-armedcommand</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosContactIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-contactin</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosContactOut.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-contactout</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosDeviceStatusUI.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-devicestatusui</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosDimmerCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-dimmercommand</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosLockCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-lockcommand</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosMSwitch1.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch1</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosMSwitch2.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch2</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosMSwitch3.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch3</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosMSwitch4.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch4</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosMSwitch5.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch5</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosMSwitch6.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch6</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosMSwitch7.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch7</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosMSwitch8.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch8</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosSceneActiveIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-sceneactivein</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosShutterCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-shuttercommand</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosStatusIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-statusin</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosSwitchIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-switchin</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosSwitchOut.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-switchout</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosTStatFanOperatingModeCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-tstatfanoperatingmodecommand</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosTStatModeStatusCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-tstatmodestatuscommand</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosTStatSetpointCoolCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-tstatsetpointcoolcommand</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosTStatSetpointHeatCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-tstatsetpointheatcommand</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosUPnPRenderingControlMuteCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-upnprenderingcontrolmutecommand</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosUPnPRenderingControlVolumeCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-upnprenderingcontrolvolumecommand</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosUPnPTransportStatePlayModeCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-upnptransportstateplaymodecommand</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosUnSwitchIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-unswitchin</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosWeatherConditionGroupIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-weatherconditiongroupin</configfile>
-        <configfile finalname="${openhab.conf}/transform/miosZWaveStatusIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-zwavestatusin</configfile>
-    </feature>
-
-    <feature name="openhab-binding-modbus" description="Modbus Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-serial</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.modbus/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/modbus.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/modbus</configfile>
-    </feature>
-
-    <feature name="openhab-binding-mqtt" description="MQTT Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.transport.mqtt/${project.version}</bundle>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.mqtt/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/mqtt.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt</configfile>
-        <configfile finalname="${openhab.conf}/services/mqtt-eventbus.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt-eventbus</configfile>
-    </feature>
-
-    <feature name="openhab-binding-myq" description="Chamberlain MyQ Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>kat-apache-httpcomponents-httpclient</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.myq/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/myq.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/myq</configfile>
-    </feature>
-
-    <feature name="openhab-binding-neohub" description="Neohub Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.neohub/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/neohub.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/neohub</configfile>
-    </feature>
-
-    <feature name="openhab-binding-nest" description="Nest Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.nest/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/nest.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/nest</configfile>
-    </feature>
-
-    <feature name="openhab-binding-netatmo1" description="Netatmo1 Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.netatmo/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/netatmo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/netatmo</configfile>
-    </feature>
-
-    <feature name="openhab-binding-networkhealth" description="NetworkHealth Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.networkhealth/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/networkhealth.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/networkhealth</configfile>
-    </feature>
-
-    <feature name="openhab-binding-nibeheatpump" description="Nibe Heatpump Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.nibeheatpump/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/nibeheatpump.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/nibeheatpump</configfile>
-    </feature>
-
-    <feature name="openhab-binding-onkyo" description="Onkyo Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.onkyo/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/onkyo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/onkyo</configfile>
-    </feature>
-
-    <feature name="openhab-binding-openenergymonitor" description="OpenEnergyMonitor Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-serial</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.openenergymonitor/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/openenergymonitor.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/openenergymonitor</configfile>
-    </feature>
-
-    <feature name="openhab-binding-onewire" description="OneWire Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.onewire/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/onewire.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/onewire</configfile>
-    </feature>
-
-    <feature name="openhab-binding-owserver" description="OWServer Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.owserver/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/owserver.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/owserver</configfile>
-    </feature>
-
-    <feature name="openhab-binding-powermax" description="Visonic PowerMax Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-serial</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.powermax/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/powermax.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/powermax</configfile>
-    </feature>
-
-    <feature name="openhab-binding-rwesmarthome" description="RWE SmartHome Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>kat-apache-httpcomponents-httpclient</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.rwesmarthome/${project.version}</bundle>
-    </feature>
-
-    <feature name="openhab-binding-samsungac" description="Samsung A/C Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.samsungac/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/samsungac.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/samsungac</configfile>
-    </feature>
-
-    <feature name="openhab-binding-sapp" description="Sapp Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.sapp/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/sapp.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/sapp</configfile>
-    </feature>
-
-    <feature name="openhab-binding-satel" description="Satel Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-serial</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.satel/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/satel.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/satel</configfile>
-    </feature>
-
-    <feature name="openhab-binding-serial" description="Serial Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-serial</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.serial/${project.version}</bundle>
-    </feature>
-
-    <feature name="openhab-binding-snmp" description="SNMP Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.snmp/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/snmp.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/snmp</configfile>
-    </feature>
-
-    <feature name="openhab-binding-swegonventilation" description="Swegon Ventilation Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-serial</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.swegonventilation/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/swegonventilation.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/swegonventilation</configfile>
-    </feature>
-
-    <feature name="openhab-binding-systeminfo" description="System Info Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.systeminfo/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/systeminfo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/systeminfo</configfile>
-    </feature>
-
-    <feature name="openhab-binding-tellstick" description="Tellstick Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.tellstick/${project.version}</bundle>
-    </feature>
-
-    <feature name="openhab-binding-tinkerforge" description="Tinkerforge Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.tinkerforge/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/tinkerforge.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/tinkerforge</configfile>
-    </feature>
-
-    <feature name="openhab-binding-urtsi" description="Somfy URTSI II Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-serial</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.urtsi/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/urtsi.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/urtsi</configfile>
-    </feature>
-
-    <feature name="openhab-binding-weather" description="Weather Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.weather/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/weather.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/weather</configfile>
-    </feature>
-
-    <feature name="openhab-binding-xbmc" description="XBMC Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.xbmc/${project.version}</bundle>
-    </feature>
-
-    <feature name="openhab-binding-zwave1" description="Z-Wave1 Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-serial</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.zwave/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/zwave.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/zwave</configfile>
-    </feature>
-
-    <!-- persistence -->
-
-    <feature name="openhab-persistence-influxdb" description="InfluxDB (v 1.0) Persistence" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.influxdb/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/influxdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/influxdb</configfile>
-    </feature>
-
-    <!-- JDBC Persistence for: Apache Derby, H2, HSQLDB, MariaDB, MySQL, PostgreSQL, SQLite -->
-    <feature name="openhab-persistence-jdbc-derby" description="JDBC Persistence Apache Derby" version="${project.version}">
-        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
-        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
-        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.apache.derby/derbyclient/${derby.version}</bundle>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
-    </feature>
-    
-    <feature name="openhab-persistence-jdbc-h2" description="JDBC Persistence H2" version="${project.version}">
-        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
-        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
-        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:com.h2database/h2/${h2.version}</bundle>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
-    </feature>
-    
-    <feature name="openhab-persistence-jdbc-hsqldb" description="JDBC Persistence HSQLDB" version="${project.version}">
-        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
-        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
-        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.hsqldb/hsqldb/${hsqldb.version}</bundle>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
-    </feature>
-    
-    <feature name="openhab-persistence-jdbc-mariadb" description="JDBC Persistence MariaDB" version="${project.version}">
-        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
-        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
-        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.mariadb.jdbc/mariadb-java-client/${mariadb.version}</bundle>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
-    </feature>
-    
-    <feature name="openhab-persistence-jdbc-mysql" description="JDBC Persistence MySQL" version="${project.version}">
-        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
-        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
-        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:mysql/mysql-connector-java/${mysql.version}</bundle>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
-    </feature>
-    
-    <feature name="openhab-persistence-jdbc-postgresql" description="JDBC Persistence PostgreSQL" version="${project.version}">
-        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
-        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
-        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.postgresql/postgresql/${postgresql.version}</bundle>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
-    </feature>
-    
-    <feature name="openhab-persistence-jdbc-sqlite" description="JDBC Persistence SQLite" version="${project.version}">
-        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
-        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
-        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.xerial/sqlite-jdbc/${sqlite.version}</bundle>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
-    </feature>
-    
-    <feature name="openhab-persistence-jpa" description="JPA Persistence" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jpa/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/jpa.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jpa</configfile>
-    </feature>
-    
-    <feature name="openhab-persistence-mapdb" description="MapDB Persistence" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mapdb/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/mapdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mapdb</configfile>
-    </feature>
-
-    <feature name="openhab-persistence-mqtt" description="MQTT Persistence" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.transport.mqtt/${project.version}</bundle>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mqtt/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/mqtt.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt</configfile>
-        <configfile finalname="${openhab.conf}/services/mqtt-persistence.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt-persistence</configfile>
-    </feature>
-
-    <feature name="openhab-persistence-mysql" description="MySQL Persistence" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mysql/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/mysql.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mysql</configfile>
-    </feature>
-
-    <feature name="openhab-persistence-rrd4j" description="RRD4j Persistence" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.rrd4j/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/rrd4j.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/rrd4j</configfile>
-    </feature>
-
-<!--
-    <feature name="openhab-persistence-logging" description="Logging Persistence" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:ch.qos.logback/logback-core/1.1.3</bundle>
-        <bundle start-level="80">mvn:ch.qos.logback/logback-classic/1.1.3</bundle>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.logging/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/logging.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/logging</configfile>
-    </feature>
--->
-    
-    <!-- text-to-speech -->   
-
-    <feature name="openhab-tts-marytts" description="MaryTTS" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.multimedia.tts.marytts/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/marytts.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/marytts</configfile>
-    </feature>
-
-    <!-- shared features, not end user facing -->
-
-    <feature name="openhab-transport-cul" description="CUL Transport" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <feature>openhab-transport-serial</feature>
-        <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.transport.cul/${project.version}</bundle>
-    </feature>
-
-    <feature name="openhab-io-caldav" description="CalDAV I/O" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.caldav/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/caldavio.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/caldavio</configfile>
-    </feature>
+  <repository>mvn:de.maggu2810.kat.features/apache-httpcomponents/${kat.version}/xml/features</repository>
+
+  <!-- action -->
+
+  <feature name="openhab-action-ecobee" description="Ecobee Action" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-binding-ecobee</feature>
+    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.ecobee/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/ecobee.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecobee</configfile>
+  </feature>
+
+  <feature name="openhab-action-mail" description="Mail Action" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.mail/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/mail.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mail</configfile>
+  </feature>
+
+  <feature name="openhab-action-mios" description="MiOS Action" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-binding-mios</feature>
+    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.mios/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/mios.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mios</configfile>
+  </feature>
+
+  <feature name="openhab-action-pebble" description="Pebble Action" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.pebble/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/pebble.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/pebble</configfile>
+  </feature>
+
+  <feature name="openhab-action-pushover" description="Pushover Action" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.pushover/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/pushover.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/pushover</configfile>
+  </feature>
+
+  <feature name="openhab-action-telegram" description="Telegram Action" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.telegram/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/telegram.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/telegram</configfile>
+  </feature>
+
+  <feature name="openhab-action-xbmc" description="XBMC Action" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.xbmc/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-action-xmpp" description="XMPP Action" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.xmpp/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/xmpp.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/xmpp</configfile>
+  </feature>
+
+  <!-- binding -->
+
+  <feature name="openhab-binding-anel" description="Anel Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.anel/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/anel.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/anel</configfile>
+  </feature>
+
+  <feature name="openhab-binding-astro1" description="Astro1 Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.astro/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/astro.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/astro</configfile>
+  </feature>
+
+  <feature name="openhab-binding-caldav-command" description="CalDAV Binding (command)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-io-caldav</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.caldav-command/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/caldavCommand.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/caldavCommand</configfile>
+  </feature>
+
+  <feature name="openhab-binding-caldav-personal" description="CalDAV Binding (personal)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-io-caldav</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.caldav-personal/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/caldavPersonal.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/caldavPersonal</configfile>
+  </feature>
+
+  <feature name="openhab-binding-comfoair" description="ComfoAir Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.comfoair/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/comfoair.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/comfoair</configfile>
+  </feature>
+
+  <feature name="openhab-binding-denon" description="Denon Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.denon/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/denon.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/denon</configfile>
+  </feature>
+
+  <feature name="openhab-binding-dmx" description="DMX OLA Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.dmx/${project.version}</bundle>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.dmx.ola/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/dmx.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/dmx</configfile>
+  </feature>
+
+  <feature name="openhab-binding-ebus" description="eBUS Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.ebus/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/ebus.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ebus</configfile>
+  </feature>
+
+  <feature name="openhab-binding-ecobee" description="Ecobee Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.ecobee/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/ecobee.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecobee</configfile>
+  </feature>
+
+  <feature name="openhab-binding-energenie" description="Energenie Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.energenie/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-binding-enocean" description="EnOcean Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.enocean/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/enocean.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/enocean</configfile>
+  </feature>
+
+  <feature name="openhab-binding-enphaseenergy" description="Enphase Energy Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.enphaseenergy/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/enphaseenergy.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/enphaseenergy</configfile>
+  </feature>
+
+  <feature name="openhab-binding-epsonprojector" description="Epson Projector Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.epsonprojector/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/epsonprojector.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/epsonprojector</configfile>
+  </feature>
+
+  <feature name="openhab-binding-exec" description="Exec Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.exec/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-binding-freeswitch" description="Freeswitch Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.freeswitch/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/freeswitch.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/freeswitch</configfile>
+  </feature>
+
+  <feature name="openhab-binding-fs20" description="FS20 Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-cul</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.fs20/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-binding-garadget" description="Garadget Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.garadget/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-binding-gc100ir" description="GC100IR Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.gc100ir/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-binding-heatmiser" description="Heatmiser Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.heatmiser/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/heatmiser.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/heatmiser</configfile>
+  </feature>
+
+  <feature name="openhab-binding-homematic" description="Homematic Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.homematic/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/homematic.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/homematic</configfile>
+  </feature>
+
+  <feature name="openhab-binding-http" description="HTTP Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.http/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/http.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/http</configfile>
+  </feature>
+
+  <feature name="openhab-binding-ihc" description="IHC Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.ihc/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/ihc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ihc</configfile>
+  </feature>
+
+  <feature name="openhab-binding-insteonplm" description="InsteonPLM Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.insteonplm/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/insteonplm.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/insteonplm</configfile>
+  </feature>
+
+  <feature name="openhab-binding-intertechno" description="Intertechno Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-cul</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.intertechno/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/culintertechno.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/culintertechno</configfile>
+  </feature>
+
+  <feature name="openhab-binding-knx" description="KNX Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.knx/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/knx.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/knx</configfile>
+  </feature>
+
+  <feature name="openhab-binding-koubachi" description="Koubachi Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.koubachi/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/koubachi.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/koubachi</configfile>
+  </feature>
+
+  <feature name="openhab-binding-lcn" description="LCN Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.lcn/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-binding-milight" description="Milight Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.milight/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/milight.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/milight</configfile>
+  </feature>
+
+  <feature name="openhab-binding-mios" description="MiOS Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.mios/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/mios.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mios</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosArmedCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-armedcommand</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosContactIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-contactin</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosContactOut.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-contactout</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosDeviceStatusUI.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-devicestatusui</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosDimmerCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-dimmercommand</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosLockCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-lockcommand</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosMSwitch1.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch1</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosMSwitch2.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch2</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosMSwitch3.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch3</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosMSwitch4.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch4</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosMSwitch5.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch5</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosMSwitch6.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch6</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosMSwitch7.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch7</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosMSwitch8.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-mswitch8</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosSceneActiveIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-sceneactivein</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosShutterCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-shuttercommand</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosStatusIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-statusin</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosSwitchIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-switchin</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosSwitchOut.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-switchout</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosTStatFanOperatingModeCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-tstatfanoperatingmodecommand</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosTStatModeStatusCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-tstatmodestatuscommand</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosTStatSetpointCoolCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-tstatsetpointcoolcommand</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosTStatSetpointHeatCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-tstatsetpointheatcommand</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosUPnPRenderingControlMuteCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-upnprenderingcontrolmutecommand</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosUPnPRenderingControlVolumeCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-upnprenderingcontrolvolumecommand</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosUPnPTransportStatePlayModeCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-upnptransportstateplaymodecommand</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosUnSwitchIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-unswitchin</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosWeatherConditionGroupIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-weatherconditiongroupin</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosZWaveStatusIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-zwavestatusin</configfile>
+  </feature>
+
+  <feature name="openhab-binding-modbus" description="Modbus Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.modbus/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/modbus.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/modbus</configfile>
+  </feature>
+
+  <feature name="openhab-binding-mqtt" description="MQTT Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.transport.mqtt/${project.version}</bundle>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.mqtt/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/mqtt.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt</configfile>
+    <configfile finalname="${openhab.conf}/services/mqtt-eventbus.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt-eventbus</configfile>
+  </feature>
+
+  <feature name="openhab-binding-myq" description="Chamberlain MyQ Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.myq/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/myq.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/myq</configfile>
+  </feature>
+
+  <feature name="openhab-binding-neohub" description="Neohub Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.neohub/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/neohub.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/neohub</configfile>
+  </feature>
+
+  <feature name="openhab-binding-nest" description="Nest Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.nest/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/nest.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/nest</configfile>
+  </feature>
+
+  <feature name="openhab-binding-netatmo1" description="Netatmo1 Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.netatmo/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/netatmo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/netatmo</configfile>
+  </feature>
+
+  <feature name="openhab-binding-networkhealth" description="NetworkHealth Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.networkhealth/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/networkhealth.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/networkhealth</configfile>
+  </feature>
+
+  <feature name="openhab-binding-nibeheatpump" description="Nibe Heatpump Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.nibeheatpump/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/nibeheatpump.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/nibeheatpump</configfile>
+  </feature>
+
+  <feature name="openhab-binding-onkyo" description="Onkyo Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.onkyo/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/onkyo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/onkyo</configfile>
+  </feature>
+
+  <feature name="openhab-binding-openenergymonitor" description="OpenEnergyMonitor Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.openenergymonitor/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/openenergymonitor.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/openenergymonitor</configfile>
+  </feature>
+
+  <feature name="openhab-binding-onewire" description="OneWire Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.onewire/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/onewire.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/onewire</configfile>
+  </feature>
+
+  <feature name="openhab-binding-owserver" description="OWServer Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.owserver/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/owserver.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/owserver</configfile>
+  </feature>
+
+  <feature name="openhab-binding-powermax" description="Visonic PowerMax Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.powermax/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/powermax.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/powermax</configfile>
+  </feature>
+
+  <feature name="openhab-binding-rwesmarthome" description="RWE SmartHome Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.rwesmarthome/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-binding-samsungac" description="Samsung A/C Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.samsungac/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/samsungac.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/samsungac</configfile>
+  </feature>
+
+  <feature name="openhab-binding-sapp" description="Sapp Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.sapp/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/sapp.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/sapp</configfile>
+  </feature>
+
+  <feature name="openhab-binding-satel" description="Satel Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.satel/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/satel.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/satel</configfile>
+  </feature>
+
+  <feature name="openhab-binding-serial" description="Serial Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.serial/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-binding-snmp" description="SNMP Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.snmp/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/snmp.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/snmp</configfile>
+  </feature>
+
+  <feature name="openhab-binding-swegonventilation" description="Swegon Ventilation Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.swegonventilation/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/swegonventilation.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/swegonventilation</configfile>
+  </feature>
+
+  <feature name="openhab-binding-systeminfo" description="System Info Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.systeminfo/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/systeminfo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/systeminfo</configfile>
+  </feature>
+
+  <feature name="openhab-binding-tellstick" description="Tellstick Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.tellstick/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-binding-tinkerforge" description="Tinkerforge Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.tinkerforge/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/tinkerforge.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/tinkerforge</configfile>
+  </feature>
+
+  <feature name="openhab-binding-urtsi" description="Somfy URTSI II Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.urtsi/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/urtsi.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/urtsi</configfile>
+  </feature>
+
+  <feature name="openhab-binding-weather" description="Weather Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.weather/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/weather.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/weather</configfile>
+  </feature>
+
+  <feature name="openhab-binding-xbmc" description="XBMC Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.xbmc/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-binding-zwave1" description="Z-Wave1 Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.zwave/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/zwave.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/zwave</configfile>
+  </feature>
+
+  <!-- persistence -->
+
+  <feature name="openhab-persistence-influxdb" description="InfluxDB (v 1.0) Persistence" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.influxdb/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/influxdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/influxdb</configfile>
+  </feature>
+
+  <!-- JDBC Persistence for: Apache Derby, H2, HSQLDB, MariaDB, MySQL, PostgreSQL, SQLite -->
+  <feature name="openhab-persistence-jdbc-derby" description="JDBC Persistence Apache Derby" version="${project.version}">
+    <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+    <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+    <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.apache.derby/derbyclient/${derby.version}</bundle>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-persistence-jdbc-h2" description="JDBC Persistence H2" version="${project.version}">
+    <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+    <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+    <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:com.h2database/h2/${h2.version}</bundle>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-persistence-jdbc-hsqldb" description="JDBC Persistence HSQLDB" version="${project.version}">
+    <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+    <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+    <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.hsqldb/hsqldb/${hsqldb.version}</bundle>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-persistence-jdbc-mariadb" description="JDBC Persistence MariaDB" version="${project.version}">
+    <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+    <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+    <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.mariadb.jdbc/mariadb-java-client/${mariadb.version}</bundle>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-persistence-jdbc-mysql" description="JDBC Persistence MySQL" version="${project.version}">
+    <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+    <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+    <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:mysql/mysql-connector-java/${mysql.version}</bundle>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-persistence-jdbc-postgresql" description="JDBC Persistence PostgreSQL" version="${project.version}">
+    <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+    <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+    <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.postgresql/postgresql/${postgresql.version}</bundle>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-persistence-jdbc-sqlite" description="JDBC Persistence SQLite" version="${project.version}">
+    <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+    <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+    <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.xerial/sqlite-jdbc/${sqlite.version}</bundle>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-persistence-jpa" description="JPA Persistence" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jpa/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/jpa.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jpa</configfile>
+  </feature>
+
+  <feature name="openhab-persistence-mapdb" description="MapDB Persistence" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mapdb/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/mapdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mapdb</configfile>
+  </feature>
+
+  <feature name="openhab-persistence-mqtt" description="MQTT Persistence" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.transport.mqtt/${project.version}</bundle>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mqtt/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/mqtt.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt</configfile>
+    <configfile finalname="${openhab.conf}/services/mqtt-persistence.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt-persistence</configfile>
+  </feature>
+
+  <feature name="openhab-persistence-mysql" description="MySQL Persistence" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mysql/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/mysql.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mysql</configfile>
+  </feature>
+
+  <feature name="openhab-persistence-rrd4j" description="RRD4j Persistence" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.rrd4j/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/rrd4j.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/rrd4j</configfile>
+  </feature>
+
+  <!--
+      <feature name="openhab-persistence-logging" description="Logging Persistence" version="${project.version}">
+          <feature>openhab-runtime-base</feature>
+          <feature>openhab-runtime-compat1x</feature>
+          <bundle start-level="80">mvn:ch.qos.logback/logback-core/1.1.3</bundle>
+          <bundle start-level="80">mvn:ch.qos.logback/logback-classic/1.1.3</bundle>
+          <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.logging/${project.version}</bundle>
+          <configfile finalname="${openhab.conf}/services/logging.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/logging</configfile>
+      </feature>
+  -->
+
+  <!-- text-to-speech -->
+
+  <feature name="openhab-tts-marytts" description="MaryTTS" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.multimedia.tts.marytts/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/marytts.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/marytts</configfile>
+  </feature>
+
+  <!-- shared features, not end user facing -->
+
+  <feature name="openhab-transport-cul" description="CUL Transport" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.transport.cul/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-io-caldav" description="CalDAV I/O" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.caldav/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/caldavio.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/caldavio</configfile>
+  </feature>
 
 </features>
