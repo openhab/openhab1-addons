@@ -191,7 +191,7 @@ public class ResponseParser {
                         values.put(cmd, attributes.getValue("Value"));
                     }
                 } catch (IllegalArgumentException e) {
-                    logger.debug("Does not support attribute: '" + attributes.getValue("ID"));
+                    logger.debug("Does not support attribute: '{}'", attributes.getValue("ID"));
                 }
             }
         }

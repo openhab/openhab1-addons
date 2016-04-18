@@ -76,7 +76,7 @@ public class AirConditioner {
             getToken();
             loginWithToken();
         } catch (Exception e) {
-            logger.debug("Disconnecting... with exception: " + e.toString());
+            logger.debug("Disconnecting... with exception: {}", e.toString());
             disconnect();
             throw e;
         }
@@ -95,9 +95,9 @@ public class AirConditioner {
                 socket.close();
             }
             socket = null;
-            logger.debug("Disconnected from AC: " + IP);
+            logger.debug("Disconnected from AC: {}", IP);
         } catch (IOException e) {
-            logger.warn("Could not disconnect from Air Conditioner with IP: " + IP, e);
+            logger.warn("Could not disconnect from Air Conditioner with IP: {}", IP, e);
         } finally {
             socket = null;
         }
@@ -126,7 +126,7 @@ public class AirConditioner {
             handleResponse();
             Thread.sleep(2000);
         }
-        logger.debug("Token has been acquired: " + TOKEN_STRING);
+        logger.debug("Token has been acquired: '{}'", TOKEN_STRING);
     }
 
     /**
@@ -167,18 +167,18 @@ public class AirConditioner {
             }
 
             if (commandId != null && ResponseParser.isCorrectCommandResponse(line, commandId)) {
-                logger.debug("Correct command response: '" + line + "'");
-                if (statusMap.get(command).equals(value)) {
+                logger.debug("Correct command response: '{}'", line);
+                if (command != null && statusMap.get(command).equals(value)) {
                     return;
                 } else {
-                    logger.debug("Continue, cause '" + value + "' is not like '" + statusMap.get(command) + "'");
+                    logger.debug("Continue, cause '{}' is not like '{}'", value, statusMap.get(command));
                     continue;
                 }
             }
 
             if (ResponseParser.isResponseWithToken(line)) {
                 TOKEN_STRING = ResponseParser.parseTokenFromResponse(line);
-                logger.debug("Received TOKEN from AC: '" + TOKEN_STRING + "'");
+                logger.debug("Received TOKEN from AC: '{}'", TOKEN_STRING);
                 return;
             }
             if (ResponseParser.isReadyForTokenResponse(line)) {
@@ -187,24 +187,24 @@ public class AirConditioner {
             }
 
             if (ResponseParser.isSuccessfulLoginResponse(line)) {
-                logger.debug("SuccessfulLoginResponse: '" + line + "'");
+                logger.debug("SuccessfulLoginResponse: '{}'", line);
                 return;
             }
 
             if (ResponseParser.isDeviceState(line)) {
-                logger.debug("Response is device state '" + line + "'");
+                logger.debug("Response is device state '{}'", line);
                 statusMap.clear();
                 statusMap = ResponseParser.parseStatusResponse(line);
                 continue;
             }
 
             if (ResponseParser.isDeviceControl(line)) {
-                logger.debug("DeviceControl: '" + line + "'");
+                logger.debug("DeviceControl: '{}'", line);
                 continue;
             }
 
             if (ResponseParser.isUpdateStatus(line)) {
-                logger.debug("Response is update status: " + line);
+                logger.debug("Response is update status: '{}'", line);
                 Pattern pattern = Pattern.compile("Attr ID=\"(.*)\" Value=\"(.*)\"");
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.groupCount() == 2) {
@@ -213,28 +213,26 @@ public class AirConditioner {
                         CommandEnum cmd = CommandEnum.valueOf(matcher.group(1));
                         if (cmd != null) {
                             statusMap.put(cmd, matcher.group(2));
-                            logger.debug(
-                                    "Setting: " + cmd.name() + " to " + matcher.group(2) + " -- " + statusMap.get(cmd));
+                            logger.debug("Setting: {} to {} ", cmd.name(), matcher.group(2));
                         }
                     } catch (IllegalStateException e) {
-                        logger.info("IllegalStateException when trying to update status, with response: " + line, e);
+                        logger.info("IllegalStateException when trying to update status, with response: {}", line, e);
                     }
                 }
                 continue;
             }
 
             if (commandId != null && !ResponseParser.isCorrectCommandResponse(line, commandId)) {
-                logger.debug(
-                        "Response with incrorrect commandId: '" + line + "' should have been: '" + commandId + "'");
+                logger.debug("Response with incrorrect commandId: '{}' should have been: '{}'", line, commandId);
                 continue;
             }
 
-            logger.debug("Got response:'" + line + "'");
+            logger.debug("Got response:'{}'", line);
         }
     }
 
     private void writeLine(String line) throws Exception {
-        logger.debug("Sending request:'" + line + "'");
+        logger.debug("Sending request:'{}'", line);
         if (!isConnected()) {
             login();
         }
@@ -245,7 +243,7 @@ public class AirConditioner {
             writer.newLine();
             writer.flush();
         } catch (Exception e) {
-            logger.debug("Could not write line. Disconnecting..., exception was: " + e);
+            logger.debug("Could not write line. Disconnecting..., exception..", e);
             disconnect();
             throw (e);
         }
@@ -328,7 +326,7 @@ public class AirConditioner {
      * @throws Exception If we cannot write to the air conditioner or if we cannot handle the response
      */
     public Map<CommandEnum, String> sendCommand(CommandEnum command, String value) throws Exception {
-        logger.debug("Sending command: '" + command.toString() + "' with value: '" + value + "'");
+        logger.debug("Sending command: '{}' with value: '{}'", command.toString(), value);
         String id = "cmd" + Math.round(Math.random() * 10000);
         writeLine("<Request Type=\"DeviceControl\"><Control CommandID=\"" + id + "\" DUID=\"" + MAC + "\"><Attr ID=\""
                 + command + "\" Value=\"" + value + "\" /></Control></Request>");
