@@ -190,6 +190,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
         dptTypeMap.put(DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL.getID(), DecimalType.class);
         dptTypeMap.put(DPTXlator4ByteFloat.DPT_FREQUENCY.getID(), DecimalType.class);
         dptTypeMap.put(DPTXlator4ByteFloat.DPT_POWER.getID(), DecimalType.class);
+        dptTypeMap.put(DPTXlator4ByteFloat.DPT_PRESSURE.getID(), DecimalType.class);
 
         // Datapoint Types "String", Main number 16
         dptTypeMap.put(DPTXlatorString.DPT_STRING_8859_1.getID(), StringType.class);
