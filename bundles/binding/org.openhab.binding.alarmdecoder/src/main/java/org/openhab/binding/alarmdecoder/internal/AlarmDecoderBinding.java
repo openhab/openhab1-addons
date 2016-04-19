@@ -85,6 +85,9 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
     // items have been updated. But where else to put per-item state?
     private HashMap<String, AlarmDecoderBindingConfig> m_unupdatedItems = new HashMap<String, AlarmDecoderBindingConfig>();
 
+    // zone state tracking ( zonetracker ) needed for Ademco panels to track onboard zones
+    private ADZoneTracker zoneTracker = new ADZoneTracker();
+
     @Override
     protected String getName() {
         return "AlarmDecoder binding";
@@ -270,7 +273,10 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
                     logger.error("{} has no mapping for command {}!", itemName, param);
                 } else {
                     String s = sendStr.replace("POUND", "#");
-                    m_writer.write(s);
+                    /** send out a \r\n every time to prevent AD2* from getting into a "greedy" char mode
+                     * such as with the 'L' command
+                     */
+                    m_writer.write(s + "\r\n");
                     m_writer.flush();
                 }
             }
@@ -453,11 +459,77 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
             int nbeeps = Integer.parseInt(parts.get(0).substring(6, 7));
             int lower = Integer.parseInt(parts.get(0).substring(7, 17), 2);
             int status = ((upper & 0x1F) << 13) | ((nbeeps & 0x3) << 10) | lower;
+
+            /**
+             *  if its a FAULT update our zone tracking for the zone.
+             *   TODO: Someone needs to send a * to the panel when it shows
+             *  "Press * for faults". If OpenHAB is connecting to an Ad2Pi
+             *  appliance running AlarmDecoders pre-done Linux Image
+             *  this is already done for you. If not we need to send a *
+             *  when we see "Hit * for faults" This will trigger the Ademco
+             *  panel to send a sequence of faults in order that we can track
+             *  for changes. For DSC alarms where we have all zones tied to EXP
+             *  messages this is not necessary but "should" still work.
+             */
+            if (parts.get(3).startsWith("FAULT",1) | parts.get(3).startsWith("CHECK",1)) {
+
+                /** must maintain sequene of FAULT messages from panel */
+                ArrayList updates = zoneTracker.updateZone(numeric,true);
+
+                /** update all bindings that match this exact zone 'XX' left padded with 0's */
+                for (Object temp : updates) {
+                    Integer i = (Integer)temp;
+
+                    /** skip updating zone 00. This can be used to track the last numeric zone */
+                    if( i > 0 ) {
+                        String dig2Zone = String.format("%02d", i);
+                        ArrayList<AlarmDecoderBindingConfig> bclt = getItems(ADMsgType.KPM, dig2Zone, "contact");
+                        for (AlarmDecoderBindingConfig ct : bclt) {
+                            logger.info("parseKeypadMessage:update({})", dig2Zone);
+
+                            /** get zone state or -1 if not existing */
+                            boolean bzs = zoneTracker.getZoneState(i);
+                            updateItem(ct, bzs == true ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
+                        }
+                    }
+                }
+            }
+
+            /** alarm panel READY bit tracking for zonetracking
+             * zone tracker state machine needs to know if we went "READY"
+             */
+            int readyBit = (status >> 17) & 0x1;
+            ArrayList updates = zoneTracker.updateReadyState( (readyBit>0) ); // boolean
+
+            /** update all bindings that match this exact zone 'XX' left padded with 0's */
+            for (Object temp : updates) {
+                Integer i = (Integer)temp;
+
+                /** skip updating zone 00. This can be used to track the last numeric zone */
+                if( i > 0 ) {
+                    String dig2Zone = String.format("%02d", i);
+                    ArrayList<AlarmDecoderBindingConfig> bclt = getItems(ADMsgType.KPM, dig2Zone, "contact");
+                    for (AlarmDecoderBindingConfig ct : bclt) {
+                        logger.info("parseKeypadMessage:update({})", dig2Zone);
+
+                        /** get zone state or -1 if not existing */
+                        boolean bzs = zoneTracker.getZoneState(i);
+                        updateItem(ct, bzs == true ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
+                    }
+                }
+            }
+
+
+            /** go over all KPM bindings and update them */
             ArrayList<AlarmDecoderBindingConfig> bcl = getItems(ADMsgType.KPM, null, null);
+
             for (AlarmDecoderBindingConfig c : bcl) {
-                if (c.hasFeature("zone")) {
+
+                /** update our last zone ID binding at address 00 only all other zones done above */
+                if (c.hasFeature("zone") && c.getAddress().equals("00") ) {
                     updateItem(c, new DecimalType(numeric));
                 } else if (c.hasFeature("text")) {
+                    /** update our "text" binding if we have one */
                     updateItem(c, new StringType(parts.get(3)));
                 } else if (c.hasFeature("beeps")) {
                     updateItem(c, new DecimalType(nbeeps));
