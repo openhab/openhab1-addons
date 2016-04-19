@@ -30,13 +30,10 @@ public class ADZoneTracker {
     private int _lastZone = 0;
 
     // TODO: zone timeout handling. zone list garbage collector.
-    long _currTime = 0;
-
 
     ADZoneTracker() {
         _zoneList = new ArrayList<ADZone>();
         _lastReady = false;
-        _currTime = System.nanoTime();
     }
 
     /**

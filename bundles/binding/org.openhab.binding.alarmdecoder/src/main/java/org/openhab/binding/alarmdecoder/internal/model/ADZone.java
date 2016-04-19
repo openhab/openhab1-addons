@@ -13,12 +13,13 @@ package org.openhab.binding.alarmdecoder.internal.model;
  *
  * @author Sean Mathews <coder@f34r.com>
  * @since 1.9.0
+ *
+ * TODO: add timeouts
  */
 
 public class ADZone {
 
     private int _id = 0;
-    private long _ts = 0;
     private boolean _state = false;
 
     /**
@@ -29,22 +30,6 @@ public class ADZone {
     public ADZone(int id) {
         _id = id;
         _state = false;
-        _ts = System.nanoTime();
-    }
-
-    public void updateTime() {
-        _ts = System.nanoTime();
-    }
-
-    /**
-     * return diff of zone time and provided time in seconds.
-     * time is stored in nanoseconds
-     *
-     * @param ts
-     * @return double the time difference
-     */
-    public double timeDiff(double ts) {
-        return (ts - _ts) / 1000000000;
     }
 
     /**
@@ -76,11 +61,9 @@ public class ADZone {
 
 
     /**
-     * return diff of zone time and provided time in seconds.
-     * time is stored in nanoseconds
+     * return true if this object equals another based upon ID
      *
-     * @param Object to search
-     * @return double the time difference
+     * @param Object to compare
      */
     @Override
     public boolean equals(Object object) {
