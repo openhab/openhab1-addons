@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  * message stream
  *
  * @author Sean Mathews <coder@f34r.com>
- * @since 1.6.0
+ * @since 1.9.0
  */
 public class ADZoneTracker {
 
@@ -42,16 +42,16 @@ public class ADZoneTracker {
     /**
      * get the state of a zone
      *
-     * @param Zone - the zone
+     * @param zone - the zone
      * @return return zone status or null if the zone is invalid
      *     -1 = unknown
      *      0 = restored
      *      1 = faulted
      */
-    public boolean getZoneState(int Zone) {
+    public boolean getZoneState(int zone) {
 
         /** find the zone in our List */
-        ADZone f = new ADZone(Zone);
+        ADZone f = new ADZone(zone);
         int z = _zoneList.indexOf(f);
 
         if ( z > -1 ) {
@@ -64,24 +64,24 @@ public class ADZoneTracker {
     /**
      * set the state of a zone
      *
-     * @param Zone  - the zone
-     * @param State - faulted or not boolean
+     * @param zone  - the zone
+     * @param state - faulted or not boolean
      * @return zone status
      *     -1 = unknown
      *      0 = restored
      *      1 = faulted
      */
-    public boolean setZoneState(int Zone, boolean State) {
+    public boolean setZoneState(int zone, boolean state) {
 
         /** find the zone in our List */
-        ADZone f = new ADZone(Zone);
+        ADZone f = new ADZone(zone);
         int z = _zoneList.indexOf(f);
 
         if ( z > -1 ) {
-            f.setState(State);
+            f.setState(state);
             f = _zoneList.set(z,f);
         } else {
-            f.setState(State);
+            f.setState(state);
             _zoneList.add(f);
         }
 
@@ -103,28 +103,28 @@ public class ADZoneTracker {
      * correct sequence and not modified from what the panel provides
      * to properly track zones
      *
-     * @param Zone  - the zone
-     * @param State - the state
+     * @param zone  - the zone
+     * @param state - the state
      * @return ArrayList of zones effected
      */
-     public ArrayList updateZone(int Zone, boolean State) {
+     public ArrayList updateZone(int zone, boolean state) {
 
         /** return a list of update zones */
         ArrayList<Integer> updateList =  new ArrayList<Integer>();
 
         /** add this zone */
-        updateList.add(Zone);
+        updateList.add(zone);
 
         /** our list iterator */
         ListIterator litr = _zoneList.listIterator();
 
         /** zone exists so check for any pruning */
-        if(_zoneList.contains(new ADZone(Zone))) {
+        if(_zoneList.contains(new ADZone(zone))) {
             /** go to our last zone updated */
             ADZone f = new ADZone(_lastZone);
             int z = _zoneList.indexOf(f);
 
-		    boolean bFoundLast = false;
+            boolean bFoundLast = false;
 
             /** look for any missing zones and clear them */
             while ( !bFoundLast ) {
@@ -139,7 +139,7 @@ public class ADZoneTracker {
 
                 /** we found it so break out */
                 if( zn.getID() == _lastZone ) {
-	               bFoundLast = true;
+                    bFoundLast = true;
                 }
             }
 
@@ -151,7 +151,7 @@ public class ADZoneTracker {
             boolean bFoundNew = false;
             while(litr.hasNext() && !bFoundNew) {
                 ADZone zn = (ADZone) litr.next();
-                if( zn.getID() == Zone ) {
+                if( zn.getID() == zone ) {
                     bFoundNew=true;
                     break;
                 } else {
@@ -168,7 +168,7 @@ public class ADZoneTracker {
                  litr = _zoneList.listIterator();
                  while(litr.hasNext() && !bFoundNew) {
                      ADZone zn = (ADZone) litr.next();
-                     if( zn.getID() == Zone ) {
+                     if( zn.getID() == zone ) {
                          bFoundNew=true;
                          break;
                      } else {
@@ -188,14 +188,14 @@ public class ADZoneTracker {
          /** zone does not exist just get it into our list */
          } else {
 
-             ADZone f = new ADZone(Zone);
+             ADZone f = new ADZone(zone);
 
              boolean bInserted=false;
              int offset=0;
              litr = _zoneList.listIterator();
              while(litr.hasNext()) {
                  ADZone zn = (ADZone) litr.next();
-                 if( zn.getID() > Zone ) {
+                 if( zn.getID() > zone ) {
                      _zoneList.add(offset, f);
                      bInserted=true;
                      break;
@@ -210,9 +210,9 @@ public class ADZoneTracker {
          }
 
          /** update our last touched zone */
-         _lastZone = Zone;
+         _lastZone = zone;
 
-         setZoneState(Zone,State);
+         setZoneState(zone,state);
 
          return updateList;
      }
@@ -220,15 +220,15 @@ public class ADZoneTracker {
      /**
       * Update panel Ready state clear zones if needed
       *
-      * @parm State - the current panel READY state
+      * @parm state - the current panel READY state
       * @return ArrayList of zones effected
       */
-      public ArrayList updateReadyState(boolean State) {
+      public ArrayList updateReadyState(boolean state) {
 
           ArrayList<Integer> updateList = new ArrayList<Integer>();
 
           /** if we go ready clear all faults */
-          if ( State && _lastReady != State ) {
+          if ( state && _lastReady != state ) {
               /** copy our zones to our update list */
               for (ADZone tz : _zoneList) {
                   updateList.add(tz.getID());
@@ -236,7 +236,7 @@ public class ADZoneTracker {
               /** now clear the list */
               clearAll();
           }
-          _lastReady = State;
+          _lastReady = state;
 
           /** return a list of update zones */
           return updateList;

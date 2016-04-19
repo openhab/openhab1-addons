@@ -12,7 +12,7 @@ package org.openhab.binding.alarmdecoder.internal.model;
  * A class to hold our zone state
  *
  * @author Sean Mathews <coder@f34r.com>
- * @since 1.6.0
+ * @since 1.9.0
  */
 
 public class ADZone {
