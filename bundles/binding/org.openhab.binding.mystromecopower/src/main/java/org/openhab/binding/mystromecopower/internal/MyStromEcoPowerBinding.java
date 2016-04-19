@@ -22,7 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.mystromecopower.MyStromEcoPowerBindingProvider;
 import org.openhab.binding.mystromecopower.internal.api.IMystromClient;
 import org.openhab.binding.mystromecopower.internal.api.MystromClient;
-import org.openhab.binding.mystromecopower.internal.api.mock.MockMystromClient;
 import org.openhab.binding.mystromecopower.internal.api.model.MystromDevice;
 import org.openhab.binding.mystromecopower.internal.util.ChangeStateJob;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -50,11 +49,6 @@ import org.slf4j.LoggerFactory;
  */
 public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowerBindingProvider>
         implements ManagedService {
-    /**
-     * If set to true, use the mystrom client mock to simulate the mystrom
-     * server.
-     */
-    private Boolean devMode = false;
 
     /**
      * The user name to login on mystrom server.
@@ -99,6 +93,16 @@ public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowe
      * The default constructor.
      */
     public MyStromEcoPowerBinding() {
+    }
+
+    /**
+     * Constructor used by unit tests.
+     *
+     * @param myStromClient The mystrom client used to interact with
+     *            MyStrom server.
+     */
+    public MyStromEcoPowerBinding(IMystromClient myStromClient) {
+        this.mystromClient = myStromClient;
     }
 
     @Override
@@ -318,9 +322,7 @@ public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowe
                         "The password to connect to myStrom must be specified in config file");
             }
 
-            if (this.devMode) {
-                this.mystromClient = new MockMystromClient();
-            } else {
+            if (this.mystromClient == null) {
                 this.mystromClient = new MystromClient(this.userName, this.password, logger);
             }
 

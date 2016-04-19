@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for the MyStrom binding
+Bundle-SymbolicName: org.openhab.binding.mystromecopower.test
+Bundle-Version: 1.9.0.SNAPSHOT
+Bundle-Vendor: openHAB.org
+Fragment-Host: org.openhab.binding.mystromecopower;bundle-version="1.9.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit;bundle-version="4.10.0",
+ com.google.guava;bundle-version="10.0.1"
+Bundle-ClassPath: .,
+ lib/slf4j-simple-1.7.5.jar,
+ lib/mockito-all-1.9.5.jar
+Import-Package: org.openhab.binding.mystromecopower.internal,
+ org.openhab.core.library.types,
+ org.osgi.service.cm;version="1.5.0"
