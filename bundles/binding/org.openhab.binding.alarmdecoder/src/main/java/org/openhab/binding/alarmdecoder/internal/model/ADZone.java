@@ -18,7 +18,7 @@ package org.openhab.binding.alarmdecoder.internal.model;
 public class ADZone {
 
     private int _id = 0;
-    private double _ts = 0;
+    private long _ts = 0;
     private boolean _state = false;
 
     /**
