@@ -101,6 +101,21 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
     protected ModbusTransaction transaction = null;
 
     /**
+     * Does the binding post updates even when the item did not change it's state?
+     *
+     * default is "false"
+     */
+    private boolean updateUnchangedItems = false;
+
+    public boolean isUpdateUnchangedItems() {
+        return updateUnchangedItems;
+    }
+
+    public void setUpdateUnchangedItems(boolean updateUnchangedItems) {
+        this.updateUnchangedItems = updateUnchangedItems;
+    }
+
+    /**
      * @param slave slave name from cfg file used for item binding
      */
     public ModbusSlave(String slave) {
