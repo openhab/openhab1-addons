@@ -27,20 +27,20 @@ public class DynamoBigDecimalItem extends AbstractDynamoItem<BigDecimal> {
         super(name, state, time);
     }
 
-    @DynamoDBAttribute(attributeName = "itemstate")
+    @DynamoDBAttribute(attributeName = ATTRIBUTE_NAME_ITEMSTATE)
     @Override
     public BigDecimal getState() {
         return state;
     }
 
-    @DynamoDBHashKey(attributeName = "itemname")
+    @DynamoDBHashKey(attributeName = ATTRIBUTE_NAME_ITEMNAME)
     @Override
     public String getName() {
         return name;
     }
 
     @Override
-    @DynamoDBRangeKey(attributeName = "timeutc")
+    @DynamoDBRangeKey(attributeName = ATTRIBUTE_NAME_TIMEUTC)
     public Date getTime() {
         return time;
     }

@@ -41,6 +41,10 @@ public abstract class AbstractDynamoItem<T> {
     private static final Logger logger = LoggerFactory.getLogger(AbstractDynamoItem.class);
     public static final SimpleDateFormat DATEFORMATTER = new SimpleDateFormat(DATE_FORMAT);
 
+    public static final String ATTRIBUTE_NAME_TIMEUTC = "timeutc";
+    protected static final String ATTRIBUTE_NAME_ITEMNAME = "itemname";
+    protected static final String ATTRIBUTE_NAME_ITEMSTATE = "itemstate";
+
     static {
         DATEFORMATTER.setTimeZone(TimeZone.getTimeZone("UTC"));
     }

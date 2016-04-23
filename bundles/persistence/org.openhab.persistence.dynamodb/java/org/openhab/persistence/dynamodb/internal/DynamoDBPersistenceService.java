@@ -343,7 +343,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
         DynamoDBQueryExpression<AbstractDynamoItem<?>> queryExpression = new DynamoDBQueryExpression<AbstractDynamoItem<?>>()
                 .withHashKeyValues(itemHash).withScanIndexForward(scanIndexForward).withLimit(filter.getPageSize());
         if (timeCondition != null) {
-            queryExpression.withRangeKeyCondition("timeutc", timeCondition);
+            queryExpression.withRangeKeyCondition(AbstractDynamoItem.ATTRIBUTE_NAME_TIMEUTC, timeCondition);
         }
         logger.debug("Querying: {} with {}", filter.getItemName(), timeCondition);
         return queryExpression;
