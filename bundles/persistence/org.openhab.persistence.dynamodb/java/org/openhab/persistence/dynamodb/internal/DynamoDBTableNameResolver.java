@@ -8,23 +8,23 @@ public class DynamoDBTableNameResolver {
         this.tablePrefix = tablePrefix;
     }
 
-    public String fromItem(DynamoItem<?> item) {
+    public String fromItem(DynamoDBItem<?> item) {
         final String[] tableName = new String[1];
 
-        item.accept(new DynamoItemVisitor() {
+        item.accept(new DynamoDBItemVisitor() {
 
             @Override
-            public void visit(DynamoBigDecimalItem dynamoBigDecimalItem) {
+            public void visit(DynamoDBBigDecimalItem dynamoBigDecimalItem) {
                 tableName[0] = tablePrefix + "bigdecimal";
             }
 
             @Override
-            public void visit(DynamoIntegerItem dynamoIntegerItem) {
+            public void visit(DynamoDBIntegerItem dynamoIntegerItem) {
                 tableName[0] = tablePrefix + "integer";
             }
 
             @Override
-            public void visit(DynamoStringItem dynamoStringItem) {
+            public void visit(DynamoDBStringItem dynamoStringItem) {
                 tableName[0] = tablePrefix + "string";
             }
         });

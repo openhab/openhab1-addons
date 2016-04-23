@@ -35,9 +35,9 @@ import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractDynamoItem<T> implements DynamoItem<T> {
+public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractDynamoItem.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractDynamoDBItem.class);
     public static final SimpleDateFormat DATEFORMATTER = new SimpleDateFormat(DATE_FORMAT);
 
     static {
@@ -51,25 +51,25 @@ public abstract class AbstractDynamoItem<T> implements DynamoItem<T> {
     protected T state;
     protected Date time;
 
-    public AbstractDynamoItem(String name, T state, Date time) {
+    public AbstractDynamoDBItem(String name, T state, Date time) {
         this.name = name;
         this.state = state;
         this.time = time;
     }
 
-    public static DynamoItem<?> fromState(String name, State state, Date time) {
+    public static DynamoDBItem<?> fromState(String name, State state, Date time) {
         if (state instanceof DecimalType) {
-            return new DynamoBigDecimalItem(name, ((DecimalType) state).toBigDecimal(), time);
+            return new DynamoDBBigDecimalItem(name, ((DecimalType) state).toBigDecimal(), time);
         } else if (state instanceof OnOffType) {
-            return new DynamoIntegerItem(name, ((OnOffType) state) == OnOffType.ON ? 1 : 0, time);
+            return new DynamoDBIntegerItem(name, ((OnOffType) state) == OnOffType.ON ? 1 : 0, time);
         } else if (state instanceof OpenClosedType) {
-            return new DynamoIntegerItem(name, ((OpenClosedType) state) == OpenClosedType.OPEN ? 1 : 0, time);
+            return new DynamoDBIntegerItem(name, ((OpenClosedType) state) == OpenClosedType.OPEN ? 1 : 0, time);
         } else if (state instanceof DateTimeType) {
-            return new DynamoStringItem(name, DATEFORMATTER.format(((DateTimeType) state).getCalendar().getTime()),
+            return new DynamoDBStringItem(name, DATEFORMATTER.format(((DateTimeType) state).getCalendar().getTime()),
                     time);
         } else {
             // HSBType, PointType and all others
-            return new DynamoStringItem(name, state.toString(), time);
+            return new DynamoDBStringItem(name, state.toString(), time);
         }
     }
 
@@ -81,10 +81,10 @@ public abstract class AbstractDynamoItem<T> implements DynamoItem<T> {
     @Override
     public HistoricItem asHistoricItem(final Item item) {
         final State[] state = new State[1];
-        accept(new DynamoItemVisitor() {
+        accept(new DynamoDBItemVisitor() {
 
             @Override
-            public void visit(DynamoStringItem dynamoStringItem) {
+            public void visit(DynamoDBStringItem dynamoStringItem) {
                 if (item instanceof HSBType) {
                     state[0] = new HSBType(dynamoStringItem.getState());
                 } else if (item instanceof PointType) {
@@ -105,7 +105,7 @@ public abstract class AbstractDynamoItem<T> implements DynamoItem<T> {
             }
 
             @Override
-            public void visit(DynamoIntegerItem dynamoIntegerItem) {
+            public void visit(DynamoDBIntegerItem dynamoIntegerItem) {
                 if (item instanceof DimmerItem) {
                     state[0] = new PercentType(dynamoIntegerItem.getState());
                 } else if (item instanceof SwitchItem) {
@@ -122,7 +122,7 @@ public abstract class AbstractDynamoItem<T> implements DynamoItem<T> {
             }
 
             @Override
-            public void visit(DynamoBigDecimalItem dynamoBigDecimalItem) {
+            public void visit(DynamoDBBigDecimalItem dynamoBigDecimalItem) {
                 if (item instanceof NumberItem) {
                     state[0] = new DecimalType(dynamoBigDecimalItem.getState());
                 }
@@ -188,7 +188,7 @@ public abstract class AbstractDynamoItem<T> implements DynamoItem<T> {
      * DynamoItemVisitor)
      */
     @Override
-    public abstract void accept(DynamoItemVisitor visitor);
+    public abstract void accept(DynamoDBItemVisitor visitor);
 
     @Override
     public String toString() {

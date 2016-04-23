@@ -241,7 +241,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             state = item.getState();
             logger.trace("Tried to get item from item class {}, state is {}", item.getClass(), state.toString());
         }
-        DynamoItem<?> dynamoItem = AbstractDynamoItem.fromState(name, state, time);
+        DynamoDBItem<?> dynamoItem = AbstractDynamoDBItem.fromState(name, state, time);
         DynamoDBMapper mapper = getDBMapper(tableNameResolver.fromItem(dynamoItem));
 
         if (!createTable(mapper, dynamoItem.getClass())) {
@@ -280,10 +280,10 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             return Collections.emptyList();
         }
 
-        DynamoItem<?> dummyDynamoItem = AbstractDynamoItem.fromState(itemName, item.getState(), new Date());
+        DynamoDBItem<?> dummyDynamoItem = AbstractDynamoDBItem.fromState(itemName, item.getState(), new Date());
 
         @SuppressWarnings("rawtypes")
-        Class<? extends DynamoItem> dtoClass = dummyDynamoItem.getClass();
+        Class<? extends DynamoDBItem> dtoClass = dummyDynamoItem.getClass();
         String tableName = tableNameResolver.fromItem(dummyDynamoItem);
         DynamoDBMapper mapper = getDBMapper(tableName);
         logger.debug("item {} (class {}) will be tried to query using dto class {} from table {}", itemName,
@@ -291,12 +291,12 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
 
         List<HistoricItem> historicItems = new ArrayList<HistoricItem>();
 
-        DynamoDBQueryExpression<DynamoItem<?>> queryExpression = createQueryExpression(filter);
+        DynamoDBQueryExpression<DynamoDBItem<?>> queryExpression = createQueryExpression(filter);
         @SuppressWarnings("rawtypes")
-        PaginatedQueryList<? extends DynamoItem> paginatedList = mapper.query(dtoClass, queryExpression);
+        PaginatedQueryList<? extends DynamoDBItem> paginatedList = mapper.query(dtoClass, queryExpression);
         for (int itemIndexOnPage = 0; itemIndexOnPage < filter.getPageSize(); itemIndexOnPage++) {
             int itemIndex = filter.getPageNumber() * filter.getPageSize() + itemIndexOnPage;
-            DynamoItem<?> dynamoItem;
+            DynamoDBItem<?> dynamoItem;
             try {
                 dynamoItem = paginatedList.get(itemIndex);
             } catch (IndexOutOfBoundsException e) {
@@ -319,7 +319,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
      * @param filter
      * @return
      */
-    private DynamoDBQueryExpression<DynamoItem<?>> createQueryExpression(FilterCriteria filter) {
+    private DynamoDBQueryExpression<DynamoDBItem<?>> createQueryExpression(FilterCriteria filter) {
         boolean hasBegin = filter.getBeginDate() != null;
         boolean hasEnd = filter.getEndDate() != null;
 
@@ -328,22 +328,22 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             timeCondition = null;
         } else if (!hasBegin && hasEnd) {
             timeCondition = new Condition().withComparisonOperator(ComparisonOperator.LE).withAttributeValueList(
-                    new AttributeValue().withS(AbstractDynamoItem.DATEFORMATTER.format(filter.getEndDate())));
+                    new AttributeValue().withS(AbstractDynamoDBItem.DATEFORMATTER.format(filter.getEndDate())));
         } else if (hasBegin && !hasEnd) {
             timeCondition = new Condition().withComparisonOperator(ComparisonOperator.GE).withAttributeValueList(
-                    new AttributeValue().withS(AbstractDynamoItem.DATEFORMATTER.format(filter.getBeginDate())));
+                    new AttributeValue().withS(AbstractDynamoDBItem.DATEFORMATTER.format(filter.getBeginDate())));
         } else {
             timeCondition = new Condition().withComparisonOperator(ComparisonOperator.BETWEEN).withAttributeValueList(
-                    new AttributeValue().withS(AbstractDynamoItem.DATEFORMATTER.format(filter.getBeginDate())),
-                    new AttributeValue().withS(AbstractDynamoItem.DATEFORMATTER.format(filter.getEndDate())));
+                    new AttributeValue().withS(AbstractDynamoDBItem.DATEFORMATTER.format(filter.getBeginDate())),
+                    new AttributeValue().withS(AbstractDynamoDBItem.DATEFORMATTER.format(filter.getEndDate())));
         }
 
         boolean scanIndexForward = filter.getOrdering() == Ordering.ASCENDING;
-        DynamoStringItem itemHash = new DynamoStringItem(filter.getItemName(), null, null);
-        DynamoDBQueryExpression<DynamoItem<?>> queryExpression = new DynamoDBQueryExpression<DynamoItem<?>>()
+        DynamoDBStringItem itemHash = new DynamoDBStringItem(filter.getItemName(), null, null);
+        DynamoDBQueryExpression<DynamoDBItem<?>> queryExpression = new DynamoDBQueryExpression<DynamoDBItem<?>>()
                 .withHashKeyValues(itemHash).withScanIndexForward(scanIndexForward).withLimit(filter.getPageSize());
         if (timeCondition != null) {
-            queryExpression.withRangeKeyCondition(DynamoItem.ATTRIBUTE_NAME_TIMEUTC, timeCondition);
+            queryExpression.withRangeKeyCondition(DynamoDBItem.ATTRIBUTE_NAME_TIMEUTC, timeCondition);
         }
         logger.debug("Querying: {} with {}", filter.getItemName(), timeCondition);
         return queryExpression;

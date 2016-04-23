@@ -5,7 +5,7 @@ import java.util.Date;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.HistoricItem;
 
-public interface DynamoItem<T> {
+public interface DynamoDBItem<T> {
 
     static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
@@ -31,6 +31,6 @@ public interface DynamoItem<T> {
 
     void setTime(Date time);
 
-    void accept(DynamoItemVisitor visitor);
+    void accept(DynamoDBItemVisitor visitor);
 
 }

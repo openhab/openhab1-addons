@@ -16,13 +16,13 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 
 @DynamoDBDocument
-public class DynamoIntegerItem extends AbstractDynamoItem<Integer> {
+public class DynamoDBIntegerItem extends AbstractDynamoDBItem<Integer> {
 
-    public DynamoIntegerItem() {
+    public DynamoDBIntegerItem() {
         this(null, null, null);
     }
 
-    public DynamoIntegerItem(String name, Integer state, Date time) {
+    public DynamoDBIntegerItem(String name, Integer state, Date time) {
         super(name, state, time);
     }
 
@@ -60,7 +60,7 @@ public class DynamoIntegerItem extends AbstractDynamoItem<Integer> {
     }
 
     @Override
-    public void accept(org.openhab.persistence.dynamodb.internal.DynamoItemVisitor visitor) {
+    public void accept(org.openhab.persistence.dynamodb.internal.DynamoDBItemVisitor visitor) {
         visitor.visit(this);
     }
 
