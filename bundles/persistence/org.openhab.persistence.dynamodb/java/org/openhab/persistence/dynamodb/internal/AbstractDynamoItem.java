@@ -35,19 +35,17 @@ import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractDynamoItem<T> {
+public abstract class AbstractDynamoItem<T> implements DynamoItem<T> {
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     private static final Logger logger = LoggerFactory.getLogger(AbstractDynamoItem.class);
     public static final SimpleDateFormat DATEFORMATTER = new SimpleDateFormat(DATE_FORMAT);
-
-    public static final String ATTRIBUTE_NAME_TIMEUTC = "timeutc";
-    protected static final String ATTRIBUTE_NAME_ITEMNAME = "itemname";
-    protected static final String ATTRIBUTE_NAME_ITEMSTATE = "itemstate";
 
     static {
         DATEFORMATTER.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
+
+    protected static final String ATTRIBUTE_NAME_ITEMNAME = "itemname";
+    protected static final String ATTRIBUTE_NAME_ITEMSTATE = "itemstate";
 
     protected String name;
     protected T state;
@@ -59,7 +57,7 @@ public abstract class AbstractDynamoItem<T> {
         this.time = time;
     }
 
-    public static AbstractDynamoItem<?> fromState(String name, State state, Date time) {
+    public static DynamoItem<?> fromState(String name, State state, Date time) {
         if (state instanceof DecimalType) {
             return new DynamoBigDecimalItem(name, ((DecimalType) state).toBigDecimal(), time);
         } else if (state instanceof OnOffType) {
@@ -75,12 +73,12 @@ public abstract class AbstractDynamoItem<T> {
         }
     }
 
-    /**
-     * Convert this AbstractDynamoItem as HistoricItem.
+    /*
+     * (non-Javadoc)
      *
-     * @param item Item representing this item. Used to determine item type.
-     * @return
+     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#asHistoricItem(org.openhab.core.items.Item)
      */
+    @Override
     public HistoricItem asHistoricItem(final Item item) {
         final State[] state = new State[1];
         accept(new DynamoItemVisitor() {
@@ -135,18 +133,61 @@ public abstract class AbstractDynamoItem<T> {
 
     // getter and setter must be defined in the child class in order to have it working with AWS SDK
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#getName()
+     */
+    @Override
     public abstract String getName();
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#getState()
+     */
+    @Override
     public abstract T getState();
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#getTime()
+     */
+    @Override
     public abstract Date getTime();
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#setName(java.lang.String)
+     */
+    @Override
     public abstract void setName(String name);
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#setState(T)
+     */
+    @Override
     public abstract void setState(T state);
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#setTime(java.util.Date)
+     */
+    @Override
     public abstract void setTime(Date time);
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#accept(org.openhab.persistence.dynamodb.internal.
+     * DynamoItemVisitor)
+     */
+    @Override
     public abstract void accept(DynamoItemVisitor visitor);
 
     @Override

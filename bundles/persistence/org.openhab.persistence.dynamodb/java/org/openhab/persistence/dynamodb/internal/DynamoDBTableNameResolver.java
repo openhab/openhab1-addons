@@ -8,7 +8,7 @@ public class DynamoDBTableNameResolver {
         this.tablePrefix = tablePrefix;
     }
 
-    public String fromItem(AbstractDynamoItem<?> item) {
+    public String fromItem(DynamoItem<?> item) {
         final String[] tableName = new String[1];
 
         item.accept(new DynamoItemVisitor() {
