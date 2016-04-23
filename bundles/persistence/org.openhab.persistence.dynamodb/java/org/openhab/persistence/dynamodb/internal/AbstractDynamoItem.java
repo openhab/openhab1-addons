@@ -129,11 +129,11 @@ public abstract class AbstractDynamoItem<T> {
         return new DynamoHistoricItem(getName(), state[0], getTime());
     }
 
+    // getter and setter must be defined in the child class in order to have it working with AWS SDK
+
     public abstract String getName();
 
-    public T getState() {
-        return state;
-    }
+    public abstract T getState();
 
     public abstract Date getTime();
 

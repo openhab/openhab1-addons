@@ -29,7 +29,7 @@ public class DynamoIntegerItem extends AbstractDynamoItem<Integer> {
     @DynamoDBAttribute(attributeName = "itemstate")
     @Override
     public Integer getState() {
-        return super.getState();
+        return state;
     }
 
     @DynamoDBHashKey(attributeName = "itemname")

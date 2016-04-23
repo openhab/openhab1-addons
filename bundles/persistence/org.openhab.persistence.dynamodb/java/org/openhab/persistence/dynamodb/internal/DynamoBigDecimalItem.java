@@ -30,7 +30,7 @@ public class DynamoBigDecimalItem extends AbstractDynamoItem<BigDecimal> {
     @DynamoDBAttribute(attributeName = "itemstate")
     @Override
     public BigDecimal getState() {
-        return super.getState();
+        return state;
     }
 
     @DynamoDBHashKey(attributeName = "itemname")

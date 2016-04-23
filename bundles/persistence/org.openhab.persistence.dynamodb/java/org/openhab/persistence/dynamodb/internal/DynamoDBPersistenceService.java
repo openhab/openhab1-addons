@@ -60,26 +60,6 @@ import com.amazonaws.services.dynamodbv2.model.TableStatus;
  */
 public class DynamoDBPersistenceService implements QueryablePersistenceService {
 
-    /**
-     * Query to use when both begin and end have been specified
-     */
-    private static final String QUERY_VARIABLE_WITH_BEGIN_AND_END = "itemname = :item and timeutc between :begin and :end";
-
-    /**
-     * Query to use when only begin has been specified
-     */
-    private static final String QUERY_VARIABLE_WITH_BEGIN = "itemname = :item and timeutc >= :begin";
-
-    /**
-     * Query to use when only end has been specified
-     */
-    private static final String QUERY_VARIABLE_WITH_END = "itemname = :item and timeutc <= :end";
-
-    /**
-     * Query to use when no begin and end have been specified
-     */
-    private static final String QUERY_VARIABLE = "itemname = :item";
-
     private ItemRegistry itemRegistry;
     private DynamoDBClient db;
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBPersistenceService.class);
