@@ -19,26 +19,45 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 @DynamoDBDocument
 public class DynamoBigDecimalItem extends AbstractDynamoItem<BigDecimal> {
 
+    public DynamoBigDecimalItem() {
+        this(null, null, null);
+    }
+
     public DynamoBigDecimalItem(String name, BigDecimal state, Date time) {
         super(name, state, time);
     }
 
-    @DynamoDBAttribute(attributeName = "state")
+    @DynamoDBAttribute(attributeName = "itemstate")
     @Override
     public BigDecimal getState() {
         return super.getState();
     }
 
-    @DynamoDBHashKey(attributeName = "name")
+    @DynamoDBHashKey(attributeName = "itemname")
     @Override
     public String getName() {
         return name;
     }
 
     @Override
-    @DynamoDBRangeKey(attributeName = "time")
+    @DynamoDBRangeKey(attributeName = "timeutc")
     public Date getTime() {
         return time;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void setState(BigDecimal state) {
+        this.state = state;
+    }
+
+    @Override
+    public void setTime(Date time) {
+        this.time = time;
     }
 
     @Override

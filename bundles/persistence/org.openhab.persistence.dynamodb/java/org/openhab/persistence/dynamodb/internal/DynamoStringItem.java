@@ -18,24 +18,28 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 @DynamoDBDocument
 public class DynamoStringItem extends AbstractDynamoItem<String> {
 
+    public DynamoStringItem() {
+        this(null, null, null);
+    }
+
     public DynamoStringItem(String name, String state, Date time) {
         super(name, state, time);
     }
 
-    @DynamoDBAttribute(attributeName = "state")
+    @DynamoDBAttribute(attributeName = "itemstate")
     @Override
     public String getState() {
         return super.getState();
     }
 
-    @DynamoDBHashKey(attributeName = "name")
+    @DynamoDBHashKey(attributeName = "itemname")
     @Override
     public String getName() {
         return name;
     }
 
     @Override
-    @DynamoDBRangeKey(attributeName = "time")
+    @DynamoDBRangeKey(attributeName = "timeutc")
     public Date getTime() {
         return time;
     }
@@ -43,5 +47,20 @@ public class DynamoStringItem extends AbstractDynamoItem<String> {
     @Override
     public void accept(org.openhab.persistence.dynamodb.internal.DynamoItemVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    @Override
+    public void setTime(Date time) {
+        this.time = time;
     }
 }

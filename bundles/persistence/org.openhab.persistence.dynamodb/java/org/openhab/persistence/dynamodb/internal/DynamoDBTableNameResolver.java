@@ -14,11 +14,6 @@ public class DynamoDBTableNameResolver {
         item.accept(new DynamoItemVisitor() {
 
             @Override
-            public void visit(DynamoDateItem item) {
-                tableName[0] = tablePrefix + "date";
-            }
-
-            @Override
             public void visit(DynamoBigDecimalItem dynamoBigDecimalItem) {
                 tableName[0] = tablePrefix + "bigdecimal";
             }

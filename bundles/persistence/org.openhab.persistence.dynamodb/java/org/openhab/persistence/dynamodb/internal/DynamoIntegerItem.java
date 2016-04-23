@@ -18,26 +18,45 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 @DynamoDBDocument
 public class DynamoIntegerItem extends AbstractDynamoItem<Integer> {
 
+    public DynamoIntegerItem() {
+        this(null, null, null);
+    }
+
     public DynamoIntegerItem(String name, Integer state, Date time) {
         super(name, state, time);
     }
 
-    @DynamoDBAttribute(attributeName = "state")
+    @DynamoDBAttribute(attributeName = "itemstate")
     @Override
     public Integer getState() {
         return super.getState();
     }
 
-    @DynamoDBHashKey(attributeName = "name")
+    @DynamoDBHashKey(attributeName = "itemname")
     @Override
     public String getName() {
         return name;
     }
 
     @Override
-    @DynamoDBRangeKey(attributeName = "time")
+    @DynamoDBRangeKey(attributeName = "timeutc")
     public Date getTime() {
         return time;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
+    @Override
+    public void setTime(Date time) {
+        this.time = time;
     }
 
     @Override

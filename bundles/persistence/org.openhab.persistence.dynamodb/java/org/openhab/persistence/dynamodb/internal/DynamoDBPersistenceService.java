@@ -15,12 +15,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.persistence.FilterCriteria;
+import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
@@ -33,6 +35,12 @@ import org.slf4j.LoggerFactory;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.PaginationLoadingStrategy;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedQueryList;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
+import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.GlobalSecondaryIndex;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
@@ -51,6 +59,26 @@ import com.amazonaws.services.dynamodbv2.model.TableStatus;
  *
  */
 public class DynamoDBPersistenceService implements QueryablePersistenceService {
+
+    /**
+     * Query to use when both begin and end have been specified
+     */
+    private static final String QUERY_VARIABLE_WITH_BEGIN_AND_END = "itemname = :item and timeutc between :begin and :end";
+
+    /**
+     * Query to use when only begin has been specified
+     */
+    private static final String QUERY_VARIABLE_WITH_BEGIN = "itemname = :item and timeutc >= :begin";
+
+    /**
+     * Query to use when only end has been specified
+     */
+    private static final String QUERY_VARIABLE_WITH_END = "itemname = :item and timeutc <= :end";
+
+    /**
+     * Query to use when no begin and end have been specified
+     */
+    private static final String QUERY_VARIABLE = "itemname = :item";
 
     private ItemRegistry itemRegistry;
     private DynamoDBClient db;
@@ -100,6 +128,15 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
         return db.checkConnection();
     }
 
+    /**
+     * Create table (if not present) and wait for table to become active.
+     *
+     * Synchronized in order to ensure that at most single thread is creating the table at a time
+     *
+     * @param mapper
+     * @param dtoClass
+     * @return
+     */
     private synchronized boolean createTable(DynamoDBMapper mapper, Class<?> dtoClass) {
         if (db == null) {
             return false;
@@ -142,10 +179,10 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             TableDescription tableDescription = db.getDynamoDB().getTable(tableName).waitForActiveOrDelete();
             boolean success = TableStatus.ACTIVE.equals(TableStatus.fromValue(tableDescription.getTableStatus()));
             if (success) {
-                logger.info("Creation of table '{}' successfull, table is now {}", tableName,
+                logger.info("Creation of table '{}' successful, table status is now {}", tableName,
                         tableDescription.getTableStatus());
             } else {
-                logger.warn("Giving up table '{}' creation, most recent status was {}", tableName,
+                logger.warn("Creation of table '{}' unsuccessful, table status is now {}", tableName,
                         tableDescription.getTableStatus());
             }
             return success;
@@ -171,11 +208,12 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
 
     private DynamoDBMapper getDBMapper(String tableName) {
         try {
-            DynamoDBMapperConfig mapperConfig = new DynamoDBMapperConfig(
-                    new DynamoDBMapperConfig.TableNameOverride(tableName));
+            DynamoDBMapperConfig mapperConfig = new DynamoDBMapperConfig.Builder()
+                    .withTableNameOverride(new DynamoDBMapperConfig.TableNameOverride(tableName))
+                    .withPaginationLoadingStrategy(PaginationLoadingStrategy.LAZY_LOADING).build();
             return new DynamoDBMapper(db.getDynamoClient(), mapperConfig);
         } catch (AmazonClientException e) {
-            logger.error("Error getting db mapper");
+            logger.error("Error getting db mapper: {}", e.getMessage());
             throw e;
         }
     }
@@ -235,11 +273,14 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             mapper.save(dynamoItem);
             logger.debug("Sucessfully stored item {}", item);
         } catch (AmazonClientException e) {
-            logger.error("Error storing object to dynamo");
+            logger.error("Error storing object to dynamo: {}", e.getMessage());
         }
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<HistoricItem> query(FilterCriteria filter) {
         logger.debug("got a query");
@@ -252,21 +293,100 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             return Collections.emptyList();
         }
 
+        String itemName = filter.getItemName();
+        Item item = getItemFromRegistry(itemName);
+        if (item == null) {
+            logger.warn("Could not get item {} from registry!", itemName);
+            return Collections.emptyList();
+        }
+
+        AbstractDynamoItem<?> dummyDynamoItem = AbstractDynamoItem.fromState(itemName, item.getState(), new Date());
+
+        @SuppressWarnings("rawtypes")
+        Class<? extends AbstractDynamoItem> dtoClass = dummyDynamoItem.getClass();
+        String tableName = tableNameResolver.fromItem(dummyDynamoItem);
+        DynamoDBMapper mapper = getDBMapper(tableName);
+        logger.debug("item {} (class {}) will be tried to query using dto class {} from table {}", itemName,
+                item.getClass(), dtoClass, tableName);
+
         List<HistoricItem> historicItems = new ArrayList<HistoricItem>();
 
-        // operator + item value
-        // begin time.getTime() == millis
-        // end
-        // - sort, paging,
+        DynamoDBQueryExpression<AbstractDynamoItem<?>> queryExpression = createQueryExpression(filter);
+        @SuppressWarnings("rawtypes")
+        PaginatedQueryList<? extends AbstractDynamoItem> paginatedList = mapper.query(dtoClass, queryExpression);
+        for (int itemIndexOnPage = 0; itemIndexOnPage < filter.getPageSize(); itemIndexOnPage++) {
+            int itemIndex = filter.getPageNumber() * filter.getPageSize() + itemIndexOnPage;
+            AbstractDynamoItem<?> dynamoItem;
+            try {
+                dynamoItem = paginatedList.get(itemIndex);
+            } catch (IndexOutOfBoundsException e) {
+                logger.debug("Index {} is out-of-bounds", itemIndex);
+                break;
+            }
+            if (dynamoItem != null) {
+                HistoricItem historicItem = dynamoItem.asHistoricItem(item);
+                logger.trace("Dynamo item {} converted to historic item: {}", item, historicItem);
+                historicItems.add(historicItem);
+            }
 
-        // for (int i = 0; i < valuess.size(); i++) {
-        // Double rawTime = (Double) valuess.get(i).get(timestampColumn);
-        // Date time = new Date(rawTime.longValue());
-        // State value = objectToState(valuess.get(i).get(valueColumn), historicItemName);
-        // logger.trace("adding historic item {}: time {} value {}", historicItemName, time, value);
-        // historicItems.add(new InfluxdbItem(historicItemName, value, time));
-        // }
+        }
         return historicItems;
+    }
+
+    /**
+     * Construct dynamodb query from filter
+     *
+     * @param filter
+     * @return
+     */
+    private DynamoDBQueryExpression<AbstractDynamoItem<?>> createQueryExpression(FilterCriteria filter) {
+        boolean hasBegin = filter.getBeginDate() != null;
+        boolean hasEnd = filter.getEndDate() != null;
+
+        final Condition timeCondition;
+        if (!hasBegin && !hasEnd) {
+            timeCondition = null;
+        } else if (!hasBegin && hasEnd) {
+            timeCondition = new Condition().withComparisonOperator(ComparisonOperator.LE).withAttributeValueList(
+                    new AttributeValue().withS(AbstractDynamoItem.DATEFORMATTER.format(filter.getEndDate())));
+        } else if (hasBegin && !hasEnd) {
+            timeCondition = new Condition().withComparisonOperator(ComparisonOperator.GE).withAttributeValueList(
+                    new AttributeValue().withS(AbstractDynamoItem.DATEFORMATTER.format(filter.getBeginDate())));
+        } else {
+            timeCondition = new Condition().withComparisonOperator(ComparisonOperator.BETWEEN).withAttributeValueList(
+                    new AttributeValue().withS(AbstractDynamoItem.DATEFORMATTER.format(filter.getBeginDate())),
+                    new AttributeValue().withS(AbstractDynamoItem.DATEFORMATTER.format(filter.getEndDate())));
+        }
+
+        boolean scanIndexForward = filter.getOrdering() == Ordering.ASCENDING;
+        DynamoStringItem itemHash = new DynamoStringItem(filter.getItemName(), null, null);
+        DynamoDBQueryExpression<AbstractDynamoItem<?>> queryExpression = new DynamoDBQueryExpression<AbstractDynamoItem<?>>()
+                .withHashKeyValues(itemHash).withScanIndexForward(scanIndexForward).withLimit(filter.getPageSize());
+        if (timeCondition != null) {
+            queryExpression.withRangeKeyCondition("timeutc", timeCondition);
+        }
+        logger.debug("Querying: {} with {}", filter.getItemName(), timeCondition);
+        return queryExpression;
+    }
+
+    /**
+     * Retrieves the item for the given name from the item registry
+     *
+     * @param itemName
+     * @return
+     */
+    private Item getItemFromRegistry(String itemName) {
+        Item item = null;
+        try {
+            if (itemRegistry != null) {
+                item = itemRegistry.getItem(itemName);
+            }
+        } catch (ItemNotFoundException e1) {
+            logger.error("Unable to get item type for {}", itemName);
+            // Set type to null - data will be returned as StringType
+            item = null;
+        }
+        return item;
     }
 
 }
