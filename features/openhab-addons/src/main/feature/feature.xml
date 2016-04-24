@@ -81,13 +81,6 @@
     <configfile finalname="${openhab.conf}/services/anel.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/anel</configfile>
   </feature>
 
-  <feature name="openhab-binding-astro1" description="Astro1 Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.astro/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/astro.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/astro</configfile>
-  </feature>
-
   <feature name="openhab-binding-caldav-command" description="CalDAV Binding (command)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -207,13 +200,6 @@
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.heatmiser/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/heatmiser.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/heatmiser</configfile>
-  </feature>
-
-  <feature name="openhab-binding-homematic" description="Homematic Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.homematic/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/homematic.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/homematic</configfile>
   </feature>
 
   <feature name="openhab-binding-http" description="HTTP Binding" version="${project.version}">
@@ -347,20 +333,6 @@
     <configfile finalname="${openhab.conf}/services/nest.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/nest</configfile>
   </feature>
 
-  <feature name="openhab-binding-netatmo1" description="Netatmo1 Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.netatmo/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/netatmo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/netatmo</configfile>
-  </feature>
-
-  <feature name="openhab-binding-networkhealth" description="NetworkHealth Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.networkhealth/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/networkhealth.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/networkhealth</configfile>
-  </feature>
-
   <feature name="openhab-binding-nibeheatpump" description="Nibe Heatpump Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -475,14 +447,6 @@
     <configfile finalname="${openhab.conf}/services/tinkerforge.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/tinkerforge</configfile>
   </feature>
 
-  <feature name="openhab-binding-urtsi" description="Somfy URTSI II Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <feature>openhab-transport-serial</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.urtsi/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/urtsi.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/urtsi</configfile>
-  </feature>
-
   <feature name="openhab-binding-weather" description="Weather Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -494,14 +458,6 @@
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.xbmc/${project.version}</bundle>
-  </feature>
-
-  <feature name="openhab-binding-zwave1" description="Z-Wave1 Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <feature>openhab-transport-serial</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.zwave/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/zwave.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/zwave</configfile>
   </feature>
 
   <!-- persistence -->
