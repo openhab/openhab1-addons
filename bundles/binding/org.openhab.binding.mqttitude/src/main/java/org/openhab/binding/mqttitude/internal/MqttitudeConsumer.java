@@ -43,7 +43,7 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 	// home location - optionally set for the binding if using non-region based item bindings
 	private final Location homeLocation;
 	private final float geoFence;
-	private final int maxGpsAccuracy;
+	private final float maxGpsAccuracy;
 	
 	// the topic this consumer is subscribed to
 	private String topic;
@@ -53,7 +53,7 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 		
 	private EventPublisher eventPublisher;
 	
-	public MqttitudeConsumer(Location homeLocation, float geoFence, int maxGpsAccuracy) {		
+	public MqttitudeConsumer(Location homeLocation, float geoFence, float maxGpsAccuracy) {		
 		this.homeLocation = homeLocation;
 		this.geoFence = geoFence;
 		this.maxGpsAccuracy = maxGpsAccuracy;
@@ -186,20 +186,27 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 					continue;
 				}
 				
-				int accuracy = (Integer) jsonPayload.get("acc");
-				if (accuracy > maxGpsAccuracy) {
-					logger.debug("GPS accuracy (radius) exceeds max allowed, ignoring: region={},acc={},max={}",
-							desc, accuracy, maxGpsAccuracy);
-					continue;
+				if (!Float.isNaN(maxGpsAccuracy)) {
+					String trigger = (String) jsonPayload.get("t");
+					// Don't enforce accuracy on beacon events
+					// Trigger may be missing for automatic location updates
+					if (trigger == null || !trigger.equals("b")) {
+						Number accuracy = (Number) jsonPayload.get("acc");
+						if (accuracy != null && accuracy.floatValue() > maxGpsAccuracy) {
+							logger.debug("GPS accuracy (radius) exceeds max allowed, ignoring: region={},acc={},max={}",
+									desc, accuracy, maxGpsAccuracy);
+							continue;
+						}
+					}
 				}
-
+						
 				if (event.equals("leave")) {
 					logger.debug("{} has left region {}", itemConfig.getItemName(), itemConfig.getRegion());
 					eventPublisher.postUpdate(itemConfig.getItemName(), OnOffType.OFF);
 				} else {
 					logger.debug("{} has entered region {}", itemConfig.getItemName(), itemConfig.getRegion());
 					eventPublisher.postUpdate(itemConfig.getItemName(), OnOffType.ON);
-				}
+				}					
 			}
 		}
 	}

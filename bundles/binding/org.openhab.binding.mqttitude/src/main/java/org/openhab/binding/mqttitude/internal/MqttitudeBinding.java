@@ -49,7 +49,7 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
     private Location homeLocation = null;
     private float geoFence = 0;
     
-    private int maxGpsAccuracy;
+    private float maxGpsAccuracy;
     
     // list of consumers (grouped by broker)
     private Map<String, List<MqttitudeConsumer>> consumers = new HashMap<String, List<MqttitudeConsumer>>();
@@ -120,9 +120,9 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 			logger.debug("Mqttitude binding configuration updated, 'home' location specified ({}) with a geofence of {}m.", homeLocation.toString(), geoFence);
         }
 		
-		maxGpsAccuracy = Integer.parseInt(getOptionalProperty(properties, "max_gps_accuracy", "-1"));
+		maxGpsAccuracy = Float.parseFloat(getOptionalProperty(properties, "max_gps_accuracy", "NaN"));
 		
-		if (maxGpsAccuracy < 0) {
+		if (Float.isNaN(maxGpsAccuracy)) {
 			logger.debug("Mqttitude binding configuration: no limit on GPS accuracy");
 		} else {
 			logger.debug("Mqttitude binding configuration: GPS accuracy limit is {}", maxGpsAccuracy);
