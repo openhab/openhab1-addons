@@ -47,7 +47,7 @@ public class ADZoneTracker {
      */
     public boolean getZoneState(int zone) {
 
-        /** find the zone in our List */
+        // find the zone in our List
         ADZone f = new ADZone(zone);
         int z = _zoneList.indexOf(f);
 
@@ -70,7 +70,7 @@ public class ADZoneTracker {
      */
     public boolean setZoneState(int zone, boolean state) {
 
-        /** find the zone in our List */
+        // find the zone in our List
         ADZone f = new ADZone(zone);
         int z = _zoneList.indexOf(f);
 
@@ -106,24 +106,24 @@ public class ADZoneTracker {
      */
      public ArrayList updateZone(int zone, boolean state) {
 
-        /** return a list of update zones */
+        // return a list of update zones
         ArrayList<Integer> updateList =  new ArrayList<Integer>();
 
-        /** add this zone */
+        // add this zone
         updateList.add(zone);
 
-        /** our list iterator */
+        // our list iterator
         ListIterator litr = _zoneList.listIterator();
 
-        /** zone exists so check for any pruning */
+        // zone exists so check for any pruning
         if(_zoneList.contains(new ADZone(zone))) {
-            /** go to our last zone updated */
+            // go to our last zone updated
             ADZone f = new ADZone(_lastZone);
             int z = _zoneList.indexOf(f);
 
             boolean bFoundLast = false;
 
-            /** look for any missing zones and clear them */
+            // look for any missing zones and clear them
             while ( !bFoundLast ) {
                ADZone zn;
 
@@ -134,13 +134,13 @@ public class ADZoneTracker {
                     break;
                 }
 
-                /** we found it so break out */
+                // we found it so break out
                 if( zn.getID() == _lastZone ) {
                     bFoundLast = true;
                 }
             }
 
-            /**
+            /*
              * Iterate through the rest till we reach the end or find our
              * new fault adding everything we find as we go to our remove list
              */
@@ -157,7 +157,7 @@ public class ADZoneTracker {
                 }
             }
 
-            /**
+            /*
              * start over if we didnt find the end and remove
              * everything we find till we do reach our current fault
              */
@@ -182,7 +182,7 @@ public class ADZoneTracker {
                  _zoneList.remove(zn);
              }
 
-         /** zone does not exist just get it into our list */
+         // zone does not exist just get it into our list
          } else {
 
              ADZone f = new ADZone(zone);
@@ -200,13 +200,13 @@ public class ADZoneTracker {
                  offset++;
              }
 
-             /** just add it */
+             // just add it
              if ( !bInserted ) {
                  _zoneList.add(f);
              }
          }
 
-         /** update our last touched zone */
+         // update our last touched zone
          _lastZone = zone;
 
          setZoneState(zone,state);
@@ -224,18 +224,18 @@ public class ADZoneTracker {
 
           ArrayList<Integer> updateList = new ArrayList<Integer>();
 
-          /** if we go ready clear all faults */
+          // if we go ready clear all faults
           if ( state && _lastReady != state ) {
-              /** copy our zones to our update list */
+              // copy our zones to our update list
               for (ADZone tz : _zoneList) {
                   updateList.add(tz.getID());
               }
-              /** now clear the list */
+              // now clear the list
               clearAll();
           }
           _lastReady = state;
 
-          /** return a list of update zones */
+          // return a list of update zones
           return updateList;
       }
 
