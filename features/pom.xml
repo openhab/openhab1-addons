@@ -25,6 +25,7 @@
 
   <modules>
     <module>openhab-addons</module>
+    <module>openhab-addons-legacy</module>
     <module>openhab-addons-external</module>
     <module>openhab-addons-verify</module>
   </modules>
