@@ -220,7 +220,7 @@ public class ADZoneTracker {
       * @parm state - the current panel READY state
       * @return ArrayList of zones effected
       */
-      public ArrayList updateReadyState(boolean state) {
+      public ArrayList<Integer> updateReadyState(boolean state) {
 
           ArrayList<Integer> updateList = new ArrayList<Integer>();
 

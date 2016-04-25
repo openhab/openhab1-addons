@@ -474,11 +474,10 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
             if (parts.get(3).startsWith("FAULT",1) | parts.get(3).startsWith("CHECK",1)) {
 
                 // must maintain sequene of FAULT messages from panel
-                ArrayList updates = zoneTracker.updateZone(numeric,true);
+                ArrayList<Integer> updates = zoneTracker.updateZone(numeric,true);
 
                 // update all bindings that match this exact zone 'XX' left padded with 0's
-                for (Object temp : updates) {
-                    Integer i = (Integer)temp;
+                for (Integer i : updates) {
 
                     // skip updating zone 00. This can be used to track the last numeric zone
                     if( i > 0 ) {
