@@ -30,6 +30,7 @@
                         </goals>
                         <configuration>
                             <artifacts>
+                                <artifact><file>src/main/resources/conf/alarmdecoder.cfg</file><type>cfg</type><classifier>alarmdecoder</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/anel.cfg</file><type>cfg</type><classifier>anel</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/astro.cfg</file><type>cfg</type><classifier>astro</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/caldavCommand.cfg</file><type>cfg</type><classifier>caldavCommand</classifier></artifact>
