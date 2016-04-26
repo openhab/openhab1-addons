@@ -262,6 +262,8 @@
   <feature name="openhab-binding-mios" description="MiOS Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transformation-regex</feature>
+    <feature>openhab-transformation-map</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.mios/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/mios.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mios</configfile>
     <configfile finalname="${openhab.conf}/transform/miosArmedCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-armedcommand</configfile>
