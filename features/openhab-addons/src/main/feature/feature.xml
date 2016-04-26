@@ -576,9 +576,9 @@
       </feature>
   -->
 
-  <!-- text-to-speech -->
+  <!-- voice -->
 
-  <feature name="openhab-tts-marytts" description="MaryTTS" version="${project.version}">
+  <feature name="openhab-voice-marytts" description="Mary TTS" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.multimedia.tts.marytts/${project.version}</bundle>
