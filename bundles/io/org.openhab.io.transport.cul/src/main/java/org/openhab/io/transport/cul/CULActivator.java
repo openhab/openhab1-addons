@@ -8,8 +8,11 @@
  */
 package org.openhab.io.transport.cul;
 
-import org.openhab.io.transport.cul.internal.CULNetworkHandlerImpl;
-import org.openhab.io.transport.cul.internal.CULSerialHandlerImpl;
+import org.openhab.io.transport.cul.internal.CULManager;
+import org.openhab.io.transport.cul.internal.network.CULNetworkConfigFactory;
+import org.openhab.io.transport.cul.internal.network.CULNetworkHandlerImpl;
+import org.openhab.io.transport.cul.internal.serial.CULSerialConfigFactory;
+import org.openhab.io.transport.cul.internal.serial.CULSerialHandlerImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -33,20 +36,20 @@ public class CULActivator implements BundleActivator {
     public void start(BundleContext bc) throws Exception {
         context = bc;
         logger.debug("CUL transport has been started.");
-        CULManager.registerHandlerClass("serial", CULSerialHandlerImpl.class);
-        CULManager.registerHandlerClass("network", CULNetworkHandlerImpl.class);
+        CULManager manager = CULManager.getInstance();
+        manager.registerHandlerClass("serial", CULSerialHandlerImpl.class, new CULSerialConfigFactory());
+        manager.registerHandlerClass("network", CULNetworkHandlerImpl.class, new CULNetworkConfigFactory());
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
         context = null;
         logger.debug("CUL transport has been stopped.");
-
     }
 
     /**
      * Returns the bundle context of this bundle
-     * 
+     *
      * @return the bundle context
      */
     public static BundleContext getContext() {

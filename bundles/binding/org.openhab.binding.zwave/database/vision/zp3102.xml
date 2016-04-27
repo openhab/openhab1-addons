@@ -1,40 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>ZP3102</Model>
-	<Label lang="en">Motion Detector</Label>
-	<CommandClasses>
-		<Class><id>0x20</id></Class>
-		<Class><id>0x30</id></Class>
-		<Class><id>0x70</id></Class>
-		<Class><id>0x71</id></Class>
-		<Class><id>0x72</id></Class>
-		<Class><id>0x80</id></Class>
-		<Class><id>0x84</id></Class>
-		<Class><id>0x85</id></Class>
-		<Class><id>0x86</id></Class>
-	</CommandClasses>
+    <Model>ZP3102</Model>
+    <Label lang="en">Motion Sensor</Label>
 
-	<Configuration>
-		<Parameter>
-			<Index>1</Index>
-			<Type>short</Type>
-			<Minimum>1</Minimum>
-			<Maximum>255</Maximum>
-			<Default>3</Default>
-			<Size>1</Size>
-			<Label lang="en">On time in minutes</Label>
-			<Help lang="en">Delay before sending OFF</Help>
-		</Parameter>
-	</Configuration>
-	
-	<Associations>
-		<Group>
-			<Index>1</Index>
-			<Maximum>5</Maximum>
-			<Label lang="en">Control Command</Label>
-			<Help lang="en"><![CDATA[Control Command when trip]]></Help>
-			<SetToController>true</SetToController>
-		</Group>
-	</Associations>
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x30</id>             <!-- SENSOR_BINARY -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">On time in minutes</Label>
+            <Type>short</Type>
+            <Default>3</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Celsius / Fahrenheit</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Celsius</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Fahrenheit</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Infrared sensor sensitivity adjustment,</Label>
+            <Type>short</Type>
+            <Default>4</Default>
+            <Minimum>1</Minimum>
+            <Maximum>7</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Control Command</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
 </Product>
-

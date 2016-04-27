@@ -225,6 +225,7 @@ public abstract class ZWaveCommandClass {
             ZWaveEndpoint endpoint) {
         try {
             CommandClass commandClass = CommandClass.getCommandClass(classId);
+            // Catch the manufacturer specific command class
             if (commandClass != null && commandClass.equals(CommandClass.MANUFACTURER_PROPRIETARY)) {
                 commandClass = CommandClass.getCommandClass(node.getManufacturer(), node.getDeviceType());
             }
@@ -477,7 +478,8 @@ public abstract class ZWaveCommandClass {
         NON_INTEROPERABLE(0xF0, "NON_INTEROPERABLE", null),
 
         // MANUFACTURER_PROPRIETARY class definitions are defined by the manufacturer and device id
-        FIBARO_FGRM_222(0x010F, 0x0301, "FIBARO_FGRM_222", FibaroFGRM222CommandClass.class);
+        FIBARO_FGRM_222(0x010F, 0x0301, "FIBARO_FGRM_222", FibaroFGRM222CommandClass.class),
+        FIBARO_FGRM_222_1(0x010F, 0x0302, "FIBARO_FGRM_222", FibaroFGRM222CommandClass.class);
 
         /**
          * A mapping between the integer code and its corresponding
