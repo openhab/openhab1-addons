@@ -463,6 +463,12 @@
     <configfile finalname="${openhab.conf}/services/weather.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/weather</configfile>
   </feature>
 
+  <feature name="openhab-binding-wol" description="WOL (Wake-on-LAN) Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.wol/${project.version}</bundle>
+  </feature>
+
   <feature name="openhab-binding-xbmc" description="XBMC Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
