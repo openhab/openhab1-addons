@@ -54,7 +54,6 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider>impleme
 
     private HueBridge activeBridge = null;
     private String bridgeIP = null;
-    private String bridgeSecret = "openHAB";
 
     // Caches all bulbs controlled to prevent the recreation of the bulbs which
     // triggers a rereading of the settings from the bridge which is very
@@ -202,7 +201,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider>impleme
      * Checks whether the command is for one of the configured Hue bulbs. If
      * this is the case, the command is translated to the corresponding action
      * which is then sent to the given bulb.
-     * 
+     *
      * @param command
      *            The command from the openHAB bus.
      * @param itemName
@@ -263,7 +262,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider>impleme
 
     /**
      * Lookup of the configuration of the named item.
-     * 
+     *
      * @param itemName
      *            The name of the item.
      * @return The configuration, null otherwise.
@@ -288,19 +287,23 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider>impleme
                 try {
                     this.bridgeIP = new SsdpDiscovery().findIpForResponseKeywords("description.xml", "FreeRTOS");
                 } catch (IOException e) {
-                    logger.warn(
-                            "Could not find hue bridge automatically. Please make sure it is switched on and connected to the same network as openHAB. If it permanently fails you may configure the IP address of your hue bridge manually in the openHAB configuration.");
+                    logger.warn("Could not find hue bridge automatically. "
+                            + "Please make sure it is switched on and connected to the same network as openHAB. "
+                            + "If it permanently fails you may configure the IP address of your hue bridge manually in the openHAB configuration.");
                 }
-            }
-            String secret = (String) config.get("secret");
-            if (StringUtils.isNotBlank(secret)) {
-                this.bridgeSecret = secret;
             }
 
             // connect the Hue bridge with the new configs
             if (this.bridgeIP != null) {
-                activeBridge = new HueBridge(bridgeIP, bridgeSecret);
-                activeBridge.pairBridgeIfNecessary();
+                activeBridge = null;
+                String secret = (String) config.get("secret");
+                HueBridge bridge = new HueBridge(bridgeIP, secret);
+                if (bridge.isAuthorized()) {
+                    activeBridge = bridge;
+                } else {
+                    logger.info("No secret configured or secret rejected by bridge. Starting pairing with bridge.");
+                    bridge.pairBridge();
+                }
             }
 
             String refreshIntervalString = (String) config.get("refresh");
@@ -311,7 +314,5 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider>impleme
                 setProperlyConfigured(true);
             }
         }
-
     }
-
 }
