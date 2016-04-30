@@ -150,6 +150,9 @@ public class ZWaveProductDatabase {
     }
 
     public List<ZWaveDbManufacturer> GetManufacturers() {
+        if (database == null || database.Manufacturer == null) {
+            return Collections.emptyList();
+        }
         return database.Manufacturer;
     }
 
@@ -168,7 +171,7 @@ public class ZWaveProductDatabase {
      * @return true if the manufacturer was found
      */
     public boolean FindManufacturer(int manufacturerId) {
-        if (database == null) {
+        if (database == null || database.Manufacturer == null) {
             return false;
         }
 

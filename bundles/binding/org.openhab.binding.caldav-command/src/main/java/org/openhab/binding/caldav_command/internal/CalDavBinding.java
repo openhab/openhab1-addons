@@ -68,6 +68,9 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
 
     private static final String KEY_READ_CALENDARS = "readCalendars";
 
+    // Use this item as default item if summary does not match pattern: BEGIN:<item>:<value>
+    private static final String KEY_DEFAULT_ITEM_ON_BEGIN = "defaultItemOnBegin";
+
     private static final Logger logger = LoggerFactory.getLogger(CalDavBinding.class);
 
     private ItemRegistry itemRegistry;
@@ -77,6 +80,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
     private List<String> readCalendars = new ArrayList<String>();
 
     private List<String> disabledItems = new ArrayList<String>();
+
+    private String defaultItemOnBegin;
 
     private boolean calendarReloaded;
 
@@ -122,11 +127,14 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
         if (properties != null) {
             logger.debug("reading configuration data...");
             String read = (String) properties.get(KEY_READ_CALENDARS);
+            this.readCalendars.clear();
             if (read != null) {
                 for (String value : read.split(",")) {
                     this.readCalendars.add(value.trim());
                 }
             }
+            read = (String) properties.get(KEY_DEFAULT_ITEM_ON_BEGIN);
+            this.defaultItemOnBegin = read == null ? null : read.trim();
             this.reloadCurrentLoadedEvents();
         }
     }
@@ -298,19 +306,22 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
     }
 
     private void doAction(CalDavEvent event, String scope) {
-        final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(event, this.itemRegistry, scope);
+        final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(event, this.itemRegistry, scope,
+                defaultItemOnBegin);
         outer: for (EventUtils.EventContent eventContent : parseContent) {
-            logger.trace("checking for disabled for item '{}' and groups '{}'", eventContent.getItem().getName(), eventContent.getItem().getGroupNames());
+            logger.trace("checking for disabled for item '{}' and groups '{}'", eventContent.getItem().getName(),
+                    eventContent.getItem().getGroupNames());
             for (String groupName : eventContent.getItem().getGroupNames()) {
                 if (disabledItems.contains(groupName)) {
                     continue outer;
-                }    
+                }
             }
             if (disabledItems.contains(eventContent.getItem().getName())) {
                 continue outer;
             }
-            
-            logger.info("sending command '{}' to item '{}' from event '{}'", eventContent.getCommand(), eventContent.getItem().getName(), event.getShortName());
+
+            logger.info("sending command '{}' to item '{}' from event '{}'", eventContent.getCommand(),
+                    eventContent.getItem().getName(), event.getShortName());
             eventPublisher.sendCommand(eventContent.getItem().getName(), eventContent.getCommand());
         }
     }
