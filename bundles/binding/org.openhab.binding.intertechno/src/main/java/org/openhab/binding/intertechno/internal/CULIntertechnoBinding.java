@@ -42,7 +42,7 @@ public class CULIntertechnoBinding extends AbstractBinding<CULIntertechnoBinding
      * href="http://culfw.de/commandref.html">Culfw Command Ref</a> for more
      * details.
      */
-    private final static String KEY_REPITIONS = "repetitions";
+    private final static String KEY_REPETITIONS = "repetitions";
     /**
      * How long should one pulse be? See <a
      * href="http://culfw.de/commandref.html">Culfw Command Ref</a> for more
@@ -52,16 +52,20 @@ public class CULIntertechnoBinding extends AbstractBinding<CULIntertechnoBinding
 
     private final CULLifecycleManager culHandlerLifecycle;
 
-    private int repititions = 6;
-    private int wavelength = 420;
+    private Integer repetitions;
+    private Integer wavelength;
 
     public CULIntertechnoBinding() {
         culHandlerLifecycle = new CULLifecycleManager(CULMode.SLOW_RF, new CULLifecycleListener() {
 
             @Override
             public void open(CULHandler cul) throws CULCommunicationException {
-                cul.send("it" + wavelength);
-                cul.send("isr" + repititions);
+                if (wavelength != null) {
+                    cul.send("it" + wavelength);
+                }
+                if (repetitions != null) {
+                    cul.send("isr" + repetitions);
+                }
             }
 
             @Override
@@ -130,14 +134,14 @@ public class CULIntertechnoBinding extends AbstractBinding<CULIntertechnoBinding
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
         if (config != null) {
-            Integer repititions = parseOptionalNumericParameter(KEY_REPITIONS, config);
-            if (repititions != null) {
-                this.repititions = repititions.intValue();
+            Integer parsedRepetitions = parseOptionalNumericParameter(KEY_REPETITIONS, config);
+            if (parsedRepetitions != null) {
+                this.repetitions = parsedRepetitions;
             }
 
-            Integer wavelength = parseOptionalNumericParameter(KEY_WAVE_LENGTH, config);
-            if (wavelength != null) {
-                this.wavelength = wavelength.intValue();
+            Integer parsedWavelength = parseOptionalNumericParameter(KEY_WAVE_LENGTH, config);
+            if (parsedWavelength != null) {
+                this.wavelength = parsedWavelength;
             }
 
             culHandlerLifecycle.config(config);
