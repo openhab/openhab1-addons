@@ -8,13 +8,6 @@
  */
 package org.openhab.binding.upb.internal;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.UnsupportedCommOperationException;
-
-import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -30,274 +23,283 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
+import gnu.io.SerialPort;
+import gnu.io.UnsupportedCommOperationException;
+
 /**
  * Binding for Universal Powerline Bus (UPB) that reads and writes messages to
  * and from the UPB modem.
- * 
+ *
  * @author cvanorman
  * @since 1.8.0-SNAPSHOT
  */
-public class UPBBinding extends AbstractActiveBinding<UPBBindingProvider> implements UPBReader.Listener {
+public class UPBBinding extends AbstractActiveBinding<UPBBindingProvider>implements UPBReader.Listener {
 
-	private static final Logger logger = LoggerFactory.getLogger(UPBBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(UPBBinding.class);
 
-	private String port;
-	private byte network = 0;
-	private SerialPort serialPort;
-	private UPBReader upbReader;
-	private UPBWriter upbWriter;
+    private String port;
+    private byte network = 0;
+    private SerialPort serialPort;
+    private UPBReader upbReader;
+    private UPBWriter upbWriter;
 
-	/**
-	 * the refresh interval which is used to poll values from the upb server
-	 * (optional, defaults to 3600000ms)
-	 */
-	private long refreshInterval = 3600000;
+    /**
+     * the refresh interval which is used to poll values from the upb server
+     * (optional, defaults to 3600000ms)
+     */
+    private long refreshInterval = 3600000;
 
-	/**
-	 * Called by the SCR to activate the component with its configuration read
-	 * from CAS
-	 * 
-	 * @param bundleContext
-	 *            BundleContext of the Bundle that defines this component
-	 * @param configuration
-	 *            Configuration properties for this component obtained from the
-	 *            ConfigAdmin service
-	 */
-	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
+    /**
+     * Called by the SCR to activate the component with its configuration read
+     * from CAS
+     *
+     * @param bundleContext
+     *            BundleContext of the Bundle that defines this component
+     * @param configuration
+     *            Configuration properties for this component obtained from the
+     *            ConfigAdmin service
+     */
+    public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
 
-		String refreshIntervalString = (String) configuration.get("refresh");
-		if (StringUtils.isNotBlank(refreshIntervalString)) {
-			refreshInterval = Long.parseLong(refreshIntervalString);
-		}
+        String refreshIntervalString = (String) configuration.get("refresh");
+        if (StringUtils.isNotBlank(refreshIntervalString)) {
+            refreshInterval = Long.parseLong(refreshIntervalString);
+        }
 
-		parseConfiguration(configuration);
+        parseConfiguration(configuration);
 
-		logger.info("UPB binding starting up...");
+        logger.info("UPB binding starting up...");
 
-		try {
-			serialPort = openSerialPort();
-			upbReader = new UPBReader(serialPort.getInputStream());
-			upbWriter = new UPBWriter(serialPort.getOutputStream(), upbReader);
-		} catch (IOException e) {
-			throw new RuntimeException("Failed to open serial port.", e);
-		}
+        try {
+            serialPort = openSerialPort();
+            upbReader = new UPBReader(serialPort.getInputStream());
+            upbWriter = new UPBWriter(serialPort.getOutputStream(), upbReader);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to open serial port.", e);
+        }
 
-		upbReader.addListener(this);
+        upbReader.addListener(this);
 
-		setProperlyConfigured(true);
-	}
+        setProperlyConfigured(true);
+    }
 
-	/**
-	 * Called by the SCR when the configuration of a binding has been changed
-	 * through the ConfigAdmin service.
-	 * 
-	 * @param configuration
-	 *            Updated configuration properties
-	 */
-	public void modified(final Map<String, Object> configuration) {
-		parseConfiguration(configuration);
-	}
+    /**
+     * Called by the SCR when the configuration of a binding has been changed
+     * through the ConfigAdmin service.
+     *
+     * @param configuration
+     *            Updated configuration properties
+     */
+    public void modified(final Map<String, Object> configuration) {
+        parseConfiguration(configuration);
+    }
 
-	private void parseConfiguration(final Map<String, Object> configuration) {
-		port = ObjectUtils.toString(configuration.get("port"), null);
-		network = Byte.valueOf(ObjectUtils.toString(configuration.get("network"), "0"));
+    private void parseConfiguration(final Map<String, Object> configuration) {
+        port = ObjectUtils.toString(configuration.get("port"), null);
+        network = Byte.valueOf(ObjectUtils.toString(configuration.get("network"), "0"));
 
-		logger.debug("Parsed UPB configuration:");
-		logger.debug("Serial port: {}", port);
-		logger.debug("UPB Network: {}", network);
+        logger.debug("Parsed UPB configuration:");
+        logger.debug("Serial port: {}", port);
+        logger.debug("UPB Network: {}", network);
 
-	}
+    }
 
-	/**
-	 * Called by the SCR to deactivate the component when either the
-	 * configuration is removed or mandatory references are no longer satisfied
-	 * or the component has simply been stopped.
-	 * 
-	 * @param reason
-	 *            Reason code for the deactivation:<br>
-	 *            <ul>
-	 *            <li>0 – Unspecified
-	 *            <li>1 – The component was disabled
-	 *            <li>2 – A reference became unsatisfied
-	 *            <li>3 – A configuration was changed
-	 *            <li>4 – A configuration was deleted
-	 *            <li>5 – The component was disposed
-	 *            <li>6 – The bundle was stopped
-	 *            </ul>
-	 */
-	public void deactivate(final int reason) {
-		logger.info("UPB binding shutting down...");
+    /**
+     * Called by the SCR to deactivate the component when either the
+     * configuration is removed or mandatory references are no longer satisfied
+     * or the component has simply been stopped.
+     *
+     * @param reason
+     *            Reason code for the deactivation:<br>
+     *            <ul>
+     *            <li>0 – Unspecified
+     *            <li>1 – The component was disabled
+     *            <li>2 – A reference became unsatisfied
+     *            <li>3 – A configuration was changed
+     *            <li>4 – A configuration was deleted
+     *            <li>5 – The component was disposed
+     *            <li>6 – The bundle was stopped
+     *            </ul>
+     */
+    public void deactivate(final int reason) {
+        logger.info("UPB binding shutting down...");
 
-		if (upbReader != null) {
-			upbReader.shutdown();
-		}
+        if (upbReader != null) {
+            upbReader.shutdown();
+        }
 
-		if (upbWriter != null) {
-			upbWriter.shutdown();
-		}
+        if (upbWriter != null) {
+            upbWriter.shutdown();
+        }
 
-		if (serialPort != null) {
-			serialPort.close();
-		}
-	}
+        if (serialPort != null) {
+            logger.debug("Closing serial port");
+            serialPort.close();
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected long getRefreshInterval() {
+        return refreshInterval;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getName() {
-		return "UPB Service";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getName() {
+        return "UPB Service";
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void execute() {
-		// the frequently executed code (polling) goes here ...
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void execute() {
+        // the frequently executed code (polling) goes here ...
+        for (UPBBindingProvider p : providers) {
+            for (String s : p.getItemNames()) {
+                UPBBindingConfig config = p.getConfig(s);
+                if (!config.isLink()) {
+                    MessageBuilder message = MessageBuilder.create().network(network).destination(config.getId())
+                            .command(UPBMessage.Command.REPORT_STATE.toByte());
+                    // Here we write the command to the PIM.
+                    upbWriter.queueMessage(message);
+                }
+            }
+        }
+    }
 
-		for (UPBBindingProvider p : providers) {
-			for (String s : p.getItemNames()) {
-				UPBBindingConfig config = p.getConfig(s);
-				MessageBuilder message = MessageBuilder.create().network(network).destination(config.getId())
-						.command(UPBMessage.Command.REPORT_STATE.toByte());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void internalReceiveCommand(String itemName, Command command) {
+        UPBBindingConfig config = getConfig(itemName);
 
-				// Here we write the command to the PIM.
-				upbWriter.queueMessage(message);
-			}
-		}
+        if (config != null) {
+            byte[] commandByte = { UPBMessage.Command.DEACTIVATE.toByte() };
+            if (command == OnOffType.ON) {
+                commandByte = new byte[] { UPBMessage.Command.ACTIVATE.toByte() };
+            } else if (command instanceof PercentType) {
+                commandByte = new byte[] { UPBMessage.Command.GOTO.toByte(), ((PercentType) command).byteValue() };
+            }
 
-	}
+            MessageBuilder message = MessageBuilder.create().network(network).destination(config.getId())
+                    .link(config.isLink()).command(commandByte);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		UPBBindingConfig config = getConfig(itemName);
+            // Here we write the command to the PIM.
+            upbWriter.queueMessage(message);
+        }
+    }
 
-		if (config != null) {
-			byte[] commandByte = { UPBMessage.Command.DEACTIVATE.toByte() };
-			if (command == OnOffType.ON) {
-				commandByte = new byte[] { UPBMessage.Command.ACTIVATE.toByte() };
-			} else if (command instanceof PercentType) {
-				commandByte = new byte[] { UPBMessage.Command.GOTO.toByte(), ((PercentType) command).byteValue() };
-			}
+    private String getItemName(byte id, boolean link) {
+        for (UPBBindingProvider p : providers) {
+            for (String itemName : p.getItemNames()) {
+                UPBBindingConfig config = p.getConfig(itemName);
 
-			MessageBuilder message = MessageBuilder.create().network(network).destination(config.getId())
-					.link(config.isLink()).command(commandByte);
+                if (config != null && config.getId() == id && config.isLink() == link) {
+                    return itemName;
+                }
+            }
+        }
 
-			// Here we write the command to the PIM.
-			upbWriter.queueMessage(message);
-		}
-	}
+        return null;
+    }
 
-	private String getItemName(byte id, boolean link) {
-		for (UPBBindingProvider p : providers) {
-			for (String itemName : p.getItemNames()) {
-				UPBBindingConfig config = p.getConfig(itemName);
+    private UPBBindingConfig getConfig(String itemName) {
+        for (UPBBindingProvider p : providers) {
+            UPBBindingConfig config = p.getConfig(itemName);
 
-				if (config != null && config.getId() == id && config.isLink() == link) {
-					return itemName;
-				}
-			}
-		}
+            if (config != null) {
+                return config;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	private UPBBindingConfig getConfig(String itemName) {
-		for (UPBBindingProvider p : providers) {
-			UPBBindingConfig config = p.getConfig(itemName);
+    private SerialPort openSerialPort() {
+        SerialPort serialPort = null;
+        CommPortIdentifier portId;
+        try {
+            portId = CommPortIdentifier.getPortIdentifier(port);
+        } catch (NoSuchPortException e1) {
+            throw new RuntimeException("Port does not exist", e1);
+        }
 
-			if (config != null) {
-				return config;
-			}
-		}
+        if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+            if (portId.getName().equals(port)) {
+                try {
+                    serialPort = portId.open("UPB", 1000);
+                } catch (PortInUseException e) {
+                    throw new RuntimeException("Port is in use", e);
+                }
+                try {
+                    serialPort.setSerialPortParams(4800, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+                            SerialPort.PARITY_NONE);
+                    serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+                    serialPort.enableReceiveTimeout(100);
+                } catch (UnsupportedCommOperationException e) {
+                    throw new RuntimeException("Failed to configure serial port");
+                }
+            }
+        }
 
-		return null;
-	}
+        return serialPort;
+    }
 
-	private SerialPort openSerialPort() {
-		SerialPort serialPort = null;
-		CommPortIdentifier portId;
-		try {
-			portId = CommPortIdentifier.getPortIdentifier(port);
-		} catch (NoSuchPortException e1) {
-			throw new RuntimeException("Port does not exist", e1);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void messageReceived(UPBMessage message) {
+        if (message.getType() == Type.MESSAGE_REPORT) {
+            String itemName = getItemName(message.getSource(), message.getControlWord().isLink());
+            UPBBindingConfig config = getConfig(itemName);
 
-		if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-			if (portId.getName().equals(port)) {
-				try {
-					serialPort = (SerialPort) portId.open("UPB", 2000);
-				} catch (PortInUseException e) {
-					throw new RuntimeException("Port is in use", e);
-				}
-				try {
-					serialPort.setSerialPortParams(4800, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-							SerialPort.PARITY_NONE);
-				} catch (UnsupportedCommOperationException e) {
-				}
-			}
-		}
+            if (itemName != null && config != null) {
+                State newState = null;
 
-		return serialPort;
-	}
+                switch (message.getCommand()) {
+                    case ACTIVATE:
+                    case DEACTIVATE:
+                    case GOTO:
+                    case DEVICE_STATE:
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void messageReceived(UPBMessage message) {
-		if (message.getType() == Type.MESSAGE_REPORT) {
-			String itemName = getItemName(message.getSource(), message.getControlWord().isLink());
-			UPBBindingConfig config = getConfig(itemName);
+                        byte level = 100;
 
-			if (itemName != null && config != null) {
-				State newState = null;
+                        if (message.getArguments() != null && message.getArguments().length > 0) {
+                            level = message.getArguments()[0];
+                        } else {
+                            level = (byte) (message.getCommand() == UPBMessage.Command.ACTIVATE ? 100 : 0);
+                        }
 
-				switch (message.getCommand()) {
-				case ACTIVATE:
-				case DEACTIVATE:
-				case GOTO:
-				case DEVICE_STATE:
+                        if (level >= 100 || (level > 0 && !config.isDimmable())) {
+                            newState = OnOffType.ON;
+                        } else if (level <= 0) {
+                            newState = OnOffType.OFF;
+                        } else {
+                            newState = new PercentType(level);
+                        }
+                    default:
+                        break;
+                }
 
-					byte level = 100;
-
-					if (message.getArguments() != null && message.getArguments().length > 0) {
-						level = message.getArguments()[0];
-					} else {
-						level = (byte) (message.getCommand() == UPBMessage.Command.ACTIVATE ? 100 : 0);
-					}
-
-					if (level >= 100 || (level > 0 && !config.isDimmable())) {
-						newState = OnOffType.ON;
-					} else if (level <= 0) {
-						newState = OnOffType.OFF;
-					} else {
-						newState = new PercentType(level);
-					}
-				default:
-					break;
-				}
-
-				if (newState != null) {
-					logger.debug("Posting update: {},{}", itemName, newState);
-					eventPublisher.postUpdate(itemName, newState);
-				}
-			} else {
-				logger.debug("Received message for unknown {} with id {}.", message.getControlWord().isLink() ? "Link"
-						: "Device", message.getDestination());
-			}
-		}
-	}
+                if (newState != null) {
+                    logger.debug("Posting update: {},{}", itemName, newState);
+                    eventPublisher.postUpdate(itemName, newState);
+                }
+            } else {
+                logger.debug("Received message for unknown {} with id {}.",
+                        message.getControlWord().isLink() ? "Link" : "Device", message.getDestination());
+            }
+        }
+    }
 }
