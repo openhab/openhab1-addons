@@ -376,9 +376,8 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 		logger.debug("updated(): Configuration updated, config {}", config != null ? true:false);
 
 		if (config != null) {
-
-			String deviceType = null;
-			if(StringUtils.isNotBlank((String) config.get("deviceType"))) {
+			String deviceType = (String) config.get("deviceType");
+			if(StringUtils.isNotBlank(deviceType)) {
 				if(deviceType.equals("it100")) {
 					connectorType = DSCAlarmConnectorType.IT100;
 				} else if(deviceType.equals("envisalink")) {
