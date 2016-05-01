@@ -53,9 +53,9 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
     private static final String TCP_PREFIX = "tcp";
     private static final String SERIAL_PREFIX = "serial";
 
-    private static final String VALID_COFIG_KEYS = "connection|id|start|length|type|valuetype|rawdatamultiplier|writemultipleregisters";
+    private static final String VALID_CONFIG_KEYS = "connection|id|start|length|type|valuetype|rawdatamultiplier|writemultipleregisters|updateunchangeditems";
     private static final Pattern EXTRACT_MODBUS_CONFIG_PATTERN = Pattern.compile(
-            "^(" + TCP_PREFIX + "|" + UDP_PREFIX + "|" + SERIAL_PREFIX + "|)\\.(.*?)\\.(" + VALID_COFIG_KEYS + ")$");
+            "^(" + TCP_PREFIX + "|" + UDP_PREFIX + "|" + SERIAL_PREFIX + "|)\\.(.*?)\\.(" + VALID_CONFIG_KEYS + ")$");
 
     /** Stores instances of all the slaves defined in cfg file */
     private static Map<String, ModbusSlave> modbusSlaves = new ConcurrentHashMap<String, ModbusSlave>();
@@ -113,8 +113,9 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
                 continue;
             }
 
-            String slaveValueType = modbusSlaves.get(slaveName).getValueType();
-            double rawDataMultiplier = modbusSlaves.get(slaveName).getRawDataMultiplier();
+            ModbusSlave slave = modbusSlaves.get(slaveName);
+            String slaveValueType = slave.getValueType();
+            double rawDataMultiplier = slave.getRawDataMultiplier();
 
             State newState = extractStateFromRegisters(registers, config.readIndex, slaveValueType);
             /* receive data manipulation */
@@ -122,14 +123,14 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
                     .translateBoolean2State(!newState.equals(DecimalType.ZERO));
             if (!UnDefType.UNDEF.equals(newStateBoolean)) {
                 newState = newStateBoolean;
-            } else if ((rawDataMultiplier != 1) && (config.getItem() instanceof NumberItem)) {
+            } else if ((rawDataMultiplier != 1) && (config.getItemClass().isAssignableFrom(NumberItem.class))) {
                 double tmpValue = ((DecimalType) newState).doubleValue() * rawDataMultiplier;
                 newState = new DecimalType(String.valueOf(tmpValue));
             }
 
-            State currentState = config.getItemState();
-            if (!newState.equals(currentState)) {
+            if (slave.isUpdateUnchangedItems() || !newState.equals(config.getState())) {
                 eventPublisher.postUpdate(itemName, newState);
+                config.setState(newState);
             }
         }
     }
@@ -181,10 +182,11 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
                 ModbusBindingConfig config = provider.getConfig(itemName);
                 if (config.slaveName.equals(slaveName)) {
                     boolean state = coils.getBit(config.readIndex);
-                    State currentState = provider.getConfig(itemName).getItemState();
-                    State newState = provider.getConfig(itemName).translateBoolean2State(state);
-                    if (!newState.equals(currentState)) {
+                    State newState = config.translateBoolean2State(state);
+                    ModbusSlave slave = modbusSlaves.get(slaveName);
+                    if (slave.isUpdateUnchangedItems() || !newState.equals(config.getState())) {
                         eventPublisher.postUpdate(itemName, newState);
+                        config.setState(newState);
                     }
                 }
             }
@@ -263,7 +265,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
                     } else {
                         logger.debug(
                                 "given modbus-slave-config-key '{}' does not follow the expected pattern or 'serial.<slaveId>.<{}>'",
-                                key, VALID_COFIG_KEYS);
+                                key, VALID_CONFIG_KEYS);
                     }
                     continue;
                 }
@@ -340,6 +342,8 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
                     }
                 } else if ("rawdatamultiplier".equals(configKey)) {
                     modbusSlave.setRawDataMultiplier(Double.valueOf(value.toString()));
+                } else if ("updateunchangeditems".equals(configKey)) {
+                    modbusSlave.setUpdateUnchangedItems(Boolean.valueOf(value.toString()));
                 } else {
                     throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
                 }

@@ -101,6 +101,21 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
     protected ModbusTransaction transaction = null;
 
     /**
+     * Does the binding post updates even when the item did not change it's state?
+     *
+     * default is "false"
+     */
+    private boolean updateUnchangedItems = false;
+
+    public boolean isUpdateUnchangedItems() {
+        return updateUnchangedItems;
+    }
+
+    public void setUpdateUnchangedItems(boolean updateUnchangedItems) {
+        this.updateUnchangedItems = updateUnchangedItems;
+    }
+
+    /**
      * @param slave slave name from cfg file used for item binding
      */
     public ModbusSlave(String slave) {
@@ -176,7 +191,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
         if (command instanceof IncreaseDecreaseType) {
             newValue = readCachedRegisterValue(readIndex);
             if (newValue == null) {
-                logger.warn("Not polled value for item {}. Cannot process command {}", config.getItem(), command);
+                logger.warn("Not polled value for item {}. Cannot process command {}", config.getItemName(), command);
                 return;
             }
             if (command.equals(IncreaseDecreaseType.INCREASE)) {
@@ -187,7 +202,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
         } else if (command instanceof UpDownType) {
             newValue = readCachedRegisterValue(readIndex);
             if (newValue == null) {
-                logger.warn("Not polled value for item {}. Cannot process command {}", config.getItem(), command);
+                logger.warn("Not polled value for item {}. Cannot process command {}", config.getItemName(), command);
                 return;
             }
             if (command.equals(UpDownType.UP)) {
@@ -213,7 +228,8 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
                 newValue.setValue(0);
             }
         } else {
-            logger.warn("Item {} received unsupported command: {}. Not setting register.", config.getItem(), command);
+            logger.warn("Item {} received unsupported command: {}. Not setting register.", config.getItemName(),
+                    command);
             return;
         }
 
@@ -301,20 +317,20 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
                     request.setHeadless();
                 }
                 request.setUnitID(id);
-                ReadCoilsResponse responce = (ReadCoilsResponse) getModbusData(request);
-                local = responce.getCoils();
+                ReadCoilsResponse response = (ReadCoilsResponse) getModbusData(request);
+                local = response.getCoils();
             } else if (ModbusBindingProvider.TYPE_DISCRETE.equals(getType())) {
                 ModbusRequest request = new ReadInputDiscretesRequest(getStart(), getLength());
-                ReadInputDiscretesResponse responce = (ReadInputDiscretesResponse) getModbusData(request);
-                local = responce.getDiscretes();
+                ReadInputDiscretesResponse response = (ReadInputDiscretesResponse) getModbusData(request);
+                local = response.getDiscretes();
             } else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {
                 ModbusRequest request = new ReadMultipleRegistersRequest(getStart(), getLength());
-                ReadMultipleRegistersResponse responce = (ReadMultipleRegistersResponse) getModbusData(request);
-                local = responce.getRegisters();
+                ReadMultipleRegistersResponse response = (ReadMultipleRegistersResponse) getModbusData(request);
+                local = response.getRegisters();
             } else if (ModbusBindingProvider.TYPE_INPUT.equals(getType())) {
                 ModbusRequest request = new ReadInputRegistersRequest(getStart(), getLength());
-                ReadInputRegistersResponse responce = (ReadInputRegistersResponse) getModbusData(request);
-                local = responce.getRegisters();
+                ReadInputRegistersResponse response = (ReadInputRegistersResponse) getModbusData(request);
+                local = response.getRegisters();
             }
             if (storage == null) {
                 storage = local;
@@ -329,7 +345,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
             }
         } catch (Exception e) {
             resetConnection();
-            logger.info("ModbusSlave error getting responce from slave");
+            logger.info("ModbusSlave error getting response from slave:", e);
         }
 
     }
