@@ -3376,5 +3376,16 @@
             <Label lang="en">4000W Thermostat</Label>
             <ConfigFile>stelpro/stzw402.xml</ConfigFile>
         </Product>
-    </Manufacturer> 
+    </Manufacturer>
+    <Manufacturer>
+        <Product>
+            <Reference>
+                <Type>4442</Type>
+                <Id>3130</Id>
+            </Reference>
+            <Model>DB100Z</Model>
+            <Label lang="en">Doorbell</Label>
+            <ConfigFile>nexia/db100z.xml</ConfigFile>
+        </Product>
+    </Manufacturer>
 </Manufacturers>
