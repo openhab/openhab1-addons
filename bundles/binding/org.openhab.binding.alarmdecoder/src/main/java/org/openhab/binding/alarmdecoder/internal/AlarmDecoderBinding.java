@@ -96,6 +96,11 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
     }
 
     @Override
+    public void deactivate() {
+        disconnect();
+    }
+
+    @Override
     public void execute() {
         // The framework calls this function once the binding has been configured,
         // so we use it as a hook to start the binding.
@@ -422,9 +427,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
                 }
             } catch (IOException e) {
                 logger.error("I/O error while reading from stream: {}", e.getMessage());
-                // mark connections as down so they get reestablished
-                m_socket = null;
-                m_port = null;
+                disconnect();
             }
             logger.debug("msg reader thread exited");
         }
