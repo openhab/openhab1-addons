@@ -48,4 +48,37 @@
         </Class>
     </CommandClasses>
 
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Send Battery Report with Notification Report</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Do not send battery report</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Send Battery Report</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
 </Product>
