@@ -3367,6 +3367,8 @@
         </Product>
     </Manufacturer>
     <Manufacturer>
+        <Id>0239</Id>
+        <Name>Stelpro</Name>
         <Product>
             <Reference>
                 <Type>0001</Type>
@@ -3378,7 +3380,9 @@
         </Product>
     </Manufacturer>
     <Manufacturer>
-        <Product>
+        <Id>0178</Id>
+        <Name>Nexia</Name>
+          <Product>
             <Reference>
                 <Type>4442</Type>
                 <Id>3130</Id>
