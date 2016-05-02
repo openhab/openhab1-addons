@@ -316,6 +316,19 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
                 } else if (command.equals(OnOffType.OFF) || command.equals(UpDownType.DOWN)) {
                     myqOnlineData.executeGarageDoorCommand(garageopener.getDeviceId(), 0);
                     beginRapidPoll(true);
+                } else if (command instanceof StringType) {
+                    String stringValue = ((StringType) command).toString();
+                    if (stringValue.equalsIgnoreCase(GarageDoorStatus.OPEN.getLabel())
+                            || stringValue.equalsIgnoreCase(GarageDoorStatus.OPENING.getLabel())) {
+                        myqOnlineData.executeGarageDoorCommand(garageopener.getDeviceId(), 1);
+                        beginRapidPoll(true);
+                    } else if (stringValue.equalsIgnoreCase(GarageDoorStatus.CLOSED.getLabel())
+                            || stringValue.equalsIgnoreCase(GarageDoorStatus.CLOSING.getLabel())) {
+                        myqOnlineData.executeGarageDoorCommand(garageopener.getDeviceId(), 0);
+                        beginRapidPoll(true);
+                    } else {
+                        logger.warn("Unknown string command {}", stringValue);
+                    }
                 } else {
                     logger.warn("Unknown command {}", command);
                 }
