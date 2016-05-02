@@ -3392,4 +3392,17 @@
             <ConfigFile>nexia/db100z.xml</ConfigFile>
         </Product>
     </Manufacturer>
+    <Manufacturer>
+        <Id>000C</Id>
+        <Name>HomeSeer Technologies</Name>
+        <Product>
+            <Reference>
+                <Type>4447</Type>
+                <Id>3034</Id>
+            </Reference>
+            <Model>HS-WD100+</Model>
+            <Label lang="en">Scene Capable Wall Dimmer Switch</Label>
+            <ConfigFile>homeseer/hswd100.xml</ConfigFile>
+        </Product>
+    </Manufacturer> 
 </Manufacturers>
