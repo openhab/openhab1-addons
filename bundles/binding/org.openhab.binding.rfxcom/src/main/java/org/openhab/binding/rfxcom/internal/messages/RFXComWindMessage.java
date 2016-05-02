@@ -66,7 +66,7 @@ public class RFXComWindMessage extends RFXComBaseMessage {
     public int sensorId = 0;
     public double windDirection = 0;
     public double windSpeed = 0;
-    public double windAvSpeed = 0; // TFA type only
+    public double windAvSpeed = 0;
     public double temperature = 0; // TFA type only
     public double chillFactor = 0; // TFA type only
     public byte signalLevel = 0;
@@ -89,8 +89,8 @@ public class RFXComWindMessage extends RFXComBaseMessage {
         str += "\n - Id = " + sensorId;
         str += "\n - Wind direction = " + windDirection;
         str += "\n - Wind speed = " + windSpeed;
+        str += "\n - Average Wind speed = " + windAvSpeed;
         if (subType == SubType.TFA) {
-            str += "\n - Average Wind speed = " + windAvSpeed;
             str += "\n - Temperature = " + temperature;
             str += "\n - Chill Factor = " + chillFactor;
         }
@@ -113,10 +113,10 @@ public class RFXComWindMessage extends RFXComBaseMessage {
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 
         windDirection = (short) ((data[6] & 0xFF) << 8 | (data[7] & 0xFF));
+        windAvSpeed = (short) ((data[8] & 0xFF) << 8 | (data[9] & 0xFF)) * 0.1;
         windSpeed = (short) ((data[10] & 0xFF) << 8 | (data[11] & 0xFF)) * 0.1;
 
         if (subType == SubType.TFA) {
-            windAvSpeed = (short) ((data[8] & 0xFF) << 8 | (data[9] & 0xFF)) * 0.1;
             temperature = (short) ((data[12] & 0x7F) << 8 | (data[13] & 0xFF)) * 0.1;
             if ((data[12] & 0x80) != 0) {
                 temperature = -temperature;
@@ -126,7 +126,6 @@ public class RFXComWindMessage extends RFXComBaseMessage {
                 chillFactor = -chillFactor;
             }
         } else {
-            windAvSpeed = 0;
             temperature = 0;
             chillFactor = 0;
         }
@@ -150,15 +149,15 @@ public class RFXComWindMessage extends RFXComBaseMessage {
         data[6] = (byte) ((WindD >> 8) & 0xFF);
         data[7] = (byte) (WindD & 0xFF);
 
+        int WindAS = (short) Math.abs(windAvSpeed) * 10;
+        data[8] = (byte) ((WindAS >> 8) & 0xFF);
+        data[9] = (byte) (WindAS & 0xFF);
+
         int WindS = (short) Math.abs(windSpeed) * 10;
         data[10] = (byte) ((WindS >> 8) & 0xFF);
         data[11] = (byte) (WindS & 0xFF);
 
         if (subType == SubType.TFA) {
-            int WindAS = (short) Math.abs(windAvSpeed) * 10;
-            data[8] = (byte) ((WindAS >> 8) & 0xFF);
-            data[9] = (byte) (WindAS & 0xFF);
-
             short temp = (short) Math.abs(temperature * 10);
             data[12] = (byte) ((temp >> 8) & 0xFF);
             data[13] = (byte) (temp & 0xFF);
