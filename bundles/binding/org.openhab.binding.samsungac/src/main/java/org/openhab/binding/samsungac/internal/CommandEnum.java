@@ -86,7 +86,6 @@ enum ConvenientModeEnum {
 }
 
 enum DirectionEnum {
-    Auto(0),
     SwingUD(1),
     Rotation(2),
     Fixed(3),
@@ -104,7 +103,7 @@ enum DirectionEnum {
                 return en;
             }
         }
-        return DirectionEnum.Auto;
+        return DirectionEnum.Fixed;
     }
 }
 
