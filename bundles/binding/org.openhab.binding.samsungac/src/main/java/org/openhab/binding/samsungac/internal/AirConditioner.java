@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.binding.openhab.samsungac.communicator;
+package org.openhab.binding.samsungac.internal;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -31,7 +31,6 @@ import javax.net.ssl.X509TrustManager;
 import org.apache.commons.ssl.KeyMaterial;
 import org.apache.commons.ssl.SSLClient;
 import org.apache.commons.ssl.TrustMaterial;
-import org.openhab.binding.samsungac.internal.CommandEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AirConditioner {
 
-    private static Logger logger = LoggerFactory.getLogger(AirConditioner.class);
+    private static final Logger logger = LoggerFactory.getLogger(AirConditioner.class);
 
     private String IP;
     private String MAC;
@@ -77,7 +76,7 @@ public class AirConditioner {
             getToken();
             loginWithToken();
         } catch (Exception e) {
-            logger.debug("Disconnecting...", e);
+            logger.debug("Disconnecting... with exception: {}", e.toString());
             disconnect();
             throw e;
         }
@@ -96,9 +95,9 @@ public class AirConditioner {
                 socket.close();
             }
             socket = null;
-            logger.debug("Disconnected from AC: " + IP);
+            logger.debug("Disconnected from AC: {}", IP);
         } catch (IOException e) {
-            logger.warn("Could not disconnect from Air Conditioner with IP: " + IP, e);
+            logger.warn("Could not disconnect from Air Conditioner with IP: {}", IP, e);
         } finally {
             socket = null;
         }
@@ -127,7 +126,7 @@ public class AirConditioner {
             handleResponse();
             Thread.sleep(2000);
         }
-        logger.info("Token has been acquired: " + TOKEN_STRING);
+        logger.debug("Token has been acquired: '{}'", TOKEN_STRING);
     }
 
     /**
@@ -136,7 +135,7 @@ public class AirConditioner {
      * @throws Exception
      */
     private void handleResponse() throws Exception {
-        handleResponse(null);
+        handleResponse(null, null, null);
     }
 
     /**
@@ -148,11 +147,9 @@ public class AirConditioner {
      * @param commandId An id of the command we are waiting for a response on. Not mandatory
      * @throws Exception Is thrown if we cannot parse the response from the air conditioner
      */
-    private void handleResponse(String commandId) throws Exception {
+    private void handleResponse(String commandId, CommandEnum command, String value) throws Exception {
         String line;
         while ((line = readLine(socket)) != null) {
-            logger.debug("Got response:'" + line + "'");
-
             if (line == null || ResponseParser.isFirstLine(line)) {
                 continue;
             }
@@ -170,56 +167,72 @@ public class AirConditioner {
             }
 
             if (commandId != null && ResponseParser.isCorrectCommandResponse(line, commandId)) {
-                logger.debug("Correct command response: '" + line + "'");
-                continue;
+                logger.debug("Correct command response: '{}'", line);
+                if (command != null && statusMap.get(command).equals(value)) {
+                    return;
+                } else {
+                    logger.debug("Continue, cause '{}' is not like '{}'", value, statusMap.get(command));
+                    continue;
+                }
             }
 
             if (ResponseParser.isResponseWithToken(line)) {
                 TOKEN_STRING = ResponseParser.parseTokenFromResponse(line);
-                logger.info("Received TOKEN from AC: '" + TOKEN_STRING + "'");
+                logger.debug("Received TOKEN from AC: '{}'", TOKEN_STRING);
                 return;
             }
             if (ResponseParser.isReadyForTokenResponse(line)) {
-                logger.info("NO TOKEN SET! Please switch off and on the air conditioner within 30 seconds");
+                logger.debug("NO TOKEN SET! Please switch off and on the air conditioner within 30 seconds");
                 return;
             }
 
             if (ResponseParser.isSuccessfulLoginResponse(line)) {
-                logger.debug("SuccessfulLoginResponse: '" + line + "'");
+                logger.debug("SuccessfulLoginResponse: '{}'", line);
                 return;
             }
 
             if (ResponseParser.isDeviceState(line)) {
-                logger.debug("Response is device state '" + line + "'");
+                logger.debug("Response is device state '{}'", line);
                 statusMap.clear();
                 statusMap = ResponseParser.parseStatusResponse(line);
-                return;
+                continue;
             }
 
             if (ResponseParser.isDeviceControl(line)) {
-                logger.debug("DeviceControl: '" + line + "'");
+                logger.debug("DeviceControl: '{}'", line);
                 continue;
             }
 
             if (ResponseParser.isUpdateStatus(line)) {
+                logger.debug("Response is update status: '{}'", line);
                 Pattern pattern = Pattern.compile("Attr ID=\"(.*)\" Value=\"(.*)\"");
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.groupCount() == 2) {
                     try {
-                        CommandEnum cmd = CommandEnum.valueOf(matcher.group(0));
+                        matcher.find();
+                        CommandEnum cmd = CommandEnum.valueOf(matcher.group(1));
                         if (cmd != null) {
-                            statusMap.put(cmd, matcher.group(1));
+                            statusMap.put(cmd, matcher.group(2));
+                            logger.debug("Setting: {} to {} ", cmd.name(), matcher.group(2));
                         }
                     } catch (IllegalStateException e) {
+                        logger.info("IllegalStateException when trying to update status, with response: {}", line, e);
                     }
                 }
                 continue;
             }
+
+            if (commandId != null && !ResponseParser.isCorrectCommandResponse(line, commandId)) {
+                logger.debug("Response with incrorrect commandId: '{}' should have been: '{}'", line, commandId);
+                continue;
+            }
+
+            logger.debug("Got response:'{}'", line);
         }
     }
 
     private void writeLine(String line) throws Exception {
-        logger.debug("Sending request:'" + line + "'");
+        logger.debug("Sending request:'{}'", line);
         if (!isConnected()) {
             login();
         }
@@ -230,7 +243,7 @@ public class AirConditioner {
             writer.newLine();
             writer.flush();
         } catch (Exception e) {
-            logger.info("Could not write line. Disconnecting..., exception was: " + e);
+            logger.debug("Could not write line. Disconnecting..., exception..", e);
             disconnect();
             throw (e);
         }
@@ -244,7 +257,7 @@ public class AirConditioner {
         try {
             return r.readLine();
         } catch (SocketTimeoutException e) {
-            logger.debug("Got socket timeout exception ... ", e);
+            logger.debug("Nothing more to read from AC");
         } catch (SSLException e) {
             logger.debug("Got SSL Exception. Disconnecting...");
             disconnect();
@@ -272,7 +285,7 @@ public class AirConditioner {
                 client.setKeyMaterial(new KeyMaterial(CERTIFICATE_FILE_NAME, CERTIFICATE_PASSWORD.toCharArray()));
                 client.setConnectTimeout(10000);
                 socket = (SSLSocket) client.createSocket(IP, PORT);
-                socket.setSoTimeout(30000);
+                socket.setSoTimeout(2000);
                 socket.startHandshake();
             } catch (Exception e) {
                 throw new Exception("Could not connect using certificate: " + CERTIFICATE_FILE_NAME, e);
@@ -294,7 +307,7 @@ public class AirConditioner {
 
                 ctx.init(null, trustAllCerts, null);
                 socket = (SSLSocket) ctx.getSocketFactory().createSocket(IP, PORT);
-                socket.setSoTimeout(10000);
+                socket.setSoTimeout(2000);
                 socket.startHandshake();
             } catch (Exception e) {
                 throw new Exception("Cannot connect to " + IP + ":" + PORT, e);
@@ -312,13 +325,13 @@ public class AirConditioner {
      * @return the generated command id
      * @throws Exception If we cannot write to the air conditioner or if we cannot handle the response
      */
-    public String sendCommand(CommandEnum command, String value) throws Exception {
-        logger.debug("Sending command: '" + command.toString() + "' with value: '" + value + "'");
+    public Map<CommandEnum, String> sendCommand(CommandEnum command, String value) throws Exception {
+        logger.debug("Sending command: '{}' with value: '{}'", command.toString(), value);
         String id = "cmd" + Math.round(Math.random() * 10000);
         writeLine("<Request Type=\"DeviceControl\"><Control CommandID=\"" + id + "\" DUID=\"" + MAC + "\"><Attr ID=\""
                 + command + "\" Value=\"" + value + "\" /></Control></Request>");
-        handleResponse(id);
-        return id;
+        handleResponse(id, command, value);
+        return statusMap;
     }
 
     /**

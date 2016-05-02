@@ -14,9 +14,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
-import org.binding.openhab.samsungac.communicator.ResponseParser;
 import org.junit.Test;
 import org.openhab.binding.samsungac.internal.CommandEnum;
+import org.openhab.binding.samsungac.internal.ResponseParser;
 import org.xml.sax.SAXException;
 
 /**

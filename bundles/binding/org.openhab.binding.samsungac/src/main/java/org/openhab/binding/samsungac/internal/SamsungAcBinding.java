@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.binding.openhab.samsungac.communicator.AirConditioner;
-import org.binding.openhab.samsungac.communicator.SsdpDiscovery;
 import org.openhab.binding.samsungac.SamsungAcBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
@@ -77,11 +75,11 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
     protected void internalReceiveCommand(String itemName, Command command) {
 
         if (itemName != null && command != null) {
-            logger.debug("InternalReceiveCommand [" + itemName + ":" + command + "]");
+            logger.debug("InternalReceiveCommand [{} : {}]", itemName, command);
             String hostName = getAirConditionerInstance(itemName);
             AirConditioner host = nameHostMapper.get(hostName);
             if (host == null) {
-                logger.debug("Host with hostname:" + hostName + " not found...");
+                logger.debug("Host with hostname: '{}' not found...", hostName);
                 return;
             }
             CommandEnum property = getProperty(itemName);
@@ -89,10 +87,10 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
             String cmd = getCmdStringFromEnumValue(command, property);
 
             if (cmd != null) {
-                sendCommand(host, property, cmd);
+                sendCommand(host, property, cmd, hostName);
             } else {
-                logger.warn("Not sending for itemName: '" + itemName + "' because property not implemented: '"
-                        + property + "'");
+                logger.warn("Not sending for itemName: '{}' because property not implemented: '{}'", itemName,
+                        property);
             }
         }
     }
@@ -118,6 +116,8 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
                 cmd = DirectionEnum.getFromValue(command).toString();
                 break;
             case AC_FUN_TEMPSET:
+                cmd = Integer.toString(new Double(command.toString()).intValue());
+                break;
             case AC_FUN_ERROR:
             default:
                 cmd = command.toString();
@@ -126,19 +126,21 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
         return cmd;
     }
 
-    private void sendCommand(AirConditioner aircon, CommandEnum property, String value) {
+    private void sendCommand(AirConditioner aircon, CommandEnum property, String value, String hostName) {
         int i = 1;
         boolean commandSent = false;
         while (i < 5 && !commandSent) {
             try {
-                logger.debug("[" + i + "/5] Sending command: " + value + " to property:" + property + " with ip:"
-                        + aircon.getIpAddress());
-                if (aircon.sendCommand(property, value) != null) {
+                logger.debug("[{}/5] Sending command: {} to property:{} with ip:{}", i, value, property,
+                        aircon.getIpAddress());
+                Map<CommandEnum, String> status = aircon.sendCommand(property, value);
+                if (status != null) {
                     commandSent = true;
-                    logger.debug("Command[" + value + "] sent on try number " + i);
+                    logger.debug("Command[{}] sent on try number {}", value, i);
+                    updateAllItemsFromStatusMap(status, hostName);
                 }
             } catch (Exception e) {
-                logger.warn("Could not send value: '" + value + "' to property:'" + property + "', try " + i + "/5");
+                logger.warn("Could not send value: '{}' to property:'{}', try {}/5", value, property, i);
                 e.printStackTrace();
             } finally {
                 i++;
@@ -197,15 +199,15 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
         String refreshIntervalString = (String) config.get("refresh");
         if (StringUtils.isNotBlank(refreshIntervalString)) {
             refreshInterval = Long.parseLong(refreshIntervalString);
-            logger.info("Refresh interval set to " + refreshIntervalString + " ms");
+            logger.info("Refresh interval set to {} ms", refreshIntervalString);
         } else {
-            logger.info("No refresh interval configured, using default: " + refreshInterval + " ms");
+            logger.info("No refresh interval configured, using default: {} ms", refreshInterval);
         }
 
         Map<String, AirConditioner> hosts = new HashMap<String, AirConditioner>();
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
-            logger.debug("Configuration key is: " + key);
+            logger.debug("Configuration key is: {}", key);
             if ("service.pid".equals(key)) {
                 continue;
             }
@@ -246,9 +248,10 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
             if (discovered != null && discovered.size() > 0) {
                 for (Map<String, String> ac : discovered.values()) {
                     if (ac.get("IP") != null && ac.get("MAC_ADDR") != null) {
-                        logger.warn("We found air conditioner. Please put the following in your configuration file: "
-                                + "\r\n samsungac:<ACNAME>.host=" + ac.get("IP") + "\r\n samsungac:<ACNAME>.mac="
-                                + ac.get("MAC_ADDR"));
+                        logger.warn(
+                                "We found air conditioner. Please put the following in your configuration file: "
+                                        + "\r\n samsungac:<ACNAME>.host={}\r\n samsungac:<ACNAME>.mac={}",
+                                ac.get("IP"), ac.get("MAC_ADDR"));
                     }
                 }
             } else {
@@ -291,7 +294,7 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
             if (e == null || e.toString() == null || e.getCause() == null) {
                 logger.debug("Returned null-exception...");
             } else {
-                logger.debug(e.toString() + " : " + e.getCause().toString());
+                logger.debug("Caught exception: {} : {}", e.toString(), e.getCause().toString());
             }
             logger.debug("Reconnect failed for '{}', will retry in {}s", key, refreshInterval / 1000);
         }
@@ -300,15 +303,19 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
     private void getAndUpdateStatusForAirConditioner(String acName, AirConditioner host) {
         Map<CommandEnum, String> status = new HashMap<CommandEnum, String>();
         try {
-            logger.debug("Getting status for ac: '" + acName + "'");
+            logger.debug("Getting status for ac: '{}'", acName);
             status = host.getStatus();
         } catch (Exception e) {
-            logger.debug("Could not get status.. returning.., got exception: " + e.toString());
+            logger.debug("Could not get status.. returning.., got exception: {}", e.toString());
             return;
         }
 
+        updateAllItemsFromStatusMap(status, acName);
+    }
+
+    private void updateAllItemsFromStatusMap(Map<CommandEnum, String> status, String acName) {
         for (CommandEnum cmd : status.keySet()) {
-            logger.debug("Trying to find item for: " + acName + " and cmd: " + cmd.toString());
+            logger.debug("Trying to find item for: {} and cmd: {}", acName, cmd.toString());
             String item = getItemName(acName, cmd);
             String value = status.get(cmd);
             if (item != null && value != null) {
@@ -347,18 +354,18 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
                     break;
             }
         } catch (IllegalArgumentException iae) {
-            logger.warn("Update of item [" + item
-                    + "] failed, probably because the received value for the command is not implemented [" + cmd + "."
-                    + value + "]");
+            logger.warn(
+                    "Update of item [{}] failed, probably because the received value for the command is not implemented [{}.{}]",
+                    item, cmd, value);
         }
     }
 
     private void postUpdate(String item, State state) {
         if (item != null && state != null) {
-            logger.debug(item + " gets updated to: " + state);
+            logger.debug("{} gets updated to: {}", item, state);
             eventPublisher.postUpdate(item, state);
         } else {
-            logger.debug("Could not update item: '" + item + "' with state: '" + state.toString() + "'");
+            logger.debug("Could not update item: '{}' with state: '{}'", item, state.toString());
         }
     }
 

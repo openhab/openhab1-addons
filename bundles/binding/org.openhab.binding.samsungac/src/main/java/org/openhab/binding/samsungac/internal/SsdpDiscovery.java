@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.binding.openhab.samsungac.communicator;
+package org.openhab.binding.samsungac.internal;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

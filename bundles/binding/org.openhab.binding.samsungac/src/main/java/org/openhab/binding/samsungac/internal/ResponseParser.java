@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.binding.openhab.samsungac.communicator;
+package org.openhab.binding.samsungac.internal;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openhab.binding.samsungac.internal.CommandEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -158,7 +157,6 @@ public class ResponseParser {
      * @throws SAXException If we cannot read the response from the AC
      */
     public static Map<CommandEnum, String> parseStatusResponse(String response) throws SAXException {
-        logger.debug("Response is: " + response);
         Map<CommandEnum, String> status = new HashMap<CommandEnum, String>();
         try {
             XMLReader reader = XMLReaderFactory.createXMLReader();
@@ -193,7 +191,7 @@ public class ResponseParser {
                         values.put(cmd, attributes.getValue("Value"));
                     }
                 } catch (IllegalArgumentException e) {
-                    logger.debug("Does not support attribute: '" + attributes.getValue("ID"));
+                    logger.debug("Does not support attribute: '{}'", attributes.getValue("ID"));
                 }
             }
         }
