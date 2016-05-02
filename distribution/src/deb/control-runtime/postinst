@@ -34,21 +34,25 @@ case "$1" in
 			--gecos "openHAB runtime user" --home /var/lib/openhab "$OH_USER"
 		fi
 	# if $2 is set, this is an upgrade
-		if [ -n $2 ] ; then
-			startOpenHAB
-	# this is a fresh installation
-		elif [ -z $2 ] ; then
-			if [ -x /bin/systemctl ] ; then
-				echo "### NOT starting on installation, please execute the following statements to configure openHAB to start automatically using systemd"
-				echo " sudo /bin/systemctl daemon-reload"
-				echo " sudo /bin/systemctl enable openhab.service"
-				echo "### You can start openhab by executing"
-				echo " sudo /bin/systemctl start openhab.service"
-			elif [ -x /usr/sbin/update-rc.d ] ; then
-				echo "### NOT starting openhab by default on bootup, please execute"
-				echo " sudo update-rc.d openhab defaults"
-				echo "### In order to start openhab, execute"
-				echo " sudo /etc/init.d/openhab start"
+		if [ x"${OH_DOCKER_INSTALLATION}" != x ]; then
+			echo "docker installation \"${OH_DOCKER_INSTALLATION}\""
+		else 			
+			if [ -z $2 ] ; then
+				# this is a fresh installation
+				if [ -x /bin/systemctl ] ; then
+					echo "### NOT starting on installation, please execute the following statements to configure openHAB to start automatically using systemd"
+					echo " sudo /bin/systemctl daemon-reload"
+					echo " sudo /bin/systemctl enable openhab.service"
+					echo "### You can start openhab by executing"
+					echo " sudo /bin/systemctl start openhab.service"
+				elif [ -x /usr/sbin/update-rc.d ] ; then
+					echo "### NOT starting openhab by default on bootup, please execute"
+					echo " sudo update-rc.d openhab defaults"
+					echo "### In order to start openhab, execute"
+					echo " sudo /etc/init.d/openhab start"
+				fi
+			else
+				startOpenHAB
 			fi
 		fi
 		;;
