@@ -20,6 +20,7 @@ import org.openhab.binding.knx.internal.config.KNXGenericBindingProvider.KNXBind
 import org.openhab.binding.knx.internal.config.KNXGenericBindingProvider.KNXBindingConfigItem;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
@@ -54,8 +55,13 @@ public class KNXGenericBindingProviderTest {
     }
 
     @Test(expected = BindingConfigParseException.class)
-    public void testParseBindingConfig_toManyArguments() throws BindingConfigParseException {
+    public void testParseBindingConfig_tooManyArguments() throws BindingConfigParseException {
         provider.parseBindingConfigString(new TestItem(), "0/0/0, 0/0/0, 0/0/0, 0/0/0, 0/0/0");
+    }
+
+    @Test
+    public void testParseBindingConfig_DateTimeAcceptsTwoGAs() throws BindingConfigParseException {
+        provider.parseBindingConfigString(new DateTimeItem("DateTest"), "11.001:15/7/11, 10.001:15/7/10");
     }
 
     @Test
