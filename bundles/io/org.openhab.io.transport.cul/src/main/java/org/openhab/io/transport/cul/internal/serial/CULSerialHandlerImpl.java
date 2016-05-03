@@ -17,7 +17,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.TooManyListenersException;
 
-import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULDeviceException;
 import org.openhab.io.transport.cul.internal.AbstractCULHandler;
 import org.openhab.io.transport.cul.internal.CULConfig;
@@ -49,6 +48,9 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
     private InputStream is;
     private OutputStream os;
 
+    private BufferedWriter bw;
+    private BufferedReader br;
+
     /**
      * Constructor including property map for specific configuration.
      *
@@ -63,9 +65,10 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
     public void serialEvent(SerialPortEvent event) {
         if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
-                processNextLine();
-            } catch (CULCommunicationException e) {
-                log.error("Serial CUL connection read failed for " + config.getDeviceAddress());
+                String line = br.readLine();
+                processNextLine(line);
+            } catch (IOException e) {
+                log.error("Can't read from serial device {}", config.getDeviceName(), e);
             }
         }
     }
@@ -131,6 +134,16 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
             }
         }
 
+    }
+
+    @Override
+    protected void write(String command) {
+        try {
+            bw.write(command);
+            bw.flush();
+        } catch (IOException e) {
+            log.error("Can't write to serial device {}", config.getDeviceName(), e);
+        }
     }
 
 }
