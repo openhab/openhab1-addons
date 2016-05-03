@@ -99,11 +99,11 @@ public class UPBBinding extends AbstractActiveBinding<UPBBindingProvider>impleme
 
     private void parseConfiguration(final Map<String, Object> configuration) {
         port = ObjectUtils.toString(configuration.get("port"), null);
-        network = Byte.valueOf(ObjectUtils.toString(configuration.get("network"), "0"));
+        network = Integer.valueOf(ObjectUtils.toString(configuration.get("network"), "0")).byteValue();
 
         logger.debug("Parsed UPB configuration:");
         logger.debug("Serial port: {}", port);
-        logger.debug("UPB Network: {}", network);
+        logger.debug("UPB Network: {}", network & 0xff);
 
     }
 
@@ -261,19 +261,22 @@ public class UPBBinding extends AbstractActiveBinding<UPBBindingProvider>impleme
     @Override
     public void messageReceived(UPBMessage message) {
         if (message.getType() == Type.MESSAGE_REPORT) {
-            String itemName = getItemName(message.getSource(), message.getControlWord().isLink());
-            UPBBindingConfig config = getConfig(itemName);
+            String sourceName = getItemName(message.getSource(), false);
+            String destinationName = getItemName(message.getDestination(), message.getControlWord().isLink());
+            UPBBindingConfig sourceConfig = getConfig(sourceName);
+            UPBBindingConfig destinationConfig = getConfig(destinationName);
+
+            String itemName = isValidId(message.getDestination()) ? destinationName : sourceName;
+            UPBBindingConfig config = isValidId(message.getDestination()) ? destinationConfig : sourceConfig;
 
             if (itemName != null && config != null) {
                 State newState = null;
+                byte level = 100;
 
                 switch (message.getCommand()) {
-                    case ACTIVATE:
-                    case DEACTIVATE:
                     case GOTO:
                     case DEVICE_STATE:
-
-                        byte level = 100;
+                    case ACTIVATE:
 
                         if (message.getArguments() != null && message.getArguments().length > 0) {
                             level = message.getArguments()[0];
@@ -281,13 +284,18 @@ public class UPBBinding extends AbstractActiveBinding<UPBBindingProvider>impleme
                             level = (byte) (message.getCommand() == UPBMessage.Command.ACTIVATE ? 100 : 0);
                         }
 
-                        if (level >= 100 || (level > 0 && !config.isDimmable())) {
+                        // Links will send FF (-1) for their level.
+                        if (level == -1 || level >= 100 || (level > 0 && !config.isDimmable())) {
                             newState = OnOffType.ON;
-                        } else if (level <= 0) {
+                        } else if (level == 0) {
                             newState = OnOffType.OFF;
                         } else {
                             newState = new PercentType(level);
                         }
+                        break;
+                    case DEACTIVATE:
+                        newState = OnOffType.OFF;
+                        break;
                     default:
                         break;
                 }
@@ -298,8 +306,12 @@ public class UPBBinding extends AbstractActiveBinding<UPBBindingProvider>impleme
                 }
             } else {
                 logger.debug("Received message for unknown {} with id {}.",
-                        message.getControlWord().isLink() ? "Link" : "Device", message.getDestination());
+                        message.getControlWord().isLink() ? "Link" : "Device", message.getDestination() & 0xff);
             }
         }
+    }
+
+    private boolean isValidId(byte id) {
+        return id != 0 && id != -1;
     }
 }

@@ -15,68 +15,68 @@ import org.openhab.core.binding.BindingConfig;
 
 /**
  * This is a helper class holding binding specific configuration details.
- * 
+ *
  * @author cvanorman
  * @since 1.8.0-SNAPSHOT
  */
 public class UPBBindingConfig implements BindingConfig {
-	private Byte id;
-	private boolean dimmable;
-	private boolean link;
-	private Map<String, String> properties = new HashMap<>();
+    private Byte id;
+    private boolean dimmable;
+    private boolean link;
+    private Map<String, String> properties = new HashMap<>();
 
-	/**
-	 * Instantiate a new UPBBindingConfig
-	 * 
-	 * @param properties
-	 */
-	public UPBBindingConfig(String[] properties, boolean dimmable) {
-		this.dimmable = dimmable;
-		for (String s : properties) {
-			String[] entry = s.split("=");
+    /**
+     * Instantiate a new UPBBindingConfig
+     * 
+     * @param properties
+     */
+    public UPBBindingConfig(String[] properties, boolean dimmable) {
+        this.dimmable = dimmable;
+        for (String s : properties) {
+            String[] entry = s.split("=");
 
-			if (entry.length == 2) {
-				setProperty(entry[0], entry[1]);
-			}
-		}
-	}
+            if (entry.length == 2) {
+                setProperty(entry[0], entry[1]);
+            }
+        }
+    }
 
-	/**
-	 * @return the id
-	 */
-	public Byte getId() {
-		return id;
-	}
+    /**
+     * @return the id
+     */
+    public Byte getId() {
+        return id;
+    }
 
-	/**
-	 * @return the request property or null if it is not specified.
-	 */
-	public String getProperty(String property) {
-		return properties.get(property);
-	}
+    /**
+     * @return the request property or null if it is not specified.
+     */
+    public String getProperty(String property) {
+        return properties.get(property);
+    }
 
-	/**
-	 * @return the link
-	 */
-	public boolean isLink() {
-		return link;
-	}
+    /**
+     * @return the link
+     */
+    public boolean isLink() {
+        return link;
+    }
 
-	/**
-	 * @return the dimmable
-	 */
-	public boolean isDimmable() {
-		return dimmable;
-	}
+    /**
+     * @return the dimmable
+     */
+    public boolean isDimmable() {
+        return dimmable;
+    }
 
-	private void setProperty(String prop, String value) {
+    private void setProperty(String prop, String value) {
 
-		if ("id".equals(prop)) {
-			this.id = Byte.valueOf(value);
-		} else if ("link".equals(prop)) {
-			this.link = Boolean.valueOf(value);
-		} else {
-			properties.put(prop, value);
-		}
-	}
+        if ("id".equals(prop)) {
+            this.id = Integer.valueOf(value).byteValue();
+        } else if ("link".equals(prop)) {
+            this.link = Boolean.valueOf(value);
+        } else {
+            properties.put(prop, value);
+        }
+    }
 }
