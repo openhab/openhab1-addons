@@ -22,6 +22,9 @@ import org.openhab.binding.knx.internal.connection.KNXConnection;
 import org.openhab.binding.knx.internal.connection.KNXConnectionListener;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -34,9 +37,10 @@ import tuwien.auto.calimero.GroupAddress;
 import tuwien.auto.calimero.Settings;
 import tuwien.auto.calimero.datapoint.Datapoint;
 import tuwien.auto.calimero.exception.KNXException;
+import tuwien.auto.calimero.exception.KNXTimeoutException;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessEvent;
-import tuwien.auto.calimero.process.ProcessListener;
+import tuwien.auto.calimero.process.ProcessListenerEx;
 
 /**
  * This is the central class that takes care of the event exchange between openHAB and KNX.
@@ -50,7 +54,7 @@ import tuwien.auto.calimero.process.ProcessListener;
  * @since 0.3.0
  *
  */
-public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements ProcessListener, KNXConnectionListener {
+public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements KNXConnectionListener {
 
     private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
@@ -66,23 +70,35 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
 
     private boolean mKNXConnectionEstablished;
 
-    public void activate(ComponentContext componentContext) {
-        logger.debug("Calimero library version {}", Settings.getLibraryVersion());
-        logger.trace("KNXBinding: activating");
-        KNXConnection.addConnectionListener(this);
-        mKNXBusReaderScheduler.start();
+    private ItemRegistry itemRegistry;
 
+    public void activate(ComponentContext componentContext) {
+        logger.debug("KNXBinding: activating, calimero library version {}", Settings.getLibraryVersion());
+        KNXConnection.addConnectionListener(this);
+        KNXConnection.addProcessListenerEx(getProcessListenerEx());
+        mKNXBusReaderScheduler.start();
+        KNXConnection.bundleActivated = true;
     }
 
     public void deactivate(ComponentContext componentContext) {
-        logger.trace("KNXBinding: deactivating");
-        KNXConnection.removeConnectionListener(this);
+        logger.debug("KNXBinding: deactivating");
+        KNXConnection.removeProcessListenerEx();
         for (KNXBindingProvider provider : providers) {
             provider.removeBindingChangeListener(this);
         }
         providers.clear();
         mKNXBusReaderScheduler.stop();
         KNXConnection.disconnect();
+    }
+
+    public void setItemRegistry(ItemRegistry itemRegistry) {
+        logger.debug("KNX:: setItemRegistry");
+        this.itemRegistry = itemRegistry;
+    }
+
+    public void unsetItemRegistry(ItemRegistry itemRegistry) {
+        logger.debug("KNX:: unsetItemRegistry");
+        this.itemRegistry = null;
     }
 
     public void addKNXTypeMapper(KNXTypeMapper typeMapper) {
@@ -142,6 +158,11 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
                     try {
                         pc.write(datapoint, toDPTValue(value, datapoint.getDPT()));
                         logger.debug("Wrote value '{}' to datapoint '{}'", value, datapoint);
+                    } catch (KNXTimeoutException e) {
+                        // Missing confirmation reply from TUNNELING connections are ignored here.
+                        // ROUTING connections are by default unconfirmed.
+                        logger.warn("KNXTimeoutException - set 'busaddr' in config to '0.0.0' to solve! Message: ",
+                                e.getMessage());
                     } catch (KNXException e) {
                         logger.warn(
                                 "Value '{}' could not be sent to the KNX bus using datapoint '{}' - retrying one time: {}",
@@ -151,6 +172,11 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
                             pc = KNXConnection.getCommunicator();
                             pc.write(datapoint, toDPTValue(value, datapoint.getDPT()));
                             logger.debug("Wrote value '{}' to datapoint '{}' on second try", value, datapoint);
+                        } catch (KNXTimeoutException e1) {
+                            // Missing confirmation reply from TUNNELING connections are ignored here.
+                            // ROUTING connections are by default unconfirmed.
+                            logger.warn("KNXTimeoutException - set 'busaddr' in config to '0.0.0' to solve! Message: ",
+                                    e1.getMessage());
                         } catch (KNXException e1) {
                             logger.error(
                                     "Value '{}' could not be sent to the KNX bus using datapoint '{}' - giving up after second try: {}",
@@ -173,9 +199,9 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
      *
      * @param e the {@link ProcessEvent} to handle.
      */
-    @Override
-    public void groupWrite(ProcessEvent e) {
-        logger.debug("Received groupWrite Event.");
+    private void onGroupEvent(ProcessEvent e) {
+        logger.debug("onGroupEvent: Event ASDU:'{}' Destination:'{}' SourceAddr:'{}' ", e.getASDU(),
+                e.getDestination(), e.getSourceAddr());
         if (!(KNXConnection.getIgnoreLocalSourceEvents()
                 && e.getSourceAddr().toString().equalsIgnoreCase(KNXConnection.getLocalSourceAddr()))) {
             readFromKNX(e);
@@ -183,16 +209,6 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
             logger.warn("Ignoring local Event, received from my local Source address {} for Group address {}.",
                     e.getSourceAddr().toString(), e.getDestination().toString());
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see tuwien.auto.calimero.process.ProcessListener#detached(tuwien.auto.calimero.DetachEvent)
-     */
-    @Override
-    public void detached(DetachEvent e) {
-        logger.error("Received detach Event.");
     }
 
     /**
@@ -257,11 +273,11 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
         }
     }
 
-    protected void addBindingProvider(KNXBindingProvider bindingProvider) {
+    public void addBindingProvider(KNXBindingProvider bindingProvider) {
         super.addBindingProvider(bindingProvider);
     }
 
-    protected void removeBindingProvider(KNXBindingProvider bindingProvider) {
+    public void removeBindingProvider(KNXBindingProvider bindingProvider) {
         super.removeBindingProvider(bindingProvider);
     }
 
@@ -355,6 +371,74 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
         logger.trace("connectionLost() msg received.");
         mKNXConnectionEstablished = false;
         mKNXBusReaderScheduler.clear();
+    }
+
+    private void writeKNXReadResponse(ProcessEvent e) {
+        logger.debug("writeKNXReadRequest ");
+        if (itemRegistry != null) {
+            for (KNXBindingProvider provider : providers) {
+                for (String itemName : provider.getListeningItemNames(e.getDestination())) {
+                    logger.debug("Found ReadCommand for Item '{}' Items.size '{}'", itemName,
+                            itemRegistry.getItems().size());
+                    Item item = null;
+                    try {
+                        item = itemRegistry.getItem(itemName);
+                    } catch (ItemNotFoundException e2) {
+                        logger.debug("Item not found for '{}'", itemName);
+                    }
+                    if (item != null && item.getState().toString() != "Uninitialized") {
+                        Iterable<Datapoint> datapoints = getDatapoints(itemName, e.getDestination());
+                        if (datapoints != null) {
+                            for (Datapoint datapoint : datapoints) {
+                                KNXConnection.writeReadResponse(datapoint, item.getState().toString());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    private ProcessListenerEx getProcessListenerEx() {
+        ProcessListenerEx processListenerEx = new ProcessListenerEx() {
+
+            @Override
+            public void groupWrite(final ProcessEvent e) {
+                logger.debug("KNX:: groupWrite '{}'", e.getDestination());
+                onGroupEvent(e);
+            }
+
+            @Override
+            public void groupReadResponse(final ProcessEvent e) {
+                logger.debug("KNX:: groupReadResponse Destination '{}' Source '{}' localSource '{}'",
+                        e.getDestination(), e.getSourceAddr(), KNXConnection.getLocalSourceAddr());
+                onGroupEvent(e);
+            }
+
+            @Override
+            public void groupReadRequest(final ProcessEvent e) {
+                logger.debug("KNX:: groupReadRequest Destination '{}' Source '{}' localSource '{}'", e.getDestination(),
+                        e.getSourceAddr(), KNXConnection.getLocalSourceAddr());
+                // only known as responding addresses get an answer
+                for (KNXBindingProvider knxProvider : providers) {
+                    for (Datapoint datapoint : knxProvider.getRespondingDatapoints()) {
+                        logger.debug("KNX:: groupReadRequest is responding '{}' = '{}'", datapoint.getMainAddress(),
+                                e.getDestination());
+                        if (datapoint.getMainAddress().getRawAddress() == e.getDestination().getRawAddress()) {
+                            logger.debug("KNX:: groupReadRequest DO");
+                            writeKNXReadResponse(e);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void detached(final DetachEvent e) {
+                logger.debug("KNX:: detached");
+            }
+        };
+        return processListenerEx;
     }
 
     /**
