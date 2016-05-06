@@ -207,7 +207,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider> implemen
 	private EMBindingConfig findConfig(EMType type, String address, Datapoint datapoint) {
 		EMBindingConfig emConfig = null;
 		for (EMBindingProvider provider : this.providers) {
-			emConfig = provider.getConfigByTypeAndAddressAndDatapoint(type, address, Datapoint.CUMULATED_VALUE);
+			emConfig = provider.getConfigByTypeAndAddressAndDatapoint(type, address, datapoint);
 			if (emConfig != null) {
 				return emConfig;
 			}
