@@ -43,7 +43,7 @@ public class TCPConnector implements DSCAlarmConnector {
 	private OutputStreamWriter tcpOutput = null;
 	private BufferedReader tcpInput = null;
 	private TCPListener TCPListener = null;
-	private DSCAlarmConnectorType connectorType = DSCAlarmConnectorType.ENVISALINK;
+	private DSCAlarmConnectorType connectorType = DSCAlarmConnectorType.TCP;
 	private static boolean connected = false;
 	private static List<DSCAlarmEventListener> _listeners = new ArrayList<DSCAlarmEventListener>();
 

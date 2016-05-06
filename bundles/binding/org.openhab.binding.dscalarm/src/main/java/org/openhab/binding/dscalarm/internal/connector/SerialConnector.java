@@ -48,7 +48,7 @@ public class SerialConnector implements DSCAlarmConnector, SerialPortEventListen
 	private SerialPort serialPort = null;
 	private OutputStreamWriter serialOutput = null;
 	private BufferedReader serialInput = null;
-	private DSCAlarmConnectorType connectorType = DSCAlarmConnectorType.IT100;
+	private DSCAlarmConnectorType connectorType = DSCAlarmConnectorType.SERIAL;
 	private static boolean connected = false;
 	private static List<DSCAlarmEventListener> _listeners = new ArrayList<DSCAlarmEventListener>();
 
