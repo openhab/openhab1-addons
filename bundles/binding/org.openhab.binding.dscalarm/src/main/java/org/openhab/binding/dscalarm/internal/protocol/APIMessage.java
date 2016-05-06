@@ -44,7 +44,7 @@ public class APIMessage {
 
     /**
      * Constructor. Creates a new instance of the APIMessage class.
-     * 
+     *
      * @param message - the message received
      */
     public APIMessage(String message) {
@@ -679,7 +679,7 @@ public class APIMessage {
 
     /**
      * Returns a string representation of a APIMessage
-     * 
+     *
      * @return APIMessage string
      */
     @Override
@@ -738,7 +738,7 @@ public class APIMessage {
 
     /**
      * Returns the modified API message received
-     * 
+     *
      * @return apiMessage
      */
     public String getAPIMessage() {
@@ -747,7 +747,7 @@ public class APIMessage {
 
     /**
      * Returns the API Code extracted from the API message
-     * 
+     *
      * @return apiCodeReceived
      */
     public String getAPICode() {
@@ -756,7 +756,7 @@ public class APIMessage {
 
     /**
      * Returns the name of the API message
-     * 
+     *
      * @return apiName
      */
     public String getAPIName() {
@@ -765,7 +765,7 @@ public class APIMessage {
 
     /**
      * Returns the description of the API message
-     * 
+     *
      * @return apiDescription
      */
     public String getAPIDescription() {
@@ -774,7 +774,7 @@ public class APIMessage {
 
     /**
      * Returns the API Message Type
-     * 
+     *
      * @return apiMessage
      */
     public APIMessageType getAPIMessageType() {
@@ -783,7 +783,7 @@ public class APIMessage {
 
     /**
      * Returns the partition information extracted from the API message
-     * 
+     *
      * @return partition
      */
     public int getPartition() {
@@ -792,7 +792,7 @@ public class APIMessage {
 
     /**
      * Returns the zone information extracted from the API message
-     * 
+     *
      * @return zone
      */
     public int getZone() {
@@ -801,7 +801,7 @@ public class APIMessage {
 
     /**
      * Returns the data extracted from the API message
-     * 
+     *
      * @return apiData
      */
     public String getAPIData() {
@@ -810,7 +810,7 @@ public class APIMessage {
 
     /**
      * Returns the partition mode information extracted from the API message
-     * 
+     *
      * @return mode
      */
     public String getMode() {
@@ -819,7 +819,7 @@ public class APIMessage {
 
     /**
      * Returns the user code information extracted from the API message
-     * 
+     *
      * @return user
      */
     public String getUser() {
@@ -828,7 +828,7 @@ public class APIMessage {
 
     /**
      * Returns the error string from the API message
-     * 
+     *
      * @return user
      */
     public String getError() {
@@ -837,7 +837,7 @@ public class APIMessage {
 
     /**
      * Returns the time stamp if available
-     * 
+     *
      * @return timeStamp
      */
     public String getTimeStamp() {
