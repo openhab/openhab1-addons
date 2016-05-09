@@ -665,6 +665,15 @@
             <Label lang="en">On/Off Relay Switch</Label>
             <ConfigFile>ge/ZW4005.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>4952</Type>
+                <Id>3033</Id>
+            </Reference>
+            <Model>12727</Model>
+            <Label lang="en">GE 12727 Z-Wave Wireless Lighting Control Smart Toggle Switch</Label>
+            <ConfigFile>ge/12727.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0064</Id>
