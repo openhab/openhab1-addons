@@ -45,8 +45,6 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
     private final static Logger log = LoggerFactory.getLogger(CULSerialHandlerImpl.class);
 
     private SerialPort serialPort;
-    private InputStream is;
-    private OutputStream os;
 
     private BufferedWriter bw;
     private BufferedReader br;
@@ -91,8 +89,8 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
 
             serialPort.setSerialPortParams(config.getBaudRate(), SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
                     config.getParityMode());
-            is = serialPort.getInputStream();
-            os = serialPort.getOutputStream();
+            InputStream is = serialPort.getInputStream();
+            OutputStream os = serialPort.getOutputStream();
             br = new BufferedReader(new InputStreamReader(is));
             bw = new BufferedWriter(new OutputStreamWriter(os));
 
