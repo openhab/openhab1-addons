@@ -1338,6 +1338,15 @@
         <Id>0109</Id>
         <Product>
             <Reference>
+                <Type>200D</Type>
+                <Id>0D03</Id>
+            </Reference>
+            <Model>ZW4101</Model>
+            <Label lang="en">Drapery controller (up/stop/down)</Label>
+            <ConfigFile>vision/zw4101.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>2021</Type>
                 <Id>2101</Id>
             </Reference>
