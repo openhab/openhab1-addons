@@ -1334,9 +1334,18 @@
         </Product>
     </Manufacturer>
     <Manufacturer>
-        <Id>0109</Id>
         <Name>Vision Security</Name>
-            <Product>
+        <Id>0109</Id>
+        <Product>
+            <Reference>
+                <Type>2021</Type>
+                <Id>2101</Id>
+            </Reference>
+            <Model>ZSE40</Model>
+            <Label lang="en">Zooz 4-in-one motion/temperature/humidity/luminance sensor</Label>
+            <ConfigFile>vision/zse40.xml</ConfigFile>
+        </Product>
+        <Product>
             <Reference>
                 <Type>2003</Type>
                 <Id>0302</Id>
