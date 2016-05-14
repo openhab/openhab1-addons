@@ -149,4 +149,15 @@
 
     </Configuration>
 
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Receive updates</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
 </Product>
