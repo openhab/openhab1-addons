@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Operator;
@@ -240,6 +241,9 @@ public abstract class TwoItemIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testQueryDimmerUsingNameAndStartAndEndWithGTOperator() {
+        // Skip for subclasses which have null "state between"
+        Assume.assumeTrue(getQueryItemStateBetween() != null);
+
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOperator(Operator.GT);
         criteria.setState(getQueryItemStateBetween());

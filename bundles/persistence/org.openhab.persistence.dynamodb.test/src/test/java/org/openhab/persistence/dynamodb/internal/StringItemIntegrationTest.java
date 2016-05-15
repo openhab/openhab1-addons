@@ -3,23 +3,21 @@ package org.openhab.persistence.dynamodb.internal;
 import java.util.Date;
 
 import org.junit.BeforeClass;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 
-public class DimmerItemIntegrationTest extends TwoItemIntegrationTest {
+public class StringItemIntegrationTest extends TwoItemIntegrationTest {
 
-    private static final String name = "dimmer";
-    private static final PercentType state1 = new PercentType(66);
-    private static final PercentType state2 = new PercentType(68);
-    private static final PercentType stateBetween = new PercentType(67);
+    private static final String name = "string";
+    private static final StringType state1 = new StringType("b001");
+    private static final StringType state2 = new StringType("c002");
+    private static final StringType stateBetween = new StringType("b001");
 
     @BeforeClass
     public static void storeData() throws InterruptedException {
-        DimmerItem item = (DimmerItem) items.get(name);
-
+        StringItem item = (StringItem) items.get(name);
         item.setState(state1);
-
         beforeStore = new Date();
         Thread.sleep(10);
         service.store(item);

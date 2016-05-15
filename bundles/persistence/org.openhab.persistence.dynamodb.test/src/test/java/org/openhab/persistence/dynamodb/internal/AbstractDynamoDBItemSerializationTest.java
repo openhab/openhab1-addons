@@ -54,7 +54,12 @@ public class AbstractDynamoDBItemSerializationTest {
 
         assertEquals("item1", dbItem.getName());
         assertEquals(date, dbItem.getTime());
-        assertEquals(expectedState, dbItem.getState());
+        // For simplicity we compare strings for all expect big decimals
+        if (expectedState instanceof BigDecimal) {
+            assertEquals(DynamoDBBigDecimalItem.loseDigits(((BigDecimal) expectedState)), ((dbItem.getState())));
+        } else {
+            assertEquals(expectedState.toString(), dbItem.getState().toString());
+        }
         return dbItem;
     }
 
@@ -65,8 +70,13 @@ public class AbstractDynamoDBItemSerializationTest {
         assertEquals("item1", historicItem.getName());
         assertEquals(date, historicItem.getTimestamp());
         assertEquals(expectedState.getClass(), historicItem.getState().getClass());
-        // For simplicity we compare strings
-        assertEquals(expectedState.toString(), historicItem.getState().toString());
+        // For simplicity we compare strings for all expect big decimals
+        if (expectedState instanceof DecimalType) {
+            assertEquals(DynamoDBBigDecimalItem.loseDigits(((DecimalType) expectedState).toBigDecimal()),
+                    DynamoDBBigDecimalItem.loseDigits(((DecimalType) historicItem.getState()).toBigDecimal()));
+        } else {
+            assertEquals(expectedState.toString(), historicItem.getState().toString());
+        }
         return historicItem;
     }
 

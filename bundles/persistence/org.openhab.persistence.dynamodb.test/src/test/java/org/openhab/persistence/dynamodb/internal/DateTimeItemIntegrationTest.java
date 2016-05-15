@@ -3,20 +3,20 @@ package org.openhab.persistence.dynamodb.internal;
 import java.util.Date;
 
 import org.junit.BeforeClass;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.items.DateTimeItem;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.types.State;
 
-public class DimmerItemIntegrationTest extends TwoItemIntegrationTest {
+public class DateTimeItemIntegrationTest extends TwoItemIntegrationTest {
 
-    private static final String name = "dimmer";
-    private static final PercentType state1 = new PercentType(66);
-    private static final PercentType state2 = new PercentType(68);
-    private static final PercentType stateBetween = new PercentType(67);
+    private static final String name = "datetime";
+    private static final DateTimeType state1 = new DateTimeType("2016-05-15T10:00:00Z");
+    private static final DateTimeType state2 = new DateTimeType("2016-05-16T10:00:00.123Z");
+    private static final DateTimeType stateBetween = new DateTimeType("2016-05-15T14:00:00Z");;
 
     @BeforeClass
     public static void storeData() throws InterruptedException {
-        DimmerItem item = (DimmerItem) items.get(name);
+        DateTimeItem item = (DateTimeItem) items.get(name);
 
         item.setState(state1);
 

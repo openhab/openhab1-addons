@@ -1,25 +1,26 @@
 package org.openhab.persistence.dynamodb.internal;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 
 import org.junit.BeforeClass;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
+import org.openhab.library.tel.items.CallItem;
+import org.openhab.library.tel.types.CallType;
 
-public class DimmerItemIntegrationTest extends TwoItemIntegrationTest {
+public class CallItemIntegrationTest extends TwoItemIntegrationTest {
 
-    private static final String name = "dimmer";
-    private static final PercentType state1 = new PercentType(66);
-    private static final PercentType state2 = new PercentType(68);
-    private static final PercentType stateBetween = new PercentType(67);
+    private static final String name = "call";
+    // values are encoded as dest##orig, ordering goes wrt strings
+    private static final CallType state1 = new CallType("orig1", "dest1");
+    private static final CallType state2 = new CallType("orig1", "dest3");
+    private static final CallType stateBetween = new CallType("orig2", "dest2");
 
     @BeforeClass
     public static void storeData() throws InterruptedException {
-        DimmerItem item = (DimmerItem) items.get(name);
-
+        CallItem item = (CallItem) items.get(name);
         item.setState(state1);
-
         beforeStore = new Date();
         Thread.sleep(10);
         service.store(item);
@@ -52,6 +53,12 @@ public class DimmerItemIntegrationTest extends TwoItemIntegrationTest {
     @Override
     protected State getQueryItemStateBetween() {
         return stateBetween;
+    }
+
+    @Override
+    protected void assertStateEquals(State expected, State actual) {
+        // Since CallType.equals is broken, toString is used as workaround
+        assertEquals(expected.toString(), actual.toString());
     }
 
 }

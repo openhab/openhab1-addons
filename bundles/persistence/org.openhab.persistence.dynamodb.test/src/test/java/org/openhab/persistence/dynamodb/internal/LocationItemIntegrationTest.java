@@ -3,23 +3,25 @@ package org.openhab.persistence.dynamodb.internal;
 import java.util.Date;
 
 import org.junit.BeforeClass;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.items.LocationItem;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.PointType;
 import org.openhab.core.types.State;
 
-public class DimmerItemIntegrationTest extends TwoItemIntegrationTest {
+public class LocationItemIntegrationTest extends TwoItemIntegrationTest {
 
-    private static final String name = "dimmer";
-    private static final PercentType state1 = new PercentType(66);
-    private static final PercentType state2 = new PercentType(68);
-    private static final PercentType stateBetween = new PercentType(67);
+    private static final String name = "location";
+    // values are encoded as lat,lon[,alt] , ordering goes wrt strings
+    private static final PointType state1 = new PointType(
+            new DecimalType("60.012033100120453345435345345345346365434630300230230032020393149"), new DecimalType(30.),
+            new DecimalType(3.0));
+    private static final PointType state2 = new PointType(new DecimalType(61.0), new DecimalType(30.));
+    private static final PointType stateBetween = new PointType(new DecimalType(60.5), new DecimalType(30.));
 
     @BeforeClass
     public static void storeData() throws InterruptedException {
-        DimmerItem item = (DimmerItem) items.get(name);
-
+        LocationItem item = (LocationItem) items.get(name);
         item.setState(state1);
-
         beforeStore = new Date();
         Thread.sleep(10);
         service.store(item);

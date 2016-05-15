@@ -6,25 +6,22 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.junit.BeforeClass;
-import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 
-public class NumberItemIntegrationTest extends TwoItemIntegrationTest {
+public class RollershutterItemIntegrationTest extends TwoItemIntegrationTest {
 
-    private static final String name = "number";
-    // On purpose we have super accurate number here (testing limits of aws)
-    private static final DecimalType state1 = new DecimalType(new BigDecimal(
-            "-3.193490838904389298049802398048923849032809483209483209482309840239840932840932849083094809483"));
-    private static final DecimalType state2 = new DecimalType(600.9123);
-    private static final DecimalType stateBetween = new DecimalType(500);
+    private static final String name = "rollershutter";
+    private static final PercentType state1 = PercentType.ZERO;
+    private static final PercentType state2 = new PercentType("72.938289428989489389329834898929892439842399483498");
+    private static final PercentType stateBetween = new PercentType(66); // no such that exists
 
     @BeforeClass
     public static void storeData() throws InterruptedException {
-        NumberItem item = (NumberItem) items.get(name);
-
+        RollershutterItem item = (RollershutterItem) items.get(name);
         item.setState(state1);
-
         beforeStore = new Date();
         Thread.sleep(10);
         service.store(item);
@@ -69,5 +66,4 @@ public class NumberItemIntegrationTest extends TwoItemIntegrationTest {
         assertEquals(DynamoDBBigDecimalItem.loseDigits(expectedDecimal),
                 DynamoDBBigDecimalItem.loseDigits(actualDecimal));
     }
-
 }

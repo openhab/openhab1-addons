@@ -10,6 +10,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.8.1"
 Import-Package: com.google.common.collect,
  org.apache.commons.io,
+ org.eclipse.smarthome.core.library.types,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.library.tel.types
