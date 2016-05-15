@@ -327,35 +327,21 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
      * @return
      */
     private DynamoDBQueryExpression<DynamoDBItem<?>> createQueryExpression(FilterCriteria filter) {
-        boolean hasBegin = filter.getBeginDate() != null;
-        boolean hasEnd = filter.getEndDate() != null;
-
-        final Condition timeCondition;
-        if (!hasBegin && !hasEnd) {
-            timeCondition = null;
-        } else if (!hasBegin && hasEnd) {
-            timeCondition = new Condition().withComparisonOperator(ComparisonOperator.LE).withAttributeValueList(
-                    new AttributeValue().withS(AbstractDynamoDBItem.DATEFORMATTER.format(filter.getEndDate())));
-        } else if (hasBegin && !hasEnd) {
-            timeCondition = new Condition().withComparisonOperator(ComparisonOperator.GE).withAttributeValueList(
-                    new AttributeValue().withS(AbstractDynamoDBItem.DATEFORMATTER.format(filter.getBeginDate())));
-        } else {
-            timeCondition = new Condition().withComparisonOperator(ComparisonOperator.BETWEEN).withAttributeValueList(
-                    new AttributeValue().withS(AbstractDynamoDBItem.DATEFORMATTER.format(filter.getBeginDate())),
-                    new AttributeValue().withS(AbstractDynamoDBItem.DATEFORMATTER.format(filter.getEndDate())));
-        }
-
-        boolean scanIndexForward = filter.getOrdering() == Ordering.ASCENDING;
-        DynamoDBStringItem itemHash = new DynamoDBStringItem(filter.getItemName(), null, null);
+        final DynamoDBStringItem itemHash = new DynamoDBStringItem(filter.getItemName(), null, null);
         final DynamoDBQueryExpression<DynamoDBItem<?>> queryExpression = new DynamoDBQueryExpression<DynamoDBItem<?>>()
-                .withHashKeyValues(itemHash).withScanIndexForward(scanIndexForward).withLimit(filter.getPageSize());
-        if (timeCondition != null) {
-            queryExpression.setRangeKeyConditions(
-                    Collections.singletonMap(DynamoDBItem.ATTRIBUTE_NAME_TIMEUTC, timeCondition));
-        }
+                .withHashKeyValues(itemHash).withScanIndexForward(filter.getOrdering() == Ordering.ASCENDING)
+                .withLimit(filter.getPageSize());
+        Condition timeFilter = maybeAddTimeFilter(queryExpression, filter);
+        maybeAddStateFilter(filter, queryExpression);
+        logger.debug("Querying: {} with {}", filter.getItemName(), timeFilter);
+        return queryExpression;
+    }
+
+    private void maybeAddStateFilter(FilterCriteria filter,
+            final DynamoDBQueryExpression<DynamoDBItem<?>> queryExpression) {
         if (filter.getOperator() != null && filter.getState() != null) {
             // Convert filter's state to DynamoDBItem in order get suitable string representation for the state
-            DynamoDBItem<?> filterState = AbstractDynamoDBItem.fromState(filter.getItemName(), filter.getState(),
+            final DynamoDBItem<?> filterState = AbstractDynamoDBItem.fromState(filter.getItemName(), filter.getState(),
                     new Date());
             queryExpression.setFilterExpression(String.format("%s %s :opstate", DynamoDBItem.ATTRIBUTE_NAME_ITEMSTATE,
                     operatorAsString(filter.getOperator())));
@@ -376,11 +362,45 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             });
 
         }
-
-        logger.debug("Querying: {} with {}", filter.getItemName(), timeCondition);
-        return queryExpression;
     }
 
+    private Condition maybeAddTimeFilter(final DynamoDBQueryExpression<DynamoDBItem<?>> queryExpression,
+            final FilterCriteria filter) {
+        final Condition timeCondition = constructTimeCondition(filter);
+        if (timeCondition != null) {
+            queryExpression.setRangeKeyConditions(
+                    Collections.singletonMap(DynamoDBItem.ATTRIBUTE_NAME_TIMEUTC, timeCondition));
+        }
+        return timeCondition;
+    }
+
+    private Condition constructTimeCondition(FilterCriteria filter) {
+        boolean hasBegin = filter.getBeginDate() != null;
+        boolean hasEnd = filter.getEndDate() != null;
+
+        final Condition timeCondition;
+        if (!hasBegin && !hasEnd) {
+            timeCondition = null;
+        } else if (!hasBegin && hasEnd) {
+            timeCondition = new Condition().withComparisonOperator(ComparisonOperator.LE).withAttributeValueList(
+                    new AttributeValue().withS(AbstractDynamoDBItem.DATEFORMATTER.format(filter.getEndDate())));
+        } else if (hasBegin && !hasEnd) {
+            timeCondition = new Condition().withComparisonOperator(ComparisonOperator.GE).withAttributeValueList(
+                    new AttributeValue().withS(AbstractDynamoDBItem.DATEFORMATTER.format(filter.getBeginDate())));
+        } else {
+            timeCondition = new Condition().withComparisonOperator(ComparisonOperator.BETWEEN).withAttributeValueList(
+                    new AttributeValue().withS(AbstractDynamoDBItem.DATEFORMATTER.format(filter.getBeginDate())),
+                    new AttributeValue().withS(AbstractDynamoDBItem.DATEFORMATTER.format(filter.getEndDate())));
+        }
+        return timeCondition;
+    }
+
+    /**
+     * Convert op to string suitable for dynamodb filter expression
+     *
+     * @param op
+     * @return
+     */
     private static String operatorAsString(Operator op) {
         switch (op) {
             case EQ:

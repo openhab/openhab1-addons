@@ -14,6 +14,10 @@ import com.amazonaws.auth.profile.ProfilesConfigFile;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 
+/**
+ * Configuration for DynamoDB connections
+ *
+ */
 public class DynamoDBConfig {
     public static final String DEFAULT_TABLE_PREFIX = "openhab-";
     public static final boolean DEFAULT_CREATE_TABLE_ON_DEMAND = true;

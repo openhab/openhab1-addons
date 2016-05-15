@@ -9,11 +9,11 @@ public interface DynamoDBItem<T> {
 
     static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
-    String ATTRIBUTE_NAME_TIMEUTC = "timeutc";
+    static final String ATTRIBUTE_NAME_TIMEUTC = "timeutc";
 
-    String ATTRIBUTE_NAME_ITEMNAME = "itemname";
+    static final String ATTRIBUTE_NAME_ITEMNAME = "itemname";
 
-    String ATTRIBUTE_NAME_ITEMSTATE = "itemstate";
+    static final String ATTRIBUTE_NAME_ITEMSTATE = "itemstate";
 
     /**
      * Convert this AbstractDynamoItem as HistoricItem.

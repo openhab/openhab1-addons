@@ -15,6 +15,10 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 
+/**
+ * DynamoDBItem for items that can be serialized as DynamoDB string
+ *
+ */
 @DynamoDBDocument
 public class DynamoDBStringItem extends AbstractDynamoDBItem<String> {
 

@@ -9,6 +9,10 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 
+/***
+ * Shallow wrapper for Dynamo DB wrappers
+ *
+ */
 public class DynamoDBClient {
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBClient.class);
     private DynamoDB dynamo;
