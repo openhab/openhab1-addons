@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>PAT02-1A</Model>
+	<Label lang="en">Flood Multisensor</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>	<!-- COMMAND_CLASS_BASIC -->
+		<Class><id>0x30</id></Class>	<!-- COMMAND_CLASS_SENSOR_BINARY_V2 -->
+		<Class><id>0x31</id></Class>	<!-- COMMAND_CLASS_SENSOR_MULTILEVEL_V5 -->
+		<Class><id>0x59</id></Class>	<!-- COMMAND_CLASS_ASSOCIATION_GRP_INFO -->
+		<Class><id>0x5A</id></Class>	<!-- COMMAND_CLASS_DEVICE_RESET_LOCALLY -->
+		<Class><id>0x5E</id></Class>	<!-- COMMAND_CLASS_ZWAVEPLUS_INFO_V2 -->
+		<Class><id>0x70</id></Class>	<!-- COMMAND_CLASS_CONFIGURATION -->
+		<Class><id>0x71</id></Class>	<!-- COMMAND_CLASS_NOTIFICATION_V4 -->
+		<Class><id>0x72</id></Class>	<!-- COMMAND_CLASS_MANUFACTURER_SPECIFIC_V2 --> 
+		<Class><id>0x73</id></Class>	<!-- COMMAND_CLASS_POWERLEVEL -->
+		<Class><id>0x7A</id></Class>	<!-- COMMAND_CLASS_FIRMWARE_UPDATE_MD_V2 -->
+		<Class><id>0x80</id></Class>	<!-- COMMAND_CLASS_BATTERY -->
+		<Class><id>0x84</id></Class>	<!-- COMMAND_CLASS_WAKE_UP_V2 -->
+		<Class><id>0x85</id></Class>	<!-- COMMAND_CLASS_ASSOCIATION_V2-->
+		<Class><id>0x86</id></Class>	<!-- COMMAND_CLASS_VERSION_V2 -->
+		<Class><id>0x8F</id></Class>	<!-- COMMAND_CLASS_MULTI_CMD -->
+		<Class><id>0x98</id></Class>	<!-- COMMAND_CLASS_SECURITY -->
+		<Class><id>0xEF</id></Class>	<!-- COMMAND_CLASS_MARK -->
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Basic Set OFF Level</Label>
+			<Help lang="en"><![CDATA[Setting the BASIC command value.<br/>
+			    When the flood trigger off (0x00), send the BASIC CC to the group 2]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>decimal</Type>
+			<Default>0xFF</Default>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Basic Set ON Level</Label>
+			<Help lang="en"><![CDATA[Setting the BASIC command value.<br/>
+				When the flood trigger on(0xFF), send the BASIC CC to the group 2.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Operation Mode</Label>
+			<Help lang="en"><![CDATA[Parameter to set the Operation Mode.<br/>
+				<ul><li>Bit 0: Disable the Flood function</li>
+				<li>Bit 1: Reserved.</li>
+				<li>Bit 2: Reserved.</li>
+				<li>Bit 3: Set the temperature scale. 0: Fahrenheit, 1:Celsius</li>
+				<li>Bit 4: Reserved.</li>
+				<li>Bit 5: Disable temperature report after event triggered. 1: Disable, 0: Enable</li>
+				<li>Bit 6: Reserved.</li>
+				<li>Bit 7: Reserved.</li></ul>]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>byte</Type>
+			<Default></Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Multi-Sensor Function Switch</Label>
+			<Help lang="en"><![CDATA[Parameter to set the sensor functions.<br/>
+				<ul><li>Bit 0: Reserved.</li>
+				<li>Bit 1: Reserved.</li>
+				<li>Bit 2: Reserved.</li>
+				<li>Bit 3: Reserved.</li>
+				<li>Bit 4: Reserved.</li>
+				<li>Bit 5: Reserved.</li>
+				<li>Bit 6: Disable the humidity report after event triggered. 1: Disable, 0: Enable. Notice: Ignored when Bit 2 is set to 0.</li>
+				<li>Bit 7: Reserved.</li></ul>]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>byte</Type>
+			<Default>12</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Auto Report Battery Time</Label>
+			<Help lang="en"><![CDATA[The interval time for auto reporting the battery level.<br/>
+				<ul><li>0 = Turn off auto report battery.</li>
+				<li>1-127 = Number of ticks. The default value is 12. The tick time can be set by configuration No. 20.</li></ul>]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>byte</Type>
+			<Default>12</Default>
+			<Minimum>1</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Auto Report Temperature Time</Label>
+			<Help lang="en"><![CDATA[The interval time for auto reporting the temperature state.<br/>
+				<ul><li>0 = Turn off auto report temperature.</li>
+				<li>1-127 = Number of ticks. The default value is 12. The tick time can be set by configuration No. 20.</li></ul>]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>byte</Type>
+			<Default>12</Default>
+			<Minimum>1</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Auto Report Humidity Time</Label>
+			<Help lang="en"><![CDATA[The interval time for auto reporting the humidity state.<br/>
+				<ul><li>0 = Turn off auto report temperature.</li>
+				<li>1-127 = Number of ticks. The default value is 12. The tick time can be set by configuration No. 20.</li></ul>]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>byte</Type>
+			<Default>12</Default>
+			<Minimum>1</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Auto Report Flood Time</Label>
+			<Help lang="en"><![CDATA[The interval time for auto reporting the flood state.<br/>
+				<ul><li>0 = Turn off auto report temperature.</li>
+				<li>1-127 = Number of ticks. The default value is 12. The tick time can be set by configuration No. 20.</li></ul>]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>20</Index>
+			<Type>byte</Type>
+			<Default>30</Default>
+			<Minimum>0</Minimum>
+			<Maximum>254</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Auto Report Tick Interval</Label>
+			<Help lang="en"><![CDATA[The interval time for auto report each tick. Setting configuration will affect configuration no. 10, 13, 14 and 15.<br/>
+				<ul><li>0 = Caution: Setting to 0 means turn off all auto report function.</li>
+				<li>1-254 = Caution: The value is unsigned byte.</li></ul>]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>21</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Temperature Differential Report</Label>
+			<Help lang="en"><![CDATA[The temperature differential to report. The unit is Fahrenheit. Enable this function the device will detect every 10 seconds.<br/>
+				<ul><li>0 = means turn off this function.</li></ul>]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>23</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>0</Minimum>
+			<Maximum>60</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Humidity Differential Report</Label>
+			<Help lang="en"><![CDATA[The humidity differential to report. The unit is percentage. Enable this function the device will detect every 10 seconds.<br/>
+				<ul><li>0 = means turn off this function.</li></ul>]]></Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>7</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">Reports</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>7</Maximum>
+			<Label lang="en">Light Control</Label>
+		</Group>
+	</Associations>
+</Product>

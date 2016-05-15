@@ -1,12 +1,11 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.openhab.io.myopenhab.internal;
 
 import java.io.File;
@@ -42,267 +41,278 @@ import org.slf4j.LoggerFactory;
  * This class starts my.openHAB connection service and implements interface to communicate with my.openHAB.
  * It also acts as a persistence service to send commands and updates for selected items to my.openHAB
  * and processes commands for items received from my.openHAB.
- * 
+ *
  * @author Victor Belov
  * @since 1.3.0
  *
  */
 
-public class MyOpenHABServiceImpl implements MyOpenHABService, PersistenceService, ManagedService, ActionService, MyOHClientListener {
+public class MyOpenHABServiceImpl
+        implements MyOpenHABService, PersistenceService, ManagedService, ActionService, MyOHClientListener {
 
-	private static Logger logger = LoggerFactory.getLogger(MyOpenHABServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(MyOpenHABServiceImpl.class);
 
-	public static String myohVersion = "1.7.0.0";
-	private MyOHClient myOHClient;
-	
-	private static final String STATIC_CONTENT_DIR = "webapps" + File.separator + "static";
-	private static final String UUID_FILE_NAME = "uuid";
-	private static final String SECRET_FILE_NAME = "secret";	
-	private static final String VERSION_FILE_NAME = "version";
-	
-	private String mMyOHBaseUrl;
-	private int mLocalPort = 8080;
-	
-	protected ItemUIRegistry mItemUIRegistry = null;
-	protected EventPublisher mEventPublisher = null;
+    public static String myohVersion = "1.7.0.0";
+    private MyOHClient myOHClient;
 
-	
-	public MyOpenHABServiceImpl() {
-	}
-		
-	/**
-	 * @{inheritDoc}
-	 */
-	public void sendNotification(String userId, String message, String icon, String severity) {
-		logger.debug("Sending message '{}' to user id {}", message, userId);
-		myOHClient.sendNotification(userId, message, icon, severity);
-	}
+    private static final String STATIC_CONTENT_DIR = "webapps" + File.separator + "static";
+    private static final String UUID_FILE_NAME = "uuid";
+    private static final String SECRET_FILE_NAME = "secret";
+    private static final String VERSION_FILE_NAME = "version";
 
-	/**
-	 * @{inheritDoc}
-	 */
-	public void sendLogNotification(String message, String icon, String severity) {
-		logger.debug("Sending log message '{}'", message);
-		myOHClient.sendLogNotification(message, icon, severity);
-	}
+    private String mMyOHBaseUrl;
+    private int mLocalPort = 8080;
 
-	/**
-	 * @{inheritDoc}
-	 */
-	public void sendBroadcastNotification(String message, String icon, String severity) {
-		logger.debug("Sending broadcast message '{}'", message);
-		myOHClient.sendBroadcastNotification(message, icon, severity);
-	}
+    protected ItemUIRegistry mItemUIRegistry = null;
+    protected EventPublisher mEventPublisher = null;
 
-	/**
-	 * @{inheritDoc}
-	 */
-	public void sendSMS(String phone, String message) {
-		logger.debug("Sending SMS '" + message + "' to phone # " + phone);
-		myOHClient.sendSMS(phone, message);
-	}
+    public MyOpenHABServiceImpl() {
+    }
 
-	@Override
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
-		if (config != null) {
-			String baseUrlString = (String) config.get("baseUrl");
-			if (StringUtils.isNotBlank(baseUrlString)) {
-				mMyOHBaseUrl = baseUrlString;
-			}
-			String localPortString = (String) config.get("localPort");
-			if (StringUtils.isNotBlank(localPortString)) {
-				mLocalPort = Integer.valueOf(localPortString);
-			}
-		} else {
-			logger.debug("config is null");
-		}
-		logger.debug("UUID = " + getUUID() + ", secret = " + getSecret());
-		myOHClient = new MyOHClient(getUUID(), getSecret());
-		if (mMyOHBaseUrl != null) {
-			myOHClient.setMyOHBaseUrl(mMyOHBaseUrl);
-		}
-		if (mLocalPort != 8080) {
-			myOHClient.setOHBaseUrl("http://localhost:" + String.valueOf(mLocalPort));
-		}
-		myOHClient.setOpenHABVersion(getVersion());
-		myOHClient.connect();
-		myOHClient.setListener(this);
-		MyOpenHAB.mMyOpenHABService = this;
-	}
-	
-	public void activate() {
-		logger.debug("my.openHAB service activated");
-	}
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void sendNotification(String userId, String message, String icon, String severity) {
+        logger.debug("Sending message '{}' to user id {}", message, userId);
+        myOHClient.sendNotification(userId, message, icon, severity);
+    }
 
-	public void deactivate() {
-		logger.debug("my.openHAB service deactivated");
-		myOHClient.shutdown();
-	}
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void sendLogNotification(String message, String icon, String severity) {
+        logger.debug("Sending log message '{}'", message);
+        myOHClient.sendLogNotification(message, icon, severity);
+    }
 
-	@Override
-	public String getActionClassName() {
-		return MyOpenHAB.class.getCanonicalName();
-	}
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void sendBroadcastNotification(String message, String icon, String severity) {
+        logger.debug("Sending broadcast message '{}'", message);
+        myOHClient.sendBroadcastNotification(message, icon, severity);
+    }
 
-	@Override
-	public Class<?> getActionClass() {
-		return MyOpenHAB.class;
-	}
-	
-	/**
-	 * 
-	 */
-	private String getVersion() {
-		File file = new File(STATIC_CONTENT_DIR + File.separator + VERSION_FILE_NAME);
-		String versionString = "";
-		
-		if (file.exists()) {
-			versionString = readFirstLine(file);
-			logger.debug("Version file found at '{}' with content '{}'", file.getAbsolutePath(), versionString);
-		}
-		return versionString;
-	}
-	
-	/**
-	 * Gets UUID from file which is created by org.openhab.core.internal.CoreActivator
-	 */
-	private String getUUID() {
-		File file = new File(STATIC_CONTENT_DIR + File.separator + UUID_FILE_NAME);
-		String uuidString = "";
-		
-		if (file.exists()) {
-			uuidString = readFirstLine(file);
-			logger.debug("UUID file found at '{}' with content '{}'", file.getAbsolutePath(), uuidString);
-		}		
-		return uuidString;
-	}
-	
-	/**
-	 * Reads the first line from specified file
-	 */
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void sendSMS(String phone, String message) {
+        logger.debug("Sending SMS '" + message + "' to phone # " + phone);
+        myOHClient.sendSMS(phone, message);
+    }
 
-	private String readFirstLine(File file) {
-		List<String> lines = null;
-		try {
-			lines = IOUtils.readLines(new FileInputStream(file));
-		} catch (IOException ioe) {
-			// no exception handling - we just return the empty String
-		}
-		return lines != null && lines.size() > 0 ? lines.get(0) : "";
-	}
-	
-	/**
-	 * Writes a String to a specified file
-	 */
+    @Override
+    public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+        if (config != null) {
+            String baseUrlString = (String) config.get("baseUrl");
+            if (StringUtils.isNotBlank(baseUrlString)) {
+                mMyOHBaseUrl = baseUrlString;
+            }
+            String localPortString = (String) config.get("localPort");
+            if (StringUtils.isNotBlank(localPortString)) {
+                mLocalPort = Integer.valueOf(localPortString);
+            }
+        } else {
+            logger.debug("config is null");
+        }
+        logger.debug("UUID = " + getUUID() + ", secret = " + getSecret());
+        myOHClient = new MyOHClient(getUUID(), getSecret());
+        if (mMyOHBaseUrl != null) {
+            myOHClient.setMyOHBaseUrl(mMyOHBaseUrl);
+        }
+        if (mLocalPort != 8080) {
+            myOHClient.setOHBaseUrl("http://localhost:" + String.valueOf(mLocalPort));
+        }
+        myOHClient.setOpenHABVersion(getVersion());
+        myOHClient.connect();
+        myOHClient.setListener(this);
+        MyOpenHAB.mMyOpenHABService = this;
+    }
 
-	private void writeFile(File file, String content) {
-		// create intermediary directories
-		file.getParentFile().mkdirs();
-		try {
-			IOUtils.write(content, new FileOutputStream(file));
-			logger.debug("Created file '{}' with content '{}'", file.getAbsolutePath(), content);
-		} catch (FileNotFoundException e) {
-			logger.error("Couldn't create file '" + file.getPath() + "'.", e);
-		} catch (IOException e) {
-			logger.error("Couldn't write to file '" + file.getPath() + "'.", e);
-		}
-	}
-	
-	/**
-	 * Creates a random secret and writes it to the <code>webapps/static</code>
-	 * directory. An existing <code>secret</code> file won't be overwritten.
-	 * Returns either existing secret from the file or newly created secret.
-	 */
+    public void activate() {
+        logger.debug("my.openHAB service activated");
+    }
 
-	private String getSecret() {
-		File file = new File(STATIC_CONTENT_DIR + File.separator + SECRET_FILE_NAME);
-		String newSecretString = "";
-		
-		if (!file.exists()) {
-			newSecretString = RandomStringUtils.randomAlphanumeric(20);
-			logger.debug("New password = " + newSecretString);
-			writeFile(file, newSecretString);
-		} else {
-			newSecretString = readFirstLine(file);
-			logger.debug("Secret file already exists at '{}' with content '{}'", file.getAbsolutePath(), newSecretString);
-		}
-		
-		return newSecretString;
-	}
-	
-	/*
-	 * @see org.openhab.io.myopenhab.internal.MyOHClientListener#sendCommand(java.lang.String, java.lang.String)
-	 */
+    public void deactivate() {
+        logger.debug("my.openHAB service deactivated");
+        myOHClient.shutdown();
+    }
 
-	@Override
-	public void sendCommand(String itemName, String commandString) {
-		try {
-			if (this.mItemUIRegistry != null) {
-				Item item = this.mItemUIRegistry.getItem(itemName);
-		    	Command command = null;
-		    	if (item != null) {
-					if (this.mEventPublisher != null) {
-			    		if("toggle".equalsIgnoreCase(commandString) && 
-			    				(item instanceof SwitchItem || 
-			    				 item instanceof RollershutterItem)) {
-			    			if(OnOffType.ON.equals(item.getStateAs(OnOffType.class))) command = OnOffType.OFF;
-			    			if(OnOffType.OFF.equals(item.getStateAs(OnOffType.class))) command = OnOffType.ON;
-			    			if(UpDownType.UP.equals(item.getStateAs(UpDownType.class))) command = UpDownType.DOWN;
-			    			if(UpDownType.DOWN.equals(item.getStateAs(UpDownType.class))) command = UpDownType.UP;
-			    		} else {
-			    			command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandString);
-			    		}
-			    		if (command != null) {
-			    			logger.debug("Received command {} for item {}", commandString, itemName);
-			    			this.mEventPublisher.postCommand(itemName,command);
-			    		} else {
-			    			logger.warn("Received invalid command {} for item {}", commandString, itemName);
-			    		}
-					}
-		    	} else {
-		    		logger.warn("Received command {} for non existing item {}", commandString, itemName);
-		    	}
-			} else {
-				return;
-			}
-		} catch (ItemNotFoundException e) {
-			logger.warn("Received my.openHAB command for a non-existant item {}", itemName);
-		}
-	}
+    @Override
+    public String getActionClassName() {
+        return MyOpenHAB.class.getCanonicalName();
+    }
 
-	@Override
-	public void store(Item item) {
-		logger.debug("store({}), state = {}", item.getName(), item.getState().toString());
-		myOHClient.sendItemUpdate(item.getName(), item.getState().toString());
-	}
+    @Override
+    public Class<?> getActionClass() {
+        return MyOpenHAB.class;
+    }
 
-	@Override
-	public void store(Item item, String alias) {
-		logger.debug("store({}), state = {}", item.getName(), item.getState().toString());
-		myOHClient.sendItemUpdate(item.getName(), item.getState().toString());		
-	}
+    /**
+     * 
+     */
+    private String getVersion() {
+        File file = new File(STATIC_CONTENT_DIR + File.separator + VERSION_FILE_NAME);
+        String versionString = "";
 
-	@Override
-	public String getName() {
-		return "myopenhab";
-	}
+        if (file.exists()) {
+            versionString = readFirstLine(file);
+            logger.debug("Version file found at '{}' with content '{}'", file.getAbsolutePath(), versionString);
+        }
+        return versionString;
+    }
 
-	public void setItemUIRegistry(ItemUIRegistry itemUIRegistry) {
-		this.mItemUIRegistry = itemUIRegistry;
-	}
+    /**
+     * Gets UUID from file which is created by org.openhab.core.internal.CoreActivator
+     */
+    private String getUUID() {
+        File file = new File(STATIC_CONTENT_DIR + File.separator + UUID_FILE_NAME);
+        String uuidString = "";
 
-	public void unsetItemUIRegistry(ItemUIRegistry itemUIRegistry) {
-		this.mItemUIRegistry = null;
-	}
+        if (file.exists()) {
+            uuidString = readFirstLine(file);
+            logger.debug("UUID file found at '{}' with content '{}'", file.getAbsolutePath(), uuidString);
+        }
+        return uuidString;
+    }
 
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		logger.debug("setEventPublisher");
-		this.mEventPublisher = eventPublisher;
-	}
+    /**
+     * Reads the first line from specified file
+     */
 
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		logger.debug("unsetEventPublisher");
-		this.mEventPublisher = null;
-	}
+    private String readFirstLine(File file) {
+        List<String> lines = null;
+        try {
+            lines = IOUtils.readLines(new FileInputStream(file));
+        } catch (IOException ioe) {
+            // no exception handling - we just return the empty String
+        }
+        return lines != null && lines.size() > 0 ? lines.get(0) : "";
+    }
+
+    /**
+     * Writes a String to a specified file
+     */
+
+    private void writeFile(File file, String content) {
+        // create intermediary directories
+        file.getParentFile().mkdirs();
+        try {
+            IOUtils.write(content, new FileOutputStream(file));
+            logger.debug("Created file '{}' with content '{}'", file.getAbsolutePath(), content);
+        } catch (FileNotFoundException e) {
+            logger.error("Couldn't create file '" + file.getPath() + "'.", e);
+        } catch (IOException e) {
+            logger.error("Couldn't write to file '" + file.getPath() + "'.", e);
+        }
+    }
+
+    /**
+     * Creates a random secret and writes it to the <code>webapps/static</code>
+     * directory. An existing <code>secret</code> file won't be overwritten.
+     * Returns either existing secret from the file or newly created secret.
+     */
+
+    private String getSecret() {
+        File file = new File(STATIC_CONTENT_DIR + File.separator + SECRET_FILE_NAME);
+        String newSecretString = "";
+
+        if (!file.exists()) {
+            newSecretString = RandomStringUtils.randomAlphanumeric(20);
+            logger.debug("New password = " + newSecretString);
+            writeFile(file, newSecretString);
+        } else {
+            newSecretString = readFirstLine(file);
+            logger.debug("Secret file already exists at '{}' with content '{}'", file.getAbsolutePath(),
+                    newSecretString);
+        }
+
+        return newSecretString;
+    }
+
+    /*
+     * @see org.openhab.io.myopenhab.internal.MyOHClientListener#sendCommand(java.lang.String, java.lang.String)
+     */
+
+    @Override
+    public void sendCommand(String itemName, String commandString) {
+        try {
+            if (this.mItemUIRegistry != null) {
+                Item item = this.mItemUIRegistry.getItem(itemName);
+                Command command = null;
+                if (item != null) {
+                    if (this.mEventPublisher != null) {
+                        if ("toggle".equalsIgnoreCase(commandString)
+                                && (item instanceof SwitchItem || item instanceof RollershutterItem)) {
+                            if (OnOffType.ON.equals(item.getStateAs(OnOffType.class))) {
+                                command = OnOffType.OFF;
+                            }
+                            if (OnOffType.OFF.equals(item.getStateAs(OnOffType.class))) {
+                                command = OnOffType.ON;
+                            }
+                            if (UpDownType.UP.equals(item.getStateAs(UpDownType.class))) {
+                                command = UpDownType.DOWN;
+                            }
+                            if (UpDownType.DOWN.equals(item.getStateAs(UpDownType.class))) {
+                                command = UpDownType.UP;
+                            }
+                        } else {
+                            command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandString);
+                        }
+                        if (command != null) {
+                            logger.debug("Received command {} for item {}", commandString, itemName);
+                            this.mEventPublisher.postCommand(itemName, command);
+                        } else {
+                            logger.warn("Received invalid command {} for item {}", commandString, itemName);
+                        }
+                    }
+                } else {
+                    logger.warn("Received command {} for non existing item {}", commandString, itemName);
+                }
+            } else {
+                return;
+            }
+        } catch (ItemNotFoundException e) {
+            logger.warn("Received my.openHAB command for a non-existant item {}", itemName);
+        }
+    }
+
+    @Override
+    public void store(Item item) {
+        logger.debug("store({}), state = {}", item.getName(), item.getState().toString());
+        myOHClient.sendItemUpdate(item.getName(), item.getState().toString());
+    }
+
+    @Override
+    public void store(Item item, String alias) {
+        logger.debug("store({}), state = {}", item.getName(), item.getState().toString());
+        myOHClient.sendItemUpdate(item.getName(), item.getState().toString());
+    }
+
+    @Override
+    public String getName() {
+        return "myopenhab";
+    }
+
+    public void setItemUIRegistry(ItemUIRegistry itemUIRegistry) {
+        this.mItemUIRegistry = itemUIRegistry;
+    }
+
+    public void unsetItemUIRegistry(ItemUIRegistry itemUIRegistry) {
+        this.mItemUIRegistry = null;
+    }
+
+    public void setEventPublisher(EventPublisher eventPublisher) {
+        logger.debug("setEventPublisher");
+        this.mEventPublisher = eventPublisher;
+    }
+
+    public void unsetEventPublisher(EventPublisher eventPublisher) {
+        logger.debug("unsetEventPublisher");
+        this.mEventPublisher = null;
+    }
 }

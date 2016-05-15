@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,145 +24,145 @@ import com.github.paolodenti.jsapp.core.command.base.SappException;
 
 /**
  * Centralized picnet command execution queue executions on pnmas are synchronized on a single serial queue
- * 
+ *
  * @author Paolo Denti
  * @since 1.8.0
- * 
+ *
  */
 public class SappCentralExecuter {
 
-	private static SappCentralExecuter sappCentralExecuterInstance;
+    private static SappCentralExecuter sappCentralExecuterInstance;
 
-	private SappCentralExecuter() {
-	}
+    private SappCentralExecuter() {
+    }
 
-	/**
-	 * singleton instance
-	 */
-	public static SappCentralExecuter getInstance() {
+    /**
+     * singleton instance
+     */
+    public static SappCentralExecuter getInstance() {
 
-		if (sappCentralExecuterInstance == null) {
-			sappCentralExecuterInstance = new SappCentralExecuter();
-		}
+        if (sappCentralExecuterInstance == null) {
+            sappCentralExecuterInstance = new SappCentralExecuter();
+        }
 
-		return sappCentralExecuterInstance;
-	}
+        return sappCentralExecuterInstance;
+    }
 
-	/**
-	 * runs polling on virtuals, inputs, outputs
-	 */
-	public PollingResult executePollingSappCommands(String ip, int port) throws SappException {
+    /**
+     * runs polling on virtuals, inputs, outputs
+     */
+    public PollingResult executePollingSappCommands(String ip, int port) throws SappException {
 
-		synchronized (this) {
+        synchronized (this) {
 
-			PollingResult pollingResult = new PollingResult();
+            PollingResult pollingResult = new PollingResult();
 
-			SappConnection sappConnection = null;
-			try {
-				sappConnection = new SappConnection(ip, port);
+            SappConnection sappConnection = null;
+            try {
+                sappConnection = new SappConnection(ip, port);
 
-				sappConnection.openConnection();
+                sappConnection.openConnection();
 
-				SappCommand sappCommand;
+                SappCommand sappCommand;
 
-				sappCommand = new Sapp80Command();
-				sappCommand.run(sappConnection);
-				if (!sappCommand.isResponseOk()) {
-					throw new SappException("Sapp80Command command execution failed");
-				}
-				pollingResult.changedOutputs = sappCommand.getResponse().getDataAsByteWordMap();
+                sappCommand = new Sapp80Command();
+                sappCommand.run(sappConnection);
+                if (!sappCommand.isResponseOk()) {
+                    throw new SappException("Sapp80Command command execution failed");
+                }
+                pollingResult.changedOutputs = sappCommand.getResponse().getDataAsByteWordMap();
 
-				sappCommand = new Sapp81Command();
-				sappCommand.run(sappConnection);
-				if (!sappCommand.isResponseOk()) {
-					throw new SappException("Sapp81Command command execution failed");
-				}
-				pollingResult.changedInputs = sappCommand.getResponse().getDataAsByteWordMap();
+                sappCommand = new Sapp81Command();
+                sappCommand.run(sappConnection);
+                if (!sappCommand.isResponseOk()) {
+                    throw new SappException("Sapp81Command command execution failed");
+                }
+                pollingResult.changedInputs = sappCommand.getResponse().getDataAsByteWordMap();
 
-				sappCommand = new Sapp82Command();
-				sappCommand.run(sappConnection);
-				if (!sappCommand.isResponseOk()) {
-					throw new SappException("Sapp82Command command execution failed");
-				}
-				pollingResult.changedVirtuals = sappCommand.getResponse().getDataAsWordWordMap();
+                sappCommand = new Sapp82Command();
+                sappCommand.run(sappConnection);
+                if (!sappCommand.isResponseOk()) {
+                    throw new SappException("Sapp82Command command execution failed");
+                }
+                pollingResult.changedVirtuals = sappCommand.getResponse().getDataAsWordWordMap();
 
-				return pollingResult;
-			} catch (IOException e) {
-				throw new SappException(e.getMessage());
-			} finally {
-				if (sappConnection != null) {
-					sappConnection.closeConnection();
-				}
-			}
-		}
-	}
+                return pollingResult;
+            } catch (IOException e) {
+                throw new SappException(e.getMessage());
+            } finally {
+                if (sappConnection != null) {
+                    sappConnection.closeConnection();
+                }
+            }
+        }
+    }
 
-	/**
-	 * runs 7C command
-	 */
-	public int executeSapp7CCommand(String ip, int port, int address) throws SappException {
+    /**
+     * runs 7C command
+     */
+    public int executeSapp7CCommand(String ip, int port, int address) throws SappException {
 
-		synchronized (this) {
-			SappCommand sappCommand = new Sapp7CCommand(address);
-			sappCommand.run(ip, port);
-			if (!sappCommand.isResponseOk()) {
-				throw new SappException("command execution failed");
-			}
-			return sappCommand.getResponse().getDataAsWord();
-		}
-	}
+        synchronized (this) {
+            SappCommand sappCommand = new Sapp7CCommand(address);
+            sappCommand.run(ip, port);
+            if (!sappCommand.isResponseOk()) {
+                throw new SappException("command execution failed");
+            }
+            return sappCommand.getResponse().getDataAsWord();
+        }
+    }
 
-	/**
-	 * runs 74 command
-	 */
-	public int executeSapp74Command(String ip, int port, byte address) throws SappException {
+    /**
+     * runs 74 command
+     */
+    public int executeSapp74Command(String ip, int port, byte address) throws SappException {
 
-		synchronized (this) {
-			SappCommand sappCommand = new Sapp74Command(address);
-			sappCommand.run(ip, port);
-			if (!sappCommand.isResponseOk()) {
-				throw new SappException("command execution failed");
-			}
-			return sappCommand.getResponse().getDataAsWord();
-		}
-	}
+        synchronized (this) {
+            SappCommand sappCommand = new Sapp74Command(address);
+            sappCommand.run(ip, port);
+            if (!sappCommand.isResponseOk()) {
+                throw new SappException("command execution failed");
+            }
+            return sappCommand.getResponse().getDataAsWord();
+        }
+    }
 
-	/**
-	 * runs 75 command
-	 */
-	public int executeSapp75Command(String ip, int port, byte address) throws SappException {
+    /**
+     * runs 75 command
+     */
+    public int executeSapp75Command(String ip, int port, byte address) throws SappException {
 
-		synchronized (this) {
-			SappCommand sappCommand = new Sapp75Command(address);
-			sappCommand.run(ip, port);
-			if (!sappCommand.isResponseOk()) {
-				throw new SappException("command execution failed");
-			}
-			return sappCommand.getResponse().getDataAsWord();
-		}
-	}
+        synchronized (this) {
+            SappCommand sappCommand = new Sapp75Command(address);
+            sappCommand.run(ip, port);
+            if (!sappCommand.isResponseOk()) {
+                throw new SappException("command execution failed");
+            }
+            return sappCommand.getResponse().getDataAsWord();
+        }
+    }
 
-	/**
-	 * runs 7D command
-	 */
-	public void executeSapp7DCommand(String ip, int port, int address, int value) throws SappException {
+    /**
+     * runs 7D command
+     */
+    public void executeSapp7DCommand(String ip, int port, int address, int value) throws SappException {
 
-		synchronized (this) {
-			SappCommand sappCommand = new Sapp7DCommand(address, value);
-			sappCommand.run(ip, port);
-			if (!sappCommand.isResponseOk()) {
-				throw new SappException("command execution failed");
-			}
-		}
-	}
+        synchronized (this) {
+            SappCommand sappCommand = new Sapp7DCommand(address, value);
+            sappCommand.run(ip, port);
+            if (!sappCommand.isResponseOk()) {
+                throw new SappException("command execution failed");
+            }
+        }
+    }
 
-	/**
-	 * model for polling results
-	 */
-	public class PollingResult {
+    /**
+     * model for polling results
+     */
+    public class PollingResult {
 
-		public Map<Byte, Integer> changedOutputs;
-		public Map<Byte, Integer> changedInputs;
-		public Map<Integer, Integer> changedVirtuals;
-	}
+        public Map<Byte, Integer> changedOutputs;
+        public Map<Byte, Integer> changedInputs;
+        public Map<Integer, Integer> changedVirtuals;
+    }
 }

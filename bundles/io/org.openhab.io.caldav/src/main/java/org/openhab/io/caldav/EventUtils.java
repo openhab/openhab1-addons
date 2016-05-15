@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.io.caldav;
 
 import java.io.BufferedReader;
@@ -5,7 +13,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.openhab.core.items.Item;
@@ -18,195 +29,186 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class EventUtils {
-	private static final Logger log = LoggerFactory.getLogger(EventUtils.class);
-	
-	public static final String SCOPE_BEGIN = "BEGIN";
-	public static final String SCOPE_END = "END";
-	public static final String SCOPE_BETWEEN = "BETWEEN";
-	public static final String DATE_FORMAT = "dd.MM.yyyy'T'HH:mm:ss";
-	public static final String SEPERATOR = ":";
-	
-	public static List<EventContent> parseContent(CalDavEvent event, ItemRegistry itemRegistry, String scope) {
-		return parseContent(event, itemRegistry, null, scope);
-	}
-	
-	public static List<EventContent> parseContent(CalDavEvent event, Item item) {
-		return parseContent(event, null, item, null);
-	}
-	
-	private static List<EventContent> parseContent(CalDavEvent event, ItemRegistry itemRegistry, 
-			Item itemIn, String expectedScope) {
-		final List<EventContent> outMap = new ArrayList<EventUtils.EventContent>();
-		
-		try {
-			BufferedReader reader = new BufferedReader(new StringReader(event.getContent()));
-		
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				Item item = itemIn;
-				line = line.trim();
-				
-				String scope = null;
-				DateTime time = null;
-				String itemName = null;
-				String stateString = null;
-				int indexItemName = -1;
-				
-				if (line.startsWith(SCOPE_BEGIN)) {
-					scope = SCOPE_BEGIN;
-					if (line.length() < scope.length() + 4) {
-						log.error("invalid format for line: {}", line);
-						continue;
-					}
-					indexItemName = scope.length();
-					time = event.getStart();
-				} else if (line.startsWith(SCOPE_END)) {
-					scope = SCOPE_END;
-					if (line.length() < scope.length() + 4) {
-						log.error("invalid format for line: {}", line);
-						continue;
-					}
-					indexItemName = scope.length();
-					time = event.getEnd();
-				} else if (line.startsWith(SCOPE_BETWEEN)) {
-					scope = SCOPE_BETWEEN;
-					if (line.length() < scope.length() + 4 + 1 + 19) {
-						log.error("invalid format for line: {}", line);
-						continue;
-					}
-					String timeString = line.substring(SCOPE_BETWEEN.length() + 1, SCOPE_BETWEEN.length() + 1 + 19);
-					time = DateTimeFormat.forPattern(EventUtils.DATE_FORMAT).parseDateTime(timeString);
-					indexItemName = scope.length() + 19 + 1;
-				} else {
-					log.trace("line skipped: unknown content: " + line);
-					continue;
-				}
-				
-				if (line.substring(indexItemName + 1, indexItemName + 2).equals(":")) {
-					log.error("invalid format for line: {}", line);
-				}
-				
-				String itemAndCommand = line.substring(indexItemName + 1);
-				final String[] split = itemAndCommand.split(SEPERATOR);
-				if (split.length != 2) {
-					log.error("invalid format for line: {}", line);
-					continue;
-				}
-				
-				itemName = split[0];
-				stateString = split[1];
-				
-				if (expectedScope != null && !expectedScope.equals(scope)) {
-					continue;
-				}
-				
-				if (item == null) {
-					if (itemRegistry == null) {
-						log.error("item is null, but itemRegistry as well");
-						continue;
-					}
-					
-					try {
-						item = itemRegistry.getItem(itemName);
-					} catch (ItemNotFoundException e) {
-						log.error("cannot find item: {}", itemName);
-						continue;
-					}
-				}
-				
-				if (!item.getName().equals(itemName)) {
-					log.debug("name of item {} does not match itemName {}", item.getName(), itemName);
-					continue;
-				}
-				
-				State state = TypeParser.parseState(item.getAcceptedDataTypes(), stateString);
-				Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), stateString);
-				log.debug("add item {} to action list (scope={}, state={}, time={})", item, scope, state, time);
-				outMap.add(new EventContent(scope, item, state, command, time));
-			}
-		} catch (IOException e) {
-			log.error("cannot parse event content", e);
-		}
-		
-		return outMap;
-	}
-	
-	
-	
-	private EventUtils() {}
-	
-	public final static class EventContent {
-		private Item item;
-		private State state;
-		private Command command;
-		private DateTime time;
-		private String scope;
-		
-		public EventContent() {
-			super();
-		}
+    private static final Logger log = LoggerFactory.getLogger(EventUtils.class);
 
-		public EventContent(String scope, Item item, State state, Command command, DateTime time) {
-			super();
-			this.scope = scope;
-			this.item = item;
-			this.state = state;
-			this.command = command;
-			this.time = time;
-		}
+    // patterns used to parse event entries
+    private static final Pattern COMMAND_PATTERN = Pattern.compile("(?:BEGIN|END|BETWEEN):");
+    private static final Pattern LINE_PATTERN = Pattern.compile("(BEGIN|END|BETWEEN)(:[^:\\s]{19})?:([^:\\s]+):(.+)");
 
-		public Item getItem() {
-			return item;
-		}
+    public static final String SCOPE_BEGIN = "BEGIN";
+    public static final String SCOPE_END = "END";
+    public static final String SCOPE_BETWEEN = "BETWEEN";
+    public static final String DATE_FORMAT = "dd.MM.yyyy'T'HH:mm:ss";
+    public static final String SEPERATOR = ":";
 
-		public State getState() {
-			return state;
-		}
+    public static List<EventContent> parseContent(CalDavEvent event, ItemRegistry itemRegistry, String scope,
+            String defaultItemOnBegin) {
+        return parseContent(event, itemRegistry, null, scope, defaultItemOnBegin);
+    }
 
-		public Command getCommand() {
-			return command;
-		}
+    public static List<EventContent> parseContent(CalDavEvent event, ItemRegistry itemRegistry, String scope) {
+        return parseContent(event, itemRegistry, null, scope, null);
+    }
 
-		public DateTime getTime() {
-			return time;
-		}
+    public static List<EventContent> parseContent(CalDavEvent event, Item item) {
+        return parseContent(event, null, item, null, null);
+    }
 
-		public String getScope() {
-			return scope;
-		}
+    private static List<EventContent> parseContent(CalDavEvent event, ItemRegistry itemRegistry, Item itemIn,
+            String expectedScope, String defaultItemOnBegin) {
+        final List<EventContent> outMap = new ArrayList<EventUtils.EventContent>();
 
-		
-	}
+        // no content, nothing to parse
+        if (StringUtils.isEmpty(event.getContent())) {
+            return outMap;
+        }
 
-	public static String createBetween(String itemName, State state) {
-		return new StringBuilder()
-		.append(SCOPE_BETWEEN)
-		.append(SEPERATOR)
-		.append(DateTimeFormat.forPattern(EventUtils.DATE_FORMAT).print(DateTime.now()))
-		.append(SEPERATOR)
-		.append(itemName)
-		.append(SEPERATOR)
-		.append(state)
-		.toString();
-	}
+        try {
+            final BufferedReader reader = new BufferedReader(new StringReader(event.getContent()));
 
-	public static String createEnd(String alias, State state) {
-		return new StringBuilder()
-		.append(SCOPE_END)
-		.append(SEPERATOR)
-		.append(alias)
-		.append(SEPERATOR)
-		.append(state)
-		.toString();
-	}
-	
-	public static String createBegin(String alias, State state) {
-		return new StringBuilder()
-		.append(SCOPE_BEGIN)
-		.append(SEPERATOR)
-		.append(alias)
-		.append(SEPERATOR)
-		.append(state)
-		.toString();
-	}
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                Item item = itemIn;
+
+                final EventLine eventLine = parseEventLine(line.trim(), event, defaultItemOnBegin);
+                if (eventLine == null) {
+                    continue;
+                }
+                if (expectedScope != null && !expectedScope.equals(eventLine.scope)) {
+                    continue;
+                }
+
+                if (item == null) {
+                    if (itemRegistry == null) {
+                        log.error("item is null, but itemRegistry as well");
+                        continue;
+                    }
+
+                    try {
+                        item = itemRegistry.getItem(eventLine.itemName);
+                    } catch (ItemNotFoundException e) {
+                        log.error("cannot find item: {}", eventLine.itemName);
+                        continue;
+                    }
+                }
+
+                if (!item.getName().equals(eventLine.itemName)) {
+                    log.trace("name of item {} does not match itemName {}", item.getName(), eventLine.itemName);
+                    continue;
+                }
+
+                final State state = TypeParser.parseState(item.getAcceptedDataTypes(), eventLine.stateString);
+                final Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), eventLine.stateString);
+                log.trace("add item {} to action list (scope={}, state={}, time={})", item, eventLine.scope, state,
+                        eventLine.time);
+                outMap.add(new EventContent(eventLine.scope, item, state, command, eventLine.time));
+            }
+        } catch (IOException e) {
+            log.error("cannot parse event content", e);
+        }
+
+        return outMap;
+    }
+
+    private static EventLine parseEventLine(String line, CalDavEvent event, String defaultItemOnBegin) {
+        final Matcher matcher = LINE_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            final String scope = matcher.group(1);
+            final String itemName = matcher.group(3);
+            final String stateString = matcher.group(4);
+            if (itemName.trim().length() > 0 && stateString.trim().length() > 0) {
+                if (SCOPE_BEGIN.equals(scope)) {
+                    return new EventLine(itemName, stateString, scope, event.getStart());
+                }
+                if (SCOPE_END.equals(scope)) {
+                    return new EventLine(itemName, stateString, scope, event.getEnd());
+                }
+                if (SCOPE_BETWEEN.equals(scope)) {
+                    final String timeString = matcher.group(2);
+                    final DateTime time = DateTimeFormat.forPattern(EventUtils.DATE_FORMAT).parseDateTime(timeString);
+                    return new EventLine(itemName, stateString, scope, time);
+                }
+            }
+        } else if (defaultItemOnBegin != null && !COMMAND_PATTERN.matcher(line).matches()) {
+            // if defaultItemOnBegin is set, use entire line as command value
+            return new EventLine(defaultItemOnBegin, line, SCOPE_BEGIN, event.getStart());
+        }
+        log.error("invalid format for line: {}", line);
+        return null; // nothing meaningful found in line
+    }
+
+    private EventUtils() {
+    }
+
+    private final static class EventLine {
+        final String itemName;
+        final String stateString;
+        final String scope;
+        final DateTime time;
+
+        EventLine(String itemName, String stateString, String scope, DateTime time) {
+            this.itemName = itemName;
+            this.stateString = stateString;
+            this.scope = scope;
+            this.time = time;
+        }
+    }
+
+    public final static class EventContent {
+        private final Item item;
+        private final State state;
+        private final Command command;
+        private final DateTime time;
+        private final String scope;
+
+        public EventContent(String scope, Item item, State state, Command command, DateTime time) {
+            this.scope = scope;
+            this.item = item;
+            this.state = state;
+            this.command = command;
+            this.time = time;
+        }
+
+        public Item getItem() {
+            return item;
+        }
+
+        public State getState() {
+            return state;
+        }
+
+        public Command getCommand() {
+            return command;
+        }
+
+        public DateTime getTime() {
+            return time;
+        }
+
+        public String getScope() {
+            return scope;
+        }
+
+        @Override
+        public String toString() {
+            return "EventContent [item=" + item + ", state=" + state + ", command=" + command + ", time=" + time
+                    + ", scope=" + scope + "]";
+        }
+    }
+
+    public static String createBetween(String itemName, State state) {
+        return new StringBuilder().append(SCOPE_BETWEEN).append(SEPERATOR)
+                .append(DateTimeFormat.forPattern(EventUtils.DATE_FORMAT).print(DateTime.now())).append(SEPERATOR)
+                .append(itemName).append(SEPERATOR).append(state).toString();
+    }
+
+    public static String createEnd(String alias, State state) {
+        return new StringBuilder().append(SCOPE_END).append(SEPERATOR).append(alias).append(SEPERATOR).append(state)
+                .toString();
+    }
+
+    public static String createBegin(String alias, State state) {
+        return new StringBuilder().append(SCOPE_BEGIN).append(SEPERATOR).append(alias).append(SEPERATOR).append(state)
+                .toString();
+    }
 }

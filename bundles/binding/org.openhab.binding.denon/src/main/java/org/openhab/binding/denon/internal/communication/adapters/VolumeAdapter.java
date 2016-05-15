@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,30 +13,30 @@ import java.math.BigDecimal;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
- * Maps Denon volume values in db to percentage   
- * 
+ * Maps Denon volume values in db to percentage
+ *
  * @author Jeroen Idserda
  * @since 1.7.0
  */
 public class VolumeAdapter extends XmlAdapter<String, BigDecimal> {
-	
-	private static final BigDecimal OFFSET = new BigDecimal("80");
 
-	@Override
-	public BigDecimal unmarshal(String v) throws Exception {
-		if (v != null && !v.trim().equals("--"))  {
-				return new BigDecimal(v).add(OFFSET);
-		}
-		
-		return BigDecimal.ZERO;
-	}
+    private static final BigDecimal OFFSET = new BigDecimal("80");
 
-	@Override
-	public String marshal(BigDecimal v) throws Exception {
-		if (v.equals(BigDecimal.ZERO)) {
-			return "--";
-		}
-		
-		return v.subtract(OFFSET).toString();
-	}
+    @Override
+    public BigDecimal unmarshal(String v) throws Exception {
+        if (v != null && !v.trim().equals("--")) {
+            return new BigDecimal(v).add(OFFSET);
+        }
+
+        return BigDecimal.ZERO;
+    }
+
+    @Override
+    public String marshal(BigDecimal v) throws Exception {
+        if (v.equals(BigDecimal.ZERO)) {
+            return "--";
+        }
+
+        return v.subtract(OFFSET).toString();
+    }
 }

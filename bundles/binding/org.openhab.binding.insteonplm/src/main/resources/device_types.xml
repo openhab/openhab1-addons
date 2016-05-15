@@ -42,6 +42,14 @@ Example entry:
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
  
+ <device productKey="0x000039">
+     <model>2663-222</model>
+     <description>On/Off Outlet</description>
+     <feature name="topoutlet">GenericSwitch</feature>
+     <feature name="bottomoutlet">BottomOutlet</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+</device>
+ 
  <device productKey="0x000041">
      <model>2484DWH8</model>
      <description>KeypadLinc Countdown Timer</description>
@@ -75,6 +83,7 @@ Example entry:
      <model>2486DWH6</model>
      <description>KeypadLinc Dimmer - 6 Button</description>
      <feature name="loaddimmer">LoadDimmerButton</feature>
+     <feature name="rampdimmer">LoadDimmerRamp</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">LoadDimmerFastOnOff</feature>
      <feature_group name="button_group" type="KeyPadButtonGroup">
@@ -89,6 +98,7 @@ Example entry:
      <model>2486DWH8</model>
      <description>KeypadLinc Dimmer - 8 Button</description>
      <feature name="loaddimmer">LoadDimmerButton</feature>
+     <feature name="rampdimmer">LoadDimmerRamp</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">LoadDimmerFastOnOff</feature>     
      <feature_group name="button_group" type="KeyPadButtonGroup">
@@ -256,6 +266,7 @@ Example entry:
      <model>2466D</model>
      <description>ToggleLinc Dimmer</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="rampdimmer">RampDimmer</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
@@ -272,6 +283,7 @@ Example entry:
      <model>2672-222</model>
      <description>LED Bulb</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="rampdimmer">RampDimmer_3435</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
@@ -309,6 +321,7 @@ Example entry:
      <model>2334-232</model>
      <description>Keypad Dimmer Switch, 6-Button </description>
      <feature name="loaddimmer">LoadDimmerButton</feature>
+     <feature name="rampdimmer">LoadDimmerRamp</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">LoadDimmerFastOnOff</feature>
      <feature_group name="button_group" type="KeyPadButtonGroup">
@@ -324,6 +337,7 @@ Example entry:
      <model>2334-232</model>
      <description>Keypad Dimmer Switch, 8-Button </description>
      <feature name="loaddimmer">LoadDimmerButton</feature>
+     <feature name="rampdimmer">LoadDimmerRamp</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">LoadDimmerFastOnOff</feature>     
      <feature_group name="button_group" type="KeyPadButtonGroup">
@@ -408,10 +422,12 @@ Example entry:
      <feature name="switch">GenericSwitch</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
+ 
  <device productKey="F00.00.1E">
      <model>2674-222</model>
      <description>LED Bulb (recessed)</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="rampdimmer">RampDimmer</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>

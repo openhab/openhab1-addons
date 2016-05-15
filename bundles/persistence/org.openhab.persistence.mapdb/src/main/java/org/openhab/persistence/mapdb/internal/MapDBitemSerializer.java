@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,53 +33,53 @@ import org.openhab.core.types.State;
  */
 public class MapDBitemSerializer implements Serializer<MapDBItem>, Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public MapDBitemSerializer() {
-	}
+    public MapDBitemSerializer() {
+    }
 
-	@Override
-	public void serialize(DataOutput out, MapDBItem item) throws IOException {
-		out.writeUTF(item.getName());
-		out.writeUTF(item.getState().getClass().getSimpleName());
-		out.writeUTF(item.getState().toString());
-		out.writeLong(item.getTimestamp().getTime());
-	}
+    @Override
+    public void serialize(DataOutput out, MapDBItem item) throws IOException {
+        out.writeUTF(item.getName());
+        out.writeUTF(item.getState().getClass().getSimpleName());
+        out.writeUTF(item.getState().toString());
+        out.writeLong(item.getTimestamp().getTime());
+    }
 
-	@Override
-	public MapDBItem deserialize(DataInput in, int available)
-			throws IOException {
-		MapDBItem item = new MapDBItem();
-		item.setName(in.readUTF());
-		String stateType = in.readUTF();
+    @Override
+    public MapDBItem deserialize(DataInput in, int available) throws IOException {
+        MapDBItem item = new MapDBItem();
+        item.setName(in.readUTF());
+        String stateType = in.readUTF();
 
-		String stateStr = in.readUTF();
+        String stateStr = in.readUTF();
 
-		State state = null;
+        State state = null;
 
-		if ("DecimalType".equals(stateType)) {
-			state = DecimalType.valueOf(stateStr);
-		} else if ("HSBType".equals(stateType)) {
-			state = HSBType.valueOf(stateStr);
-		} else if ("PercentType".equals(stateType)) {
-			state = PercentType.valueOf(stateStr);
-		} else if ("OnOffType".equals(stateType)) {
-			state = OnOffType.valueOf(stateStr);
-		} else if ("OpenClosedType".equals(stateType)) {
-			state = OpenClosedType.valueOf(stateStr);
-		} else if ("DateTimeType".equals(stateType)) {
-			state = DateTimeType.valueOf(stateStr);
-		} else
-			state = StringType.valueOf(stateStr);
+        if ("DecimalType".equals(stateType)) {
+            state = DecimalType.valueOf(stateStr);
+        } else if ("HSBType".equals(stateType)) {
+            state = HSBType.valueOf(stateStr);
+        } else if ("PercentType".equals(stateType)) {
+            state = PercentType.valueOf(stateStr);
+        } else if ("OnOffType".equals(stateType)) {
+            state = OnOffType.valueOf(stateStr);
+        } else if ("OpenClosedType".equals(stateType)) {
+            state = OpenClosedType.valueOf(stateStr);
+        } else if ("DateTimeType".equals(stateType)) {
+            state = DateTimeType.valueOf(stateStr);
+        } else {
+            state = StringType.valueOf(stateStr);
+        }
 
-		item.setState(state);
-		item.setTimestamp(new Date(in.readLong()));
-		return item;
-	}
+        item.setState(state);
+        item.setTimestamp(new Date(in.readLong()));
+        return item;
+    }
 
-	@Override
-	public int fixedSize() {
-		return -1;
-	}
+    @Override
+    public int fixedSize() {
+        return -1;
+    }
 
 }

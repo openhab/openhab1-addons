@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,33 +12,37 @@ import java.util.List;
 
 /**
  * Cal DAV loader interface
- * 
+ *
  * @author Robert Delbrück
  * @since 1.8.0
  */
 public interface CalDavLoader {
-	/**
-	 * add listener to notify for event changes
-	 * @param notifier the event listener
-	 */
-	public void addListener(EventNotifier notifier);
-	
-	/**
-	 * remove listener to notify for event changes
-	 * @param notifier the event listener
-	 */
-	public void removeListener(EventNotifier notifier);
+    /**
+     * add listener to notify for event changes
+     * 
+     * @param notifier the event listener
+     */
+    public void addListener(EventNotifier notifier);
 
-	/**
-	 * get events for a specific calendar
-	 * @param calendarId
-	 * @return
-	 */
-	public List<CalDavEvent> getEvents(CalDavQuery query);
+    /**
+     * remove listener to notify for event changes
+     * 
+     * @param notifier the event listener
+     */
+    public void removeListener(EventNotifier notifier);
 
-	/**
-	 * add a new event to the calendar
-	 * @param calDavEvent
-	 */
-	public void addEvent(CalDavEvent event);
+    /**
+     * get events for a specific calendar
+     * 
+     * @param calendarId
+     * @return
+     */
+    public List<CalDavEvent> getEvents(CalDavQuery query);
+
+    /**
+     * add a new event to the calendar
+     * 
+     * @param calDavEvent
+     */
+    public void addEvent(CalDavEvent event);
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,153 +21,153 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This is a {@link PersistenceService} implementation using MQTT.
- * 
+ *
  * It can be used to persist item states through MQTT messages. The service only
  * supports sending of data, not receiving.
- * 
+ *
  * Which items are persisted and when they are persisted can be configured in
  * the mqtt.persist file in the configurations/persistence folder. The
  * mqtt.persist file follows the standard openHAB persistence definitions.
- * 
+ *
  * The broker to which the messages are sent is defined by the
  * mqtt-persistence:broker property in the openhab.cfg file.
- * 
+ *
  * The topic to which messages are sent is defined by the mqtt-persistence:topic
  * property.
- * 
+ *
  * The message payload is created from a template string, which you can define
  * in the property mqtt-persistence:message.
- * 
+ *
  * For both the topic and message, the following parameter replacements are made
  * using String.format:
- * 
+ *
  * <pre>
- * 	%1 item name 
+ * 	%1 item name
  * 	%2 alias (as defined in mqtt.persist)
- * 	%3 item state 
+ * 	%3 item state
  * 	%4 current timestamp
  * </pre>
- * 
+ *
  * @author Davy Vanherbergen
  * @since 1.3.0
  */
 public class MqttPersistenceService implements PersistenceService {
 
-	private static Logger logger = LoggerFactory.getLogger(MqttPersistenceService.class);
+    private static Logger logger = LoggerFactory.getLogger(MqttPersistenceService.class);
 
-	private MqttService mqttService;
+    private MqttService mqttService;
 
-	private String brokerName;
+    private String brokerName;
 
-	private String topic;
+    private String topic;
 
-	private String messageTemplate;
+    private String messageTemplate;
 
-	private MqttPersistencePublisher publisher;
+    private MqttPersistencePublisher publisher;
 
-	private boolean configured;
+    private boolean configured;
 
-	/**
-	 * Start the persistence service.
-	 */
-	public void activate(final BundleContext bundleContext, final Map<String, Object> properties) {
-		deactivate(0);
+    /**
+     * Start the persistence service.
+     */
+    public void activate(final BundleContext bundleContext, final Map<String, Object> properties) {
+        deactivate(0);
 
-		brokerName = getProperty(properties, "broker");
-		topic = getProperty(properties, "topic");
-		messageTemplate = getProperty(properties, "message");
-		configured = true;
-		
-		logger.debug("Configuration updated for MQTT Persistence.");
-		
-		if (StringUtils.isBlank(brokerName)) {
-			logger.debug("Configuration incomplete. Cannot start yet.");
-			return;
-		}
+        brokerName = getProperty(properties, "broker");
+        topic = getProperty(properties, "topic");
+        messageTemplate = getProperty(properties, "message");
+        configured = true;
 
-		logger.debug("Activating MQTT Persistence");
+        logger.debug("Configuration updated for MQTT Persistence.");
 
-		// create a new message publisher and register it
-		publisher = new MqttPersistencePublisher(topic, messageTemplate);
-		mqttService.registerMessageProducer(brokerName, publisher);
-	}
+        if (StringUtils.isBlank(brokerName)) {
+            logger.debug("Configuration incomplete. Cannot start yet.");
+            return;
+        }
 
-	/**
-	 * Shut down the persistence service.
-	 */
-	public void deactivate(final int reason) {
+        logger.debug("Activating MQTT Persistence");
 
-		logger.debug("Deactivating MQTT Persistence");
-		if (StringUtils.isNotBlank(brokerName) && publisher != null) {
-			mqttService.unregisterMessageProducer(brokerName, publisher);
-		}
-	}
-	
-	/**
-	 * Get a value from the given properties.
-	 * 
-	 * @param properties
-	 *            dictionary to load property from.
-	 * @param name
-	 *            of the property
-	 * @return property value
-	 * @throws ConfigurationException
-	 *             if the property is empty
-	 */
-	private String getProperty(Map<String, Object> properties, String name) {
+        // create a new message publisher and register it
+        publisher = new MqttPersistencePublisher(topic, messageTemplate);
+        mqttService.registerMessageProducer(brokerName, publisher);
+    }
 
-		String value = (String) properties.get(name);
-		if (StringUtils.isNotBlank(value)) {
-			return value.trim();
-		} else {
-			logger.warn("mqtt-persistence:" + name, "Missing or invalid property '" + name + "'");
-			return null;
-		}
-	}
+    /**
+     * Shut down the persistence service.
+     */
+    public void deactivate(final int reason) {
 
-	@Override
-	public String getName() {
-		return "mqtt";
-	}
+        logger.debug("Deactivating MQTT Persistence");
+        if (StringUtils.isNotBlank(brokerName) && publisher != null) {
+            mqttService.unregisterMessageProducer(brokerName, publisher);
+        }
+    }
 
-	@Override
-	public void store(Item item) {
-		store(item, null);
-	}
+    /**
+     * Get a value from the given properties.
+     * 
+     * @param properties
+     *            dictionary to load property from.
+     * @param name
+     *            of the property
+     * @return property value
+     * @throws ConfigurationException
+     *             if the property is empty
+     */
+    private String getProperty(Map<String, Object> properties, String name) {
 
-	@Override
-	public void store(Item item, String alias) {
+        String value = (String) properties.get(name);
+        if (StringUtils.isNotBlank(value)) {
+            return value.trim();
+        } else {
+            logger.warn("mqtt-persistence:" + name, "Missing or invalid property '" + name + "'");
+            return null;
+        }
+    }
 
-		if (!configured) {
-			logger.trace("MQTT Persistence not configured yet. Cannot store item state for {}", item.getName());
-			return;
-		}
-		try {
-			publisher.publish(item, alias);
-			logger.debug("Published item state '{}' for item '{}'", item.getState(), item.getName());
-		} catch (Exception e) {
-			logger.error("Error sending persistency message for item '{}' : {}", item.getName(), e);
-		}
-	}
+    @Override
+    public String getName() {
+        return "mqtt";
+    }
 
-	/**
-	 * Set MQTT Service from DS.
-	 * 
-	 * @param mqttService
-	 *            to set.
-	 */
-	public void setMqttService(MqttService mqttService) {
-		this.mqttService = mqttService;
-	}
+    @Override
+    public void store(Item item) {
+        store(item, null);
+    }
 
-	/**
-	 * Unset MQTT Service from DS.
-	 * 
-	 * @param mqttService
-	 *            to remove.
-	 */
-	public void unsetMqttService(MqttService mqttService) {
-		this.mqttService = null;
-	}
+    @Override
+    public void store(Item item, String alias) {
+
+        if (!configured) {
+            logger.trace("MQTT Persistence not configured yet. Cannot store item state for {}", item.getName());
+            return;
+        }
+        try {
+            publisher.publish(item, alias);
+            logger.debug("Published item state '{}' for item '{}'", item.getState(), item.getName());
+        } catch (Exception e) {
+            logger.error("Error sending persistency message for item '{}' : {}", item.getName(), e);
+        }
+    }
+
+    /**
+     * Set MQTT Service from DS.
+     * 
+     * @param mqttService
+     *            to set.
+     */
+    public void setMqttService(MqttService mqttService) {
+        this.mqttService = mqttService;
+    }
+
+    /**
+     * Unset MQTT Service from DS.
+     * 
+     * @param mqttService
+     *            to remove.
+     */
+    public void unsetMqttService(MqttService mqttService) {
+        this.mqttService = null;
+    }
 
 }

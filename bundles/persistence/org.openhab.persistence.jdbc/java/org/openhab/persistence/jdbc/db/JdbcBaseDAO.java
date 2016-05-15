@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.persistence.jdbc.db;
 
 import java.math.BigDecimal;
@@ -13,6 +21,7 @@ import java.util.Properties;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.knowm.yank.Yank;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ColorItem;
@@ -40,8 +49,6 @@ import org.openhab.persistence.jdbc.model.JdbcItem;
 import org.openhab.persistence.jdbc.utils.StringUtilsExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.knowm.yank.Yank;
 
 public class JdbcBaseDAO {
     private static final Logger logger = LoggerFactory.getLogger(JdbcBaseDAO.class);
@@ -203,7 +210,7 @@ public class JdbcBaseDAO {
     public boolean doIfTableExists(ItemsVO vo) {
         String sql = StringUtilsExt.replaceArrayMerge(SQL_IF_TABLE_EXISTS, new String[] { "#searchTable#" },
                 new String[] { vo.getItemsManageTable() });
-        logger.debug("JDBC::doCreateNewEntryInItemsTable sql={}", sql);
+        logger.debug("JDBC::doIfTableExists sql={}", sql);
         return Yank.queryScalar(sql, String.class, null) != null;
     }
 

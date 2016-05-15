@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,48 +28,48 @@ import org.xml.sax.SAXException;
  * This class handles the response of the "/update" call, which loads the
  * notifications of RWE Smarthome. Those notifications include e.g. device
  * state changes, configuration changes etc.
- * 
+ *
  * @author ollie-dev
  *
  */
 public class NotificationsXMLResponse extends XMLResponse {
 
-	/**
-	 * Constructor with input stream.
-	 * 
-	 * @param is
-	 * @throws LogoutNotificationException
-	 * @throws ConfigurationChangedException
-	 */
-	public NotificationsXMLResponse(InputStream is) throws LogoutNotificationException, ConfigurationChangedException {
+    /**
+     * Constructor with input stream.
+     * 
+     * @param is
+     * @throws LogoutNotificationException
+     * @throws ConfigurationChangedException
+     */
+    public NotificationsXMLResponse(InputStream is) throws LogoutNotificationException, ConfigurationChangedException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
         try {
-        	//Using factory get an instance of document builder
+            // Using factory get an instance of document builder
             DocumentBuilder db = dbf.newDocumentBuilder();
 
-            //parse using builder to get DOM representation of the XML file
+            // parse using builder to get DOM representation of the XML file
             Document doc = db.parse(is);
-            
-            //get the root element
+
+            // get the root element
             Element docEle = doc.getDocumentElement();
-            
+
             // Check for LogoutNotification
-			NodeList nl = docEle.getElementsByTagName("LogoutNotification");
-			if (nl != null && nl.getLength() > 0) {
-				Element el = (Element) nl.item(0);
-				String reason = getTextValueFromAttribute(el, "Reason");
-				throw new LogoutNotificationException("Logged out from Notifications. Reason:" + reason);
-			}
-			
-			// Check for ConfigurationChanges
-			nl = docEle.getElementsByTagName("ConfigurationChangedNotification");
-			if (nl != null && nl.getLength() > 0) {
-				Element el = (Element) nl.item(0);
-				String configVersion = getTextValueFromAttribute(el, "ConfigurationVersion");
-				throw new ConfigurationChangedException("Configuration changed to version " + configVersion);
-			}
-            
+            NodeList nl = docEle.getElementsByTagName("LogoutNotification");
+            if (nl != null && nl.getLength() > 0) {
+                Element el = (Element) nl.item(0);
+                String reason = getTextValueFromAttribute(el, "Reason");
+                throw new LogoutNotificationException("Logged out from Notifications. Reason:" + reason);
+            }
+
+            // Check for ConfigurationChanges
+            nl = docEle.getElementsByTagName("ConfigurationChangedNotification");
+            if (nl != null && nl.getLength() > 0) {
+                Element el = (Element) nl.item(0);
+                String configVersion = getTextValueFromAttribute(el, "ConfigurationVersion");
+                throw new ConfigurationChangedException("Configuration changed to version " + configVersion);
+            }
+
         } catch (SAXException ex) {
             Logger.getLogger(NotificationsXMLResponse.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -77,6 +77,6 @@ public class NotificationsXMLResponse extends XMLResponse {
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(NotificationsXMLResponse.class.getName()).log(Level.SEVERE, null, ex);
         }
-	}
+    }
 
 }

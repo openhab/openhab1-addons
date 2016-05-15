@@ -18,13 +18,13 @@ package net.wimpi.modbus.cmd;
 
 import java.net.InetAddress;
 
+import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.io.ModbusTCPTransaction;
 import net.wimpi.modbus.msg.ModbusRequest;
 import net.wimpi.modbus.msg.ReadInputDiscretesRequest;
 import net.wimpi.modbus.msg.ReadInputDiscretesResponse;
 import net.wimpi.modbus.msg.WriteCoilRequest;
 import net.wimpi.modbus.net.TCPMasterConnection;
-import net.wimpi.modbus.Modbus;
 
 /**
  * Class that implements a simple commandline
@@ -48,103 +48,102 @@ import net.wimpi.modbus.Modbus;
  */
 public class DIDOTest {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    InetAddress addr = null;
-    TCPMasterConnection con = null;
-    ModbusRequest di_req = null;
-    WriteCoilRequest do_req = null;
+        InetAddress addr = null;
+        TCPMasterConnection con = null;
+        ModbusRequest di_req = null;
+        WriteCoilRequest do_req = null;
 
-    ModbusTCPTransaction di_trans = null;
-    ModbusTCPTransaction do_trans = null;
+        ModbusTCPTransaction di_trans = null;
+        ModbusTCPTransaction do_trans = null;
 
-    int di_ref = 0;
-    int do_ref = 0;
-    int port = Modbus.DEFAULT_PORT;
+        int di_ref = 0;
+        int do_ref = 0;
+        int port = Modbus.DEFAULT_PORT;
 
-    try {
-
-      //1. Setup the parameters
-      if (args.length < 3) {
-        printUsage();
-        System.exit(1);
-      } else {
         try {
-          String astr = args[0];
-          int idx = astr.indexOf(':');
-          if(idx > 0) {
-            port = Integer.parseInt(astr.substring(idx+1));
-            astr = astr.substring(0,idx);
-          }
-          addr = InetAddress.getByName(astr);
-          di_ref = Integer.parseInt(args[1]);
-          do_ref = Integer.parseInt(args[2]);
+
+            // 1. Setup the parameters
+            if (args.length < 3) {
+                printUsage();
+                System.exit(1);
+            } else {
+                try {
+                    String astr = args[0];
+                    int idx = astr.indexOf(':');
+                    if (idx > 0) {
+                        port = Integer.parseInt(astr.substring(idx + 1));
+                        astr = astr.substring(0, idx);
+                    }
+                    addr = InetAddress.getByName(astr);
+                    di_ref = Integer.parseInt(args[1]);
+                    do_ref = Integer.parseInt(args[2]);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    printUsage();
+                    System.exit(1);
+                }
+            }
+
+            // 2. Open the connection
+            con = new TCPMasterConnection(addr);
+            con.setPort(port);
+            con.connect();
+            if (Modbus.debug) {
+                System.out.println("Connected to " + addr.toString() + ":" + con.getPort());
+            }
+
+            // 3. Prepare the requests
+            di_req = new ReadInputDiscretesRequest(di_ref, 1);
+
+            do_req = new WriteCoilRequest();
+            do_req.setReference(do_ref);
+
+            di_req.setUnitID(0);
+            do_req.setUnitID(0);
+
+            // 4. Prepare the transactions
+            di_trans = new ModbusTCPTransaction(con);
+            di_trans.setRequest(di_req);
+            di_trans.setReconnecting(false);
+            do_trans = new ModbusTCPTransaction(con);
+            do_trans.setRequest(do_req);
+            do_trans.setReconnecting(false);
+
+            // 5. Holders for last states
+            boolean last_out = false;
+            boolean new_in = false;
+
+            // 6. Execute the transactions repeatedly
+            do {
+                di_trans.execute();
+                new_in = ((ReadInputDiscretesResponse) di_trans.getResponse()).getDiscreteStatus(0);
+
+                // write only if differ
+                if (new_in != last_out) {
+                    do_req.setCoil(new_in);
+                    do_trans.execute();
+                    last_out = new_in;
+                    if (Modbus.debug) {
+                        System.out.println("Updated coil with state from DI.");
+                    }
+                }
+            } while (true);
+
         } catch (Exception ex) {
-          ex.printStackTrace();
-          printUsage();
-          System.exit(1);
+            ex.printStackTrace();
+        } finally {
+
+            // 7. Close the connection
+            con.close();
+
         }
-      }
+    }// main
 
-      //2. Open the connection
-      con = new TCPMasterConnection(addr);
-      con.setPort(port);
-      con.connect();
-      if (Modbus.debug) System.out.println("Connected to " + addr.toString() + ":" + con.getPort());
+    private static void printUsage() {
+        System.out.println(
+                "java net.wimpi.modbus.cmd.DIDOTest <address{:<port>} [String]> <register d_in [int16]> <register d_out [int16]>");
+    }// printUsage
 
-
-      //3. Prepare the requests
-      di_req = new ReadInputDiscretesRequest(di_ref, 1);
-
-      do_req = new WriteCoilRequest();
-      do_req.setReference(do_ref);
-
-      di_req.setUnitID(0);
-      do_req.setUnitID(0);
-
-
-      //4. Prepare the transactions
-      di_trans = new ModbusTCPTransaction(con);
-      di_trans.setRequest(di_req);
-      di_trans.setReconnecting(false);
-      do_trans = new ModbusTCPTransaction(con);
-      do_trans.setRequest(do_req);
-      do_trans.setReconnecting(false);
-
-      //5. Holders for last states
-      boolean last_out = false;
-      boolean new_in = false;
-
-      //6. Execute the transactions repeatedly
-      do {
-        di_trans.execute();
-        new_in = ((ReadInputDiscretesResponse) di_trans.getResponse())
-            .getDiscreteStatus(0);
-
-        //write only if differ
-        if (new_in != last_out) {
-          do_req.setCoil(new_in);
-          do_trans.execute();
-          last_out = new_in;
-          if (Modbus.debug) System.out.println("Updated coil with state from DI.");
-        }
-      } while (true);
-
-
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    } finally {
-
-      //7. Close the connection
-      con.close();
-
-    }
-  }//main
-
-  private static void printUsage() {
-    System.out.println(
-        "java net.wimpi.modbus.cmd.DIDOTest <address{:<port>} [String]> <register d_in [int16]> <register d_out [int16]>"
-    );
-  }//printUsage
-
-}//class DIDOTest
+}// class DIDOTest

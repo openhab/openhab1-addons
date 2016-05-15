@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,14 +18,14 @@ import org.openhab.core.types.State;
  */
 public interface LightwaveRFCommand {
 
-	LightwaveRFCommand STOP_MESSAGE = new LightwaveRFStopPublisherCommand();
+    LightwaveRFCommand STOP_MESSAGE = new LightwaveRFStopPublisherCommand();
 
-	public String getLightwaveRfCommandString();
+    public String getLightwaveRfCommandString();
 
-	public State getState(LightwaveRfType type);
+    public State getState(LightwaveRfType type);
 
-	public LightwaveRfMessageId getMessageId();
+    public LightwaveRfMessageId getMessageId();
 
-	public LightwaveRfMessageType getMessageType();
+    public LightwaveRfMessageType getMessageType();
 
 }

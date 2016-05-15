@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,70 +19,62 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 /**
  * {@link WithingsGenericBindingProvider} is responsible for parsing the binding
  * configuration.
- * 
+ *
  * @author Dennis Nobel
  * @since 1.5.0
  */
-public class WithingsGenericBindingProvider extends
-		AbstractGenericBindingProvider implements WithingsBindingProvider {
+public class WithingsGenericBindingProvider extends AbstractGenericBindingProvider implements WithingsBindingProvider {
 
-	@Override
-	public String getBindingType() {
-		return "withings";
-	}
+    @Override
+    public String getBindingType() {
+        return "withings";
+    }
 
-	@Override
-	public WithingsBindingConfig getItemConfig(String itemName) {
-		return (WithingsBindingConfig) bindingConfigs.get(itemName);
-	}
+    @Override
+    public WithingsBindingConfig getItemConfig(String itemName) {
+        return (WithingsBindingConfig) bindingConfigs.get(itemName);
+    }
 
-	@Override
-	public void processBindingConfiguration(String context, Item item,
-			String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
+    @Override
+    public void processBindingConfiguration(String context, Item item, String bindingConfig)
+            throws BindingConfigParseException {
+        super.processBindingConfiguration(context, item, bindingConfig);
 
-		String[] configElements = bindingConfig.split(":");
-		
-		String accountId = null;
-		MeasureType measureType = null;
-		
-		if (configElements.length == 1) {
-			measureType = MeasureType.valueOf(configElements[0].toUpperCase());
-		}
-		else if (configElements.length == 2) {
-			accountId = configElements[0];
-			measureType = MeasureType.valueOf(configElements[1].toUpperCase());
-		}
-		else {
-			throw new BindingConfigParseException("Unknown Binding configuration '{}'. The Binding "
-				+ "configuration should consists of either one or two elements.");
-		}
+        String[] configElements = bindingConfig.split(":");
 
-		if (measureType == null) {
-			throw new BindingConfigParseException("Could not convert string '"
-					+ bindingConfig + "' to according measure type.");
-		}
+        String accountId = null;
+        MeasureType measureType = null;
 
-		WithingsBindingConfig config = new WithingsBindingConfig(accountId, measureType);
+        if (configElements.length == 1) {
+            measureType = MeasureType.valueOf(configElements[0].toUpperCase());
+        } else if (configElements.length == 2) {
+            accountId = configElements[0];
+            measureType = MeasureType.valueOf(configElements[1].toUpperCase());
+        } else {
+            throw new BindingConfigParseException("Unknown Binding configuration '{}'. The Binding "
+                    + "configuration should consists of either one or two elements.");
+        }
 
-		addBindingConfig(item, config);
-	}
+        if (measureType == null) {
+            throw new BindingConfigParseException(
+                    "Could not convert string '" + bindingConfig + "' to according measure type.");
+        }
 
-	@Override
-	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException {
-		if (!(item instanceof NumberItem)) {
-			throw new BindingConfigParseException(
-					getConfigParseExcpetionMessage(item));
-		}
-	}
+        WithingsBindingConfig config = new WithingsBindingConfig(accountId, measureType);
 
-	private String getConfigParseExcpetionMessage(Item item) {
-		return "item '"
-				+ item.getName()
-				+ "' is of type '"
-				+ item.getClass().getSimpleName()
-				+ "', only NumberItems are allowed - please check your *.items configuration";
-	}
+        addBindingConfig(item, config);
+    }
+
+    @Override
+    public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+        if (!(item instanceof NumberItem)) {
+            throw new BindingConfigParseException(getConfigParseExcpetionMessage(item));
+        }
+    }
+
+    private String getConfigParseExcpetionMessage(Item item) {
+        return "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
+                + "', only NumberItems are allowed - please check your *.items configuration";
+    }
 
 }

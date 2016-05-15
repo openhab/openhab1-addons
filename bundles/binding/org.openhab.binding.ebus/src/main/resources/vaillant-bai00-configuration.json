@@ -1,59 +1,514 @@
 [
-	{
-		"comment":	"<Regler> Vaillant: Aktuelle Geräteleistung in %",
-		"device": 	"Vaillant BAI000 VSC 196/2- C 150",
-		"id":		"performance-kw",
-		"class":	"bai00",
-		"command":	"B5 09",
-		"data":		"0D 07 04",
-		"dst":		"08",
-		
-		"values": {
-			"performance_burner-kw":	{"type": "uchar", "pos": 12, "label": "Heizungteillast in kW", "min": 1, "max": 100}
-		}
-	},
+    {
+        "comment":  "<Boiler> Heating partial load D.000 (kW)",
+        "device":   "Vaillant BAI000",
+        "id":       "level_part_load",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 07 04",
+        "dst":      "08",
 
-	{
-		"comment":	"<Regler> Vaillant: Aktuelle Geräteleistung in %",
-		"device": 	"Vaillant BAI000 VSC 196/2- C 150",
-		"id":		"performance",
-		"class":	"bai00",
-		"command":	"B5 09",
-		"data":		"0D 73 00",
-		"dst":		"08",
-		
-		"values": {
-			"performance_burner":		{"type": "uchar", "pos": 12, "label": "Aktuelle Geräteleistung (%)", "min": 0, "max": 100}
-		}
-	},
-	
-	{
-		"comment":	"<Regler> Vaillant: Vorlauf-Temperatur in °C",
-		"device": 	"Vaillant BAI000 VSC 196/2- C 150",
-		"id":		"temp_flow",
-		"class":	"bai00",
-		"command":	"B5 09",
-		"data":		"0D 18 00",
-		"dst":		"08",
-		
-		"values": {
-			"temp_flow":		{"type": "data2c", "pos": 12, "label": "Vorlauf-Temperatur in °C", "min": 0, "max": 100},
-			"status_flow":		{"type": "byte", "pos": 14, "label": "Vorlauf-Temperatur Status"}
-		}
-	},
-	
-	{
-		"comment":	"<Regler> Vaillant: Rücklauf-Temperatur in °C",
-		"device": 	"Vaillant BAI000 VSC 196/2- C 150",
-		"id":		"temp_return",
-		"class":	"bai00",
-		"command":	"B5 09",
-		"data":		"0D 98 00",
-		"dst":		"08",
-		
-		"values": {
-			"temp_return":		{"type": "data2c", "pos": 12, "label": "Rücklauf-Temperatur in °C", "min": 0, "max": 100},
-			"status_return":	{"type": "byte", "pos": 14, "label": "Rücklauf-Temperatur Status"}
-		}
-	}
+        "values": {
+            "level_part_load": {"type": "uchar", "pos": 12, "label": "Heating partial load (kW)", "min": 0,"max": 200}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Heating partial load D.000 (kW)",
+        "device":   "Vaillant BAI000",
+        "id":       "set_level_part_load",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0E 07 04 00",
+        "dst":      "08",
+
+        "values": {
+            "level_part_load": {"type": "uchar", "pos": 9, "label": "Heating partial load (kW)", "min": 0,"max": 200}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Overrun time of internal pump for heating mode D.001 (min)",
+        "device":   "Vaillant BAI000",
+        "id":       "postrun_pump",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D F7 03",
+        "dst":      "08",
+
+        "values": {
+            "postrun_pump": {"type": "uchar", "pos": 12, "label": "Overrun time of internal pump for heating mode (min)", "min": 0,"max": 60}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Pump overrun time for heating mode D.001 (min)",
+        "device":   "Vaillant BAI000",
+        "id":       "set_postrun_pump",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0E F7 03 00",
+        "dst":      "08",
+
+        "values": {
+            "postrun_pump": {"type": "uchar", "pos": 12, "label": "Overrun time of internal pump for heating mode (min)", "min": 0,"max": 60}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Max. burner anti-cycling time heating at 20 °C flow temperature D.002 (min)",
+        "device":   "Vaillant BAI000",
+        "id":       "blocktime_boiler",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 09 04",
+        "dst":      "08",
+
+        "values": {
+            "blocktime_boiler": {"type": "uchar", "pos": 12, "label": "Max. burner anti-cycling time heating at 20 °C flow temperature (min)", "min": 2,"max": 60}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Max. burner anti-cycling time heating at 20 °C flow temperature D.002 (min)",
+        "device":   "Vaillant BAI000",
+        "id":       "set_blocktime_boiler",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0E 09 04 00",
+        "dst":      "08",
+
+        "values": {
+            "blocktime_boiler": {"type": "uchar", "pos": 12, "label": "Max. burner anti-cycling time heating at 20 °C flow temperature (min)", "min": 2,"max": 60}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Outlet temp. actual value D.003 (°C)",
+        "device":   "Vaillant BAI000",
+        "id":       "temp_outlet",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 16 00",
+        "dst":      "08",
+
+        "values": {
+            "temp_outlet": {"type": "data2c", "pos": 12,"label": "Outlet temp. actual value (°C)", "min": 0, "max":100},
+            "status":      {"type": "uchar", "pos": 14, "label": "Outlet temp. actual value status",
+                "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
+        }
+    },
+
+    {
+        "comment":  "<DHW> Measured value of hot water sensor D.004 (°C)",
+        "device":   "Vaillant BAI000",
+        "id":       "temp_cylinder",
+        "class":    "dhw",
+        "command":  "B5 09",
+        "data":     "0D 17 00",
+        "dst":      "08",
+
+        "values": {
+            "temp_cylinder": {"type": "data2c", "pos": 12,"label": "Measured value of hot water sensor (°C)", "min": 0, "max":100},
+            "status":        {"type": "uchar", "pos": 14, "label": "Hot water sensor status",
+                "mapping":   {"0":"ok", "85":"circuit", "170":"cutoff"}}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Flow temperature target value (or return target value) D.005 (°C)",
+        "device":   "Vaillant BAI000",
+        "id":       "temp_d_flow",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 39 00",
+        "dst":      "08",
+
+        "values": {
+            "temp_d_flow": {"type": "data2c", "pos": 12, "label": "Flow temperature target value (or return target value) (°C)"}
+        }
+    },
+
+    {
+        "comment":  "<DHW> Hot water temperature target value (VUW boilers only) D.006 (°C)",
+        "device":   "Vaillant BAI000",
+        "id":       "temp_d_dhw",
+        "class":    "dhw",
+        "command":  "B5 09",
+        "data":     "0D EA 03",
+        "dst":      "08",
+
+        "values": {
+            "temp_d_dhw": {"type": "data2c", "pos": 12, "label": "Hot water temperature target value (°C)"}
+        }
+    },
+
+    {
+        "comment":  "<DHW> Warm start temperature target value (only with VUW boilers) - Cylinder temperature target value (only with VU boilers) D.007 (°C)",
+        "device":   "Vaillant BAI000",
+        "id":       "temp_d_cylinder",
+        "class":    "dhw",
+        "command":  "B5 09",
+        "data":     "0D 04 00",
+        "dst":      "08",
+
+        "values": {
+            "temp_d_cylinder": {"type": "data2c", "pos": 12, "label": "Cylinder temperature target value (°C)"}
+        }
+    },
+
+    {
+        "comment":  "<Controller> Room thermostat at terminal RT D.008",
+        "device":   "Vaillant BAI000",
+        "id":       "state_thermostat_RT",
+        "class":    "controller",
+        "command":  "B5 09",
+        "data":     "0D 2A 00",
+        "dst":      "08",
+
+        "values": {
+            "state_thermostat_RT": {"type": "uchar", "pos": 12, "label": "Room thermostat at terminal RT", 
+                "mapping": {"0":"off", "1":"on"}}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Target value from external eBus controller D.009 (°C)",
+        "device":   "Vaillant BAI000",
+        "id":       "temp_d_flow_ext",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 6E 04",
+        "dst":      "08",
+
+        "values": {
+            "temp_d_flow_ext": {"type": "data2c", "pos": 12, "label": "Target value from external eBus controller (°C)"}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Status of internal pump D.010",
+        "device":   "Vaillant BAI000",
+        "id":       "state_pump",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 44 00",
+        "dst":      "08",
+
+        "values": {
+            "state_pump":  {"type": "uchar", "pos": 12, "label": "Status of internal pump", 
+                "mapping": {"0":"off", "1":"on"}}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Status of external heating pump D.011",
+        "device":   "Vaillant BAI000",
+        "id":       "state_pump_ext",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 3F 00",
+        "dst":      "08",
+
+        "values": {
+            "state_pump_ext": {"type": "uchar", "pos": 12, "label": "Status of external heating pump", 
+                "mapping":    {"0":"off", "1":"on"}}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Actual pump speed (high-efficiency pump) (%) D.015",
+        "device":   "Vaillant BAI000",
+        "id":       "modulation_pump",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 73 00",
+        "dst":      "08",
+
+        "values": {
+            "modulation_pump": {"type": "uchar", "pos": 12, "label": "Actual pump speed (%)", "min": 0, "max": 100}
+        }
+    },
+
+    {
+        "comment":  "<Controller> Room thermostat 24 V DC open/closed D.016",
+        "device":   "Vaillant BAI000",
+        "id":       "state_thermostat_24V",
+        "class":    "controller",
+        "command":  "B5 09",
+        "data":     "0D 0E 00",
+        "dst":      "08",
+
+        "values": {
+            "state_thermostat_24V": {"type": "uchar", "pos": 12, "label": "Room thermostat 24V", 
+                "mapping": {"0":"off", "1":"on"}}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Heating flow/return regulation changeover D.017",
+        "device":   "Vaillant BAI000",
+        "id":       "state_return_regulation",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 0C 04",
+        "dst":      "08",
+
+        "values": {
+            "state_return_regulation": {"type": "uchar", "pos": 12, "label": "Heating flow/return regulation changeover", 
+                "mapping": {"0":"flow", "1":"return"}}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Heating flow/return regulation changeover D.017",
+        "device":   "Vaillant BAI000",
+        "id":       "set_state_return_regulation",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0E 0C 04 00",
+        "dst":      "08",
+
+        "values": {
+            "state_return_regulation": {"type": "uchar", "pos": 9, "label": "Heating flow/return regulation changeover", 
+                "mapping": {"0":"flow", "1":"return"}}
+        }
+    },
+
+    {
+        "comment":  "<DHW> Hot water requirement via C1/C2, impeller or APC D.022",
+        "device":   "Vaillant BAI000",
+        "id":       "state_dhw_demand",
+        "class":    "dhw",
+        "command":  "B5 09",
+        "data":     "0D 58 00",
+        "dst":      "08",
+
+        "values": {
+            "state_dhw_demand": {"type": "uchar", "pos": 12, "label": "Hot water requirement", 
+                "mapping": {"0":"off", "1":"on"}}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Summer/winter operating mode(heating on/off) D.023",
+        "device":   "Vaillant BAI000",
+        "id":       "mode_summer_winter_switch",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D F2 03",
+        "dst":      "08",
+
+        "values": {
+            "mode_summer_winter_switch": {"type": "uchar", "pos": 12, "label": "Summer/winter operating mode", 
+                "mapping": {"0":"off", "1":"on"}}
+        }
+    },
+
+    {
+        "comment":  "<DHW> Hot water generation enabled by eBUS controller D.025",
+        "device":   "Vaillant BAI000",
+        "id":       "state_dhw_demand_ebus",
+        "class":    "dhw",
+        "command":  "B5 09",
+        "data":     "0D 47 04",
+        "dst":      "08",
+
+        "values": {
+            "state_dhw_demand_ebus": {"type": "uchar", "pos": 12, "label": "Hot water generation enabled by eBUS controller", 
+                "mapping": {"0":"off", "1":"on"}}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Gas valve status D.030",
+        "device":   "Vaillant BAI000",
+        "id":       "state_gas_valve",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D BB 00",
+        "dst":      "08",
+
+        "values": {
+            "state_gas_valve": {"type": "uchar", "pos": 12, "label": "Gas valve status", 
+                "mapping": {"240":"off", "15":"on"}}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Fan speed target value D.033 (rpm)",
+        "device":   "Vaillant BAI000",
+        "id":       "speed_d_fan",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 24 00",
+        "dst":      "08",
+        
+        "values": {
+            "speed_d_fan": {"type": "uint","pos": 12,"label": "Fan speed target value (rpm)"}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Fan speed actual value D.034 (rpm)",
+        "device":   "Vaillant BAI000",
+        "id":       "speed_fan",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 83 00",
+        "dst":      "08",
+
+        "values": {
+            "speed_fan": {"type": "uint","pos": 12,"label": "Fan speed (rpm)"}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Position of the diverter valve D.035",
+        "device":   "Vaillant BAI000",
+        "id":       "state_diverter_valve",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 54 00",
+        "dst":      "08",
+
+        "values": {
+            "state_diverter_valve": {"type": "uchar", "pos": 12, "label": "Position of the diverter valve", 
+                "mapping":   {"0":"heating", "40":"parallel", "100":"dhw"}}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Flow temperature D.040 (°C)",
+        "device":   "Vaillant BAI000",
+        "id":       "temp_flow",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 18 00",
+        "dst":      "08",
+
+        "values": {
+            "temp_flow":   {"type": "data2c","pos": 12,"label": "Flow temperature (°C)","min": 0,"max": 100},
+            "status":      {"type": "uchar", "pos": 14, "label": "Status flow temperature",
+                "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Return temperature D.041 (°C)",
+        "device":   "Vaillant BAI000",
+        "id":       "temp_return",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 98 00",
+        "dst":      "08",
+
+        "values": {
+            "temp_return": {"type": "data2c", "pos": 12, "label": "Return temperature (°C)", "min": 0, "max": 100},
+            "status":      {"type": "uchar", "pos": 14, "label": "Status return temperature",
+                "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Digitised ionisation value D.044",
+        "device":   "Vaillant BAI000",
+        "id":       "value_io",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D A4 00",
+        "dst":      "08",
+
+        "values": {
+            "value_io": {"type": "word", "pos": 12, "label": "Digitised ionisation value", "min":0, "max":1020}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Outside temperature D.047 (°C)",
+        "device":   "Vaillant BAI000",
+        "id":       "temp_outside",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 76 00",
+        "dst":      "08",
+
+        "values": {
+            "temp_outside": {"type": "data2c", "pos": 12, "label": "Outside temperature (°C)", "min": 0, "max": 100},
+            "status":       {"type": "uchar", "pos": 14, "label": "Status outside temperature",
+                "mapping":  {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+        }
+    },
+
+    {
+        "comment":  "<Heating> Operating hours, heating D.080 (h)",
+        "device":   "Vaillant BAI000",
+        "id":       "runtime",
+        "class":    "heating",
+        "command":  "B5 09",
+        "data":     "0D 28 00",
+        "dst":      "08",
+        
+        "values": {
+            "runtime": {"type": "uint", "pos": 12, "label": "Operating hours, heating (h)"}
+        }
+    },
+
+    {
+        "comment":  "<DHW> Operating hours, hot water generation D.081 (h)",
+        "device":   "Vaillant BAI000",
+        "id":       "runtime",
+        "class":    "dhw",
+        "command":  "B5 09",
+        "data":     "0D 22 00",
+        "dst":      "08",
+        
+        "values": {
+            "runtime": {"type": "uint", "pos": 12, "label": "Operating hours, hot water generation (h)"}
+        }
+    },
+
+    {
+        "comment":  "<Heating> Number of burner start-ups in heating mode D.082 (x100)",
+        "device":   "Vaillant BAI000",
+        "id":       "starts",
+        "class":    "heating",
+        "command":  "B5 09",
+        "data":     "0D 29 00",
+        "dst":      "08",
+        
+        "values": {
+            "starts": {"type": "uint", "pos": 12, "label": "Burner start-ups in heating mode (x100)"}
+        }
+    },  
+
+    {
+        "comment":  "<DHW> Number of burner start-ups in hot water mode D.083 (x100)",
+        "device":   "Vaillant BAI000",
+        "id":       "starts",
+        "class":    "dhw",
+        "command":  "B5 09",
+        "data":     "0D 23 00",
+        "dst":      "08",
+        
+        "values": {
+            "starts": {"type": "uint", "pos": 12, "label": "Burner start-ups in hot water mode (x100)"}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> System pressure (bar)",
+        "device":   "Vaillant BAI000",
+        "id":       "pressure",
+        "class":    "boiler",
+        "command":  "B5 09",
+        "data":     "0D 02 00",
+        "dst":      "08",
+
+        "values": {
+            "pressure": {"type": "word", "pos": 12, "label": "System pressure (bar)", "factor": 0.001},
+            "status":   {"type": "uchar", "pos": 14, "label": "Status system pressure",
+                "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+        }
+    }
 ]

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,29 +14,29 @@ import org.openhab.core.items.Item;
 
 /**
  * Interface for the RWE Smarthome binding provider.
- * 
+ *
  * @author ollie-dev
  * @since 1.8.0
  */
 public interface RWESmarthomeBindingProvider extends BindingProvider {
 
-	/**
-	 * Returns the item object by itemName.
-	 */
-	Item getItem(String itemName);
-	
-	/**
-	 * Returns the itemname of the logicaldeviceid.
-	 */
-	String getItemNameById(String id);
-	
-	/**
-	 * Returns the itemname of the logicaldeviceid with the given param.
-	 */
-	String getItemNameByIdAndParam(String id, String param);
+    /**
+     * Returns the item object by itemName.
+     */
+    Item getItem(String itemName);
 
-	/**
-	 * Returns the bindingConfig by itemName.
-	 */
-	RWESmarthomeBindingConfig getBindingConfigFor(String itemName);
+    /**
+     * Returns the itemname of the logicaldeviceid.
+     */
+    String getItemNameById(String id);
+
+    /**
+     * Returns the itemname of the logicaldeviceid with the given param.
+     */
+    String getItemNameByIdAndParam(String id, String param);
+
+    /**
+     * Returns the bindingConfig by itemName.
+     */
+    RWESmarthomeBindingConfig getBindingConfigFor(String itemName);
 }

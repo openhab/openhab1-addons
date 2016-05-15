@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,17 +8,15 @@
  */
 package org.openhab.binding.mailcontrol.service;
 
-import static org.creek.mailcontrol.model.message.MessageType.ITEMS_STATE_REQUEST_MESSAGE;
-import static org.creek.mailcontrol.model.message.MessageType.ITEM_COMMAND_REQUEST_MESSAGE;
-import static org.creek.mailcontrol.model.message.MessageType.ITEM_STATE_REQUEST_MESSAGE;
+import static org.creek.mailcontrol.model.message.MessageType.*;
 
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Set;
 
 import org.creek.accessemail.connector.mail.MailConnector;
-import org.creek.mailcontrol.model.data.ItemStateData;
 import org.creek.mailcontrol.model.data.ItemCommandData;
+import org.creek.mailcontrol.model.data.ItemStateData;
 import org.creek.mailcontrol.model.message.GenericMessage;
 import org.creek.mailcontrol.model.message.GenericRequestTransformer;
 import org.creek.mailcontrol.model.message.ItemCommandRequestMessage;
@@ -30,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
@@ -58,11 +56,13 @@ public class MessagesProcessor<T extends Command> {
                 logger.debug("Processing message: " + message);
 
                 if (message.getMessageType() == ITEM_COMMAND_REQUEST_MESSAGE) {
-                    ItemCommandData itemCommand = (ItemCommandData) ((ItemCommandRequestMessage) message).getItemCommand();
+                    ItemCommandData itemCommand = (ItemCommandData) ((ItemCommandRequestMessage) message)
+                            .getItemCommand();
                     itemCommandProcessor.processItemCommand(itemCommand);
                 } else if (message.getMessageType() == ITEM_STATE_REQUEST_MESSAGE) {
                     ItemStateRequestMessage itemStateRequestMessage = (ItemStateRequestMessage) message;
-                    ItemStateData itemState = itemStateRequestProcessor.getItemState(itemStateRequestMessage.getItemId());
+                    ItemStateData itemState = itemStateRequestProcessor
+                            .getItemState(itemStateRequestMessage.getItemId());
                     messagesSender.sendMessage(message, itemState);
                 } else if (message.getMessageType() == ITEMS_STATE_REQUEST_MESSAGE) {
                     List<ItemStateData> itemStates = itemStateRequestProcessor.getItemStates();

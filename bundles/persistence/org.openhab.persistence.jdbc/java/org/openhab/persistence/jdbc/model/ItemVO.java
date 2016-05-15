@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Represents the Item-data on the part of MyBatis/database.
- * 
+ *
  * @author Helmut Lehmeyer
  * @since 1.8.0
  */
@@ -116,25 +116,31 @@ public class ItemVO implements Serializable {
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         ItemVO other = (ItemVO) obj;
         if (value == null) {
-            if (other.value != null)
+            if (other.value != null) {
                 return false;
-        } else if (!value.equals(other.value))
+            }
+        } else if (!value.equals(other.value)) {
             return false;
-        if (time != other.time)
+        }
+        if (time != other.time) {
             return false;
+        }
         return true;
     }
 

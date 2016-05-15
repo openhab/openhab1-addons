@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,31 +8,19 @@
  */
 package org.openhab.binding.mailcontrol.connection;
 
-import static org.creek.accessemail.connector.mail.MailPropertiesStorage.MAIL_USERNAME_PROPERTY;
-import static org.creek.accessemail.connector.mail.MailPropertiesStorage.MAIL_PASSWORD_PROPERTY;
-import static org.creek.accessemail.connector.mail.MailPropertiesStorage.MAIL_SMTP_AUTH_PROPERTY;
-import static org.creek.accessemail.connector.mail.MailPropertiesStorage.MAIL_SMTP_HOST_PROPERTY;
-import static org.creek.accessemail.connector.mail.MailPropertiesStorage.MAIL_SMTP_PORT_PROPERTY;
-import static org.creek.accessemail.connector.mail.MailPropertiesStorage.MAIL_SMTP_SOCKET_FACTORY_CLASS_PROPERTY;
-import static org.creek.accessemail.connector.mail.MailPropertiesStorage.MAIL_SMTP_SOCKET_FACTORY_PORT_PROPERTY;
-import static org.creek.accessemail.connector.mail.MailPropertiesStorage.MAIL_SMTP_STARTTLS_ENABLE_PROPERTY;
-import static org.creek.accessemail.connector.mail.MailPropertiesStorage.MAIL_POP3_HOST_PROPERTY;
-import static org.creek.accessemail.connector.mail.MailPropertiesStorage.MAIL_POP3_PORT_PROPERTY;
-import static org.creek.accessemail.connector.mail.MailPropertiesStorage.MAIL_POP3_SOCKET_FACTORY_CLASS_PROPERTY;
-import static org.creek.accessemail.connector.mail.MailPropertiesStorage.MAIL_POP3_SOCKET_FACTORY_PORT_PROPERTY;
+import static org.creek.accessemail.connector.mail.MailPropertiesStorage.*;
 
 import java.util.Dictionary;
 import java.util.Properties;
 
+import org.creek.accessemail.connector.mail.ConnectorException;
+import org.creek.accessemail.connector.mail.MailConnector;
 import org.osgi.service.cm.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.creek.accessemail.connector.mail.ConnectorException;
-import org.creek.accessemail.connector.mail.MailConnector;
-
 /**
- * 
+ *
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
@@ -62,7 +50,7 @@ public class ConnectorBuilder {
 
     public MailConnector createAndCheckMailConnector() throws ConfigurationException {
         MailConnector connector = null;
-        
+
         try {
             connector = new MailConnector(mailProperties);
         } catch (Exception ex) {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,13 +18,14 @@ import org.openhab.core.items.Item;
 
 public interface UCPRelayBoardBindingProvider extends BindingProvider {
 
-	/**
-	 * Returns the binding configuration for an item
-	 * @param itemName
-	 * @return
-	 */
-	public UCPRelayConfig getRelayConfigForItem(String itemName);
-	
-	public Item getItemForRelayConfig(UCPRelayConfig config);
-	
+    /**
+     * Returns the binding configuration for an item
+     * 
+     * @param itemName
+     * @return
+     */
+    public UCPRelayConfig getRelayConfigForItem(String itemName);
+
+    public Item getItemForRelayConfig(UCPRelayConfig config);
+
 }

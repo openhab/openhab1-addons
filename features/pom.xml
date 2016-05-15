@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>openhab</artifactId>
-    <version>1.8.0-SNAPSHOT</version>
+    <version>1.9.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -15,10 +15,74 @@
 
   <packaging>pom</packaging>
 
+    <properties>
+        <ohc.version>2.0.0-SNAPSHOT</ohc.version>
+        <esh.version>0.8.0-SNAPSHOT</esh.version>
+        <kat.version>1.4.1</kat.version>
+        <karaf.version>4.0.4</karaf.version>
+        <build.helper.maven.plugin.version>1.9.1</build.helper.maven.plugin.version>
+    </properties>
+
   <modules>
-    <module>org.openhab.dependencies.feature</module>
-    <module>org.openhab.designer.feature</module>
-    <module>org.openhab.runtime.feature</module>
+    <module>openhab-addons</module>
+    <module>openhab-addons-legacy</module>
+    <module>openhab-addons-external</module>
+    <module>openhab-addons-verify</module>
   </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.karaf.tooling</groupId>
+                    <artifactId>karaf-maven-plugin</artifactId>
+                    <version>${karaf.version}</version>
+                    <extensions>true</extensions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build.helper.maven.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <name>JCenter Repository</name>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+        <repository>
+            <id>maggu2810-bintray</id>
+            <name>Bintray Repository of maggu2810</name>
+            <url>https://dl.bintray.com/maggu2810/maven</url>
+        </repository>
+        <repository>
+            <id>eclipse-snapshots</id>
+            <name>Eclipse Snapshot Repository</name>
+            <layout>default</layout>
+            <url>https://repo.eclipse.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>eclipse-releases</id>
+            <name>Eclipse Release Repository</name>
+            <layout>default</layout>
+            <url>https://repo.eclipse.org/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>jfrog</id>
+            <name>JFrog OSS Repository</name>
+            <url>http://oss.jfrog.org/libs-snapshot/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
 
 </project>

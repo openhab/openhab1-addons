@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,67 +25,67 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TokenResponse extends AbstractAuthResponse {
 
-	@JsonProperty("access_token")
-	private String accessToken;
-	@JsonProperty("token_type")
-	private String tokenType;
-	@JsonProperty("expires_in")
-	private Integer expiresIn;
-	@JsonProperty("refresh_token")
-	private String refreshToken;
-	@JsonProperty("scope")
-	private String scope;
+    @JsonProperty("access_token")
+    private String accessToken;
+    @JsonProperty("token_type")
+    private String tokenType;
+    @JsonProperty("expires_in")
+    private Integer expiresIn;
+    @JsonProperty("refresh_token")
+    private String refreshToken;
+    @JsonProperty("scope")
+    private String scope;
 
-	/**
-	 * @return the accessToken
-	 */
-	@JsonProperty("access_token")
-	public String getAccessToken() {
-		return this.accessToken;
-	}
+    /**
+     * @return the accessToken
+     */
+    @JsonProperty("access_token")
+    public String getAccessToken() {
+        return this.accessToken;
+    }
 
-	/**
-	 * @return the tokenType
-	 */
-	@JsonProperty("token_type")
-	public String getTokenType() {
-		return this.tokenType;
-	}
+    /**
+     * @return the tokenType
+     */
+    @JsonProperty("token_type")
+    public String getTokenType() {
+        return this.tokenType;
+    }
 
-	/**
-	 * @return the expiresIn
-	 */
-	@JsonProperty("expires_in")
-	public Integer getExpiresIn() {
-		return this.expiresIn;
-	}
+    /**
+     * @return the expiresIn
+     */
+    @JsonProperty("expires_in")
+    public Integer getExpiresIn() {
+        return this.expiresIn;
+    }
 
-	/**
-	 * @return the refreshToken
-	 */
-	@JsonProperty("refresh_token")
-	public String getRefreshToken() {
-		return this.refreshToken;
-	}
+    /**
+     * @return the refreshToken
+     */
+    @JsonProperty("refresh_token")
+    public String getRefreshToken() {
+        return this.refreshToken;
+    }
 
-	/**
-	 * @return the scope
-	 */
-	@JsonProperty("scope")
-	public String getScope() {
-		return this.scope;
-	}
+    /**
+     * @return the scope
+     */
+    @JsonProperty("scope")
+    public String getScope() {
+        return this.scope;
+    }
 
-	@Override
-	public String toString() {
-		final ToStringBuilder builder = createToStringBuilder();
-		builder.appendSuper(super.toString());
-		builder.append("accessToken", this.accessToken);
-		builder.append("tokenType", this.tokenType);
-		builder.append("expiresIn", this.expiresIn);
-		builder.append("refreshToken", this.refreshToken);
-		builder.append("scope", this.scope);
+    @Override
+    public String toString() {
+        final ToStringBuilder builder = createToStringBuilder();
+        builder.appendSuper(super.toString());
+        builder.append("accessToken", this.accessToken);
+        builder.append("tokenType", this.tokenType);
+        builder.append("expiresIn", this.expiresIn);
+        builder.append("refreshToken", this.refreshToken);
+        builder.append("scope", this.scope);
 
-		return builder.toString();
-	}
+        return builder.toString();
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,74 +21,78 @@ import org.slf4j.LoggerFactory;
 
 import flexjson.JSONSerializer;
 
-
 /**
  * This is the implementation of the Open.Sen.se {@link PersistenceService}. To learn
  * more about Open.Sen.se please visit their <a href="http://open.sen.se/">website</a>.
- * 
+ *
  * @author Thomas.Eichstaedt-Engelen
  * @author Kai Kreuzer
  * @since 1.0.0
  */
 public class SenseService implements PersistenceService {
 
-	private static final Logger logger = LoggerFactory.getLogger(SenseService.class);
-	
-	private String apiKey;
-	private String url;
-	
-	private final static String DEFAULT_EVENT_URL = "http://api.sen.se/events/?sense_key=";
+    private static final Logger logger = LoggerFactory.getLogger(SenseService.class);
 
-	private boolean initialized = false;
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	public String getName() {
-		return "sense";
-	}
+    private String apiKey;
+    private String url;
 
-	/**
-	 * @{inheritDoc}
-	 */
-	public void store(Item item, String alias) {
-		if (initialized) {
-			JSONSerializer serializer = 
-				new JSONSerializer().transform(new SenseEventTransformer(), SenseEventBean.class);
-			String serializedBean = serializer.serialize(new SenseEventBean(alias, item.getState().toString()));
-			
-			String serviceUrl = url + apiKey;
-			String response = HttpUtil.executeUrl(
-				"POST", serviceUrl, IOUtils.toInputStream(serializedBean), "application/json", 5000);
-			logger.debug("Stored item '{}' as '{}' in Sen.se and received response: {} ", new String[] { item.getName(), alias, response });
-		}
-	}
+    private final static String DEFAULT_EVENT_URL = "http://api.sen.se/events/?sense_key=";
 
-	/**
-	 * @{inheritDoc}
-	 */
-	public void store(Item item) {
-		throw new UnsupportedOperationException("The sense service requires aliases for persistence configurations that should match the feed id");
-	}
+    private boolean initialized = false;
 
-	/**
-	 * @{inheritDoc}
-	 */
-	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
-		if (config!=null) {
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public String getName() {
+        return "sense";
+    }
 
-			url = (String) config.get("url");
-			if (StringUtils.isBlank(url)) {
-				url = DEFAULT_EVENT_URL;
-			}
-			
-			apiKey = (String) config.get("apikey");
-			if (StringUtils.isBlank(apiKey)) {
-				logger.warn("The Open.Sen.se API-Key is missing - please configure it in openhab.cfg");
-			}
-			
-			initialized = true;
-		}
-	}
-	
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void store(Item item, String alias) {
+        if (initialized) {
+            JSONSerializer serializer = new JSONSerializer().transform(new SenseEventTransformer(),
+                    SenseEventBean.class);
+            String serializedBean = serializer.serialize(new SenseEventBean(alias, item.getState().toString()));
+
+            String serviceUrl = url + apiKey;
+            String response = HttpUtil.executeUrl("POST", serviceUrl, IOUtils.toInputStream(serializedBean),
+                    "application/json", 5000);
+            logger.debug("Stored item '{}' as '{}' in Sen.se and received response: {} ",
+                    new String[] { item.getName(), alias, response });
+        }
+    }
+
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void store(Item item) {
+        throw new UnsupportedOperationException(
+                "The sense service requires aliases for persistence configurations that should match the feed id");
+    }
+
+    /**
+     * @{inheritDoc}
+     */
+    public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+        if (config != null) {
+
+            url = (String) config.get("url");
+            if (StringUtils.isBlank(url)) {
+                url = DEFAULT_EVENT_URL;
+            }
+
+            apiKey = (String) config.get("apikey");
+            if (StringUtils.isBlank(apiKey)) {
+                logger.warn("The Open.Sen.se API-Key is missing - please configure it in openhab.cfg");
+            }
+
+            initialized = true;
+        }
+    }
+
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -34,175 +34,186 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
- * 
+ *
  * @author Paolo Denti
  * @since 1.8.0
  */
 public class SappGenericBindingProvider extends AbstractGenericBindingProvider implements SappBindingProvider {
 
-	private static final Logger logger = LoggerFactory.getLogger(SappGenericBindingProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(SappGenericBindingProvider.class);
 
-	/**
-	 * map of existing pnmas. key is pnmas id.
-	 */
-	private Map<String, SappPnmas> pnmasMap = new HashMap<String, SappPnmas>();
+    /**
+     * map of existing pnmas. key is pnmas id.
+     */
+    private Map<String, SappPnmas> pnmasMap = new HashMap<String, SappPnmas>();
 
-	/**
-	 * virtuals cache.
-	 */
-	private Map<Integer, Integer> virtualsCache = new HashMap<Integer, Integer>();
+    /**
+     * virtuals cache.
+     */
+    private Map<Integer, Integer> virtualsCache = new HashMap<Integer, Integer>();
 
-	/**
-	 * inputs cache.
-	 */
-	private Map<Integer, Integer> inputsCache = new HashMap<Integer, Integer>();
+    /**
+     * inputs cache.
+     */
+    private Map<Integer, Integer> inputsCache = new HashMap<Integer, Integer>();
 
-	/**
-	 * outputs cache.
-	 */
-	private Map<Integer, Integer> outputsCache = new HashMap<Integer, Integer>();
+    /**
+     * outputs cache.
+     */
+    private Map<Integer, Integer> outputsCache = new HashMap<Integer, Integer>();
 
-	/**
-	 * pending update requests
-	 */
-	private SappUpdatePendingRequestsProvider sappUpdatePendingRequests = new SappUpdatePendingRequests();
+    /**
+     * pending update requests
+     */
+    private SappUpdatePendingRequestsProvider sappUpdatePendingRequests = new SappUpdatePendingRequests();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getBindingType() {
-		return "sapp";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getBindingType() {
+        return "sapp";
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		logger.debug("validating item '{}' against config '{}'", item, bindingConfig);
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+        logger.debug("validating item '{}' against config '{}'", item, bindingConfig);
 
-		if (item instanceof SwitchItem) {
-			; // OK, nothing to validate
-		} else if (item instanceof ContactItem) {
-			; // OK, nothing to validate
-		} else if (item instanceof NumberItem) {
-			; // OK, nothing to validate
-		} else if (item instanceof RollershutterItem) {
-			; // OK, nothing to validate
-		} else if (item instanceof DimmerItem) {
-			; // OK, nothing to validate
-		} else {
-			throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + " - not yet implemented, please check your *.items configuration");
-		}
-	}
+        if (item instanceof SwitchItem) {
+            ; // OK, nothing to validate
+        } else if (item instanceof ContactItem) {
+            ; // OK, nothing to validate
+        } else if (item instanceof NumberItem) {
+            ; // OK, nothing to validate
+        } else if (item instanceof RollershutterItem) {
+            ; // OK, nothing to validate
+        } else if (item instanceof DimmerItem) {
+            ; // OK, nothing to validate
+        } else {
+            throw new BindingConfigParseException(
+                    "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
+                            + " - not yet implemented, please check your *.items configuration");
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		logger.debug("processing binding configuration for context {}", context);
-		super.processBindingConfiguration(context, item, bindingConfig);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void processBindingConfiguration(String context, Item item, String bindingConfig)
+            throws BindingConfigParseException {
+        logger.debug("processing binding configuration for context {}", context);
+        super.processBindingConfiguration(context, item, bindingConfig);
 
-		if (bindingConfig != null) {
-			if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
-				SappBindingConfigSwitchItem sappBindingConfigSwitchItem = new SappBindingConfigSwitchItem(item, bindingConfig);
-				addBindingConfig(item, sappBindingConfigSwitchItem);
-			} else if (item instanceof ContactItem) {
-				SappBindingConfigContactItem sappBindingConfigContactItem = new SappBindingConfigContactItem(item, bindingConfig);
-				addBindingConfig(item, sappBindingConfigContactItem);
-			} else if (item instanceof NumberItem) {
-				SappBindingConfigNumberItem sappBindingConfigNumberItem = new SappBindingConfigNumberItem(item, bindingConfig);
-				addBindingConfig(item, sappBindingConfigNumberItem);
-			} else if (item instanceof RollershutterItem) {
-				SappBindingConfigRollershutterItem sappBindingConfigRollershutterItem = new SappBindingConfigRollershutterItem(item, bindingConfig);
-				addBindingConfig(item, sappBindingConfigRollershutterItem);
-			} else if (item instanceof DimmerItem) {
-				SappBindingConfigDimmerItem sappBindingConfigDimmerItem = new SappBindingConfigDimmerItem(item, bindingConfig);
-				addBindingConfig(item, sappBindingConfigDimmerItem);
-			} else {
-				throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + " - not yet implemented, please check your *.items configuration");
-			}
-		} else {
-			logger.warn("bindingConfig is NULL (item={}) -> processing bindingConfig aborted!", item);
-		}
-	}
+        if (bindingConfig != null) {
+            if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
+                SappBindingConfigSwitchItem sappBindingConfigSwitchItem = new SappBindingConfigSwitchItem(item,
+                        bindingConfig);
+                addBindingConfig(item, sappBindingConfigSwitchItem);
+            } else if (item instanceof ContactItem) {
+                SappBindingConfigContactItem sappBindingConfigContactItem = new SappBindingConfigContactItem(item,
+                        bindingConfig);
+                addBindingConfig(item, sappBindingConfigContactItem);
+            } else if (item instanceof NumberItem) {
+                SappBindingConfigNumberItem sappBindingConfigNumberItem = new SappBindingConfigNumberItem(item,
+                        bindingConfig);
+                addBindingConfig(item, sappBindingConfigNumberItem);
+            } else if (item instanceof RollershutterItem) {
+                SappBindingConfigRollershutterItem sappBindingConfigRollershutterItem = new SappBindingConfigRollershutterItem(
+                        item, bindingConfig);
+                addBindingConfig(item, sappBindingConfigRollershutterItem);
+            } else if (item instanceof DimmerItem) {
+                SappBindingConfigDimmerItem sappBindingConfigDimmerItem = new SappBindingConfigDimmerItem(item,
+                        bindingConfig);
+                addBindingConfig(item, sappBindingConfigDimmerItem);
+            } else {
+                throw new BindingConfigParseException(
+                        "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
+                                + " - not yet implemented, please check your *.items configuration");
+            }
+        } else {
+            logger.warn("bindingConfig is NULL (item={}) -> processing bindingConfig aborted!", item);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void addBindingConfig(Item item, BindingConfig config) {
-		super.addBindingConfig(item, config);
-		sappUpdatePendingRequests.addPendingUpdateRequest(item.getName());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void addBindingConfig(Item item, BindingConfig config) {
+        super.addBindingConfig(item, config);
+        sappUpdatePendingRequests.addPendingUpdateRequest(item.getName());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public SappBindingConfig getBindingConfig(String itemName) {
-		return (SappBindingConfig) bindingConfigs.get(itemName);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SappBindingConfig getBindingConfig(String itemName) {
+        return (SappBindingConfig) bindingConfigs.get(itemName);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, SappPnmas> getPnmasMap() {
-		return pnmasMap;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, SappPnmas> getPnmasMap() {
+        return pnmasMap;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Integer getVirtualCachedValue(int address) {
-		return virtualsCache.get(address);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Integer getVirtualCachedValue(int address) {
+        return virtualsCache.get(address);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setVirtualCachedValue(int address, int value) {
-		virtualsCache.put(address, value);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setVirtualCachedValue(int address, int value) {
+        virtualsCache.put(address, value);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Integer getInputCachedValue(int address) {
-		return inputsCache.get(address);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Integer getInputCachedValue(int address) {
+        return inputsCache.get(address);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setInputCachedValue(int address, int value) {
-		inputsCache.put(address, value);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setInputCachedValue(int address, int value) {
+        inputsCache.put(address, value);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Integer getOutputCachedValue(int address) {
-		return outputsCache.get(address);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Integer getOutputCachedValue(int address) {
+        return outputsCache.get(address);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setOutputCachedValue(int address, int value) {
-		outputsCache.put(address, value);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setOutputCachedValue(int address, int value) {
+        outputsCache.put(address, value);
+    }
 
-	@Override
-	public SappUpdatePendingRequestsProvider getSappUpdatePendingRequests() {
-		return sappUpdatePendingRequests;
-	}
+    @Override
+    public SappUpdatePendingRequestsProvider getSappUpdatePendingRequests() {
+        return sappUpdatePendingRequests;
+    }
 }

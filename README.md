@@ -1,4 +1,3 @@
-[![Build Status](https://openhab-ci.innoq.io/jenkins/job/openhab-1/badge/icon)](https://openhab-ci.innoq.io/jenkins/job/openhab-1)
 
 ## Introduction
 
@@ -6,7 +5,7 @@ The open Home Automation Bus (openHAB) project aims at providing a universal int
 
 It is designed to be absolutely vendor-neutral as well as hardware/protocol-agnostic. openHAB brings together different bus systems, hardware devices and interface protocols by dedicated bindings. These bindings send and receive commands and status updates on the openHAB event bus. This concept allows designing user interfaces with a unique look&feel, but with the possibility to operate devices based on a big number of different technologies. Besides the user interfaces, it also brings the power of automation logics across different system boundaries.
 
-For further Information please refer to our homepage http://www.openhab.org. The release binaries can be found in the ['releases' section on Github](https://github.com/openhab/openhab/releases). Nightly Snapshot-Builds can be obtained from [Cloudbees](https://openhab.ci.cloudbees.com/job/openHAB/).
+For further Information please refer to our homepage http://www.openhab.org. The release binaries can be found in the ['releases' section on Github](https://github.com/openhab/openhab/releases). 
 
 
 ## Demo
@@ -20,14 +19,14 @@ To see openHAB in action, you can directly access our demo server - choose one o
 
 If you just want to watch for a start, you might also like our [YouTube channel](http://www.youtube.com/playlist?list=PLGlxCdrGUagz6lfgo9SlNLhdwI4la_VSv)!
 
-[![HABDroid](https://developer.android.com/images/brand/en_app_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=org.openhab.habdroid) [![iOSApp](http://raw.github.com/wiki/openhab/openhab/images/app-store-badges.png)](http://itunes.apple.com/us/app/openhab/id492054521?mt=8)
+<a href="https://play.google.com/store/apps/details?id=org.openhab.habdroid"><img src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png" height="45" alt="HABDroid"></a> [![iOSApp](http://raw.github.com/wiki/openhab/openhab/images/app-store-badges.png)](http://itunes.apple.com/us/app/openhab/id492054521?mt=8)
 
 
 ## Quick Start
 
 If you do not care about reading docs and just want to see things running, here are the quick start instructions for you:
 
-1. [Download](http://www.openhab.org/downloads.html) the release version of the openHAB runtime (or alternatively the [latest snapshot build](https://openhab.ci.cloudbees.com/job/openHAB))
+1. [Download](http://www.openhab.org/downloads.html) the release version of the openHAB runtime.
 1. Unzip it to some local folder
 1. [Download](http://www.openhab.org/downloads.html) the demo configuration files
 1. Unzip to your openHAB folder
@@ -49,9 +48,9 @@ Check out [the presentations](https://github.com/openhab/openhab/wiki/Presentati
 
 If you are looking for support, please check out the [different support channels](https://github.com/openhab/openhab/wiki/Support-options-for-openHAB) that we provide.
 
-As any good open source project, openHAB welcomes any participation in the project. Read more in the [how to contribute](https://github.com/openhab/openhab/wiki/How-To-Contribute) guide.
+As any good open source project, openHAB welcomes any participation in the project. Read more in the [how to contribute](https://github.com/openhab/openhab-distro/blob/master/CONTRIBUTING.md) guide.
 
-If you are a developer and want to jump right into the sources and execute openHAB from within Eclipse, please have a look at the [IDE setup](https://github.com/openhab/openhab/wiki/IDE-Setup) procedures.
+If you are a developer and want to jump right into the sources and execute openHAB from within Eclipse, please have a look at the [IDE setup](https://github.com/openhab/openhab-distro/blob/master/docs/sources/development/ide.md) procedures.
 
 [![](http://raw.github.com/wiki/openhab/openhab/images/twitter.png)](http://twitter.com/openHAB)
 

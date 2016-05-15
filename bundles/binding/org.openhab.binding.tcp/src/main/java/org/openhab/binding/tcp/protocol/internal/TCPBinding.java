@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,7 +22,6 @@ import org.openhab.binding.tcp.Direction;
 import org.openhab.binding.tcp.internal.TCPActivator;
 import org.openhab.binding.tcp.protocol.ProtocolBindingProvider;
 import org.openhab.binding.tcp.protocol.TCPBindingProvider;
-import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
@@ -33,249 +32,270 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TCPBinding is most "simple" implementation of a TCP based ASCII protocol. It sends and received 
+ * TCPBinding is most "simple" implementation of a TCP based ASCII protocol. It sends and received
  * data as ASCII strings. Data sent out is padded with a CR/LF. This should be sufficient for a lot
  * of home automation devices that take simple ASCII based control commands, or that send back
  * text based status messages
- * 
- * 
+ *
+ *
  * @author Karel Goderis
  * @since 1.1.0
  *
  */
-public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider> implements ManagedService {
+public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>implements ManagedService {
 
-	static private final Logger logger = LoggerFactory.getLogger(TCPBinding.class);
+    static private final Logger logger = LoggerFactory.getLogger(TCPBinding.class);
 
-	/** RegEx to extract a parse a function String <code>'(.*?)\((.*)\)'</code> */
-	private static final Pattern EXTRACT_FUNCTION_PATTERN = Pattern.compile("(.*?)\\((.*)\\)");
+    /** RegEx to extract a parse a function String <code>'(.*?)\((.*)\)'</code> */
+    private static final Pattern EXTRACT_FUNCTION_PATTERN = Pattern.compile("(.*?)\\((.*)\\)");
 
-	// time to wait for a reply, in milliseconds
-	private static int timeOut = 3000;
-	// flag to use only blocking write/read operations
-	private static boolean blocking = false;
-	// string to prepend to data being sent
-	private static String preAmble = "";
-	// string to append to data being sent
-	private static String postAmble = "";
-	// flag to use the reply of the remote end to update the status of the Item receving the data
-	private static boolean updateWithResponse = true;
-	// used character set
-	private static String charset = "ASCII";
+    // time to wait for a reply, in milliseconds
+    private static int timeOut = 3000;
+    // flag to use only blocking write/read operations
+    private static boolean blocking = false;
+    // string to prepend to data being sent
+    private static String preAmble = "";
+    // string to append to data being sent
+    private static String postAmble = "";
+    // flag to use the reply of the remote end to update the status of the Item receving the data
+    private static boolean updateWithResponse = true;
+    // used character set
+    private static String charset = "ASCII";
 
-	@Override
-	protected boolean internalReceiveChanneledCommand(String itemName,
-			Command command, Channel sChannel, String commandAsString) {
+    @Override
+    protected boolean internalReceiveChanneledCommand(String itemName, Command command, Channel sChannel,
+            String commandAsString) {
 
-		ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
+        ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 
-		if(command != null ){		
-			
-			String transformedMessage = transformResponse(provider.getProtocolCommand(itemName, command),commandAsString);
-			String tcpCommandName = preAmble + transformedMessage + postAmble ;
+        if (command != null) {
 
-			ByteBuffer outputBuffer = null;
-			try {
-				outputBuffer = ByteBuffer.allocate(tcpCommandName.getBytes(charset).length);
-				outputBuffer.put(tcpCommandName.getBytes(charset));
-			} catch (UnsupportedEncodingException e) {
-				logger.warn("Exception while attempting an unsupported encoding scheme");
-			}
+            String transformedMessage = transformResponse(provider.getProtocolCommand(itemName, command),
+                    commandAsString);
+            String tcpCommandName = preAmble + transformedMessage + postAmble;
 
-			// send the buffer in an asynchronous way
-			ByteBuffer result = null;
-			try {
-				result = writeBuffer(outputBuffer,sChannel,blocking,timeOut);
-			} catch (Exception e) {
-				logger.error("An exception occurred while writing a buffer to a channel: {}",e.getMessage());
-			}
+            ByteBuffer outputBuffer = null;
+            try {
+                outputBuffer = ByteBuffer.allocate(tcpCommandName.getBytes(charset).length);
+                outputBuffer.put(tcpCommandName.getBytes(charset));
+            } catch (UnsupportedEncodingException e) {
+                logger.warn("Exception while attempting an unsupported encoding scheme");
+            }
 
-			if(result!=null && blocking) {
-				String resultString = "";
-				try {
-					resultString = new String(result.array(), charset).split("\0")[0];
-				} catch (UnsupportedEncodingException e) {
-					logger.warn("Exception while attempting an unsupported encoding scheme");
-				}
-				
-				logger.info("Received {} from the remote end {}", resultString, sChannel.toString());
-				String transformedResponse = transformResponse(provider.getProtocolCommand(itemName, command), resultString);
+            // send the buffer in an asynchronous way
+            ByteBuffer result = null;
+            try {
+                result = writeBuffer(outputBuffer, sChannel, blocking, timeOut);
+            } catch (Exception e) {
+                logger.error("An exception occurred while writing a buffer to a channel: {}", e.getMessage());
+            }
 
-				// if the remote-end does not send a reply in response to the string we just sent, then the abstract superclass will update
-				// the openhab status of the item for us. If it does reply, then an additional update is done via parseBuffer.
-				// since this TCP binding does not know about the specific protocol, there might be two state updates (the command, and if
-				// the case, the reply from the remote-end)
+            if (result != null && blocking) {
+                String resultString = "";
+                try {
+                    resultString = new String(result.array(), charset).split("\0")[0];
+                } catch (UnsupportedEncodingException e) {
+                    logger.warn("Exception while attempting an unsupported encoding scheme");
+                }
 
-				if(updateWithResponse) {
+                logger.info("Received {} from the remote end {}", resultString, sChannel.toString());
+                String transformedResponse = transformResponse(provider.getProtocolCommand(itemName, command),
+                        resultString);
 
-					List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName,command);
-					State newState = createStateFromString(stateTypeList,transformedResponse);
+                // if the remote-end does not send a reply in response to the string we just sent, then the abstract
+                // superclass will update
+                // the openhab status of the item for us. If it does reply, then an additional update is done via
+                // parseBuffer.
+                // since this TCP binding does not know about the specific protocol, there might be two state updates
+                // (the command, and if
+                // the case, the reply from the remote-end)
 
-					if(newState != null) {
-						eventPublisher.postUpdate(itemName, newState);						        						
-					} else {
-						logger.warn("Can not parse transformed output "+transformedResponse+" to match command {} on item {}  ",command,itemName);
-					}
+                if (updateWithResponse) {
 
-					return false;
-				} else {
-					return true;
-				}
-			} else {
-				return true;
-			}
-		}
-		return false;
-	}
+                    List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName, command);
+                    State newState = createStateFromString(stateTypeList, transformedResponse);
 
-	/**
-	 * 
-	 * Main function to parse ASCII string received 
-	 * @return 
-	 * 
-	 */
-	@Override
-	protected void parseBuffer(String itemName, Command aCommand, Direction theDirection,ByteBuffer byteBuffer){
+                    if (newState != null) {
+                        eventPublisher.postUpdate(itemName, newState);
+                    } else {
+                        logger.warn("Can not parse transformed output " + transformedResponse
+                                + " to match command {} on item {}  ", command, itemName);
+                    }
 
-		String theUpdate = "";
-		try {
-			theUpdate = new String(byteBuffer.array(), charset).split("\0")[0];
-		} catch (UnsupportedEncodingException e) {
-			logger.warn("Exception while attempting an unsupported encoding scheme");
-		}
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
 
-		ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
+    /**
+     *
+     * Main function to parse ASCII string received
+     *
+     * @return
+     *
+     */
+    @Override
+    protected void parseBuffer(String itemName, Command aCommand, Direction theDirection, ByteBuffer byteBuffer) {
 
-		List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName,aCommand);
-		
-		String transformedResponse = transformResponse(provider.getProtocolCommand(itemName, aCommand),theUpdate);
-		State newState = createStateFromString(stateTypeList,transformedResponse);
+        String theUpdate = "";
+        try {
+            theUpdate = new String(byteBuffer.array(), charset).split("\0")[0];
+        } catch (UnsupportedEncodingException e) {
+            logger.warn("Exception while attempting an unsupported encoding scheme");
+        }
 
-		if(newState != null) {
-			eventPublisher.postUpdate(itemName, newState);							        						
-		} else {
-			logger.warn("Can not parse input "+theUpdate+" to match command {} on item {}  ",aCommand,itemName);
-		}
-	}
+        ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 
-	@SuppressWarnings("rawtypes")
-	@Override
-	public void updated(Dictionary config) throws ConfigurationException {
+        List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName, aCommand);
 
-		super.updated(config);
+        String transformedResponse = transformResponse(provider.getProtocolCommand(itemName, aCommand), theUpdate);
+        State newState = createStateFromString(stateTypeList, transformedResponse);
 
-		if (config != null) {
+        if (newState != null) {
+            eventPublisher.postUpdate(itemName, newState);
+        } else {
+            logger.warn("Can not parse input " + theUpdate + " to match command {} on item {}  ", aCommand, itemName);
+        }
+    }
 
-			String timeOutString = (String) config.get("timeout");
-			if (StringUtils.isNotBlank(timeOutString)) {
-				timeOut = Integer.parseInt((timeOutString));
-			} else {
-				logger.info("The maximum time out for blocking write operations will be set to the default vaulue of {}",timeOut);
-			}
+    protected void addBindingProvider(TCPBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
 
-			String blockingString = (String) config.get("blocking");
-			if (StringUtils.isNotBlank(blockingString)) {
-				blocking = Boolean.parseBoolean((blockingString));
-			} else {
-				logger.info("The blocking nature of read/write operations will be set to the default vaulue of {}",blocking);
-			}
+    protected void removeBindingProvider(TCPBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
 
-			String preambleString = (String) config.get("preamble");
-			if (StringUtils.isNotBlank(preambleString)) {
-				preAmble = StringEscapeUtils.unescapeJava(preambleString);
-			} else {
-				logger.info("The preamble for all write operations will be set to the default vaulue of \"{}\"",preAmble);
-			}
+    @SuppressWarnings("rawtypes")
+    @Override
+    public void updated(Dictionary config) throws ConfigurationException {
 
-			String postambleString = (String) config.get("postamble");
-			if (StringUtils.isNotBlank(postambleString)) {
-				postAmble = StringEscapeUtils.unescapeJava(postambleString);
-			} else {
-				logger.info("The postamble for all write operations will be set to the default vaulue of \"{}\"",postAmble);
-			}
+        super.updated(config);
 
-			String updatewithresponseString = (String) config.get("updatewithresponse");
-			if (StringUtils.isNotBlank(updatewithresponseString)) {
-				updateWithResponse = Boolean.parseBoolean((updatewithresponseString));
-			} else {
-				logger.info("Updating states with returned values will be set to the default vaulue of {}",updateWithResponse);
-			}
+        if (config != null) {
 
-			String charsetString = (String) config.get("charset");
-			if (StringUtils.isNotBlank(charsetString)) {
-				charset = charsetString;
-			} else {
-				logger.info("The characterset will be set to the default vaulue of {}",charset);
-			}
+            String timeOutString = (String) config.get("timeout");
+            if (StringUtils.isNotBlank(timeOutString)) {
+                timeOut = Integer.parseInt((timeOutString));
+            } else {
+                logger.info(
+                        "The maximum time out for blocking write operations will be set to the default value of {}",
+                        timeOut);
+            }
 
-		}
+            String blockingString = (String) config.get("blocking");
+            if (StringUtils.isNotBlank(blockingString)) {
+                blocking = Boolean.parseBoolean((blockingString));
+            } else {
+                logger.info("The blocking nature of read/write operations will be set to the default value of {}",
+                        blocking);
+            }
 
-	}
+            String preambleString = (String) config.get("preamble");
+            if (StringUtils.isNotBlank(preambleString)) {
+                preAmble = StringEscapeUtils.unescapeJava(preambleString);
+            } else {
+                logger.info("The preamble for all write operations will be set to the default value of \"{}\"",
+                        preAmble);
+            }
 
-	@Override
-	protected void configureChannel(Channel channel) {
-	}
+            String postambleString = (String) config.get("postamble");
+            if (StringUtils.isNotBlank(postambleString)) {
+                postAmble = StringEscapeUtils.unescapeJava(postambleString);
+            } else {
+                logger.info("The postamble for all write operations will be set to the default value of \"{}\"",
+                        postAmble);
+            }
 
-	/**
-	 * Splits a transformation configuration string into its two parts - the
-	 * transformation type and the function/pattern to apply.
-	 * 
-	 * @param transformation the string to split
-	 * @return a string array with exactly two entries for the type and the function
-	 */
-	protected String[] splitTransformationConfig(String transformation) {
-		Matcher matcher = EXTRACT_FUNCTION_PATTERN.matcher(transformation);
+            String updatewithresponseString = (String) config.get("updatewithresponse");
+            if (StringUtils.isNotBlank(updatewithresponseString)) {
+                updateWithResponse = Boolean.parseBoolean((updatewithresponseString));
+            } else {
+                logger.info("Updating states with returned values will be set to the default value of {}",
+                        updateWithResponse);
+            }
 
-		if (!matcher.matches()) {
-			throw new IllegalArgumentException("given transformation function '" + transformation + "' does not follow the expected pattern '<function>(<pattern>)'");
-		}
-		matcher.reset();
+            String charsetString = (String) config.get("charset");
+            if (StringUtils.isNotBlank(charsetString)) {
+                charset = charsetString;
+            } else {
+                logger.info("The characterset will be set to the default value of {}", charset);
+            }
 
-		matcher.find();			
-		String type = matcher.group(1);
-		String pattern = matcher.group(2);
+        }
 
-		return new String[] { type, pattern };
-	}
+    }
 
-	protected String transformResponse(String transformation, String response) {
-		String transformedResponse;
+    @Override
+    protected void configureChannel(Channel channel) {
+    }
 
-		try {
-			String[] parts = splitTransformationConfig(transformation);
-			String transformationType = parts[0];
-			String transformationFunction = parts[1];
+    /**
+     * Splits a transformation configuration string into its two parts - the
+     * transformation type and the function/pattern to apply.
+     *
+     * @param transformation the string to split
+     * @return a string array with exactly two entries for the type and the function
+     */
+    protected String[] splitTransformationConfig(String transformation) {
+        Matcher matcher = EXTRACT_FUNCTION_PATTERN.matcher(transformation);
 
-			TransformationService transformationService = 
-					TransformationHelper.getTransformationService(TCPActivator.getContext(), transformationType);
-			if (transformationService != null) {
-				transformedResponse = transformationService.transform(transformationFunction, response);
-			} else {
-				transformedResponse = response;
-				logger.warn("couldn't transform response because transformationService of type '{}' is unavailable", transformationType);
-			}
-		}
-		catch (Exception te) {
-			logger.error("transformation throws exception [transformation="
-					+ transformation + ", response=" + response + "]", te);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("given transformation function '" + transformation
+                    + "' does not follow the expected pattern '<function>(<pattern>)'");
+        }
+        matcher.reset();
 
-			// in case of an error we return the response without any
-			// transformation
-			transformedResponse = response;
-		}
+        matcher.find();
+        String type = matcher.group(1);
+        String pattern = matcher.group(2);
 
-		logger.debug("transformed response is '{}'", transformedResponse);
+        return new String[] { type, pattern };
+    }
 
-		return transformedResponse;
-	}
-	
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected String getName() {
-		return "TCP Refresh Service";
-	}
+    protected String transformResponse(String transformation, String response) {
+        String transformedResponse;
+
+        try {
+            String[] parts = splitTransformationConfig(transformation);
+            String transformationType = parts[0];
+            String transformationFunction = parts[1];
+
+            TransformationService transformationService = TransformationHelper
+                    .getTransformationService(TCPActivator.getContext(), transformationType);
+            if (transformationService != null) {
+                transformedResponse = transformationService.transform(transformationFunction, response);
+            } else {
+                transformedResponse = response;
+                logger.warn("couldn't transform response because transformationService of type '{}' is unavailable",
+                        transformationType);
+            }
+        } catch (Exception te) {
+            logger.error("transformation throws exception [transformation=" + transformation + ", response=" + response
+                    + "]", te);
+
+            // in case of an error we return the response without any
+            // transformation
+            transformedResponse = response;
+        }
+
+        logger.debug("transformed response is '{}'", transformedResponse);
+
+        return transformedResponse;
+    }
+
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    protected String getName() {
+        return "TCP Refresh Service";
+    }
 
 }

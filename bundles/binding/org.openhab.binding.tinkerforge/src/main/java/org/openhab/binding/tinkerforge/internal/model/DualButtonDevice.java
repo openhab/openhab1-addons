@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,7 +7,6 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model;
-
 
 /**
  * <!-- begin-user-doc -->
@@ -19,6 +18,5 @@ package org.openhab.binding.tinkerforge.internal.model;
  * @model interface="true" abstract="true"
  * @generated
  */
-public interface DualButtonDevice extends MSubDevice<MBrickletDualButton>
-{
+public interface DualButtonDevice extends MSubDevice<MBrickletDualButton> {
 } // DualButtonDevice
