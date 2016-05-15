@@ -8,19 +8,25 @@
  */
 package org.openhab.persistence.dynamodb.internal;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.LocationItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
@@ -30,21 +36,50 @@ import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.PointType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
+import org.openhab.library.tel.items.CallItem;
+import org.openhab.library.tel.types.CallType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractDynamoDBItem.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDynamoDBItem.class);
     public static final SimpleDateFormat DATEFORMATTER = new SimpleDateFormat(DATE_FORMAT);
 
     static {
         DATEFORMATTER.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
-    protected static final String ATTRIBUTE_NAME_ITEMNAME = "itemname";
+    private static final String UNDEFINED_PLACEHOLDER = "<org.openhab.core.types.UnDefType.UNDEF>";
+
+    static final Map<Class<? extends Item>, Class<? extends DynamoDBItem<?>>> itemClassToDynamoItemClass = new HashMap<Class<? extends Item>, Class<? extends DynamoDBItem<?>>>();
+
+    static {
+        itemClassToDynamoItemClass.put(CallItem.class, DynamoDBStringItem.class);
+        itemClassToDynamoItemClass.put(ContactItem.class, DynamoDBBigDecimalItem.class);
+        itemClassToDynamoItemClass.put(DateTimeItem.class, DynamoDBStringItem.class);
+        itemClassToDynamoItemClass.put(LocationItem.class, DynamoDBStringItem.class);
+        itemClassToDynamoItemClass.put(NumberItem.class, DynamoDBBigDecimalItem.class);
+        itemClassToDynamoItemClass.put(RollershutterItem.class, DynamoDBBigDecimalItem.class);
+        itemClassToDynamoItemClass.put(StringItem.class, DynamoDBStringItem.class);
+        itemClassToDynamoItemClass.put(SwitchItem.class, DynamoDBBigDecimalItem.class);
+        itemClassToDynamoItemClass.put(DimmerItem.class, DynamoDBBigDecimalItem.class); // inherited from SwitchItem (!)
+        itemClassToDynamoItemClass.put(ColorItem.class, DynamoDBStringItem.class); // inherited from DimmerItem
+    }
+
+    public static final Class<? extends DynamoDBItem<?>> getDynamoItemClass(Class<? extends Item> itemClass)
+            throws NullPointerException {
+        Class<? extends DynamoDBItem<?>> dtoclass = itemClassToDynamoItemClass.get(itemClass);
+        if (dtoclass == null) {
+            throw new NullPointerException(String.format("Unknown item class %s", itemClass));
+        }
+        return dtoclass;
+    }
+
     protected static final String ATTRIBUTE_NAME_ITEMSTATE = "itemstate";
 
     protected String name;
@@ -58,17 +93,29 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
     }
 
     public static DynamoDBItem<?> fromState(String name, State state, Date time) {
-        if (state instanceof DecimalType) {
+        if (state instanceof DecimalType && !(state instanceof HSBType)) {
+            // also covers PercentType which is inherited from DecimalType
             return new DynamoDBBigDecimalItem(name, ((DecimalType) state).toBigDecimal(), time);
         } else if (state instanceof OnOffType) {
-            return new DynamoDBIntegerItem(name, ((OnOffType) state) == OnOffType.ON ? 1 : 0, time);
+            return new DynamoDBBigDecimalItem(name,
+                    ((OnOffType) state) == OnOffType.ON ? BigDecimal.ONE : BigDecimal.ZERO, time);
         } else if (state instanceof OpenClosedType) {
-            return new DynamoDBIntegerItem(name, ((OpenClosedType) state) == OpenClosedType.OPEN ? 1 : 0, time);
+            return new DynamoDBBigDecimalItem(name,
+                    ((OpenClosedType) state) == OpenClosedType.OPEN ? BigDecimal.ONE : BigDecimal.ZERO, time);
+        } else if (state instanceof UpDownType) {
+            return new DynamoDBBigDecimalItem(name,
+                    ((UpDownType) state) == UpDownType.UP ? BigDecimal.ONE : BigDecimal.ZERO, time);
         } else if (state instanceof DateTimeType) {
             return new DynamoDBStringItem(name, DATEFORMATTER.format(((DateTimeType) state).getCalendar().getTime()),
                     time);
+        } else if (state instanceof UnDefType) {
+            return new DynamoDBStringItem(name, UNDEFINED_PLACEHOLDER, time);
+        } else if (state instanceof CallType) {
+            // CallType.format method instead of toString since that matches the format expected by the String
+            // constructor
+            return new DynamoDBStringItem(name, state.format("%s##%s"), time);
         } else {
-            // HSBType, PointType and all others
+            // HSBType, PointType and StringType
             return new DynamoDBStringItem(name, state.toString(), time);
         }
     }
@@ -85,39 +132,30 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
 
             @Override
             public void visit(DynamoDBStringItem dynamoStringItem) {
-                if (item instanceof HSBType) {
+                if (item instanceof ColorItem) {
                     state[0] = new HSBType(dynamoStringItem.getState());
-                } else if (item instanceof PointType) {
+                } else if (item instanceof LocationItem) {
                     state[0] = new PointType(dynamoStringItem.getState());
                 } else if (item instanceof DateTimeItem) {
                     Calendar cal = Calendar.getInstance();
                     try {
                         cal.setTime(DATEFORMATTER.parse(dynamoStringItem.getState()));
                     } catch (ParseException e) {
-                        logger.error("Failed to parse {} as date. Outputting string item instead",
+                        LOGGER.error("Failed to parse {} as date. Outputting UNDEF instead",
                                 dynamoStringItem.getState());
-                        state[0] = new StringType(dynamoStringItem.getState());
+                        state[0] = UnDefType.UNDEF;
                     }
                     state[0] = new DateTimeType(cal);
+                } else if (dynamoStringItem.getState().equals(UNDEFINED_PLACEHOLDER)) {
+                    state[0] = UnDefType.UNDEF;
+                } else if (item instanceof CallItem) {
+                    String parts = dynamoStringItem.getState();
+                    String[] strings = parts.split("##");
+                    String dest = strings[0];
+                    String orig = strings[1];
+                    state[0] = new CallType(orig, dest);
                 } else {
                     state[0] = new StringType(dynamoStringItem.getState());
-                }
-            }
-
-            @Override
-            public void visit(DynamoDBIntegerItem dynamoIntegerItem) {
-                if (item instanceof DimmerItem) {
-                    state[0] = new PercentType(dynamoIntegerItem.getState());
-                } else if (item instanceof SwitchItem) {
-                    state[0] = dynamoIntegerItem.getState() == 1 ? OnOffType.ON : OnOffType.OFF;
-                } else if (item instanceof ContactItem) {
-                    state[0] = dynamoIntegerItem.getState() == 1 ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-                } else if (item instanceof RollershutterItem) {
-                    state[0] = new PercentType(dynamoIntegerItem.getState());
-                } else {
-                    logger.warn("Not sure how to convert integer item {} to type {}. Using StringType as fallback",
-                            dynamoIntegerItem.getName(), item.getClass());
-                    state[0] = new StringType(dynamoIntegerItem.getState().toString());
                 }
             }
 
@@ -125,6 +163,20 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
             public void visit(DynamoDBBigDecimalItem dynamoBigDecimalItem) {
                 if (item instanceof NumberItem) {
                     state[0] = new DecimalType(dynamoBigDecimalItem.getState());
+                } else if (item instanceof DimmerItem) {
+                    state[0] = new PercentType(dynamoBigDecimalItem.getState());
+                } else if (item instanceof SwitchItem) {
+                    state[0] = dynamoBigDecimalItem.getState().compareTo(BigDecimal.ONE) == 0 ? OnOffType.ON
+                            : OnOffType.OFF;
+                } else if (item instanceof ContactItem) {
+                    state[0] = dynamoBigDecimalItem.getState().compareTo(BigDecimal.ONE) == 0 ? OpenClosedType.OPEN
+                            : OpenClosedType.CLOSED;
+                } else if (item instanceof RollershutterItem) {
+                    state[0] = new PercentType(dynamoBigDecimalItem.getState());
+                } else {
+                    LOGGER.warn("Not sure how to convert big decimal item {} to type {}. Using StringType as fallback",
+                            dynamoBigDecimalItem.getName(), item.getClass());
+                    state[0] = new StringType(dynamoBigDecimalItem.getState().toString());
                 }
             }
         });

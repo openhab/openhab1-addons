@@ -56,7 +56,7 @@ public class DynamoDBConfig {
                 credentials = new ProfilesConfigFile(profilesConfigFile).getCredentials(profile);
             }
 
-            String table = (String) config.get("table");
+            String table = (String) config.get("tablePrefix");
             if (isBlank(table)) {
                 logger.debug("Using default table name {}", DEFAULT_TABLE_PREFIX);
                 table = DEFAULT_TABLE_PREFIX;

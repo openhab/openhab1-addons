@@ -11,6 +11,8 @@ public interface DynamoDBItem<T> {
 
     String ATTRIBUTE_NAME_TIMEUTC = "timeutc";
 
+    String ATTRIBUTE_NAME_ITEMNAME = "itemname";
+
     /**
      * Convert this AbstractDynamoItem as HistoricItem.
      *

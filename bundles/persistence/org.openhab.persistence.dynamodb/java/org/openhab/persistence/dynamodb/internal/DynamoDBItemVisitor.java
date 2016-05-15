@@ -4,7 +4,5 @@ public interface DynamoDBItemVisitor {
 
     public void visit(DynamoDBBigDecimalItem dynamoBigDecimalItem);
 
-    public void visit(DynamoDBIntegerItem dynamoIntegerItem);
-
     public void visit(DynamoDBStringItem dynamoStringItem);
 }

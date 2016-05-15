@@ -80,6 +80,10 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
         resetClient();
         try {
             dbConfig = DynamoDBConfig.fromConfig(config);
+            if (dbConfig == null) {
+                throw new IllegalArgumentException("Something was wrong with configuration");
+            }
+
             tableNameResolver = new DynamoDBTableNameResolver(dbConfig.getTablePrefix());
         } catch (Exception e) {
             logger.error("Error with configuration: {}", e);
@@ -280,6 +284,9 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             return Collections.emptyList();
         }
 
+        // FIXME: dangerous, state can be UNDEFINED!? and determination would go wrong
+        // SHould be based on item type only. Similar to AbstractDynamoDBItem visitor impl
+        // use AbstractDynamoDBItem.itemClassToDynamoItemClass
         DynamoDBItem<?> dummyDynamoItem = AbstractDynamoDBItem.fromState(itemName, item.getState(), new Date());
 
         @SuppressWarnings("rawtypes")
@@ -343,8 +350,17 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
         DynamoDBQueryExpression<DynamoDBItem<?>> queryExpression = new DynamoDBQueryExpression<DynamoDBItem<?>>()
                 .withHashKeyValues(itemHash).withScanIndexForward(scanIndexForward).withLimit(filter.getPageSize());
         if (timeCondition != null) {
-            queryExpression.withRangeKeyCondition(DynamoDBItem.ATTRIBUTE_NAME_TIMEUTC, timeCondition);
+            queryExpression.setRangeKeyConditions(
+                    Collections.singletonMap(DynamoDBItem.ATTRIBUTE_NAME_TIMEUTC, timeCondition));
         }
+        if (filter.getOperator() != null && filter.getState() != null) {
+            // Convert filter's state to DynamoDBItem. The DynamoDBItem's state as string should usable in comparisons
+            DynamoDBItem<?> filterState = AbstractDynamoDBItem.fromState(filter.getItemName(), filter.getState(),
+                    new Date());
+            queryExpression.setFilterExpression(String.format("%s %s %s", DynamoDBItem.ATTRIBUTE_NAME_ITEMNAME,
+                    filter.getOperator(), filterState.getState()));
+        }
+
         logger.debug("Querying: {} with {}", filter.getItemName(), timeCondition);
         return queryExpression;
     }

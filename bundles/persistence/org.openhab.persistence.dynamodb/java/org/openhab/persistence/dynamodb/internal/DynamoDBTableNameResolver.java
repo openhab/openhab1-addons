@@ -19,11 +19,6 @@ public class DynamoDBTableNameResolver {
             }
 
             @Override
-            public void visit(DynamoDBIntegerItem dynamoIntegerItem) {
-                tableName[0] = tablePrefix + "integer";
-            }
-
-            @Override
             public void visit(DynamoDBStringItem dynamoStringItem) {
                 tableName[0] = tablePrefix + "string";
             }

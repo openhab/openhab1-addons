@@ -33,7 +33,7 @@ public class DynamoDBBigDecimalItem extends AbstractDynamoDBItem<BigDecimal> {
         return state;
     }
 
-    @DynamoDBHashKey(attributeName = ATTRIBUTE_NAME_ITEMNAME)
+    @DynamoDBHashKey(attributeName = DynamoDBItem.ATTRIBUTE_NAME_ITEMNAME)
     @Override
     public String getName() {
         return name;

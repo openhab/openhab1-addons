@@ -6,16 +6,18 @@ Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 DynamicImport-Package: *
-Import-Package: org.slf4j,
+Import-Package: org.apache.commons.lang,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.core.persistence,
  org.openhab.core.types,
+ org.openhab.library.tel.items,
+ org.openhab.library.tel.types,
  org.osgi.framework,
  org.osgi.service.cm,
  org.osgi.service.event,
- org.apache.commons.lang
+ org.slf4j
 Bundle-ClassPath: ., 
  lib/aws-java-sdk-core-1.10.69.jar,
  lib/aws-java-sdk-dynamodb-1.10.69.jar,
