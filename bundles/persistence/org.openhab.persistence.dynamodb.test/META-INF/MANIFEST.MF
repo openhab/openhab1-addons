@@ -8,7 +8,7 @@ Bundle-Vendor: openHAB.org
 Fragment-Host: org.openhab.persistence.dynamodb
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.8.1"
-Import-Package: com.google.common.collect
+Import-Package: com.google.common.collect,
  org.apache.commons.io,
  org.openhab.core.library.items,
  org.openhab.core.library.types,

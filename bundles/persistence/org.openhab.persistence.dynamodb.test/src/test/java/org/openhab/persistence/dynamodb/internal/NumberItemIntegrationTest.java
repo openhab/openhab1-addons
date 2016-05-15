@@ -14,7 +14,9 @@ import org.openhab.core.types.State;
 public class NumberItemIntegrationTest extends TwoItemIntegrationTest {
 
     private static final String name = "number";
-    private static final DecimalType state1 = new DecimalType(-3.14);
+    // On purpose we have super accurate number here (testing limits of aws)
+    private static final DecimalType state1 = new DecimalType(new BigDecimal(
+            "-3.193490838904389298049802398048923849032809483209483209482309840239840932840932849083094809483"));
     private static final DecimalType state2 = new DecimalType(600.9123);
     private static final DecimalType stateBetween = new DecimalType(500);
 
@@ -60,7 +62,7 @@ public class NumberItemIntegrationTest extends TwoItemIntegrationTest {
     }
 
     /**
-     * Use relaxed state comparison due to numerical rounding
+     * Use relaxed state comparison due to numerical rounding. See also DynamoDBBigDecimalItem.loseDigits
      */
     @Override
     protected void assertStateEquals(State expected, State actual) {
