@@ -7,7 +7,7 @@ import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 
-public class StringItemIntegrationTest extends TwoItemIntegrationTest {
+public class StringItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "string";
     private static final StringType state1 = new StringType("b001");

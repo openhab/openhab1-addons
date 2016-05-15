@@ -7,7 +7,7 @@ import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.State;
 
-public class SwitchItemIntegrationTest extends TwoItemIntegrationTest {
+public class SwitchItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "switch";
     private static final OnOffType state1 = OnOffType.OFF;

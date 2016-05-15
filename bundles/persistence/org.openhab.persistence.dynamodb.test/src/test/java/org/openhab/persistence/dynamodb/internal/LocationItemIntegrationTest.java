@@ -8,7 +8,7 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.PointType;
 import org.openhab.core.types.State;
 
-public class LocationItemIntegrationTest extends TwoItemIntegrationTest {
+public class LocationItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "location";
     // values are encoded as lat,lon[,alt] , ordering goes wrt strings

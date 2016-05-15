@@ -10,7 +10,7 @@ import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 
-public class ColorItemIntegrationTest extends TwoItemIntegrationTest {
+public class ColorItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static HSBType color(double hue, int saturation, int brightness) {
         return new HSBType(new DecimalType(hue), new PercentType(saturation), new PercentType(brightness));

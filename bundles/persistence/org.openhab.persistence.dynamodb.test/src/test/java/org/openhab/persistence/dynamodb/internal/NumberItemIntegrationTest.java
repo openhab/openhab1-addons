@@ -10,7 +10,7 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
 
-public class NumberItemIntegrationTest extends TwoItemIntegrationTest {
+public class NumberItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "number";
     // On purpose we have super accurate number here (testing limits of aws)

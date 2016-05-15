@@ -7,7 +7,7 @@ import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.types.State;
 
-public class DateTimeItemIntegrationTest extends TwoItemIntegrationTest {
+public class DateTimeItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "datetime";
     private static final DateTimeType state1 = new DateTimeType("2016-05-15T10:00:00Z");

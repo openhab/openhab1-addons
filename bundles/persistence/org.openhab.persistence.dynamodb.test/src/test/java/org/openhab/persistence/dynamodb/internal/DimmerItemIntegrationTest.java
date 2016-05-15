@@ -7,7 +7,7 @@ import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 
-public class DimmerItemIntegrationTest extends TwoItemIntegrationTest {
+public class DimmerItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "dimmer";
     private static final PercentType state1 = new PercentType(66);

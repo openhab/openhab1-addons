@@ -8,7 +8,7 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.State;
 
-public class ContactItemIntegrationTest extends TwoItemIntegrationTest {
+public class ContactItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "contact";
     private static final OpenClosedType state1 = OpenClosedType.CLOSED;

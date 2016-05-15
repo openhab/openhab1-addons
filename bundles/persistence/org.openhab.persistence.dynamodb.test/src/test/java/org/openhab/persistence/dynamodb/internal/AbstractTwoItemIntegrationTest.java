@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  *
  *
  */
-public abstract class TwoItemIntegrationTest extends BaseIntegrationTest {
+public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest {
 
     protected static final Logger logger = LoggerFactory.getLogger(DynamoDBPersistenceService.class);
     protected static Date beforeStore;
