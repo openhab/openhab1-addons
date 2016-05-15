@@ -1548,7 +1548,8 @@
             </Reference>
             <Model>FGMS001</Model>
             <Label lang="en">Motion Sensor</Label>
-            <ConfigFile>fibaro/fgms001.xml</ConfigFile>
+            <ConfigFile VersionMax="2.8">fibaro/fgms001.xml</ConfigFile>
+            <ConfigFile VersionMin="3.2">fibaro/fgms001-32.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
