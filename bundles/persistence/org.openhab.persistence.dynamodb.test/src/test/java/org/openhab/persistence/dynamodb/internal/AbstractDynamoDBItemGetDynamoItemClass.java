@@ -33,7 +33,6 @@ public class AbstractDynamoDBItemGetDynamoItemClass {
     @Test
     public void testCallItem() throws IOException {
         assertEquals(DynamoDBStringItem.class, AbstractDynamoDBItem.getDynamoItemClass(CallItem.class));
-
     }
 
     @Test
