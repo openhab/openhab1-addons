@@ -25,6 +25,7 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
@@ -139,7 +140,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
     /**
      * Called by the SCR to activate the component with its configuration read from CAS
-     * 
+     *
      * @param bundleContext BundleContext of the Bundle that defines this component
      * @param configuration Configuration properties for this component obtained from the ConfigAdmin service
      */
@@ -154,7 +155,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
     /**
      * Called by the SCR when the configuration of a binding has been changed through the ConfigAdmin service.
-     * 
+     *
      * @param configuration Updated configuration properties
      */
     public void modified(final Map<String, Object> configuration) {
@@ -164,7 +165,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
     /**
      * Called by the SCR to deactivate the component when either the configuration is removed or
      * mandatory references are no longer satisfied or the component has simply been stopped.
-     * 
+     *
      * @param reason Reason code for the deactivation:<br>
      *            <ul>
      *            <li>0 – Unspecified
@@ -189,7 +190,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
     /**
      * Configure binding.
-     * 
+     *
      * @param configuration
      */
     private void configure(final Map<String, Object> configuration) {
@@ -348,7 +349,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
     /**
      * Read value of given command and publish it to the bus.
-     * 
+     *
      * @param wr3223CommandType
      * @throws IOException
      */
@@ -362,7 +363,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
     /**
      * Publish the value to all bound items.
-     * 
+     *
      * @param wr3223CommandType
      * @param value
      */
@@ -375,7 +376,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
     /**
      * Publish the value to the given items.
-     * 
+     *
      * @param itemNames
      * @param wr3223CommandType
      * @param value
@@ -393,7 +394,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
             } else if (wr3223CommandType.getItemClass() == SwitchItem.class) {
                 state = parseBooleanValue(value);
             } else if (wr3223CommandType.getItemClass() == ContactItem.class) {
-                state = parseBooleanValue(value);
+                state = parseBooleanValue(value) == OnOffType.ON ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
             } else {
                 logger.error("Can't set value {} to item type {}.", value, wr3223CommandType.getCommand());
             }
@@ -410,14 +411,15 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
     /**
      * Versucht aus einem Objekt ein On/Off Status zu lesen
-     * 
+     *
      * @param value
      * @return
      */
     private State parseBooleanValue(Object value) {
         State state;
         String valStr = value.toString().trim();
-        state = (valStr.equalsIgnoreCase("true") || valStr.equals("1")) ? OnOffType.ON : OnOffType.OFF;
+        state = (valStr.equalsIgnoreCase("true") || valStr.equals("1") || valStr.equals("1.")) ? OnOffType.ON
+                : OnOffType.OFF;
         return state;
     }
 
@@ -475,6 +477,16 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
                             } else {
                                 updateMap.put(type, value);
                             }
+                        } else if (type.getItemClass() == SwitchItem.class && command instanceof OnOffType) {
+                            if (command == OnOffType.ON) {
+                                updateMap.put(type, 1);
+                            } else if (command == OnOffType.OFF) {
+                                updateMap.put(type, 0);
+                            } else {
+                                logger.warn("WR3223 command {} should be of type {}.", type.getCommand(),
+                                        type.getItemClass());
+                            }
+
                         } else {
                             logger.warn("WR3223 command {} should be of type {}.", type.getCommand(),
                                     type.getItemClass());
@@ -489,7 +501,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
     /**
      * Hold the values which must be send every 20 seconds to the WR3223. The values received from the bus are stored in
      * this class.
-     * 
+     *
      * @author Michael Fraefel
      *
      */
@@ -554,7 +566,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
     /**
      * Coding of the RL command.
-     * 
+     *
      * @author Michael Fraefel
      *
      */
@@ -663,7 +675,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
         /**
          * "Netzrelais Bypass"
-         * 
+         *
          * @return
          */
         public boolean isBypassRelay() {
