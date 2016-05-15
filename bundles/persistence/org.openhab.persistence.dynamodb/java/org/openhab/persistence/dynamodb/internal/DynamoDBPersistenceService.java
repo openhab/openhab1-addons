@@ -17,11 +17,10 @@ import java.util.Map;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
-import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.library.types.PercentType;
 import org.openhab.core.persistence.FilterCriteria;
+import org.openhab.core.persistence.FilterCriteria.Operator;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
@@ -47,6 +46,7 @@ import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.TableStatus;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * This is the implementation of the DynamoDB {@link PersistenceService}. It persists item values
@@ -66,6 +66,15 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
     private boolean isProperlyConfigured;
     private DynamoDBConfig dbConfig;
     private DynamoDBTableNameResolver tableNameResolver;
+
+    /**
+     * For testing
+     *
+     * @return
+     */
+    DynamoDBClient getDb() {
+        return db;
+    }
 
     public void setItemRegistry(ItemRegistry itemRegistry) {
         this.itemRegistry = itemRegistry;
@@ -87,17 +96,18 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             tableNameResolver = new DynamoDBTableNameResolver(dbConfig.getTablePrefix());
         } catch (Exception e) {
             logger.error("Error with configuration: {}", e);
+            return;
         }
         try {
             db = new DynamoDBClient(dbConfig);
-            isProperlyConfigured = true;
-
             if (!checkConnection()) {
                 logger.error("dynamodb: database connection does not work for now, will retry to use the database.");
             }
         } catch (Exception e) {
             logger.error("Error constructing dynamodb client", e);
+            return;
         }
+        isProperlyConfigured = true;
     }
 
     public void deactivate() {
@@ -161,6 +171,11 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
         try {
             logger.debug("Checking if table '{}' is created...", tableName);
             TableDescription tableDescription = db.getDynamoDB().getTable(tableName).waitForActiveOrDelete();
+            if (tableDescription == null) {
+                // table has been deleted
+                logger.warn("Table '{}' deleted unexpectedly", tableName);
+                return false;
+            }
             boolean success = TableStatus.ACTIVE.equals(TableStatus.fromValue(tableDescription.getTableStatus()));
             if (success) {
                 logger.info("Creation of table '{}' successful, table status is now {}", tableName,
@@ -233,23 +248,14 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
         String name = (alias != null) ? alias : realName;
         Date time = new Date(System.currentTimeMillis());
 
-        State state = null;
-        if (item.getAcceptedCommandTypes().contains(HSBType.class)) {
-            state = item.getStateAs(HSBType.class);
-            logger.trace("Tried to get item as {}, state is {}", HSBType.class, state.toString());
-        } else if (item.getAcceptedDataTypes().contains(PercentType.class)) {
-            state = item.getStateAs(PercentType.class);
-            logger.trace("Tried to get item as {}, state is {}", PercentType.class, state.toString());
-        } else {
-            // All other items should return the best format by default
-            state = item.getState();
-            logger.trace("Tried to get item from item class {}, state is {}", item.getClass(), state.toString());
-        }
+        State state = item.getState();
+        logger.trace("Tried to get item from item class {}, state is {}", item.getClass(), state.toString());
         DynamoDBItem<?> dynamoItem = AbstractDynamoDBItem.fromState(name, state, time);
         DynamoDBMapper mapper = getDBMapper(tableNameResolver.fromItem(dynamoItem));
 
         if (!createTable(mapper, dynamoItem.getClass())) {
             logger.warn("Table creation failed. Not storing item");
+            return;
         }
 
         try {
@@ -284,14 +290,8 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             return Collections.emptyList();
         }
 
-        // FIXME: dangerous, state can be UNDEFINED!? and determination would go wrong
-        // SHould be based on item type only. Similar to AbstractDynamoDBItem visitor impl
-        // use AbstractDynamoDBItem.itemClassToDynamoItemClass
-        DynamoDBItem<?> dummyDynamoItem = AbstractDynamoDBItem.fromState(itemName, item.getState(), new Date());
-
-        @SuppressWarnings("rawtypes")
-        Class<? extends DynamoDBItem> dtoClass = dummyDynamoItem.getClass();
-        String tableName = tableNameResolver.fromItem(dummyDynamoItem);
+        Class<? extends DynamoDBItem<?>> dtoClass = AbstractDynamoDBItem.getDynamoItemClass(item.getClass());
+        String tableName = tableNameResolver.fromClass(dtoClass);
         DynamoDBMapper mapper = getDBMapper(tableName);
         logger.debug("item {} (class {}) will be tried to query using dto class {} from table {}", itemName,
                 item.getClass(), dtoClass, tableName);
@@ -347,22 +347,58 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
 
         boolean scanIndexForward = filter.getOrdering() == Ordering.ASCENDING;
         DynamoDBStringItem itemHash = new DynamoDBStringItem(filter.getItemName(), null, null);
-        DynamoDBQueryExpression<DynamoDBItem<?>> queryExpression = new DynamoDBQueryExpression<DynamoDBItem<?>>()
+        final DynamoDBQueryExpression<DynamoDBItem<?>> queryExpression = new DynamoDBQueryExpression<DynamoDBItem<?>>()
                 .withHashKeyValues(itemHash).withScanIndexForward(scanIndexForward).withLimit(filter.getPageSize());
         if (timeCondition != null) {
             queryExpression.setRangeKeyConditions(
                     Collections.singletonMap(DynamoDBItem.ATTRIBUTE_NAME_TIMEUTC, timeCondition));
         }
         if (filter.getOperator() != null && filter.getState() != null) {
-            // Convert filter's state to DynamoDBItem. The DynamoDBItem's state as string should usable in comparisons
+            // Convert filter's state to DynamoDBItem in order get suitable string representation for the state
             DynamoDBItem<?> filterState = AbstractDynamoDBItem.fromState(filter.getItemName(), filter.getState(),
                     new Date());
-            queryExpression.setFilterExpression(String.format("%s %s %s", DynamoDBItem.ATTRIBUTE_NAME_ITEMNAME,
-                    filter.getOperator(), filterState.getState()));
+            queryExpression.setFilterExpression(String.format("%s %s :opstate", DynamoDBItem.ATTRIBUTE_NAME_ITEMSTATE,
+                    operatorAsString(filter.getOperator())));
+
+            filterState.accept(new DynamoDBItemVisitor() {
+
+                @Override
+                public void visit(DynamoDBStringItem dynamoStringItem) {
+                    queryExpression.setExpressionAttributeValues(
+                            ImmutableMap.of(":opstate", new AttributeValue().withS(dynamoStringItem.getState())));
+                }
+
+                @Override
+                public void visit(DynamoDBBigDecimalItem dynamoBigDecimalItem) {
+                    queryExpression.setExpressionAttributeValues(ImmutableMap.of(":opstate",
+                            new AttributeValue().withN(dynamoBigDecimalItem.getState().toPlainString())));
+                }
+            });
+
         }
 
         logger.debug("Querying: {} with {}", filter.getItemName(), timeCondition);
         return queryExpression;
+    }
+
+    private static String operatorAsString(Operator op) {
+        switch (op) {
+            case EQ:
+                return "=";
+            case NEQ:
+                return "<>";
+            case LT:
+                return "<";
+            case LTE:
+                return "<=";
+            case GT:
+                return ">";
+            case GTE:
+                return ">=";
+
+            default:
+                throw new IllegalStateException("Unknown operator " + op);
+        }
     }
 
     /**

@@ -9,6 +9,7 @@
 package org.openhab.persistence.dynamodb.internal;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
@@ -19,6 +20,14 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 @DynamoDBDocument
 public class DynamoDBBigDecimalItem extends AbstractDynamoDBItem<BigDecimal> {
 
+    /**
+     * We get the following error if the BigDecimal has too many digits
+     * "Attempting to store more than 38 significant digits in a Number"
+     *
+     * Value of 35 seems to be highest that works.
+     */
+    private static final int MAX_SCALE_SUPPORTED_BY_AMAZON = 35;
+
     public DynamoDBBigDecimalItem() {
         this(null, null, null);
     }
@@ -27,10 +36,10 @@ public class DynamoDBBigDecimalItem extends AbstractDynamoDBItem<BigDecimal> {
         super(name, state, time);
     }
 
-    @DynamoDBAttribute(attributeName = ATTRIBUTE_NAME_ITEMSTATE)
+    @DynamoDBAttribute(attributeName = DynamoDBItem.ATTRIBUTE_NAME_ITEMSTATE)
     @Override
     public BigDecimal getState() {
-        return state;
+        return loseDigits(state);
     }
 
     @DynamoDBHashKey(attributeName = DynamoDBItem.ATTRIBUTE_NAME_ITEMNAME)
@@ -63,5 +72,12 @@ public class DynamoDBBigDecimalItem extends AbstractDynamoDBItem<BigDecimal> {
     @Override
     public void accept(org.openhab.persistence.dynamodb.internal.DynamoDBItemVisitor visitor) {
         visitor.visit(this);
+    }
+
+    static BigDecimal loseDigits(BigDecimal number) {
+        if (number == null) {
+            return null;
+        }
+        return number.setScale(MAX_SCALE_SUPPORTED_BY_AMAZON, RoundingMode.HALF_UP);
     }
 }

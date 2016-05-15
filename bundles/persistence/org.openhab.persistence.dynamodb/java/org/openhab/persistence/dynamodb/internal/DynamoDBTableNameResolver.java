@@ -26,4 +26,14 @@ public class DynamoDBTableNameResolver {
         return tableName[0];
     }
 
+    public String fromClass(Class<? extends DynamoDBItem<?>> clazz) {
+        DynamoDBItem<?> dummy;
+        try {
+            dummy = clazz.getConstructor().newInstance();
+        } catch (Exception e) {
+            throw new IllegalStateException(String.format("Could not find suitable constructor for class %s", clazz));
+        }
+        return this.fromItem(dummy);
+    }
+
 }

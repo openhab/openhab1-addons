@@ -26,7 +26,7 @@ public class DynamoDBStringItem extends AbstractDynamoDBItem<String> {
         super(name, state, time);
     }
 
-    @DynamoDBAttribute(attributeName = ATTRIBUTE_NAME_ITEMSTATE)
+    @DynamoDBAttribute(attributeName = DynamoDBItem.ATTRIBUTE_NAME_ITEMSTATE)
     @Override
     public String getState() {
         return state;

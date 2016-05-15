@@ -63,7 +63,7 @@ public class AbstractDynamoDBItemGetDynamoItemClass {
 
     @Test
     public void testColorItem() throws IOException {
-        assertEquals(DynamoDBBigDecimalItem.class, AbstractDynamoDBItem.getDynamoItemClass(ColorItem.class));
+        assertEquals(DynamoDBStringItem.class, AbstractDynamoDBItem.getDynamoItemClass(ColorItem.class));
     }
 
     @Test

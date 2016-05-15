@@ -80,8 +80,6 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
         return dtoclass;
     }
 
-    protected static final String ATTRIBUTE_NAME_ITEMSTATE = "itemstate";
-
     protected String name;
     protected T state;
     protected Date time;

@@ -13,6 +13,8 @@ public interface DynamoDBItem<T> {
 
     String ATTRIBUTE_NAME_ITEMNAME = "itemname";
 
+    String ATTRIBUTE_NAME_ITEMSTATE = "itemstate";
+
     /**
      * Convert this AbstractDynamoItem as HistoricItem.
      *
