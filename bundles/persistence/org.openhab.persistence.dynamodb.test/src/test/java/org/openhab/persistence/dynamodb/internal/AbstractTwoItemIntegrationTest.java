@@ -6,14 +6,13 @@ import java.util.Date;
 import java.util.Iterator;
 
 import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Operator;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.types.State;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * See DimmerItemIntegrationTest for example how to use this base class.
@@ -25,7 +24,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest {
 
-    protected static final Logger logger = LoggerFactory.getLogger(DynamoDBPersistenceService.class);
     protected static Date beforeStore;
     protected static Date afterStore1;
     protected static Date afterStore2;
@@ -55,6 +53,16 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
 
     protected void assertStateEquals(State expected, State actual) {
         assertEquals(expected, actual);
+    }
+
+    @BeforeClass
+    public static void checkService() throws InterruptedException {
+        String msg = "DynamoDB integration tests will be skipped. Did you specify AWS credentials for testing? "
+                + "See BaseIntegrationTest for more details";
+        if (service == null) {
+            System.out.println(msg);
+        }
+        Assume.assumeTrue(msg, service != null);
     }
 
     /**

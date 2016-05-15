@@ -22,11 +22,13 @@ import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.library.tel.items.CallItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
 public class BaseIntegrationTest {
-
+    protected static final Logger logger = LoggerFactory.getLogger(DynamoDBPersistenceService.class);
     protected static DynamoDBPersistenceService service;
     protected final static Map<String, Item> items = new HashMap<>();
 
@@ -99,8 +101,11 @@ public class BaseIntegrationTest {
 
         for (Entry<String, Object> entry : config.entrySet()) {
             if (entry.getValue() == null) {
-                throw new AssertionError(
-                        String.format("Expecting %s to have value for integration tests", entry.getKey()));
+                logger.warn(String.format(
+                        "Expecting %s to have value for integration tests. Integration tests will be skipped",
+                        entry.getKey()));
+                service = null;
+                return;
             }
         }
 
