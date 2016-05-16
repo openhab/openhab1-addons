@@ -43,6 +43,12 @@
         <Class>
             <id>0x73</id>             <!-- POWERLEVEL -->
         </Class>
+        <Class>
+            <id>0x5B</id>             <!-- CENTRAL_SCENE -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
     </CommandClasses>
 
     <Configuration>
@@ -80,7 +86,7 @@
             <Label lang="en">Dimming Step Duration</Label>
             <Type>short</Type>
             <Default>3</Default>
-            <Minimum>0</Minimum>
+            <Minimum>1</Minimum>
             <Maximum>255</Maximum>
             <Size>1</Size>
         </Parameter>

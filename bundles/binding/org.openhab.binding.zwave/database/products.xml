@@ -510,7 +510,7 @@
             <Label lang="en">Door/Window Contact</Label>
             <Label lang="de">Tür/Fenster Kontakt</Label>
             <ConfigFile>everspring/sm103.xml</ConfigFile>
-        </Product>      
+        </Product>
         <Product>
             <Reference>
                 <Type>000C</Type>
@@ -2080,8 +2080,8 @@
             <Label lang="en">Floor Thermostat</Label>
             <ConfigFile>zwaveme/zme_ft11.xml</ConfigFile>
             <ConfigFile VersionMax="1.2">zwaveme/zme_ftll.xml</ConfigFile> <!-- VersionMin="1.1" -->
-            <ConfigFile VersionMin="1.3" VersionMax="1.3">zwaveme/zme_ftl3.xml</ConfigFile> 
-            <ConfigFile VersionMin="1.4">zwaveme/zme_ftl4.xml</ConfigFile> 
+            <ConfigFile VersionMin="1.3" VersionMax="1.3">zwaveme/zme_ftl3.xml</ConfigFile>
+            <ConfigFile VersionMin="1.4">zwaveme/zme_ftl4.xml</ConfigFile>
         </Product>
     </Manufacturer>
     <Manufacturer>
@@ -2188,7 +2188,7 @@
             <ConfigFile>danfoss/lcz_251.xml</ConfigFile>
         </Product>
         <Product>
-            <Reference> <!-- This Type and Id are know to be used by the Devolo badged device --> 
+            <Reference> <!-- This Type and Id are know to be used by the Devolo badged device -->
                 <Type>0005</Type>
                 <Id>0175</Id>
             </Reference>
@@ -2235,7 +2235,7 @@
     </Manufacturer>
     <Manufacturer>
         <Id>013C</Id>
-        <Name>Philio Technology Corporation</Name>    
+        <Name>Philio Technology Corporation</Name>
         <Product>
             <Reference>
                 <Type>0009</Type>
@@ -3432,5 +3432,14 @@
             <Label lang="en">Scene Capable Wall Dimmer Switch</Label>
             <ConfigFile>homeseer/hswd100.xml</ConfigFile>
         </Product>
-    </Manufacturer> 
+        <Product>
+            <Reference>
+                <Type>4447</Type>
+                <Id>3033</Id>
+            </Reference>
+            <Model>HS-WS100+</Model>
+            <Label lang="en">Scene Capable Wall Switch</Label>
+            <ConfigFile>homeseer/hsws100.xml</ConfigFile>
+        </Product>
+    </Manufacturer>
 </Manufacturers>
