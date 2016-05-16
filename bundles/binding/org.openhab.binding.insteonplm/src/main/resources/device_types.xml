@@ -432,4 +432,12 @@ Example entry:
      <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
+ 
+ <device productKey="F00.00.1F">
+     <model>2477SA1</model>
+     <description>220V 30-amp Load Controller N/O</description>
+     <feature name="switch">GenericSwitch</feature>
+     <feature name="fastonoff">FastOnOff</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
 </xml>
