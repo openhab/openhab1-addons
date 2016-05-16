@@ -51,7 +51,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
      */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.model.item.binding.BindingConfigReader#getBindingType()
      */
     @Override
@@ -97,10 +97,10 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 
     /**
      * Checks if the bindingConfig contains a valid binding type and returns an appropriate instance.
-     * 
+     *
      * @param item
      * @param bindingConfig
-     * 
+     *
      * @throws BindingConfigParseException if bindingConfig is no valid binding type
      */
     protected ModbusBindingConfig parseBindingConfig(Item item, String bindingConfig)
@@ -110,7 +110,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.modbus.tcp.master.ModbusBindingProvider#getConfig(java.lang.String)
      */
     @Override
@@ -120,7 +120,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 
     /**
      * ModbusBindingConfig stores configuration of the item bound to Modbus
-     * 
+     *
      * @author dbkrasn
      * @since 1.1.0
      */
@@ -140,32 +140,52 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
          */
         String slaveName;
         /**
-         * OpenHAB Item to be configured
+         * State of Item
          */
-        private Item item = null;
+        private State state = null;
 
-        public Item getItem() {
-            return item;
+        public State getState() {
+            return state;
         }
 
-        State getItemState() {
-            return item.getState();
+        public void setState(State state) {
+            this.state = state;
+        }
+
+        /**
+         * Name of Item
+         */
+
+        private Class<? extends Item> itemClass = null;
+
+        public Class<? extends Item> getItemClass() {
+            return itemClass;
+        }
+
+        private String itemName = null;
+
+        public String getItemName() {
+            return itemName;
         }
 
         /**
          * Calculates new item state based on the new boolean value, current item state and item class
          * Used with item bound to "coil" type slaves
-         * 
+         *
          * @param b new boolean value
          * @param c class of the current item state
          * @param itemClass class of the item
-         * 
+         *
          * @return new item state
          */
         protected State translateBoolean2State(boolean b) {
 
-            Class<? extends State> c = item.getState().getClass();
-            Class<? extends Item> itemClass = item.getClass();
+            Class<? extends State> c = null;
+            if (state == null) {
+                c = UnDefType.class;
+            } else {
+                c = state.getClass();
+            }
 
             if (c == UnDefType.class && itemClass == SwitchItem.class) {
                 return b ? OnOffType.ON : OnOffType.OFF;
@@ -186,13 +206,14 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 
         /**
          * Constructor for config object
-         * 
+         *
          * @param item
          * @param config
          * @throws BindingConfigParseException if
          */
         ModbusBindingConfig(Item item, String config) throws BindingConfigParseException {
-            this.item = item;
+            itemClass = item.getClass();
+            state = item.getState();
 
             try {
                 String[] items = config.split(":");
@@ -213,7 +234,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 
         /**
          * Parses register reference string and assigns values to readRegister and writeRegister
-         * 
+         *
          * @param item
          * @throws BindingConfigParseException if register description is invalid
          */
