@@ -49,13 +49,15 @@ public class AbstractDynamoDBItemSerializationTest {
 
     private final Date date = new Date(400);
 
+    @SuppressWarnings("unchecked")
     public DynamoDBItem<?> testStateGeneric(State state, Object expectedState) throws IOException {
         DynamoDBItem<?> dbItem = AbstractDynamoDBItem.fromState("item1", state, date);
 
         assertEquals("item1", dbItem.getName());
         assertEquals(date, dbItem.getTime());
         if (expectedState instanceof BigDecimal) {
-            assertEquals(DynamoDBBigDecimalItem.loseDigits(((BigDecimal) expectedState)), ((dbItem.getState())));
+            assertTrue(DynamoDBBigDecimalItem.loseDigits(((BigDecimal) expectedState))
+                    .compareTo((((DynamoDBItem<BigDecimal>) dbItem).getState())) == 0);
         } else {
             assertEquals(expectedState, dbItem.getState());
         }
@@ -71,8 +73,8 @@ public class AbstractDynamoDBItemSerializationTest {
         assertEquals(expectedState.getClass(), historicItem.getState().getClass());
         if (expectedState instanceof DecimalType) {
             // serialization loses accuracy, take this into consideration
-            assertEquals(DynamoDBBigDecimalItem.loseDigits(((DecimalType) expectedState).toBigDecimal()),
-                    DynamoDBBigDecimalItem.loseDigits(((DecimalType) historicItem.getState()).toBigDecimal()));
+            assertTrue(DynamoDBBigDecimalItem.loseDigits(((DecimalType) expectedState).toBigDecimal())
+                    .compareTo(((DecimalType) historicItem.getState()).toBigDecimal()) == 0);
         } else if (expectedState instanceof CallType) {
             // CallType has buggy equals, let's compare strings instead
             assertEquals(expectedState.toString(), historicItem.getState().toString());

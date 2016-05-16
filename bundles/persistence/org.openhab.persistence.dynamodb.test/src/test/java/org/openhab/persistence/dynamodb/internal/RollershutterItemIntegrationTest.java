@@ -8,7 +8,7 @@
  */
 package org.openhab.persistence.dynamodb.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -70,8 +70,7 @@ public class RollershutterItemIntegrationTest extends AbstractTwoItemIntegration
     @Override
     protected void assertStateEquals(State expected, State actual) {
         BigDecimal expectedDecimal = ((DecimalType) expected).toBigDecimal();
-        BigDecimal actualDecimal = ((DecimalType) expected).toBigDecimal();
-        assertEquals(DynamoDBBigDecimalItem.loseDigits(expectedDecimal),
-                DynamoDBBigDecimalItem.loseDigits(actualDecimal));
+        BigDecimal actualDecimal = ((DecimalType) actual).toBigDecimal();
+        assertTrue(DynamoDBBigDecimalItem.loseDigits(expectedDecimal).compareTo(actualDecimal) == 0);
     }
 }
