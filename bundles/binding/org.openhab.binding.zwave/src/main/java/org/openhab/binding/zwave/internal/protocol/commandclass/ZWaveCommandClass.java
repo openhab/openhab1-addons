@@ -426,6 +426,7 @@ public abstract class ZWaveCommandClass {
         CRC_16_ENCAP(0x56, "CRC_16_ENCAP", ZWaveCRC16EncapsulationCommandClass.class),
         ASSOCIATION_GROUP_INFO(0x59, "ASSOCIATION_GROUP_INFO", null),
         DEVICE_RESET_LOCALLY(0x5a, "DEVICE_RESET_LOCALLY", null),
+        CENTRAL_SCENE(0x5b, "CENTRAL_SCENE", ZWaveCentralSceneCommandClass.class),
         ZWAVE_PLUS_INFO(0x5e, "ZWAVE_PLUS_INFO", null),
         MULTI_INSTANCE(0x60, "MULTI_INSTANCE", ZWaveMultiInstanceCommandClass.class),
         DOOR_LOCK(0x62, "DOOR_LOCK", null),
