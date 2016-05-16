@@ -9,7 +9,7 @@
 package org.openhab.persistence.dynamodb.internal;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.MathContext;
 import java.util.Date;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
@@ -28,9 +28,10 @@ public class DynamoDBBigDecimalItem extends AbstractDynamoDBItem<BigDecimal> {
      * We get the following error if the BigDecimal has too many digits
      * "Attempting to store more than 38 significant digits in a Number"
      *
-     * Value of 35 seems to be highest that works.
+     * See "Data types" section in
+     * http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html
      */
-    private static final int MAX_SCALE_SUPPORTED_BY_AMAZON = 35;
+    private static final int MAX_DIGITS_SUPPORTED_BY_AMAZON = 38;
 
     public DynamoDBBigDecimalItem() {
         this(null, null, null);
@@ -43,6 +44,8 @@ public class DynamoDBBigDecimalItem extends AbstractDynamoDBItem<BigDecimal> {
     @DynamoDBAttribute(attributeName = DynamoDBItem.ATTRIBUTE_NAME_ITEMSTATE)
     @Override
     public BigDecimal getState() {
+        // When serializing this to the wire, we round the number in order to ensure
+        // that it is within the dynamodb limits
         return loseDigits(state);
     }
 
@@ -82,6 +85,6 @@ public class DynamoDBBigDecimalItem extends AbstractDynamoDBItem<BigDecimal> {
         if (number == null) {
             return null;
         }
-        return number.setScale(MAX_SCALE_SUPPORTED_BY_AMAZON, RoundingMode.HALF_UP);
+        return number.round(new MathContext(MAX_DIGITS_SUPPORTED_BY_AMAZON));
     }
 }
