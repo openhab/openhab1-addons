@@ -178,7 +178,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             }
             boolean success = TableStatus.ACTIVE.equals(TableStatus.fromValue(tableDescription.getTableStatus()));
             if (success) {
-                logger.info("Creation of table '{}' successful, table status is now {}", tableName,
+                logger.debug("Creation of table '{}' successful, table status is now {}", tableName,
                         tableDescription.getTableStatus());
             } else {
                 logger.warn("Creation of table '{}' unsuccessful, table status is now {}", tableName,
