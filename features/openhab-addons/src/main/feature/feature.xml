@@ -437,13 +437,6 @@
     <configfile finalname="${openhab.conf}/services/swegonventilation.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/swegonventilation</configfile>
   </feature>
 
-  <feature name="openhab-binding-systeminfo" description="System Info Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.systeminfo/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/systeminfo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/systeminfo</configfile>
-  </feature>
-
   <feature name="openhab-binding-tellstick" description="Tellstick Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
