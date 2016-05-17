@@ -62,11 +62,18 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
     @Override
     public void serialEvent(SerialPortEvent event) {
         if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-            try {
-                String line = br.readLine();
-                processNextLine(line);
-            } catch (IOException e) {
-                log.error("Can't read from serial device {}", config.getDeviceName(), e);
+            synchronized (br) {
+                try {
+                    if (br == null) {
+                        log.error("BufferedReader for serial connection is null");
+                    } else {
+                        String line = br.readLine();
+                        processNextLine(line);
+                    }
+                } catch (IOException e) {
+                    log.error("Can't read from serial device {}", config.getDeviceName(), e);
+                    tryReopenHardware();
+                }
             }
         }
     }
@@ -91,8 +98,12 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
                     config.getParityMode());
             InputStream is = serialPort.getInputStream();
             OutputStream os = serialPort.getOutputStream();
-            br = new BufferedReader(new InputStreamReader(is));
-            bw = new BufferedWriter(new OutputStreamWriter(os));
+            synchronized (br) {
+                br = new BufferedReader(new InputStreamReader(is));
+            }
+            synchronized (bw) {
+                bw = new BufferedWriter(new OutputStreamWriter(os));
+            }
 
             serialPort.notifyOnDataAvailable(true);
             log.debug("Adding serial port event listener");
@@ -131,17 +142,34 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
                 serialPort.close();
             }
         }
+    }
 
+    private void tryReopenHardware() {
+        closeHardware();
+        try {
+            openHardware();
+        } catch (CULDeviceException e) {
+            log.error("Failed to reopen serial connection after connection error", e);
+        }
     }
 
     @Override
     protected void write(String command) {
+
         try {
-            bw.write(command);
-            bw.flush();
+            synchronized (bw) {
+                if (bw == null) {
+                    log.error("BufferedWriter for serial connection is null");
+                } else {
+                    bw.write(command);
+                    bw.flush();
+                }
+            }
         } catch (IOException e) {
             log.error("Can't write to serial device {}", config.getDeviceName(), e);
+            tryReopenHardware();
         }
+
     }
 
 }
