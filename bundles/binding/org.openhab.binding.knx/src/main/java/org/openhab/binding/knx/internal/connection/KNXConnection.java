@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -436,7 +436,7 @@ public class KNXConnection implements ManagedService {
             if (sPC == null) {
                 sLogger.debug("Not connected yet. Trying to connect.");
                 if (!connect()) {
-                    sLogger.warn("Inital connection to KNX bus failed!");
+                    sLogger.warn("Initial connection to KNX bus failed!");
                     if (sAutoReconnectPeriod > 0) {
                         sLogger.info("KNX link will be retried in {} seconds", sAutoReconnectPeriod);
                         final Timer timer = new Timer();

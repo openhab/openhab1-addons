@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -43,7 +43,7 @@ public class TCPConnector implements DSCAlarmConnector {
 	private OutputStreamWriter tcpOutput = null;
 	private BufferedReader tcpInput = null;
 	private TCPListener TCPListener = null;
-	private DSCAlarmConnectorType connectorType = DSCAlarmConnectorType.ENVISALINK;
+	private DSCAlarmConnectorType connectorType = DSCAlarmConnectorType.TCP;
 	private static boolean connected = false;
 	private static List<DSCAlarmEventListener> _listeners = new ArrayList<DSCAlarmEventListener>();
 
@@ -144,7 +144,7 @@ public class TCPConnector implements DSCAlarmConnector {
 	  */
 	 public synchronized void handleIncomingMessage(String incomingMessage) {
 		APIMessage Message = new APIMessage(incomingMessage);
-		logger.debug("handleIncomingMessage(): Message recieved: {} - {}",incomingMessage,Message.toString());
+		logger.debug("handleIncomingMessage(): Message received: {} - {}",incomingMessage,Message.toString());
 
 		DSCAlarmEvent event = new DSCAlarmEvent(this);
 		event.dscAlarmEventMessage(Message);

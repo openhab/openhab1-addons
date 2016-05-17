@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>12727</Model>
+    <Label lang="en">GE 12727 Z-Wave Wireless Lighting Control Smart Toggle Switch</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x77</id>             <!-- NODE_NAMING -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Invert switch</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Normal switch install</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Inverted switch</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>29</Index>
+            <Label lang="en">Load Sensing</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>0</Size>
+        </Parameter>
+
+    </Configuration>
+
+</Product>

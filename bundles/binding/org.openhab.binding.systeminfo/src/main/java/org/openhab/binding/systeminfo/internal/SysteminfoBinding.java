@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -381,13 +381,16 @@ public class SysteminfoBinding extends AbstractActiveBinding<SysteminfoBindingPr
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+        String variant = null;
         if (config != null) {
             String granularityString = (String) config.get("granularity");
             if (StringUtils.isNotBlank(granularityString)) {
                 granularity = Integer.parseInt(granularityString);
             }
-
             logger.debug("Granularity: {} ms", granularity);
+
+            variant = (String) config.get("variant");
+            logger.debug("Variant: {}", variant);
 
             String tmp = (String) config.get("units");
             if (StringUtils.isNotBlank(tmp)) {
@@ -405,12 +408,19 @@ public class SysteminfoBinding extends AbstractActiveBinding<SysteminfoBindingPr
             logger.debug("Using units: {}", units);
         }
 
-        initializeSystemMonitor();
+        logger.debug("About to initialize system monitor...");
+        try {
+            initializeSystemMonitor(variant);
+        } catch (Throwable t) {
+            logger.error("Error initializing system monitor", t);
+        }
+        logger.debug("Initialized system monitor.");
         setProperlyConfigured(true);
     }
 
-    private void initializeSystemMonitor() {
+    private void initializeSystemMonitor(String variant) {
         if (sigarImpl == null) {
+            Sigar.variant = variant;
             sigarImpl = new Sigar();
         }
 
@@ -419,6 +429,7 @@ public class SysteminfoBinding extends AbstractActiveBinding<SysteminfoBindingPr
         }
 
         logger.info("Using Sigar version {}", Sigar.VERSION_STRING);
+        logger.info("Using native version {}", Sigar.NATIVE_VERSION_STRING);
 
         try {
             String[] interfaces = sigar.getNetInterfaceList();
@@ -438,7 +449,7 @@ public class SysteminfoBinding extends AbstractActiveBinding<SysteminfoBindingPr
             logger.debug("valid disk names: {}", Arrays.toString(disks.toArray()));
 
         } catch (SigarException e) {
-            logger.error("System monitor error: {}", e);
+            logger.error("System monitor error:", e);
         }
     }
 

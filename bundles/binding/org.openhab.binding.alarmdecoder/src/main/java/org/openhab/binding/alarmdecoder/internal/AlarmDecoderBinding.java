@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -93,6 +93,11 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
     @Override
     protected long getRefreshInterval() {
         return refreshInterval;
+    }
+
+    @Override
+    public void deactivate() {
+        disconnect();
     }
 
     @Override
@@ -422,9 +427,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
                 }
             } catch (IOException e) {
                 logger.error("I/O error while reading from stream: {}", e.getMessage());
-                // mark connections as down so they get reestablished
-                m_socket = null;
-                m_port = null;
+                disconnect();
             }
             logger.debug("msg reader thread exited");
         }

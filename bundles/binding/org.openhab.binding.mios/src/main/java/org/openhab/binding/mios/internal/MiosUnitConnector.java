@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -191,7 +191,7 @@ public class MiosUnitConnector {
                     command.toString(), config.getItemName());
             return;
         } else if (newCommand.equals("")) {
-            logger.trace("callDevice: Item '{}' has disabled the use of Command '{}' via it's configuration '{}'",
+            logger.trace("callDevice: Item '{}' has disabled the use of Command '{}' via its configuration '{}'",
                     new Object[] { config.getItemName(), command.toString(), config.toProperty() });
             return;
         }

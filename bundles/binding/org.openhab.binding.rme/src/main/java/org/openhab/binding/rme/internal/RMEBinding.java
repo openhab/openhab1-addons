@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -360,7 +360,7 @@ public class RMEBinding extends AbstractActiveBinding<RMEBindingProvider>impleme
                                                     matcher.group(selector.getFieldIndex()));
                                         }
                                     } catch (BindingConfigParseException e) {
-                                        logger.error("An exception occured while converting {} to a valide state : {}",
+                                        logger.error("An exception occured while converting {} to a valid state : {}",
                                                 matcher.group(selector.getFieldIndex()), e.getMessage());
                                         return;
                                     }

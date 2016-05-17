@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,15 +29,15 @@ import org.slf4j.LoggerFactory;
  *
  * 1) single coil/register per item
  * Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}
- * 
+ *
  * This binds MySwitch to modbus slave defined as "slave1" in openhab.config reading/writing to the coil 5
  *
  * 2) separate coils/registers for reading and writing
  * Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:<6:>7"}
- * 
+ *
  * In this case coil 6 is used as status coil (readonly) and commands are put to coil 7 by setting coil 7 to true.
  * You hardware should then set coil 7 back to false to allow further commands processing.
- * 
+ *
  * @author Dmitry Krasnov
  * @since 1.1.0
  */
@@ -51,7 +51,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
      */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.model.item.binding.BindingConfigReader#getBindingType()
      */
     @Override
@@ -97,10 +97,10 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 
     /**
      * Checks if the bindingConfig contains a valid binding type and returns an appropriate instance.
-     * 
+     *
      * @param item
      * @param bindingConfig
-     * 
+     *
      * @throws BindingConfigParseException if bindingConfig is no valid binding type
      */
     protected ModbusBindingConfig parseBindingConfig(Item item, String bindingConfig)
@@ -110,7 +110,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.modbus.tcp.master.ModbusBindingProvider#getConfig(java.lang.String)
      */
     @Override
@@ -120,49 +120,72 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 
     /**
      * ModbusBindingConfig stores configuration of the item bound to Modbus
-     * 
+     *
      * @author dbkrasn
      * @since 1.1.0
      */
     public class ModbusBindingConfig implements BindingConfig {
 
         /**
-         * readRegister and writeRegister store references to the register in device data space
+         * Index to read, relative to start
          */
-        int readRegister;
-        int writeRegister;
+        int readIndex;
+        /**
+         * Index to write, relative to start
+         */
+        int writeIndex;
 
         /**
          * Name of the ModbusSlave instance to read/write data
          */
         String slaveName;
         /**
-         * OpenHAB Item to be configured
+         * State of Item
          */
-        private Item item = null;
+        private State state = null;
 
-        public Item getItem() {
-            return item;
+        public State getState() {
+            return state;
         }
 
-        State getItemState() {
-            return item.getState();
+        public void setState(State state) {
+            this.state = state;
+        }
+
+        /**
+         * Name of Item
+         */
+
+        private Class<? extends Item> itemClass = null;
+
+        public Class<? extends Item> getItemClass() {
+            return itemClass;
+        }
+
+        private String itemName = null;
+
+        public String getItemName() {
+            return itemName;
         }
 
         /**
          * Calculates new item state based on the new boolean value, current item state and item class
          * Used with item bound to "coil" type slaves
-         * 
+         *
          * @param b new boolean value
          * @param c class of the current item state
          * @param itemClass class of the item
-         * 
+         *
          * @return new item state
          */
         protected State translateBoolean2State(boolean b) {
 
-            Class<? extends State> c = item.getState().getClass();
-            Class<? extends Item> itemClass = item.getClass();
+            Class<? extends State> c = null;
+            if (state == null) {
+                c = UnDefType.class;
+            } else {
+                c = state.getClass();
+            }
 
             if (c == UnDefType.class && itemClass == SwitchItem.class) {
                 return b ? OnOffType.ON : OnOffType.OFF;
@@ -183,20 +206,21 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 
         /**
          * Constructor for config object
-         * 
+         *
          * @param item
          * @param config
          * @throws BindingConfigParseException if
          */
         ModbusBindingConfig(Item item, String config) throws BindingConfigParseException {
-            this.item = item;
+            itemClass = item.getClass();
+            state = item.getState();
 
             try {
                 String[] items = config.split(":");
                 slaveName = items[0];
                 if (items.length == 2) {
-                    readRegister = Integer.valueOf(items[1]);
-                    writeRegister = Integer.valueOf(items[1]);
+                    readIndex = Integer.valueOf(items[1]);
+                    writeIndex = Integer.valueOf(items[1]);
                 } else if (items.length == 3) {
                     assignRegisters(items[1]);
                     assignRegisters(items[2]);
@@ -210,15 +234,15 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 
         /**
          * Parses register reference string and assigns values to readRegister and writeRegister
-         * 
+         *
          * @param item
          * @throws BindingConfigParseException if register description is invalid
          */
         private void assignRegisters(String item) throws BindingConfigParseException {
             if (item.startsWith("<")) {
-                readRegister = Integer.valueOf(item.substring(1, item.length()));
+                readIndex = Integer.valueOf(item.substring(1, item.length()));
             } else if (item.startsWith(">")) {
-                writeRegister = Integer.valueOf(item.substring(1, item.length()));
+                writeIndex = Integer.valueOf(item.substring(1, item.length()));
             } else {
                 throw new BindingConfigParseException("Register references should be either :X or :<X:>Y");
             }

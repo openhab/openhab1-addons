@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@ package org.openhab.binding.modbus.internal;
 import java.util.Collection;
 
 import org.openhab.binding.modbus.ModbusBindingProvider;
+import org.openhab.binding.modbus.internal.ModbusGenericBindingProvider.ModbusBindingConfig;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
@@ -36,6 +37,7 @@ import net.wimpi.modbus.msg.WriteMultipleRegistersRequest;
 import net.wimpi.modbus.msg.WriteSingleRegisterRequest;
 import net.wimpi.modbus.procimg.InputRegister;
 import net.wimpi.modbus.procimg.Register;
+import net.wimpi.modbus.procimg.SimpleRegister;
 import net.wimpi.modbus.util.BitVector;
 
 /**
@@ -86,10 +88,10 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     /**
      * A multiplier for the raw incoming data
-     * 
+     *
      * @note rawMultiplier can also be used for divisions, by simply
      *       setting the value smaller than zero.
-     * 
+     *
      *       E.g.:
      *       - data/100 ... rawDataMultiplier=0.01
      */
@@ -97,6 +99,21 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     private Object storage;
     protected ModbusTransaction transaction = null;
+
+    /**
+     * Does the binding post updates even when the item did not change it's state?
+     *
+     * default is "false"
+     */
+    private boolean updateUnchangedItems = false;
+
+    public boolean isUpdateUnchangedItems() {
+        return updateUnchangedItems;
+    }
+
+    public void setUpdateUnchangedItems(boolean updateUnchangedItems) {
+        this.updateUnchangedItems = updateUnchangedItems;
+    }
 
     /**
      * @param slave slave name from cfg file used for item binding
@@ -108,24 +125,23 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
     /**
      * writes data to Modbus device corresponding to OpenHAB command
      * works only with types "coil" and "holding"
-     * 
+     *
      * @param command OpenHAB command received
-     * @param readRegister data from readRegister are used to define value to write to the device
-     * @param writeRegister register address to write new data to
+     * @param config
      */
-    void executeCommand(Command command, int readRegister, int writeRegister) {
+    void executeCommand(Command command, ModbusBindingConfig config) {
         if (ModbusBindingProvider.TYPE_COIL.equals(getType())) {
-            setCoil(command, readRegister, writeRegister);
+            setCoil(command, config);
         }
         if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {
-            setRegister(command, readRegister, getStart() + writeRegister);
+            setRegister(command, config);
         }
     }
 
     /**
      * Calculates boolean value that will be written to the device as a result of OpenHAB command
      * Used with item bound to "coil" type slaves
-     * 
+     *
      * @param command OpenHAB command received by the item
      * @return new boolean value to be written to the device
      */
@@ -147,68 +163,74 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     /**
      * Performs physical write to device when slave type is "coil"
-     * 
+     *
      * @param command command received from OpenHAB
-     * @param readRegister reference to the register that stores current value
-     * @param writeRegister register reference to write data to
+     * @param config
      */
-    private void setCoil(Command command, int readRegister, int writeRegister) {
-        synchronized (storage) {
-            boolean b = translateCommand2Boolean(command);
-            if (((BitVector) storage).getBit(readRegister) != b) {
-                if (b) {
-                    doSetCoil(getStart() + writeRegister, true);
-                } else {
-                    doSetCoil(getStart() + writeRegister, readRegister == writeRegister ? false : true);
-                }
-            }
-        }
+    private void setCoil(Command command, ModbusBindingConfig config) {
+        int writeRegister = config.writeIndex;
+        boolean b = translateCommand2Boolean(command);
+        doSetCoil(getStart() + writeRegister, b);
     }
 
     /**
      * Performs physical write to device when slave type is "holding" using Modbus FC06 function
-     * 
+     *
      * @param command command received from OpenHAB
-     * @param readRegister reference to the register that stores current value
-     * @param writeRegister register reference to write data to
+     * @param config
      */
-    protected void setRegister(Command command, int readRegister, int writeRegister) {
+    protected void setRegister(Command command, ModbusBindingConfig config) {
+        int readIndex = config.readIndex;
+        int writeRegister = getStart() + config.writeIndex;
 
         if (!isConnected()) {
             return;
         }
 
-        Register newValue = null;
-        synchronized (storage) {
-            newValue = (Register) ((InputRegister[]) storage)[readRegister];
-        }
-
+        Register newValue;
         if (command instanceof IncreaseDecreaseType) {
+            newValue = readCachedRegisterValue(readIndex);
+            if (newValue == null) {
+                logger.warn("Not polled value for item {}. Cannot process command {}", config.getItemName(), command);
+                return;
+            }
             if (command.equals(IncreaseDecreaseType.INCREASE)) {
                 newValue.setValue(newValue.getValue() + 1);
             } else if (command.equals(IncreaseDecreaseType.DECREASE)) {
                 newValue.setValue(newValue.getValue() - 1);
             }
         } else if (command instanceof UpDownType) {
+            newValue = readCachedRegisterValue(readIndex);
+            if (newValue == null) {
+                logger.warn("Not polled value for item {}. Cannot process command {}", config.getItemName(), command);
+                return;
+            }
             if (command.equals(UpDownType.UP)) {
                 newValue.setValue(newValue.getValue() + 1);
             } else if (command.equals(UpDownType.DOWN)) {
                 newValue.setValue(newValue.getValue() - 1);
             }
         } else if (command instanceof DecimalType) {
+            newValue = new SimpleRegister();
             newValue.setValue(((DecimalType) command).intValue());
         } else if (command instanceof OnOffType) {
+            newValue = new SimpleRegister();
             if (command.equals(OnOffType.ON)) {
                 newValue.setValue(1);
             } else if (command.equals(OnOffType.OFF)) {
                 newValue.setValue(0);
             }
         } else if (command instanceof OpenClosedType) {
+            newValue = new SimpleRegister();
             if (command.equals(OpenClosedType.OPEN)) {
                 newValue.setValue(1);
             } else if (command.equals(OpenClosedType.CLOSED)) {
                 newValue.setValue(0);
             }
+        } else {
+            logger.warn("Item {} received unsupported command: {}. Not setting register.", config.getItemName(),
+                    command);
+            return;
         }
 
         ModbusRequest request = null;
@@ -232,6 +254,17 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
         }
     }
 
+    private Register readCachedRegisterValue(int readIndex) {
+        if (storage == null) {
+            return null;
+        }
+        Register newValue = null;
+        synchronized (storage) {
+            newValue = (Register) ((InputRegister[]) storage)[readIndex];
+        }
+        return newValue;
+    }
+
     /**
      * @return slave name from cfg file
      */
@@ -241,7 +274,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     /**
      * Sends boolean (bit) data to the device using Modbus FC05 function
-     * 
+     *
      * @param writeRegister
      * @param b
      */
@@ -264,7 +297,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     /**
      * Reads data from the connected device and updates items with the new data
-     * 
+     *
      * @param binding ModbusBindig that stores providers information
      */
     public void update(ModbusBinding binding) {
@@ -284,20 +317,20 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
                     request.setHeadless();
                 }
                 request.setUnitID(id);
-                ReadCoilsResponse responce = (ReadCoilsResponse) getModbusData(request);
-                local = responce.getCoils();
+                ReadCoilsResponse response = (ReadCoilsResponse) getModbusData(request);
+                local = response.getCoils();
             } else if (ModbusBindingProvider.TYPE_DISCRETE.equals(getType())) {
                 ModbusRequest request = new ReadInputDiscretesRequest(getStart(), getLength());
-                ReadInputDiscretesResponse responce = (ReadInputDiscretesResponse) getModbusData(request);
-                local = responce.getDiscretes();
+                ReadInputDiscretesResponse response = (ReadInputDiscretesResponse) getModbusData(request);
+                local = response.getDiscretes();
             } else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {
                 ModbusRequest request = new ReadMultipleRegistersRequest(getStart(), getLength());
-                ReadMultipleRegistersResponse responce = (ReadMultipleRegistersResponse) getModbusData(request);
-                local = responce.getRegisters();
+                ReadMultipleRegistersResponse response = (ReadMultipleRegistersResponse) getModbusData(request);
+                local = response.getRegisters();
             } else if (ModbusBindingProvider.TYPE_INPUT.equals(getType())) {
                 ModbusRequest request = new ReadInputRegistersRequest(getStart(), getLength());
-                ReadInputRegistersResponse responce = (ReadInputRegistersResponse) getModbusData(request);
-                local = responce.getRegisters();
+                ReadInputRegistersResponse response = (ReadInputRegistersResponse) getModbusData(request);
+                local = response.getRegisters();
             }
             if (storage == null) {
                 storage = local;
@@ -312,7 +345,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
             }
         } catch (Exception e) {
             resetConnection();
-            logger.info("ModbusSlave error getting responce from slave");
+            logger.info("ModbusSlave error getting response from slave:", e);
         }
 
     }
@@ -320,7 +353,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
     /**
      * Updates OpenHAB item with data read from slave device
      * works only for type "coil" and "holding"
-     * 
+     *
      * @param binding ModbusBinding
      * @param item item to update
      */
@@ -337,7 +370,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     /**
      * Executes Modbus transaction that reads data from the device and returns response data
-     * 
+     *
      * @param request describes what data are requested from the device
      * @return response data
      */
