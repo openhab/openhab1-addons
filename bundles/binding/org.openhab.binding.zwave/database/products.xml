@@ -2884,6 +2884,10 @@
                 <Type>453</Type>
                 <Id>110</Id>
             </Reference>
+            <Reference>
+                <Type>453</Type>
+                <Id>111</Id>
+            </Reference>
             <Model>MIMOlite</Model>
             <Label lang="en">Digital or Analog Voltage input and/or Dry Contact
                 Relay
