@@ -15,8 +15,6 @@ import java.net.UnknownHostException;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.openhab.binding.girahomeserver.GiraHomeServerBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -67,8 +65,11 @@ public class GiraHomeServerBinding extends AbstractActiveBinding<GiraHomeServerB
      */
     private long refreshInterval = DEFAULT_REFRESH_INTERVAL;
 
-    private static HashMap<String, Type> updatedParams = new HashMap<String, Type>();
-    private final Lock updatedParamsLock = new ReentrantLock();
+    /**
+     * HasMap of items -> type that have changed since the last
+     * communication with the girahomeserver
+     */
+    private static volatile HashMap<String, Type> updatedParams = new HashMap<String, Type>();
 
     public GiraHomeServerBinding() {
     }
@@ -205,8 +206,13 @@ public class GiraHomeServerBinding extends AbstractActiveBinding<GiraHomeServerB
      * @throws IOException
      */
     protected void flushValuesToGirahomeserver(GiraHomeServerConnector connector) throws IOException {
-        updatedParamsLock.lock();
-        for (Map.Entry<String, Type> entry : updatedParams.entrySet()) {
+
+        // copy the updatedParams -- updatedParams is volatile
+        HashMap<String, Type> updatedParamsCopy = updatedParams;
+        updatedParams = new HashMap<String, Type>();
+
+        // process the updated params
+        for (Map.Entry<String, Type> entry : updatedParamsCopy.entrySet()) {
             String itemName = entry.getKey();
             Type value = entry.getValue();
 
@@ -216,9 +222,6 @@ public class GiraHomeServerBinding extends AbstractActiveBinding<GiraHomeServerB
                 connector.setParam(communicationObject, value);
             }
         }
-        // flush
-        updatedParams = new HashMap<String, Type>();
-        updatedParamsLock.unlock();
     }
 
     /**
@@ -236,9 +239,7 @@ public class GiraHomeServerBinding extends AbstractActiveBinding<GiraHomeServerB
      * @param value
      */
     protected void writeToGiraHomeServerBuffered(String itemName, Type value) {
-        updatedParamsLock.lock();
         GiraHomeServerBinding.updatedParams.put(itemName, value);
-        updatedParamsLock.unlock();
     }
 
     /**

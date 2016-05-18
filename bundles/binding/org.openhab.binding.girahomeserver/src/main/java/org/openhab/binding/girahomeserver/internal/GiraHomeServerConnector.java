@@ -140,10 +140,10 @@ public class GiraHomeServerConnector {
 
             if (records.length == 2) {
                 // ignore uninitialized values
-                String address = decodeCommunicationObjectAddress(records[1]);
                 continue;
 
             } else if (records.length == 3) {
+                // decode initialized values
                 String address = decodeCommunicationObjectAddress(records[1]);
                 String value = records[2];
                 values.put(address, value);
