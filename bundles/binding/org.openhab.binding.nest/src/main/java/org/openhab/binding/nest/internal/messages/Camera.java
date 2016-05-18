@@ -36,6 +36,7 @@ public class Camera extends AbstractDevice {
         private String app_url;
         private String image_url;
         private String animated_image_url;
+        // TODO: private array activity_zone_ids;
 
         /**
          * @return true if sound event - sound was detected.
@@ -126,6 +127,7 @@ public class Camera extends AbstractDevice {
             builder.append("app_url", this.app_url);
             builder.append("image_url", this.image_url);
             builder.append("animated_image_url", this.animated_image_url);
+            // TODO: builder.append("activity_zone_ids", this.activity_zone_ids);
             return builder.toString();
         }
     }
@@ -136,6 +138,10 @@ public class Camera extends AbstractDevice {
     private Boolean is_video_history_enabled;
     private String web_url;
     private String app_url;
+    private Boolean is_public_share_enabled;
+    // TODO: private JsonArray activity_zones;
+    private String public_share_url;
+    private String snapshot_url;
     private Event last_event;
 
     public Camera(@JsonProperty("device_id") String device_id) {
@@ -201,6 +207,31 @@ public class Camera extends AbstractDevice {
     }
 
     /**
+     * @return true if public share is enabled, so you can read public_share_url.
+     */
+    @JsonProperty("is_public_share_enabled")
+    public Boolean getIs_public_share_enabled() {
+        return this.is_public_share_enabled;
+    }
+
+    /**
+     * @return the URL when a user makes their video stream public.
+     */
+    @JsonProperty("public_share_url")
+    public String getPublic_share_url() {
+        return this.public_share_url;
+    }
+
+    /**
+     * @return the URL of an image captured from the live video stream.
+     *         Requires that the camera is on and actively streaming.
+     */
+    @JsonProperty("snapshot_url")
+    public String getSnapshot_url() {
+        return this.snapshot_url;
+    }
+
+    /**
      * @return the last event
      */
     @JsonProperty("last_event")
@@ -218,6 +249,10 @@ public class Camera extends AbstractDevice {
         builder.append("is_video_history_enabled", this.is_video_history_enabled);
         builder.append("web_url", this.web_url);
         builder.append("app_url", this.app_url);
+        builder.append("is_public_share_enabled", this.is_public_share_enabled);
+        // TODO: builder.append("activity_zones", this.activity_zones);
+        builder.append("public_share_url", this.public_share_url);
+        builder.append("snapshot_url", this.snapshot_url);
         builder.append("last_event", this.last_event);
         return builder.toString();
     }
