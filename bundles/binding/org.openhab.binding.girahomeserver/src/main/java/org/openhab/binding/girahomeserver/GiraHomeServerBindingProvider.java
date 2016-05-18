@@ -9,11 +9,24 @@
 package org.openhab.binding.girahomeserver;
 
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.types.Type;
 
 /**
  * @author Jochen Mattes
- * @since 1.8.0-SNAPSHOT
+ * @since 1.9.0
  */
 public interface GiraHomeServerBindingProvider extends BindingProvider {
 
+    /**
+     * Returns the outbound communicationObject to write according to <code>itemName</code>.
+     *
+     * @param itemName
+     *            the item for which to find a commandLine
+     *
+     * @return the matching communicationObject or <code>null</code> if no matching
+     *         communicationObject could be found.
+     */
+    String getOutboundCommunicationObject(String itemName, Type value);
+
+    String[] getItemNames(String communicationObject);
 }
