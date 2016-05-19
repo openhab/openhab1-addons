@@ -104,7 +104,7 @@ public class ScriptManager {
 			}
 
 		} catch(NoSuchMethodException e) {
-			logger.error("Script file misses mandotary function: getRules()", e);
+			logger.error("Script file misses mandatory function: getRules()", e);
 		} catch (FileNotFoundException e) {
 			logger.error("script file not found", e);
 		} catch (ScriptException e) {
