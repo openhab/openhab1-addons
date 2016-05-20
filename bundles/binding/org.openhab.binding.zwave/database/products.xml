@@ -674,6 +674,15 @@
             <Label lang="en">GE 12727 Z-Wave Wireless Lighting Control Smart Toggle Switch</Label>
             <ConfigFile>ge/12727.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>4944</Type>
+                <Id>3034</Id>
+            </Reference>
+            <Model>ZW4002</Model>
+            <Label lang="en">In-Wall Smart Fan Control</Label>
+            <ConfigFile>ge/zw4002.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0064</Id>
