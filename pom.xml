@@ -8,7 +8,7 @@
 
     <groupId>org.openhab</groupId>
     <artifactId>openhab</artifactId>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>1.9.0.b3</version>
     <name>openHAB</name>
 
     <organization>
@@ -37,8 +37,8 @@
     <description>This is the open Home Automation Bus (openHAB)</description>
 
     <properties>
-        <ohdr.version>1.0.0</ohdr.version>
-        <ohc.version>2.0.0.x</ohc.version>
+        <ohdr.version>1.0.6</ohdr.version>
+        <ohc.version>2.0.0.b3</ohc.version>
         <jdeb-version>1.4</jdeb-version>
 
         <tycho-version>0.24.0</tycho-version>
