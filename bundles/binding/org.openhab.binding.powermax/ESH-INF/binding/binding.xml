@@ -4,7 +4,7 @@
 
 	<name>Visonic PowerMax Binding</name>
 	<description>The Visonic PowerMax binding interfaces with Visonic PowerMax and PowerMaster alarm panel series.</description>
-	<author></author>
+	<author>Laurent Garnier</author>
 
 	<config-description>
 		<parameter name="serialPort" type="text" required="false">

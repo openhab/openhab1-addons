@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Extension of the default OSGi bundle activator
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxActivator implements BundleActivator {

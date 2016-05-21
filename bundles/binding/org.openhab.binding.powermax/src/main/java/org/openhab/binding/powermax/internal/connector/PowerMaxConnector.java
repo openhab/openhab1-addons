@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * An abstract class for the communication with the Visonic alarm panel that
  * handles stuff common to all communication types
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public abstract class PowerMaxConnector implements PowerMaxConnectorInterface {

@@ -15,7 +15,7 @@ import org.openhab.binding.powermax.internal.state.PowerMaxZoneSettings;
 /**
  * A class for STATUS message handling
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxStatusMessage extends PowerMaxBaseMessage {

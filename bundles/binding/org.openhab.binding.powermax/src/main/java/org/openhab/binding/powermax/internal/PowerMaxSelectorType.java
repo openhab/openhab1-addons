@@ -13,7 +13,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Used to map selector types from the binding string to a ENUM value
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public enum PowerMaxSelectorType {

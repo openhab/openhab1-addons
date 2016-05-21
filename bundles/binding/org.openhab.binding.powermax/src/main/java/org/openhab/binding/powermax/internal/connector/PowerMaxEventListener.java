@@ -14,7 +14,7 @@ import java.util.EventObject;
 /**
  * PowerMax Alarm Event Listener interface. Handles incoming PowerMax Alarm events
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public interface PowerMaxEventListener extends EventListener {

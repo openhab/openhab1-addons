@@ -15,7 +15,7 @@ import org.openhab.binding.powermax.internal.message.PowerMaxBaseMessage;
 /**
  * Event for messages received from the Visonic alarm panel
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxEvent extends EventObject {
