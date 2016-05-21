@@ -11,7 +11,7 @@ package org.openhab.binding.powermax.internal.state;
 /**
  * Used to store main characteristics of each Visonic alarm panel type in an ENUM
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public enum PowerMaxPanelType {

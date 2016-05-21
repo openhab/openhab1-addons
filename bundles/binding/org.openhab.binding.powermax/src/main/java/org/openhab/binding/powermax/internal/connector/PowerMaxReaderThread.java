@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A class that reads messages from the Visonic alarm panel in a dedicated thread
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxReaderThread extends Thread {

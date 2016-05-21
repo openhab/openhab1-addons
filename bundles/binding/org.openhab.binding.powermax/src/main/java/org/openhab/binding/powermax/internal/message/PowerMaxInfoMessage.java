@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A class for INFO message handling
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxInfoMessage extends PowerMaxBaseMessage {
