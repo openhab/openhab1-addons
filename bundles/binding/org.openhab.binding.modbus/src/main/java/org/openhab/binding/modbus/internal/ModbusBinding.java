@@ -607,6 +607,11 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
                 return inner.hasNext();
             }
 
+            @Override
+            public void remove() {
+                inner.remove();
+            }
+
         };
         return settingIterator;
     }
