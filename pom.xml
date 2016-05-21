@@ -34,6 +34,17 @@
         <system>Github</system>
     </issueManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>bintray</id>
+            <url>https://api.bintray.com/maven/openhab/mvn/openhab/;publish=1</url>
+        </repository>
+        <snapshotRepository>
+            <id>jfrog</id>
+            <url>http://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <description>This is the open Home Automation Bus (openHAB)</description>
 
     <properties>
