@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A class to store all the settings of the alarm system
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxPanelSettings {

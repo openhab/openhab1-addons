@@ -28,7 +28,7 @@ import gnu.io.UnsupportedCommOperationException;
 /**
  * A class for the communication with the Visonic alarm panel through a serial connection
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxSerialConnector extends PowerMaxConnector {

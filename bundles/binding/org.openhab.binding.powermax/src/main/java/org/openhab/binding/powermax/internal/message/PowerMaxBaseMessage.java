@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A base class for handling a message with the Visonic alarm system
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxBaseMessage {

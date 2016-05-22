@@ -91,6 +91,7 @@
                                 <artifact><file>src/main/resources/conf/snmp.cfg</file><type>cfg</type><classifier>snmp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/swegonventilation.cfg</file><type>cfg</type><classifier>swegonventilation</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/systeminfo.cfg</file><type>cfg</type><classifier>systeminfo</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/tcp.cfg</file><type>cfg</type><classifier>tcp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/telegram.cfg</file><type>cfg</type><classifier>telegram</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/tinkerforge.cfg</file><type>cfg</type><classifier>tinkerforge</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/urtsi.cfg</file><type>cfg</type><classifier>urtsi</classifier></artifact>

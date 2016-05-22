@@ -11,7 +11,7 @@ package org.openhab.binding.powermax.internal.connector;
 /**
  * Interface for communication with the Visonic alarm panel
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public interface PowerMaxConnectorInterface {

@@ -10,8 +10,10 @@ package org.openhab.binding.modbus.internal;
 
 import java.util.Collection;
 
+import org.apache.commons.pool2.KeyedObjectPool;
 import org.openhab.binding.modbus.ModbusBindingProvider;
 import org.openhab.binding.modbus.internal.ModbusGenericBindingProvider.ModbusBindingConfig;
+import org.openhab.binding.modbus.internal.pooling.ModbusSlaveEndpoint;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
@@ -35,6 +37,7 @@ import net.wimpi.modbus.msg.ReadMultipleRegistersResponse;
 import net.wimpi.modbus.msg.WriteCoilRequest;
 import net.wimpi.modbus.msg.WriteMultipleRegistersRequest;
 import net.wimpi.modbus.msg.WriteSingleRegisterRequest;
+import net.wimpi.modbus.net.ModbusSlaveConnection;
 import net.wimpi.modbus.procimg.InputRegister;
 import net.wimpi.modbus.procimg.Register;
 import net.wimpi.modbus.procimg.SimpleRegister;
@@ -49,12 +52,13 @@ import net.wimpi.modbus.util.BitVector;
  * @author Dmitry Krasnov
  * @since 1.1.0
  */
-public abstract class ModbusSlave implements ModbusSlaveConnection {
+public abstract class ModbusSlave {
 
     private static final Logger logger = LoggerFactory.getLogger(ModbusSlave.class);
 
     /** name - slave name from cfg file, used for items binding */
     protected String name = null;
+    protected ModbusSlaveEndpoint endpoint;
 
     private static boolean writeMultipleRegisters = false;
 
@@ -68,6 +72,8 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
      * "input" and "holding" use byte values
      */
     private String type;
+
+    private KeyedObjectPool<ModbusSlaveEndpoint, ModbusSlaveConnection> connectionPool;
 
     /** Modbus slave id */
     private int id = 1;
@@ -117,9 +123,11 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
     /**
      * @param slave slave name from cfg file used for item binding
+     * @connectionPool pool to create connections
      */
-    public ModbusSlave(String slave) {
-        name = slave;
+    public ModbusSlave(String slave, KeyedObjectPool<ModbusSlaveEndpoint, ModbusSlaveConnection> connectionPool) {
+        this.name = slave;
+        this.connectionPool = connectionPool;
     }
 
     /**
@@ -129,7 +137,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
      * @param command OpenHAB command received
      * @param config
      */
-    void executeCommand(Command command, ModbusBindingConfig config) {
+    public void executeCommand(Command command, ModbusBindingConfig config) {
         if (ModbusBindingProvider.TYPE_COIL.equals(getType())) {
             setCoil(command, config);
         }
@@ -182,10 +190,6 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
     protected void setRegister(Command command, ModbusBindingConfig config) {
         int readIndex = config.readIndex;
         int writeRegister = getStart() + config.writeIndex;
-
-        if (!isConnected()) {
-            return;
-        }
 
         Register newValue;
         if (command instanceof IncreaseDecreaseType) {
@@ -242,16 +246,9 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
             request = new WriteSingleRegisterRequest(writeRegister, newValue);
         }
         request.setUnitID(getId());
-        transaction.setRequest(request);
-
-        try {
-            logger.debug("ModbusSlave: FC{} ref={} value={}", request.getFunctionCode(), writeRegister,
-                    newValue.getValue());
-            transaction.execute();
-        } catch (Exception e) {
-            logger.debug("ModbusSlave: {}", e.getMessage());
-            return;
-        }
+        logger.debug("ModbusSlave ({}): FC{} ref={} value={}", name, request.getFunctionCode(), writeRegister,
+                newValue.getValue());
+        executeWriteRequest(request);
     }
 
     private Register readCachedRegisterValue(int readIndex) {
@@ -279,20 +276,80 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
      * @param b
      */
     public void doSetCoil(int writeRegister, boolean b) {
-        if (!connect()) {
-            logger.info("ModbusSlave not connected");
-            return;
-        }
         ModbusRequest request = new WriteCoilRequest(writeRegister, b);
         request.setUnitID(getId());
-        transaction.setRequest(request);
+        logger.debug("ModbusSlave ({}): FC05 ref={} value={}", name, writeRegister, b);
+        executeWriteRequest(request);
+    }
+
+    private void executeWriteRequest(ModbusRequest request) {
+        ModbusSlaveEndpoint endpoint = getEndpoint();
+        ModbusSlaveConnection connection = null;
         try {
-            logger.debug("ModbusSlave: FC05 ref={} value={}", writeRegister, b);
-            transaction.execute();
+            connection = getConnection(endpoint);
+            if (connection == null) {
+                logger.warn("ModbusSlave ({}): not connected -- aborting request {}", name, request);
+                return;
+            }
+            transaction.setRequest(request);
+            try {
+                transaction.execute();
+            } catch (Exception e) {
+                logger.error("ModbusSlave ({}): error when executing write request ({}): {}", name, request,
+                        e.getMessage());
+                invalidate(endpoint, connection);
+                // set connection to null such that it is not returned to pool
+                connection = null;
+                return;
+            }
+        } finally {
+            returnConnection(endpoint, connection);
+        }
+    }
+
+    protected ModbusSlaveConnection getConnection(ModbusSlaveEndpoint endpoint) {
+        ModbusSlaveConnection connection = borrowConnection(endpoint);
+        return connection;
+    }
+
+    private ModbusSlaveConnection borrowConnection(ModbusSlaveEndpoint endpoint) {
+        ModbusSlaveConnection connection = null;
+        long start = System.currentTimeMillis();
+        try {
+            connection = connectionPool.borrowObject(endpoint);
         } catch (Exception e) {
-            logger.debug("ModbusSlave:{}", e.getMessage());
+            invalidate(endpoint, connection);
+            logger.warn("ModbusSlave ({}): Error getting a new connection for endpoint {}. Error was: {}", name,
+                    endpoint, e.getMessage());
+        }
+        logger.trace("ModbusSlave ({}): borrowing connection (got {}) for endpoint {} took {} ms", name, connection,
+                endpoint, System.currentTimeMillis() - start);
+        return connection;
+    }
+
+    private void invalidate(ModbusSlaveEndpoint endpoint, ModbusSlaveConnection connection) {
+        if (connection == null) {
             return;
         }
+        try {
+            connectionPool.invalidateObject(endpoint, connection);
+        } catch (Exception e) {
+            logger.warn("ModbusSlave ({}): Error invalidating connection in pool for endpoint {}. Error was: {}", name,
+                    endpoint, e.getMessage());
+        }
+    }
+
+    private void returnConnection(ModbusSlaveEndpoint endpoint, ModbusSlaveConnection connection) {
+        if (connection == null) {
+            return;
+        }
+        try {
+            connectionPool.returnObject(endpoint, connection);
+        } catch (Exception e) {
+            logger.warn("ModbusSlave ({}): Error returning connection to pool for endpoint {}. Error was: {}", name,
+                    endpoint, e.getMessage());
+        }
+        logger.trace("ModbusSlave ({}): returned connection for endpoint {}", name, endpoint);
     }
 
     /**
@@ -301,12 +358,6 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
      * @param binding ModbusBindig that stores providers information
      */
     public void update(ModbusBinding binding) {
-        if (!connect()) {
-            resetConnection();
-            logger.info("ModbusSlave not connected");
-            return;
-        }
-
         try {
 
             Object local = null;
@@ -318,18 +369,38 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
                 }
                 request.setUnitID(id);
                 ReadCoilsResponse response = (ReadCoilsResponse) getModbusData(request);
+                if (response == null) {
+                    // use debug level logging since getModbusData has already logged the reason
+                    logger.debug("Could not read from the slave");
+                    return;
+                }
                 local = response.getCoils();
             } else if (ModbusBindingProvider.TYPE_DISCRETE.equals(getType())) {
                 ModbusRequest request = new ReadInputDiscretesRequest(getStart(), getLength());
                 ReadInputDiscretesResponse response = (ReadInputDiscretesResponse) getModbusData(request);
+                // use debug level logging since getModbusData has already logged the reason
+                if (response == null) {
+                    logger.debug("Could not read from the slave");
+                    return;
+                }
                 local = response.getDiscretes();
             } else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {
                 ModbusRequest request = new ReadMultipleRegistersRequest(getStart(), getLength());
                 ReadMultipleRegistersResponse response = (ReadMultipleRegistersResponse) getModbusData(request);
+                // use debug level logging since getModbusData has already logged the reason
+                if (response == null) {
+                    logger.debug("Could not read from the slave");
+                    return;
+                }
                 local = response.getRegisters();
             } else if (ModbusBindingProvider.TYPE_INPUT.equals(getType())) {
                 ModbusRequest request = new ReadInputRegistersRequest(getStart(), getLength());
                 ReadInputRegistersResponse response = (ReadInputRegistersResponse) getModbusData(request);
+                // use debug level logging since getModbusData has already logged the reason
+                if (response == null) {
+                    logger.debug("Could not read from the slave");
+                    return;
+                }
                 local = response.getRegisters();
             }
             if (storage == null) {
@@ -344,8 +415,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
                 updateItem(binding, item);
             }
         } catch (Exception e) {
-            resetConnection();
-            logger.info("ModbusSlave error getting response from slave:", e);
+            logger.error("ModbusSlave ({}) error getting response from slave", name, e);
         }
 
     }
@@ -375,69 +445,107 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
      * @return response data
      */
     private ModbusResponse getModbusData(ModbusRequest request) {
-        request.setUnitID(getId());
-        transaction.setRequest(request);
-
+        ModbusSlaveEndpoint endpoint = getEndpoint();
+        ModbusSlaveConnection connection = null;
+        ModbusResponse response = null;
         try {
-            transaction.execute();
-        } catch (Exception e) {
-            logger.debug("ModbusSlave:{}", e.getMessage());
-            return null;
-        }
+            connection = getConnection(endpoint);
+            if (connection == null) {
+                logger.warn("ModbusSlave ({}) not connected -- aborting read request {}. Endpoint {}", name, request,
+                        endpoint);
+                return null;
+            }
+            request.setUnitID(getId());
+            transaction.setRequest(request);
 
-        ModbusResponse r = transaction.getResponse();
-        if ((r.getTransactionID() != transaction.getTransactionID()) && !r.isHeadless()) {
-            return null;
-        }
+            try {
+                transaction.execute();
+            } catch (Exception e) {
+                logger.error(
+                        "ModbusSlave ({}): Error getting modbus data for request {}. Error: {}. Endpoint {}. Connection: {}",
+                        name, request, e.getMessage(), endpoint, connection);
+                invalidate(endpoint, connection);
+                // Invalidated connections should not be returned
+                connection = null;
+                return null;
+            }
 
-        return r;
+            response = transaction.getResponse();
+            if ((response.getTransactionID() != transaction.getTransactionID()) && !response.isHeadless()) {
+                logger.warn(
+                        "ModbusSlave ({}): Transaction id of the response does not match request {}.  Endpoint {}. Connection: {}. Ignoring response.",
+                        name, request, endpoint, connection);
+                return null;
+            }
+        } finally {
+            returnConnection(endpoint, connection);
+        }
+        return response;
     }
 
-    int getStart() {
+    public ModbusSlaveEndpoint getEndpoint() {
+        return endpoint;
+    }
+
+    public int getStart() {
         return start;
     }
 
-    void setStart(int start) {
+    public void setStart(int start) {
         this.start = start;
     }
 
-    int getLength() {
+    public int getLength() {
         return length;
     }
 
-    void setLength(int length) {
+    public void setLength(int length) {
         this.length = length;
     }
 
-    int getId() {
+    public int getId() {
         return id;
     }
 
-    void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    String getType() {
+    public String getType() {
         return type;
     }
 
-    void setType(String type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    String getValueType() {
+    public String getValueType() {
         return valueType;
     }
 
-    void setValueType(String valueType) {
+    public void setValueType(String valueType) {
         this.valueType = valueType;
     }
 
-    void setRawDataMultiplier(double value) {
+    public void setRawDataMultiplier(double value) {
         this.rawDataMultiplier = value;
     }
 
-    double getRawDataMultiplier() {
+    public double getRawDataMultiplier() {
         return rawDataMultiplier;
+    }
+
+    public long getRetryDelayMillis() {
+        if (transaction == null) {
+            throw new IllegalStateException("transaction not initialized!");
+        }
+        return transaction.getRetryDelayMillis();
+    }
+
+    public void setRetryDelayMillis(long retryDelayMillis) {
+        if (transaction == null) {
+            throw new IllegalStateException("transaction not initialized!");
+        }
+        transaction.setRetryDelayMillis(retryDelayMillis);
     }
 }

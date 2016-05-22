@@ -122,6 +122,13 @@ public class Thermostat extends AbstractDevice {
     private BigDecimal ambient_temperature_c;
     private BigDecimal humidity;
     private HvacState hvac_state;
+    private String where_id;
+    private Boolean is_locked;
+    private String locked_temp_min_f;
+    private String locked_temp_max_f;
+    private String locked_temp_min_c;
+    private String locked_temp_max_c;
+    private String label;
 
     public Thermostat(@JsonProperty("device_id") String device_id) {
         super(device_id);
@@ -194,11 +201,19 @@ public class Thermostat extends AbstractDevice {
     }
 
     /**
-     * @return Celsius or Fahrenheit; used with temperature display
+     * @return Celsius ("C") or Fahrenheit ("F"); used with temperature display
      */
     @JsonProperty("temperature_scale")
     public String getTemperature_scale() {
         return this.temperature_scale;
+    }
+
+    /**
+     * Set the temperature scale to "C" or "F" for display on the thermostat
+     */
+    @JsonProperty("temperature_scale")
+    public void setTemperature_scale(String temperature_scale) {
+        this.temperature_scale = temperature_scale;
     }
 
     /**
@@ -379,6 +394,68 @@ public class Thermostat extends AbstractDevice {
         return this.hvac_state;
     }
 
+    /**
+     * @return Where unique identifier.
+     */
+    @JsonProperty("where_id")
+    public String getWhere_id() {
+        return this.where_id;
+    }
+
+    /**
+     * @return Thermostat Lock status. When true, the Thermostat Lock feature is enabled, and restricts the temperature
+     *         range to these min/max values: locked_temp_min_f, locked_temp_max_f, locked_temp_min_c, and
+     *         locked_temp_max_c.
+     */
+    @JsonProperty("is_locked")
+    public Boolean getIs_locked() {
+        return this.is_locked;
+    }
+
+    /**
+     * @return Minimum Thermostat Lock temperature, displayed in whole degrees Fahrenheit (1°F). Used when is_locked is
+     *         true.
+     */
+    @JsonProperty("locked_temp_min_f")
+    public String getLocked_temp_min_f() {
+        return this.locked_temp_min_f;
+    }
+
+    /**
+     * @return Maximum Thermostat Lock temperature, displayed in whole degrees Fahrenheit (1°F). Used when is_locked is
+     *         true.
+     */
+    @JsonProperty("locked_temp_max_f")
+    public String getLocked_temp_max_f() {
+        return this.locked_temp_max_f;
+    }
+
+    /**
+     * @return Minimum Thermostat Lock temperature, displayed in half degrees Celsius (0.5°C). Used when is_locked is
+     *         true.
+     */
+    @JsonProperty("locked_temp_min_c")
+    public String getLocked_temp_min_c() {
+        return this.locked_temp_min_c;
+    }
+
+    /**
+     * @return Maximum Thermostat Lock temperature, displayed in half degrees Celsius (0.5°C). Used when is_locked is
+     *         true.
+     */
+    @JsonProperty("locked_temp_max_c")
+    public String getLocked_temp_max_c() {
+        return this.locked_temp_max_c;
+    }
+
+    /**
+     * Set the thermostat custom label.
+     */
+    @JsonProperty("label")
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     @Override
     public String toString() {
         final ToStringBuilder builder = createToStringBuilder();
@@ -406,6 +483,13 @@ public class Thermostat extends AbstractDevice {
         builder.append("ambient_temperature_c", this.ambient_temperature_c);
         builder.append("humidity", this.humidity);
         builder.append("hvac_state", this.hvac_state);
+        builder.append("where_id", this.where_id);
+        builder.append("is_locked", this.is_locked);
+        builder.append("locked_temp_min_f", this.locked_temp_min_f);
+        builder.append("locked_temp_max_f", this.locked_temp_max_f);
+        builder.append("locked_temp_min_c", this.locked_temp_min_c);
+        builder.append("locked_temp_max_c", this.locked_temp_max_c);
+        builder.append("label", this.label);
 
         return builder.toString();
     }

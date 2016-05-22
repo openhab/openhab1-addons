@@ -13,7 +13,7 @@ import org.openhab.binding.powermax.internal.state.PowerMaxState;
 /**
  * A class for DOWNLOAD RETRY message handling
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxDownloadRetryMessage extends PowerMaxBaseMessage {
