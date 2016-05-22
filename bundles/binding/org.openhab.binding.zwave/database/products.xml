@@ -1227,6 +1227,27 @@
             <Label lang="en">Door/Window Sensor</Label>
             <ConfigFile>aeon/zw089.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0003</Type>
+                <Id>0063</Id>
+            </Reference>
+            <Reference>
+                <Type>0103</Type>
+                <Id>0063</Id>
+            </Reference>
+            <Reference>
+                <Type>0203</Type>
+                <Id>0063</Id>
+            </Reference>
+            <Reference>
+                <Type>1D03</Type>
+                <Id>0063</Id>
+            </Reference>
+            <Model>ZW099</Model>
+            <Label lang="en">Smart Dimmer 6</Label>
+            <ConfigFile>aeon/zw099.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0098</Id>
