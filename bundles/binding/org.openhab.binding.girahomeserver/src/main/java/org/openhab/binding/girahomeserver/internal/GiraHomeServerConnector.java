@@ -14,7 +14,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import org.openhab.core.types.Type;
@@ -106,12 +105,33 @@ public class GiraHomeServerConnector {
      */
     public HashMap<String, String> getValues(int tries) throws IOException {
 
-        // fetch the data from the socket
-        String data;
+        // read the data from the socket
+        String data = "";
         try {
             char[] rawData = new char[1024];
-            datain.read(rawData);
-            data = new String(rawData);
+            boolean end = false;
+            while (!end) {
+
+                // read and translate
+                datain.read(rawData);
+                String chunk = new String(rawData);
+                data += chunk;
+
+                // test if end through \0\0
+                if (data.endsWith("\0\0")) {
+                    // end
+                    end = true;
+
+                    // delete the final \0\0
+                    data = data.substring(0, data.length() - 2);
+
+                    // test if end because we receive no more data
+                } else if (chunk.length() == 0) {
+                    end = true;
+                }
+
+            }
+
         } catch (IOException e) {
             if (tries > MAX_READ_RETRIES) {
                 throw e;
@@ -130,9 +150,6 @@ public class GiraHomeServerConnector {
         if (elements.length == 0) {
             return values;
         }
-
-        // remove the last element (always empty)
-        elements = Arrays.copyOfRange(elements, 0, elements.length - 1);
 
         // translate elements to values
         for (String e : elements) {

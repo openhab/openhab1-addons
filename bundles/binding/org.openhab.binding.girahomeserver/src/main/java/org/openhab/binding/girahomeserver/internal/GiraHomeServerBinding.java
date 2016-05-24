@@ -185,15 +185,24 @@ public class GiraHomeServerBinding extends AbstractActiveBinding<GiraHomeServerB
      * @throws IOException
      */
     protected void readValuesFromGirahomeserver(GiraHomeServerConnector connector) throws IOException {
+
+        // get the values from the girahomeserver
         HashMap<String, String> giraValues = connector.getValues();
-        if (!giraValues.isEmpty()) {
-            for (Map.Entry<String, String> entry : giraValues.entrySet()) {
-                for (GiraHomeServerBindingProvider provider : providers) {
-                    for (String itemName : provider.getItemNames(entry.getKey())) {
-                        // TODO: implement Strings
-                        Type type = new DecimalType(entry.getValue());
-                        eventPublisher.postCommand(itemName, (Command) type);
-                    }
+
+        // ignore empty updates
+        if (giraValues.isEmpty()) {
+            return;
+        }
+
+        // update the openhab items through the first provider
+        for (Map.Entry<String, String> entry : giraValues.entrySet()) {
+
+            // send update
+            for (GiraHomeServerBindingProvider provider : providers) {
+                for (String itemName : provider.getItemNames(entry.getKey())) {
+                    // TODO: implement Strings
+                    Type type = new DecimalType(entry.getValue());
+                    eventPublisher.postCommand(itemName, (Command) type);
                 }
             }
         }
