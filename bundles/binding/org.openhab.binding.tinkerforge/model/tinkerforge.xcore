@@ -67,6 +67,7 @@ import com.tinkerforge.BrickletLaserRangeFinder
 import com.tinkerforge.BrickletAccelerometer
 import com.tinkerforge.BrickletOLED128x64
 import com.tinkerforge.BrickletOLED64x48
+import com.tinkerforge.BrickletThermocouple
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -134,6 +135,7 @@ type TinkerBrickletLaserRangeFinder wraps BrickletLaserRangeFinder
 type TinkerBrickletAccelerometer wraps BrickletAccelerometer
 type TinkerBrickletOLED128x64 wraps BrickletOLED128x64
 type TinkerBrickletOLED64x48 wraps BrickletOLED64x48
+type TinkerBrickletThermocouple wraps BrickletThermocouple
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -778,6 +780,14 @@ class MBrickletTemperature extends MDevice<MTinkerBrickletTemperature>,
 	op void init(){}
 }
 
+class MBrickletThermocouple extends MDevice<TinkerBrickletThermocouple>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFThermocoupleConfiguration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_thermocouple"
+    BigDecimal threshold = "0"
+    op void init(){}
+}
+
 class MBrickletTemperatureIR extends MDevice<TinkerBrickletTemperatureIR>,
         MSubDeviceHolder<MTemperatureIRDevice> {
     readonly String deviceType = "bricklet_temperatureIR"
@@ -1045,6 +1055,12 @@ class BrickletIndustrialDualAnalogInConfiguration extends TFBaseConfiguration {
 
 class TFTemperatureConfiguration extends TFBaseConfiguration {
 	boolean slowI2C
+}
+
+class TFThermocoupleConfiguration extends TFBaseConfiguration {
+    Short averaging
+    String thermocoupleType
+    String filter
 }
 
 class TFObjectTemperatureConfiguration extends TFBaseConfiguration {

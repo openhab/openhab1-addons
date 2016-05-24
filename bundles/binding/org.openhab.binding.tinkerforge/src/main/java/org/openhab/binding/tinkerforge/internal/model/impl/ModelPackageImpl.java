@@ -81,6 +81,7 @@ import com.tinkerforge.BrickletSolidStateRelay;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
+import com.tinkerforge.BrickletThermocouple;
 import com.tinkerforge.BrickletTilt;
 import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
@@ -1132,6 +1133,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    private EClass mBrickletThermocoupleEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     private EClass mBrickletTemperatureIREClass = null;
 
     /**
@@ -1253,6 +1262,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EClass tfTemperatureConfigurationEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass tfThermocoupleConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -2125,6 +2142,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EDataType tinkerBrickletOLED64x48EDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType tinkerBrickletThermocoupleEDataType = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -6893,6 +6918,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EClass getMBrickletThermocouple() {
+        return mBrickletThermocoupleEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletThermocouple_DeviceType() {
+        return (EAttribute) mBrickletThermocoupleEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletThermocouple_Threshold() {
+        return (EAttribute) mBrickletThermocoupleEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMBrickletThermocouple__Init() {
+        return mBrickletThermocoupleEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EClass getMBrickletTemperatureIR() {
         return mBrickletTemperatureIREClass;
@@ -7358,6 +7423,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
     @Override
     public EAttribute getTFTemperatureConfiguration_SlowI2C() {
         return (EAttribute) tfTemperatureConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFThermocoupleConfiguration() {
+        return tfThermocoupleConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFThermocoupleConfiguration_Averaging() {
+        return (EAttribute) tfThermocoupleConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFThermocoupleConfiguration_ThermocoupleType() {
+        return (EAttribute) tfThermocoupleConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFThermocoupleConfiguration_Filter() {
+        return (EAttribute) tfThermocoupleConfigurationEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -9450,6 +9555,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EDataType getTinkerBrickletThermocouple() {
+        return tinkerBrickletThermocoupleEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EDataType getHSBType() {
         return hsbTypeEDataType;
@@ -10061,6 +10176,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__SLOW_I2C);
         createEOperation(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE___INIT);
 
+        mBrickletThermocoupleEClass = createEClass(MBRICKLET_THERMOCOUPLE);
+        createEAttribute(mBrickletThermocoupleEClass, MBRICKLET_THERMOCOUPLE__DEVICE_TYPE);
+        createEAttribute(mBrickletThermocoupleEClass, MBRICKLET_THERMOCOUPLE__THRESHOLD);
+        createEOperation(mBrickletThermocoupleEClass, MBRICKLET_THERMOCOUPLE___INIT);
+
         mBrickletTemperatureIREClass = createEClass(MBRICKLET_TEMPERATURE_IR);
         createEAttribute(mBrickletTemperatureIREClass, MBRICKLET_TEMPERATURE_IR__DEVICE_TYPE);
 
@@ -10248,6 +10368,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         tfTemperatureConfigurationEClass = createEClass(TF_TEMPERATURE_CONFIGURATION);
         createEAttribute(tfTemperatureConfigurationEClass, TF_TEMPERATURE_CONFIGURATION__SLOW_I2C);
+
+        tfThermocoupleConfigurationEClass = createEClass(TF_THERMOCOUPLE_CONFIGURATION);
+        createEAttribute(tfThermocoupleConfigurationEClass, TF_THERMOCOUPLE_CONFIGURATION__AVERAGING);
+        createEAttribute(tfThermocoupleConfigurationEClass, TF_THERMOCOUPLE_CONFIGURATION__THERMOCOUPLE_TYPE);
+        createEAttribute(tfThermocoupleConfigurationEClass, TF_THERMOCOUPLE_CONFIGURATION__FILTER);
 
         tfObjectTemperatureConfigurationEClass = createEClass(TF_OBJECT_TEMPERATURE_CONFIGURATION);
         createEAttribute(tfObjectTemperatureConfigurationEClass, TF_OBJECT_TEMPERATURE_CONFIGURATION__EMISSIVITY);
@@ -10450,6 +10575,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         tinkerBrickletAccelerometerEDataType = createEDataType(TINKER_BRICKLET_ACCELEROMETER);
         tinkerBrickletOLED128x64EDataType = createEDataType(TINKER_BRICKLET_OLED12_8X64);
         tinkerBrickletOLED64x48EDataType = createEDataType(TINKER_BRICKLET_OLED6_4X48);
+        tinkerBrickletThermocoupleEDataType = createEDataType(TINKER_BRICKLET_THERMOCOUPLE);
         hsbTypeEDataType = createEDataType(HSB_TYPE);
         upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
         percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -11259,6 +11385,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         g1 = createEGenericType(this.getCallbackListener());
         mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getMDevice());
+        g2 = createEGenericType(this.getTinkerBrickletThermocouple());
+        g1.getETypeArguments().add(g2);
+        mBrickletThermocoupleEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        mBrickletThermocoupleEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMTFConfigConsumer());
+        g2 = createEGenericType(this.getTFThermocoupleConfiguration());
+        g1.getETypeArguments().add(g2);
+        mBrickletThermocoupleEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getCallbackListener());
+        mBrickletThermocoupleEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMDevice());
         g2 = createEGenericType(this.getTinkerBrickletTemperatureIR());
         g1.getETypeArguments().add(g2);
         mBrickletTemperatureIREClass.getEGenericSuperTypes().add(g1);
@@ -11550,6 +11690,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         ambientLightV2ConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
         brickletIndustrialDualAnalogInConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
         tfTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
+        tfThermocoupleConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
         tfObjectTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
         tfMoistureBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
         tfAnalogInConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
@@ -12611,6 +12752,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         initEOperation(getMBrickletTemperature__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+        initEClass(mBrickletThermocoupleEClass, MBrickletThermocouple.class, "MBrickletThermocouple", !IS_ABSTRACT,
+                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMBrickletThermocouple_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "bricklet_thermocouple", 0, 1, MBrickletThermocouple.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
+                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletThermocouple_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1,
+                MBrickletThermocouple.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEOperation(getMBrickletThermocouple__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
         initEClass(mBrickletTemperatureIREClass, MBrickletTemperatureIR.class, "MBrickletTemperatureIR", !IS_ABSTRACT,
                 !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getMBrickletTemperatureIR_DeviceType(), theEcorePackage.getEString(), "deviceType",
@@ -13058,6 +13210,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
                 !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getTFTemperatureConfiguration_SlowI2C(), theEcorePackage.getEBoolean(), "slowI2C", null, 0, 1,
                 TFTemperatureConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(tfThermocoupleConfigurationEClass, TFThermocoupleConfiguration.class, "TFThermocoupleConfiguration",
+                !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getTFThermocoupleConfiguration_Averaging(), theEcorePackage.getEShortObject(), "averaging", null,
+                0, 1, TFThermocoupleConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+                !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTFThermocoupleConfiguration_ThermocoupleType(), theEcorePackage.getEString(),
+                "thermocoupleType", null, 0, 1, TFThermocoupleConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE,
+                IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTFThermocoupleConfiguration_Filter(), theEcorePackage.getEString(), "filter", null, 0, 1,
+                TFThermocoupleConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
                 !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(tfObjectTemperatureConfigurationEClass, TFObjectTemperatureConfiguration.class,
@@ -13620,6 +13784,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEDataType(tinkerBrickletOLED128x64EDataType, BrickletOLED128x64.class, "TinkerBrickletOLED128x64",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(tinkerBrickletOLED64x48EDataType, BrickletOLED64x48.class, "TinkerBrickletOLED64x48",
+                IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(tinkerBrickletThermocoupleEDataType, BrickletThermocouple.class, "TinkerBrickletThermocouple",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE,

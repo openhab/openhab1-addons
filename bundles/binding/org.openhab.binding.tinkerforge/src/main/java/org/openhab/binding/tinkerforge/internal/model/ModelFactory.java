@@ -955,6 +955,16 @@ public interface ModelFactory extends EFactory {
     MBrickletTemperature createMBrickletTemperature();
 
     /**
+     * Returns a new object of class '<em>MBricklet Thermocouple</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Thermocouple</em>'.
+     * @generated
+     */
+    MBrickletThermocouple createMBrickletThermocouple();
+
+    /**
      * Returns a new object of class '<em>MBricklet Temperature IR</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1093,6 +1103,16 @@ public interface ModelFactory extends EFactory {
      * @generated
      */
     TFTemperatureConfiguration createTFTemperatureConfiguration();
+
+    /**
+     * Returns a new object of class '<em>TF Thermocouple Configuration</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>TF Thermocouple Configuration</em>'.
+     * @generated
+     */
+    TFThermocoupleConfiguration createTFThermocoupleConfiguration();
 
     /**
      * Returns a new object of class '<em>TF Object Temperature Configuration</em>'.

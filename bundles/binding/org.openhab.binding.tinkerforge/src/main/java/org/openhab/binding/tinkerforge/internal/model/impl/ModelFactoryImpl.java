@@ -76,6 +76,7 @@ import com.tinkerforge.BrickletSolidStateRelay;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
+import com.tinkerforge.BrickletThermocouple;
 import com.tinkerforge.BrickletTilt;
 import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
@@ -268,6 +269,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createPTCConnected();
             case ModelPackage.MBRICKLET_TEMPERATURE:
                 return createMBrickletTemperature();
+            case ModelPackage.MBRICKLET_THERMOCOUPLE:
+                return createMBrickletThermocouple();
             case ModelPackage.MBRICKLET_TEMPERATURE_IR:
                 return createMBrickletTemperatureIR();
             case ModelPackage.OBJECT_TEMPERATURE:
@@ -342,6 +345,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createBrickletIndustrialDualAnalogInConfiguration();
             case ModelPackage.TF_TEMPERATURE_CONFIGURATION:
                 return createTFTemperatureConfiguration();
+            case ModelPackage.TF_THERMOCOUPLE_CONFIGURATION:
+                return createTFThermocoupleConfiguration();
             case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION:
                 return createTFObjectTemperatureConfiguration();
             case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION:
@@ -582,6 +587,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createTinkerBrickletOLED128x64FromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_OLED6_4X48:
                 return createTinkerBrickletOLED64x48FromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_THERMOCOUPLE:
+                return createTinkerBrickletThermocoupleFromString(eDataType, initialValue);
             case ModelPackage.HSB_TYPE:
                 return createHSBTypeFromString(eDataType, initialValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -789,6 +796,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertTinkerBrickletOLED128x64ToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_OLED6_4X48:
                 return convertTinkerBrickletOLED64x48ToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_THERMOCOUPLE:
+                return convertTinkerBrickletThermocoupleToString(eDataType, instanceValue);
             case ModelPackage.HSB_TYPE:
                 return convertHSBTypeToString(eDataType, instanceValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -1945,6 +1954,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
+    public MBrickletThermocouple createMBrickletThermocouple() {
+        MBrickletThermocoupleImpl mBrickletThermocouple = new MBrickletThermocoupleImpl();
+        return mBrickletThermocouple;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public MBrickletTemperatureIR createMBrickletTemperatureIR() {
         MBrickletTemperatureIRImpl mBrickletTemperatureIR = new MBrickletTemperatureIRImpl();
@@ -2105,6 +2125,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public TFTemperatureConfiguration createTFTemperatureConfiguration() {
         TFTemperatureConfigurationImpl tfTemperatureConfiguration = new TFTemperatureConfigurationImpl();
         return tfTemperatureConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFThermocoupleConfiguration createTFThermocoupleConfiguration() {
+        TFThermocoupleConfigurationImpl tfThermocoupleConfiguration = new TFThermocoupleConfigurationImpl();
+        return tfThermocoupleConfiguration;
     }
 
     /**
@@ -4215,6 +4246,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertTinkerBrickletOLED64x48ToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletThermocouple createTinkerBrickletThermocoupleFromString(EDataType eDataType, String initialValue) {
+        return (BrickletThermocouple) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletThermocoupleToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 

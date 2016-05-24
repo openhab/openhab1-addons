@@ -84,6 +84,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfigu
 import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
 import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
@@ -198,7 +199,8 @@ public class ConfigurationHandler {
         accelerometer_temperature,
         accelerometer_led,
         bricklet_oled128x64,
-        bricklet_oled64x48
+        bricklet_oled64x48,
+        bricklet_thermocouple
     }
 
     public ConfigurationHandler() {
@@ -713,6 +715,12 @@ public class ConfigurationHandler {
                 || deviceType.equals(TypeKey.bricklet_oled64x48.name())) {
             BrickletOLEDConfiguration configuration = modelFactory.createBrickletOLEDConfiguration();
             OHTFDevice<BrickletOLEDConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+            ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+            ohtfDevice.setTfConfig(configuration);
+            fillupConfig(ohtfDevice, deviceConfig);
+        } else if (deviceType.equals(TypeKey.bricklet_thermocouple.name())) {
+            TFThermocoupleConfiguration configuration = modelFactory.createTFThermocoupleConfiguration();
+            OHTFDevice<TFThermocoupleConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
             ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
             ohtfDevice.setTfConfig(configuration);
             fillupConfig(ohtfDevice, deviceConfig);
