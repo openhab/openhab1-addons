@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB MegaDevice Binding
 Bundle-SymbolicName: org.openhab.binding.megadevice
 Bundle-Vendor: openHAB.org
-Bundle-Version: 0.0.9.4
+Bundle-Version: 0.1.2.0
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the MegaDevice binding of the open Home Aut
  omation Bus (openHAB)

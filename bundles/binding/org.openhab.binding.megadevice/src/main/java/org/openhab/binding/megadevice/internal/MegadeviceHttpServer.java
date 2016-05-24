@@ -15,7 +15,9 @@ public class MegadeviceHttpServer extends Thread {
 	private static ServerSocket ss = null;
 
 	public void run() {
+
 		logger.info("Starting MegaHttpServer at " + portnumber + " port");
+
 		try {
 			ss = new ServerSocket(portnumber);
 		} catch (IOException e) {
@@ -46,6 +48,7 @@ public class MegadeviceHttpServer extends Thread {
 			logger.info("closing port");
 			ss.close();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

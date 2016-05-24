@@ -65,9 +65,17 @@ public class MegaDeviceGenericBindingProvider extends
 			MegaDeviceBindingConfig config = new MegaDeviceBindingConfig();
 			config.itemType = item.getClass();
 			String[] configParts = bindingConfig.trim().split(":");
-			config.password = configParts.length > 0 ? configParts[0] : "NO_Pass";
-			config.ip = configParts.length > 0 ? configParts[1] : "NO_IP";
-			config.port = configParts.length > 0 ? configParts[2] : "NO_PORT";
+			// if(item instanceof SwitchItem){
+			config.password = configParts.length > 0 ? configParts[0]
+					: "NO_Pass";
+			config.ip = configParts.length > 1 ? configParts[1] : "NO_IP";
+			config.port = configParts.length > 2 ? configParts[2] : "NO_PORT";
+			config.pollinterval = configParts.length > 3 ? Integer.parseInt(configParts[3]) : 0;
+			
+			
+		//	logger.debug("binding item:" + item +". It has " + config.itemType.getName()+ " class and " + config.password + " password " +config.ip+ " ip " +config.port+ "port");
+			
+			// } //else if (item instanceof NumberItem) {
 			addBindingConfig(item, config);
 		} else {
 			logger.warn("bindingConfig is NULL (item=" + item
@@ -86,6 +94,7 @@ public class MegaDeviceGenericBindingProvider extends
 		public String ip;
 		public String port;
 		public String password;
+		public int pollinterval;
 	}
 
 	
@@ -114,5 +123,11 @@ public class MegaDeviceGenericBindingProvider extends
 		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
 				.get(itemName);
 		return config != null ? config.itemType : null;
+	}
+
+	public int getPollInterval(String itemName) {
+		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
+				.get(itemName);
+		return config.pollinterval;
 	}
 }

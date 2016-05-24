@@ -80,4 +80,7 @@ public class MegaDeviceHttpSocket extends Thread {
 			e.printStackTrace();
 		}
 	}
+
+	public void setEventPublisher(EventPublisher eventPublisher) {
+	}
 }

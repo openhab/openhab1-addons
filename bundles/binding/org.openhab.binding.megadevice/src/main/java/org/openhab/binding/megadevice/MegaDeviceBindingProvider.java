@@ -16,45 +16,15 @@ import org.openhab.core.items.Item;
  * @since 0.0.1
  */
 public interface MegaDeviceBindingProvider extends BindingProvider {
-	
-	/**
-	 * Returns ip address of megadevice for configuring <code>itemName</code>
-	 * 
-	 * @param itemName the name of the Item.
-	 *            
-	 * @return ip address of MegaDevice
-	 * 
-	 */
-	public String getIP(String itemName);
-	
-	/**
-	 * Returns ip address of megadevice for configuring <code>itemName</code>
-	 * 
-	 * @param itemName the name of the Item.
-	 *            
-	 * @return port of MegaDevice
-	 * 
-	 */
-	public String getPORT(String itemName);
-	
-	/**
-	 * Returns ip address of megadevice for configuring <code>itemName</code>
-	 * 
-	 * @param itemName the name of the Item.
-	 *            
-	 * @return password to access MegaDevice
-	 * 
-	 */
-	public String password(String itemName);
 
-	/**
-	 * Returns ip address of megadevice for configuring <code>itemName</code>
-	 * 
-	 * @param itemName the name of the Item.
-	 *            
-	 * @return the type of the Item identified by {@code itemName}
-	 * 
-	 */
+	public String getIP(String itemName);
+
+	public String getPORT(String itemName);
+
+	public String password(String itemName);
+	
+	public int getPollInterval(String itemName);
+
 	Class<? extends Item> getItemType(String itemName);
 
 }
