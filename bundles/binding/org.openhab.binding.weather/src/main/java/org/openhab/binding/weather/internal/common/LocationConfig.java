@@ -19,12 +19,14 @@ import org.openhab.binding.weather.internal.model.ProviderName;
  * @since 1.6.0
  */
 public class LocationConfig {
+    private static final int DEFAULT_UPDATE_INTERVAL = 240;
+
     private ProviderName providerName;
     private String language = "en";
     private Double latitude;
     private Double longitude;
     private String woeid;
-    private Integer updateInterval = 240;
+    private Integer updateInterval = DEFAULT_UPDATE_INTERVAL;
     private String locationId;
     private String name;
 
