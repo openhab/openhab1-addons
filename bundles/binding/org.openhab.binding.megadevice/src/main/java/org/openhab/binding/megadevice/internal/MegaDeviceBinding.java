@@ -176,17 +176,17 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 		}
 		setProviders();
 		if (firstRun) {
-			ScanPorts();
+			scanPorts();
 			firstRun = false;
 		}
-		ScanPortsScheduler();
+		scanPortsScheduler();
 	}
 
-	private void ScanPortsScheduler() {
+	private void scanPortsScheduler() {
 
 		// logger.debug("ScanPortsScheduler start...");
 
-		String Result = "";
+		String result = "";
 		for (MegaDeviceBindingProvider provider : providers) {
 
 			for (String itemName : provider.getItemNames()) {
@@ -212,36 +212,36 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 					try {
 						if (provider.getItemType(itemName).toString().contains("NumberItem")) {
 							if (provider.getPORT(itemName).toString().contains("tget")) {
-								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
+								result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?tget=1";
 							} else if ((provider.getPORT(itemName).toString().contains("t"))
 									|| (provider.getPORT(itemName).toString().contains("h"))) {
 								String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
 
-								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
+								result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?pt=" + PortParse[0] + "&cmd=get";
 							} else {
 
-								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
+								result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?pt=" + provider.getPORT(itemName) + "&cmd=get";
 							}
 						}else if (provider.getItemType(itemName).toString().contains("StringItem")) {
 							if(provider.getPORT(itemName).toString().contains("r")){
 								String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
 
-								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
+								result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?pt=" + PortParse[0] + "&cmd=get";
 							}
 							
 						}
 						else {
-							Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName) + "/?pt="
+							result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName) + "/?pt="
 									+ provider.getPORT(itemName) + "&cmd=get";
 						}
 
-						URL obj = new URL(Result);
+						URL obj = new URL(result);
 						HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-						logger.debug(Result);
+						logger.debug(result);
 
 						// optional default is GET
 						con.setRequestMethod("GET");
@@ -479,7 +479,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 		}
 	}
 
-	public void ScanPorts() {
+	public void scanPorts() {
 		try {
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {

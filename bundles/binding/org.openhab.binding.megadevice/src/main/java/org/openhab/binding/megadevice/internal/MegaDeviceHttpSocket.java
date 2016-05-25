@@ -65,7 +65,7 @@ public class MegaDeviceHttpSocket extends Thread {
 				} else
 					break;
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.debug("ERROR: " + e.getMessage());
 			}
 		}
 	}
@@ -77,7 +77,7 @@ public class MegaDeviceHttpSocket extends Thread {
 			os.write(result.getBytes());
 			os.flush();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.debug("ERROR: " + e.getMessage());
 		}
 	}
 
