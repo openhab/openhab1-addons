@@ -19,12 +19,14 @@ import org.openhab.binding.weather.internal.model.ProviderName;
  * @since 1.6.0
  */
 public class LocationConfig {
+    private static final int DEFAULT_UPDATE_INTERVAL = 240;
+
     private ProviderName providerName;
     private String language = "en";
     private Double latitude;
     private Double longitude;
     private String woeid;
-    private Integer updateInterval;
+    private Integer updateInterval = DEFAULT_UPDATE_INTERVAL;
     private String locationId;
     private String name;
 
@@ -145,12 +147,15 @@ public class LocationConfig {
      */
     public boolean isValid() {
         boolean valid = providerName != null && language != null && updateInterval != null && locationId != null;
-        if (providerName == ProviderName.YAHOO) {
-            valid = valid && woeid != null;
-        } else {
-            valid = valid && latitude != null && longitude != null;
+        if (!valid) {
+            return false;
         }
-        return valid;
+
+        if (providerName == ProviderName.YAHOO) {
+            return woeid != null;
+        } else {
+            return latitude != null && longitude != null;
+        }
     }
 
     /**
