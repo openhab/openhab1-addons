@@ -145,8 +145,8 @@ public class LocationConfig {
      */
     public boolean isValid() {
         boolean valid = providerName != null && language != null && updateInterval != null && locationId != null;
-        if( !valid ) {
-          return false;
+        if (!valid) {
+            return false;
         }
 
         if (providerName == ProviderName.YAHOO) {
