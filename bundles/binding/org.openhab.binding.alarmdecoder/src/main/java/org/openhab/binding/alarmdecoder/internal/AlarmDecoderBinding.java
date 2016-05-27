@@ -260,8 +260,6 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
             return;
         }
 
-        logger.debug("Received command '" + command + "' for item '" + itemName + "'");
-
         String param;
         if (command instanceof OnOffType) {
             OnOffType cmd = (OnOffType) command;
