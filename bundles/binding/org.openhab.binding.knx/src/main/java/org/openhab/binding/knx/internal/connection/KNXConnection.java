@@ -118,6 +118,13 @@ public class KNXConnection implements ManagedService {
      */
     private static int sMaxRefreshQueueEntries = 10000;
 
+    /**
+     * Determines whether Network Address Translation (NAT) will be used for IP connections.
+     *
+     * Default value is <code>false</code>.
+     */
+    private static boolean sUseNAT = false;
+
     /** listeners for connection/re-connection events */
     private static Set<KNXConnectionListener> sConnectionListeners = new HashSet<KNXConnectionListener>();
 
@@ -282,7 +289,7 @@ public class KNXConnection implements ManagedService {
             }
         }
 
-        return new KNXNetworkLinkIP(ipConnectionType, localEndPoint, new InetSocketAddress(ip, port), false,
+        return new KNXNetworkLinkIP(ipConnectionType, localEndPoint, new InetSocketAddress(ip, port), sUseNAT,
                 new TPSettings(new IndividualAddress(sLocalSourceAddr), true));
     }
 
@@ -431,6 +438,14 @@ public class KNXConnection implements ManagedService {
                             "Error when trying to read parameter 'scheduledExecutorServiceShutdownTimeout' from configuration. '{}' is not a number: using default.",
                             scheduledExecutorServiceShutdownTimeoutString);
                 }
+            }
+
+            String shouldUseNAT = (String) config.get("useNAT");
+            if (StringUtils.isNotBlank(shouldUseNAT)) {
+                sUseNAT = shouldUseNAT.equalsIgnoreCase("true");
+            }
+            else if (StringUtils.isBlank(shouldUseNAT)) {
+                sLogger.warn("Error when trying to read parameter 'useNAT' from configuration. Parameter was missing, so using default.");
             }
 
             if (sPC == null) {
