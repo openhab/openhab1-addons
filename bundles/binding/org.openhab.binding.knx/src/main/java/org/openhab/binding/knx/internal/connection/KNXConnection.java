@@ -441,12 +441,7 @@ public class KNXConnection implements ManagedService {
             }
 
             String shouldUseNAT = (String) config.get("useNAT");
-            if (StringUtils.isNotBlank(shouldUseNAT)) {
-                sUseNAT = shouldUseNAT.equalsIgnoreCase("true");
-            }
-            else if (StringUtils.isBlank(shouldUseNAT)) {
-                sLogger.warn("Error when trying to read parameter 'useNAT' from configuration. Parameter was missing, so using default.");
-            }
+            sUseNAT = StringUtils.isNotBlank(shouldUseNAT) && shouldUseNAT.equalsIgnoreCase("true");
 
             if (sPC == null) {
                 sLogger.debug("Not connected yet. Trying to connect.");
