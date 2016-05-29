@@ -35,222 +35,220 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-* A class that establishes a Serial connection to the DSC IT100 interface
-* 
-* @author Russell Stephens
-* @since 1.6.0
-*/
-public class SerialConnector implements DSCAlarmConnector, SerialPortEventListener{
-	private static final Logger logger = LoggerFactory.getLogger(SerialConnector.class);
+ * A class that establishes a Serial connection to the DSC IT100 interface
+ * 
+ * @author Russell Stephens
+ * @since 1.6.0
+ */
+public class SerialConnector implements DSCAlarmConnector, SerialPortEventListener {
+    private static final Logger logger = LoggerFactory.getLogger(SerialConnector.class);
 
-	private String serialPortName = "";
-	private int baudRate;
-	private SerialPort serialPort = null;
-	private OutputStreamWriter serialOutput = null;
-	private BufferedReader serialInput = null;
-	private DSCAlarmConnectorType connectorType = DSCAlarmConnectorType.SERIAL;
-	private static boolean connected = false;
-	private static List<DSCAlarmEventListener> _listeners = new ArrayList<DSCAlarmEventListener>();
+    private String serialPortName = "";
+    private int baudRate;
+    private SerialPort serialPort = null;
+    private OutputStreamWriter serialOutput = null;
+    private BufferedReader serialInput = null;
+    private DSCAlarmConnectorType connectorType = DSCAlarmConnectorType.SERIAL;
+    private static boolean connected = false;
+    private static List<DSCAlarmEventListener> _listeners = new ArrayList<DSCAlarmEventListener>();
 
-	/**
-	 * Constructor
-	 */
-	public SerialConnector(String serialPortName, int baudRate) {
-		this.serialPortName = serialPortName;
-		this.baudRate = baudRate;
-	}
+    /**
+     * Constructor
+     */
+    public SerialConnector(String serialPortName, int baudRate) {
+        this.serialPortName = serialPortName;
+        this.baudRate = baudRate;
+    }
 
-	/**
-	 * Returns Connector Type
-	 */
-	public DSCAlarmConnectorType getConnectorType() {
-		return connectorType;		
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 **/
-	public void write(String writeString) {
+    /**
+     * Returns Connector Type
+     */
+    public DSCAlarmConnectorType getConnectorType() {
+        return connectorType;
+    }
+
+    /**
+     * {@inheritDoc}
+     **/
+    public void write(String writeString) {
         try {
-        	serialOutput.write(writeString);
+            serialOutput.write(writeString);
             serialOutput.flush();
-    		logger.debug("write(): Message Sent: {}",writeString);
-        }catch (IOException ioException) {
-        	logger.error("write(): {}",ioException);
-			connected = false;
+            logger.debug("write(): Message Sent: {}", writeString);
+        } catch (IOException ioException) {
+            logger.error("write(): {}", ioException);
+            connected = false;
         } catch (Exception exception) {
-        	logger.error("write(): Unable to write to socket: {} ", exception);
-			connected = false;
+            logger.error("write(): Unable to write to socket: {} ", exception);
+            connected = false;
         }
     }
-	
-	/**
-	 * {@inheritDoc}
-	 **/
-   public String read() {
+
+    /**
+     * {@inheritDoc}
+     **/
+    public String read() {
         String message = "";
 
         try {
-        	message = readLine();
-    		logger.debug("read(): Message Received: {}",message);
+            message = readLine();
+            logger.debug("read(): Message Received: {}", message);
+        } catch (IOException ioException) {
+            logger.error("read(): IO Exception: ", ioException);
+            connected = false;
+        } catch (Exception exception) {
+            logger.error("read(): Exception: ", exception);
+            connected = false;
         }
-        catch (IOException ioException) {
-			logger.error("read(): IO Exception: ", ioException);
-			connected = false;
-        }
-        catch (Exception exception) {
-			logger.error("read(): Exception: ", exception);
-			connected = false;
-        }
-        
+
         return message;
 
     }
 
-	private String readLine() throws IOException {
-		return serialInput.readLine();
-	}
+    private String readLine() throws IOException {
+        return serialInput.readLine();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 **/
-	public void open() {
+    /**
+     * {@inheritDoc}
+     **/
+    public void open() {
 
-		try {
-			
-			CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(serialPortName);
-			CommPort commPort = portIdentifier.open(this.getClass().getName(), 2000);
-			
-			serialPort = (SerialPort) commPort;
-			serialPort.setSerialPortParams(baudRate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-			serialPort.enableReceiveThreshold(1);
-			serialPort.disableReceiveTimeout();
+        try {
 
-			serialOutput = new OutputStreamWriter(serialPort.getOutputStream(), "US-ASCII");
+            CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(serialPortName);
+            CommPort commPort = portIdentifier.open(this.getClass().getName(), 2000);
+
+            serialPort = (SerialPort) commPort;
+            serialPort.setSerialPortParams(baudRate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+            serialPort.enableReceiveThreshold(1);
+            serialPort.disableReceiveTimeout();
+
+            serialOutput = new OutputStreamWriter(serialPort.getOutputStream(), "US-ASCII");
             serialInput = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
-            
+
             setSerialEventHandler(this);
-            
+
             connected = true;
-			
-		} catch (NoSuchPortException noSuchPortException) {
-			logger.error("open(): No Such Port Exception: ", noSuchPortException);
+
+        } catch (NoSuchPortException noSuchPortException) {
+            logger.error("open(): No Such Port Exception: ", noSuchPortException);
             connected = false;
-		} catch (PortInUseException portInUseException) {
-			logger.error("open(): Port in Use Exception: ", portInUseException);
+        } catch (PortInUseException portInUseException) {
+            logger.error("open(): Port in Use Exception: ", portInUseException);
             connected = false;
-		} catch (UnsupportedCommOperationException unsupportedCommOperationException) {
-			logger.error("open(): Unsupported Comm Operation Exception: ", unsupportedCommOperationException);
+        } catch (UnsupportedCommOperationException unsupportedCommOperationException) {
+            logger.error("open(): Unsupported Comm Operation Exception: ", unsupportedCommOperationException);
             connected = false;
-		} catch (UnsupportedEncodingException unsupportedEncodingException) {
-			logger.error("open(): Unsupported Encoding Exception: ", unsupportedEncodingException);
+        } catch (UnsupportedEncodingException unsupportedEncodingException) {
+            logger.error("open(): Unsupported Encoding Exception: ", unsupportedEncodingException);
             connected = false;
-		} catch (IOException ioException) {
-			logger.error("open(): IO Exception: ", ioException);
+        } catch (IOException ioException) {
+            logger.error("open(): IO Exception: ", ioException);
             connected = false;
-		}
-	}
-	
-	 /**
-	  * Handles an incoming message
-	  * 
-	  * @param incomingMessage
-	  */
-	 public synchronized void handleIncomingMessage(String incomingMessage) {
-		APIMessage Message = new APIMessage(incomingMessage);
-		logger.debug("handleIncomingMessage(): Message received: {} - {}",incomingMessage,Message.toString());
+        }
+    }
 
-		DSCAlarmEvent event = new DSCAlarmEvent(this);
-		event.dscAlarmEventMessage(Message);
-		
-		// send message to event listeners
-		try {
-			Iterator<DSCAlarmEventListener> iterator = _listeners.iterator();
+    /**
+     * Handles an incoming message
+     * 
+     * @param incomingMessage
+     */
+    public synchronized void handleIncomingMessage(String incomingMessage) {
+        APIMessage Message = new APIMessage(incomingMessage);
+        logger.debug("handleIncomingMessage(): Message received: {} - {}", incomingMessage, Message.toString());
 
-			while (iterator.hasNext()) {
-				((DSCAlarmEventListener) iterator.next()).dscAlarmEventRecieved(event);
-			}
+        DSCAlarmEvent event = new DSCAlarmEvent(this);
+        event.dscAlarmEventMessage(Message);
 
-		} catch (Exception e) {
-			logger.error("handleIncomingMessage(): Event listener invoking error", e);
-		}
-	 }
+        // send message to event listeners
+        try {
+            Iterator<DSCAlarmEventListener> iterator = _listeners.iterator();
 
-	 /**
-	 * Receives Serial Port Events and reads Serial Port Data
-	 */	
-	public synchronized void serialEvent(SerialPortEvent serialPortEvent) {
-		 if (serialPortEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-			 try {
-				 String messageLine=serialInput.readLine();
-				 handleIncomingMessage(messageLine);
-			 } catch (IOException ioException) {
-				logger.error("serialEvent(): IO Exception: ", ioException);
-			 }
-		 }
-	 }
-	 
-	/**
-	 * Set the serial event handler
-	 */
-	private void setSerialEventHandler(SerialPortEventListener serialPortEventListenser) {
-	    try {
-	        // Add the serial port event listener
-	        serialPort.addEventListener(serialPortEventListenser);
-	        serialPort.notifyOnDataAvailable(true);
-	    } catch (TooManyListenersException tooManyListenersException) {
-			logger.error("open(): Too Many Listeners Exception: ", tooManyListenersException);
-	    }
-	}
+            while (iterator.hasNext()) {
+                ((DSCAlarmEventListener) iterator.next()).dscAlarmEventRecieved(event);
+            }
 
-	/**
-	 * {@inheritDoc}
-	 **/
-	public boolean isConnected() {
-		return connected;
-	}
-   
-	/**
-	 * {@inheritDoc}
-	 **/
-	public void close() {
-       	logger.debug("close(): Closing Serial Connection!");
+        } catch (Exception e) {
+            logger.error("handleIncomingMessage(): Event listener invoking error", e);
+        }
+    }
 
-       	if(serialPort == null) {
-    		connected = false;
-       		return;
-       	}
+    /**
+     * Receives Serial Port Events and reads Serial Port Data
+     */
+    public synchronized void serialEvent(SerialPortEvent serialPortEvent) {
+        if (serialPortEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+            try {
+                String messageLine = serialInput.readLine();
+                handleIncomingMessage(messageLine);
+            } catch (IOException ioException) {
+                logger.error("serialEvent(): IO Exception: ", ioException);
+            }
+        }
+    }
 
-       	serialPort.removeEventListener();
+    /**
+     * Set the serial event handler
+     */
+    private void setSerialEventHandler(SerialPortEventListener serialPortEventListenser) {
+        try {
+            // Add the serial port event listener
+            serialPort.addEventListener(serialPortEventListenser);
+            serialPort.notifyOnDataAvailable(true);
+        } catch (TooManyListenersException tooManyListenersException) {
+            logger.error("open(): Too Many Listeners Exception: ", tooManyListenersException);
+        }
+    }
 
-       	if(serialInput != null) {
-       		IOUtils.closeQuietly(serialInput);
-       		serialInput = null;
-		}
+    /**
+     * {@inheritDoc}
+     **/
+    public boolean isConnected() {
+        return connected;
+    }
 
-       	if(serialOutput != null) {
-			IOUtils.closeQuietly(serialOutput);
-			serialOutput = null;
-		}
-		
-   		serialPort.close();
-   		serialPort = null;
-   		
-		connected = false;
-       	logger.debug("close(): Serial Connection Closed!");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 **/
-	public synchronized void addEventListener(DSCAlarmEventListener listener) {
-		_listeners.add(listener);
-	}
+    /**
+     * {@inheritDoc}
+     **/
+    public void close() {
+        logger.debug("close(): Closing Serial Connection!");
 
-	/**
-	 * {@inheritDoc}
-	 **/
-	public synchronized void removeEventListener(DSCAlarmEventListener listener) {
-		_listeners.remove(listener);		
-	}
+        if (serialPort == null) {
+            connected = false;
+            return;
+        }
+
+        serialPort.removeEventListener();
+
+        if (serialInput != null) {
+            IOUtils.closeQuietly(serialInput);
+            serialInput = null;
+        }
+
+        if (serialOutput != null) {
+            IOUtils.closeQuietly(serialOutput);
+            serialOutput = null;
+        }
+
+        serialPort.close();
+        serialPort = null;
+
+        connected = false;
+        logger.debug("close(): Serial Connection Closed!");
+    }
+
+    /**
+     * {@inheritDoc}
+     **/
+    public synchronized void addEventListener(DSCAlarmEventListener listener) {
+        _listeners.add(listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     **/
+    public synchronized void removeEventListener(DSCAlarmEventListener listener) {
+        _listeners.remove(listener);
+    }
 }
