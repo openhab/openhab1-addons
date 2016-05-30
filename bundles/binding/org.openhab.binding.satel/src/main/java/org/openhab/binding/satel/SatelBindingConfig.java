@@ -10,8 +10,8 @@ package org.openhab.binding.satel;
 
 import java.util.Map;
 
+import org.openhab.binding.satel.command.SatelCommand;
 import org.openhab.binding.satel.internal.event.SatelEvent;
-import org.openhab.binding.satel.internal.protocol.SatelMessage;
 import org.openhab.binding.satel.internal.types.IntegraType;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
@@ -46,7 +46,7 @@ public abstract class SatelBindingConfig implements BindingConfig {
 
     /**
      * Checks whether given option is set to <code>true</code>.
-     * 
+     *
      * @param option
      *            option to check
      * @return <code>true</code> if option is enabled
@@ -57,7 +57,7 @@ public abstract class SatelBindingConfig implements BindingConfig {
 
     /**
      * Returns value of given option.
-     * 
+     *
      * @param option
      *            option to get value for
      * @return string value or <code>null</code> if option is not present
@@ -68,7 +68,7 @@ public abstract class SatelBindingConfig implements BindingConfig {
 
     /**
      * Returns string representation of option map.
-     * 
+     *
      * @return string as pairs of [name]=[value] separated by comma
      */
     public String optionsAsString() {
@@ -77,7 +77,7 @@ public abstract class SatelBindingConfig implements BindingConfig {
 
     /**
      * Returns initialization state of bound item.
-     * 
+     *
      * @return <code>true</code> if bound item has received state update,
      *         <code>false</code> if it is uninitialized
      */
@@ -94,7 +94,7 @@ public abstract class SatelBindingConfig implements BindingConfig {
 
     /**
      * Converts data from {@link SatelEvent} to openHAB state of specified item.
-     * 
+     *
      * @param item
      *            an item to get new state for
      * @param event
@@ -104,27 +104,27 @@ public abstract class SatelBindingConfig implements BindingConfig {
     public abstract State convertEventToState(Item item, SatelEvent event);
 
     /**
-     * Converts openHAB command to proper Satel message that changes state of
-     * bound object (output, zone).
-     * 
+     * Converts openHAB command to proper Satel command that changes state of
+     * bound object (output, zone, etc).
+     *
      * @param command
-     *            command to convert
+     *            openHAB command to convert
      * @param integraType
      *            type of connected Integra
      * @param userCode
      *            user's password
-     * @return a message to send
+     * @return appropriate Satel command
      */
-    public abstract SatelMessage convertCommandToMessage(Command command, IntegraType integraType, String userCode);
+    public abstract SatelCommand convertCommand(Command command, IntegraType integraType, String userCode);
 
     /**
      * Returns message needed to get current state of bound object.
-     * 
+     *
      * @param integraType
      *            type of connected Integra
-     * @return a message to send
+     * @return a command to send
      */
-    public abstract SatelMessage buildRefreshMessage(IntegraType integraType);
+    public abstract SatelCommand buildRefreshCommand(IntegraType integraType);
 
     protected SatelBindingConfig(Map<String, String> options) {
         this.options = options;
