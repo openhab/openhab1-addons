@@ -45,6 +45,13 @@
     <configfile finalname="${openhab.conf}/services/pebble.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/pebble</configfile>
   </feature>
 
+  <feature name="openhab-action-prowl" description="Prowl Action" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.prowl/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/prowl.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/prowl</configfile>
+  </feature>
+
   <feature name="openhab-action-pushover" description="Pushover Action" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -57,6 +64,13 @@
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.telegram/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/telegram.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/telegram</configfile>
+  </feature>
+
+  <feature name="openhab-action-twitter" description="Twitter Action" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.twitter/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/twitter.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/twitter</configfile>
   </feature>
 
   <feature name="openhab-action-xbmc" description="XBMC Action" version="${project.version}">
