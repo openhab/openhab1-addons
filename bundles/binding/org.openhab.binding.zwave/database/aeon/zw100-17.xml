@@ -240,6 +240,36 @@
         </Parameter>
 
         <Parameter>
+            <Index>101</Index>
+            <Label lang="en">Group 1 Periodic Reports</Label>
+            <Type>short</Type>
+            <Default>241</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>102</Index>
+            <Label lang="en">Group 2 Periodic Reports           </Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>103</Index>
+            <Label lang="en">Group 3 Periodic Reports           </Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
             <Index>110</Index>
             <Label lang="en">Set parameters 111-113 to default.         </Label>
             <Type>short</Type>
