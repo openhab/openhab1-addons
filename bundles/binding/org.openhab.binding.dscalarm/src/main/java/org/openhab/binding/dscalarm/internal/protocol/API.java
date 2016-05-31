@@ -239,8 +239,7 @@ public class API {
             logger.error("open(): Unable to Make API Connection!");
         }
 
-        logger.debug("open(): Connected = {}, Connection Type: {}, Interface Type: {}", connected ? true : false,
-                connectorType, interfaceType);
+        logger.debug("open(): Connected = {}, Connection Type: {}, Interface Type: {}", connected ? true : false, connectorType, interfaceType);
 
         return connected;
     }
@@ -320,15 +319,12 @@ public class API {
                 break;
             case CommandOutputControl: /* 020 */
                 if (apiData[0] == null || !apiData[0].matches("[1-8]")) {
-                    logger.error(
-                            "sendCommand(): Partition number must be a single character string from 1 to 8, it was: "
-                                    + apiData[0]);
+                    logger.error("sendCommand(): Partition number must be a single character string from 1 to 8, it was: " + apiData[0]);
                     break;
                 }
 
                 if (apiData[1] == null || !apiData[1].matches("[1-4]")) {
-                    logger.error("sendCommand(): Output number must be a single character string from 1 to 4, it was: "
-                            + apiData[1]);
+                    logger.error("sendCommand(): Output number must be a single character string from 1 to 4, it was: " + apiData[1]);
                     break;
                 }
 
@@ -343,9 +339,7 @@ public class API {
             case PartitionArmControlStay: /* 031 */
             case PartitionArmControlZeroEntryDelay: /* 032 */
                 if (apiData[0] == null || !apiData[0].matches("[1-8]")) {
-                    logger.error(
-                            "sendCommand(): Partition number must be a single character string from 1 to 8, it was: {}",
-                            apiData[0]);
+                    logger.error("sendCommand(): Partition number must be a single character string from 1 to 8, it was: {}", apiData[0]);
                     break;
                 }
                 data = apiData[0];
@@ -354,15 +348,12 @@ public class API {
             case PartitionArmControlWithUserCode: /* 033 */
             case PartitionDisarmControl: /* 040 */
                 if (apiData[0] == null || !apiData[0].matches("[1-8]")) {
-                    logger.error(
-                            "sendCommand(): Partition number must be a single character string from 1 to 8, it was: {}",
-                            apiData[0]);
+                    logger.error("sendCommand(): Partition number must be a single character string from 1 to 8, it was: {}", apiData[0]);
                     break;
                 }
 
                 if (dscAlarmUserCode == null || dscAlarmUserCode.length() < 4 || dscAlarmUserCode.length() > 6) {
-                    logger.error("sendCommand(): User Code is invalid, must be between 4 and 6 chars: {}",
-                            dscAlarmUserCode);
+                    logger.error("sendCommand(): User Code is invalid, must be between 4 and 6 chars: {}", dscAlarmUserCode);
                     break;
                 }
 
@@ -389,15 +380,12 @@ public class API {
                 break;
             case TriggerPanicAlarm: /* 060 */
                 if (apiData[0] == null || !apiData[0].matches("[1-8]")) {
-                    logger.error(
-                            "sendCommand(): Partition number must be a single character string from 1 to 8, it was: {}",
-                            apiData[0]);
+                    logger.error("sendCommand(): Partition number must be a single character string from 1 to 8, it was: {}", apiData[0]);
                     break;
                 }
 
                 if (apiData[1] == null || !apiData[1].matches("[1-3]")) {
-                    logger.error("sendCommand(): FAPcode must be a single character string from 1 to 3, it was: {}",
-                            apiData[1]);
+                    logger.error("sendCommand(): FAPcode must be a single character string from 1 to 3, it was: {}", apiData[1]);
                     break;
                 }
                 data = apiData[0] + apiData[1];
@@ -405,9 +393,7 @@ public class API {
                 break;
             case KeyStroke: /* 070 */
                 if (apiData[0] == null || apiData[0].length() != 1 || !apiData[0].matches("[0-9]|A|#|\\*")) {
-                    logger.error(
-                            "sendCommand(): \'keystroke\' must be a single character string from 0 to 9, *, #, or A, it was: {}",
-                            apiData[0]);
+                    logger.error("sendCommand(): \'keystroke\' must be a single character string from 0 to 9, *, #, or A, it was: {}", apiData[0]);
                     break;
                 }
                 data = apiData[0];
@@ -419,9 +405,7 @@ public class API {
                 }
 
                 if (apiData[0] == null || apiData[0].length() > 6 || !apiData[0].matches("(\\d|#|\\*)+")) {
-                    logger.error(
-                            "sendCommand(): \'keysequence\' must be a string of up to 6 characters consiting of 0 to 9, *, or #, it was: {}",
-                            apiData[0]);
+                    logger.error("sendCommand(): \'keysequence\' must be a string of up to 6 characters consiting of 0 to 9, *, or #, it was: {}", apiData[0]);
                     break;
                 }
                 data = apiData[0];
@@ -429,8 +413,7 @@ public class API {
                 break;
             case CodeSend: /* 200 */
                 if (dscAlarmUserCode == null || dscAlarmUserCode.length() < 4 || dscAlarmUserCode.length() > 6) {
-                    logger.error("sendCommand(): Access Code is invalid, must be between 4 and 6 chars: {}",
-                            apiData[0]);
+                    logger.error("sendCommand(): Access Code is invalid, must be between 4 and 6 chars: {}", apiData[0]);
                     break;
                 }
                 data = dscAlarmUserCode;

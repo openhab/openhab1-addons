@@ -28,8 +28,7 @@ public class DSCAlarmBindingConfig implements BindingConfig {
      * @param zoneId the ZoneId of the item
      * @param itemType the DSC Alarm Item Type.
      */
-    public DSCAlarmBindingConfig(DSCAlarmDeviceType dscAlarmDeviceType, int partitionId, int zoneId,
-            DSCAlarmItemType dscAlarmItemType) {
+    public DSCAlarmBindingConfig(DSCAlarmDeviceType dscAlarmDeviceType, int partitionId, int zoneId, DSCAlarmItemType dscAlarmItemType) {
         this.dscAlarmDeviceType = dscAlarmDeviceType;
         this.partitionId = partitionId;
         this.zoneId = zoneId;
