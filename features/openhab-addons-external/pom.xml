@@ -82,6 +82,7 @@
                                 <artifact><file>src/main/resources/conf/openenergymonitor.cfg</file><type>cfg</type><classifier>openenergymonitor</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/owserver.cfg</file><type>cfg</type><classifier>owserver</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pebble.cfg</file><type>cfg</type><classifier>pebble</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/prowl.cfg</file><type>cfg</type><classifier>prowl</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/powermax.cfg</file><type>cfg</type><classifier>powermax</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pushover.cfg</file><type>cfg</type><classifier>pushover</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/rwesmarthome.cfg</file><type>cfg</type><classifier>rwesmarthome</classifier></artifact>
@@ -95,6 +96,7 @@
                                 <artifact><file>src/main/resources/conf/tcp.cfg</file><type>cfg</type><classifier>tcp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/telegram.cfg</file><type>cfg</type><classifier>telegram</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/tinkerforge.cfg</file><type>cfg</type><classifier>tinkerforge</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/twitter.cfg</file><type>cfg</type><classifier>twitter</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/urtsi.cfg</file><type>cfg</type><classifier>urtsi</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/weather.cfg</file><type>cfg</type><classifier>weather</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/xbmc.cfg</file><type>cfg</type><classifier>xbmc</classifier></artifact>
