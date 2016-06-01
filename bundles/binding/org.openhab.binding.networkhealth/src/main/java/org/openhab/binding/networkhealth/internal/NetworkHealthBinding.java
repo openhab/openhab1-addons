@@ -94,7 +94,7 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
                         logger.debug("established connection [host '{}' port '{}' timeout '{}']",
                             new Object[] { hostname, port, timeout });
                     else
-                        logger.debug("couldn't established connection [host '{}' port '{}' timeout '{}']",
+                        logger.debug("couldn't establish connection [host '{}' port '{}' timeout '{}']",
                             new Object[] { hostname, port, timeout });
                 } catch (SocketTimeoutException se) {
                     logger.debug("timed out while connecting [host '{}' port '{}' timeout '{}']",
