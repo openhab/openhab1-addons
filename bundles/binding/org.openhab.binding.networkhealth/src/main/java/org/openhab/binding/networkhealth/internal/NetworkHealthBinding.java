@@ -90,12 +90,13 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
                 try {
                     success = Ping.checkVitality(hostname, port, timeout);
 
-                    if(success)
+                    if(success) {
                         logger.debug("established connection [host '{}' port '{}' timeout '{}']",
                             new Object[] { hostname, port, timeout });
-                    else
+                    } else {
                         logger.debug("couldn't establish connection [host '{}' port '{}' timeout '{}']",
                             new Object[] { hostname, port, timeout });
+                    }
                 } catch (SocketTimeoutException se) {
                     logger.debug("timed out while connecting [host '{}' port '{}' timeout '{}']",
                             new Object[] { hostname, port, timeout });
