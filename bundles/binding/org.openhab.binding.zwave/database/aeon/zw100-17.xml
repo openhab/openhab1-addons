@@ -122,6 +122,16 @@
         </Parameter>
 
         <Parameter>
+            <Index>8</Index>
+            <Label lang="en">Timeout after wake up</Label>
+            <Type>short</Type>
+            <Default>30</Default>
+            <Minimum>8</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
             <Index>9</Index>
             <Label lang="en">Report the current power mode</Label>
             <Type>short</Type>
@@ -167,7 +177,7 @@
             <Default>20</Default>
             <Minimum>0</Minimum>
             <Maximum>100</Maximum>
-            <Size>2</Size>
+            <Size>3</Size>
         </Parameter>
 
         <Parameter>
