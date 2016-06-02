@@ -11,7 +11,7 @@ package org.openhab.binding.powermax.internal.state;
 /**
  * A class to store the settings of an X10 device
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxX10Settings {

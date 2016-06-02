@@ -11,12 +11,12 @@ package org.openhab.binding.satel.config;
 import java.util.Map;
 
 import org.openhab.binding.satel.SatelBindingConfig;
+import org.openhab.binding.satel.command.ClearTroublesCommand;
+import org.openhab.binding.satel.command.IntegraStatusCommand;
+import org.openhab.binding.satel.command.SatelCommand;
+import org.openhab.binding.satel.command.SetClockCommand;
 import org.openhab.binding.satel.internal.event.IntegraStatusEvent;
 import org.openhab.binding.satel.internal.event.SatelEvent;
-import org.openhab.binding.satel.internal.protocol.SatelMessage;
-import org.openhab.binding.satel.internal.protocol.command.ClearTroublesCommand;
-import org.openhab.binding.satel.internal.protocol.command.IntegraStatusCommand;
-import org.openhab.binding.satel.internal.protocol.command.SetClockCommand;
 import org.openhab.binding.satel.internal.types.IntegraType;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DateTimeType;
@@ -60,7 +60,7 @@ public class IntegraStatusBindingConfig extends SatelBindingConfig {
 
     /**
      * Parses given binding configuration and creates configuration object.
-     * 
+     *
      * @param bindingConfig
      *            config to parse
      * @return parsed config object or <code>null</code> if config does not
@@ -119,7 +119,7 @@ public class IntegraStatusBindingConfig extends SatelBindingConfig {
      * {@inheritDoc}
      */
     @Override
-    public SatelMessage convertCommandToMessage(Command command, IntegraType integraType, String userCode) {
+    public SatelCommand convertCommand(Command command, IntegraType integraType, String userCode) {
         if (command instanceof OnOffType) {
             boolean switchOn = ((OnOffType) command == OnOffType.ON);
 
@@ -129,7 +129,7 @@ public class IntegraStatusBindingConfig extends SatelBindingConfig {
                     if (switchOn) {
                         return null;
                     } else {
-                        return ClearTroublesCommand.buildMessage(userCode);
+                        return new ClearTroublesCommand(userCode);
                     }
 
                     // do nothing for other types of status
@@ -145,7 +145,7 @@ public class IntegraStatusBindingConfig extends SatelBindingConfig {
                 dateTime = (DateTimeType) command;
             }
             if (dateTime != null) {
-                return SetClockCommand.buildMessage(dateTime.getCalendar(), userCode);
+                return new SetClockCommand(dateTime.getCalendar(), userCode);
             }
         }
 
@@ -156,8 +156,8 @@ public class IntegraStatusBindingConfig extends SatelBindingConfig {
      * {@inheritDoc}
      */
     @Override
-    public SatelMessage buildRefreshMessage(IntegraType integraType) {
-        return IntegraStatusCommand.buildMessage();
+    public SatelCommand buildRefreshCommand(IntegraType integraType) {
+        return new IntegraStatusCommand();
     }
 
     /**

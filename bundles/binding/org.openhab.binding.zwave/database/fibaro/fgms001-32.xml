@@ -557,21 +557,33 @@
 
         <Group>
             <Index>1</Index>
-            <Label lang="en">Device Status</Label>
-            <Maximum>16</Maximum>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
         </Group>
 
         <Group>
             <Index>2</Index>
-            <Label lang="en">Tamper Alarm</Label>
-            <Maximum>16</Maximum>
+            <Label lang="en">Motion</Label>
+            <Maximum>5</Maximum>
         </Group>
 
         <Group>
             <Index>3</Index>
-            <Label lang="en">Controller Updates</Label>
-            <Maximum>1</Maximum>
-            <SetToController>true</SetToController>
+            <Label lang="en">Tamper</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>4</Index>
+            <Label lang="en">Motion BC</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>5</Index>
+            <Label lang="en">Tamper BC</Label>
+            <Maximum>5</Maximum>
         </Group>
 
     </Associations>

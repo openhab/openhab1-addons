@@ -674,6 +674,15 @@
             <Label lang="en">GE 12727 Z-Wave Wireless Lighting Control Smart Toggle Switch</Label>
             <ConfigFile>ge/12727.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>4944</Type>
+                <Id>3034</Id>
+            </Reference>
+            <Model>ZW4002</Model>
+            <Label lang="en">In-Wall Smart Fan Control</Label>
+            <ConfigFile>ge/zw4002.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0064</Id>
@@ -1004,7 +1013,8 @@
             </Reference>
             <Model>ZW100-A</Model>
             <Label lang="en">MultiSensor 6</Label>
-            <ConfigFile>aeon/zw100-a.xml</ConfigFile>
+            <ConfigFile VersionMax="1.6">aeon/zw100-a.xml</ConfigFile>
+            <ConfigFile VersionMin="1.7">aeon/zw100-17.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
@@ -1217,6 +1227,27 @@
             <Model>ZW089B</Model>
             <Label lang="en">Door/Window Sensor</Label>
             <ConfigFile>aeon/zw089.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>0003</Type>
+                <Id>0063</Id>
+            </Reference>
+            <Reference>
+                <Type>0103</Type>
+                <Id>0063</Id>
+            </Reference>
+            <Reference>
+                <Type>0203</Type>
+                <Id>0063</Id>
+            </Reference>
+            <Reference>
+                <Type>1D03</Type>
+                <Id>0063</Id>
+            </Reference>
+            <Model>ZW099</Model>
+            <Label lang="en">Smart Dimmer 6</Label>
+            <ConfigFile>aeon/zw099.xml</ConfigFile>
         </Product>
     </Manufacturer>
     <Manufacturer>
@@ -2484,9 +2515,10 @@
                 <Type>101</Type>
                 <Id>0603</Id>
             </Reference>
-            <Model>ZW20R</Model>
-            <Label lang="en">20A Tamper Resistant Duplex Receptacle</Label>
-            <ConfigFile>enerwave/zw20r.xml</ConfigFile>
+            <Model>ZW20R/ZWN-RSM2</Model>
+            <Label lang="en">20A Tamper Resistant Duplex Receptacle / Smart Dual Relay Switch Module</Label>
+            <ConfigFile VersionMax="3.255">enerwave/zw20r.xml</ConfigFile>
+            <ConfigFile VersionMin="4">enerwave/zwn-rsm2.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
@@ -2883,6 +2915,10 @@
             <Reference>
                 <Type>453</Type>
                 <Id>110</Id>
+            </Reference>
+            <Reference>
+                <Type>453</Type>
+                <Id>111</Id>
             </Reference>
             <Model>MIMOlite</Model>
             <Label lang="en">Digital or Analog Voltage input and/or Dry Contact

@@ -13,7 +13,7 @@ import org.openhab.core.binding.BindingProvider;
 /**
  * Binding provider interface for the powermax binding
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public interface PowerMaxBindingProvider extends BindingProvider {

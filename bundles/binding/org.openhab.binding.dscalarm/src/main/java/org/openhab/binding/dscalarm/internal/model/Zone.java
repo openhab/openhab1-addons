@@ -146,8 +146,7 @@ public class Zone extends DSCAlarmDevice {
                             break;
                         case ZONE_GENERAL_STATUS:
                             zoneProperties.setState(StateType.GENERAL_STATE, (tpiCode == 609) ? 1 : 0, strStatus);
-                            publisher.postUpdate(item.getName(), (zoneProperties.getState(StateType.GENERAL_STATE) == 1)
-                                    ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
+                            publisher.postUpdate(item.getName(), (zoneProperties.getState(StateType.GENERAL_STATE) == 1) ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
                             break;
                         default:
                             logger.debug("handleEvent(): Zone item not updated.");

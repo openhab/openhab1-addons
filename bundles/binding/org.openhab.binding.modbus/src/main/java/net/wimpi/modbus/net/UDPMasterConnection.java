@@ -18,6 +18,9 @@ package net.wimpi.modbus.net;
 
 import java.net.InetAddress;
 
+import org.apache.commons.lang.builder.StandardToStringStyle;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.io.ModbusTransport;
 
@@ -27,7 +30,10 @@ import net.wimpi.modbus.io.ModbusTransport;
  * @author Dieter Wimberger
  * @version @version@ (@date@)
  */
-public class UDPMasterConnection {
+
+public class UDPMasterConnection implements ModbusSlaveConnection {
+
+    private static int LOCAL_PORT = 50000;
 
     // instance attributes
     private UDPMasterTerminal m_Terminal;
@@ -36,6 +42,12 @@ public class UDPMasterConnection {
 
     private InetAddress m_Address;
     private int m_Port = Modbus.DEFAULT_PORT;
+
+    private static StandardToStringStyle toStringStyle = new StandardToStringStyle();
+
+    static {
+        toStringStyle.setUseShortClassName(true);
+    }
 
     /**
      * Constructs a <tt>UDPMasterConnection</tt> instance
@@ -47,22 +59,29 @@ public class UDPMasterConnection {
         m_Address = adr;
     }// constructor
 
+    public UDPMasterConnection(InetAddress adr, int port) {
+        this(adr);
+        setPort(port);
+    }
+
     /**
      * Opens this <tt>UDPMasterConnection</tt>.
      *
      * @throws Exception if there is a network failure.
      */
-    public synchronized void connect() throws Exception {
+    @Override
+    public synchronized boolean connect() throws Exception {
         if (!m_Connected) {
             m_Terminal = new UDPMasterTerminal();
             m_Terminal.setLocalAddress(InetAddress.getLocalHost());
-            m_Terminal.setLocalPort(5000);
+            m_Terminal.setLocalPort(LOCAL_PORT);
             m_Terminal.setRemoteAddress(m_Address);
             m_Terminal.setRemotePort(m_Port);
             m_Terminal.setTimeout(m_Timeout);
             m_Terminal.activate();
             m_Connected = true;
         }
+        return m_Connected;
     }// connect
 
     /**
@@ -165,8 +184,19 @@ public class UDPMasterConnection {
      *
      * @return <tt>true</tt> if connected, <tt>false</tt> otherwise.
      */
+    @Override
     public boolean isConnected() {
         return m_Connected;
     }// isConnected
+
+    @Override
+    public void resetConnection() {
+        close();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, toStringStyle).append("terminal", m_Terminal).toString();
+    }
 
 }// class UDPMasterConnection

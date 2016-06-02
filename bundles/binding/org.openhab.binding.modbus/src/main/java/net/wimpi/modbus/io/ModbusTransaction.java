@@ -39,7 +39,7 @@ public interface ModbusTransaction {
      * The related <tt>ModbusResponse</tt> is acquired
      * from the passed in <tt>ModbusRequest</tt> instance.<br>
      * <p>
-     * 
+     *
      * @param req a <tt>ModbusRequest</tt>.
      */
     public void setRequest(ModbusRequest req);
@@ -48,7 +48,7 @@ public interface ModbusTransaction {
      * Returns the <tt>ModbusRequest</tt> instance
      * associated with this <tt>ModbusTransaction</tt>.
      * <p>
-     * 
+     *
      * @return the associated <tt>ModbusRequest</tt> instance.
      */
     public ModbusRequest getRequest();
@@ -57,7 +57,7 @@ public interface ModbusTransaction {
      * Returns the <tt>ModbusResponse</tt> instance
      * associated with this <tt>ModbusTransaction</tt>.
      * <p>
-     * 
+     *
      * @return the associated <tt>ModbusRequest</tt> instance.
      */
     public ModbusResponse getResponse();
@@ -68,7 +68,7 @@ public interface ModbusTransaction {
      * The identifier is a 2-byte (short) non negative
      * integer value valid in the range of 0-65535.<br>
      * <p>
-     * 
+     *
      * @return the actual transaction identifier as
      *         <tt>int</tt>.
      */
@@ -78,7 +78,7 @@ public interface ModbusTransaction {
      * Set the amount of retries for opening
      * the connection for executing the transaction.
      * <p>
-     * 
+     *
      * @param retries the amount of retries as <tt>int</tt>.
      */
     public void setRetries(int retries);
@@ -87,16 +87,28 @@ public interface ModbusTransaction {
      * Returns the amount of retries for opening
      * the connection for executing the transaction.
      * <p>
-     * 
+     *
      * @return the amount of retries as <tt>int</tt>.
      */
     public int getRetries();
 
     /**
+     * Sets the time to wait in milliseconds between retries
+     */
+    public void setRetryDelayMillis(long retryDelayMillis);
+
+    /**
+     * Returns the time to wait in milliseconds between retries
+     *
+     * @return time to wait in milliseconds between retries as <tt>long</tt>
+     */
+    public long getRetryDelayMillis();
+
+    /**
      * Sets the flag that controls whether the
      * validity of a transaction will be checked.
      * <p>
-     * 
+     *
      * @param b true if checking validity, false otherwise.
      */
     public void setCheckingValidity(boolean b);
@@ -105,7 +117,7 @@ public interface ModbusTransaction {
      * Tests whether the validity of a transaction
      * will be checked.
      * <p>
-     * 
+     *
      * @return true if checking validity, false otherwise.
      */
     public boolean isCheckingValidity();
@@ -118,7 +130,7 @@ public interface ModbusTransaction {
      * If reconnecting is activated the connection will
      * be opened for the transaction and closed afterwards.
      * <p>
-     * 
+     *
      * @throws ModbusException if an I/O error occurs,
      *             or the response is a modbus protocol exception.
      */

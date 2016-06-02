@@ -13,7 +13,7 @@ import org.openhab.binding.powermax.internal.state.PowerMaxState;
 /**
  * A class for TIMEOUT message handling
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxTimeoutMessage extends PowerMaxBaseMessage {
