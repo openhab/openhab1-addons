@@ -1,40 +1,13 @@
-/**
- * Copyright (c) 2010-2016 by the respective copyright holders.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- */
+***Copyright(c)2010-2016 by the respective copyright holders.**All rights reserved.This program and the accompanying materials*are made available under the terms of the Eclipse Public License v1.0*which accompanies this distribution,and is available at*http://www.eclipse.org/legal/epl-v10.html
+*/
+
 package org.openhab.binding.sonance.internal;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.BufferedReader;import java.io.DataOutputStream;import java.io.IOException;import java.io.InputStreamReader;import java.net.Socket;import java.net.UnknownHostException;import java.util.ArrayList;import java.util.HashMap;import java.util.List;import java.util.Map;import java.util.regex.Matcher;import java.util.regex.Pattern;
 
 import org.openhab.binding.sonance.SonanceBindingProvider;
 
-import org.apache.commons.lang.StringUtils;
-import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.IncreaseDecreaseType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.UpDownType;
-import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringUtils;import org.openhab.core.binding.AbstractActiveBinding;import org.openhab.core.binding.BindingProvider;import org.openhab.core.library.types.DecimalType;import org.openhab.core.library.types.IncreaseDecreaseType;import org.openhab.core.library.types.OnOffType;import org.openhab.core.library.types.UpDownType;import org.openhab.core.types.Command;import org.openhab.core.types.State;import org.osgi.framework.BundleContext;import org.slf4j.Logger;import org.slf4j.LoggerFactory;
 
 /**
  * The Sonance Binding communicates with Sonance Amplifiers like the DSP 2-150,
@@ -105,7 +78,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 	}
 
 	/*
-	 * @see org.openhab.core.binding.AbstractActiveBinding#getRefreshInterval()
+	 * @inheritDoc
 	 */
 	@Override
 	protected long getRefreshInterval() {
@@ -113,7 +86,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 	}
 
 	/*
-	 * @see org.openhab.core.binding.AbstractActiveBinding#getName()
+	 * @inheritDoc
 	 */
 	@Override
 	protected String getName() {
@@ -121,7 +94,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 	}
 
 	/*
-	 * @see org.openhab.core.binding.AbstractActiveBinding#execute()
+	 * @inheritDoc
 	 */
 	@Override
 	protected void execute() {
@@ -184,9 +157,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 	}
 
 	/*
-	 * @see
-	 * org.openhab.core.binding.AbstractActiveBinding#bindingChanged(org.openhab
-	 * .core.binding.BindingProvider, java.lang.String)
+	 * @inheritDoc
 	 */
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
@@ -206,13 +177,11 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 	}
 
 	/*
-	 * @see
-	 * org.openhab.core.binding.AbstractBinding#internalReceiveCommand(java.
-	 * lang.String, org.openhab.core.types.Command)
+	 * @inheritDoc
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		logger.info("Command received ({}, {})", itemName, command);
+		logger.debug("Command received ({}, {})", itemName, command);
 
 		SonanceBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 		String group = provider.getGroup(itemName);
@@ -279,13 +248,11 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 	}
 
 	/*
-	 * @see
-	 * org.openhab.core.binding.AbstractBinding#internalReceiveUpdate(java.lang
-	 * .String, org.openhab.core.types.State)
+	 * @inheritDoc
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
-		logger.info("Update received ({},{})", itemName, newState);
+		logger.debug("Update received ({},{})", itemName, newState);
 
 		SonanceBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 		String group = provider.getGroup(itemName);
@@ -301,28 +268,30 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 			DataOutputStream outToServer = new DataOutputStream(s.getOutputStream());
 			BufferedReader i = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
-			if (provider.isMute(itemName))
+			if (provider.isMute(itemName)) {
 				if (newState.equals(OnOffType.OFF))
 					sendMuteCommand(itemName, SonanceConsts.MUTE_ON + group, outToServer, i);
 				else if (newState.equals(OnOffType.ON))
 					sendMuteCommand(itemName, SonanceConsts.MUTE_OFF + group, outToServer, i);
 				else
 					logger.error("I don't know what to do with this new state \"{}\"", newState);
-			if (provider.isPower(itemName))
+			}
+			if (provider.isPower(itemName)) {
 				if (newState.equals(OnOffType.OFF))
 					sendPowerCommand(itemName, SonanceConsts.POWER_OFF, outToServer, i);
 				else if (newState.equals(OnOffType.ON))
 					sendPowerCommand(itemName, SonanceConsts.POWER_ON, outToServer, i);
 				else
 					logger.error("I don't know what to do with this new state \"{}\"", newState);
-			else if (provider.isVolume(itemName))
+			} else if (provider.isVolume(itemName)) {
 				if (newState.equals(IncreaseDecreaseType.INCREASE))
 					sendVolumeCommand(itemName, SonanceConsts.VOLUME_UP + group, outToServer, i);
 				else if (newState.equals(IncreaseDecreaseType.DECREASE))
 					sendVolumeCommand(itemName, SonanceConsts.VOLUME_DOWN + group, outToServer, i);
 				else
 					logger.error("I don't know what to do with this new state \"{}\"", newState);
-			s.close();
+				s.close();
+			}
 		} catch (IOException e) {
 			logger.error("IO Exception when received internal command. Message: {}", e.getMessage());
 		} finally {
