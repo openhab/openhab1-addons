@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,17 +43,13 @@ import org.slf4j.LoggerFactory;
  * @author Laurens Van Acker
  * @since 1.8.0
  */
-public class SonanceBinding extends
-		AbstractActiveBinding<SonanceBindingProvider> {
+public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider> {
 	private Map<String, Socket> socketCache = new HashMap<String, Socket>();
 	private Map<String, DataOutputStream> outputStreamCache = new HashMap<String, DataOutputStream>();
 	private Map<String, BufferedReader> bufferedReaderCache = new HashMap<String, BufferedReader>();
-	private Map<String, ReentrantLock> volumeLocks = new HashMap<String, ReentrantLock>();
-	private static Pattern volumePattern = Pattern
-			.compile(".*Vol=(-?\\d{1,2}).*");
+	private static Pattern volumePattern = Pattern.compile(".*Vol=(-?\\d{1,2}).*");
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(SonanceBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(SonanceBinding.class);
 
 	/**
 	 * the refresh interval which is used to poll values from the Sonance server
@@ -80,8 +74,7 @@ public class SonanceBinding extends
 	 *            Configuration properties for this component obtained from the
 	 *            ConfigAdmin service
 	 */
-	public void activate(final BundleContext bundleContext,
-			final Map<String, Object> configuration) {
+	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
 		String refreshIntervalString = (String) configuration.get("refresh");
 		if (StringUtils.isNotBlank(refreshIntervalString)) {
 			refreshInterval = Long.parseLong(refreshIntervalString);
@@ -152,38 +145,27 @@ public class SonanceBinding extends
 					try {
 						if (!socketCache.containsKey(key)) {
 							socketCache.put(key, new Socket(ip, port));
-							outputStreamCache.put(key, new DataOutputStream(
-									socketCache.get(key).getOutputStream()));
-							bufferedReaderCache.put(key, new BufferedReader(
-									new InputStreamReader(socketCache.get(key)
-											.getInputStream())));
+							outputStreamCache.put(key, new DataOutputStream(socketCache.get(key).getOutputStream()));
+							bufferedReaderCache.put(key,
+									new BufferedReader(new InputStreamReader(socketCache.get(key).getInputStream())));
 							logger.debug("New socket created ({}:{})", ip, port);
 						}
 
 						if (provider.isMute(itemName)) {
-							sendMuteCommand(itemName, SonanceConsts.MUTE_QUERY
-									+ group, outputStreamCache.get(key),
+							sendMuteCommand(itemName, SonanceConsts.MUTE_QUERY + group, outputStreamCache.get(key),
 									bufferedReaderCache.get(key));
 						} else if (provider.isVolume(itemName)) {
-							sendVolumeCommand(itemName,
-									SonanceConsts.VOLUME_QUERY + group,
-									outputStreamCache.get(key),
+							sendVolumeCommand(itemName, SonanceConsts.VOLUME_QUERY + group, outputStreamCache.get(key),
 									bufferedReaderCache.get(key));
 						} else if (provider.isPower(itemName)) {
-							sendPowerCommand(itemName,
-									SonanceConsts.POWER_QUERY,
-									outputStreamCache.get(key),
+							sendPowerCommand(itemName, SonanceConsts.POWER_QUERY, outputStreamCache.get(key),
 									bufferedReaderCache.get(key));
 
 						}
 					} catch (UnknownHostException e) {
-						logger.error(
-								"UnknownHostException occured when connecting to amplifier {}:{}.",
-								ip, port);
+						logger.error("UnknownHostException occured when connecting to amplifier {}:{}.", ip, port);
 					} catch (IOException e) {
-						logger.debug(
-								"Amplifier ({},{}) is offline, status can't be updated at this moment.",
-								ip, port);
+						logger.debug("Amplifier ({},{}) is offline, status can't be updated at this moment.", ip, port);
 						try {
 							socketCache.get(key).close();
 						} catch (Exception ex) {
@@ -240,57 +222,42 @@ public class SonanceBinding extends
 		Socket s = null;
 		try {
 			s = new Socket(ip, port);
-			DataOutputStream outToServer = new DataOutputStream(
-					s.getOutputStream());
-			BufferedReader i = new BufferedReader(new InputStreamReader(
-					s.getInputStream()));
+			DataOutputStream outToServer = new DataOutputStream(s.getOutputStream());
+			BufferedReader i = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
 			if (provider.isMute(itemName)) {
 				if (command.equals(OnOffType.OFF)) {
-					sendMuteCommand(itemName, SonanceConsts.MUTE_ON + group,
-							outToServer, i);
+					sendMuteCommand(itemName, SonanceConsts.MUTE_ON + group, outToServer, i);
 				} else if (command.equals(OnOffType.ON)) {
-					sendMuteCommand(itemName, SonanceConsts.MUTE_OFF + group,
-							outToServer, i);
+					sendMuteCommand(itemName, SonanceConsts.MUTE_OFF + group, outToServer, i);
 				} else {
-					logger.error(
-							"I don't know what to do with the command \"{}\"",
-							command);
+					logger.error("I don't know what to do with the command \"{}\"", command);
 				}
 			} else if (provider.isPower(itemName)) {
 				if (command.equals(OnOffType.OFF)) {
-					sendPowerCommand(itemName, SonanceConsts.POWER_OFF,
-							outToServer, i);
+					sendPowerCommand(itemName, SonanceConsts.POWER_OFF, outToServer, i);
 				} else if (command.equals(OnOffType.ON)) {
-					sendPowerCommand(itemName, SonanceConsts.POWER_ON,
-							outToServer, i);
+					sendPowerCommand(itemName, SonanceConsts.POWER_ON, outToServer, i);
 				} else {
-					logger.error(
-							"I don't know what to do with the command \"{}\"",
-							command);
+					logger.error("I don't know what to do with the command \"{}\"", command);
 				}
 			} else if (provider.isVolume(itemName))
 				if (command.equals(UpDownType.UP))
-					sendVolumeCommand(itemName,
-							SonanceConsts.VOLUME_UP + group, outToServer, i);
+					sendVolumeCommand(itemName, SonanceConsts.VOLUME_UP + group, outToServer, i);
 				else if (command.equals(UpDownType.DOWN))
-					sendVolumeCommand(itemName, SonanceConsts.VOLUME_DOWN
-							+ group, outToServer, i);
+					sendVolumeCommand(itemName, SonanceConsts.VOLUME_DOWN + group, outToServer, i);
 				else {
 					try {
 						Double d = Double.parseDouble(command.toString());
-						setVolumeCommand(itemName, group, d.intValue(),
-								outToServer, i, ip + ":" + port);
+						setVolumeCommand(itemName, group, d.intValue(), outToServer, i, ip + ":" + port);
 					} catch (NumberFormatException nfe) {
-						logger.error(
-								"I don't know what to do with the volume command \"{}\" ({})",
-								command, nfe.getMessage());
+						logger.error("I don't know what to do with the volume command \"{}\" ({})", command,
+								nfe.getMessage());
 					}
 				}
 			s.close();
 		} catch (IOException e) {
-			logger.debug("IO Exception when sending command. Exception: {}",
-					e.getMessage());
+			logger.debug("IO Exception when sending command. Exception: {}", e.getMessage());
 		} finally {
 			closeSilently(s);
 		}
@@ -331,49 +298,33 @@ public class SonanceBinding extends
 		Socket s = null;
 		try {
 			s = new Socket(ip, port);
-			DataOutputStream outToServer = new DataOutputStream(
-					s.getOutputStream());
-			BufferedReader i = new BufferedReader(new InputStreamReader(
-					s.getInputStream()));
+			DataOutputStream outToServer = new DataOutputStream(s.getOutputStream());
+			BufferedReader i = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
 			if (provider.isMute(itemName))
 				if (newState.equals(OnOffType.OFF))
-					sendMuteCommand(itemName, SonanceConsts.MUTE_ON + group,
-							outToServer, i);
+					sendMuteCommand(itemName, SonanceConsts.MUTE_ON + group, outToServer, i);
 				else if (newState.equals(OnOffType.ON))
-					sendMuteCommand(itemName, SonanceConsts.MUTE_OFF + group,
-							outToServer, i);
+					sendMuteCommand(itemName, SonanceConsts.MUTE_OFF + group, outToServer, i);
 				else
-					logger.error(
-							"I don't know what to do with this new state \"{}\"",
-							newState);
+					logger.error("I don't know what to do with this new state \"{}\"", newState);
 			if (provider.isPower(itemName))
 				if (newState.equals(OnOffType.OFF))
-					sendPowerCommand(itemName, SonanceConsts.POWER_OFF,
-							outToServer, i);
+					sendPowerCommand(itemName, SonanceConsts.POWER_OFF, outToServer, i);
 				else if (newState.equals(OnOffType.ON))
-					sendPowerCommand(itemName, SonanceConsts.POWER_ON,
-							outToServer, i);
+					sendPowerCommand(itemName, SonanceConsts.POWER_ON, outToServer, i);
 				else
-					logger.error(
-							"I don't know what to do with this new state \"{}\"",
-							newState);
+					logger.error("I don't know what to do with this new state \"{}\"", newState);
 			else if (provider.isVolume(itemName))
 				if (newState.equals(IncreaseDecreaseType.INCREASE))
-					sendVolumeCommand(itemName,
-							SonanceConsts.VOLUME_UP + group, outToServer, i);
+					sendVolumeCommand(itemName, SonanceConsts.VOLUME_UP + group, outToServer, i);
 				else if (newState.equals(IncreaseDecreaseType.DECREASE))
-					sendVolumeCommand(itemName, SonanceConsts.VOLUME_DOWN
-							+ group, outToServer, i);
+					sendVolumeCommand(itemName, SonanceConsts.VOLUME_DOWN + group, outToServer, i);
 				else
-					logger.error(
-							"I don't know what to do with this new state \"{}\"",
-							newState);
+					logger.error("I don't know what to do with this new state \"{}\"", newState);
 			s.close();
 		} catch (IOException e) {
-			logger.error(
-					"IO Exception when received internal command. Message: {}",
-					e.getMessage());
+			logger.error("IO Exception when received internal command. Message: {}", e.getMessage());
 		} finally {
 			closeSilently(s);
 		}
@@ -393,8 +344,8 @@ public class SonanceBinding extends
 	 * @throws IOException
 	 *             throws an exception when we can't reach to amplifier
 	 */
-	private void sendVolumeCommand(String itemName, String command,
-			DataOutputStream outToServer, BufferedReader i) throws IOException {
+	private void sendVolumeCommand(String itemName, String command, DataOutputStream outToServer, BufferedReader i)
+			throws IOException {
 		char[] cbuf = new char[50]; // Response is always 50 characters
 
 		logger.debug("Sending volume command {}", command);
@@ -409,9 +360,7 @@ public class SonanceBinding extends
 			eventPublisher.postUpdate(itemName, new DecimalType(volume));
 			logger.debug("Setting volume for item {} on {}", itemName, volume);
 		} else {
-			logger.error(
-					"Error sending regular volume command {}, received this: {}",
-					command, new String(cbuf));
+			logger.error("Error sending regular volume command {}, received this: {}", command, new String(cbuf));
 		}
 	}
 
@@ -429,8 +378,8 @@ public class SonanceBinding extends
 	 * @throws IOException
 	 *             throws an exception when we can't reach to amplifier
 	 */
-	private void sendMuteCommand(String itemName, String command,
-			DataOutputStream outToServer, BufferedReader i) throws IOException {
+	private void sendMuteCommand(String itemName, String command, DataOutputStream outToServer, BufferedReader i)
+			throws IOException {
 		char[] cbuf = new char[50]; // Response is always 50 characters
 
 		logger.debug("Sending mute command {}", command);
@@ -448,8 +397,7 @@ public class SonanceBinding extends
 			eventPublisher.postUpdate(itemName, OnOffType.ON);
 			logger.debug("Setting mute item {} on ON", itemName);
 		} else
-			logger.error("Error sending mute command {}, received this: {}",
-					command, result);
+			logger.error("Error sending mute command {}, received this: {}", command, result);
 	}
 
 	/**
@@ -466,8 +414,8 @@ public class SonanceBinding extends
 	 * @throws IOException
 	 *             throws an exception when we can't reach to amplifier
 	 */
-	private void sendPowerCommand(String itemName, String command,
-			DataOutputStream outToServer, BufferedReader i) throws IOException {
+	private void sendPowerCommand(String itemName, String command, DataOutputStream outToServer, BufferedReader i)
+			throws IOException {
 		char[] cbuf = new char[50]; // Response is always 50 characters
 
 		logger.debug("Sending power command {}", command);
@@ -485,8 +433,7 @@ public class SonanceBinding extends
 			eventPublisher.postUpdate(itemName, OnOffType.ON);
 			logger.debug("Setting power item {} on ON", itemName);
 		} else {
-			logger.trace("Error sending power command {}, received this: {}",
-					command, result);
+			logger.trace("Error sending power command {}, received this: {}", command, result);
 		}
 	}
 
@@ -509,94 +456,27 @@ public class SonanceBinding extends
 	 * @throws IOException
 	 *             throws an IOException when we can't reach the amplifier
 	 */
-	private void setVolumeCommand(String itemName, String group,
-			int targetVolume, DataOutputStream outToServer, BufferedReader i,
-			String endpoint) throws IOException {
+	private void setVolumeCommand(String itemName, String group, int targetVolume, DataOutputStream outToServer,
+			BufferedReader i, String endpoint) throws IOException {
 		char[] cbuf = new char[50]; // Response is always 50 characters
 
-		// Now lock this part, so we don't end up with two functions going up
-		// and now all the time
-		String lockKey = endpoint + ":" + group;
-		if (!volumeLocks.containsKey(lockKey))
-			volumeLocks.put(lockKey, new ReentrantLock()); // We can keep this
-															// once when we
-															// finished with it,
-															// speed before
-															// memory usage
+		String question = String.format("%s%s%s", SonanceConsts.DIRECT_VOLUME_QUERY,
+				Integer.toHexString(183 + targetVolume), group);
+		logger.trace("Sending this to amplifier: {}", question);
 
-		try {
-			volumeLocks.get(lockKey).tryLock(2, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			logger.debug("Lock waiting time (2s) expired for lockKey {}.",
-					lockKey);
-			return;
-		}
+		outToServer.write(hexStringToByteArray(question));
+		i.read(cbuf, 0, 50);
 
-		try {
-			outToServer.write(hexStringToByteArray(SonanceConsts.VOLUME_QUERY
-					+ group));
-			i.read(cbuf, 0, 50);
+		String result = new String(cbuf);
+		logger.trace("Received this as response : {}", result);
+		Matcher m = volumePattern.matcher(result);
 
-			Matcher m = volumePattern.matcher(new String(cbuf));
-
-			if (m.find()) {
-				double currentVolume = Integer.parseInt(m.group(1));
-				eventPublisher.postUpdate(itemName, new DecimalType(
-						currentVolume));
-				logger.debug("Updating {} with new volume {}", itemName,
-						currentVolume);
-				int step = 0; // We should be able to reach every volume in less
-								// 29 steps
-				while (currentVolume != targetVolume && step++ <= 28) {
-					logger.debug(
-							"Current volume: {}, target volume: {}, step: {}, lock: {})",
-							currentVolume, targetVolume, step, lockKey);
-					if (currentVolume + 3 <= targetVolume) {
-						outToServer
-								.write(hexStringToByteArray(SonanceConsts.VOLUME_UP_3
-										+ group));
-						logger.debug("Sending volume up 3 command {}",
-								SonanceConsts.VOLUME_UP_3);
-					}
-					if (currentVolume - 3 >= targetVolume) {
-						outToServer
-								.write(hexStringToByteArray(SonanceConsts.VOLUME_DOWN_3
-										+ group));
-						logger.debug("Sending volume down 3 command {}",
-								SonanceConsts.VOLUME_DOWN_3);
-					} else if (currentVolume < targetVolume) {
-						outToServer
-								.write(hexStringToByteArray(SonanceConsts.VOLUME_UP
-										+ group));
-						logger.debug("Sending volume up command {}",
-								SonanceConsts.VOLUME_UP);
-					} else {
-						outToServer
-								.write(hexStringToByteArray(SonanceConsts.VOLUME_DOWN
-										+ group));
-						logger.debug("Sending volume down command {}",
-								SonanceConsts.VOLUME_DOWN);
-					}
-					i.read(cbuf, 0, 50);
-					m = volumePattern.matcher(new String(cbuf));
-					if (m.find()) {
-						currentVolume = Integer.parseInt(m.group(1));
-						logger.info("Setting volume, current volume: {}",
-								currentVolume);
-						eventPublisher.postUpdate(itemName, new DecimalType(
-								currentVolume));
-					} else {
-						logger.error(
-								"Error sending volume command, received this: {}",
-								new String(cbuf));
-					}
-				}
-			} else {
-				logger.error("Error sending volume command, received this: {}",
-						new String(cbuf));
-			}
-		} finally {
-			volumeLocks.get(lockKey).unlock();
+		if (m.find()) {
+			double currentVolume = Integer.parseInt(m.group(1));
+			eventPublisher.postUpdate(itemName, new DecimalType(currentVolume));
+			logger.debug("Updating {} with new volume {}", itemName, currentVolume);
+		} else {
+			logger.error("Error sending volume command, received this: {}", new String(cbuf));
 		}
 	}
 
@@ -607,8 +487,7 @@ public class SonanceBinding extends
 	 *            name of the item where we need to binding provder for
 	 * @return SonanceBindingProvider
 	 */
-	protected SonanceBindingProvider findFirstMatchingBindingProvider(
-			String itemName) {
+	protected SonanceBindingProvider findFirstMatchingBindingProvider(String itemName) {
 		SonanceBindingProvider firstMatchingProvider = null;
 		for (SonanceBindingProvider provider : providers) {
 			if (provider.providesBindingFor(itemName)) {
@@ -630,8 +509,7 @@ public class SonanceBinding extends
 		int len = s.length();
 		byte[] data = new byte[len / 2];
 		for (int i = 0; i < len; i += 2)
-			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character
-					.digit(s.charAt(i + 1), 16));
+			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
 		return data;
 	}
 }

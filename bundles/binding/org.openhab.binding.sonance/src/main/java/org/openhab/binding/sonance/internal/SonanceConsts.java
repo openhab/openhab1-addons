@@ -1,9 +1,10 @@
 package org.openhab.binding.sonance.internal;
 
 /**
- * IP codes to send to the amplifier. List of all possible commands: http://www.
- * sonance.com/assets/media/files/downloads/Sonance_IP_Codes_-_June_2015_
- * -_V1_2_110612.xlsx
+ * IP codes to send to the amplifier. List of all possible commands:
+ * https://danainnovationsupport.zendesk.com/attachments/token/
+ * PHk0adMkeZX6bJN1PEBnU59lM/?name=Sonance_IP_Codes_-_Feb_2016_-_V1_3_100449.
+ * xlsx
  * 
  * @author Laurens Van Acker
  * 
@@ -22,4 +23,6 @@ final class SonanceConsts {
 	protected static final String POWER_ON = "FF550101";
 	protected static final String POWER_OFF = "FF550102";
 	protected static final String POWER_QUERY = "FF550170";
+
+	protected static final String DIRECT_VOLUME_QUERY = "FF5502";
 }
