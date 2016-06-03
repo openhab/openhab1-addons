@@ -14,7 +14,7 @@ package org.openhab.binding.alarmdecoder.internal.model;
  * @author Sean Mathews <coder@f34r.com>
  * @since 1.9.0
  *
- * TODO: add timeouts
+ *        TODO: add timeouts
  */
 
 public class ADZone {
@@ -59,7 +59,6 @@ public class ADZone {
         return _id;
     }
 
-
     /**
      * return true if this object equals another based upon ID
      *
@@ -69,8 +68,7 @@ public class ADZone {
     public boolean equals(Object object) {
         boolean equals = false;
 
-        if (object != null && object instanceof ADZone)
-        {
+        if (object != null && object instanceof ADZone) {
             equals = this._id == ((ADZone) object)._id;
         }
 
