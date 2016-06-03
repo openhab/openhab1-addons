@@ -182,6 +182,14 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
         }
     }
 
+    protected void addBindingProvider(SonanceBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(SonanceBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /*
      * {@inheritDoc}
      */
