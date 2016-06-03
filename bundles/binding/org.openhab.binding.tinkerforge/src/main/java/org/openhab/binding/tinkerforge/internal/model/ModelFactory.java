@@ -965,6 +965,16 @@ public interface ModelFactory extends EFactory {
     MBrickletThermocouple createMBrickletThermocouple();
 
     /**
+     * Returns a new object of class '<em>MBricklet UV Light</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet UV Light</em>'.
+     * @generated
+     */
+    MBrickletUVLight createMBrickletUVLight();
+
+    /**
      * Returns a new object of class '<em>MBricklet Temperature IR</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

@@ -4,8 +4,6 @@ package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -18,71 +16,68 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
-import org.openhab.binding.tinkerforge.internal.config.ConfigurationException;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletThermocouple;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletUVLight;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.tools.Tools;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tinkerforge.BrickletThermocouple;
+import com.tinkerforge.BrickletUVLight;
 import com.tinkerforge.IPConnection;
 import com.tinkerforge.NotConnectedException;
 import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>MBricklet Thermocouple</b></em>'.
+ * An implementation of the model object '<em><b>MBricklet UV Light</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getLogger <em>Logger</em>}
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getLogger <em>Logger</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getUid <em>Uid</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#isPoll <em>Poll</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getEnabledA <em>Enabled A</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getUid <em>Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getEnabledA
- * <em>Enabled A</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getTinkerforgeDevice
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getIpConnection
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getIpConnection
  * <em>Ip Connection</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getConnectedUid
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getConnectedUid
  * <em>Connected Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getPosition
- * <em>Position</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getDeviceIdentifier
- * <em>Device Identifier</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getName <em>Name</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getBrickd <em>Brickd</em>}
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getPosition <em>Position</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getSensorValue
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getDeviceIdentifier
+ * <em>Device Identifier</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getName <em>Name</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getBrickd <em>Brickd</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getSensorValue
  * <em>Sensor Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getTfConfig
- * <em>Tf Config</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getCallbackPeriod
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getTfConfig <em>Tf Config</em>}
+ * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getCallbackPeriod
  * <em>Callback Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getDeviceType
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getDeviceType
  * <em>Device Type</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletThermocoupleImpl#getThreshold
- * <em>Threshold</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getThreshold <em>Threshold</em>}
+ * </li>
  * </ul>
  *
  * @generated
  */
-public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container implements MBrickletThermocouple {
+public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implements MBrickletUVLight {
     /**
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getLogger()
      * @generated
      * @ordered
@@ -93,7 +88,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getLogger()
      * @generated
      * @ordered
@@ -104,7 +99,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getUid()
      * @generated
      * @ordered
@@ -115,7 +110,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getUid()
      * @generated
      * @ordered
@@ -126,7 +121,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #isPoll()
      * @generated
      * @ordered
@@ -137,7 +132,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #isPoll()
      * @generated
      * @ordered
@@ -148,7 +143,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -159,7 +154,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -170,18 +165,18 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #getTinkerforgeDevice() <em>Tinkerforge Device</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getTinkerforgeDevice()
      * @generated
      * @ordered
      */
-    protected BrickletThermocouple tinkerforgeDevice;
+    protected BrickletUVLight tinkerforgeDevice;
 
     /**
      * The default value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -192,7 +187,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -203,7 +198,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The default value of the '{@link #getConnectedUid() <em>Connected Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getConnectedUid()
      * @generated
      * @ordered
@@ -214,7 +209,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #getConnectedUid() <em>Connected Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getConnectedUid()
      * @generated
      * @ordered
@@ -225,7 +220,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The default value of the '{@link #getPosition() <em>Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getPosition()
      * @generated
      * @ordered
@@ -236,7 +231,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #getPosition() <em>Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getPosition()
      * @generated
      * @ordered
@@ -247,7 +242,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The default value of the '{@link #getDeviceIdentifier() <em>Device Identifier</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getDeviceIdentifier()
      * @generated
      * @ordered
@@ -258,7 +253,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #getDeviceIdentifier() <em>Device Identifier</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getDeviceIdentifier()
      * @generated
      * @ordered
@@ -269,7 +264,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getName()
      * @generated
      * @ordered
@@ -280,7 +275,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getName()
      * @generated
      * @ordered
@@ -291,7 +286,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getSensorValue()
      * @generated
      * @ordered
@@ -302,18 +297,18 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getTfConfig()
      * @generated
      * @ordered
      */
-    protected TFThermocoupleConfiguration tfConfig;
+    protected TFBaseConfiguration tfConfig;
 
     /**
      * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getCallbackPeriod()
      * @generated
      * @ordered
@@ -324,7 +319,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getCallbackPeriod()
      * @generated
      * @ordered
@@ -335,18 +330,18 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getDeviceType()
      * @generated
      * @ordered
      */
-    protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_thermocouple";
+    protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_uv_light";
 
     /**
      * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -357,7 +352,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The default value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getThreshold()
      * @generated
      * @ordered
@@ -368,40 +363,40 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getThreshold()
      * @generated
      * @ordered
      */
     protected BigDecimal threshold = THRESHOLD_EDEFAULT;
 
-    private TemperatureListener listener;
+    private UVLightListener listener;
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
-    protected MBrickletThermocoupleImpl() {
+    protected MBrickletUVLightImpl() {
         super();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     protected EClass eStaticClass() {
-        return ModelPackage.Literals.MBRICKLET_THERMOCOUPLE;
+        return ModelPackage.Literals.MBRICKLET_UV_LIGHT;
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -412,22 +407,23 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_THERMOCOUPLE__LOGGER,
-                    oldLogger, logger));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__LOGGER, oldLogger,
+                    logger));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -438,22 +434,22 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_THERMOCOUPLE__UID, oldUid,
-                    uid));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__UID, oldUid, uid));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -464,22 +460,23 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_THERMOCOUPLE__POLL, oldPoll,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__POLL, oldPoll,
                     poll));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -490,48 +487,50 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_THERMOCOUPLE__ENABLED_A,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__ENABLED_A,
                     oldEnabledA, enabledA));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
-    public BrickletThermocouple getTinkerforgeDevice() {
+    public BrickletUVLight getTinkerforgeDevice() {
         return tinkerforgeDevice;
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
-    public void setTinkerforgeDevice(BrickletThermocouple newTinkerforgeDevice) {
-        BrickletThermocouple oldTinkerforgeDevice = tinkerforgeDevice;
+    public void setTinkerforgeDevice(BrickletUVLight newTinkerforgeDevice) {
+        BrickletUVLight oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    ModelPackage.MBRICKLET_THERMOCOUPLE__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__TINKERFORGE_DEVICE,
+                    oldTinkerforgeDevice, tinkerforgeDevice));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -542,22 +541,23 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_THERMOCOUPLE__IP_CONNECTION,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__IP_CONNECTION,
                     oldIpConnection, ipConnection));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -568,22 +568,23 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_THERMOCOUPLE__CONNECTED_UID,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -594,22 +595,23 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_THERMOCOUPLE__POSITION,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__POSITION,
                     oldPosition, position));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -620,22 +622,23 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    ModelPackage.MBRICKLET_THERMOCOUPLE__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_IDENTIFIER,
+                    oldDeviceIdentifier, deviceIdentifier));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -646,84 +649,92 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_THERMOCOUPLE__NAME, oldName,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__NAME, oldName,
                     name));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_THERMOCOUPLE__BRICKD)
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_UV_LIGHT__BRICKD) {
             return null;
+        }
         return (MBrickd) eContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public MBrickd basicGetBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_THERMOCOUPLE__BRICKD)
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_UV_LIGHT__BRICKD) {
             return null;
+        }
         return (MBrickd) eInternalContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public NotificationChain basicSetBrickd(MBrickd newBrickd, NotificationChain msgs) {
-        msgs = eBasicSetContainer((InternalEObject) newBrickd, ModelPackage.MBRICKLET_THERMOCOUPLE__BRICKD, msgs);
+        msgs = eBasicSetContainer((InternalEObject) newBrickd, ModelPackage.MBRICKLET_UV_LIGHT__BRICKD, msgs);
         return msgs;
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
-                || (eContainerFeatureID() != ModelPackage.MBRICKLET_THERMOCOUPLE__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd))
+                || (eContainerFeatureID() != ModelPackage.MBRICKLET_UV_LIGHT__BRICKD && newBrickd != null)) {
+            if (EcoreUtil.isAncestor(this, newBrickd)) {
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null)
+            if (eInternalContainer() != null) {
                 msgs = eBasicRemoveFromContainer(msgs);
-            if (newBrickd != null)
+            }
+            if (newBrickd != null) {
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
+            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null)
+            if (msgs != null) {
                 msgs.dispatch();
-        } else if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_THERMOCOUPLE__BRICKD,
-                    newBrickd, newBrickd));
+            }
+        } else if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__BRICKD, newBrickd,
+                    newBrickd));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -734,45 +745,47 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setSensorValue(DecimalValue newSensorValue) {
         DecimalValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_THERMOCOUPLE__SENSOR_VALUE,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
-    public TFThermocoupleConfiguration getTfConfig() {
+    public TFBaseConfiguration getTfConfig() {
         return tfConfig;
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
-    public NotificationChain basicSetTfConfig(TFThermocoupleConfiguration newTfConfig, NotificationChain msgs) {
-        TFThermocoupleConfiguration oldTfConfig = tfConfig;
+    public NotificationChain basicSetTfConfig(TFBaseConfiguration newTfConfig, NotificationChain msgs) {
+        TFBaseConfiguration oldTfConfig = tfConfig;
         tfConfig = newTfConfig;
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-                    ModelPackage.MBRICKLET_THERMOCOUPLE__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null)
+                    ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG, oldTfConfig, newTfConfig);
+            if (msgs == null) {
                 msgs = notification;
-            else
+            } else {
                 msgs.add(notification);
+            }
         }
         return msgs;
     }
@@ -780,31 +793,35 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
-    public void setTfConfig(TFThermocoupleConfiguration newTfConfig) {
+    public void setTfConfig(TFBaseConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null)
+            if (tfConfig != null) {
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_THERMOCOUPLE__TF_CONFIG, null, msgs);
-            if (newTfConfig != null)
+                        EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG, null, msgs);
+            }
+            if (newTfConfig != null) {
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_THERMOCOUPLE__TF_CONFIG, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG, null, msgs);
+            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null)
+            if (msgs != null) {
                 msgs.dispatch();
-        } else if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_THERMOCOUPLE__TF_CONFIG,
+            }
+        } else if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG,
                     newTfConfig, newTfConfig));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -815,22 +832,23 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setCallbackPeriod(long newCallbackPeriod) {
         long oldCallbackPeriod = callbackPeriod;
         callbackPeriod = newCallbackPeriod;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_THERMOCOUPLE__CALLBACK_PERIOD,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD,
                     oldCallbackPeriod, callbackPeriod));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -841,7 +859,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -852,16 +870,17 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setThreshold(BigDecimal newThreshold) {
         BigDecimal oldThreshold = threshold;
         threshold = newThreshold;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_THERMOCOUPLE__THRESHOLD,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__THRESHOLD,
                     oldThreshold, threshold));
+        }
     }
 
     /**
@@ -873,7 +892,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     @Override
     public void init() {
         setEnabledA(new AtomicBoolean());
-        logger = LoggerFactory.getLogger(MBrickletThermocoupleImpl.class);
+        logger = LoggerFactory.getLogger(MBrickletUVLightImpl.class);
     }
 
     /**
@@ -884,10 +903,9 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      */
     @Override
     public void fetchSensorValue() {
-        int temperature;
         try {
-            temperature = tinkerforgeDevice.getTemperature();
-            DecimalValue value = Tools.calculate(temperature);
+            long uvLight = tinkerforgeDevice.getUVLight();
+            DecimalValue value = Tools.calculate(uvLight);
             setSensorValue(value);
         } catch (TimeoutException e) {
             TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -904,14 +922,6 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
      */
     @Override
     public void enable() {
-        List<Short> possibleAveragingValues = Arrays.asList(new Short[] { 1, 2, 4, 8, 16 });
-        List<String> possibleTypeValues = Arrays
-                .asList(new String[] { "B", "E", "J", "K", "N", "R", "S", "T", "G8", "G32" });
-        List<String> possibleFilterValues = Arrays.asList(new String[] { "50", "60" });
-
-        short averaging = BrickletThermocouple.AVERAGING_1;
-        short thermocoupleTypeId = BrickletThermocouple.TYPE_K;
-        short filterId = BrickletThermocouple.FILTER_OPTION_50HZ;
         if (tfConfig != null) {
             if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
                 logger.debug("threshold {}", tfConfig.getThreshold());
@@ -921,44 +931,26 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
                 logger.debug("callbackPeriod {}", tfConfig.getCallbackPeriod());
                 setCallbackPeriod(tfConfig.getCallbackPeriod());
             }
-            if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("averaging"))) {
-                Short averagingConfig = tfConfig.getAveraging();
-                if (!possibleAveragingValues.contains(averagingConfig)) {
-                    logger.error("invalid averaging configuration {}", averagingConfig);
-                    throw new ConfigurationException("invalid averaging configuration " + averagingConfig);
-                }
-                averaging = averagingConfig;
-            }
-            if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("thermocoupleType"))) {
-                String thermocoupleType = tfConfig.getThermocoupleType();
-                if (!possibleTypeValues.contains(thermocoupleType)) {
-                    logger.error("invalid thermocoupleType {}", thermocoupleType);
-                    throw new ConfigurationException("invalid thermocoupleType" + thermocoupleType);
-                }
-                thermocoupleTypeId = getTypeId(thermocoupleType);
-            }
-            if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("filter"))) {
-                String filterConfig = tfConfig.getFilter();
-                if (!possibleFilterValues.contains(filterConfig)) {
-                    logger.error("invalid filter configuration {}", filterConfig);
-                    throw new ConfigurationException("invalid filter configuration" + filterConfig);
-                }
-                filterId = filterConfig.equals("50") ? BrickletThermocouple.FILTER_OPTION_50HZ
-                        : BrickletThermocouple.FILTER_OPTION_60HZ;
-            }
+        }
+        tinkerforgeDevice = new BrickletUVLight(getUid(), getIpConnection());
+        listener = new UVLightListener();
+        tinkerforgeDevice.addUVLightListener(listener);
+        fetchSensorValue();
+    }
 
+    private class UVLightListener implements BrickletUVLight.UVLightListener {
+
+        @Override
+        public void uvLight(long uvLight) {
+            DecimalValue newValue = Tools.calculate(uvLight);
+            if (newValue.compareTo(getSensorValue(), getThreshold()) != 0) {
+                logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+                setSensorValue(newValue);
+            } else {
+                logger.trace("{} omitting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+            }
         }
-        try {
-            tinkerforgeDevice = new BrickletThermocouple(getUid(), getIpConnection());
-            tinkerforgeDevice.setConfiguration(averaging, thermocoupleTypeId, filterId);
-            listener = new TemperatureListener();
-            tinkerforgeDevice.addTemperatureListener(listener);
-            fetchSensorValue();
-        } catch (TimeoutException e) {
-            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-        } catch (NotConnectedException e) {
-            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-        }
+
     }
 
     /**
@@ -970,64 +962,24 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     @Override
     public void disable() {
         if (listener != null) {
-            tinkerforgeDevice.removeTemperatureListener(listener);
+            tinkerforgeDevice.removeUVLightListener(listener);
         }
         tinkerforgeDevice = null;
-    }
-
-    private class TemperatureListener implements BrickletThermocouple.TemperatureListener {
-
-        @Override
-        public void temperature(int newTemperature) {
-            DecimalValue newValue = Tools.calculate(newTemperature);
-            if (newValue.compareTo(getSensorValue(), getThreshold()) != 0) {
-                logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
-                setSensorValue(newValue);
-            } else {
-                logger.trace("{} omitting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
-            }
-        }
-    }
-
-    private short getTypeId(String type) {
-        switch (type) {
-            case "B":
-                return BrickletThermocouple.TYPE_B;
-            case "E":
-                return BrickletThermocouple.TYPE_E;
-            case "J":
-                return BrickletThermocouple.TYPE_J;
-            case "K":
-                return BrickletThermocouple.TYPE_K;
-            case "N":
-                return BrickletThermocouple.TYPE_N;
-            case "R":
-                return BrickletThermocouple.TYPE_R;
-            case "S":
-                return BrickletThermocouple.TYPE_S;
-            case "T":
-                return BrickletThermocouple.TYPE_T;
-            case "G8":
-                return BrickletThermocouple.TYPE_G8;
-            case "G32":
-                return BrickletThermocouple.TYPE_G32;
-            default:
-                throw new ConfigurationException("unknown type");
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__BRICKD:
-                if (eInternalContainer() != null)
+            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
+                if (eInternalContainer() != null) {
                     msgs = eBasicRemoveFromContainer(msgs);
+                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -1036,15 +988,15 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__BRICKD:
+            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
                 return basicSetBrickd(null, msgs);
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__TF_CONFIG:
+            case ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG:
                 return basicSetTfConfig(null, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -1053,13 +1005,13 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
         switch (eContainerFeatureID()) {
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__BRICKD:
+            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
                 return eInternalContainer().eInverseRemove(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class, msgs);
         }
         return super.eBasicRemoveFromContainerFeature(msgs);
@@ -1068,45 +1020,46 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__LOGGER:
+            case ModelPackage.MBRICKLET_UV_LIGHT__LOGGER:
                 return getLogger();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__UID:
+            case ModelPackage.MBRICKLET_UV_LIGHT__UID:
                 return getUid();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__POLL:
+            case ModelPackage.MBRICKLET_UV_LIGHT__POLL:
                 return isPoll();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__ENABLED_A:
+            case ModelPackage.MBRICKLET_UV_LIGHT__ENABLED_A:
                 return getEnabledA();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__TINKERFORGE_DEVICE:
+            case ModelPackage.MBRICKLET_UV_LIGHT__TINKERFORGE_DEVICE:
                 return getTinkerforgeDevice();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__IP_CONNECTION:
+            case ModelPackage.MBRICKLET_UV_LIGHT__IP_CONNECTION:
                 return getIpConnection();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__CONNECTED_UID:
+            case ModelPackage.MBRICKLET_UV_LIGHT__CONNECTED_UID:
                 return getConnectedUid();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__POSITION:
+            case ModelPackage.MBRICKLET_UV_LIGHT__POSITION:
                 return getPosition();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__DEVICE_IDENTIFIER:
+            case ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_IDENTIFIER:
                 return getDeviceIdentifier();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__NAME:
+            case ModelPackage.MBRICKLET_UV_LIGHT__NAME:
                 return getName();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__BRICKD:
-                if (resolve)
+            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
+                if (resolve) {
                     return getBrickd();
+                }
                 return basicGetBrickd();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__SENSOR_VALUE:
+            case ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE:
                 return getSensorValue();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__TF_CONFIG:
+            case ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG:
                 return getTfConfig();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__CALLBACK_PERIOD:
+            case ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD:
                 return getCallbackPeriod();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__DEVICE_TYPE:
+            case ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_TYPE:
                 return getDeviceType();
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__THRESHOLD:
+            case ModelPackage.MBRICKLET_UV_LIGHT__THRESHOLD:
                 return getThreshold();
         }
         return super.eGet(featureID, resolve, coreType);
@@ -1115,55 +1068,55 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__LOGGER:
+            case ModelPackage.MBRICKLET_UV_LIGHT__LOGGER:
                 setLogger((Logger) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__UID:
+            case ModelPackage.MBRICKLET_UV_LIGHT__UID:
                 setUid((String) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__POLL:
+            case ModelPackage.MBRICKLET_UV_LIGHT__POLL:
                 setPoll((Boolean) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__ENABLED_A:
+            case ModelPackage.MBRICKLET_UV_LIGHT__ENABLED_A:
                 setEnabledA((AtomicBoolean) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__TINKERFORGE_DEVICE:
-                setTinkerforgeDevice((BrickletThermocouple) newValue);
+            case ModelPackage.MBRICKLET_UV_LIGHT__TINKERFORGE_DEVICE:
+                setTinkerforgeDevice((BrickletUVLight) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__IP_CONNECTION:
+            case ModelPackage.MBRICKLET_UV_LIGHT__IP_CONNECTION:
                 setIpConnection((IPConnection) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__CONNECTED_UID:
+            case ModelPackage.MBRICKLET_UV_LIGHT__CONNECTED_UID:
                 setConnectedUid((String) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__POSITION:
+            case ModelPackage.MBRICKLET_UV_LIGHT__POSITION:
                 setPosition((Character) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__DEVICE_IDENTIFIER:
+            case ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_IDENTIFIER:
                 setDeviceIdentifier((Integer) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__NAME:
+            case ModelPackage.MBRICKLET_UV_LIGHT__NAME:
                 setName((String) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__BRICKD:
+            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
                 setBrickd((MBrickd) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__SENSOR_VALUE:
+            case ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE:
                 setSensorValue((DecimalValue) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__TF_CONFIG:
-                setTfConfig((TFThermocoupleConfiguration) newValue);
+            case ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG:
+                setTfConfig((TFBaseConfiguration) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__CALLBACK_PERIOD:
+            case ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD:
                 setCallbackPeriod((Long) newValue);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__THRESHOLD:
+            case ModelPackage.MBRICKLET_UV_LIGHT__THRESHOLD:
                 setThreshold((BigDecimal) newValue);
                 return;
         }
@@ -1173,55 +1126,55 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__LOGGER:
+            case ModelPackage.MBRICKLET_UV_LIGHT__LOGGER:
                 setLogger(LOGGER_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__UID:
+            case ModelPackage.MBRICKLET_UV_LIGHT__UID:
                 setUid(UID_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__POLL:
+            case ModelPackage.MBRICKLET_UV_LIGHT__POLL:
                 setPoll(POLL_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__ENABLED_A:
+            case ModelPackage.MBRICKLET_UV_LIGHT__ENABLED_A:
                 setEnabledA(ENABLED_A_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__TINKERFORGE_DEVICE:
-                setTinkerforgeDevice((BrickletThermocouple) null);
+            case ModelPackage.MBRICKLET_UV_LIGHT__TINKERFORGE_DEVICE:
+                setTinkerforgeDevice((BrickletUVLight) null);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__IP_CONNECTION:
+            case ModelPackage.MBRICKLET_UV_LIGHT__IP_CONNECTION:
                 setIpConnection(IP_CONNECTION_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__CONNECTED_UID:
+            case ModelPackage.MBRICKLET_UV_LIGHT__CONNECTED_UID:
                 setConnectedUid(CONNECTED_UID_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__POSITION:
+            case ModelPackage.MBRICKLET_UV_LIGHT__POSITION:
                 setPosition(POSITION_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__DEVICE_IDENTIFIER:
+            case ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_IDENTIFIER:
                 setDeviceIdentifier(DEVICE_IDENTIFIER_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__NAME:
+            case ModelPackage.MBRICKLET_UV_LIGHT__NAME:
                 setName(NAME_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__BRICKD:
+            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
                 setBrickd((MBrickd) null);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__SENSOR_VALUE:
+            case ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE:
                 setSensorValue((DecimalValue) null);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__TF_CONFIG:
-                setTfConfig((TFThermocoupleConfiguration) null);
+            case ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG:
+                setTfConfig((TFBaseConfiguration) null);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__CALLBACK_PERIOD:
+            case ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD:
                 setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__THRESHOLD:
+            case ModelPackage.MBRICKLET_UV_LIGHT__THRESHOLD:
                 setThreshold(THRESHOLD_EDEFAULT);
                 return;
         }
@@ -1231,45 +1184,45 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__LOGGER:
+            case ModelPackage.MBRICKLET_UV_LIGHT__LOGGER:
                 return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__UID:
+            case ModelPackage.MBRICKLET_UV_LIGHT__UID:
                 return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__POLL:
+            case ModelPackage.MBRICKLET_UV_LIGHT__POLL:
                 return poll != POLL_EDEFAULT;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__ENABLED_A:
+            case ModelPackage.MBRICKLET_UV_LIGHT__ENABLED_A:
                 return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__TINKERFORGE_DEVICE:
+            case ModelPackage.MBRICKLET_UV_LIGHT__TINKERFORGE_DEVICE:
                 return tinkerforgeDevice != null;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__IP_CONNECTION:
+            case ModelPackage.MBRICKLET_UV_LIGHT__IP_CONNECTION:
                 return IP_CONNECTION_EDEFAULT == null ? ipConnection != null
                         : !IP_CONNECTION_EDEFAULT.equals(ipConnection);
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__CONNECTED_UID:
+            case ModelPackage.MBRICKLET_UV_LIGHT__CONNECTED_UID:
                 return CONNECTED_UID_EDEFAULT == null ? connectedUid != null
                         : !CONNECTED_UID_EDEFAULT.equals(connectedUid);
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__POSITION:
+            case ModelPackage.MBRICKLET_UV_LIGHT__POSITION:
                 return position != POSITION_EDEFAULT;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__DEVICE_IDENTIFIER:
+            case ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_IDENTIFIER:
                 return deviceIdentifier != DEVICE_IDENTIFIER_EDEFAULT;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__NAME:
+            case ModelPackage.MBRICKLET_UV_LIGHT__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__BRICKD:
+            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
                 return basicGetBrickd() != null;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__SENSOR_VALUE:
+            case ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE:
                 return sensorValue != null;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__TF_CONFIG:
+            case ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG:
                 return tfConfig != null;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__CALLBACK_PERIOD:
+            case ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD:
                 return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__DEVICE_TYPE:
+            case ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_TYPE:
                 return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
-            case ModelPackage.MBRICKLET_THERMOCOUPLE__THRESHOLD:
+            case ModelPackage.MBRICKLET_UV_LIGHT__THRESHOLD:
                 return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
         }
         return super.eIsSet(featureID);
@@ -1278,14 +1231,14 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
         if (baseClass == MSensor.class) {
             switch (derivedFeatureID) {
-                case ModelPackage.MBRICKLET_THERMOCOUPLE__SENSOR_VALUE:
+                case ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE:
                     return ModelPackage.MSENSOR__SENSOR_VALUE;
                 default:
                     return -1;
@@ -1293,7 +1246,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
         }
         if (baseClass == MTFConfigConsumer.class) {
             switch (derivedFeatureID) {
-                case ModelPackage.MBRICKLET_THERMOCOUPLE__TF_CONFIG:
+                case ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG:
                     return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
                 default:
                     return -1;
@@ -1301,7 +1254,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
         }
         if (baseClass == CallbackListener.class) {
             switch (derivedFeatureID) {
-                case ModelPackage.MBRICKLET_THERMOCOUPLE__CALLBACK_PERIOD:
+                case ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD:
                     return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
                 default:
                     return -1;
@@ -1313,7 +1266,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -1321,7 +1274,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
         if (baseClass == MSensor.class) {
             switch (baseFeatureID) {
                 case ModelPackage.MSENSOR__SENSOR_VALUE:
-                    return ModelPackage.MBRICKLET_THERMOCOUPLE__SENSOR_VALUE;
+                    return ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE;
                 default:
                     return -1;
             }
@@ -1329,7 +1282,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
         if (baseClass == MTFConfigConsumer.class) {
             switch (baseFeatureID) {
                 case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG:
-                    return ModelPackage.MBRICKLET_THERMOCOUPLE__TF_CONFIG;
+                    return ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG;
                 default:
                     return -1;
             }
@@ -1337,7 +1290,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
         if (baseClass == CallbackListener.class) {
             switch (baseFeatureID) {
                 case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD:
-                    return ModelPackage.MBRICKLET_THERMOCOUPLE__CALLBACK_PERIOD;
+                    return ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD;
                 default:
                     return -1;
             }
@@ -1348,7 +1301,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -1356,7 +1309,7 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
         if (baseClass == MSensor.class) {
             switch (baseOperationID) {
                 case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE:
-                    return ModelPackage.MBRICKLET_THERMOCOUPLE___FETCH_SENSOR_VALUE;
+                    return ModelPackage.MBRICKLET_UV_LIGHT___FETCH_SENSOR_VALUE;
                 default:
                     return -1;
             }
@@ -1379,22 +1332,22 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
         switch (operationID) {
-            case ModelPackage.MBRICKLET_THERMOCOUPLE___INIT:
+            case ModelPackage.MBRICKLET_UV_LIGHT___INIT:
                 init();
                 return null;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE___FETCH_SENSOR_VALUE:
+            case ModelPackage.MBRICKLET_UV_LIGHT___FETCH_SENSOR_VALUE:
                 fetchSensorValue();
                 return null;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE___ENABLE:
+            case ModelPackage.MBRICKLET_UV_LIGHT___ENABLE:
                 enable();
                 return null;
-            case ModelPackage.MBRICKLET_THERMOCOUPLE___DISABLE:
+            case ModelPackage.MBRICKLET_UV_LIGHT___DISABLE:
                 disable();
                 return null;
         }
@@ -1404,13 +1357,14 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy())
+        if (eIsProxy()) {
             return super.toString();
+        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");
@@ -1445,4 +1399,4 @@ public class MBrickletThermocoupleImpl extends MinimalEObjectImpl.Container impl
         return result.toString();
     }
 
-} // MBrickletThermocoupleImpl
+} // MBrickletUVLightImpl

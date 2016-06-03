@@ -83,6 +83,7 @@ import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
 import com.tinkerforge.BrickletThermocouple;
 import com.tinkerforge.BrickletTilt;
+import com.tinkerforge.BrickletUVLight;
 import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
@@ -1141,6 +1142,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    private EClass mBrickletUVLightEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     private EClass mBrickletTemperatureIREClass = null;
 
     /**
@@ -2150,6 +2159,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EDataType tinkerBrickletThermocoupleEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType tinkerBrickletUVLightEDataType = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -6958,6 +6975,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EClass getMBrickletUVLight() {
+        return mBrickletUVLightEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletUVLight_DeviceType() {
+        return (EAttribute) mBrickletUVLightEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletUVLight_Threshold() {
+        return (EAttribute) mBrickletUVLightEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMBrickletUVLight__Init() {
+        return mBrickletUVLightEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EClass getMBrickletTemperatureIR() {
         return mBrickletTemperatureIREClass;
@@ -9565,6 +9622,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EDataType getTinkerBrickletUVLight() {
+        return tinkerBrickletUVLightEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EDataType getHSBType() {
         return hsbTypeEDataType;
@@ -10181,6 +10248,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEAttribute(mBrickletThermocoupleEClass, MBRICKLET_THERMOCOUPLE__THRESHOLD);
         createEOperation(mBrickletThermocoupleEClass, MBRICKLET_THERMOCOUPLE___INIT);
 
+        mBrickletUVLightEClass = createEClass(MBRICKLET_UV_LIGHT);
+        createEAttribute(mBrickletUVLightEClass, MBRICKLET_UV_LIGHT__DEVICE_TYPE);
+        createEAttribute(mBrickletUVLightEClass, MBRICKLET_UV_LIGHT__THRESHOLD);
+        createEOperation(mBrickletUVLightEClass, MBRICKLET_UV_LIGHT___INIT);
+
         mBrickletTemperatureIREClass = createEClass(MBRICKLET_TEMPERATURE_IR);
         createEAttribute(mBrickletTemperatureIREClass, MBRICKLET_TEMPERATURE_IR__DEVICE_TYPE);
 
@@ -10576,6 +10648,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         tinkerBrickletOLED128x64EDataType = createEDataType(TINKER_BRICKLET_OLED12_8X64);
         tinkerBrickletOLED64x48EDataType = createEDataType(TINKER_BRICKLET_OLED6_4X48);
         tinkerBrickletThermocoupleEDataType = createEDataType(TINKER_BRICKLET_THERMOCOUPLE);
+        tinkerBrickletUVLightEDataType = createEDataType(TINKER_BRICKLET_UV_LIGHT);
         hsbTypeEDataType = createEDataType(HSB_TYPE);
         upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
         percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -11398,6 +11471,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         mBrickletThermocoupleEClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getCallbackListener());
         mBrickletThermocoupleEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMDevice());
+        g2 = createEGenericType(this.getTinkerBrickletUVLight());
+        g1.getETypeArguments().add(g2);
+        mBrickletUVLightEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        mBrickletUVLightEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMTFConfigConsumer());
+        g2 = createEGenericType(this.getTFBaseConfiguration());
+        g1.getETypeArguments().add(g2);
+        mBrickletUVLightEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getCallbackListener());
+        mBrickletUVLightEClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getMDevice());
         g2 = createEGenericType(this.getTinkerBrickletTemperatureIR());
         g1.getETypeArguments().add(g2);
@@ -12763,6 +12850,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         initEOperation(getMBrickletThermocouple__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+        initEClass(mBrickletUVLightEClass, MBrickletUVLight.class, "MBrickletUVLight", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMBrickletUVLight_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "bricklet_uv_light", 0, 1, MBrickletUVLight.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
+                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletUVLight_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1,
+                MBrickletUVLight.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+
+        initEOperation(getMBrickletUVLight__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
         initEClass(mBrickletTemperatureIREClass, MBrickletTemperatureIR.class, "MBrickletTemperatureIR", !IS_ABSTRACT,
                 !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getMBrickletTemperatureIR_DeviceType(), theEcorePackage.getEString(), "deviceType",
@@ -13787,6 +13885,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(tinkerBrickletThermocoupleEDataType, BrickletThermocouple.class, "TinkerBrickletThermocouple",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(tinkerBrickletUVLightEDataType, BrickletUVLight.class, "TinkerBrickletUVLight", IS_SERIALIZABLE,
+                !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE,
                 !IS_GENERATED_INSTANCE_CLASS);

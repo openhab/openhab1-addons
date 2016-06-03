@@ -90,6 +90,7 @@ import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
 import com.tinkerforge.BrickletThermocouple;
 import com.tinkerforge.BrickletTilt;
+import com.tinkerforge.BrickletUVLight;
 import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.CryptoException;
 import com.tinkerforge.IPConnection;
@@ -1164,6 +1165,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
                 logger.debug("addDevice BrickletThermocouple");
                 mDevice = factory.createMBrickletThermocouple();
                 mDevice.setDeviceIdentifier(BrickletThermocouple.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletUVLight.DEVICE_IDENTIFIER) {
+                logger.debug("addDevice BrickletUVLight");
+                mDevice = factory.createMBrickletUVLight();
+                mDevice.setDeviceIdentifier(BrickletUVLight.DEVICE_IDENTIFIER);
             }
             if (mDevice != null) {
                 mDevice.setIpConnection(getIpConnection());
