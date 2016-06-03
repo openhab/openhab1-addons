@@ -18,7 +18,7 @@ import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletUVLight;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletCO2;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
@@ -28,56 +28,52 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tinkerforge.BrickletUVLight;
+import com.tinkerforge.BrickletCO2;
 import com.tinkerforge.IPConnection;
 import com.tinkerforge.NotConnectedException;
 import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>MBricklet UV Light</b></em>'.
+ * An implementation of the model object '<em><b>MBricklet CO2</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getLogger <em>Logger</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getUid <em>Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getEnabledA <em>Enabled A</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getTinkerforgeDevice
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getLogger <em>Logger</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getUid <em>Uid</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#isPoll <em>Poll</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getEnabledA <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getIpConnection
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getIpConnection
  * <em>Ip Connection</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getConnectedUid
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getConnectedUid
  * <em>Connected Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getPosition <em>Position</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getDeviceIdentifier
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getPosition <em>Position</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getDeviceIdentifier
  * <em>Device Identifier</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getName <em>Name</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getBrickd <em>Brickd</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getTfConfig <em>Tf Config</em>}
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getName <em>Name</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getBrickd <em>Brickd</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getSensorValue <em>Sensor Value</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getCallbackPeriod
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getTfConfig <em>Tf Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getCallbackPeriod
  * <em>Callback Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getDeviceType
- * <em>Device Type</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletUVLightImpl#getThreshold <em>Threshold</em>}
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getDeviceType <em>Device Type</em>}
  * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getThreshold <em>Threshold</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implements MBrickletUVLight {
+public class MBrickletCO2Impl extends MinimalEObjectImpl.Container implements MBrickletCO2 {
     /**
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getLogger()
      * @generated
      * @ordered
@@ -88,7 +84,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getLogger()
      * @generated
      * @ordered
@@ -99,7 +95,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getUid()
      * @generated
      * @ordered
@@ -110,7 +106,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getUid()
      * @generated
      * @ordered
@@ -121,7 +117,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #isPoll()
      * @generated
      * @ordered
@@ -132,7 +128,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #isPoll()
      * @generated
      * @ordered
@@ -143,7 +139,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -154,7 +150,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -165,18 +161,18 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #getTinkerforgeDevice() <em>Tinkerforge Device</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getTinkerforgeDevice()
      * @generated
      * @ordered
      */
-    protected BrickletUVLight tinkerforgeDevice;
+    protected BrickletCO2 tinkerforgeDevice;
 
     /**
      * The default value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -187,7 +183,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -198,7 +194,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The default value of the '{@link #getConnectedUid() <em>Connected Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getConnectedUid()
      * @generated
      * @ordered
@@ -209,7 +205,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #getConnectedUid() <em>Connected Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getConnectedUid()
      * @generated
      * @ordered
@@ -220,7 +216,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The default value of the '{@link #getPosition() <em>Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getPosition()
      * @generated
      * @ordered
@@ -231,7 +227,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #getPosition() <em>Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getPosition()
      * @generated
      * @ordered
@@ -242,7 +238,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The default value of the '{@link #getDeviceIdentifier() <em>Device Identifier</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getDeviceIdentifier()
      * @generated
      * @ordered
@@ -253,7 +249,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #getDeviceIdentifier() <em>Device Identifier</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getDeviceIdentifier()
      * @generated
      * @ordered
@@ -264,7 +260,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getName()
      * @generated
      * @ordered
@@ -275,7 +271,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getName()
      * @generated
      * @ordered
@@ -286,7 +282,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getSensorValue()
      * @generated
      * @ordered
@@ -297,7 +293,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getTfConfig()
      * @generated
      * @ordered
@@ -308,7 +304,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getCallbackPeriod()
      * @generated
      * @ordered
@@ -319,7 +315,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getCallbackPeriod()
      * @generated
      * @ordered
@@ -330,18 +326,18 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getDeviceType()
      * @generated
      * @ordered
      */
-    protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_uv_light";
+    protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_co2";
 
     /**
      * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -352,7 +348,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The default value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getThreshold()
      * @generated
      * @ordered
@@ -363,40 +359,40 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
      * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getThreshold()
      * @generated
      * @ordered
      */
     protected BigDecimal threshold = THRESHOLD_EDEFAULT;
 
-    private UVLightListener listener;
+    private CO2ConcentrationListener listener;
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
-    protected MBrickletUVLightImpl() {
+    protected MBrickletCO2Impl() {
         super();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     protected EClass eStaticClass() {
-        return ModelPackage.Literals.MBRICKLET_UV_LIGHT;
+        return ModelPackage.Literals.MBRICKLET_CO2;
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -407,22 +403,23 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__LOGGER, oldLogger,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__LOGGER, oldLogger,
                     logger));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -433,21 +430,22 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__UID, oldUid, uid));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__UID, oldUid, uid));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -458,22 +456,22 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__POLL, oldPoll,
-                    poll));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__POLL, oldPoll, poll));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -484,48 +482,50 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__ENABLED_A,
-                    oldEnabledA, enabledA));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__ENABLED_A, oldEnabledA,
+                    enabledA));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
-    public BrickletUVLight getTinkerforgeDevice() {
+    public BrickletCO2 getTinkerforgeDevice() {
         return tinkerforgeDevice;
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
-    public void setTinkerforgeDevice(BrickletUVLight newTinkerforgeDevice) {
-        BrickletUVLight oldTinkerforgeDevice = tinkerforgeDevice;
+    public void setTinkerforgeDevice(BrickletCO2 newTinkerforgeDevice) {
+        BrickletCO2 oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__TINKERFORGE_DEVICE,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__TINKERFORGE_DEVICE,
                     oldTinkerforgeDevice, tinkerforgeDevice));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -536,22 +536,23 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__IP_CONNECTION,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__IP_CONNECTION,
                     oldIpConnection, ipConnection));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -562,22 +563,23 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__CONNECTED_UID,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -588,22 +590,23 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__POSITION,
-                    oldPosition, position));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__POSITION, oldPosition,
+                    position));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -614,22 +617,23 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_IDENTIFIER,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__DEVICE_IDENTIFIER,
                     oldDeviceIdentifier, deviceIdentifier));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -640,84 +644,91 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__NAME, oldName,
-                    name));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__NAME, oldName, name));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_UV_LIGHT__BRICKD)
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_CO2__BRICKD) {
             return null;
+        }
         return (MBrickd) eContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public MBrickd basicGetBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_UV_LIGHT__BRICKD)
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_CO2__BRICKD) {
             return null;
+        }
         return (MBrickd) eInternalContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public NotificationChain basicSetBrickd(MBrickd newBrickd, NotificationChain msgs) {
-        msgs = eBasicSetContainer((InternalEObject) newBrickd, ModelPackage.MBRICKLET_UV_LIGHT__BRICKD, msgs);
+        msgs = eBasicSetContainer((InternalEObject) newBrickd, ModelPackage.MBRICKLET_CO2__BRICKD, msgs);
         return msgs;
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
-                || (eContainerFeatureID() != ModelPackage.MBRICKLET_UV_LIGHT__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd))
+                || (eContainerFeatureID() != ModelPackage.MBRICKLET_CO2__BRICKD && newBrickd != null)) {
+            if (EcoreUtil.isAncestor(this, newBrickd)) {
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null)
+            if (eInternalContainer() != null) {
                 msgs = eBasicRemoveFromContainer(msgs);
-            if (newBrickd != null)
+            }
+            if (newBrickd != null) {
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
+            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null)
+            if (msgs != null) {
                 msgs.dispatch();
-        } else if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__BRICKD, newBrickd,
+            }
+        } else if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__BRICKD, newBrickd,
                     newBrickd));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -728,22 +739,23 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setSensorValue(DecimalValue newSensorValue) {
         DecimalValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -754,7 +766,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public NotificationChain basicSetTfConfig(TFBaseConfiguration newTfConfig, NotificationChain msgs) {
@@ -762,11 +774,12 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
         tfConfig = newTfConfig;
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-                    ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null)
+                    ModelPackage.MBRICKLET_CO2__TF_CONFIG, oldTfConfig, newTfConfig);
+            if (msgs == null) {
                 msgs = notification;
-            else
+            } else {
                 msgs.add(notification);
+            }
         }
         return msgs;
     }
@@ -774,31 +787,35 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setTfConfig(TFBaseConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null)
+            if (tfConfig != null) {
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG, null, msgs);
-            if (newTfConfig != null)
+                        EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_CO2__TF_CONFIG, null, msgs);
+            }
+            if (newTfConfig != null) {
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_CO2__TF_CONFIG, null, msgs);
+            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null)
+            if (msgs != null) {
                 msgs.dispatch();
-        } else if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG,
-                    newTfConfig, newTfConfig));
+            }
+        } else if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__TF_CONFIG, newTfConfig,
+                    newTfConfig));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -809,22 +826,23 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setCallbackPeriod(long newCallbackPeriod) {
         long oldCallbackPeriod = callbackPeriod;
         callbackPeriod = newCallbackPeriod;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__CALLBACK_PERIOD,
                     oldCallbackPeriod, callbackPeriod));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -835,7 +853,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -846,16 +864,17 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setThreshold(BigDecimal newThreshold) {
         BigDecimal oldThreshold = threshold;
         threshold = newThreshold;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_UV_LIGHT__THRESHOLD,
-                    oldThreshold, threshold));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_CO2__THRESHOLD, oldThreshold,
+                    threshold));
+        }
     }
 
     /**
@@ -867,7 +886,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     @Override
     public void init() {
         setEnabledA(new AtomicBoolean());
-        logger = LoggerFactory.getLogger(MBrickletUVLightImpl.class);
+        logger = LoggerFactory.getLogger(MBrickletCO2Impl.class);
     }
 
     /**
@@ -879,8 +898,8 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     @Override
     public void fetchSensorValue() {
         try {
-            long uvLight = tinkerforgeDevice.getUVLight();
-            DecimalValue value = Tools.calculate(uvLight);
+            int co2Concentration = tinkerforgeDevice.getCO2Concentration();
+            DecimalValue value = Tools.calculate(co2Concentration);
             setSensorValue(value);
         } catch (TimeoutException e) {
             TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -907,17 +926,16 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
                 setCallbackPeriod(tfConfig.getCallbackPeriod());
             }
         }
-        tinkerforgeDevice = new BrickletUVLight(getUid(), getIpConnection());
-        listener = new UVLightListener();
-        tinkerforgeDevice.addUVLightListener(listener);
-        fetchSensorValue();
+        tinkerforgeDevice = new BrickletCO2(getUid(), getIpConnection());
+        listener = new CO2ConcentrationListener();
+        tinkerforgeDevice.addCO2ConcentrationListener(listener);
     }
 
-    private class UVLightListener implements BrickletUVLight.UVLightListener {
+    private class CO2ConcentrationListener implements BrickletCO2.CO2ConcentrationListener {
 
         @Override
-        public void uvLight(long uvLight) {
-            DecimalValue newValue = Tools.calculate(uvLight);
+        public void co2Concentration(int co2Concentration) {
+            DecimalValue newValue = Tools.calculate(co2Concentration);
             if (newValue.compareTo(getSensorValue(), getThreshold()) != 0) {
                 logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
                 setSensorValue(newValue);
@@ -937,7 +955,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     @Override
     public void disable() {
         if (listener != null) {
-            tinkerforgeDevice.removeUVLightListener(listener);
+            tinkerforgeDevice.removeCO2ConcentrationListener(listener);
         }
         tinkerforgeDevice = null;
     }
@@ -945,15 +963,16 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
-                if (eInternalContainer() != null)
+            case ModelPackage.MBRICKLET_CO2__BRICKD:
+                if (eInternalContainer() != null) {
                     msgs = eBasicRemoveFromContainer(msgs);
+                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -962,15 +981,15 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
+            case ModelPackage.MBRICKLET_CO2__BRICKD:
                 return basicSetBrickd(null, msgs);
-            case ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG:
+            case ModelPackage.MBRICKLET_CO2__TF_CONFIG:
                 return basicSetTfConfig(null, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -979,13 +998,13 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
         switch (eContainerFeatureID()) {
-            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
+            case ModelPackage.MBRICKLET_CO2__BRICKD:
                 return eInternalContainer().eInverseRemove(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class, msgs);
         }
         return super.eBasicRemoveFromContainerFeature(msgs);
@@ -994,45 +1013,46 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_UV_LIGHT__LOGGER:
+            case ModelPackage.MBRICKLET_CO2__LOGGER:
                 return getLogger();
-            case ModelPackage.MBRICKLET_UV_LIGHT__UID:
+            case ModelPackage.MBRICKLET_CO2__UID:
                 return getUid();
-            case ModelPackage.MBRICKLET_UV_LIGHT__POLL:
+            case ModelPackage.MBRICKLET_CO2__POLL:
                 return isPoll();
-            case ModelPackage.MBRICKLET_UV_LIGHT__ENABLED_A:
+            case ModelPackage.MBRICKLET_CO2__ENABLED_A:
                 return getEnabledA();
-            case ModelPackage.MBRICKLET_UV_LIGHT__TINKERFORGE_DEVICE:
+            case ModelPackage.MBRICKLET_CO2__TINKERFORGE_DEVICE:
                 return getTinkerforgeDevice();
-            case ModelPackage.MBRICKLET_UV_LIGHT__IP_CONNECTION:
+            case ModelPackage.MBRICKLET_CO2__IP_CONNECTION:
                 return getIpConnection();
-            case ModelPackage.MBRICKLET_UV_LIGHT__CONNECTED_UID:
+            case ModelPackage.MBRICKLET_CO2__CONNECTED_UID:
                 return getConnectedUid();
-            case ModelPackage.MBRICKLET_UV_LIGHT__POSITION:
+            case ModelPackage.MBRICKLET_CO2__POSITION:
                 return getPosition();
-            case ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_IDENTIFIER:
+            case ModelPackage.MBRICKLET_CO2__DEVICE_IDENTIFIER:
                 return getDeviceIdentifier();
-            case ModelPackage.MBRICKLET_UV_LIGHT__NAME:
+            case ModelPackage.MBRICKLET_CO2__NAME:
                 return getName();
-            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
-                if (resolve)
+            case ModelPackage.MBRICKLET_CO2__BRICKD:
+                if (resolve) {
                     return getBrickd();
+                }
                 return basicGetBrickd();
-            case ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE:
+            case ModelPackage.MBRICKLET_CO2__SENSOR_VALUE:
                 return getSensorValue();
-            case ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG:
+            case ModelPackage.MBRICKLET_CO2__TF_CONFIG:
                 return getTfConfig();
-            case ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD:
+            case ModelPackage.MBRICKLET_CO2__CALLBACK_PERIOD:
                 return getCallbackPeriod();
-            case ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_TYPE:
+            case ModelPackage.MBRICKLET_CO2__DEVICE_TYPE:
                 return getDeviceType();
-            case ModelPackage.MBRICKLET_UV_LIGHT__THRESHOLD:
+            case ModelPackage.MBRICKLET_CO2__THRESHOLD:
                 return getThreshold();
         }
         return super.eGet(featureID, resolve, coreType);
@@ -1041,55 +1061,55 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_UV_LIGHT__LOGGER:
+            case ModelPackage.MBRICKLET_CO2__LOGGER:
                 setLogger((Logger) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__UID:
+            case ModelPackage.MBRICKLET_CO2__UID:
                 setUid((String) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__POLL:
+            case ModelPackage.MBRICKLET_CO2__POLL:
                 setPoll((Boolean) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__ENABLED_A:
+            case ModelPackage.MBRICKLET_CO2__ENABLED_A:
                 setEnabledA((AtomicBoolean) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__TINKERFORGE_DEVICE:
-                setTinkerforgeDevice((BrickletUVLight) newValue);
+            case ModelPackage.MBRICKLET_CO2__TINKERFORGE_DEVICE:
+                setTinkerforgeDevice((BrickletCO2) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__IP_CONNECTION:
+            case ModelPackage.MBRICKLET_CO2__IP_CONNECTION:
                 setIpConnection((IPConnection) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__CONNECTED_UID:
+            case ModelPackage.MBRICKLET_CO2__CONNECTED_UID:
                 setConnectedUid((String) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__POSITION:
+            case ModelPackage.MBRICKLET_CO2__POSITION:
                 setPosition((Character) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_IDENTIFIER:
+            case ModelPackage.MBRICKLET_CO2__DEVICE_IDENTIFIER:
                 setDeviceIdentifier((Integer) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__NAME:
+            case ModelPackage.MBRICKLET_CO2__NAME:
                 setName((String) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
+            case ModelPackage.MBRICKLET_CO2__BRICKD:
                 setBrickd((MBrickd) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE:
+            case ModelPackage.MBRICKLET_CO2__SENSOR_VALUE:
                 setSensorValue((DecimalValue) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG:
+            case ModelPackage.MBRICKLET_CO2__TF_CONFIG:
                 setTfConfig((TFBaseConfiguration) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD:
+            case ModelPackage.MBRICKLET_CO2__CALLBACK_PERIOD:
                 setCallbackPeriod((Long) newValue);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__THRESHOLD:
+            case ModelPackage.MBRICKLET_CO2__THRESHOLD:
                 setThreshold((BigDecimal) newValue);
                 return;
         }
@@ -1099,55 +1119,55 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_UV_LIGHT__LOGGER:
+            case ModelPackage.MBRICKLET_CO2__LOGGER:
                 setLogger(LOGGER_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__UID:
+            case ModelPackage.MBRICKLET_CO2__UID:
                 setUid(UID_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__POLL:
+            case ModelPackage.MBRICKLET_CO2__POLL:
                 setPoll(POLL_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__ENABLED_A:
+            case ModelPackage.MBRICKLET_CO2__ENABLED_A:
                 setEnabledA(ENABLED_A_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__TINKERFORGE_DEVICE:
-                setTinkerforgeDevice((BrickletUVLight) null);
+            case ModelPackage.MBRICKLET_CO2__TINKERFORGE_DEVICE:
+                setTinkerforgeDevice((BrickletCO2) null);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__IP_CONNECTION:
+            case ModelPackage.MBRICKLET_CO2__IP_CONNECTION:
                 setIpConnection(IP_CONNECTION_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__CONNECTED_UID:
+            case ModelPackage.MBRICKLET_CO2__CONNECTED_UID:
                 setConnectedUid(CONNECTED_UID_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__POSITION:
+            case ModelPackage.MBRICKLET_CO2__POSITION:
                 setPosition(POSITION_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_IDENTIFIER:
+            case ModelPackage.MBRICKLET_CO2__DEVICE_IDENTIFIER:
                 setDeviceIdentifier(DEVICE_IDENTIFIER_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__NAME:
+            case ModelPackage.MBRICKLET_CO2__NAME:
                 setName(NAME_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
+            case ModelPackage.MBRICKLET_CO2__BRICKD:
                 setBrickd((MBrickd) null);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE:
+            case ModelPackage.MBRICKLET_CO2__SENSOR_VALUE:
                 setSensorValue((DecimalValue) null);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG:
+            case ModelPackage.MBRICKLET_CO2__TF_CONFIG:
                 setTfConfig((TFBaseConfiguration) null);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD:
+            case ModelPackage.MBRICKLET_CO2__CALLBACK_PERIOD:
                 setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_UV_LIGHT__THRESHOLD:
+            case ModelPackage.MBRICKLET_CO2__THRESHOLD:
                 setThreshold(THRESHOLD_EDEFAULT);
                 return;
         }
@@ -1157,45 +1177,45 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_UV_LIGHT__LOGGER:
+            case ModelPackage.MBRICKLET_CO2__LOGGER:
                 return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-            case ModelPackage.MBRICKLET_UV_LIGHT__UID:
+            case ModelPackage.MBRICKLET_CO2__UID:
                 return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-            case ModelPackage.MBRICKLET_UV_LIGHT__POLL:
+            case ModelPackage.MBRICKLET_CO2__POLL:
                 return poll != POLL_EDEFAULT;
-            case ModelPackage.MBRICKLET_UV_LIGHT__ENABLED_A:
+            case ModelPackage.MBRICKLET_CO2__ENABLED_A:
                 return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-            case ModelPackage.MBRICKLET_UV_LIGHT__TINKERFORGE_DEVICE:
+            case ModelPackage.MBRICKLET_CO2__TINKERFORGE_DEVICE:
                 return tinkerforgeDevice != null;
-            case ModelPackage.MBRICKLET_UV_LIGHT__IP_CONNECTION:
+            case ModelPackage.MBRICKLET_CO2__IP_CONNECTION:
                 return IP_CONNECTION_EDEFAULT == null ? ipConnection != null
                         : !IP_CONNECTION_EDEFAULT.equals(ipConnection);
-            case ModelPackage.MBRICKLET_UV_LIGHT__CONNECTED_UID:
+            case ModelPackage.MBRICKLET_CO2__CONNECTED_UID:
                 return CONNECTED_UID_EDEFAULT == null ? connectedUid != null
                         : !CONNECTED_UID_EDEFAULT.equals(connectedUid);
-            case ModelPackage.MBRICKLET_UV_LIGHT__POSITION:
+            case ModelPackage.MBRICKLET_CO2__POSITION:
                 return position != POSITION_EDEFAULT;
-            case ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_IDENTIFIER:
+            case ModelPackage.MBRICKLET_CO2__DEVICE_IDENTIFIER:
                 return deviceIdentifier != DEVICE_IDENTIFIER_EDEFAULT;
-            case ModelPackage.MBRICKLET_UV_LIGHT__NAME:
+            case ModelPackage.MBRICKLET_CO2__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-            case ModelPackage.MBRICKLET_UV_LIGHT__BRICKD:
+            case ModelPackage.MBRICKLET_CO2__BRICKD:
                 return basicGetBrickd() != null;
-            case ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE:
+            case ModelPackage.MBRICKLET_CO2__SENSOR_VALUE:
                 return sensorValue != null;
-            case ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG:
+            case ModelPackage.MBRICKLET_CO2__TF_CONFIG:
                 return tfConfig != null;
-            case ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD:
+            case ModelPackage.MBRICKLET_CO2__CALLBACK_PERIOD:
                 return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
-            case ModelPackage.MBRICKLET_UV_LIGHT__DEVICE_TYPE:
+            case ModelPackage.MBRICKLET_CO2__DEVICE_TYPE:
                 return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
-            case ModelPackage.MBRICKLET_UV_LIGHT__THRESHOLD:
+            case ModelPackage.MBRICKLET_CO2__THRESHOLD:
                 return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
         }
         return super.eIsSet(featureID);
@@ -1204,14 +1224,14 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
         if (baseClass == MSensor.class) {
             switch (derivedFeatureID) {
-                case ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE:
+                case ModelPackage.MBRICKLET_CO2__SENSOR_VALUE:
                     return ModelPackage.MSENSOR__SENSOR_VALUE;
                 default:
                     return -1;
@@ -1219,7 +1239,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
         }
         if (baseClass == MTFConfigConsumer.class) {
             switch (derivedFeatureID) {
-                case ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG:
+                case ModelPackage.MBRICKLET_CO2__TF_CONFIG:
                     return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
                 default:
                     return -1;
@@ -1227,7 +1247,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
         }
         if (baseClass == CallbackListener.class) {
             switch (derivedFeatureID) {
-                case ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD:
+                case ModelPackage.MBRICKLET_CO2__CALLBACK_PERIOD:
                     return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
                 default:
                     return -1;
@@ -1239,7 +1259,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -1247,7 +1267,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
         if (baseClass == MSensor.class) {
             switch (baseFeatureID) {
                 case ModelPackage.MSENSOR__SENSOR_VALUE:
-                    return ModelPackage.MBRICKLET_UV_LIGHT__SENSOR_VALUE;
+                    return ModelPackage.MBRICKLET_CO2__SENSOR_VALUE;
                 default:
                     return -1;
             }
@@ -1255,7 +1275,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
         if (baseClass == MTFConfigConsumer.class) {
             switch (baseFeatureID) {
                 case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG:
-                    return ModelPackage.MBRICKLET_UV_LIGHT__TF_CONFIG;
+                    return ModelPackage.MBRICKLET_CO2__TF_CONFIG;
                 default:
                     return -1;
             }
@@ -1263,7 +1283,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
         if (baseClass == CallbackListener.class) {
             switch (baseFeatureID) {
                 case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD:
-                    return ModelPackage.MBRICKLET_UV_LIGHT__CALLBACK_PERIOD;
+                    return ModelPackage.MBRICKLET_CO2__CALLBACK_PERIOD;
                 default:
                     return -1;
             }
@@ -1274,7 +1294,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -1282,7 +1302,7 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
         if (baseClass == MSensor.class) {
             switch (baseOperationID) {
                 case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE:
-                    return ModelPackage.MBRICKLET_UV_LIGHT___FETCH_SENSOR_VALUE;
+                    return ModelPackage.MBRICKLET_CO2___FETCH_SENSOR_VALUE;
                 default:
                     return -1;
             }
@@ -1305,22 +1325,22 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
         switch (operationID) {
-            case ModelPackage.MBRICKLET_UV_LIGHT___INIT:
+            case ModelPackage.MBRICKLET_CO2___INIT:
                 init();
                 return null;
-            case ModelPackage.MBRICKLET_UV_LIGHT___FETCH_SENSOR_VALUE:
+            case ModelPackage.MBRICKLET_CO2___FETCH_SENSOR_VALUE:
                 fetchSensorValue();
                 return null;
-            case ModelPackage.MBRICKLET_UV_LIGHT___ENABLE:
+            case ModelPackage.MBRICKLET_CO2___ENABLE:
                 enable();
                 return null;
-            case ModelPackage.MBRICKLET_UV_LIGHT___DISABLE:
+            case ModelPackage.MBRICKLET_CO2___DISABLE:
                 disable();
                 return null;
         }
@@ -1330,13 +1350,14 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy())
+        if (eIsProxy()) {
             return super.toString();
+        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");
@@ -1371,4 +1392,4 @@ public class MBrickletUVLightImpl extends MinimalEObjectImpl.Container implement
         return result.toString();
     }
 
-} // MBrickletUVLightImpl
+} // MBrickletCO2Impl

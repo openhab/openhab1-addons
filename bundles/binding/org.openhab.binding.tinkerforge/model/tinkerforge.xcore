@@ -69,6 +69,7 @@ import com.tinkerforge.BrickletOLED128x64
 import com.tinkerforge.BrickletOLED64x48
 import com.tinkerforge.BrickletThermocouple
 import com.tinkerforge.BrickletUVLight
+import com.tinkerforge.BrickletCO2
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -138,6 +139,7 @@ type TinkerBrickletOLED128x64 wraps BrickletOLED128x64
 type TinkerBrickletOLED64x48 wraps BrickletOLED64x48
 type TinkerBrickletThermocouple wraps BrickletThermocouple
 type TinkerBrickletUVLight wraps BrickletUVLight
+type TinkerBrickletCO2 wraps BrickletCO2
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -794,6 +796,14 @@ class MBrickletUVLight extends MDevice<TinkerBrickletUVLight>,
     MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
     CallbackListener {
     readonly String deviceType = "bricklet_uv_light"
+    BigDecimal threshold = "0"
+    op void init(){}
+}
+
+class MBrickletCO2 extends MDevice<TinkerBrickletCO2>,
+    MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
+    CallbackListener {
+    readonly String deviceType = "bricklet_co2"
     BigDecimal threshold = "0"
     op void init(){}
 }

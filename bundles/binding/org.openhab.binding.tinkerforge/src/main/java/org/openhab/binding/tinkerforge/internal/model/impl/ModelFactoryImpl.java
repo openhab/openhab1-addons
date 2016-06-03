@@ -41,6 +41,7 @@ import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletAnalogIn;
 import com.tinkerforge.BrickletAnalogInV2;
 import com.tinkerforge.BrickletBarometer;
+import com.tinkerforge.BrickletCO2;
 import com.tinkerforge.BrickletColor;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
@@ -274,6 +275,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMBrickletThermocouple();
             case ModelPackage.MBRICKLET_UV_LIGHT:
                 return createMBrickletUVLight();
+            case ModelPackage.MBRICKLET_CO2:
+                return createMBrickletCO2();
             case ModelPackage.MBRICKLET_TEMPERATURE_IR:
                 return createMBrickletTemperatureIR();
             case ModelPackage.OBJECT_TEMPERATURE:
@@ -594,6 +597,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createTinkerBrickletThermocoupleFromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_UV_LIGHT:
                 return createTinkerBrickletUVLightFromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_CO2:
+                return createTinkerBrickletCO2FromString(eDataType, initialValue);
             case ModelPackage.HSB_TYPE:
                 return createHSBTypeFromString(eDataType, initialValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -805,6 +810,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertTinkerBrickletThermocoupleToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_UV_LIGHT:
                 return convertTinkerBrickletUVLightToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_CO2:
+                return convertTinkerBrickletCO2ToString(eDataType, instanceValue);
             case ModelPackage.HSB_TYPE:
                 return convertHSBTypeToString(eDataType, instanceValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -1975,6 +1982,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public MBrickletUVLight createMBrickletUVLight() {
         MBrickletUVLightImpl mBrickletUVLight = new MBrickletUVLightImpl();
         return mBrickletUVLight;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletCO2 createMBrickletCO2() {
+        MBrickletCO2Impl mBrickletCO2 = new MBrickletCO2Impl();
+        return mBrickletCO2;
     }
 
     /**
@@ -4304,6 +4322,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertTinkerBrickletUVLightToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletCO2 createTinkerBrickletCO2FromString(EDataType eDataType, String initialValue) {
+        return (BrickletCO2) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletCO2ToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 

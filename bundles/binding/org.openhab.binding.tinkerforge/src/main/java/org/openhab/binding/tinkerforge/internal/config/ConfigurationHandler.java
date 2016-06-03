@@ -201,7 +201,8 @@ public class ConfigurationHandler {
         bricklet_oled128x64,
         bricklet_oled64x48,
         bricklet_thermocouple,
-        bricklet_uvlight
+        bricklet_uvlight,
+        bricklet_co2
     }
 
     public ConfigurationHandler() {
@@ -339,7 +340,8 @@ public class ConfigurationHandler {
                 || deviceType.equals(TypeKey.accelerometer_direction.name())
                 || deviceType.equals(TypeKey.laser_range_finder_distance.name())
                 || deviceType.equals(TypeKey.laser_range_finder_velocity.name())
-                || deviceType.equals(TypeKey.bricklet_uvlight.name())) {
+                || deviceType.equals(TypeKey.bricklet_uvlight.name())
+                || deviceType.equals(TypeKey.bricklet_co2.name())) {
             logger.debug("{} setting base config", LoggerConstants.CONFIG);
             TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
             if (deviceType.equals(TypeKey.bricklet_barometer)) {

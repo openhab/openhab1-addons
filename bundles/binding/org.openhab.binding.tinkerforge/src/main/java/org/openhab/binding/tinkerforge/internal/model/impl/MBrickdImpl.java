@@ -53,6 +53,7 @@ import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletAnalogIn;
 import com.tinkerforge.BrickletAnalogInV2;
 import com.tinkerforge.BrickletBarometer;
+import com.tinkerforge.BrickletCO2;
 import com.tinkerforge.BrickletColor;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
@@ -1169,6 +1170,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
                 logger.debug("addDevice BrickletUVLight");
                 mDevice = factory.createMBrickletUVLight();
                 mDevice.setDeviceIdentifier(BrickletUVLight.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletCO2.DEVICE_IDENTIFIER) {
+                logger.debug("addDevice BrickletCO2");
+                mDevice = factory.createMBrickletCO2();
+                mDevice.setDeviceIdentifier(BrickletCO2.DEVICE_IDENTIFIER);
             }
             if (mDevice != null) {
                 mDevice.setIpConnection(getIpConnection());
