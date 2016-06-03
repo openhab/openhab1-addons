@@ -28,6 +28,7 @@ import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
+import org.openhab.binding.tinkerforge.internal.model.IO4Device;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
@@ -309,7 +310,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                     ((MTFConfigConsumer<EObject>) device).setTfConfig(deviceTfConfig);
                     device.enable();
                 }
-            } else if (device instanceof IODevice) {
+            } else if (device instanceof IODevice || device instanceof IO4Device) {
                 logger.debug("{} ignoring unconfigured  IODevice: {}", LoggerConstants.TFINIT, logId);
                 // set the device disabled, this is needed for not getting
                 // states
