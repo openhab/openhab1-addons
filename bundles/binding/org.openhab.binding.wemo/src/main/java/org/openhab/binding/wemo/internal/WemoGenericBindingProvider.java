@@ -141,6 +141,4 @@ public class WemoGenericBindingProvider extends AbstractGenericBindingProvider i
 		state, lastChangedAt, lastOnFor, onToday, onTotal, timespan, 
 		averagePower, currentPower, energyToday, energyTotal, standbyLimit		
 	}
-
-	
 }
