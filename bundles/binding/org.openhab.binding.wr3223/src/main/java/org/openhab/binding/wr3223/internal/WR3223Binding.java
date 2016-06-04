@@ -11,10 +11,12 @@ package org.openhab.binding.wr3223.internal;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.wr3223.WR3223BindingProvider;
@@ -45,7 +47,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
             WR3223CommandType.TEMPERATURE_CONDENSER, WR3223CommandType.TEMPERATURE_OUTSIDE,
             WR3223CommandType.TEMPERATURE_OUTGOING_AIR, WR3223CommandType.TEMPERATURE_AFTER_HEAT_EXCHANGER,
             WR3223CommandType.TEMPERATURE_SUPPLY_AIR, WR3223CommandType.TEMPERATURE_AFTER_BRINE_PREHEATING,
-            WR3223CommandType.TEMPERATURE_AFTER_PREHEATING_RADIATOR, WR3223CommandType.VENTILATION_LEVEL,
+            WR3223CommandType.TEMPERATURE_AFTER_PREHEATING, WR3223CommandType.VENTILATION_LEVEL,
             WR3223CommandType.ROTATION_SPEED_SUPPLY_AIR_MOTOR, WR3223CommandType.ROTATION_SPEED_EXHAUST_AIR_MOTOR,
             WR3223CommandType.OPERATION_MODE, WR3223CommandType.TEMPERATURE_SUPPLY_AIR_TARGET,
             WR3223CommandType.HEAT_FEEDBACK_RATE, WR3223CommandType.SPEED_DEVIATION_MAX_LEVEL_1,
@@ -139,6 +141,11 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
     private Map<WR3223CommandType, Integer> updateMap = new HashMap<WR3223CommandType, Integer>();
 
     /**
+     * Not all controller supports all commands. The binding automatically disable not supported commands.
+     */
+    private Set<WR3223Commands> disabledCommands = new HashSet<>();
+
+    /**
      * Called by the SCR to activate the component with its configuration read from CAS
      *
      * @param bundleContext BundleContext of the Bundle that defines this component
@@ -150,7 +157,6 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
         // Default start values
         updateMap.put(WR3223CommandType.OPERATION_MODE, 3);
-        updateMap.put(WR3223CommandType.TEMPERATURE_SUPPLY_AIR_TARGET, 20);
     }
 
     /**
@@ -284,8 +290,28 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
         }
 
         try {
+
+            // Read status values (Ta)
+            if (checkIfCommandIsAvailable(WR3223Commands.Ta)) {
+                statusHolder.valueOf(connector.read(controllerAddr, WR3223Commands.Ta));
+                publishValueToBoundItems(WR3223CommandType.MALFUNCTION, statusHolder.isMalfunction());
+                publishValueToBoundItems(WR3223CommandType.HEAT_PUMP_STATUS, statusHolder.getHeatPumpOnStatus());
+                publishValueToBoundItems(WR3223CommandType.ADDITIONAL_HEATER_STATUS,
+                        statusHolder.getAdditionalHeatingOnStatus());
+            }
+
+            // EVU Blockade handling
+            if (checkIfCommandIsAvailable(WR3223Commands.Tf)) {
+                EvuBlockadeHandler handler = EvuBlockadeHandler
+                        .valueOf(connector.read(controllerAddr, WR3223Commands.Tf));
+                publishValueToBoundItems(WR3223CommandType.EVU_BLOCKADE, handler.isBlockade());
+            }
+
             // Read relais
-            RelaisValueDecoder relais = RelaisValueDecoder.valueOf(connector.read(controllerAddr, WR3223Commands.RL));
+            RelaisValueDecoder relais = readAndPublishRelaisValues();
+
+            // Read errors
+            readAndPublishErrorValues();
 
             // Write values if no control device connected
             if (!relais.isControlDeviceActive()) {
@@ -301,36 +327,23 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
                         }
                     }
                 } else {
-                    logger.error("Coudn't send keep alive message to WR3223.");
+                    logger.error("Couldn't send keep alive message to WR3223.");
                 }
             } else {
                 logger.warn(
                         "The control device is activ! Openhab can only control the WR3223, when the control device is removed. (Bedienteil)");
             }
 
-            // Publish relais values
-            publishValueToBoundItems(WR3223CommandType.COMPRESSOR, relais.isCompressor());
-            publishValueToBoundItems(WR3223CommandType.ADDITIONAL_HEATER, relais.isAdditionalHeater());
-            publishValueToBoundItems(WR3223CommandType.PREHEATING_RADIATOR_ACTIVE, relais.isPreHeaterRadiatorActive());
-            publishValueToBoundItems(WR3223CommandType.BYPASS, !relais.isBypass());
-            publishValueToBoundItems(WR3223CommandType.BYPASS_RELAY, relais.isBypassRelay());
-            publishValueToBoundItems(WR3223CommandType.CONTROL_DEVICE_ACTIVE, relais.isControlDeviceActive());
-            publishValueToBoundItems(WR3223CommandType.EARTH_HEAT_EXCHANGER, relais.isEarthHeatExchanger());
-            publishValueToBoundItems(WR3223CommandType.MAGNET_VALVE, relais.isMagnetValve());
-            publishValueToBoundItems(WR3223CommandType.OPENHAB_INTERFACE_ACTIVE, relais.isOpenhabInterfaceActive());
-            publishValueToBoundItems(WR3223CommandType.PREHEATING_RADIATOR, relais.isPreheatingRadiator());
-            publishValueToBoundItems(WR3223CommandType.VENTILATION_LEVEL_AVAILABLE,
-                    relais.isVentilationLevelAvailable());
-            publishValueToBoundItems(WR3223CommandType.WARM_WATER_POST_HEATER, relais.isWarmWaterPostHeater());
-
             // Read and publish other values from WR3223
             for (WR3223CommandType readCommand : READ_COMMANDS) {
-                if (!updateMap.containsKey(readCommand)) {
-                    readAndPublishValue(readCommand);
-                } else {
-                    logger.info(
-                            "Skip reading values for command {} from WR3223, because an updated values must fist be send to WR3223.",
-                            readCommand.getCommand());
+                if (checkIfCommandIsAvailable(readCommand.getWr3223Command())) {
+                    if (!updateMap.containsKey(readCommand)) {
+                        readAndPublishValue(readCommand);
+                    } else {
+                        logger.info(
+                                "Skip reading values for command {} from WR3223, because an updated values must fist be send to WR3223.",
+                                readCommand.getCommand());
+                    }
                 }
             }
         } catch (IOException e) {
@@ -345,6 +358,60 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
             connector = null;
         }
 
+    }
+
+    private boolean checkIfCommandIsAvailable(WR3223Commands command) throws IOException {
+        if (disabledCommands.contains(command)) {
+            return false;
+        }
+        String value = connector.read(controllerAddr, command);
+        if (value == null || value.contains("???")) {
+            disabledCommands.add(command);
+            logger.warn("Command " + command + " is not supported by the controller.");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
+    private RelaisValueDecoder readAndPublishRelaisValues() throws IOException {
+        RelaisValueDecoder relais = RelaisValueDecoder.valueOf(connector.read(controllerAddr, WR3223Commands.RL));
+        publishValueToBoundItems(WR3223CommandType.COMPRESSOR, relais.isCompressor());
+        publishValueToBoundItems(WR3223CommandType.ADDITIONAL_HEATER_RELAIS, relais.isAdditionalHeater());
+        publishValueToBoundItems(WR3223CommandType.PREHEATING_RADIATOR_ACTIVE, relais.isPreHeaterRadiatorActive());
+        publishValueToBoundItems(WR3223CommandType.BYPASS, !relais.isBypass());
+        publishValueToBoundItems(WR3223CommandType.BYPASS_RELAY, relais.isBypassRelay());
+        publishValueToBoundItems(WR3223CommandType.CONTROL_DEVICE_ACTIVE, relais.isControlDeviceActive());
+        publishValueToBoundItems(WR3223CommandType.EARTH_HEAT_EXCHANGER, relais.isEarthHeatExchanger());
+        publishValueToBoundItems(WR3223CommandType.MAGNET_VALVE, relais.isMagnetValve());
+        publishValueToBoundItems(WR3223CommandType.OPENHAB_INTERFACE_ACTIVE, relais.isOpenhabInterfaceActive());
+        publishValueToBoundItems(WR3223CommandType.PREHEATING_RADIATOR, relais.isPreheatingRadiator());
+        publishValueToBoundItems(WR3223CommandType.VENTILATION_LEVEL_AVAILABLE, relais.isVentilationLevelAvailable());
+        publishValueToBoundItems(WR3223CommandType.WARM_WATER_POST_HEATER, relais.isWarmWaterPostHeater());
+        return relais;
+    }
+
+    /**
+     * @throws IOException
+     */
+    private void readAndPublishErrorValues() throws IOException {
+        ErrorValueDecoder errors = ErrorValueDecoder.valueOf(connector.read(controllerAddr, WR3223Commands.ER));
+        publishValueToBoundItems(WR3223CommandType.ERROR_TEMP_SENSOR_SHORT, errors.isError_temp_sensor_short());
+        publishValueToBoundItems(WR3223CommandType.ERROR_OFFSET, errors.isError_offset());
+        publishValueToBoundItems(WR3223CommandType.ERROR_TEMP_SENSOR_INTERUPT, errors.isError_temp_sensor_interupt());
+        publishValueToBoundItems(WR3223CommandType.ERROR_HIGH_PRESSURE, errors.isError_high_pressure());
+        publishValueToBoundItems(WR3223CommandType.ERROR_SYS_RAM, errors.isError_sys_ram());
+        publishValueToBoundItems(WR3223CommandType.ERROR_SYS_ROM, errors.isError_sys_rom());
+        publishValueToBoundItems(WR3223CommandType.ERROR_SYS_EE, errors.isError_sys_ee());
+        publishValueToBoundItems(WR3223CommandType.ERROR_SYS_IO, errors.isError_sys_io());
+        publishValueToBoundItems(WR3223CommandType.ERROR_SYS_67_AD, errors.isError_sys_67_ad());
+        publishValueToBoundItems(WR3223CommandType.ERROR_SUPPLY_AIR, errors.isError_supply_air());
+        publishValueToBoundItems(WR3223CommandType.ERROR_OUTGOING_AIR, errors.isError_outgoing_air());
+        publishValueToBoundItems(WR3223CommandType.ERROR_CONDENSER, errors.isError_condenser());
+        publishValueToBoundItems(WR3223CommandType.ERROR_PREHEATING, errors.isError_preheating());
     }
 
     /**
@@ -386,6 +453,10 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
             State state = null;
             if (wr3223CommandType.getItemClass() == NumberItem.class) {
                 try {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("WR3223Binding.publishValueToItems: publish command {} with number {} ",
+                                wr3223CommandType.getCommand(), value.toString().trim());
+                    }
                     state = DecimalType.valueOf(value.toString().trim());
                 } catch (NumberFormatException nfe) {
                     logger.error("Can't set value {} to item type {} because it's not a decimal number.", value,
@@ -393,8 +464,14 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
                 }
             } else if (wr3223CommandType.getItemClass() == SwitchItem.class) {
                 state = parseBooleanValue(value);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("WR3223 publish switch item {} to {}.", wr3223CommandType.getCommand(), state);
+                }
             } else if (wr3223CommandType.getItemClass() == ContactItem.class) {
                 state = parseBooleanValue(value) == OnOffType.ON ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("WR3223 publish contact item {} to {}.", wr3223CommandType.getCommand(), state);
+                }
             } else {
                 logger.error("Can't set value {} to item type {}.", value, wr3223CommandType.getCommand());
             }
@@ -420,6 +497,9 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
         String valStr = value.toString().trim();
         state = (valStr.equalsIgnoreCase("true") || valStr.equals("1") || valStr.equals("1.")) ? OnOffType.ON
                 : OnOffType.OFF;
+        if (logger.isDebugEnabled()) {
+            logger.debug("W3223Binding.parseBooleanValue: parsed value {} to state {}", valStr, state);
+        }
         return state;
     }
 
@@ -447,7 +527,9 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
      */
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
-        logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
+        if (logger.isDebugEnabled()) {
+            logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
+        }
         WR3223CommandType type = getWR3223BindingConfig(itemName);
         if (type == null) {
             logger.error("Item {} is not bound to WR3223 binding.", itemName);
@@ -458,10 +540,40 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
                     if (value >= 0 && value <= 3) {
                         statusHolder.setVentilationLevel(value);
                     } else {
-                        // FIXME Error
+                        logger.warn("WR3223 value {} of item {} out of range.", value, itemName);
                     }
                 } else {
                     logger.warn("WR3223 item {} must be from type:{}.", itemName, DecimalType.class.getSimpleName());
+                }
+            } else if (type == WR3223CommandType.ADDITIONAL_HEATER_ACTIVATE) {
+                if (command instanceof OnOffType) {
+                    if (command == OnOffType.ON) {
+                        statusHolder.setAdditionalHeatingOn(true);
+                    } else {
+                        statusHolder.setAdditionalHeatingOn(false);
+                    }
+                } else {
+                    logger.warn("WR3223 item {} must be from type:{}.", itemName, OnOffType.class.getSimpleName());
+                }
+            } else if (type == WR3223CommandType.HEAT_PUMP_ACTIVATE) {
+                if (command instanceof OnOffType) {
+                    if (command == OnOffType.ON) {
+                        statusHolder.setHeatPumpOn(true);
+                    } else {
+                        statusHolder.setHeatPumpOn(false);
+                    }
+                } else {
+                    logger.warn("WR3223 item {} must be from type:{}.", itemName, OnOffType.class.getSimpleName());
+                }
+            } else if (type == WR3223CommandType.COOLING_MODE_ACTIVATE) {
+                if (command instanceof OnOffType) {
+                    if (command == OnOffType.ON) {
+                        statusHolder.setCoolingOn(true);
+                    } else {
+                        statusHolder.setCoolingOn(false);
+                    }
+                } else {
+                    logger.warn("WR3223 item {} must be from type:{}.", itemName, OnOffType.class.getSimpleName());
                 }
             } else {
                 for (WR3223CommandType t : WRITE_COMMANDS) {
@@ -478,6 +590,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
                                 updateMap.put(type, value);
                             }
                         } else if (type.getItemClass() == SwitchItem.class && command instanceof OnOffType) {
+                            logger.debug("SwitchCommand({},{}) is called!", itemName, command);
                             if (command == OnOffType.ON) {
                                 updateMap.put(type, 1);
                             } else if (command == OnOffType.OFF) {
@@ -512,6 +625,17 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
         private boolean additionalHeatingOn = false;
         private boolean coolingOn = false;
 
+        private boolean malfunction = false;
+        private final int FLAG_MALFUNCTION = 16;
+
+        private boolean heatPumpOnStatus = false;
+        private final int FLAG_HEAT_PUMP_STATUS = 32;
+
+        private boolean additionalHeatingOnStatus = false;
+        private final int FLAG_ADDITIONAL_HEATER_STATUS = 64;
+
+        private final int STATUS_MASK = 112;
+
         /**
          * @param "Wärmepumpe  ein (bei Anlagen mit Wärmepumpe)"
          */
@@ -540,7 +664,29 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
             this.coolingOn = coolingOn;
         }
 
+        /**
+         * @return Störung
+         */
+        public boolean isMalfunction() {
+            return malfunction;
+        }
+
+        /**
+         * @return Zusatzheizung An/Aus
+         */
+        public boolean getAdditionalHeatingOnStatus() {
+            return additionalHeatingOnStatus;
+        }
+
+        /**
+         * @return Wärmepumpe An/Aus
+         */
+        public boolean getHeatPumpOnStatus() {
+            return heatPumpOnStatus;
+        }
+
         public String getStatusValue() {
+
             int data = 0;
             if (!heatPumpOn) {
                 data += 1;
@@ -560,7 +706,36 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
             if (!coolingOn) {
                 data += 32;
             }
+
             return String.valueOf(data);
+        }
+
+        public void valueOf(String read) {
+
+            read = read.trim();
+            int decPoint = read.indexOf(".");
+            if (decPoint > 0) {
+                read = read.substring(0, decPoint);
+            }
+            int value = Integer.valueOf(read.trim()) * -1;
+
+            // Mask value as only bits 4, 5 and 6 are necessary
+            value &= STATUS_MASK;
+
+            malfunction = (value & FLAG_MALFUNCTION) == FLAG_MALFUNCTION ? true : false;
+            heatPumpOnStatus = (value & FLAG_HEAT_PUMP_STATUS) == FLAG_HEAT_PUMP_STATUS ? true : false;
+            additionalHeatingOnStatus = (value & FLAG_ADDITIONAL_HEATER_STATUS) == FLAG_ADDITIONAL_HEATER_STATUS ? true
+                    : false;
+
+            // in case of any malfunction turn off ventilation, heat pump and additional heating
+            if (malfunction) {
+                // TODO Bei Störung Anlage ausschalten?
+                // ventilationLevel = 0;
+                // heatPumpOn = false;
+                // additionalHeatingOn = false;
+                // coolingOn = false;
+            }
+
         }
     }
 
@@ -605,6 +780,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
             if (decPoint > 0) {
                 read = read.substring(0, decPoint);
             }
+            logger.debug("WR3223.RelaisValueDecoder read string={}.", read);
             int value = Integer.valueOf(read.trim());
             if ((value & FLAG_COMPRESSOR) == FLAG_COMPRESSOR) {
                 relaisValue.compressor = true;
@@ -731,5 +907,230 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
             return preHeaterRadiatorActive;
         }
 
+    }
+
+    /**
+     * Check the different possible errors codes
+     *
+     * @author Christian Spiegel
+     *
+     */
+    private static final class ErrorValueDecoder {
+
+        private static final int ERROR_TEMP_SENSOR_SHORT = 1;
+        private static final int ERROR_OFFSET = 2;
+        private static final int ERROR_TEMP_SENSOR_INTERUPT = 3;
+        private static final int ERROR_HIGH_PRESSURE = 4;
+        private static final int ERROR_SYS_RAM = 61;
+        private static final int ERROR_SYS_ROM = 62;
+        private static final int ERROR_SYS_EE = 65;
+        private static final int ERROR_SYS_IO = 66;
+        private static final int ERROR_SYS_67_AD = 67;
+        private static final int ERROR_SUPPLY_AIR = 128;
+        private static final int ERROR_OUTGOING_AIR = 132;
+        private static final int ERROR_CONDENSER = 130;
+        private static final int ERROR_PREHEATING = 133;
+
+        private boolean error_temp_sensor_short;
+        private boolean error_offset;
+        private boolean error_temp_sensor_interupt;
+        private boolean error_high_pressure;
+        private boolean error_sys_ram;
+        private boolean error_sys_rom;
+        private boolean error_sys_ee;
+        private boolean error_sys_io;
+        private boolean error_sys_67_ad;
+        private boolean error_supply_air;
+        private boolean error_outgoing_air;
+        private boolean error_condenser;
+        private boolean error_preheating;
+
+        public static ErrorValueDecoder valueOf(String read) {
+
+            ErrorValueDecoder errorValue = new ErrorValueDecoder();
+            read = read.trim();
+            int decPoint = read.indexOf(".");
+            if (decPoint > 0) {
+                read = read.substring(0, decPoint);
+            }
+            if (logger.isDebugEnabled()) {
+                logger.debug("WR3223.ErrorValueDecoder read string={}.", read);
+            }
+            int value = Integer.valueOf(read.trim());
+
+            if ((value & ERROR_TEMP_SENSOR_SHORT) == ERROR_TEMP_SENSOR_SHORT) {
+                errorValue.error_temp_sensor_short = true;
+            }
+            if ((value & ERROR_OFFSET) == ERROR_OFFSET) {
+                errorValue.error_offset = true;
+            }
+            if ((value & ERROR_TEMP_SENSOR_INTERUPT) == ERROR_TEMP_SENSOR_INTERUPT) {
+                errorValue.error_temp_sensor_interupt = true;
+            }
+            if ((value & ERROR_HIGH_PRESSURE) == ERROR_HIGH_PRESSURE) {
+                errorValue.error_high_pressure = true;
+            }
+            if ((value & ERROR_SYS_RAM) == ERROR_SYS_RAM) {
+                errorValue.error_sys_ram = true;
+            }
+            if ((value & ERROR_SYS_ROM) == ERROR_SYS_ROM) {
+                errorValue.error_sys_rom = true;
+            }
+            if ((value & ERROR_SYS_EE) == ERROR_SYS_EE) {
+                errorValue.error_sys_ee = true;
+            }
+            if ((value & ERROR_SYS_IO) == ERROR_SYS_IO) {
+                errorValue.error_sys_io = true;
+            }
+            if ((value & ERROR_SYS_67_AD) == ERROR_SYS_67_AD) {
+                errorValue.error_sys_67_ad = true;
+            }
+            if ((value & ERROR_SUPPLY_AIR) == ERROR_SUPPLY_AIR) {
+                errorValue.error_supply_air = true;
+            }
+            if ((value & ERROR_OUTGOING_AIR) == ERROR_OUTGOING_AIR) {
+                errorValue.error_outgoing_air = true;
+            }
+            if ((value & ERROR_CONDENSER) == ERROR_CONDENSER) {
+                errorValue.error_condenser = true;
+            }
+            if ((value & ERROR_PREHEATING) == ERROR_PREHEATING) {
+                errorValue.error_preheating = true;
+            }
+            return errorValue;
+        }
+
+        /**
+         * @return the error_temp_sensor_short
+         */
+        public boolean isError_temp_sensor_short() {
+            return error_temp_sensor_short;
+        }
+
+        /**
+         * @return the error_offset
+         */
+        public boolean isError_offset() {
+            return error_offset;
+        }
+
+        /**
+         * @return the error_temp_sensor_interupt
+         */
+        public boolean isError_temp_sensor_interupt() {
+            return error_temp_sensor_interupt;
+        }
+
+        /**
+         * @return the error_high_pressure
+         */
+        public boolean isError_high_pressure() {
+            return error_high_pressure;
+        }
+
+        /**
+         * @return the error_sys_ram
+         */
+        public boolean isError_sys_ram() {
+            return error_sys_ram;
+        }
+
+        /**
+         * @return the error_sys_rom
+         */
+        public boolean isError_sys_rom() {
+            return error_sys_rom;
+        }
+
+        /**
+         * @return the error_sys_ee
+         */
+        public boolean isError_sys_ee() {
+            return error_sys_ee;
+        }
+
+        /**
+         * @return the error_sys_io
+         */
+        public boolean isError_sys_io() {
+            return error_sys_io;
+        }
+
+        /**
+         * @return the error_sys_67_ad
+         */
+        public boolean isError_sys_67_ad() {
+            return error_sys_67_ad;
+        }
+
+        /**
+         * @return the error_supply_air
+         */
+        public boolean isError_supply_air() {
+            return error_supply_air;
+        }
+
+        /**
+         * @return the error_outgoing_air
+         */
+        public boolean isError_outgoing_air() {
+            return error_outgoing_air;
+        }
+
+        /**
+         * @return the error_condenser
+         */
+        public boolean isError_condenser() {
+            return error_condenser;
+        }
+
+        /**
+         * @return the error_preheating
+         */
+        public boolean isError_preheating() {
+            return error_preheating;
+        }
+    }
+
+    /**
+     * Check if EVU blockade is on/off.
+     *
+     * @author Christian Spiegel
+     *
+     */
+    private static final class EvuBlockadeHandler {
+
+        private static final int FLAG_BLOCKADE = 1;
+
+        private boolean blockade = false;
+
+        public static EvuBlockadeHandler valueOf(String read) {
+            EvuBlockadeHandler handler = new EvuBlockadeHandler();
+            read = read.trim();
+            int decPoint = read.indexOf(".");
+            if (decPoint > 0) {
+                read = read.substring(0, decPoint);
+            }
+
+            int value = Integer.valueOf(read.trim()) * -1;
+            if (logger.isDebugEnabled()) {
+                logger.debug("WR3223.EvuBlockadeHandler value={}.", value);
+            }
+
+            if ((value & FLAG_BLOCKADE) == FLAG_BLOCKADE) {
+                handler.blockade = true;
+                // TODO Anlage ausschalten bei EVU Sperre?
+            }
+
+            return handler;
+
+        }
+
+        /**
+         * @return the blockade
+         */
+        public boolean isBlockade() {
+            return blockade;
+        }
     }
 }

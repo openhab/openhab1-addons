@@ -10,7 +10,7 @@ package org.openhab.binding.wr3223.internal;
 
 /**
  * Commands for the WR3223 Connector.
- * 
+ *
  * @author Michael Fraefel
  *
  */
@@ -202,6 +202,12 @@ public enum WR3223Commands {
     S3,
 
     /** Parameter Warmwasser Sollwert */
-    WS
+    WS,
+
+    /** Parameter EVU Sperre */
+    Tf,
+
+    /** Status auslesen */
+    Ta
 
 }

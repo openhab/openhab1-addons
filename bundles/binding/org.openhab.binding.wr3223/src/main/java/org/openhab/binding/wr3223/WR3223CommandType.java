@@ -16,13 +16,13 @@ import org.openhab.core.library.items.SwitchItem;
 
 /**
  * Represents all valid commands which could be processed by this binding
- * 
+ *
  * @author Michael Fraefel
  * @since 1.8.0
  */
 public enum WR3223CommandType {
 
-    /** T1 (de: Verdampfertemepratur) */
+    /** T1 (de: Verdampfertemperatur) */
     TEMPERATURE_EVAPORATOR {
         {
             command = "temperature_evaporator";
@@ -85,10 +85,10 @@ public enum WR3223CommandType {
         }
     },
 
-    /** T8 (de: Temperatur nach Vorheizregister) */
-    TEMPERATURE_AFTER_PREHEATING_RADIATOR {
+    /** T8 (de: Temperatur nach Wärmetauscher) */
+    TEMPERATURE_AFTER_PREHEATING {
         {
-            command = "temperature_after_preheating_radiator";
+            command = "temperature_after_heat_exchanger";
             itemClass = NumberItem.class;
             wr3223Command = WR3223Commands.T8;
         }
@@ -131,12 +131,41 @@ public enum WR3223CommandType {
     },
 
     /** (de: Zusatzheizung Relais) */
-    ADDITIONAL_HEATER {
+    ADDITIONAL_HEATER_RELAIS {
         {
-            command = "additional_heater";
+            command = "additional_heater_relais";
             itemClass = ContactItem.class;
             wr3223Command = null;
         }
+    },
+
+    /** (de: Zusatzheizung An/Aus) */
+    ADDITIONAL_HEATER_STATUS {
+        {
+            command = "additional_heater_status";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+    },
+
+    /** (de: Zusatzheizung ausgeschaltet (0) oder freigegeben (1) */
+    ADDITIONAL_HEATER_OPEN {
+        {
+            command = "additional_heater_open";
+            itemClass = SwitchItem.class;
+            wr3223Command = WR3223Commands.ZH;
+        }
+
+    },
+
+    /** (de: Zusatzheizung ein/ausschalten */
+    ADDITIONAL_HEATER_ACTIVATE {
+        {
+            command = "additional_heater_activate";
+            itemClass = SwitchItem.class;
+            wr3223Command = null;
+        }
+
     },
 
     /** (de: Netzrelais Bypass) */
@@ -238,6 +267,15 @@ public enum WR3223CommandType {
         }
     },
 
+    /** (de: Kühlen) */
+    COOLING_MODE_ACTIVATE {
+        {
+            command = "cooling_mode";
+            itemClass = SwitchItem.class;
+            wr3223Command = null;
+        }
+    },
+
     /** (de: Zuluftsoll Temperatur) */
     TEMPERATURE_SUPPLY_AIR_TARGET {
         {
@@ -319,7 +357,7 @@ public enum WR3223CommandType {
         }
     },
 
-    /** (de: Luftstufe 1, % des max. Ventilatorstellwerts (40 bis100%) */
+    /** (de: Luftstufe 1, % des max. Ventilatorstellwerts (40 bis 100%) */
     VENTILATION_SPEED_LEVEL_1 {
         {
             command = "ventilation_speed_level_1";
@@ -328,7 +366,7 @@ public enum WR3223CommandType {
         }
     },
 
-    /** (de: Luftstufe 2, % des max. Ventilatorstellwerts (40 bis100%) */
+    /** (de: Luftstufe 2, % des max. Ventilatorstellwerts (40 bis 100%) */
     VENTILATION_SPEED_LEVEL_2 {
         {
             command = "ventilation_speed_level_2";
@@ -337,7 +375,7 @@ public enum WR3223CommandType {
         }
     },
 
-    /** (de: Luftstufe 3, % des max. Ventilatorstellwerts (40 bis100%) */
+    /** (de: Luftstufe 3, % des max. Ventilatorstellwerts (40 bis 100%) */
     VENTILATION_SPEED_LEVEL_3 {
         {
             command = "ventilation_speed_level_3";
@@ -526,6 +564,15 @@ public enum WR3223CommandType {
         }
     },
 
+    /** (de: Waermepumpe An/Aus */
+    HEAT_PUMP_STATUS {
+        {
+            command = "heat_pump_status";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+    },
+
     /** (de: Waermepumpe freigegeben (1) oder aus (0) */
     HEAT_PUMP_OPEN {
         {
@@ -535,14 +582,164 @@ public enum WR3223CommandType {
         }
     },
 
-    /** (de: Zusatzheizung ausgeschaltet (0) oder freigegeben (1) */
-    ADDITIONAL_HEATER_OPEN {
+    /** (de: Waermepumpe Ein/-Ausschalten */
+    HEAT_PUMP_ACTIVATE {
         {
-            command = "additional_heater_open";
+            command = "heat_pump_activate";
             itemClass = SwitchItem.class;
-            wr3223Command = WR3223Commands.WP;
+            wr3223Command = null;
         }
-    },;
+    },
+
+    /** (de: EVU Abschaltung */
+    EVU_BLOCKADE {
+        {
+            command = "evu_blockade";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: Störung vorhanden */
+    MALFUNCTION {
+        {
+            command = "malfunction";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: kurzsch.TS */
+    ERROR_TEMP_SENSOR_SHORT {
+        {
+            command = "error_temp_sensor_short";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: Offset error */
+    ERROR_OFFSET {
+        {
+            command = "error_offset";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: unterbr.TS */
+    ERROR_TEMP_SENSOR_INTERUPT {
+        {
+            command = "error_temp_sensor_interupt";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: Hochdruckfehler */
+    ERROR_HIGH_PRESSURE {
+        {
+            command = "error_high_pressure";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: error sys ram */
+    ERROR_SYS_RAM {
+        {
+            command = "error_sys_ram";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: error sys rom */
+    ERROR_SYS_ROM {
+        {
+            command = "error_sys_rom";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: error sys ee */
+    ERROR_SYS_EE {
+        {
+            command = "error_sys_ee";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: error sys io */
+    ERROR_SYS_IO {
+        {
+            command = "error_sys_io";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: error sys 67 ad */
+    ERROR_SYS_67_AD {
+        {
+            command = "error_sys_67_ad";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: Zuluft fehlt */
+    ERROR_SUPPLY_AIR {
+        {
+            command = "error_supply_air";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: Abluft fehlt */
+    ERROR_OUTGOING_AIR {
+        {
+            command = "error_outgoing_air";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: Kondensationsfehler */
+    ERROR_CONDENSER {
+        {
+            command = "error_condenser";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    },
+
+    /** (de: Vorheizfehler */
+    ERROR_PREHEATING {
+        {
+            command = "error_preheating";
+            itemClass = ContactItem.class;
+            wr3223Command = null;
+        }
+
+    };
 
     /** Represents the WR3223 command as it will be used in *.items configuration */
     String command;
@@ -573,7 +770,7 @@ public enum WR3223CommandType {
 
     /**
      * Find the right command for an item string.
-     * 
+     *
      * @param bindingConfigString
      * @return
      */
