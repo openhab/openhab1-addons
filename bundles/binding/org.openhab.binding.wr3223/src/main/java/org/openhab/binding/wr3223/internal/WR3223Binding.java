@@ -300,7 +300,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
                         statusHolder.getAdditionalHeatingOnStatus());
             }
 
-            // EVU Blockade handling
+            // EVU Blockade handling (Tf)
             if (checkIfCommandIsAvailable(WR3223Commands.Tf)) {
                 EvuBlockadeHandler handler = EvuBlockadeHandler
                         .valueOf(connector.read(controllerAddr, WR3223Commands.Tf));
@@ -360,6 +360,13 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
     }
 
+    /**
+     * Check if a command is available.
+     * 
+     * @param command
+     * @return
+     * @throws IOException
+     */
     private boolean checkIfCommandIsAvailable(WR3223Commands command) throws IOException {
         if (disabledCommands.contains(command)) {
             return false;
@@ -398,20 +405,23 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
      * @throws IOException
      */
     private void readAndPublishErrorValues() throws IOException {
-        ErrorValueDecoder errors = ErrorValueDecoder.valueOf(connector.read(controllerAddr, WR3223Commands.ER));
-        publishValueToBoundItems(WR3223CommandType.ERROR_TEMP_SENSOR_SHORT, errors.isError_temp_sensor_short());
-        publishValueToBoundItems(WR3223CommandType.ERROR_OFFSET, errors.isError_offset());
-        publishValueToBoundItems(WR3223CommandType.ERROR_TEMP_SENSOR_INTERUPT, errors.isError_temp_sensor_interupt());
-        publishValueToBoundItems(WR3223CommandType.ERROR_HIGH_PRESSURE, errors.isError_high_pressure());
-        publishValueToBoundItems(WR3223CommandType.ERROR_SYS_RAM, errors.isError_sys_ram());
-        publishValueToBoundItems(WR3223CommandType.ERROR_SYS_ROM, errors.isError_sys_rom());
-        publishValueToBoundItems(WR3223CommandType.ERROR_SYS_EE, errors.isError_sys_ee());
-        publishValueToBoundItems(WR3223CommandType.ERROR_SYS_IO, errors.isError_sys_io());
-        publishValueToBoundItems(WR3223CommandType.ERROR_SYS_67_AD, errors.isError_sys_67_ad());
-        publishValueToBoundItems(WR3223CommandType.ERROR_SUPPLY_AIR, errors.isError_supply_air());
-        publishValueToBoundItems(WR3223CommandType.ERROR_OUTGOING_AIR, errors.isError_outgoing_air());
-        publishValueToBoundItems(WR3223CommandType.ERROR_CONDENSER, errors.isError_condenser());
-        publishValueToBoundItems(WR3223CommandType.ERROR_PREHEATING, errors.isError_preheating());
+        if (checkIfCommandIsAvailable(WR3223Commands.ER)) {
+            ErrorValueDecoder errors = ErrorValueDecoder.valueOf(connector.read(controllerAddr, WR3223Commands.ER));
+            publishValueToBoundItems(WR3223CommandType.ERROR_TEMP_SENSOR_SHORT, errors.isError_temp_sensor_short());
+            publishValueToBoundItems(WR3223CommandType.ERROR_OFFSET, errors.isError_offset());
+            publishValueToBoundItems(WR3223CommandType.ERROR_TEMP_SENSOR_INTERUPT,
+                    errors.isError_temp_sensor_interupt());
+            publishValueToBoundItems(WR3223CommandType.ERROR_HIGH_PRESSURE, errors.isError_high_pressure());
+            publishValueToBoundItems(WR3223CommandType.ERROR_SYS_RAM, errors.isError_sys_ram());
+            publishValueToBoundItems(WR3223CommandType.ERROR_SYS_ROM, errors.isError_sys_rom());
+            publishValueToBoundItems(WR3223CommandType.ERROR_SYS_EE, errors.isError_sys_ee());
+            publishValueToBoundItems(WR3223CommandType.ERROR_SYS_IO, errors.isError_sys_io());
+            publishValueToBoundItems(WR3223CommandType.ERROR_SYS_67_AD, errors.isError_sys_67_ad());
+            publishValueToBoundItems(WR3223CommandType.ERROR_SUPPLY_AIR, errors.isError_supply_air());
+            publishValueToBoundItems(WR3223CommandType.ERROR_OUTGOING_AIR, errors.isError_outgoing_air());
+            publishValueToBoundItems(WR3223CommandType.ERROR_CONDENSER, errors.isError_condenser());
+            publishValueToBoundItems(WR3223CommandType.ERROR_PREHEATING, errors.isError_preheating());
+        }
     }
 
     /**
