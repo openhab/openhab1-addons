@@ -926,9 +926,17 @@ public class MBrickletCO2Impl extends MinimalEObjectImpl.Container implements MB
                 setCallbackPeriod(tfConfig.getCallbackPeriod());
             }
         }
-        tinkerforgeDevice = new BrickletCO2(getUid(), getIpConnection());
-        listener = new CO2ConcentrationListener();
-        tinkerforgeDevice.addCO2ConcentrationListener(listener);
+        try {
+            tinkerforgeDevice = new BrickletCO2(getUid(), getIpConnection());
+            tinkerforgeDevice.setCO2ConcentrationCallbackPeriod(getCallbackPeriod());
+            listener = new CO2ConcentrationListener();
+            tinkerforgeDevice.addCO2ConcentrationListener(listener);
+            fetchSensorValue();
+        } catch (TimeoutException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+        } catch (NotConnectedException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+        }
     }
 
     private class CO2ConcentrationListener implements BrickletCO2.CO2ConcentrationListener {
