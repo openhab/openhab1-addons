@@ -121,7 +121,7 @@ public class MiosUnitConnector {
 
     /***
      * Check if the connection to the MiOS instance is active
-     * 
+     *
      * @return true if an active connection to the MiOS instance exists, false otherwise
      */
     public boolean isConnected() {
@@ -130,7 +130,7 @@ public class MiosUnitConnector {
 
     /**
      * Attempts to create a connection to the MiOS host and begin listening for updates over the async HTTP connection.
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws IOException
@@ -138,6 +138,10 @@ public class MiosUnitConnector {
     public void open() throws IOException, InterruptedException, ExecutionException {
         running = true;
         pollThread.start();
+    }
+
+    public void restart() {
+        pollCall.restart();
     }
 
     /***
@@ -149,7 +153,7 @@ public class MiosUnitConnector {
 
     /**
      * Is the underlying Polling thread running?
-     * 
+     *
      * @return true if it's running.
      */
 
@@ -294,9 +298,9 @@ public class MiosUnitConnector {
 
     /**
      * Request that a MiOS Scene be triggered.
-     * 
+     *
      * Used by openHAB Action code, this method fires off the MiOS Scene associated with the Scene Item.
-     * 
+     *
      * @param config
      *            A Scene [Item] Binding Configuration.
      */
@@ -310,9 +314,9 @@ public class MiosUnitConnector {
 
     /**
      * Request that a MiOS Device Action be triggered.
-     * 
+     *
      * Used by openHAB Action code, this method fires off the MiOS Action associated with the Device Item.
-     * 
+     *
      * @param config
      *            A Device [Item] Binding Configuration.
      * @param actionName
@@ -391,16 +395,16 @@ public class MiosUnitConnector {
 
     /**
      * MiOS Poll code.
-     * 
+     *
      * This code will stand up a thread to serially poll the target MiOS Unit. The initial poll request will return the
      * full content from the MiOS unit. Subsequent calls are requested to only return the incremental/changed contents.
-     * 
+     *
      * If a processing error (Timeout, etc) is detected, then a full content poll is again initiated (since things can
      * change during the interval)
-     * 
+     *
      * Upon successful polling, a series of calls are made to openHAB to push the data to the respective bindings, so
      * that data values will change within the user's Rules (etc).
-     * 
+     *
      * @author Mark Clark
      * @since 1.6.0
      */
@@ -749,19 +753,54 @@ public class MiosUnitConnector {
             }
         }
 
+        private boolean fullReload;
+        private long lastFullReload;
+        private Object fullReloadLock = new Object();
+
+        public void restart() {
+            synchronized (this.fullReloadLock) {
+                this.lastFullReload = System.currentTimeMillis();
+                this.fullReload = true;
+            }
+            logger.debug("restart: Resetting, requesting forced reload. lastFullReload={}", this.lastFullReload);
+        }
+
         @Override
         public void run() {
-            long loopCount = 0;
+            restart();
+            MiosUnit unit = getMiosUnit();
+            int startupDelay = unit.getStartupDelay();
+            int errorCount = unit.getErrorCount();
+            long loopCount = 0l;
 
             do {
                 try {
+                    //
+                    // On the first loop, and each time we're restarted through openHAB config change, add
+                    // a delay to bundle the incoming openHAB Configuration events.
+                    //
+                    while (this.fullReload) {
+                        int sleepTime;
+                        synchronized (this.fullReloadLock) {
+                            sleepTime = (int)(this.lastFullReload + startupDelay - System.currentTimeMillis());
+                            if (sleepTime <= 0) {
+                                this.fullReload = false;
+                            }
+                        }
+
+                        if (sleepTime <= 0) {
+                            loopCount = 0l;
+                            logger.debug("run: finishing sleep cycle.");
+                            break;
+                        }
+
+                        logger.debug("run: sleeping, delaying reload sleepTime={}", sleepTime);
+                        Thread.sleep(sleepTime);
+                    }
+
                     // Force a full poll of the dataSet every time the MiOS Unit
                     // configuration indicates to do so, or if we get an error.
-                    MiosUnit unit = getMiosUnit();
-                    int errorCount = unit.getErrorCount();
-                    boolean force = (loopCount == 0l)
-                            || (errorCount != 0) && (failures != 0) && ((failures % errorCount) == 0);
-
+                    boolean force = this.fullReload || (errorCount != 0) && (failures != 0) && ((failures % errorCount) == 0);
                     boolean incremental = (!force && loadTime != null && dataVersion != null);
                     String uri = getUri(incremental);
 
@@ -789,6 +828,8 @@ public class MiosUnitConnector {
                     if (c != 0) {
                         loopCount = (loopCount % c);
                     }
+                } catch (InterruptedException ie) {
+                    logger.debug("run: Thread shutdown by Interrupted");
                 } catch (Exception e) {
                     connected = false;
                     this.failures++;
