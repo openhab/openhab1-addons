@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2014-2016 by the respective copyright holders.
- *
+ * <p>
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,19 +8,23 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.openhab.binding.zwave.internal.protocol.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Properties;
+
+import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
+import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Properties;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the clock command class.
@@ -46,9 +50,12 @@ public class ZWaveCentralSceneCommandClass extends ZWaveCommandClass
     /**
      * Creates a new instance of the ZWaveCentralSceneCommandClass class.
      *
-     * @param node the node this command class belongs to
-     * @param controller the controller to use
-     * @param endpoint the endpoint this Command class belongs to
+     * @param node
+     *            the node this command class belongs to
+     * @param controller
+     *            the controller to use
+     * @param endpoint
+     *            the endpoint this Command class belongs to
      */
     public ZWaveCentralSceneCommandClass(ZWaveNode node, ZWaveController controller, ZWaveEndpoint endpoint) {
         super(node, controller, endpoint);
@@ -76,15 +83,18 @@ public class ZWaveCentralSceneCommandClass extends ZWaveCommandClass
                 int key = serialMessage.getMessagePayloadByte(offset + 2);
                 logger.debug("NODE {}: Received scene {} ; key {}", this.getNode().getNodeId(), sceneId, key);
 
-                //Received Central Scene Commands. They are triggered by pushing a button on a controller
-                //supporting the central Scene Command Class
-                //Command Class values in data holder:
-                //• ’keyAttribute’: 0x00 = Key pressed,
-                //                  0x01 = Key released,
-                //                  0x02 = Key held down,
-                //                  0x03 = Double Tap,    (Homeseer HS-WD100, HS-WS100)
-                //                  0x04 = Triple Tap,    (Homeseer HS-WD100, HS-WS100)
-                //• ’currentScene’: indicates the current activated scene
+                // Received Central Scene Commands. They are triggered by pushing a
+                // button on a controller supporting the CENTRAL_SCENE command class.
+                // Command class values in data holder: 'key' and 'scene'
+                // - ’scene’: indicates the current activated scene/button.
+                // - ’key’: indicates the current key/button state.
+                //
+                // Examples 'key' values:
+                // 0x00 = Key pressed,
+                // 0x01 = Key released,
+                // 0x02 = Key held down,
+                // 0x03 = Double Tap, (Homeseer HS-WD100, HS-WS100)
+                // 0x04 = Triple Tap, (Homeseer HS-WD100, HS-WS100)
                 Properties properties = new Properties();
                 properties.put("key", key);
                 properties.put("scene", sceneId);
