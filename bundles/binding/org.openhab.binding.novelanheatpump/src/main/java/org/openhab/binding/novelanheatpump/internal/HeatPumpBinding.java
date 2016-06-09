@@ -353,6 +353,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                 break;
             case 19:
                 returnValue = Messages.HeatPumpBinding_SERVICE_WATER_ADDITIONAL_HEATING;
+                break;
             default:
                 logger.info(
                         "found new value for reverse engineering !!!! No idea what the heatpump will do in state {}.", //$NON-NLS-1$
