@@ -1,26 +1,29 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2014-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.maxcube.internal.message;
+package org.openhab.binding.maxcube.internal.command;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openhab.binding.maxcube.internal.Utils;
+import org.openhab.binding.maxcube.internal.message.ThermostatModeType;
 
 /**
- * Command to be send via the MAX!Cube protocol.
+ * {@link S_Command} for setting MAX! thermostat temperature & mode.
  *
  * @author Andreas Heil (info@aheil.de)
- * @author Marcel Verpaalen
+ * @author Marcel Verpaalen - OH2 update + simplification
  * @since 1.4.0
  */
-public class S_Command {
+public class S_Command extends CubeCommand {
 
-    private String baseString = "000440000000";
+    private String baseStringS = "000040000000"; // for single devices
+    private String baseStringG = "000440000000"; // for group/room devices
+
     private boolean[] bits = null;
 
     private String rfAddress = null;
@@ -28,7 +31,7 @@ public class S_Command {
 
     /**
      * Creates a new instance of the MAX! protocol S command.
-     * 
+     *
      * @param rfAddress
      *            the RF address the command is for
      * @param roomId
@@ -52,49 +55,23 @@ public class S_Command {
         // AB => bit mapping
         // 01 = Permanent
         // 10 = Temporarily
-
-        if (mode.equals(ThermostatModeType.MANUAL)) {
-            bits[7] = false; // A (MSB)
-            bits[6] = true; // B
-        } else if (mode.equals(ThermostatModeType.BOOST)) {
-            bits[7] = true; // A (MSB)
-            bits[6] = true; // B
-        } else {
-            bits[7] = false; // A (MSB)
-            bits[6] = false; // B
-        }
-    }
-
-    /**
-     * Creates a new instance of the MAX! protocol S command.
-     * 
-     * @param rfAddress
-     *            the RF address the command is for
-     * @param roomId
-     *            the room ID the RF address is mapped to
-     * @param mode
-     *            the desired mode for the device.
-     */
-    public S_Command(String rfAddress, int roomId, ThermostatModeType mode) {
-        this.rfAddress = rfAddress;
-        this.roomId = roomId;
-
-        // default to perm setting
-        // AB => bit mapping
-        // 01 = Permanent
-        // 10 = Temporarily
+        // 11 = Boost
 
         switch (mode) {
-            case VACATION:
             case MANUAL:
-                // not implemented
+                bits[7] = false; // A (MSB)
+                bits[6] = true; // B
                 break;
             case AUTOMATIC:
-                bits = Utils.getBits(0);
+                bits[7] = false; // A (MSB)
+                bits[6] = false; // B
                 break;
             case BOOST:
-                bits = Utils.getBits(255);
+                bits[7] = true; // A (MSB)
+                bits[6] = true; // B
                 break;
+            case VACATION:
+                // not implemented needs time
             default:
                 // no further modes supported
         }
@@ -103,15 +80,28 @@ public class S_Command {
     /**
      * Returns the Base64 encoded command string to be sent via the MAX!
      * protocol.
-     * 
+     *
      * @return the string representing the command
      */
+    @Override
     public String getCommandString() {
+
+        String baseString = "";
+        if (roomId == 0) {
+            baseString = baseStringS;
+        } else {
+            baseString = baseStringG;
+        }
 
         String commandString = baseString + rfAddress + Utils.toHex(roomId) + Utils.toHex(bits);
 
         String encodedString = Base64.encodeBase64String(Utils.hexStringToByteArray(commandString));
 
-        return "s:" + encodedString;
+        return "s:" + encodedString + '\r' + '\n';
+    }
+
+    @Override
+    public String getReturnStrings() {
+        return "S:";
     }
 }

@@ -9,37 +9,39 @@
 /**
  *
  */
-package org.openhab.binding.maxcube.internal.message;
+package org.openhab.binding.maxcube.internal.command;
+
+import static org.junit.Assert.assertEquals;
 
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 import org.openhab.binding.maxcube.internal.Utils;
-
-import junit.framework.Assert;
+import org.openhab.binding.maxcube.internal.message.ThermostatModeType;
 
 /**
+ * Tests cases for {@link S_Command}.
+ *
+ * @author Marcel Verpaalen
  * @author Andreas Heil (info@aheil.de)
  * @since 1.4.0
  */
 public class S_CommandTest {
 
-    public final String foo = "s:AARAAAAAAP4wAaiLix8=\r\n";
-
     @Test
     public void PrefixTest() {
-        S_Command scmd = new S_Command("00FE30", 1, ThermostatModeType.MANUAL, 20.0);
+        S_Command scmd = new S_Command("0b0da3", 1, ThermostatModeType.MANUAL, 20.0);
 
         String commandStr = scmd.getCommandString();
 
         String prefix = commandStr.substring(0, 2);
 
-        Assert.assertEquals("s:", prefix);
+        assertEquals("s:", prefix);
 
     }
 
     @Test
     public void BaseCommandTest() {
-        S_Command scmd = new S_Command("00FE30", 1, ThermostatModeType.MANUAL, 20.0);
+        S_Command scmd = new S_Command("0b0da3", 1, ThermostatModeType.MANUAL, 20.0);
 
         String commandStr = scmd.getCommandString();
 
@@ -53,7 +55,28 @@ public class S_CommandTest {
         }
 
         String decodedString = Utils.toHex(data);
-        System.out.print("\n" + decodedString);
+        assertEquals("s:AARAAAAACw2jAWg=\r\n", commandStr);
+        assertEquals("011000000002C368C05A", decodedString);
+
+    }
+
+    @Test
+    public void boostModeTest() {
+        S_Command scmd = new S_Command("0b0da3", 1, ThermostatModeType.BOOST, 21.0);
+
+        String commandStr = scmd.getCommandString();
+
+        assertEquals("s:AARAAAAACw2jAeo=\r\n", commandStr);
+
+    }
+
+    @Test
+    public void autotModeTest() {
+        S_Command scmd = new S_Command("0b0da3", 1, ThermostatModeType.AUTOMATIC, 0);
+
+        String commandStr = scmd.getCommandString();
+
+        assertEquals("s:AARAAAAACw2jAQA=\r\n", commandStr);
 
     }
 }
