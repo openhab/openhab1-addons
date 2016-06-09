@@ -36,6 +36,7 @@ public class Messages extends NLS {
     public static String HeatPumpBinding_SERVICE_WATER_EXT;
     public static String HeatPumpBinding_FLOW_MONITORING;
     public static String HeatPumpBinding_ZWE_OPERATION;
+    public static String HeatPumpBinding_SERVICE_WATER_ADDITIONAL_HEATING;
 
     static {
         // initialize resource bundle
