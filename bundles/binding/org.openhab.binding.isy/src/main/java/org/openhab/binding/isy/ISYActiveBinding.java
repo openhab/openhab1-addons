@@ -611,8 +611,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 				switch (config.getControlCommand()) {
 				case CLISPH:
 				case CLISPC:
-					DecimalType value = new DecimalType(
-							new BigDecimal(type).multiply(TWO));
+					DecimalType value = new DecimalType(type.toBigDecimal().multiply(TWO));
 					this.insteonClient.changeNodeState(config
 							.getControlCommand().name(), value.format("%d"),
 							node.address);
@@ -633,7 +632,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 			case DIMMER:
 				switch (config.getControlCommand()) {
 				case ST:
-					DecimalType dim = new DecimalType(new BigDecimal(type)
+					DecimalType dim = new DecimalType(type.toBigDecimal()
 							.multiply(HUNDRED).divide(BYTEMAX)
 							.setScale(0, BigDecimal.ROUND_HALF_UP));
 
