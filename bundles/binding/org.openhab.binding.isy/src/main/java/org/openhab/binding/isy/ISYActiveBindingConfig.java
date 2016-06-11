@@ -6,11 +6,14 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 /**
  * Contains the runtime configuration for the binding as defined in the openhab
  * configuration file.
  * 
  * @author Jon Bullen
+ * @since 1.9.0
  * 
  */
 public class ISYActiveBindingConfig {
@@ -24,7 +27,7 @@ public class ISYActiveBindingConfig {
 	private String password;
 	private final Logger logger = LoggerFactory
 			.getLogger(ISYActiveBinding.class);
-	
+
 	/**
 	 * Creates a new instance of the Active Binding configuration for work with
 	 * a ISY unit.
@@ -34,28 +37,31 @@ public class ISYActiveBindingConfig {
 	 */
 	public ISYActiveBindingConfig(Map<Object, Object> config) {
 
-		this.logger.info("OpenHab Binding Configuration(refresh='{}',upnp='{}',uuid='{}',ip='{}',port='{}',user='{}',password='{}')",
-					config.get("refresh"), config.get("upnp"),config.get("uuid"),config.get("ip"),config.get("port"),config.get("user"),"xxxxxx");
+		this.logger
+				.info("OpenHab Binding Configuration(refresh='{}',upnp='{}',uuid='{}',ip='{}',port='{}',user='{}',password='{}')",
+						config.get("refresh"), config.get("upnp"),
+						config.get("uuid"), config.get("ip"),
+						config.get("port"), config.get("user"), "xxxxxx");
 
-		if (StringUtils.isNotBlank((String) config.get("refresh"))) {
+		if (isNotBlank((String) config.get("refresh"))) {
 			refreshInterval = Long.parseLong((String) config.get("refresh"));
 		}
 
-		if (StringUtils.isNotBlank((String) config.get("user"))
-				&& StringUtils.isNotBlank((String) config.get("password"))) {
+		if (isNotBlank((String) config.get("user"))
+				&& isNotBlank((String) config.get("password"))) {
 			this.user = (String) config.get("user");
 			this.password = (String) config.get("password");
 		} else {
 			this.logger.warn("No user/password specified");
 		}
 
-		if (StringUtils.isNotBlank((String) config.get("upnp"))) {
+		if (isNotBlank((String) config.get("upnp"))) {
 			useUpnp = Boolean.parseBoolean((String) config.get("upnp"));
 		}
 
-		if (!useUpnp && StringUtils.isNotBlank((String) config.get("uuid"))
-				&& StringUtils.isNotBlank((String) config.get("ip"))
-				&& StringUtils.isNotBlank((String) config.get("port"))) {
+		if (!useUpnp && isNotBlank((String) config.get("uuid"))
+				&& isNotBlank((String) config.get("ip"))
+				&& isNotBlank((String) config.get("port"))) {
 
 			this.uuid = (String) config.get("uuid");
 			this.ipAddress = (String) config.get("ip");

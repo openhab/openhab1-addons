@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZW099</Model>
+    <Label lang="en">Smart Dimmer 6</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x33</id>             <!-- COLOR -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x26</id>             <!-- SWITCH_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x32</id>             <!-- METER -->
+        </Class>
+        <Class>
+            <id>0x81</id>             <!-- CLOCK -->
+        </Class>
+        <Class>
+            <id>0x60</id>             <!-- MULTI_INSTANCE -->
+        </Class>
+        <Class>
+            <id>0x8E</id>             <!-- MULTI_INSTANCE_ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x82</id>             <!-- HAIL -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0xEF</id>             <!-- MARK -->
+        </Class>
+        <Class>
+            <id>0x98</id>             <!-- SECURITY -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Current Overload Protection</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disabled</Label>
+            </Item>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enabled</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>20</Index>
+            <Label lang="en">Initial Load State</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Last Status</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Always On</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Always Off</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>33</Index>
+            <Label lang="en">RGB LED Color Test</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2147483647</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>80</Index>
+            <Label lang="en">Notification on Status Change</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">None</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Hail</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Basic CC Report</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>81</Index>
+            <Label lang="en">LED Indicator Mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Energy Mode (Load State)</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Momentary Mode</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Night Light Mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>83</Index>
+            <Label lang="en">LED Color for Night Light</Label>
+            <Type>short</Type>
+            <Default>1774619</Default>
+            <Minimum>0</Minimum>
+            <Maximum>16777215</Maximum>
+            <Size>3</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>84</Index>
+            <Label lang="en">LED Brightness</Label>
+            <Type>short</Type>
+            <Default>3289650</Default>
+            <Minimum>0</Minimum>
+            <Maximum>6579300</Maximum>
+            <Size>3</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>90</Index>
+            <Label lang="en">Enable Report triggered by minimal change of value</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enabled</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>91</Index>
+            <Label lang="en">Minimum Change to send Report (Watt)</Label>
+            <Type>short</Type>
+            <Default>25</Default>
+            <Minimum>0</Minimum>
+            <Maximum>60000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>92</Index>
+            <Label lang="en">Minimum Change to send Report (%)</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>100</Index>
+            <Label lang="en">Reset Report Assignments for All Groups</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Do Nothing</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Reset to Defaults</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>101</Index>
+            <Label lang="en">Reports for Group 1</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2147483647</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>102</Index>
+            <Label lang="en">Reports for Group 2</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2147483647</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>103</Index>
+            <Label lang="en">Reports for Group 3</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2147483647</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>110</Index>
+            <Label lang="en">Reset Report Time Intervals for All Groups</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <ReadOnly>true</ReadOnly>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Do Nothing</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Reset to Defaults</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>111</Index>
+            <Label lang="en">Report Group 1 Time Interval</Label>
+            <Type>short</Type>
+            <Default>600</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2147483647</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>112</Index>
+            <Label lang="en">Report Group 2 Time Interval</Label>
+            <Type>short</Type>
+            <Default>600</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2147483647</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>113</Index>
+            <Label lang="en">Report Group 3 Time Interval</Label>
+            <Type>short</Type>
+            <Default>600</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2147483647</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>200</Index>
+            <Label lang="en">Partner ID</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <ReadOnly>true</ReadOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Aeon Labs Standard Product</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Others</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>252</Index>
+            <Label lang="en">Configuration Lock</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enabled</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>254</Index>
+            <Label lang="en">Device Tag</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>255</Index>
+            <Label lang="en">Reset to Factory Default Settings</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Reset</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Group 1</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Group 2</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

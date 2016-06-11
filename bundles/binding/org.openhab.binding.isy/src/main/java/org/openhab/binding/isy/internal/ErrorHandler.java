@@ -21,7 +21,7 @@ import com.universaldevices.upnp.UDProxyDevice;
  * Error handler for the ISY client
  * 
  * @author Tim Diekmann
- * 
+ * @since 1.9.0
  */
 public class ErrorHandler implements ErrorEventListener {
 

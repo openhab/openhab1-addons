@@ -37,11 +37,13 @@ import com.universaldevices.device.model.UDNode;
 import com.universaldevices.resources.errormessages.Errors;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * This handles the connection and binding to the ISY device. All interaction
+ * through the device runs through this class. It uses the ISY SDK to create the
+ * client object and connect to the device using credentials in the
+ * configuration file for openhab.
  * 
  * @author Tim Diekmann
- * @since 1.7.0
+ * @since 1.9.0
  */
 public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 		implements ISYModelChangeListener {
@@ -169,10 +171,8 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 	 */
 	@Override
 	protected void execute() {
-		// the frequently executed code (polling) goes here ...
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("refreshing status");
-		}
+
+		this.logger.debug("refreshing status");
 
 		queryStatus();
 	}
@@ -187,10 +187,10 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("internalReceiveCommand({},{}) is called!",
-					itemName, command);
-		}
+		// See the Readme.md for the item formatting for the ISY link.
+
+		this.logger.debug("internalReceiveCommand({},{}) is called!", itemName,
+				command);
 
 		ISYBindingConfig config = getBindingConfigByName(itemName);
 
@@ -203,20 +203,10 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 		}
 	}
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected void internalReceiveUpdate(final String itemName,
-			final State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("internalReceiveUpdate({},{}) is called!",
-					itemName, newState);
-		}
-	}
+	private static final BigDecimal HALF = new BigDecimal("0.5");
+	private static final BigDecimal TWO = new BigDecimal("0.5");
+	private static final BigDecimal HUNDRED = new BigDecimal("100.0");
+	private static final BigDecimal BYTEMAX = new BigDecimal("255.0");
 
 	/**
 	 * Callback from the ISY client when a node changed its state. Find the
@@ -250,7 +240,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 
 			for (ISYBindingConfig config : configs) {
 
-				switch (config.getType()) { 
+				switch (config.getType()) {
 				case SWITCH:
 					if ("0".equals(action)) {
 						state = OnOffType.OFF;
@@ -274,7 +264,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 					break;
 				case THERMOSTAT:
 					state = new DecimalType(
-							new DecimalType((String) action).doubleValue() * 0.5);
+							new BigDecimal((String) action).multiply(HALF));
 					break;
 				case NUMBER:
 					state = new DecimalType((String) action);
@@ -285,26 +275,29 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 				case DIMMER:
 					if ("0".equals(action)) {
 						state = OnOffType.OFF;
-					} else if ("255".equals(action)){
+					} else if ("255".equals(action)) {
 						state = OnOffType.ON;
 					} else {
-						BigDecimal dim = new BigDecimal(Math.round((new DecimalType((String) action).doubleValue() * 100) / 255));
+						BigDecimal dim = new BigDecimal((String) action)
+								.multiply(HUNDRED).divide(BYTEMAX)
+								.setScale(0, BigDecimal.ROUND_HALF_UP);
+
 						state = new PercentType(dim);
 					}
 					break;
 				case LOCK:
-				    if ("0".equals(action)) {
-				        state = OnOffType.OFF;
-				    } else {
-				        state = OnOffType.ON;
-				    }
-				    break;
+					if ("0".equals(action)) {
+						state = OnOffType.OFF;
+					} else {
+						state = OnOffType.ON;
+					}
+					break;
 				case HEARTBEAT:
-				    if ("255".equals(action)) {
-				        // Return current timestamp when we get a heartbeat
-				        state = new DateTimeType();
-				    }
-				    break;
+					if ("255".equals(action)) {
+						// Return current timestamp when we get a heartbeat
+						state = new DateTimeType();
+					}
+					break;
 				default:
 					break;
 				}
@@ -374,8 +367,9 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 
 				switch (config.getType()) {
 				case THERMOSTAT:
+
 					state = new DecimalType(
-							new DecimalType((String) action).doubleValue() * 0.5);
+							new BigDecimal((String) action).multiply(HALF));
 					break;
 				default:
 					state = null;
@@ -411,18 +405,16 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 			break;
 
 		case BATLVL:
-            for (ISYBindingConfig config : getBindingConfigFromAddress(
-                    node.address, control.name)) {
-                
-                state = new DecimalType((String) action);
-                this.eventPublisher.postUpdate(config.getItemName(), state);
-            }
-            break;
-		    
-		default:
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Unsupported control {}", control.name);
+			for (ISYBindingConfig config : getBindingConfigFromAddress(
+					node.address, control.name)) {
+
+				state = new DecimalType((String) action);
+				this.eventPublisher.postUpdate(config.getItemName(), state);
 			}
+			break;
+
+		default:
+			this.logger.debug("Unsupported control '{}'", control.name);
 		}
 	}
 
@@ -482,7 +474,8 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 	private void processCommand(final ISYBindingConfig config,
 			final Command command) {
 		if (!this.insteonClient.isISYReady()) {
-			this.logger.warn("ISY is not ready");
+			this.logger
+					.warn("ISY is not ready; dropping command '{}'", command);
 
 			return;
 		}
@@ -493,7 +486,8 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 		try {
 			node = this.insteonClient.getNodes().get(config.getController());
 		} catch (Exception e) {
-			this.logger.warn("no such device, " + config.getController(), e);
+			this.logger.warn("no such device: '{}' - {} ",
+					config.getController(), e);
 		}
 
 		if (node == null) {
@@ -501,16 +495,16 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 				node = this.insteonClient.getGroups().get(
 						config.getController());
 			} catch (Exception e) {
-				this.logger.warn(
-						"no such group found, " + config.getController(), e);
+				this.logger.warn("no such group found: '{}' - {}",
+						config.getController(), e);
 			}
 		}
 
 		if (node != null) {
 			executeCommand(config, node, command);
 		} else {
-			this.logger.warn("No node found for address "
-					+ config.getController());
+			this.logger.warn("No node found for address: '{}' ",
+					config.getController());
 		}
 	}
 
@@ -528,10 +522,11 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 	private void executeCommand(final ISYBindingConfig config,
 			final UDNode node, final Command command) {
 
-		// Do percent first so dimmers dim and do not just go on and off. 
-		if(command instanceof IncreaseDecreaseType && ISYNodeType.DIMMER.equals(config.getType())) {
+		// Do percent first so dimmers dim and do not just go on and off.
+		if (command instanceof IncreaseDecreaseType
+				&& ISYNodeType.DIMMER.equals(config.getType())) {
 			IncreaseDecreaseType type = (IncreaseDecreaseType) command;
-			
+
 			switch (type) {
 			case INCREASE:
 				if (node instanceof UDGroup) {
@@ -560,12 +555,18 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 
 					// provide immediate feedback such that the UI gets updated
 					// or else the switch button will not be refreshed until the
-					// new state has been reached
-					this.eventPublisher.postUpdate(config.getItemName(), type);
+					// new state has been reached.
+					// TODO: Make it a configuration option to enable immediate
+					// state update before ISY device poll.
+					// this.eventPublisher.postUpdate(config.getItemName(),
+					// type);
 				} else if (ISYNodeType.LOCK.equals(config.getType())) {
-				    this.insteonClient.changeNodeState(ISYControl.SECMD.name(), 
-				            "1", node.address);
-				    this.eventPublisher.postUpdate(config.getItemName(), type);
+					this.insteonClient.changeNodeState(ISYControl.SECMD.name(),
+							"1", node.address);
+					// TODO: Make it a configuration option to enable immediate
+					// state update before ISY device poll.
+					// this.eventPublisher.postUpdate(config.getItemName(),
+					// type);
 				} else if (node instanceof UDGroup) {
 					this.insteonClient.turnSceneOn(node.address);
 				} else {
@@ -583,12 +584,18 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 					// provide immediate feedback such that the UI gets updated
 					// or else the switch button will not be refreshed until the
 					// new state has been reached
-					this.eventPublisher.postUpdate(config.getItemName(), type);
-				
-                } else if (ISYNodeType.LOCK.equals(config.getType())) {
-                    this.insteonClient.changeNodeState(ISYControl.SECMD.name(), 
-                            "0", node.address);
-                    this.eventPublisher.postUpdate(config.getItemName(), type);
+					// TODO: Make it a configuration option to enable immediate
+					// state update before ISY device poll.
+					// this.eventPublisher.postUpdate(config.getItemName(),
+					// type);
+
+				} else if (ISYNodeType.LOCK.equals(config.getType())) {
+					this.insteonClient.changeNodeState(ISYControl.SECMD.name(),
+							"0", node.address);
+					// TODO: Make it a configuration option to enable immediate
+					// state update before ISY device poll.
+					// this.eventPublisher.postUpdate(config.getItemName(),
+					// type);
 				} else if (node instanceof UDGroup) {
 					this.insteonClient.turnSceneFastOff(node.address);
 				} else {
@@ -599,21 +606,22 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 		} else if (command instanceof DecimalType) {
 			DecimalType type = (DecimalType) command;
 
-			switch (config.getType()) {	
+			switch (config.getType()) {
 			case THERMOSTAT:
 				switch (config.getControlCommand()) {
 				case CLISPH:
 				case CLISPC:
 					DecimalType value = new DecimalType(
-							type.doubleValue() * 2.0);
-					this.insteonClient.changeNodeState(
-							config.getControlCommand().name(), value.format("%d"),
+							new BigDecimal(type).multiply(TWO));
+					this.insteonClient.changeNodeState(config
+							.getControlCommand().name(), value.format("%d"),
 							node.address);
 					break;
 				case CLIMD:
 				case CLIFS:
-					this.insteonClient.changeNodeState(config.getControlCommand().name(),
-							type.format("%s"), node.address);
+					this.insteonClient.changeNodeState(config
+							.getControlCommand().name(), type.format("%s"),
+							node.address);
 					break;
 				default:
 					break;
@@ -621,21 +629,28 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 				break;
 			default:
 				break;
-			//Dimmer Commands come in as DecimalType, not PercentType
+			// Dimmer Commands come in as DecimalType, not PercentType
 			case DIMMER:
 				switch (config.getControlCommand()) {
 				case ST:
-					DecimalType dim = new DecimalType(Math.round((type.doubleValue() * 255)/ 100));
-					if (dim.intValue() <= 0){
+					DecimalType dim = new DecimalType(new BigDecimal(type)
+							.multiply(HUNDRED).divide(BYTEMAX)
+							.setScale(0, BigDecimal.ROUND_HALF_UP));
+
+					if (dim.intValue() <= 0) {
 						this.insteonClient.turnDeviceFastOff(node.address);
-					} else if (dim.intValue() >= 255){
+					} else if (dim.intValue() >= 255) {
 						this.insteonClient.turnDeviceFastOn(node.address);
 					} else {
-						this.insteonClient.changeNodeState(ISYControl.DON.name(),
-								dim.format("%s"), node.address);
+						this.insteonClient.changeNodeState(
+								ISYControl.DON.name(), dim.format("%s"),
+								node.address);
 					}
-					
-					this.eventPublisher.postUpdate(config.getItemName(), dim);
+
+					// TODO: Make it a configuration option to enable immediate
+					// state update before ISY device poll.
+					// this.eventPublisher.postUpdate(config.getItemName(),
+					// dim);
 					break;
 				default:
 					break;
@@ -644,7 +659,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 		} else if (command instanceof IncreaseDecreaseType) {
 			IncreaseDecreaseType type = (IncreaseDecreaseType) command;
 
-			switch (config.getType()) {	
+			switch (config.getType()) {
 			case DIMMER:
 				switch (config.getControlCommand()) {
 				case ST:
@@ -682,10 +697,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 	private void updateStatus(final String itemName,
 			final ISYBindingConfig config) {
 
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("updateStatus({},{}) is called!", itemName,
-					config);
-		}
+		this.logger.debug("updateStatus({},{}) is called!", itemName, config);
 
 		if (this.insteonClient != null && this.insteonClient.isISYReady()) {
 			try {
@@ -706,12 +718,13 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 					onModelChanged(control, value, node);
 				}
 			} catch (Exception ex) {
-				this.logger.error("Failed to update status of " + itemName, ex);
+				this.logger.error("Failed to update status of '{}' ", itemName,
+						ex);
 			}
 		} else {
-			if (this.logger.isInfoEnabled()) {
-				this.logger.info("ISY is not ready yet");
-			}
+
+			this.logger.info("ISY is not ready yet");
+
 		}
 	}
 

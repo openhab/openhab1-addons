@@ -27,7 +27,7 @@ import com.universaldevices.upnp.UDProxyDevice;
  * ISY SDK Insteon client implementation
  * 
  * @author Tim Diekmann
- * 
+ * @since 1.9.0
  */
 public class InsteonClient extends ISYInsteonClient {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -35,10 +35,10 @@ public class InsteonClient extends ISYInsteonClient {
 	private final String password;
 	private final ISYModelChangeListener listener;
 
-	/** 
-	 * Constructor 
+	/**
+	 * Constructor
 	 * 
-	 */ 
+	 */
 	public InsteonClient(final String user, final String password,
 			final ISYModelChangeListener listener) {
 		super();
@@ -55,7 +55,7 @@ public class InsteonClient extends ISYInsteonClient {
 	@Override
 	public void onLinkerEvent(final UDProxyDevice arg0, final String arg1,
 			final XMLElement arg2) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -67,7 +67,7 @@ public class InsteonClient extends ISYInsteonClient {
 	@Override
 	public void onNodeDeviceIdChanged(final UDProxyDevice arg0,
 			final UDNode arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -79,7 +79,7 @@ public class InsteonClient extends ISYInsteonClient {
 	@Override
 	public void onNodeDevicePropertiesRefreshed(final UDProxyDevice arg0,
 			final UDNode arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -90,7 +90,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNodeDevicePropertiesRefreshedComplete(final UDProxyDevice arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -103,7 +103,7 @@ public class InsteonClient extends ISYInsteonClient {
 	@Override
 	public void onNodeDevicePropertyChanged(final UDProxyDevice arg0,
 			final UDNode arg1, final UDProperty<?> arg2) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -114,17 +114,17 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNodeErrorCleared(final UDProxyDevice arg0, final UDNode arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
-	
+
 	/**
 	 * @see com.universaldevices.device.model.IModelChangeListener#onNodeRevised(com.universaldevices.upnp.UDProxyDevice,
 	 *      com.universaldevices.device.model.UDNode)
 	 */
 	@Override
 	public void onNodeRevised(final UDProxyDevice arg0, final UDNode arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -136,7 +136,7 @@ public class InsteonClient extends ISYInsteonClient {
 	@Override
 	public void onNodeSupportedTypeInfoChanged(final UDProxyDevice arg0,
 			final String arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -219,7 +219,7 @@ public class InsteonClient extends ISYInsteonClient {
 	@Override
 	public void onDeviceSpecific(final String arg0, final String arg1,
 			final XMLElement arg2) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -228,7 +228,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onDiscoveringNodes() {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -238,7 +238,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onFolderRemoved(final String arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -249,7 +249,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onFolderRenamed(final UDFolder arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -259,7 +259,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onGroupRemoved(final String arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -270,7 +270,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onGroupRenamed(final UDGroup arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -280,7 +280,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onInternetAccessDisabled() {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -290,7 +290,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onInternetAccessEnabled(final String arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -326,7 +326,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNetworkRenamed(final String arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -337,7 +337,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNewFolder(final UDFolder arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -348,7 +348,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNewGroup(final UDGroup arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -359,7 +359,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNewNode(final UDNode arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -369,7 +369,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNodeDiscoveryStopped() {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -380,7 +380,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNodeEnabled(final UDNode arg0, final boolean arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -402,7 +402,7 @@ public class InsteonClient extends ISYInsteonClient {
 	@Override
 	public void onNodeHasPendingDeviceWrites(final UDNode arg0,
 			final boolean arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -413,7 +413,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNodeIsWritingToDevice(final UDNode arg0, final boolean arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -424,7 +424,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNodeMovedAsMaster(final UDNode arg0, final UDGroup arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -435,7 +435,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNodeMovedAsSlave(final UDNode arg0, final UDGroup arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -446,7 +446,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNodeParentChanged(final UDNode arg0, final UDNode arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -457,7 +457,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNodePowerInfoChanged(final UDNode arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -467,7 +467,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNodeRemoved(final String arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -478,7 +478,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNodeRemovedFromGroup(final UDNode arg0, final UDGroup arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -489,7 +489,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onNodeRenamed(final UDNode arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -502,7 +502,7 @@ public class InsteonClient extends ISYInsteonClient {
 	@Override
 	public void onNodeToGroupRoleChanged(final UDNode arg0, final UDGroup arg1,
 			final char arg2) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -513,7 +513,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onProgress(final String arg0, final XMLElement arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -524,7 +524,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onSystemConfigChanged(final String arg0, final XMLElement arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -534,7 +534,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onSystemStatus(final boolean arg0) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 
@@ -545,7 +545,7 @@ public class InsteonClient extends ISYInsteonClient {
 	 */
 	@Override
 	public void onTriggerStatus(final String arg0, final XMLElement arg1) {
-		// TODO Auto-generated method stub
+		// Nothing in OH is picking this up yet. 
 
 	}
 

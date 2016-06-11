@@ -13,7 +13,7 @@ import com.universaldevices.device.model.UDNode;
 
 /**
  * @author Tim Diekmann
- * 
+ * @since 1.9.0
  */
 public interface ISYModelChangeListener {
 	public void onModelChanged(final UDControl control, final Object action,

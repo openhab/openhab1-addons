@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2016, openHAB.org and others.
+    Copyright (c) 2010-2016 by the respective copyright holders.
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -201,6 +201,13 @@
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.gc100ir/${project.version}</bundle>
+  </feature>
+  
+  <feature name="openhab-binding-gpio" description="GPIO Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-io-gpio</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.gpio/${project.version}</bundle>
   </feature>
 
   <feature name="openhab-binding-heatmiser" description="Heatmiser Binding" version="${project.version}">
@@ -437,11 +444,11 @@
     <configfile finalname="${openhab.conf}/services/swegonventilation.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/swegonventilation</configfile>
   </feature>
 
-  <feature name="openhab-binding-systeminfo" description="System Info Binding" version="${project.version}">
+  <feature name="openhab-binding-tcp" description="TCP/UDP Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.systeminfo/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/systeminfo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/systeminfo</configfile>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.tcp/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/tcp.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/tcp</configfile>
   </feature>
 
   <feature name="openhab-binding-tellstick" description="Tellstick Binding" version="${project.version}">
@@ -600,6 +607,11 @@
   </feature>
 
   <!-- shared features, not end user facing -->
+  <feature name="openhab-io-gpio" description="GPIO IO" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.gpio/${project.version}</bundle>
+  </feature>
 
   <feature name="openhab-transport-cul" description="CUL Transport" version="${project.version}">
     <feature>openhab-runtime-base</feature>

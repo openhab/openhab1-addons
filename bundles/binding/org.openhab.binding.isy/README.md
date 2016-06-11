@@ -4,20 +4,6 @@ This is a openHAB binding for the Universal Devices ISY 994i router and PLM. Uni
 external programs to communicate with the router. Alternatives include an extensive REST API. See details at
 https://www.universal-devices.com/isy-developers/.
 
-## Instructions
-
-To build and install the isy binding, you need to first download the Java SDK that corresponds with the firmware version
-of your ISY 994i.
-
-
-1. [Download](https://www.universal-devices.com/isy-developers/.) the latest Java SDK zip file, e.g. ISY-WSDK-4.2.21.zip
-1. Unzip it to some local folder
-1. Copy the isy_inst.jar file into the org.openhab.binding.isy/lib folder
-1. Provided that the API and the file name have not changed, there should not be a need to change the source code. Watch for
-   compilation errors and adjust accordingly.
-1. Configure the ISY binding in the openhab.cfg file. See below for configuration details
-1. Build and deploy the binding like any other binding into the addons folder of a openHAB runtime
-
 ## Items Configuration with ISY Binding Details
 
 The following settings can be added to the Items definition.
@@ -88,3 +74,18 @@ The following settings configure the ISY binding in the openhab.cfg file.
 ## Disclaimer
 
 There is no guarantee for the function of the binding or its correctness. Use at your own risk.
+
+## Development Upgrade Instructions
+
+To build and install the isy binding, you need to first download the Java SDK that corresponds with the firmware version
+of your ISY 994i.
+
+
+1. [Download](https://www.universal-devices.com/isy-developers/.) the latest Java SDK zip file, e.g. ISY-WSDK-4.2.21.zip
+1. Unzip it to some local folder
+1. Copy the isy_inst.jar file into the org.openhab.binding.isy/lib folder
+1. Provided that the API and the file name have not changed, there should not be a need to change the source code. Watch for
+   compilation errors and adjust accordingly.
+
+
+The Lib is pushed with the binding, if you are using a older firmware version than the bundled version you may have issues. The SDK used should work with all newer version. 

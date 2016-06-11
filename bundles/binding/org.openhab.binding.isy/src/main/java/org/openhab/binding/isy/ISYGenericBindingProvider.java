@@ -29,10 +29,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
- *
+ * 
  * @author Tim Diekmann
  * @author Jon Bullen
- * @since 1.7.0
+ * @since 1.9.0
  * 
  */
 public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
@@ -53,9 +53,8 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 	@Override
 	public void validateItemType(final Item item, final String bindingConfig)
 			throws BindingConfigParseException {
-		if (!(item instanceof ContactItem || item instanceof SwitchItem 
-				|| item instanceof NumberItem || item instanceof StringItem
-				|| item instanceof DateTimeItem)) {
+		if (!(item instanceof ContactItem || item instanceof SwitchItem
+				|| item instanceof NumberItem || item instanceof StringItem || item instanceof DateTimeItem)) {
 			throw new BindingConfigParseException(
 					"item '"
 							+ item.getName()
@@ -69,21 +68,18 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(final String context, final Item item, final String bindingConfig)
+	public void processBindingConfiguration(final String context,
+			final Item item, final String bindingConfig)
 			throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
 
 		ISYBindingConfig config = parseConfig(item, bindingConfig);
-
 		addBindingConfig(item, config);
-
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("added item {} [{}]", item, config);
-		}
+		this.logger.debug("added item {} [{}]", item, config);
+		super.processBindingConfiguration(context, item, bindingConfig);
 	}
 
 	/**
-	 * @see org.openhab.binding.isy.ISYBindingProvider#getBindingConfigFromItemName(java.lang.String)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ISYBindingConfig getBindingConfigFromItemName(final String itemName) {
@@ -99,8 +95,7 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 	}
 
 	/**
-	 * @see org.openhab.binding.isy.ISYBindingProvider#getBindingConfigFromAddress(java.lang.String,
-	 *      java.lang.String)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Collection<ISYBindingConfig> getBindingConfigFromAddress(
@@ -121,19 +116,22 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 
 	/**
 	 * 
-	 * @param item				The item being processed for this config. 
-	 * @param bindingConfig		The string configuration against this item in the config file. 
-	 * @return					A {@link ISYBindingConfig} with the ISY reference information. 
+	 * @param item
+	 *            The item being processed for this config.
+	 * @param bindingConfig
+	 *            The string configuration against this item in the config file.
+	 * @return A {@link ISYBindingConfig} with the ISY reference information.
 	 */
 	private ISYBindingConfig parseConfig(final Item item,
-			final String bindingConfig) {
+			final String bindingConfig) throws BindingConfigParseException {
 
 		ISYNodeType type;
 		String controller = null;
 		String address = null;
 		ISYControl command = null;
-		
-		// item has already been validated. Use validateItemType to catch unsupported types. 
+
+		// item has already been validated. Use validateItemType to catch
+		// unsupported types.
 		if (item instanceof GroupItem) {
 			type = ISYNodeType.GROUP;
 		} else if (item instanceof ContactItem) {
@@ -150,8 +148,6 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 			type = ISYNodeType.SWITCH;
 		}
 
-		
-		
 		// Valid Keys:
 		// ctrl, type, cmd, addr
 		String[] arr = bindingConfig.split(",");
@@ -161,35 +157,36 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 			String value = pair[1];
 
 			switch (key) {
-				case "ctrl":
-					controller = value.replace('.', ' ');
-					break;
-				case "addr":
-					address = value.replace('.', ' ');
-					break;
-				case "type":
-					if ("thermostat".equalsIgnoreCase(value)) {
-						type = ISYNodeType.THERMOSTAT;
-					}
-                    if ("lock".equalsIgnoreCase(value)) {
-                        type = ISYNodeType.LOCK;
-                    }
-                    if ("heartbeat".equalsIgnoreCase(value)) {
-                        type = ISYNodeType.HEARTBEAT;
-                    }
-					break;
-				case "cmd":
-					try {
-						command = ISYControl.valueOf(value.toUpperCase());
-					} catch (IllegalArgumentException ie) {
-						this.logger.warn("Unsupported cmd {}", value);
-						command = ISYControl.UNDEFINED;
-					}
-					break;
+			case "ctrl":
+				controller = value.replace('.', ' ');
+				break;
+			case "addr":
+				address = value.replace('.', ' ');
+				break;
+			case "type":
+				if ("thermostat".equalsIgnoreCase(value)) {
+					type = ISYNodeType.THERMOSTAT;
+				}
+				if ("lock".equalsIgnoreCase(value)) {
+					type = ISYNodeType.LOCK;
+				}
+				if ("heartbeat".equalsIgnoreCase(value)) {
+					type = ISYNodeType.HEARTBEAT;
+				}
+				break;
+			case "cmd":
+				try {
+					command = ISYControl.valueOf(value.toUpperCase());
+				} catch (IllegalArgumentException ie) {
+					throw new BindingConfigParseException("Unsupported cmd "
+							+ value.toString());
+				}
+				break;
 			}
 		}
 
-		// Set the address to be the same as the controller as it is just a single device. 
+		// Set the address to be the same as the controller as it is just a
+		// single device.
 		if (address == null) {
 			address = controller;
 		}

@@ -18,7 +18,7 @@ package net.wimpi.modbus.net;
 
 import java.net.InetAddress;
 
-import net.wimpi.modbus.io.ModbusUDPTransport;
+import net.wimpi.modbus.io.ModbusTransport;
 
 /**
  * Interface defining a <tt>UDPTerminal</tt>.
@@ -67,7 +67,7 @@ public interface UDPTerminal {
      *
      * @return a <tt>ModbusTransport</tt> instance.
      */
-    public ModbusUDPTransport getModbusTransport();
+    public ModbusTransport getModbusTransport();
 
     /**
      * Sends the given message.
