@@ -282,6 +282,13 @@
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.lcn/${project.version}</bundle>
   </feature>
 
+  <feature name="openhab-binding-lgtv" description="LGTV Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.lgtv/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/lgtv.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/lgtv</configfile>
+  </feature>
+
   <feature name="openhab-binding-milight" description="Milight Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
