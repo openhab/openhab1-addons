@@ -15,6 +15,6 @@ package org.openhab.binding.dscalarm.internal.connector;
  * @since 1.6.0
  */
 public enum DSCAlarmConnectorType {
-	SERIAL,
-	TCP;
+    SERIAL,
+    TCP;
 }

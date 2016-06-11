@@ -34,210 +34,200 @@ import org.slf4j.LoggerFactory;
  * @since 1.6.0
  */
 public class TCPConnector implements DSCAlarmConnector {
-	private static final Logger logger = LoggerFactory.getLogger(TCPConnector.class);
+    private static final Logger logger = LoggerFactory.getLogger(TCPConnector.class);
 
-	String ipAddress = "";
-	int tcpPort;
-	int connectTimeout;
-	private Socket tcpSocket = null;
-	private OutputStreamWriter tcpOutput = null;
-	private BufferedReader tcpInput = null;
-	private TCPListener TCPListener = null;
-	private DSCAlarmConnectorType connectorType = DSCAlarmConnectorType.TCP;
-	private static boolean connected = false;
-	private static List<DSCAlarmEventListener> _listeners = new ArrayList<DSCAlarmEventListener>();
+    String ipAddress = "";
+    int tcpPort;
+    int connectTimeout;
+    private Socket tcpSocket = null;
+    private OutputStreamWriter tcpOutput = null;
+    private BufferedReader tcpInput = null;
+    private TCPListener TCPListener = null;
+    private DSCAlarmConnectorType connectorType = DSCAlarmConnectorType.TCP;
+    private static boolean connected = false;
+    private static List<DSCAlarmEventListener> _listeners = new ArrayList<DSCAlarmEventListener>();
 
-	/**
-	 * Constructor.
-	 **/
-	public TCPConnector(String ip, int port, int timeout) {
-		ipAddress = ip;
-		tcpPort = port;
-		connectTimeout = timeout;
-	}
+    /**
+     * Constructor.
+     **/
+    public TCPConnector(String ip, int port, int timeout) {
+        ipAddress = ip;
+        tcpPort = port;
+        connectTimeout = timeout;
+    }
 
-	/**
-	 * Returns Connector Type
-	 **/
-	public DSCAlarmConnectorType getConnectorType() {
-		return connectorType;
-	}
+    /**
+     * Returns Connector Type
+     **/
+    public DSCAlarmConnectorType getConnectorType() {
+        return connectorType;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 **/
-	public void write(String writeString) {
+    /**
+     * {@inheritDoc}
+     **/
+    public void write(String writeString) {
         try {
-        	tcpOutput.write(writeString);
+            tcpOutput.write(writeString);
             tcpOutput.flush();
-    		logger.debug("write(): Message Sent: {}",writeString);
-        }catch (IOException ioException) {
-        	logger.error("write(): {}",ioException);
-			connected = false;
+            logger.debug("write(): Message Sent: {}", writeString);
+        } catch (IOException ioException) {
+            logger.error("write(): {}", ioException);
+            connected = false;
         } catch (Exception exception) {
-        	logger.error("write(): Unable to write to socket: {} ", exception);
-			connected = false;
+            logger.error("write(): Unable to write to socket: {} ", exception);
+            connected = false;
         }
     }
 
-	/**
-	 * {@inheritDoc}
-	 **/
-   public String read() {
+    /**
+     * {@inheritDoc}
+     **/
+    public String read() {
         String message = "";
 
         try {
-        	message = tcpInput.readLine();
-    		logger.debug("read(): Message Received: {}",message);
-        }
-        catch (IOException ioException) {
-			logger.error("read(): IO Exception: ", ioException);
-			connected = false;
-        }
-        catch (Exception exception) {
-			logger.error("read(): Exception: ", exception);
-			connected = false;
+            message = tcpInput.readLine();
+            logger.debug("read(): Message Received: {}", message);
+        } catch (IOException ioException) {
+            logger.error("read(): IO Exception: ", ioException);
+            connected = false;
+        } catch (Exception exception) {
+            logger.error("read(): Exception: ", exception);
+            connected = false;
         }
 
         return message;
 
     }
 
-	/**
-	 * {@inheritDoc}
-	 **/
-   public void open() {
+    /**
+     * {@inheritDoc}
+     **/
+    public void open() {
         try {
-        	tcpSocket = new Socket();
+            tcpSocket = new Socket();
             SocketAddress TPIsocketAddress = new InetSocketAddress(ipAddress, tcpPort);
             tcpSocket.connect(TPIsocketAddress, connectTimeout);
-			tcpOutput = new OutputStreamWriter(tcpSocket.getOutputStream(), "US-ASCII");
+            tcpOutput = new OutputStreamWriter(tcpSocket.getOutputStream(), "US-ASCII");
             tcpInput = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream()));
             connected = true;
 
-			//Start the TCP Listener
-	    	TCPListener = new TCPListener();
-	    	TCPListener.start();
-        }
-        catch (UnknownHostException exception) {
-			logger.error("open(): Unknown Host Exception: ", exception);
+            // Start the TCP Listener
+            TCPListener = new TCPListener();
+            TCPListener.start();
+        } catch (UnknownHostException exception) {
+            logger.error("open(): Unknown Host Exception: ", exception);
             connected = false;
-        }
-		catch (SocketException socketException) {
-			logger.error("open(): Socket Exception: ", socketException);
+        } catch (SocketException socketException) {
+            logger.error("open(): Socket Exception: ", socketException);
             connected = false;
-        }
-		catch (IOException ioException) {
-			logger.error("open(): IO Exception: ", ioException);
+        } catch (IOException ioException) {
+            logger.error("open(): IO Exception: ", ioException);
             connected = false;
-        }
-        catch (Exception exception) {
-			logger.error("open(): Exception: ", exception);
+        } catch (Exception exception) {
+            logger.error("open(): Exception: ", exception);
             connected = false;
         }
     }
 
-	 /**
-	  * Handles an incoming  message
-	  *
-	  * @param incomingMessage
-	  */
-	 public synchronized void handleIncomingMessage(String incomingMessage) {
-		APIMessage Message = new APIMessage(incomingMessage);
-		logger.debug("handleIncomingMessage(): Message received: {} - {}",incomingMessage,Message.toString());
+    /**
+     * Handles an incoming message
+     *
+     * @param incomingMessage
+     */
+    public synchronized void handleIncomingMessage(String incomingMessage) {
+        APIMessage Message = new APIMessage(incomingMessage);
+        logger.debug("handleIncomingMessage(): Message received: {} - {}", incomingMessage, Message.toString());
 
-		DSCAlarmEvent event = new DSCAlarmEvent(this);
-		event.dscAlarmEventMessage(Message);
+        DSCAlarmEvent event = new DSCAlarmEvent(this);
+        event.dscAlarmEventMessage(Message);
 
-		// send message to event listeners
-		try {
-			Iterator<DSCAlarmEventListener> iterator = _listeners.iterator();
+        // send message to event listeners
+        try {
+            Iterator<DSCAlarmEventListener> iterator = _listeners.iterator();
 
-			while (iterator.hasNext()) {
-				((DSCAlarmEventListener) iterator.next()).dscAlarmEventRecieved(event);
-			}
+            while (iterator.hasNext()) {
+                ((DSCAlarmEventListener) iterator.next()).dscAlarmEventRecieved(event);
+            }
 
-		} catch (Exception e) {
-			logger.error("handleIncomingMessage(): Event listener invoking error", e);
-		}
-	 }
-
-
-	/**
-	 * {@inheritDoc}
-	 **/
-	 public boolean isConnected() {
-		 return connected;
-	 }
-
-	/**
-	 * {@inheritDoc}
-	 **/
-	 public void close() {
-		try {
-			if (tcpSocket != null) {
-				tcpSocket.close();
-				tcpSocket = null;
-			}
-			if (tcpInput != null) {
-				tcpInput.close();
-				tcpInput = null;
-			}
-			if (tcpOutput != null) {
-				tcpOutput.close();
-				tcpOutput = null;
-			}
-			connected = false;
-			logger.debug("close(): Closed TCP Connection!");
-		}
-		catch (IOException ioException) {
-			logger.error("close(): Unable to close connection - " + ioException.getMessage());
-		}
-        catch (Exception exception) {
-        	logger.error("close(): Error closing connection - " + exception.getMessage());
+        } catch (Exception e) {
+            logger.error("handleIncomingMessage(): Event listener invoking error", e);
         }
-	 }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 **/
-	public synchronized void addEventListener(DSCAlarmEventListener listener) {
-		_listeners.add(listener);
-	}
+    /**
+     * {@inheritDoc}
+     **/
+    public boolean isConnected() {
+        return connected;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 **/
-	public synchronized void removeEventListener(DSCAlarmEventListener listener) {
-		_listeners.remove(listener);
-	}
+    /**
+     * {@inheritDoc}
+     **/
+    public void close() {
+        try {
+            if (tcpSocket != null) {
+                tcpSocket.close();
+                tcpSocket = null;
+            }
+            if (tcpInput != null) {
+                tcpInput.close();
+                tcpInput = null;
+            }
+            if (tcpOutput != null) {
+                tcpOutput.close();
+                tcpOutput = null;
+            }
+            connected = false;
+            logger.debug("close(): Closed TCP Connection!");
+        } catch (IOException ioException) {
+            logger.error("close(): Unable to close connection - " + ioException.getMessage());
+        } catch (Exception exception) {
+            logger.error("close(): Error closing connection - " + exception.getMessage());
+        }
+    }
 
-	/**
-	 * TCPMessageListener Thread. Receives  messages from the DSC Alarm Panel API.
-	 */
-	private class TCPListener extends Thread {
-		private final Logger logger = LoggerFactory.getLogger(TCPListener.class);
+    /**
+     * {@inheritDoc}
+     **/
+    public synchronized void addEventListener(DSCAlarmEventListener listener) {
+        _listeners.add(listener);
+    }
 
-		public TCPListener() {
-		}
+    /**
+     * {@inheritDoc}
+     **/
+    public synchronized void removeEventListener(DSCAlarmEventListener listener) {
+        _listeners.remove(listener);
+    }
 
-		/**
-		 * Run method. Runs the MessageListener thread
-		 */
-		@Override
-		public void run() {
-			String messageLine;
+    /**
+     * TCPMessageListener Thread. Receives messages from the DSC Alarm Panel API.
+     */
+    private class TCPListener extends Thread {
+        private final Logger logger = LoggerFactory.getLogger(TCPListener.class);
 
-			try {
-				while(connected) {
-					if((messageLine = read()) != null) {
-						handleIncomingMessage(messageLine);
-					}
-				}
-			}
-			catch(Exception e) {
-				logger.error("TCPListener(): Unable to read message: ", e);
-			}
-		}
-	}
+        public TCPListener() {
+        }
+
+        /**
+         * Run method. Runs the MessageListener thread
+         */
+        @Override
+        public void run() {
+            String messageLine;
+
+            try {
+                while (connected) {
+                    if ((messageLine = read()) != null) {
+                        handleIncomingMessage(messageLine);
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("TCPListener(): Unable to read message: ", e);
+            }
+        }
+    }
 }

@@ -69,8 +69,7 @@ public class Panel extends DSCAlarmDevice {
                         publisher.postUpdate(item.getName(), new StringType(str));
                         break;
                     case PANEL_SYSTEM_ERROR:
-                        str = String.format("%03d", panelProperties.getSystemErrorCode()) + ": "
-                                + panelProperties.getSystemErrorDescription();
+                        str = String.format("%03d", panelProperties.getSystemErrorCode()) + ": " + panelProperties.getSystemErrorDescription();
                         publisher.postUpdate(item.getName(), new StringType(str));
                         break;
                     case PANEL_TIME:
@@ -209,8 +208,7 @@ public class Panel extends DSCAlarmDevice {
                                 systemErrorCode = Integer.parseInt(apiMessage.getAPIData());
                                 panelProperties.setSystemErrorCode(systemErrorCode);
                                 panelProperties.setSystemErrorDescription(apiMessage.getError());
-                                str = String.format("%03d", panelProperties.getSystemErrorCode()) + ": "
-                                        + panelProperties.getSystemErrorDescription();
+                                str = String.format("%03d", panelProperties.getSystemErrorCode()) + ": " + panelProperties.getSystemErrorDescription();
                                 publisher.postUpdate(item.getName(), new StringType(str));
                             }
                             break;

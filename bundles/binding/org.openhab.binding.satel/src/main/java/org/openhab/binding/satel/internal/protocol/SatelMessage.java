@@ -30,11 +30,11 @@ public class SatelMessage {
     private byte command;
     private byte[] payload;
 
-    private static final byte[] EMPTY_PAYLOAD = new byte[0];
+    protected static final byte[] EMPTY_PAYLOAD = new byte[0];
 
     /**
      * Creates new instance with specified command code and payload.
-     * 
+     *
      * @param command
      *            command code
      * @param payload
@@ -47,7 +47,7 @@ public class SatelMessage {
 
     /**
      * Creates new instance with specified command code and empty payload.
-     * 
+     *
      * @param command
      *            command code
      */
@@ -57,7 +57,7 @@ public class SatelMessage {
 
     /**
      * Deserializes new message instance from specified byte buffer.
-     * 
+     *
      * @param buffer
      *            bytes to deserialize a message from
      * @return deserialized message instance
@@ -86,7 +86,7 @@ public class SatelMessage {
 
     /**
      * Returns command byte.
-     * 
+     *
      * @return the command
      */
     public byte getCommand() {
@@ -95,7 +95,7 @@ public class SatelMessage {
 
     /**
      * Returns the payload bytes.
-     * 
+     *
      * @return payload as byte array
      */
     public byte[] getPayload() {
@@ -105,7 +105,7 @@ public class SatelMessage {
     /**
      * Returns the message serialized as array of bytes with checksum calculated
      * at last two bytes.
-     * 
+     *
      * @return the message as array of bytes
      */
     public byte[] getBytes() {
@@ -133,7 +133,7 @@ public class SatelMessage {
 
     /**
      * Calculates a checksum for the specified buffer.
-     * 
+     *
      * @param buffer
      *            the buffer to calculate.
      * @return the checksum value.

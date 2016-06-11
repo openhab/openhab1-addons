@@ -1013,7 +1013,8 @@
             </Reference>
             <Model>ZW100-A</Model>
             <Label lang="en">MultiSensor 6</Label>
-            <ConfigFile>aeon/zw100-a.xml</ConfigFile>
+            <ConfigFile VersionMax="1.6">aeon/zw100-a.xml</ConfigFile>
+            <ConfigFile VersionMin="1.7">aeon/zw100-17.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
