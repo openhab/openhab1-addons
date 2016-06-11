@@ -163,7 +163,6 @@
     <module>org.openhab.binding.lightwaverf</module>
     <module>org.openhab.binding.lightwaverf.test</module>
     <module>org.openhab.binding.souliss</module>
-    <module>org.openhab.binding.isy</module>
     <!--module>org.openhab.binding.sagercaster</module-->
     <module>org.openhab.binding.ipx800</module>
     <module>org.openhab.binding.tacmi</module>
@@ -185,6 +184,7 @@
     <module>org.openhab.binding.smarthomatic</module>
     <module>org.openhab.binding.gc100ir</module>
     <module>org.openhab.binding.powermax</module>
+    <module>org.openhab.binding.isy</module>
   </modules>
 </project>
 =======
