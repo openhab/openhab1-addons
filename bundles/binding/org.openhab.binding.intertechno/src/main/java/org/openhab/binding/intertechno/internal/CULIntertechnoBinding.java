@@ -97,7 +97,7 @@ public class CULIntertechnoBinding extends AbstractBinding<CULIntertechnoBinding
                 break;
             }
         }
-        if (config != null && command instanceof OnOffType) {
+        if (config != null && culHandlerLifecycle.isCulReady() && command instanceof OnOffType) {
             OnOffType type = (OnOffType) command;
             String commandValue = null;
             switch (type) {
