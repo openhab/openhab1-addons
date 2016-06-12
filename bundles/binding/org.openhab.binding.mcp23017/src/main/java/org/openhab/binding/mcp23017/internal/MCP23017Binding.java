@@ -70,6 +70,11 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 	 * (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
+	
+    /**
+     * the polling interval mcp23071 check interrupt register (optional, defaults to 50ms)
+     */
+	private int pollingInterval = 50;
 
 	public MCP23017Binding() {
 	}
@@ -94,6 +99,13 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 			refreshInterval = Long.parseLong(refreshIntervalString);
 		}
 
+        // to override the default polling interval one has to add a
+        // parameter to openhab.cfg like <bindingName>:polling=<intervalInMs>
+        String pollingIntervalString = (String) configuration.get("polling");
+        if (StringUtils.isNotBlank(pollingIntervalString)) {
+            pollingInterval = Integer.parseInt(pollingIntervalString);
+        }
+		
 		// read further config parameters here ...
 		logger.debug("mcp23017 activated " + this.hashCode());
 		setProperlyConfigured(true);
@@ -206,6 +218,7 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 			{
 				try {
 					mcp = new MCP23017GpioProvider(I2CBus.BUS_1, address);
+					mcp.setPollingTime(pollingInterval);
 				} catch (UnsupportedBusNumberException ex) {
 					throw new IllegalArgumentException("Tried to access not available I2C bus");
 				}
