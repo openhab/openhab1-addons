@@ -35,6 +35,7 @@ import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 /**
  * Implement this class if you are going create an actively polling service like
@@ -194,7 +195,13 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 
 	private void bindGpioPin(MCP23017BindingProvider provider, String itemName) {
 		try {
-			final MCP23017GpioProvider gpioProvider = new MCP23017GpioProvider(I2CBus.BUS_1, provider.getBusAddress(itemName));
+			int address = provider.getBusAddress(itemName);
+			MCP23017GpioProvider gpioProvider = null;
+			try {
+				gpioProvider = new MCP23017GpioProvider(I2CBus.BUS_1, address);
+			} catch (UnsupportedBusNumberException ex) {
+				throw new IllegalArgumentException("Tried to access not available I2C bus");
+			}
 			GpioPin pin;
 			
 			if (provider.getPinMode(itemName).equals(PinMode.DIGITAL_OUTPUT)) {
