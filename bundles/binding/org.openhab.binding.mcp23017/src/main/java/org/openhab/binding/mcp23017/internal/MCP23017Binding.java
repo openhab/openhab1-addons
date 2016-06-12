@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.i2c.internal;
+package org.openhab.binding.mcp23017.internal;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -14,7 +14,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
-import org.openhab.binding.i2c.I2CBindingProvider;
+import org.openhab.binding.mcp23017.MCP23017BindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.library.types.OnOffType;
@@ -41,11 +41,12 @@ import com.pi4j.io.i2c.I2CBus;
  * querying a Website/Device.
  * 
  * @author Diego A. Fliess
+ * @author Alexander Falkenstern
  * @since 1.8.0
  */
-public class I2CBinding extends AbstractActiveBinding<I2CBindingProvider> implements GpioPinListenerDigital {
+public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvider> implements GpioPinListenerDigital {
 
-	private static final Logger logger = LoggerFactory.getLogger(I2CBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(MCP23017Binding.class);
 	
 	private final GpioController gpio = GpioFactory.getInstance();
 	
@@ -60,12 +61,12 @@ public class I2CBinding extends AbstractActiveBinding<I2CBindingProvider> implem
 	private BundleContext bundleContext;
 
 	/**
-	 * the refresh interval which is used to poll values from the i2c server
+	 * the refresh interval which is used to poll values from the mcp23017 server
 	 * (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
 
-	public I2CBinding() {
+	public MCP23017Binding() {
 	}
 
 	/**
@@ -78,8 +79,7 @@ public class I2CBinding extends AbstractActiveBinding<I2CBindingProvider> implem
 	 *            Configuration properties for this component obtained from the
 	 *            ConfigAdmin service
 	 */
-	public void activate(final BundleContext bundleContext,
-			final Map<String, Object> configuration) {
+	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
 		this.bundleContext = bundleContext;
 		
 		// to override the default refresh interval one has to add a
@@ -90,11 +90,10 @@ public class I2CBinding extends AbstractActiveBinding<I2CBindingProvider> implem
 		}
 
 		// read further config parameters here ...
-		logger.debug("i2c activated " + this.hashCode());
+		logger.debug("mcp23017 activated " + this.hashCode());
 		setProperlyConfigured(true);
-		logger.debug("i2c activated and ProperlyConfigured " + this.hashCode());
+		logger.debug("mcp23017 activated and ProperlyConfigured " + this.hashCode());
 	}
-
 
 	/**
 	 * Called by the SCR when the configuration of a binding has been changed
@@ -105,7 +104,7 @@ public class I2CBinding extends AbstractActiveBinding<I2CBindingProvider> implem
 	 */
 	public void modified(final Map<String, Object> configuration) {
 		// update the internal configuration accordingly
-		logger.debug("i2c modified");
+		logger.debug("mcp23017 modified");
 	}
 
 	/**
@@ -116,20 +115,20 @@ public class I2CBinding extends AbstractActiveBinding<I2CBindingProvider> implem
 	 * @param reason
 	 *            Reason code for the deactivation:<br>
 	 *            <ul>
-	 *            <li>0 – Unspecified
-	 *            <li>1 – The component was disabled
-	 *            <li>2 – A reference became unsatisfied
-	 *            <li>3 – A configuration was changed
-	 *            <li>4 – A configuration was deleted
-	 *            <li>5 – The component was disposed
-	 *            <li>6 – The bundle was stopped
+	 *            <li>0 - Unspecified
+	 *            <li>1 - The component was disabled
+	 *            <li>2 - A reference became unsatisfied
+	 *            <li>3 - A configuration was changed
+	 *            <li>4 - A configuration was deleted
+	 *            <li>5 - The component was disposed
+	 *            <li>6 - The bundle was stopped
 	 *            </ul>
 	 */
 	public void deactivate(final int reason) {
 		this.bundleContext = null;
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
-		logger.debug("i2c deactivated");
+		logger.debug("mcp23017 deactivated");
 		gpio.shutdown();	
 	}
 
@@ -146,7 +145,7 @@ public class I2CBinding extends AbstractActiveBinding<I2CBindingProvider> implem
 	 */
 	@Override
 	protected String getName() {
-		return "i2c Refresh Service";
+		return "mcp23017 Refresh Service";
 	}
 
 	/**
@@ -155,46 +154,45 @@ public class I2CBinding extends AbstractActiveBinding<I2CBindingProvider> implem
 	@Override
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
+//		logger.debug("execute() method is called!");
 	}
 	
 	@Override
-	public void addBindingProvider(I2CBindingProvider provider) {
+	public void addBindingProvider(BindingProvider provider) {
 		super.addBindingProvider(provider);
 		
 		/*first call contains all, better use activate ? if you have providers*/
 		logger.debug("addBindingProvider: " + Arrays.toString(provider.getItemNames().toArray()));
 		for (String itemName: provider.getItemNames()) {
-			bindGpioPin(provider, itemName);
+			bindGpioPin((MCP23017BindingProvider)provider, itemName);
 		}
 	}
 
-	
 	@Override
-	public void removeBindingProvider(I2CBindingProvider provider) {		
+	public void removeBindingProvider(BindingProvider provider) {		
 		super.removeBindingProvider(provider);
 		/*shutdown call contains all better use deactivate*/
 		logger.debug("removeBindingProvider: " + Arrays.toString(provider.getItemNames().toArray()));
 		for (String itemName: provider.getItemNames()) {
-			unBindGpioPin(itemName);
+			unBindGpioPin((MCP23017BindingProvider) provider, itemName);
 		}
 	}
 
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
-		if (provider instanceof I2CBindingProvider) {
+		if (provider instanceof MCP23017BindingProvider) {
 			if (provider.getItemNames().contains(itemName)) {
-				 bindGpioPin((I2CBindingProvider) provider, itemName);
+				bindGpioPin((MCP23017BindingProvider) provider, itemName);
 				logger.debug("bindingChanged item bound " + itemName + " - " + Arrays.toString(provider.getItemNames().toArray()));
 			} else {
-				unBindGpioPin(itemName);
+				unBindGpioPin((MCP23017BindingProvider) provider, itemName);
 				logger.debug("bindingChanged item unbound " + itemName + " - " + Arrays.toString(provider.getItemNames().toArray()));
 			}
 		}
 		super.bindingChanged(provider, itemName);
 	}
 
-	private void bindGpioPin(I2CBindingProvider provider, String itemName) {
+	private void bindGpioPin(MCP23017BindingProvider provider, String itemName) {
 		try {
 			final MCP23017GpioProvider gpioProvider = new MCP23017GpioProvider(I2CBus.BUS_1, provider.getBusAddress(itemName));
 			GpioPin pin;
@@ -221,7 +219,7 @@ public class I2CBinding extends AbstractActiveBinding<I2CBindingProvider> implem
 		}
 	}
 
-	private void unBindGpioPin(String itemName) {
+	private void unBindGpioPin(MCP23017BindingProvider provider, String itemName) {
 		GpioPin pin = gpioPins.remove(itemName);
 		pin.removeAllListeners();
 		pin.unexport();
@@ -245,7 +243,7 @@ public class I2CBinding extends AbstractActiveBinding<I2CBindingProvider> implem
 		if (command instanceof OnOffType) {
 			final OnOffType switchCommand = (OnOffType) command;
 			
-			for (I2CBindingProvider provider : this.providers) {
+			for (MCP23017BindingProvider provider : this.providers) {
 				if (provider.providesBindingFor(itemName)) {
 
 					//Map for converting OFF -> LOW and ON->HIGH
@@ -257,7 +255,6 @@ public class I2CBinding extends AbstractActiveBinding<I2CBindingProvider> implem
 				}
 			}
 		}
-
 	}
 
 	/** Note: MCP23017 has no internal pull-down, so I used pull-up and 
@@ -285,8 +282,6 @@ public class I2CBinding extends AbstractActiveBinding<I2CBindingProvider> implem
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveUpdate({},{}) is called!", itemName,
-				newState);
+		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
 	}
-
 }

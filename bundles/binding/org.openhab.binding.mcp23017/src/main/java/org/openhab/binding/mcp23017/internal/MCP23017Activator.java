@@ -6,13 +6,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.i2c.internal;
+package org.openhab.binding.mcp23017.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Extension of the default OSGi bundle activator
@@ -20,9 +19,9 @@ import org.slf4j.LoggerFactory;
  * @author Jonathan Giles (http://www.jonathangiles.net)
  * @since 1.3.0
  */
-public final class I2CActivator implements BundleActivator {
+public final class MCP23017Activator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(I2CActivator.class); 
+	private static Logger logger = LoggerFactory.getLogger(MCP23017Activator.class); 
 	
 	private static BundleContext context;
 	
@@ -31,7 +30,7 @@ public final class I2CActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-		logger.debug("i2c binding has been started.");
+		logger.debug("mcp23017 binding has been started.");
 	}
 
 	/**
@@ -39,7 +38,7 @@ public final class I2CActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
-		logger.debug("i2c binding has been stopped.");
+		logger.debug("mcp23017 binding has been stopped.");
 	}
 	
 	/**
@@ -49,5 +48,4 @@ public final class I2CActivator implements BundleActivator {
 	public static BundleContext getContext() {
 		return context;
 	}
-	
 }
