@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.i2c;
+package org.openhab.binding.mcp23017;
 
 import org.openhab.core.binding.BindingProvider;
 
@@ -18,7 +18,7 @@ import com.pi4j.io.gpio.PinState;
  * @author Diego A. Fliess
  * @since 1.8.0
  */
-public interface I2CBindingProvider extends BindingProvider {
+public interface MCP23017BindingProvider extends BindingProvider {
 
 	/**
 	 * @return the busAddress
