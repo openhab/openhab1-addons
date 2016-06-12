@@ -28,7 +28,9 @@ import com.pi4j.gpio.extension.mcp.MCP23017GpioProvider;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
@@ -50,8 +52,10 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 	private static final Logger logger = LoggerFactory.getLogger(MCP23017Binding.class);
 	
 	private final GpioController gpio = GpioFactory.getInstance();
-	
-	private Map<String, GpioPin> gpioPins = new HashMap<>();
+
+	private Map<String, GpioPin> gpioPins = new HashMap<String, GpioPin>();
+
+	private static final Map<Integer, MCP23017GpioProvider> mcpProviders = new HashMap<Integer, MCP23017GpioProvider>();
 	
 	/**
 	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is
@@ -130,6 +134,7 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
 		logger.debug("mcp23017 deactivated");
+		mcpProviders.clear();
 		gpio.shutdown();	
 	}
 
@@ -196,31 +201,38 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 	private void bindGpioPin(MCP23017BindingProvider provider, String itemName) {
 		try {
 			int address = provider.getBusAddress(itemName);
-			MCP23017GpioProvider gpioProvider = null;
-			try {
-				gpioProvider = new MCP23017GpioProvider(I2CBus.BUS_1, address);
-			} catch (UnsupportedBusNumberException ex) {
-				throw new IllegalArgumentException("Tried to access not available I2C bus");
+			MCP23017GpioProvider mcp = mcpProviders.get(address);
+			if(mcp == null)
+			{
+				try {
+					mcp = new MCP23017GpioProvider(I2CBus.BUS_1, address);
+				} catch (UnsupportedBusNumberException ex) {
+					throw new IllegalArgumentException("Tried to access not available I2C bus");
+				}
+				mcpProviders.put(address, mcp);
 			}
-			GpioPin pin;
-			
-			if (provider.getPinMode(itemName).equals(PinMode.DIGITAL_OUTPUT)) {
-				pin = gpio.provisionDigitalOutputPin(gpioProvider, provider.getPin(itemName), itemName, provider.getDefaultState(itemName));
+
+			Pin pin = provider.getPin(itemName);
+			PinMode mode = provider.getPinMode(itemName);
+			if (mode.equals(PinMode.DIGITAL_OUTPUT)) {
+				GpioPinDigitalOutput output = gpio.provisionDigitalOutputPin(mcp, pin, itemName, provider.getDefaultState(itemName));
+				gpioPins.put(itemName, output);
+
 				logger.debug("Provisioned Digital Output for " + itemName );
-			} else if (provider.getPinMode(itemName).equals(PinMode.DIGITAL_INPUT))  {
+			} else if (mode.equals(PinMode.DIGITAL_INPUT))  {
 				
 				 /** Note: MCP23017 has no internal pull-down, so I used pull-up and 
 				 *  inverted the button reading logic with a "not" 
 				 **/
-				pin = gpio.provisionDigitalInputPin(gpioProvider, provider.getPin(itemName),itemName,PinPullResistance.PULL_UP);
+				GpioPinDigitalInput input = gpio.provisionDigitalInputPin(mcp, pin, itemName, PinPullResistance.OFF);
+				input.setDebounce(20);
+				input.addListener(this);
+				gpioPins.put(itemName, input);
 
-				pin.addListener(this);
-				
 				logger.debug("Provisioned Digital Input for " + itemName );
 			} else {
-				throw new IllegalArgumentException("Invalid Pin Mode in config " + provider.getPinMode(itemName).name());
+				throw new IllegalArgumentException("Invalid Pin Mode in config " + mode.name());
 			}
-			gpioPins.put(itemName,pin);
 		} catch (IOException e) {
 			logger.error("IO ERROR " + e.getMessage());
 		}
@@ -228,8 +240,7 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 
 	private void unBindGpioPin(MCP23017BindingProvider provider, String itemName) {
 		GpioPin pin = gpioPins.remove(itemName);
-		pin.removeAllListeners();
-		pin.unexport();
+		gpio.unprovisionPin(pin);
 		logger.debug("unbound " + itemName );
 	}
 	
