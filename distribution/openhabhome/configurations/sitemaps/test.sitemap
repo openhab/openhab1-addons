@@ -1,0 +1,6 @@
+sitemap default label="Test"
+{
+	Frame label="Relays" {
+		Switch item=Test1 label="switch 1" icon="switch"
+	}
+}
