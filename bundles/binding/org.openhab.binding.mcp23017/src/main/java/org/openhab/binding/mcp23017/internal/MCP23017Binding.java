@@ -10,7 +10,6 @@ package org.openhab.binding.mcp23017.internal;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
@@ -276,13 +275,12 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 			
 			for (MCP23017BindingProvider provider : this.providers) {
 				if (provider.providesBindingFor(itemName)) {
-
-					//Map for converting OFF -> LOW and ON->HIGH
-					EnumMap<OnOffType, PinState> states = new EnumMap<OnOffType, PinState>(OnOffType.class);
-					states.put(OnOffType.OFF, PinState.LOW);
-					states.put(OnOffType.ON, PinState.HIGH);
-
-					gpio.setState(states.get(switchCommand), (GpioPinDigitalOutput) gpioPins.get(itemName));
+					GpioPin pin = gpioPins.get(itemName);
+					if (switchCommand == OnOffType.OFF) {
+						gpio.setState(PinState.LOW, (GpioPinDigitalOutput)pin);
+					} else if (switchCommand == OnOffType.ON) {
+						gpio.setState(PinState.HIGH, (GpioPinDigitalOutput)pin);
+					}
 				}
 			}
 		}
@@ -293,16 +291,13 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 	 **/
 	@Override
 	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-		
-		
-	
-		//Inverted state map (same as PinState.getInverseState(event.getState()))
-		EnumMap<PinState,OpenClosedType> states = new EnumMap<PinState,OpenClosedType>(PinState.class);
-		states.put(PinState.LOW,OpenClosedType.OPEN);
-		states.put(PinState.HIGH,OpenClosedType.CLOSED);
-		this.eventPublisher.postUpdate(event.getPin().getName(), states.get(event.getState()));
-		
-		logger.debug(" --> GPIO PIN STATE CHANGE: {} = {}",event.getPin(), states.get(event.getState()) );
+		GpioPin pin = event.getPin();
+		OpenClosedType state = OpenClosedType.CLOSED; // Assume we are high...
+		if (event.getState() == PinState.LOW) { // To err is human...
+			state = OpenClosedType.OPEN;
+		}
+		this.eventPublisher.postUpdate(pin.getName(), state);
+		logger.debug(" --> GPIO PIN STATE CHANGE: {} = {}", pin, state);
 	}
 
 	/**
