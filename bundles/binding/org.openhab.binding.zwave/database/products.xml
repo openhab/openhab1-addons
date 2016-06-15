@@ -2263,6 +2263,14 @@
             <Label lang="en">Danfoss Air CCM</Label>
             <ConfigFile>danfoss/hrv_ccm.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0003</Type>
+                <Id>8010</Id>
+            </Reference>
+            <Model>014G0160</Model>
+            <Label lang="en">Z-Wave room sensor</Label>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>013C</Id>
@@ -2870,6 +2878,15 @@
         <Name>Wintop</Name>
         <Product>
             <Reference>
+                <Type>1180</Type>
+                <Id>5501</Id>
+            </Reference>
+            <Model>Multisensor</Model>
+            <Label lang="en">Wintop Multi-sensor</Label>
+            <ConfigFile>wintop/multisensor.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>1182</Type>
                 <Id>4501</Id>
             </Reference>
@@ -3014,6 +3031,15 @@
     <Manufacturer>
         <Id>0154</Id>
         <Name>POPP</Name>
+        <Product>
+            <Reference>
+                <Type>0004</Type>
+                <Id>0002</Id>
+            </Reference>
+            <Model>005107</Model>
+            <Label lang="en">Solar Powered Outdoor Siren</Label>
+            <ConfigFile>popp/005107.xml</ConfigFile>
+        </Product>
         <Product>
             <Reference>
                 <Type>0001</Type>
