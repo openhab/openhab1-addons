@@ -148,7 +148,7 @@ public class MCP3424Binding extends AbstractActiveBinding<MCP3424BindingProvider
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected long getRefreshInterval() {
@@ -156,7 +156,7 @@ public class MCP3424Binding extends AbstractActiveBinding<MCP3424BindingProvider
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected String getName() {
@@ -164,7 +164,7 @@ public class MCP3424Binding extends AbstractActiveBinding<MCP3424BindingProvider
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected void execute() {
@@ -248,7 +248,7 @@ public class MCP3424Binding extends AbstractActiveBinding<MCP3424BindingProvider
 	}
 	
     /**
-     * @{inheritDoc
+     * @{inheritDoc}
      */
     @Override
     protected void internalReceiveCommand(String itemName, Command newState) {
@@ -291,7 +291,7 @@ public class MCP3424Binding extends AbstractActiveBinding<MCP3424BindingProvider
 	}
 
     /**
-     * @{inheritDoc
+     * @{inheritDoc}
      */
     @Override
     protected void internalReceiveUpdate(String itemName, State newState) {
