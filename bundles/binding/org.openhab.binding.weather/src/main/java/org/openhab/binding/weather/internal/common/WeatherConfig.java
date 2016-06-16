@@ -186,7 +186,7 @@ public class WeatherConfig {
         } else if (StringUtils.equalsIgnoreCase(keyId, "apikey2")) {
             pConfig.setApiKey2(value);
         } else {
-            logger.debug("Unknown configuration key '{}'. Check openhab.cfg.", key);
+            logger.warn("Unknown configuration key '{}'. Check openhab.cfg.", key);
         }
     }
 
