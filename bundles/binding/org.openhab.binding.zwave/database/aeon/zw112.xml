@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>DoorSensor</Model>
+	<Label lang="en">Door/Window sensor</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x00</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Which value of the Sensor Binary Report or Basic Set will be sent when the Magnet is triggered On/Off.</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">On=Sensor Binary Report/Basic Set 0xFF; Off=Sensor Binary Report/Basic Set 0x00</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">On=Sensor Binary Report/Basic Set 0x00; Off=Sensor Binary Report/Basic Set 0xFF</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>39</Index>
+			<Type>byte</Type>
+			<Default>20</Default>
+			<Minimum>10</Minimum>
+			<Maximum>50</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Set the low battery value.</Label>
+			<Help lang="en">10% to 50%</Help>
+		</Parameter>
+		<Parameter>
+			<Index>101</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable/disable the function of parameter 111</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>111</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>2147483647</Maximum>
+			<Default>86640</Default>
+			<Size>4</Size>
+			<Label lang="en">Set the interval time of low battery checking.</Label>
+			<Help lang="en">Minimum interval is 4 minutes, Range is 0 to 2147483647</Help>
+		</Parameter>
+		<Parameter>
+			<Index>121</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Configure which sensor report will be sent when the Magnet is triggered On/Off.</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">send nothing</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">send Basic Set CC</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">send Sensor Binary Report CC</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">send Basic Set CC and Sensor Binary CC</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>252</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Lock/unlock all configuration parameters.</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">unlock</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">lock</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 1</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>
