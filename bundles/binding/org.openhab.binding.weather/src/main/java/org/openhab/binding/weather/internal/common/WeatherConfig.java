@@ -70,10 +70,11 @@ public class WeatherConfig {
     public void parse(Dictionary<String, ?> properties) throws ConfigurationException {
         parseCompleted = false;
         valid = false;
-        if (properties == null ) {
+        if (properties == null) {
             parseCompleted = true;
             logger.warn("No configuration found for the weather binding. Check openhab.cfg.");
-            throw new ConfigurationException("weather", "No configuration found for the weather binding. Check openhab.cfg.");
+            throw new ConfigurationException("weather",
+                    "No configuration found for the weather binding. Check openhab.cfg.");
         }
 
         Enumeration<String> keys = properties.keys();
@@ -93,15 +94,15 @@ public class WeatherConfig {
             if (!lc.isValid()) {
                 parseCompleted = true;
                 logger.warn("Incomplete location config for locationId '{}'. Check openhab.cfg.", lc.getLocationId());
-                throw new ConfigurationException("weather", "Incomplete location config for locationId '"
-                        + lc.getLocationId() + "'. Check openhab.cfg.");
+                throw new ConfigurationException("weather",
+                        "Incomplete location config for locationId '" + lc.getLocationId() + "'. Check openhab.cfg.");
             }
 
             if (lc.getProviderName() != ProviderName.YAHOO && !providerConfigs.containsKey(lc.getProviderName())) {
                 parseCompleted = true;
                 logger.warn("No apikey found for provider '{}'. Check openhab.cfg.", lc.getProviderName());
-                throw new ConfigurationException("weather", "No apikey found for provider '" + lc.getProviderName()
-                        + "'. Check openhab.cfg.");
+                throw new ConfigurationException("weather",
+                        "No apikey found for provider '" + lc.getProviderName() + "'. Check openhab.cfg.");
             }
         }
 
@@ -110,8 +111,8 @@ public class WeatherConfig {
             if (!pc.isValid()) {
                 parseCompleted = true;
                 logger.warn("Invalid apikey config for provider '{}'. Check openhab.cfg.", pc.getProviderName());
-                throw new ConfigurationException("weather", "Invalid apikey config for provider '"
-                        + pc.getProviderName() + "'. Check openhab.cfg.");
+                throw new ConfigurationException("weather",
+                        "Invalid apikey config for provider '" + pc.getProviderName() + "'. Check openhab.cfg.");
             }
         }
 
@@ -245,7 +246,7 @@ public class WeatherConfig {
     }
 
     /**
-     *
+     * Returns true if the parse routine is not currently in progress.
      */
     public boolean finishedParsing() {
         return parseCompleted;
