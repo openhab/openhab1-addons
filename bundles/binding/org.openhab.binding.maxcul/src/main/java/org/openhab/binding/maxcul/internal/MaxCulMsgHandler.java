@@ -275,7 +275,7 @@ public class MaxCulMsgHandler implements CULListener {
                     logger.debug("Retransmitting packet " + qi.msg.msgCount + " attempt " + qi.retryCount);
                     sendMessage(qi.msg, qi);
                 } else {
-                    logger.error("Transmission of packet " + qi.msg.msgCount + " failed 3 times");
+                    logger.error("Transmission of packet " + qi.msg.msgCount + " failed 3 times, message was " + qi.msg.msgType + " to address " + qi.msg.dstAddrStr + " => " + qi.msg.rawMsg);
                 }
             }
         }
