@@ -2989,6 +2989,15 @@
         </Product>
         <Product>
             <Reference>
+                <Type>0003</Type>
+                <Id>0101</Id>
+            </Reference>
+            <Model>Molite</Model>
+            <Label lang="en">Movement sensor with temperature and light sensor</Label>
+            <ConfigFile>benext/molite.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0008</Type>
                 <Id>0101</Id>
             </Reference>
