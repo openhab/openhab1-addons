@@ -59,6 +59,15 @@
         <Name>Linear</Name>
         <Product>
             <Reference>
+                <Type>2005</Type>
+                <Id>0503</Id>
+            </Reference>
+            <Model>WA105DBZ</Model>
+            <Label lang="en">Siren</Label>
+            <ConfigFile>linear/wa105dbz.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>5257</Type>
                 <Id>3533</Id>
             </Reference>
