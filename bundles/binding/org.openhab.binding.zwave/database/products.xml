@@ -59,6 +59,15 @@
         <Name>Linear</Name>
         <Product>
             <Reference>
+                <Type>2005</Type>
+                <Id>0503</Id>
+            </Reference>
+            <Model>WA105DBZ</Model>
+            <Label lang="en">Siren</Label>
+            <ConfigFile>linear/wa105dbz.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>5257</Type>
                 <Id>3533</Id>
             </Reference>
@@ -1249,6 +1258,15 @@
             <Label lang="en">Smart Dimmer 6</Label>
             <ConfigFile>aeon/zw099.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0002</Type>
+                <Id>0070</Id>
+            </Reference>
+            <Model>ZW112</Model>
+            <Label lang="en">Door/Window Sensor 6</Label>
+            <ConfigFile>aeon/zw112.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0098</Id>
@@ -2263,6 +2281,14 @@
             <Label lang="en">Danfoss Air CCM</Label>
             <ConfigFile>danfoss/hrv_ccm.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0003</Type>
+                <Id>8010</Id>
+            </Reference>
+            <Model>014G0160</Model>
+            <Label lang="en">Z-Wave room sensor</Label>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>013C</Id>
@@ -2870,6 +2896,15 @@
         <Name>Wintop</Name>
         <Product>
             <Reference>
+                <Type>1180</Type>
+                <Id>5501</Id>
+            </Reference>
+            <Model>Multisensor</Model>
+            <Label lang="en">Wintop Multi-sensor</Label>
+            <ConfigFile>wintop/multisensor.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>1182</Type>
                 <Id>4501</Id>
             </Reference>
@@ -2972,6 +3007,15 @@
         </Product>
         <Product>
             <Reference>
+                <Type>0003</Type>
+                <Id>0101</Id>
+            </Reference>
+            <Model>Molite</Model>
+            <Label lang="en">Movement sensor with temperature and light sensor</Label>
+            <ConfigFile>benext/molite.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0008</Type>
                 <Id>0101</Id>
             </Reference>
@@ -3014,6 +3058,15 @@
     <Manufacturer>
         <Id>0154</Id>
         <Name>POPP</Name>
+        <Product>
+            <Reference>
+                <Type>0004</Type>
+                <Id>0002</Id>
+            </Reference>
+            <Model>005107</Model>
+            <Label lang="en">Solar Powered Outdoor Siren</Label>
+            <ConfigFile>popp/005107.xml</ConfigFile>
+        </Product>
         <Product>
             <Reference>
                 <Type>0001</Type>
