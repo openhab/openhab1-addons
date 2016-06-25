@@ -2228,6 +2228,15 @@
         </Product>
         <Product>
             <Reference>
+                <Type>0003</Type>
+                <Id>8010</Id>
+            </Reference>
+            <Model>014G0160</Model>
+            <Label lang="en">Z-Wave room sensor</Label>
+            <ConfigFile>danfoss/014g0160.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0005</Type>
                 <Id>0003</Id>
             </Reference>
