@@ -30,12 +30,12 @@
     <Configuration>
 
         <Parameter>
-            <Index>1</Index>
+            <Index>0</Index>
             <Label lang="en">Siren Strobe Mode</Label>
             <Type>list</Type>
             <Default>0</Default>
             <Minimum>0</Minimum>
-            <Maximum>255</Maximum>
+            <Maximum>2</Maximum>
             <Size>1</Size>
             <Item>
                 <Value>0</Value>
@@ -52,12 +52,12 @@
         </Parameter>
 
         <Parameter>
-            <Index>2</Index>
+            <Index>1</Index>
             <Label lang="en">Alarm auto stop</Label>
             <Type>list</Type>
             <Default>0</Default>
             <Minimum>0</Minimum>
-            <Maximum>255</Maximum>
+            <Maximum>3</Maximum>
             <Size>1</Size>
             <Item>
                 <Value>0</Value>

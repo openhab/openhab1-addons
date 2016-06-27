@@ -443,7 +443,7 @@ public abstract class ZWaveCommandClass {
         REMOTE_ASSOCIATION_ACTIVATE(0x7C, "REMOTE_ASSOCIATION_ACTIVATE", null),
         REMOTE_ASSOCIATION(0x7D, "REMOTE_ASSOCIATION", null),
         BATTERY(0x80, "BATTERY", ZWaveBatteryCommandClass.class),
-        CLOCK(0x81, "CLOCK", null),
+        CLOCK(0x81, "CLOCK", ZWaveClockCommandClass.class),
         HAIL(0x82, "HAIL", ZWaveHailCommandClass.class),
         WAKE_UP(0x84, "WAKE_UP", ZWaveWakeUpCommandClass.class),
         ASSOCIATION(0x85, "ASSOCIATION", ZWaveAssociationCommandClass.class),
