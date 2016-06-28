@@ -421,15 +421,20 @@ public class MysqlPersistenceService implements QueryablePersistenceService {
         String sqlCmd = null;
         PreparedStatement statement = null;
         try {
+            // Get current timestamp
+            long timeNow = Calendar.getInstance().getTimeInMillis();
+    	    java.sql.Timestamp timestamp = new java.sql.Timestamp(timeNow);
+        
             sqlCmd = new String(
-                    "INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),?) ON DUPLICATE KEY UPDATE VALUE=?;");
+                    "INSERT INTO " + tableName + " (TIME, VALUE) VALUES(?,?) ON DUPLICATE KEY UPDATE VALUE=?;");
             statement = connection.prepareStatement(sqlCmd);
-            statement.setString(1, value);
+            statement.setTimestamp(1, timestamp);
             statement.setString(2, value);
+            statement.setString(3, value);
             statement.executeUpdate();
 
             logger.debug("mySQL: Stored item '{}' as '{}'[{}] in SQL database at {}.", item.getName(),
-                    item.getState().toString(), value, (new java.util.Date()).toString());
+                    item.getState().toString(), value, timestamp.toString());
             logger.debug("mySQL: query: {}", sqlCmd);
 
             // Success
