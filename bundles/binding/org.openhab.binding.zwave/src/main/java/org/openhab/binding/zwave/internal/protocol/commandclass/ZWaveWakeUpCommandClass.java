@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -414,7 +414,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
         // Send the next message in the wake-up queue
         if (!this.wakeUpQueue.isEmpty()) {
             // Get the next message from the queue.
-            // Bump it's priority to highest to try and send it while the node is awake
+            // Bump its priority to highest to try and send it while the node is awake
             serialMessage = this.wakeUpQueue.poll();
             serialMessage.setPriority(SerialMessagePriority.Immediate);
             this.getController().sendData(serialMessage);
@@ -458,7 +458,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
             // We send the first message, and when that's ACKed, we sent the next
             if (!this.wakeUpQueue.isEmpty()) {
                 // Get the next message from the queue.
-                // Bump it's priority to highest to try and send it while the node is awake
+                // Bump its priority to highest to try and send it while the node is awake
                 SerialMessage serialMessage = this.wakeUpQueue.poll();
                 serialMessage.setPriority(SerialMessagePriority.Immediate);
                 this.getController().sendData(serialMessage);

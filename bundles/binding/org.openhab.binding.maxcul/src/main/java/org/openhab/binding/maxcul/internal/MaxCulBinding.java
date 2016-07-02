@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,7 +10,6 @@ package org.openhab.binding.maxcul.internal;
 
 import java.util.Collection;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,9 +38,10 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
-import org.openhab.io.transport.cul.CULDeviceException;
+import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULHandler;
-import org.openhab.io.transport.cul.CULManager;
+import org.openhab.io.transport.cul.CULLifecycleListener;
+import org.openhab.io.transport.cul.CULLifecycleManager;
 import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -61,14 +61,9 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
     private static final Logger logger = LoggerFactory.getLogger(MaxCulBinding.class);
 
     /**
-     * The device that is used to access the CUL hardware
-     */
-    private String accessDevice;
-
-    /**
      * This provides access to the CULFW device (e.g. USB stick)
      */
-    private CULHandler cul;
+    private final CULLifecycleManager culHandlerLifecycle;
 
     /**
      * This sets the address of the controller i.e. us!
@@ -96,22 +91,31 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
     private String tzStr;
 
     public MaxCulBinding() {
+        culHandlerLifecycle = new CULLifecycleManager(CULMode.MAX, new CULLifecycleListener() {
+
+            @Override
+            public void open(CULHandler cul) throws CULCommunicationException {
+                messageHandler = new MaxCulMsgHandler(srcAddr, cul, providers);
+                messageHandler.registerMaxCulBindingMessageProcessor(MaxCulBinding.this);
+            }
+
+            @Override
+            public void close(CULHandler cul) {
+                cul.unregisterListener(messageHandler);
+            }
+        });
     }
 
     @Override
     public void activate() {
-        super.activate();
         logger.debug("Activating MaxCul binding");
+        culHandlerLifecycle.open();
     }
 
     @Override
     public void deactivate() {
         logger.debug("De-Activating MaxCul binding");
-        if (cul != null) {
-            cul.unregisterListener(messageHandler);
-            CULManager.close(cul);
-            logger.debug("CUL IO should now be closed");
-        }
+        culHandlerLifecycle.close();
     }
 
     /**
@@ -145,7 +149,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
                                 TimerTask task = new TimerTask() {
                                     @Override
                                     public void run() {
-                                        logger.debug(itemName + " pairMode time out executed");
+                                        logger.debug(itemName + " pairMode timeout executed");
                                         pairMode = false;
                                         eventPublisher.postUpdate(itemName, OnOffType.OFF);
                                     }
@@ -258,56 +262,8 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
                 this.tzStr = "Europe/London";
             }
 
-            // handle device config
-            // maxcul:device=/dev/cul
-            String deviceString = (String) config.get("device");
-            if (StringUtils.isNotBlank(deviceString)) {
-                logger.debug("Setting up device " + deviceString);
-                setupDevice(deviceString, config);
-                if (cul == null) {
-                    throw new ConfigurationException("device",
-                            "Configuration failed. Unable to access CUL device " + deviceString);
-                }
-            } else {
-                throw new ConfigurationException("device", "No device set - please set one");
-            }
+            culHandlerLifecycle.config(config);
         }
-    }
-
-    private void setupDevice(String device, Dictionary<String, ?> config) {
-        if (cul != null) {
-            CULManager.close(cul);
-        }
-        try {
-            accessDevice = device;
-            logger.debug("Opening CUL device on " + accessDevice);
-            cul = CULManager.getOpenCULHandler(accessDevice, CULMode.MAX, convertDictionaryToMap(config));
-            messageHandler = new MaxCulMsgHandler(this.srcAddr, cul, super.providers);
-            messageHandler.registerMaxCulBindingMessageProcessor(this);
-        } catch (CULDeviceException e) {
-            logger.error("Cannot open CUL device", e);
-            cul = null;
-            accessDevice = null;
-        }
-    }
-
-    private Map<String, Object> convertDictionaryToMap(Dictionary<String, ?> config) {
-
-        Map<String, Object> myMap = new HashMap<String, Object>();
-
-        if (config == null) {
-            return null;
-        }
-        if (config.size() == 0) {
-            return myMap;
-        }
-
-        Enumeration<String> allKeys = config.keys();
-        while (allKeys.hasMoreElements()) {
-            String key = allKeys.nextElement();
-            myMap.put(key, config.get(key));
-        }
-        return myMap;
     }
 
     private Collection<MaxCulBindingConfig> getBindingsBySerial(String serial) {

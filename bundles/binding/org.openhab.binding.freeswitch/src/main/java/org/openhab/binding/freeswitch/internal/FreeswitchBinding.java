@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -171,7 +171,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 
     @Override
     public void eventReceived(EslEvent event) {
-        logger.debug("Recieved ESLEvent {}", event.getEventName());
+        logger.debug("Received ESLEvent {}", event.getEventName());
         logger.trace(printEvent(event));
         if (CHANNEl_CREATE.matches(event.getEventName())) {
             handleNewCallEvent(event);

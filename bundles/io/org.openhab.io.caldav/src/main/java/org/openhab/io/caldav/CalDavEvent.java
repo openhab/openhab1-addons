@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,6 +7,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.io.caldav;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -30,6 +33,7 @@ public class CalDavEvent {
     private String location;
     private String content;
     private String filename;
+    private final List<String> categoryList = new ArrayList<String>();
 
     public CalDavEvent() {
         super();
@@ -121,6 +125,10 @@ public class CalDavEvent {
         this.filename = filename;
     }
 
+    public List<String> getCategoryList() {
+        return categoryList;
+    }
+
     public String getShortName() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.id);
@@ -138,37 +146,31 @@ public class CalDavEvent {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((calendarId == null) ? 0 : calendarId.hashCode());
+        result = prime * result
+                + ((calendarId == null) ? 0 : calendarId.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (obj == null) {
+        if (obj == null)
             return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass())
             return false;
-        }
         CalDavEvent other = (CalDavEvent) obj;
         if (calendarId == null) {
-            if (other.calendarId != null) {
+            if (other.calendarId != null)
                 return false;
-            }
-        } else if (!calendarId.equals(other.calendarId)) {
+        } else if (!calendarId.equals(other.calendarId))
             return false;
-        }
         if (id == null) {
-            if (other.id != null) {
+            if (other.id != null)
                 return false;
-            }
-        } else if (!id.equals(other.id)) {
+        } else if (!id.equals(other.id))
             return false;
-        }
         return true;
     }
 
@@ -177,4 +179,5 @@ public class CalDavEvent {
         return this.getShortName();
     }
 
+    
 }

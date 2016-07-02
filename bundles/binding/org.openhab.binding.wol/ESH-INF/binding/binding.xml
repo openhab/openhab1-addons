@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="wol"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>Wake-on-LAN (WoL) Binding</name>
+    <description>The Wake-on-LAN Binding is used to send Wake-on-LAN magic packets to specific hosts in the network.</description>
+    <author>Thomas Eichstaedt-Engelen</author>
+
+</binding:binding>

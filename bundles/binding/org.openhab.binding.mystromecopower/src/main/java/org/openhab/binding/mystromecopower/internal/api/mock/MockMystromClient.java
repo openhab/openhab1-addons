@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,7 +19,7 @@ import org.openhab.binding.mystromecopower.internal.api.model.MystromDevice;
 /**
  * Mock used to simulate the mystrom SRS server.
  *
- * @since 1.8.0-SNAPSHOT
+ * @since 1.8.0
  * @author Jordens Christophe
  *
  */
@@ -82,4 +82,8 @@ public class MockMystromClient implements IMystromClient {
     public void RestartMaster(String deviceId) {
     }
 
+    @Override
+    public List<MystromDevice> getDevicesState() {
+        return null;
+    }
 }

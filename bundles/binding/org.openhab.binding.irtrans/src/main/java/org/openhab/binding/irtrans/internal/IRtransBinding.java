@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -419,7 +419,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
                         }
 
                     } else {
-                        logger.warn("Received an unexecpted response {}",
+                        logger.warn("Received an unexpected response {}",
                                 StringUtils.substringAfter(message, "RESULT "));
                     }
                 }
@@ -502,7 +502,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
             }
 
         } else {
-            logger.error("{} does not match the IRtrans message formet ({})", message, matcher.pattern());
+            logger.error("{} does not match the IRtrans message format ({})", message, matcher.pattern());
         }
     }
 
@@ -801,7 +801,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
             byteBuffer.put(putInASCIImode.getBytes("ASCII"));
             writeBuffer(byteBuffer, channel, false, timeOut);
         } catch (UnsupportedEncodingException e) {
-            logger.error("An exception occurred while configurting the IRtrans device: {}", e.getMessage());
+            logger.error("An exception occurred while configuring the IRtrans device: {}", e.getMessage());
         }
 
         String getFirmwareVersion = "Aver" + (char) 13;
@@ -812,7 +812,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
             byteBuffer.put(getFirmwareVersion.getBytes("ASCII"));
             response = writeBuffer(byteBuffer, channel, true, timeOut);
         } catch (UnsupportedEncodingException e) {
-            logger.error("An exception occurred while configurting the IRtrans device: {}", e.getMessage());
+            logger.error("An exception occurred while configuring the IRtrans device: {}", e.getMessage());
         }
 
         if (response != null) {

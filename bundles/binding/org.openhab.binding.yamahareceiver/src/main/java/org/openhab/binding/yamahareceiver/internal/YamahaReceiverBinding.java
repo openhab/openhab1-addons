@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Yamaha Reciever binding. Handles all commands and polls configured devices to
+ * Yamaha Receiver binding. Handles all commands and polls configured devices to
  * process updates.
  *
  * @author Eric Thill

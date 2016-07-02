@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -36,6 +36,7 @@ public class Messages extends NLS {
     public static String HeatPumpBinding_SERVICE_WATER_EXT;
     public static String HeatPumpBinding_FLOW_MONITORING;
     public static String HeatPumpBinding_ZWE_OPERATION;
+    public static String HeatPumpBinding_SERVICE_WATER_ADDITIONAL_HEATING;
 
     static {
         // initialize resource bundle

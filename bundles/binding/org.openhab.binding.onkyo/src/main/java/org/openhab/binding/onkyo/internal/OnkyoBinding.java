@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -347,12 +347,17 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
 
                     for (String cmd : values.keySet()) {
                         String[] commandParts = values.get(cmd).split(":");
+                        String deviceId = commandParts[0];
                         String deviceCmd = commandParts[1];
+
+                        if (!deviceConfig.deviceId.equals(deviceId)) {
+                            continue;
+                        }
 
                         boolean match = false;
                         if (deviceCmd.startsWith(ADVANCED_COMMAND_KEY)) {
-                            // skip advanced command key and compare 3 first character
-                            if (data.startsWith(deviceCmd.substring(1, 4))) {
+                            // skip advanced command key and compare remaining characters
+                            if (data.startsWith(deviceCmd.substring(1))) {
                                 match = true;
                             }
                         } else {
@@ -363,9 +368,8 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
                                 if (data.startsWith(eiscpCmd.substring(0, 3))) {
                                     match = true;
                                 }
-
                             } catch (Exception e) {
-                                logger.error("Unregonized command '" + deviceCmd + "'", e);
+                                logger.error("Unrecognized command '" + deviceCmd + "'", e);
                             }
                         }
 
@@ -380,7 +384,6 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
             }
         }
     }
-
     /**
      * Convert receiver value to OpenHAB state.
      *

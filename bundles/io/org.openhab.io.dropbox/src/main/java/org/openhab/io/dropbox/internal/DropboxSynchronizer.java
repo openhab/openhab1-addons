@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -471,6 +471,10 @@ public class DropboxSynchronizer implements ManagedService {
             if (file.isDirectory()) {
                 collectLocalEntries(localEntries, file.getPath());
             } else {
+                //if we are on a Windows filesystem we need to change the separator for dropbox
+                if (isWindows()) {
+                    normalizedPath = normalizedPath.replace('\\', '/');
+                }
                 localEntries.put(normalizedPath, file.lastModified());
             }
         }
@@ -814,4 +818,7 @@ public class DropboxSynchronizer implements ManagedService {
         }
     }
 
+    private boolean isWindows() {
+        return (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0);
+    }
 }

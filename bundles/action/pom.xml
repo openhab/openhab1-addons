@@ -37,6 +37,7 @@
     <module>org.openhab.action.dscalarm</module>
     <module>org.openhab.action.telegram</module>
     <module>org.openhab.action.pebble</module>
+    <module>org.openhab.action.satel</module>
   </modules>
 
 </project>

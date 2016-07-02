@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,7 +23,7 @@ public interface SatelBindingProvider extends BindingProvider {
     /**
      * Returns the {@link Item} with the specified item name. Returns null if
      * the item was not found.
-     * 
+     *
      * @param itemName
      *            the name of the item.
      * @return the item.
@@ -33,7 +33,7 @@ public interface SatelBindingProvider extends BindingProvider {
     /**
      * Returns the {@link SatelBindingConfig} for the specified item name.
      * Returns null if the item was not found.
-     * 
+     *
      * @param itemName
      *            the name of the item.
      * @return the binding configuration for the item.

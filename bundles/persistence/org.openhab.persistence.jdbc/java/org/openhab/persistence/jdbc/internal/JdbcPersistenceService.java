@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -123,7 +123,7 @@ public class JdbcPersistenceService extends JdbcMapper implements QueryablePersi
             logger.warn("JDBC::store: ignore Item '{}' because it is UnDefType", item.getName());
             return;
         }
-        if (!checkDBAcessability()) {
+        if (!checkDBAccessability()) {
             logger.warn(
                     "JDBC::store:  No connection to database. Can not persist item '{}'! Will retry connecting to database when error count:{} equals errReconnectThreshold:{}",
                     item, errCnt, conf.getErrReconnectThreshold());
@@ -146,7 +146,7 @@ public class JdbcPersistenceService extends JdbcMapper implements QueryablePersi
     @Override
     public Iterable<HistoricItem> query(FilterCriteria filter) {
 
-        if (!checkDBAcessability()) {
+        if (!checkDBAccessability()) {
             logger.warn("JDBC::query: db not connected, query aborted for item '{}'", filter.getItemName());
             return Collections.emptyList();
         }
@@ -183,7 +183,9 @@ public class JdbcPersistenceService extends JdbcMapper implements QueryablePersi
 
         String table = sqlTables.get(itemName);
         if (table == null) {
-            logger.warn("JDBC::query: unable to find table for query, no Data in Database for Item '{}'", itemName);
+            logger.warn(
+                    "JDBC::query: unable to find table for query, no Data in Database for Item '{}'. Current number of tables in the database: {}",
+                    itemName, sqlTables.size());
             // if enabled, table will be created immediately
             if (item != null) {
                 logger.warn("JDBC::query: try to generate the table for item '{}'", itemName);
@@ -213,7 +215,7 @@ public class JdbcPersistenceService extends JdbcMapper implements QueryablePersi
         logger.debug("JDBC::updateConfig");
 
         conf = new JdbcConfiguration(configuration);
-        if (checkDBAcessability()) {
+        if (checkDBAccessability()) {
             checkDBSchema();
             // connection has been established ... initialization completed!
             initialized = true;

@@ -215,15 +215,16 @@
     <Associations>
 
         <Group>
-            <Index>0</Index>
-            <Label lang="en">Basic Set Level</Label>
-            <Maximum>0</Maximum>
+            <Index>1</Index>
+            <Label lang="en">Reports</Label>
+            <Maximum>8</Maximum>
+            <SetToController>true</SetToController>
         </Group>
 
         <Group>
-            <Index>0</Index>
-            <Label lang="en">PIR Sensitivity</Label>
-            <Maximum>0</Maximum>
+            <Index>2</Index>
+            <Label lang="en">Light Control</Label>
+            <Maximum>8</Maximum>
         </Group>
 
     </Associations>

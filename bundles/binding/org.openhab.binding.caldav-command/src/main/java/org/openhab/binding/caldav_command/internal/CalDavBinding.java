@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,6 +29,7 @@ import org.openhab.core.types.Command;
 import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.CalDavLoader;
 import org.openhab.io.caldav.CalDavQuery;
+import org.openhab.io.caldav.CalDavQuery.Sort;
 import org.openhab.io.caldav.EventNotifier;
 import org.openhab.io.caldav.EventUtils;
 import org.osgi.service.cm.ConfigurationException;
@@ -67,6 +68,9 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
 
     private static final String KEY_READ_CALENDARS = "readCalendars";
 
+    // Use this item as default item if summary does not match pattern: BEGIN:<item>:<value>
+    private static final String KEY_DEFAULT_ITEM_ON_BEGIN = "defaultItemOnBegin";
+
     private static final Logger logger = LoggerFactory.getLogger(CalDavBinding.class);
 
     private ItemRegistry itemRegistry;
@@ -76,6 +80,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
     private List<String> readCalendars = new ArrayList<String>();
 
     private List<String> disabledItems = new ArrayList<String>();
+
+    private String defaultItemOnBegin;
 
     private boolean calendarReloaded;
 
@@ -121,11 +127,14 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
         if (properties != null) {
             logger.debug("reading configuration data...");
             String read = (String) properties.get(KEY_READ_CALENDARS);
+            this.readCalendars.clear();
             if (read != null) {
                 for (String value : read.split(",")) {
                     this.readCalendars.add(value.trim());
                 }
             }
+            read = (String) properties.get(KEY_DEFAULT_ITEM_ON_BEGIN);
+            this.defaultItemOnBegin = read == null ? null : read.trim();
             this.reloadCurrentLoadedEvents();
         }
     }
@@ -270,7 +279,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
 
     private void doActionInitial() {
         List<CalDavEvent> events = calDavLoader
-                .getEvents(new CalDavQuery(this.readCalendars, DateTime.now(), DateTime.now()));
+                .getEvents(new CalDavQuery(this.readCalendars, DateTime.now(), Sort.ASCENDING));
         Map<String, EventUtils.EventContent> map = new HashMap<String, EventUtils.EventContent>();
         for (CalDavEvent calDavEvent : events) {
             final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(calDavEvent, this.itemRegistry,
@@ -297,12 +306,22 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
     }
 
     private void doAction(CalDavEvent event, String scope) {
-        final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(event, this.itemRegistry, scope);
-        for (EventUtils.EventContent eventContent : parseContent) {
+        final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(event, this.itemRegistry, scope,
+                defaultItemOnBegin);
+        outer: for (EventUtils.EventContent eventContent : parseContent) {
+            logger.trace("checking for disabled for item '{}' and groups '{}'", eventContent.getItem().getName(),
+                    eventContent.getItem().getGroupNames());
+            for (String groupName : eventContent.getItem().getGroupNames()) {
+                if (disabledItems.contains(groupName)) {
+                    continue outer;
+                }
+            }
             if (disabledItems.contains(eventContent.getItem().getName())) {
-                continue;
+                continue outer;
             }
 
+            logger.info("sending command '{}' to item '{}' from event '{}'", eventContent.getCommand(),
+                    eventContent.getItem().getName(), event.getShortName());
             eventPublisher.sendCommand(eventContent.getItem().getName(), eventContent.getCommand());
         }
     }
@@ -337,7 +356,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
             }
         }
 
-        if (time == null) {
+        if (time == null && config.getType() != CalDavType.DISABLE) {
             // no item found
             eventPublisher.postUpdate(itemNamePreview, org.openhab.core.types.UnDefType.UNDEF);
             return;

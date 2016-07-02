@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -146,8 +146,7 @@ public class Zone extends DSCAlarmDevice {
                             break;
                         case ZONE_GENERAL_STATUS:
                             zoneProperties.setState(StateType.GENERAL_STATE, (tpiCode == 609) ? 1 : 0, strStatus);
-                            publisher.postUpdate(item.getName(), (zoneProperties.getState(StateType.GENERAL_STATE) == 1)
-                                    ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
+                            publisher.postUpdate(item.getName(), (zoneProperties.getState(StateType.GENERAL_STATE) == 1) ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
                             break;
                         default:
                             logger.debug("handleEvent(): Zone item not updated.");

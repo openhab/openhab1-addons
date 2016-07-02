@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -142,7 +142,7 @@ public class KNXBusReaderScheduler {
         }
 
         if (mReadQueue.size() > KNXConnection.getMaxRefreshQueueEntries()) {
-            sLogger.error("Maximium number of permissible reading queue entries reached ('{}'). Ignoring new entries.",
+            sLogger.error("Maximum number of permissible reading queue entries reached ('{}'). Ignoring new entries.",
                     KNXConnection.getMaxRefreshQueueEntries());
             return false;
         }
@@ -181,7 +181,7 @@ public class KNXBusReaderScheduler {
         }
 
         if (mReadQueue.size() > KNXConnection.getMaxRefreshQueueEntries()) {
-            sLogger.error("Maximium number of permissible reading queue entries reached ('{}'). Ignoring new entries.",
+            sLogger.error("Maximum number of permissible reading queue entries reached ('{}'). Ignoring new entries.",
                     KNXConnection.getMaxRefreshQueueEntries());
             return false;
         }
@@ -190,7 +190,7 @@ public class KNXBusReaderScheduler {
         int oldListNumber = getAutoRefreshTimeInSecs(datapoint);
         if (oldListNumber > 0) {
             if (oldListNumber == autoRefreshTimeInSecs) {
-                sLogger.debug("Datapoint '{}' was already in  auto refresh list {}", datapoint.getName(),
+                sLogger.debug("Datapoint '{}' was already in auto refresh list {}", datapoint.getName(),
                         autoRefreshTimeInSecs);
                 return true;
             }
