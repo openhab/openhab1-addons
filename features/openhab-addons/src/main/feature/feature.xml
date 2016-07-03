@@ -387,6 +387,13 @@
     <configfile finalname="${openhab.conf}/services/nest.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/nest</configfile>
   </feature>
 
+  <feature name="openhab-binding-networkupstools" description="Network UPS Tools Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.networkupstools/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/networkupstools.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/networkupstools</configfile>
+  </feature>
+
   <feature name="openhab-binding-nibeheatpump" description="Nibe Heatpump Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -400,6 +407,13 @@
     <feature>openhab-transport-serial</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.nikobus/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/nikobus.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/nikobus</configfile>
+  </feature>
+
+  <feature name="openhab-binding-novelanheatpump" description="Novelan Heatpump Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.novelanheatpump/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/novelanheatpump.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/novelanheatpump</configfile>
   </feature>
 
   <feature name="openhab-binding-onkyo" description="Onkyo Binding" version="${project.version}">
