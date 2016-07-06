@@ -6,13 +6,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.insteonplm.internal.driver.hub;
+package org.openhab.binding.insteonplm.internal.driver;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import org.openhab.binding.insteonplm.internal.driver.IOStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,8 +22,8 @@ import org.slf4j.LoggerFactory;
  * @since 1.7.0
  *
  */
-public class OldHubIOStream extends IOStream {
-    private static final Logger logger = LoggerFactory.getLogger(OldHubIOStream.class);
+public class TcpIOStream extends IOStream {
+    private static final Logger logger = LoggerFactory.getLogger(TcpIOStream.class);
 
     private String m_host = null;
     private int m_port = -1;
@@ -36,7 +35,7 @@ public class OldHubIOStream extends IOStream {
      * @param host host name of hub device
      * @param port port to connect to
      */
-    public OldHubIOStream(String host, int port) {
+    public TcpIOStream(String host, int port) {
         m_host = host;
         m_port = port;
     }
