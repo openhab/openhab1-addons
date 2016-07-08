@@ -1318,6 +1318,10 @@
                 <Type>6401</Type>
                 <Id>107</Id>
             </Reference>
+            <Reference>
+                <Type>6401</Type>
+                <Id>01FD</Id>
+            </Reference>
             <Model>CT100</Model>
             <Label lang="en">Z-Wave Thermostat</Label>
             <ConfigFile>rtc/ct100.xml</ConfigFile>
@@ -1385,6 +1389,15 @@
     <Manufacturer>
         <Name>Vision Security</Name>
         <Id>0109</Id>
+        <Product>
+            <Reference>
+                <Type>0002</Type>
+                <Id>FFFF</Id>
+            </Reference>
+            <Model>YRD220</Model>
+            <Label lang="en">Vision Real Living Touchscreen Deadbolt</Label>
+            <ConfigFile>vision/yrd220.xml</ConfigFile>
+        </Product>
         <Product>
             <Reference>
                 <Type>200D</Type>
@@ -3157,6 +3170,23 @@
             <Label lang="en">Push Button Deadbolt</Label>
             <ConfigFile>yale/yrd210.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0002</Type>
+                <Id>0000</Id>
+            </Reference>
+            <Reference>
+                <Type>0002</Type>
+                <Id>AA00</Id>
+            </Reference>
+            <Reference>
+                <Type>0002</Type>
+                <Id>FFFF</Id>
+            </Reference>
+            <Model>YRD220</Model>
+            <Label lang="en">Yale Real Living Touchscreen Deadbolt</Label>
+            <ConfigFile>yale/yrd220.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0166</Id>
@@ -3540,4 +3570,17 @@
             <ConfigFile>homeseer/hsws100.xml</ConfigFile>
         </Product>
     </Manufacturer>
+    <Manufacturer>
+        <Id>0234</Id>
+        <Name>Logic Home Control</Name>
+        <Product>
+            <Reference>
+                <Type>0003</Type>
+                <Id>010A</Id>
+            </Reference>
+            <Model>ZHC5010</Model>
+            <Label lang="en">FUGA Wall 4-way Switch + Relay</Label>
+            <ConfigFile>logic/zhc5010.xml</ConfigFile>
+        </Product>
+    </Manufacturer> 
 </Manufacturers>
