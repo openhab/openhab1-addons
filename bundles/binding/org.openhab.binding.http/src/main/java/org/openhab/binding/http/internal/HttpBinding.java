@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @author Pauli Anttila
  * @auther Ben Jones
+ * @author John Cocula
  * @since 0.6.0
  */
 public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>implements ManagedService {
@@ -63,12 +64,16 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
 
     protected static final String CONFIG_TIMEOUT = "timeout";
     protected static final String CONFIG_GRANULARITY = "granularity";
+    protected static final String CONFIG_FORMAT = "format";
 
     /** the timeout to use for connecting to a given host (defaults to 5000 milliseconds) */
     private int timeout = 5000;
 
     /** the interval to find new refresh candidates (defaults to 1000 milliseconds) */
     private int granularity = 1000;
+
+    /** whether to substitute time and/or state into the URL */
+    private boolean format = true;
 
     private Map<String, Long> lastUpdateMap = new HashMap<String, Long>();
 
@@ -141,7 +146,9 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
             for (String itemName : provider.getInBindingItemNames()) {
 
                 String url = provider.getUrl(itemName);
-                url = String.format(url, Calendar.getInstance().getTime());
+                if (format) {
+                    url = String.format(url, Calendar.getInstance().getTime());
+                }
 
                 Properties headers = provider.getHttpHeaders(itemName);
                 int refreshInterval = provider.getRefreshInterval(itemName);
@@ -292,7 +299,9 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
 
         String httpMethod = provider.getHttpMethod(itemName, command);
         String url = provider.getUrl(itemName, command);
-        url = String.format(url, Calendar.getInstance().getTime(), value);
+        if (format) {
+            url = String.format(url, Calendar.getInstance().getTime(), value);
+        }
 
         if (isNotBlank(httpMethod) && isNotBlank(url)) {
             HttpUtil.executeUrl(httpMethod, url, provider.getHttpHeaders(itemName, command), null, null, timeout);
@@ -410,6 +419,11 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
                 String granularityString = (String) config.get(CONFIG_GRANULARITY);
                 if (StringUtils.isNotBlank(granularityString)) {
                     granularity = Integer.parseInt(granularityString);
+                }
+
+                String formatString = (String) config.get(CONFIG_FORMAT);
+                if (StringUtils.isNotBlank(formatString)) {
+                    format = formatString.equalsIgnoreCase("true");
                 }
 
                 // Parse page cache config
