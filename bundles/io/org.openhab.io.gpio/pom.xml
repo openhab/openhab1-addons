@@ -12,7 +12,7 @@
   	<bundle.namespace>org.openhab.io.gpio</bundle.namespace>
   	<deb.name>openhab-addon-io-gpio</deb.name>
   	<deb.description>${project.name}</deb.description>
-  	<deb.depends>libjna-java, openhab-runtime</deb.depends>
+  	<deb.depends>openhab-runtime</deb.depends>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>

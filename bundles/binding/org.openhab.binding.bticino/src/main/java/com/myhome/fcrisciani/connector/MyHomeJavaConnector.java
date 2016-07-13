@@ -16,6 +16,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.myhome.fcrisciani.datastructure.action.Action;
 import com.myhome.fcrisciani.datastructure.command.CommandOPEN;
 import com.myhome.fcrisciani.datastructure.command.DelayInterval;
@@ -36,6 +39,9 @@ import com.myhome.fcrisciani.queue.PriorityQueueThread;
  * @since 1.7.0
  */
 public class MyHomeJavaConnector {
+
+    private static final Logger logger = LoggerFactory.getLogger(MyHomeJavaConnector.class);
+
     // ----- TYPES ----- //
 
     // ---- MEMBERS ---- //
@@ -100,7 +106,7 @@ public class MyHomeJavaConnector {
     }
 
     /**
-     * Receive message form a monitor socket
+     * Receive message from a monitor socket
      * 
      * @param sk
      *            monitor socket used to read commands
@@ -129,6 +135,7 @@ public class MyHomeJavaConnector {
         super();
         this.ip = ip;
         this.port = port;
+        logger.debug("Created MyHomeJavaConnector with ip = {} and port = {}", ip, port);
         this.commandMutex = new Semaphore(1, true);
         this.commandQueue = new PriorityCommandQueue();
         this.commandQueueThread = new Thread(new PriorityQueueThread(this, commandQueue), "TailThread");
@@ -319,12 +326,11 @@ public class MyHomeJavaConnector {
                 }
                 retry++;
                 Thread.sleep(1000);
-                System.err.println("Monitor connection problem retry temptative: " + retry);
+                logger.error("Monitor connection problem. Attempting retry {}.", retry);
                 try {
                     startMonitoring();
                 } catch (IOException e1) {
                 }
-                continue;
             }
         } while (result == null);
 

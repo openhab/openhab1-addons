@@ -112,7 +112,12 @@ public class TACmiGenericBindingProvider extends AbstractGenericBindingProvider 
             this.canNode = canNode;
             this.portType = portType;
             this.portNumber = portNumber;
-            this.measureType = measureType;
+            if (measureType == null) {
+                this.measureType = TACmiMeasureType.NONE;
+            } else {
+                this.measureType = measureType;
+            }
+
             this.configurationString = configurationString;
         }
 
