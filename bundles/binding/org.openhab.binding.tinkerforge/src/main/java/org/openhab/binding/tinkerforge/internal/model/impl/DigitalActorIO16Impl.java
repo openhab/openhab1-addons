@@ -813,7 +813,7 @@ public class DigitalActorIO16Impl extends MinimalEObjectImpl.Container implement
             } else if (digitalState == HighLowValue.LOW) {
                 brickletIO16.setSelectedValues(getPort(), (short) mask, (short) 0);
             } else {
-                logger.error("{} unkown digitalState {}", LoggerConstants.TFMODELUPDATE, digitalState);
+                logger.error("{} unknown digitalState {}", LoggerConstants.TFMODELUPDATE, digitalState);
             }
             setDigitalState(digitalState);
         } catch (TimeoutException e) {

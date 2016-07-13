@@ -588,7 +588,7 @@ public class DigitalActorDigitalOut4Impl extends MinimalEObjectImpl.Container im
             } else if (digitalState == HighLowValue.LOW) {
                 bricklet.setSelectedValues((short) mask, (short) 0);
             } else {
-                logger.error("{} unkown digitalState {}", LoggerConstants.TFMODELUPDATE, digitalState);
+                logger.error("{} unknown digitalState {}", LoggerConstants.TFMODELUPDATE, digitalState);
             }
             setDigitalState(digitalState);
         } catch (TimeoutException e) {
