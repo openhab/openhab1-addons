@@ -929,7 +929,7 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
                 } else if (chipTypeString.equalsIgnoreCase("ws2812")) {
                     chipType = BrickletLEDStrip.CHIP_TYPE_WS2812;
                 } else {
-                    logger.error("Unkown ChipType {}", chipTypeString);
+                    logger.error("Unknown ChipType {}", chipTypeString);
                     // TODO raise configuration error
                 }
             }

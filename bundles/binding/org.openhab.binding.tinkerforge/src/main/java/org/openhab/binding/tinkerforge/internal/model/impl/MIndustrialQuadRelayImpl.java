@@ -292,7 +292,7 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
                 logger.debug("setSwitchState on");
                 getMbrick().getTinkerforgeDevice().setSelectedValues(mask, mask);
             } else {
-                logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+                logger.error("{} unknown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
             }
             setSwitchState(state);
         } catch (TimeoutException e) {
