@@ -16,8 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implements IOStream for the older hubs (pre 2014)
- * 
+ * Implements IOStream for the older hubs (pre 2014).
+ * Also works for serial ports exposed via tcp, eg. ser2net
+ *
  * @author Bernd Pfrommer
  * @since 1.7.0
  *
@@ -31,7 +32,7 @@ public class TcpIOStream extends IOStream {
 
     /**
      * Constructor
-     * 
+     *
      * @param host host name of hub device
      * @param port port to connect to
      */

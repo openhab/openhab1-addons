@@ -109,6 +109,8 @@ public abstract class IOStream {
      *
      * /hub/myinsteonhub.mydomain.com:9761
      *
+     * /tcp/serialportserver.mydomain.com:port (serial port exposed via tcp, eg. ser2net)
+     *
      * @param config
      * @return reference to IOStream
      */
@@ -117,7 +119,7 @@ public abstract class IOStream {
         if (config.startsWith("/hub2/")) {
             return makeHub2014Stream(config);
         } else if (config.startsWith("/hub/") || config.startsWith("/tcp/")) {
-            return makeOldHubStream(config);
+            return makeTCPStream(config);
         } else {
             return new SerialIOStream(config);
         }
@@ -152,7 +154,7 @@ public abstract class IOStream {
         return new HubIOStream(hp.host, hp.port, pollTime, user, pass);
     }
 
-    private static TcpIOStream makeOldHubStream(String config) {
+    private static TcpIOStream makeTCPStream(String config) {
         config = config.substring(5); // Get rid of the /hub/ part
         String[] parts = config.split(","); // split off options at the end, if any
         String[] hostPort = parts[0].split(":");
