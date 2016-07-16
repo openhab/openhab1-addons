@@ -106,7 +106,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingName() {
+    public void testQueryUsingName() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOrdering(Ordering.ASCENDING);
         criteria.setItemName(getItemName());
@@ -115,7 +115,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStart() {
+    public void testQueryUsingNameAndStart() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOrdering(Ordering.ASCENDING);
         criteria.setItemName(getItemName());
@@ -125,7 +125,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStartNoMatch() {
+    public void testQueryUsingNameAndStartNoMatch() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setItemName(getItemName());
         criteria.setBeginDate(afterStore2);
@@ -134,7 +134,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndEnd() {
+    public void testQueryUsingNameAndEnd() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOrdering(Ordering.ASCENDING);
         criteria.setItemName(getItemName());
@@ -144,7 +144,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndEndNoMatch() {
+    public void testQueryUsingNameAndEndNoMatch() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setItemName(getItemName());
         criteria.setEndDate(beforeStore);
@@ -153,7 +153,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStartAndEnd() {
+    public void testQueryUsingNameAndStartAndEnd() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOrdering(Ordering.ASCENDING);
         criteria.setItemName(getItemName());
@@ -164,7 +164,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStartAndEndDesc() {
+    public void testQueryUsingNameAndStartAndEndDesc() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOrdering(Ordering.DESCENDING);
         criteria.setItemName(getItemName());
@@ -175,7 +175,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStartAndEndWithNEQOperator() {
+    public void testQueryUsingNameAndStartAndEndWithNEQOperator() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOperator(Operator.NEQ);
         criteria.setState(getSecondItemState());
@@ -192,7 +192,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStartAndEndWithEQOperator() {
+    public void testQueryUsingNameAndStartAndEndWithEQOperator() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOperator(Operator.EQ);
         criteria.setState(getFirstItemState());
@@ -209,7 +209,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStartAndEndWithLTOperator() {
+    public void testQueryUsingNameAndStartAndEndWithLTOperator() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOperator(Operator.LT);
         criteria.setState(getSecondItemState());
@@ -226,7 +226,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStartAndEndWithLTOperatorNoMatch() {
+    public void testQueryUsingNameAndStartAndEndWithLTOperatorNoMatch() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOperator(Operator.LT);
         criteria.setState(getFirstItemState());
@@ -239,7 +239,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStartAndEndWithLTEOperator() {
+    public void testQueryUsingNameAndStartAndEndWithLTEOperator() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOperator(Operator.LTE);
         criteria.setState(getFirstItemState());
@@ -256,7 +256,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStartAndEndWithGTOperator() {
+    public void testQueryUsingNameAndStartAndEndWithGTOperator() {
         // Skip for subclasses which have null "state between"
         Assume.assumeTrue(getQueryItemStateBetween() != null);
 
@@ -276,7 +276,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStartAndEndWithGTOperatorNoMatch() {
+    public void testQueryUsingNameAndStartAndEndWithGTOperatorNoMatch() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOperator(Operator.GT);
         criteria.setState(getSecondItemState());
@@ -289,7 +289,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStartAndEndWithGTEOperator() {
+    public void testQueryUsingNameAndStartAndEndWithGTEOperator() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOperator(Operator.GTE);
         criteria.setState(getSecondItemState());
@@ -306,7 +306,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStartAndEndFirst() {
+    public void testQueryUsingNameAndStartAndEndFirst() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setOrdering(Ordering.ASCENDING);
         criteria.setItemName(getItemName());
@@ -323,7 +323,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void testQueryDimmerUsingNameAndStartAndEndNoMatch() {
+    public void testQueryUsingNameAndStartAndEndNoMatch() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setItemName(getItemName());
         criteria.setBeginDate(beforeStore);
