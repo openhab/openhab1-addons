@@ -25,6 +25,9 @@ import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>OHTF Device</b></em>'.
@@ -52,6 +55,9 @@ import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 @SuppressWarnings("rawtypes")
 public class OHTFDeviceImpl<TFC extends TFConfig, IDS extends Enum> extends MinimalEObjectImpl.Container
         implements OHTFDevice<TFC, IDS> {
+
+    private static Logger logger = LoggerFactory.getLogger(OHTFDeviceImpl.class);
+
     /**
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -379,8 +385,10 @@ public class OHTFDeviceImpl<TFC extends TFConfig, IDS extends Enum> extends Mini
     public boolean isValidSubId(String subId) {
         OHTFDevice<TFC, IDS> _this = this;
         EList<IDS> _subDeviceIds = _this.getSubDeviceIds();
+        logger.debug("Looking through the list of subdeviceids... Length = {}", _subDeviceIds.size());
         for (final IDS sid : _subDeviceIds) {
             String _string = sid.toString();
+            logger.debug("Comparing {} to {}.", _string, subId);
             boolean _equalsIgnoreCase = _string.equalsIgnoreCase(subId);
             if (_equalsIgnoreCase) {
                 return true;

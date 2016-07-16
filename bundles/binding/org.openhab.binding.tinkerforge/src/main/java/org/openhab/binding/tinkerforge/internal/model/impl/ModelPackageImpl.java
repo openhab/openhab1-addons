@@ -12580,7 +12580,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEAttribute(getOHTFDevice_Uid(), theEcorePackage.getEString(), "uid", null, 0, 1, OHTFDevice.class,
                 !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
                 IS_ORDERED);
-        initEAttribute(getOHTFDevice_Subid(), theEcorePackage.getEString(), "subid", null, 0, 1, OHTFDevice.class,
+        initEAttribute(getOHTFDevice_Subid(), theEcorePackage.getEString(), "subId", null, 0, 1, OHTFDevice.class,
                 !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
                 IS_ORDERED);
         initEAttribute(getOHTFDevice_Ohid(), theEcorePackage.getEString(), "ohid", null, 0, 1, OHTFDevice.class,
@@ -12622,7 +12622,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         op = initEOperation(getOHConfig__GetConfigByTFId__String_String(), null, "getConfigByTFId", 0, 1, !IS_UNIQUE,
                 IS_ORDERED);
         addEParameter(op, theEcorePackage.getEString(), "uid", 0, 1, !IS_UNIQUE, IS_ORDERED);
-        addEParameter(op, theEcorePackage.getEString(), "subid", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEString(), "subId", 0, 1, !IS_UNIQUE, IS_ORDERED);
         g1 = createEGenericType(this.getOHTFDevice());
         g2 = createEGenericType();
         g1.getETypeArguments().add(g2);
