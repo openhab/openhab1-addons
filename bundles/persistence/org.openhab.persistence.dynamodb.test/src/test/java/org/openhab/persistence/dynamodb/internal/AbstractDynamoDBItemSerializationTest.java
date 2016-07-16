@@ -49,6 +49,15 @@ public class AbstractDynamoDBItemSerializationTest {
 
     private final Date date = new Date(400);
 
+    /**
+     * Generic function testing serialization of item state to internal format in DB. In other words, conversion of
+     * Item with state to DynamoDBItem
+     *
+     * @param state item state
+     * @param expectedState internal format in DB representing the item state
+     * @return dynamo db item
+     * @throws IOException
+     */
     @SuppressWarnings("unchecked")
     public DynamoDBItem<?> testStateGeneric(State state, Object expectedState) throws IOException {
         DynamoDBItem<?> dbItem = AbstractDynamoDBItem.fromState("item1", state, date);
@@ -64,6 +73,15 @@ public class AbstractDynamoDBItemSerializationTest {
         return dbItem;
     }
 
+    /**
+     * Test state deserialization, that is DynamoDBItem conversion to HistoricItem
+     *
+     * @param dbItem dynamo db item
+     * @param item parameter for DynamoDBItem.asHistoricItem
+     * @param expectedState Expected state of the historic item. DecimalTypes are compared with reduced accuracy
+     * @return
+     * @throws IOException
+     */
     public HistoricItem testAsHistoricGeneric(DynamoDBItem<?> dbItem, Item item, Object expectedState)
             throws IOException {
         HistoricItem historicItem = dbItem.asHistoricItem(item);
