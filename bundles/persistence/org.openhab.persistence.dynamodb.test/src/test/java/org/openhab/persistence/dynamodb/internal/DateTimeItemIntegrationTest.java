@@ -8,7 +8,9 @@
  */
 package org.openhab.persistence.dynamodb.internal;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.junit.BeforeClass;
 import org.openhab.core.library.items.DateTimeItem;
@@ -18,9 +20,19 @@ import org.openhab.core.types.State;
 public class DateTimeItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "datetime";
-    private static final DateTimeType state1 = new DateTimeType("2016-05-15T10:00:00Z");
-    private static final DateTimeType state2 = new DateTimeType("2016-05-16T10:00:00.123Z");
-    private static final DateTimeType stateBetween = new DateTimeType("2016-05-15T14:00:00Z");;
+    private static final Calendar cal1 = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    private static final Calendar cal2 = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    private static final Calendar calBetween = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    static {
+        cal1.set(2016, 5, 15, 10, 00, 00);
+        cal2.set(2016, 5, 15, 16, 00, 00);
+        cal2.set(Calendar.MILLISECOND, 123);
+        calBetween.set(2016, 5, 15, 14, 00, 00);
+    }
+
+    private static final DateTimeType state1 = new DateTimeType(cal1);
+    private static final DateTimeType state2 = new DateTimeType(cal2);
+    private static final DateTimeType stateBetween = new DateTimeType(calBetween);;
 
     @BeforeClass
     public static void storeData() throws InterruptedException {

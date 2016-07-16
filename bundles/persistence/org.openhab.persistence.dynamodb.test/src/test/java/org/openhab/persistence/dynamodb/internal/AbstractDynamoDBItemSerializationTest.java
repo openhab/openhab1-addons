@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.junit.Test;
 import org.openhab.core.items.Item;
@@ -127,8 +128,8 @@ public class AbstractDynamoDBItemSerializationTest {
 
     @Test
     public void testDateTimeTypeWithDateTimeItem() throws IOException {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2016, Calendar.MAY, 1, 16, 46, 0);
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        calendar.set(2016, Calendar.MAY, 1, 13, 46, 0);
         calendar.set(Calendar.MILLISECOND, 50);
         DynamoDBItem<?> dbitem = testStateGeneric(new DateTimeType(calendar), "2016-05-01T13:46:00.050Z");
         testAsHistoricGeneric(dbitem, new DateTimeItem("foo"), new DateTimeType(calendar));
@@ -136,8 +137,8 @@ public class AbstractDynamoDBItemSerializationTest {
 
     @Test
     public void testDateTimeTypeWithStringItem() throws IOException {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2016, Calendar.MAY, 1, 16, 46, 0);
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        calendar.set(2016, Calendar.MAY, 1, 13, 46, 0);
         calendar.set(Calendar.MILLISECOND, 50);
         DynamoDBItem<?> dbitem = testStateGeneric(new DateTimeType(calendar), "2016-05-01T13:46:00.050Z");
         testAsHistoricGeneric(dbitem, new StringItem("foo"), new StringType("2016-05-01T13:46:00.050Z"));

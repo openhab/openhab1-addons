@@ -140,7 +140,7 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
                 } else if (item instanceof LocationItem) {
                     state[0] = new PointType(dynamoStringItem.getState());
                 } else if (item instanceof DateTimeItem) {
-                    Calendar cal = Calendar.getInstance();
+                    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                     try {
                         cal.setTime(DATEFORMATTER.parse(dynamoStringItem.getState()));
                     } catch (ParseException e) {
