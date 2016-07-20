@@ -137,7 +137,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -148,7 +148,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -159,7 +159,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The default value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -170,7 +170,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The cached value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -181,7 +181,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The default value of the '{@link #getHost() <em>Host</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getHost()
      * @generated
      * @ordered
@@ -192,7 +192,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The cached value of the '{@link #getHost() <em>Host</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getHost()
      * @generated
      * @ordered
@@ -203,7 +203,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The default value of the '{@link #getPort() <em>Port</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPort()
      * @generated
      * @ordered
@@ -214,7 +214,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The cached value of the '{@link #getPort() <em>Port</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPort()
      * @generated
      * @ordered
@@ -225,7 +225,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The default value of the '{@link #getAuthkey() <em>Authkey</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getAuthkey()
      * @generated
      * @ordered
@@ -236,7 +236,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The cached value of the '{@link #getAuthkey() <em>Authkey</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getAuthkey()
      * @generated
      * @ordered
@@ -247,7 +247,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The default value of the '{@link #getIsConnected() <em>Is Connected</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIsConnected()
      * @generated
      * @ordered
@@ -258,7 +258,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The cached value of the '{@link #getIsConnected() <em>Is Connected</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIsConnected()
      * @generated
      * @ordered
@@ -269,7 +269,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The default value of the '{@link #isAutoReconnect() <em>Auto Reconnect</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isAutoReconnect()
      * @generated
      * @ordered
@@ -280,7 +280,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The cached value of the '{@link #isAutoReconnect() <em>Auto Reconnect</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isAutoReconnect()
      * @generated
      * @ordered
@@ -291,7 +291,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The default value of the '{@link #isReconnected() <em>Reconnected</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isReconnected()
      * @generated
      * @ordered
@@ -302,7 +302,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The cached value of the '{@link #isReconnected() <em>Reconnected</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isReconnected()
      * @generated
      * @ordered
@@ -313,7 +313,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The default value of the '{@link #getConnectedCounter() <em>Connected Counter</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getConnectedCounter()
      * @generated
      * @ordered
@@ -325,7 +325,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The cached value of the '{@link #getConnectedCounter() <em>Connected Counter</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getConnectedCounter()
      * @generated
      * @ordered
@@ -336,7 +336,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The default value of the '{@link #getTimeout() <em>Timeout</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getTimeout()
      * @generated
      * @ordered
@@ -347,7 +347,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The cached value of the '{@link #getTimeout() <em>Timeout</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getTimeout()
      * @generated
      * @ordered
@@ -358,7 +358,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      * The cached value of the '{@link #getMdevices() <em>Mdevices</em>}' containment reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getMdevices()
      * @generated
      * @ordered
@@ -370,7 +370,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     protected MBrickdImpl() {
@@ -380,7 +380,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -391,7 +391,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -402,22 +402,21 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__LOGGER, oldLogger, logger));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -428,23 +427,22 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__IP_CONNECTION, oldIpConnection,
                     ipConnection));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -455,22 +453,21 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setHost(String newHost) {
         String oldHost = host;
         host = newHost;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__HOST, oldHost, host));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -481,22 +478,21 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPort(int newPort) {
         int oldPort = port;
         port = newPort;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__PORT, oldPort, port));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -507,22 +503,21 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setAuthkey(String newAuthkey) {
         String oldAuthkey = authkey;
         authkey = newAuthkey;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__AUTHKEY, oldAuthkey, authkey));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -533,23 +528,22 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setIsConnected(HighLowValue newIsConnected) {
         HighLowValue oldIsConnected = isConnected;
         isConnected = newIsConnected;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__IS_CONNECTED, oldIsConnected,
                     isConnected));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -560,23 +554,22 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setAutoReconnect(boolean newAutoReconnect) {
         boolean oldAutoReconnect = autoReconnect;
         autoReconnect = newAutoReconnect;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__AUTO_RECONNECT,
                     oldAutoReconnect, autoReconnect));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -587,23 +580,22 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setReconnected(boolean newReconnected) {
         boolean oldReconnected = reconnected;
         reconnected = newReconnected;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__RECONNECTED, oldReconnected,
                     reconnected));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -614,23 +606,22 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setConnectedCounter(DecimalValue newConnectedCounter) {
         DecimalValue oldConnectedCounter = connectedCounter;
         connectedCounter = newConnectedCounter;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__CONNECTED_COUNTER,
                     oldConnectedCounter, connectedCounter));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -641,22 +632,21 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setTimeout(int newTimeout) {
         int oldTimeout = timeout;
         timeout = newTimeout;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__TIMEOUT, oldTimeout, timeout));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -671,34 +661,32 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public Ecosystem getEcosystem() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKD__ECOSYSTEM) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKD__ECOSYSTEM)
             return null;
-        }
         return (Ecosystem) eContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public Ecosystem basicGetEcosystem() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKD__ECOSYSTEM) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKD__ECOSYSTEM)
             return null;
-        }
         return (Ecosystem) eInternalContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public NotificationChain basicSetEcosystem(Ecosystem newEcosystem, NotificationChain msgs) {
@@ -709,32 +697,27 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setEcosystem(Ecosystem newEcosystem) {
         if (newEcosystem != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKD__ECOSYSTEM && newEcosystem != null)) {
-            if (EcoreUtil.isAncestor(this, newEcosystem)) {
+            if (EcoreUtil.isAncestor(this, newEcosystem))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newEcosystem != null) {
+            if (newEcosystem != null)
                 msgs = ((InternalEObject) newEcosystem).eInverseAdd(this, ModelPackage.ECOSYSTEM__MBRICKDS,
                         Ecosystem.class, msgs);
-            }
             msgs = basicSetEcosystem(newEcosystem, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__ECOSYSTEM, newEcosystem,
                     newEcosystem));
-        }
     }
 
     /**
@@ -1239,7 +1222,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @SuppressWarnings("unchecked")
@@ -1249,9 +1232,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
             case ModelPackage.MBRICKD__MDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMdevices()).basicAdd(otherEnd, msgs);
             case ModelPackage.MBRICKD__ECOSYSTEM:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetEcosystem((Ecosystem) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -1260,7 +1242,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1277,7 +1259,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1293,7 +1275,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1322,9 +1304,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
             case ModelPackage.MBRICKD__MDEVICES:
                 return getMdevices();
             case ModelPackage.MBRICKD__ECOSYSTEM:
-                if (resolve) {
+                if (resolve)
                     return getEcosystem();
-                }
                 return basicGetEcosystem();
         }
         return super.eGet(featureID, resolve, coreType);
@@ -1333,7 +1314,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @SuppressWarnings("unchecked")
@@ -1384,7 +1365,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1433,7 +1414,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1472,7 +1453,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1496,14 +1477,13 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

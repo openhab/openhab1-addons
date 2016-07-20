@@ -33,6 +33,7 @@ import org.openhab.binding.tinkerforge.internal.model.AccelerometerTemperature;
 import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
 import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.BrickStepperSubIds;
 import org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice;
@@ -111,6 +112,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
 import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
+import org.openhab.binding.tinkerforge.internal.model.MBrickStepper;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
@@ -168,6 +170,19 @@ import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
 import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MServo;
+import org.openhab.binding.tinkerforge.internal.model.MStepperChipTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MStepperConsumption;
+import org.openhab.binding.tinkerforge.internal.model.MStepperCurrent;
+import org.openhab.binding.tinkerforge.internal.model.MStepperDevice;
+import org.openhab.binding.tinkerforge.internal.model.MStepperDrive;
+import org.openhab.binding.tinkerforge.internal.model.MStepperExternalVoltage;
+import org.openhab.binding.tinkerforge.internal.model.MStepperPosition;
+import org.openhab.binding.tinkerforge.internal.model.MStepperStackVoltage;
+import org.openhab.binding.tinkerforge.internal.model.MStepperState;
+import org.openhab.binding.tinkerforge.internal.model.MStepperStatusLed;
+import org.openhab.binding.tinkerforge.internal.model.MStepperSteps;
+import org.openhab.binding.tinkerforge.internal.model.MStepperUnderVoltage;
+import org.openhab.binding.tinkerforge.internal.model.MStepperVelocity;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
@@ -217,6 +232,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFAnalogInV2Configuration;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
@@ -253,6 +269,7 @@ import org.slf4j.Logger;
 
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
+import com.tinkerforge.BrickStepper;
 import com.tinkerforge.BrickletAccelerometer;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletAmbientLightV2;
@@ -421,6 +438,126 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EClass mBrickDCEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickStepperEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass tfBrickStepperConfigurationEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mStepperDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mStepperDriveEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mStepperVelocityEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mStepperCurrentEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mStepperPositionEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mStepperStepsEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mStepperStackVoltageEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mStepperExternalVoltageEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mStepperConsumptionEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mStepperUnderVoltageEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mStepperStateEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mStepperChipTemperatureEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mStepperStatusLedEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1213,6 +1350,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EEnum accelerometerCoordinateEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum brickStepperSubIdsEEnum = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -2045,6 +2190,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EDataType mTinkerBrickDCEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType mTinkerBrickStepperEDataType = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -3508,6 +3661,366 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
     @Override
     public EOperation getMBrickDC__SetSpeed__Short_int_String() {
         return mBrickDCEClass.getEOperations().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickStepper() {
+        return mBrickStepperEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickStepper_DeviceType() {
+        return (EAttribute) mBrickStepperEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFBrickStepperConfiguration() {
+        return tfBrickStepperConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBrickStepperConfiguration_MaxVelocity() {
+        return (EAttribute) tfBrickStepperConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBrickStepperConfiguration_Acceleration() {
+        return (EAttribute) tfBrickStepperConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBrickStepperConfiguration_Deacceleration() {
+        return (EAttribute) tfBrickStepperConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBrickStepperConfiguration_MotorCurrent() {
+        return (EAttribute) tfBrickStepperConfigurationEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBrickStepperConfiguration_StepMode() {
+        return (EAttribute) tfBrickStepperConfigurationEClass.getEStructuralFeatures().get(4);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBrickStepperConfiguration_Decay() {
+        return (EAttribute) tfBrickStepperConfigurationEClass.getEStructuralFeatures().get(5);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBrickStepperConfiguration_SyncRect() {
+        return (EAttribute) tfBrickStepperConfigurationEClass.getEStructuralFeatures().get(6);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBrickStepperConfiguration_TimeBase() {
+        return (EAttribute) tfBrickStepperConfigurationEClass.getEStructuralFeatures().get(7);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMStepperDevice() {
+        return mStepperDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMStepperDrive() {
+        return mStepperDriveEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMStepperDrive_DeviceType() {
+        return (EAttribute) mStepperDriveEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMStepperVelocity() {
+        return mStepperVelocityEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMStepperVelocity_DeviceType() {
+        return (EAttribute) mStepperVelocityEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMStepperCurrent() {
+        return mStepperCurrentEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMStepperCurrent_DeviceType() {
+        return (EAttribute) mStepperCurrentEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMStepperPosition() {
+        return mStepperPositionEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMStepperPosition_DeviceType() {
+        return (EAttribute) mStepperPositionEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMStepperSteps() {
+        return mStepperStepsEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMStepperSteps_DeviceType() {
+        return (EAttribute) mStepperStepsEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMStepperStackVoltage() {
+        return mStepperStackVoltageEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMStepperStackVoltage_DeviceType() {
+        return (EAttribute) mStepperStackVoltageEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMStepperExternalVoltage() {
+        return mStepperExternalVoltageEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMStepperExternalVoltage_DeviceType() {
+        return (EAttribute) mStepperExternalVoltageEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMStepperConsumption() {
+        return mStepperConsumptionEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMStepperConsumption_DeviceType() {
+        return (EAttribute) mStepperConsumptionEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMStepperUnderVoltage() {
+        return mStepperUnderVoltageEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMStepperUnderVoltage_DeviceType() {
+        return (EAttribute) mStepperUnderVoltageEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMStepperState() {
+        return mStepperStateEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMStepperState_DeviceType() {
+        return (EAttribute) mStepperStateEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMStepperChipTemperature() {
+        return mStepperChipTemperatureEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMStepperChipTemperature_DeviceType() {
+        return (EAttribute) mStepperChipTemperatureEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMStepperStatusLed() {
+        return mStepperStatusLedEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMStepperStatusLed_DeviceType() {
+        return (EAttribute) mStepperStatusLedEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -6538,6 +7051,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EEnum getBrickStepperSubIds() {
+        return brickStepperSubIdsEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EClass getMServo() {
         return mServoEClass;
@@ -9433,6 +9956,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EDataType getMTinkerBrickStepper() {
+        return mTinkerBrickStepperEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EDataType getMTinkerBrickServo() {
         return mTinkerBrickServoEDataType;
@@ -10356,6 +10889,57 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEOperation(mBrickDCEClass, MBRICK_DC___INIT);
         createEOperation(mBrickDCEClass, MBRICK_DC___SET_SPEED__SHORT_INT_STRING);
 
+        mBrickStepperEClass = createEClass(MBRICK_STEPPER);
+        createEAttribute(mBrickStepperEClass, MBRICK_STEPPER__DEVICE_TYPE);
+
+        tfBrickStepperConfigurationEClass = createEClass(TF_BRICK_STEPPER_CONFIGURATION);
+        createEAttribute(tfBrickStepperConfigurationEClass, TF_BRICK_STEPPER_CONFIGURATION__MAX_VELOCITY);
+        createEAttribute(tfBrickStepperConfigurationEClass, TF_BRICK_STEPPER_CONFIGURATION__ACCELERATION);
+        createEAttribute(tfBrickStepperConfigurationEClass, TF_BRICK_STEPPER_CONFIGURATION__DEACCELERATION);
+        createEAttribute(tfBrickStepperConfigurationEClass, TF_BRICK_STEPPER_CONFIGURATION__MOTOR_CURRENT);
+        createEAttribute(tfBrickStepperConfigurationEClass, TF_BRICK_STEPPER_CONFIGURATION__STEP_MODE);
+        createEAttribute(tfBrickStepperConfigurationEClass, TF_BRICK_STEPPER_CONFIGURATION__DECAY);
+        createEAttribute(tfBrickStepperConfigurationEClass, TF_BRICK_STEPPER_CONFIGURATION__SYNC_RECT);
+        createEAttribute(tfBrickStepperConfigurationEClass, TF_BRICK_STEPPER_CONFIGURATION__TIME_BASE);
+
+        mStepperDeviceEClass = createEClass(MSTEPPER_DEVICE);
+
+        mStepperDriveEClass = createEClass(MSTEPPER_DRIVE);
+        createEAttribute(mStepperDriveEClass, MSTEPPER_DRIVE__DEVICE_TYPE);
+
+        mStepperVelocityEClass = createEClass(MSTEPPER_VELOCITY);
+        createEAttribute(mStepperVelocityEClass, MSTEPPER_VELOCITY__DEVICE_TYPE);
+
+        mStepperCurrentEClass = createEClass(MSTEPPER_CURRENT);
+        createEAttribute(mStepperCurrentEClass, MSTEPPER_CURRENT__DEVICE_TYPE);
+
+        mStepperPositionEClass = createEClass(MSTEPPER_POSITION);
+        createEAttribute(mStepperPositionEClass, MSTEPPER_POSITION__DEVICE_TYPE);
+
+        mStepperStepsEClass = createEClass(MSTEPPER_STEPS);
+        createEAttribute(mStepperStepsEClass, MSTEPPER_STEPS__DEVICE_TYPE);
+
+        mStepperStackVoltageEClass = createEClass(MSTEPPER_STACK_VOLTAGE);
+        createEAttribute(mStepperStackVoltageEClass, MSTEPPER_STACK_VOLTAGE__DEVICE_TYPE);
+
+        mStepperExternalVoltageEClass = createEClass(MSTEPPER_EXTERNAL_VOLTAGE);
+        createEAttribute(mStepperExternalVoltageEClass, MSTEPPER_EXTERNAL_VOLTAGE__DEVICE_TYPE);
+
+        mStepperConsumptionEClass = createEClass(MSTEPPER_CONSUMPTION);
+        createEAttribute(mStepperConsumptionEClass, MSTEPPER_CONSUMPTION__DEVICE_TYPE);
+
+        mStepperUnderVoltageEClass = createEClass(MSTEPPER_UNDER_VOLTAGE);
+        createEAttribute(mStepperUnderVoltageEClass, MSTEPPER_UNDER_VOLTAGE__DEVICE_TYPE);
+
+        mStepperStateEClass = createEClass(MSTEPPER_STATE);
+        createEAttribute(mStepperStateEClass, MSTEPPER_STATE__DEVICE_TYPE);
+
+        mStepperChipTemperatureEClass = createEClass(MSTEPPER_CHIP_TEMPERATURE);
+        createEAttribute(mStepperChipTemperatureEClass, MSTEPPER_CHIP_TEMPERATURE__DEVICE_TYPE);
+
+        mStepperStatusLedEClass = createEClass(MSTEPPER_STATUS_LED);
+        createEAttribute(mStepperStatusLedEClass, MSTEPPER_STATUS_LED__DEVICE_TYPE);
+
         mDualRelayBrickletEClass = createEClass(MDUAL_RELAY_BRICKLET);
         createEAttribute(mDualRelayBrickletEClass, MDUAL_RELAY_BRICKLET__DEVICE_TYPE);
 
@@ -10843,6 +11427,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         // Create enums
         accelerometerCoordinateEEnum = createEEnum(ACCELEROMETER_COORDINATE);
+        brickStepperSubIdsEEnum = createEEnum(BRICK_STEPPER_SUB_IDS);
         noSubIdsEEnum = createEEnum(NO_SUB_IDS);
         industrialDigitalInSubIDsEEnum = createEEnum(INDUSTRIAL_DIGITAL_IN_SUB_IDS);
         industrialDigitalOutSubIDsEEnum = createEEnum(INDUSTRIAL_DIGITAL_OUT_SUB_IDS);
@@ -10883,6 +11468,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         mAtomicBooleanEDataType = createEDataType(MATOMIC_BOOLEAN);
         mTinkerforgeDeviceEDataType = createEDataType(MTINKERFORGE_DEVICE);
         mTinkerBrickDCEDataType = createEDataType(MTINKER_BRICK_DC);
+        mTinkerBrickStepperEDataType = createEDataType(MTINKER_BRICK_STEPPER);
         mTinkerBrickletDualRelayEDataType = createEDataType(MTINKER_BRICKLET_DUAL_RELAY);
         mTinkerBrickletIndustrialQuadRelayEDataType = createEDataType(MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY);
         mTinkerBrickletIndustrialDigitalIn4EDataType = createEDataType(MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4);
@@ -11365,6 +11951,86 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         mBrickDCEClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getCallbackListener());
         mBrickDCEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMDevice());
+        g2 = createEGenericType(this.getMTinkerBrickStepper());
+        g1.getETypeArguments().add(g2);
+        mBrickStepperEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSubDeviceHolder());
+        g2 = createEGenericType(this.getMStepperDevice());
+        g1.getETypeArguments().add(g2);
+        mBrickStepperEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMTFConfigConsumer());
+        g2 = createEGenericType(this.getTFBrickStepperConfiguration());
+        g1.getETypeArguments().add(g2);
+        mBrickStepperEClass.getEGenericSuperTypes().add(g1);
+        tfBrickStepperConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
+        g1 = createEGenericType(this.getMSubDevice());
+        g2 = createEGenericType(this.getMBrickStepper());
+        g1.getETypeArguments().add(g2);
+        mStepperDeviceEClass.getEGenericSuperTypes().add(g1);
+        mStepperDriveEClass.getESuperTypes().add(this.getMStepperDevice());
+        g1 = createEGenericType(this.getMStepperDevice());
+        mStepperVelocityEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        mStepperVelocityEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMStepperDevice());
+        mStepperCurrentEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        mStepperCurrentEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMStepperDevice());
+        mStepperPositionEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        mStepperPositionEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMStepperDevice());
+        mStepperStepsEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        mStepperStepsEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMStepperDevice());
+        mStepperStackVoltageEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        mStepperStackVoltageEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMStepperDevice());
+        mStepperExternalVoltageEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        mStepperExternalVoltageEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMStepperDevice());
+        mStepperConsumptionEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        mStepperConsumptionEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMStepperDevice());
+        mStepperUnderVoltageEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        mStepperUnderVoltageEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMStepperDevice());
+        mStepperStateEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        mStepperStateEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMStepperDevice());
+        mStepperChipTemperatureEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        mStepperChipTemperatureEClass.getEGenericSuperTypes().add(g1);
+        mStepperStatusLedEClass.getESuperTypes().add(this.getMStepperDevice());
+        mStepperStatusLedEClass.getESuperTypes().add(this.getDigitalActor());
         g1 = createEGenericType(this.getMDevice());
         g2 = createEGenericType(this.getMTinkerBrickletDualRelay());
         g1.getETypeArguments().add(g2);
@@ -12764,6 +13430,114 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         addEParameter(op, theEcorePackage.getEInt(), "acceleration", 0, 1, !IS_UNIQUE, IS_ORDERED);
         addEParameter(op, theEcorePackage.getEString(), "drivemode", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+        initEClass(mBrickStepperEClass, MBrickStepper.class, "MBrickStepper", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMBrickStepper_DeviceType(), theEcorePackage.getEString(), "deviceType", "brick_stepper", 0, 1,
+                MBrickStepper.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+
+        initEClass(tfBrickStepperConfigurationEClass, TFBrickStepperConfiguration.class, "TFBrickStepperConfiguration",
+                !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getTFBrickStepperConfiguration_MaxVelocity(), theEcorePackage.getEInt(), "maxVelocity", null, 0,
+                1, TFBrickStepperConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+                !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTFBrickStepperConfiguration_Acceleration(), theEcorePackage.getEInt(), "acceleration", null,
+                0, 1, TFBrickStepperConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+                !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTFBrickStepperConfiguration_Deacceleration(), theEcorePackage.getEInt(), "deacceleration",
+                null, 0, 1, TFBrickStepperConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTFBrickStepperConfiguration_MotorCurrent(), theEcorePackage.getEInt(), "motorCurrent", null,
+                0, 1, TFBrickStepperConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+                !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTFBrickStepperConfiguration_StepMode(), theEcorePackage.getEShort(), "stepMode", null, 0, 1,
+                TFBrickStepperConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTFBrickStepperConfiguration_Decay(), theEcorePackage.getEInt(), "decay", null, 0, 1,
+                TFBrickStepperConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTFBrickStepperConfiguration_SyncRect(), theEcorePackage.getEBoolean(), "syncRect", null, 0, 1,
+                TFBrickStepperConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTFBrickStepperConfiguration_TimeBase(), theEcorePackage.getELong(), "timeBase", null, 0, 1,
+                TFBrickStepperConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mStepperDeviceEClass, MStepperDevice.class, "MStepperDevice", IS_ABSTRACT, IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(mStepperDriveEClass, MStepperDrive.class, "MStepperDrive", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMStepperDrive_DeviceType(), theEcorePackage.getEString(), "deviceType", "stepper_drive", 0, 1,
+                MStepperDrive.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mStepperVelocityEClass, MStepperVelocity.class, "MStepperVelocity", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMStepperVelocity_DeviceType(), theEcorePackage.getEString(), "deviceType", "stepper_velocity",
+                0, 1, MStepperVelocity.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mStepperCurrentEClass, MStepperCurrent.class, "MStepperCurrent", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMStepperCurrent_DeviceType(), theEcorePackage.getEString(), "deviceType", "stepper_current",
+                0, 1, MStepperCurrent.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mStepperPositionEClass, MStepperPosition.class, "MStepperPosition", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMStepperPosition_DeviceType(), theEcorePackage.getEString(), "deviceType", "stepper_position",
+                0, 1, MStepperPosition.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mStepperStepsEClass, MStepperSteps.class, "MStepperSteps", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMStepperSteps_DeviceType(), theEcorePackage.getEString(), "deviceType", "stepper_steps", 0, 1,
+                MStepperSteps.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mStepperStackVoltageEClass, MStepperStackVoltage.class, "MStepperStackVoltage", !IS_ABSTRACT,
+                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMStepperStackVoltage_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "stepper_stack_voltage", 0, 1, MStepperStackVoltage.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
+                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mStepperExternalVoltageEClass, MStepperExternalVoltage.class, "MStepperExternalVoltage",
+                !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMStepperExternalVoltage_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "stepper_external_voltage", 0, 1, MStepperExternalVoltage.class, !IS_TRANSIENT, !IS_VOLATILE,
+                !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mStepperConsumptionEClass, MStepperConsumption.class, "MStepperConsumption", !IS_ABSTRACT,
+                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMStepperConsumption_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "stepper_consumption", 0, 1, MStepperConsumption.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
+                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mStepperUnderVoltageEClass, MStepperUnderVoltage.class, "MStepperUnderVoltage", !IS_ABSTRACT,
+                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMStepperUnderVoltage_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "stepper_under_voltage", 0, 1, MStepperUnderVoltage.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
+                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mStepperStateEClass, MStepperState.class, "MStepperState", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMStepperState_DeviceType(), theEcorePackage.getEString(), "deviceType", "stepper_state", 0, 1,
+                MStepperState.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mStepperChipTemperatureEClass, MStepperChipTemperature.class, "MStepperChipTemperature",
+                !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMStepperChipTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "stepper_chip_temperature", 0, 1, MStepperChipTemperature.class, !IS_TRANSIENT, !IS_VOLATILE,
+                !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mStepperStatusLedEClass, MStepperStatusLed.class, "MStepperStatusLed", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMStepperStatusLed_DeviceType(), theEcorePackage.getEString(), "deviceType", "stepper_led", 0,
+                1, MStepperStatusLed.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
         initEClass(mDualRelayBrickletEClass, MDualRelayBricklet.class, "MDualRelayBricklet", !IS_ABSTRACT,
                 !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getMDualRelayBricklet_DeviceType(), theEcorePackage.getEString(), "deviceType",
@@ -13882,6 +14656,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         addEEnumLiteral(accelerometerCoordinateEEnum, AccelerometerCoordinate.Y);
         addEEnumLiteral(accelerometerCoordinateEEnum, AccelerometerCoordinate.Z);
 
+        initEEnum(brickStepperSubIdsEEnum, BrickStepperSubIds.class, "BrickStepperSubIds");
+        addEEnumLiteral(brickStepperSubIdsEEnum, BrickStepperSubIds.STEPPER_DRIVE);
+        addEEnumLiteral(brickStepperSubIdsEEnum, BrickStepperSubIds.STEPPER_VELOCITY);
+        addEEnumLiteral(brickStepperSubIdsEEnum, BrickStepperSubIds.STEPPER_CURRENT);
+        addEEnumLiteral(brickStepperSubIdsEEnum, BrickStepperSubIds.STEPPER_POSITION);
+        addEEnumLiteral(brickStepperSubIdsEEnum, BrickStepperSubIds.STEPPER_STEPS);
+        addEEnumLiteral(brickStepperSubIdsEEnum, BrickStepperSubIds.STEPPER_STACK_VOLTAGE);
+        addEEnumLiteral(brickStepperSubIdsEEnum, BrickStepperSubIds.STEPPER_EXTERNAL_VOLTAGE);
+        addEEnumLiteral(brickStepperSubIdsEEnum, BrickStepperSubIds.STEPPER_CONSUMPTION);
+        addEEnumLiteral(brickStepperSubIdsEEnum, BrickStepperSubIds.STEPPER_UNDER_VOLTAGE);
+        addEEnumLiteral(brickStepperSubIdsEEnum, BrickStepperSubIds.STEPPER_STATE);
+        addEEnumLiteral(brickStepperSubIdsEEnum, BrickStepperSubIds.STEPPER_CHIP_TEMPERATURE);
+        addEEnumLiteral(brickStepperSubIdsEEnum, BrickStepperSubIds.STEPPER_LED);
+
         initEEnum(noSubIdsEEnum, NoSubIds.class, "NoSubIds");
 
         initEEnum(industrialDigitalInSubIDsEEnum, IndustrialDigitalInSubIDs.class, "IndustrialDigitalInSubIDs");
@@ -14096,6 +14884,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEDataType(mTinkerforgeDeviceEDataType, Device.class, "MTinkerforgeDevice", IS_SERIALIZABLE,
                 !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(mTinkerBrickDCEDataType, BrickDC.class, "MTinkerBrickDC", IS_SERIALIZABLE,
+                !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(mTinkerBrickStepperEDataType, BrickStepper.class, "MTinkerBrickStepper", IS_SERIALIZABLE,
                 !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(mTinkerBrickletDualRelayEDataType, BrickletDualRelay.class, "MTinkerBrickletDualRelay",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

@@ -365,6 +365,146 @@ public interface ModelFactory extends EFactory {
     MBrickDC createMBrickDC();
 
     /**
+     * Returns a new object of class '<em>MBrick Stepper</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBrick Stepper</em>'.
+     * @generated
+     */
+    MBrickStepper createMBrickStepper();
+
+    /**
+     * Returns a new object of class '<em>TF Brick Stepper Configuration</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>TF Brick Stepper Configuration</em>'.
+     * @generated
+     */
+    TFBrickStepperConfiguration createTFBrickStepperConfiguration();
+
+    /**
+     * Returns a new object of class '<em>MStepper Drive</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Drive</em>'.
+     * @generated
+     */
+    MStepperDrive createMStepperDrive();
+
+    /**
+     * Returns a new object of class '<em>MStepper Velocity</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Velocity</em>'.
+     * @generated
+     */
+    MStepperVelocity createMStepperVelocity();
+
+    /**
+     * Returns a new object of class '<em>MStepper Current</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Current</em>'.
+     * @generated
+     */
+    MStepperCurrent createMStepperCurrent();
+
+    /**
+     * Returns a new object of class '<em>MStepper Position</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Position</em>'.
+     * @generated
+     */
+    MStepperPosition createMStepperPosition();
+
+    /**
+     * Returns a new object of class '<em>MStepper Steps</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Steps</em>'.
+     * @generated
+     */
+    MStepperSteps createMStepperSteps();
+
+    /**
+     * Returns a new object of class '<em>MStepper Stack Voltage</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Stack Voltage</em>'.
+     * @generated
+     */
+    MStepperStackVoltage createMStepperStackVoltage();
+
+    /**
+     * Returns a new object of class '<em>MStepper External Voltage</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper External Voltage</em>'.
+     * @generated
+     */
+    MStepperExternalVoltage createMStepperExternalVoltage();
+
+    /**
+     * Returns a new object of class '<em>MStepper Consumption</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Consumption</em>'.
+     * @generated
+     */
+    MStepperConsumption createMStepperConsumption();
+
+    /**
+     * Returns a new object of class '<em>MStepper Under Voltage</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Under Voltage</em>'.
+     * @generated
+     */
+    MStepperUnderVoltage createMStepperUnderVoltage();
+
+    /**
+     * Returns a new object of class '<em>MStepper State</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper State</em>'.
+     * @generated
+     */
+    MStepperState createMStepperState();
+
+    /**
+     * Returns a new object of class '<em>MStepper Chip Temperature</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Chip Temperature</em>'.
+     * @generated
+     */
+    MStepperChipTemperature createMStepperChipTemperature();
+
+    /**
+     * Returns a new object of class '<em>MStepper Status Led</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Status Led</em>'.
+     * @generated
+     */
+    MStepperStatusLed createMStepperStatusLed();
+
+    /**
      * Returns a new object of class '<em>MDual Relay Bricklet</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

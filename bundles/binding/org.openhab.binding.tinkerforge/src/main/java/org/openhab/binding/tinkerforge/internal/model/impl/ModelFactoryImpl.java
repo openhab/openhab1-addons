@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
+import com.tinkerforge.BrickStepper;
 import com.tinkerforge.BrickletAccelerometer;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletAmbientLightV2;
@@ -197,6 +198,34 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMServo();
             case ModelPackage.MBRICK_DC:
                 return createMBrickDC();
+            case ModelPackage.MBRICK_STEPPER:
+                return createMBrickStepper();
+            case ModelPackage.TF_BRICK_STEPPER_CONFIGURATION:
+                return createTFBrickStepperConfiguration();
+            case ModelPackage.MSTEPPER_DRIVE:
+                return createMStepperDrive();
+            case ModelPackage.MSTEPPER_VELOCITY:
+                return createMStepperVelocity();
+            case ModelPackage.MSTEPPER_CURRENT:
+                return createMStepperCurrent();
+            case ModelPackage.MSTEPPER_POSITION:
+                return createMStepperPosition();
+            case ModelPackage.MSTEPPER_STEPS:
+                return createMStepperSteps();
+            case ModelPackage.MSTEPPER_STACK_VOLTAGE:
+                return createMStepperStackVoltage();
+            case ModelPackage.MSTEPPER_EXTERNAL_VOLTAGE:
+                return createMStepperExternalVoltage();
+            case ModelPackage.MSTEPPER_CONSUMPTION:
+                return createMStepperConsumption();
+            case ModelPackage.MSTEPPER_UNDER_VOLTAGE:
+                return createMStepperUnderVoltage();
+            case ModelPackage.MSTEPPER_STATE:
+                return createMStepperState();
+            case ModelPackage.MSTEPPER_CHIP_TEMPERATURE:
+                return createMStepperChipTemperature();
+            case ModelPackage.MSTEPPER_STATUS_LED:
+                return createMStepperStatusLed();
             case ModelPackage.MDUAL_RELAY_BRICKLET:
                 return createMDualRelayBricklet();
             case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET:
@@ -419,6 +448,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
         switch (eDataType.getClassifierID()) {
             case ModelPackage.ACCELEROMETER_COORDINATE:
                 return createAccelerometerCoordinateFromString(eDataType, initialValue);
+            case ModelPackage.BRICK_STEPPER_SUB_IDS:
+                return createBrickStepperSubIdsFromString(eDataType, initialValue);
             case ModelPackage.NO_SUB_IDS:
                 return createNoSubIdsFromString(eDataType, initialValue);
             case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
@@ -495,6 +526,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMTinkerforgeDeviceFromString(eDataType, initialValue);
             case ModelPackage.MTINKER_BRICK_DC:
                 return createMTinkerBrickDCFromString(eDataType, initialValue);
+            case ModelPackage.MTINKER_BRICK_STEPPER:
+                return createMTinkerBrickStepperFromString(eDataType, initialValue);
             case ModelPackage.MTINKER_BRICKLET_DUAL_RELAY:
                 return createMTinkerBrickletDualRelayFromString(eDataType, initialValue);
             case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY:
@@ -632,6 +665,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
         switch (eDataType.getClassifierID()) {
             case ModelPackage.ACCELEROMETER_COORDINATE:
                 return convertAccelerometerCoordinateToString(eDataType, instanceValue);
+            case ModelPackage.BRICK_STEPPER_SUB_IDS:
+                return convertBrickStepperSubIdsToString(eDataType, instanceValue);
             case ModelPackage.NO_SUB_IDS:
                 return convertNoSubIdsToString(eDataType, instanceValue);
             case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
@@ -708,6 +743,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertMTinkerforgeDeviceToString(eDataType, instanceValue);
             case ModelPackage.MTINKER_BRICK_DC:
                 return convertMTinkerBrickDCToString(eDataType, instanceValue);
+            case ModelPackage.MTINKER_BRICK_STEPPER:
+                return convertMTinkerBrickStepperToString(eDataType, instanceValue);
             case ModelPackage.MTINKER_BRICKLET_DUAL_RELAY:
                 return convertMTinkerBrickletDualRelayToString(eDataType, instanceValue);
             case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY:
@@ -1229,6 +1266,160 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public MBrickDC createMBrickDC() {
         MBrickDCImpl mBrickDC = new MBrickDCImpl();
         return mBrickDC;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickStepper createMBrickStepper() {
+        MBrickStepperImpl mBrickStepper = new MBrickStepperImpl();
+        return mBrickStepper;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFBrickStepperConfiguration createTFBrickStepperConfiguration() {
+        TFBrickStepperConfigurationImpl tfBrickStepperConfiguration = new TFBrickStepperConfigurationImpl();
+        return tfBrickStepperConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperDrive createMStepperDrive() {
+        MStepperDriveImpl mStepperDrive = new MStepperDriveImpl();
+        return mStepperDrive;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperVelocity createMStepperVelocity() {
+        MStepperVelocityImpl mStepperVelocity = new MStepperVelocityImpl();
+        return mStepperVelocity;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperCurrent createMStepperCurrent() {
+        MStepperCurrentImpl mStepperCurrent = new MStepperCurrentImpl();
+        return mStepperCurrent;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperPosition createMStepperPosition() {
+        MStepperPositionImpl mStepperPosition = new MStepperPositionImpl();
+        return mStepperPosition;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperSteps createMStepperSteps() {
+        MStepperStepsImpl mStepperSteps = new MStepperStepsImpl();
+        return mStepperSteps;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperStackVoltage createMStepperStackVoltage() {
+        MStepperStackVoltageImpl mStepperStackVoltage = new MStepperStackVoltageImpl();
+        return mStepperStackVoltage;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperExternalVoltage createMStepperExternalVoltage() {
+        MStepperExternalVoltageImpl mStepperExternalVoltage = new MStepperExternalVoltageImpl();
+        return mStepperExternalVoltage;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperConsumption createMStepperConsumption() {
+        MStepperConsumptionImpl mStepperConsumption = new MStepperConsumptionImpl();
+        return mStepperConsumption;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperUnderVoltage createMStepperUnderVoltage() {
+        MStepperUnderVoltageImpl mStepperUnderVoltage = new MStepperUnderVoltageImpl();
+        return mStepperUnderVoltage;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperState createMStepperState() {
+        MStepperStateImpl mStepperState = new MStepperStateImpl();
+        return mStepperState;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperChipTemperature createMStepperChipTemperature() {
+        MStepperChipTemperatureImpl mStepperChipTemperature = new MStepperChipTemperatureImpl();
+        return mStepperChipTemperature;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperStatusLed createMStepperStatusLed() {
+        MStepperStatusLedImpl mStepperStatusLed = new MStepperStatusLedImpl();
+        return mStepperStatusLed;
     }
 
     /**
@@ -1827,6 +2018,30 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertAccelerometerCoordinateToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickStepperSubIds createBrickStepperSubIdsFromString(EDataType eDataType, String initialValue) {
+        BrickStepperSubIds result = BrickStepperSubIds.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertBrickStepperSubIdsToString(EDataType eDataType, Object instanceValue) {
         return instanceValue == null ? null : instanceValue.toString();
     }
 
@@ -3453,6 +3668,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertMTinkerBrickDCToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickStepper createMTinkerBrickStepperFromString(EDataType eDataType, String initialValue) {
+        return (BrickStepper) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertMTinkerBrickStepperToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
