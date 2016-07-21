@@ -184,5 +184,6 @@
     <module>org.openhab.binding.smarthomatic</module>
     <module>org.openhab.binding.gc100ir</module>
     <module>org.openhab.binding.powermax</module>
+	<module>org.openhab.binding.russound</module>
   </modules>
 </project>
