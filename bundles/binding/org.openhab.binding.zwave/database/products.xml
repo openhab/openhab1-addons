@@ -1758,6 +1758,10 @@
                 <Type>0700</Type>
                 <Id>3000</Id>
             </Reference>
+            <Reference>
+                <Type>0701</Type>
+                <Id>1001</Id>
+            </Reference>
             <Model>FGK101</Model>
             <Label lang="en">Door Opening Sensor</Label>
             <ConfigFile>fibaro/fgk101.xml</ConfigFile>
@@ -3438,6 +3442,15 @@
             <Model>DCH-Z120</Model>
             <Label lang="en">Battery Motion Sensor</Label>
             <ConfigFile>dlink/dch-z120.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>0004</Type>
+                <Id>000A</Id>
+            </Reference>
+            <Model>DCH-Z510</Model>
+            <Label lang="en">Siren</Label>
+            <ConfigFile>dlink/dchz510.xml</ConfigFile>
         </Product>
     </Manufacturer>
     <Manufacturer>
