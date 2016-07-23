@@ -13,9 +13,11 @@ import java.util.Map;
 
 import org.openhab.binding.weather.internal.converter.property.DateConverter;
 import org.openhab.binding.weather.internal.converter.property.DoubleConverter;
+import org.openhab.binding.weather.internal.converter.property.FeetConverter;
 import org.openhab.binding.weather.internal.converter.property.FractionIntegerConverter;
 import org.openhab.binding.weather.internal.converter.property.FullUtcDateConverter;
 import org.openhab.binding.weather.internal.converter.property.IntegerConverter;
+import org.openhab.binding.weather.internal.converter.property.JsonStandardDateConverter;
 import org.openhab.binding.weather.internal.converter.property.MultiIdConverter;
 import org.openhab.binding.weather.internal.converter.property.PercentIntegerConverter;
 import org.openhab.binding.weather.internal.converter.property.PressureTrendConverter;
@@ -50,6 +52,8 @@ public class ConverterFactory {
         addConverter(new WindMpsConverter());
         addConverter(new ThreeHoursDoubleConverter());
         addConverter(new PressureTrendConverter());
+        addConverter(new JsonStandardDateConverter());
+        addConverter(new FeetConverter());
     }
 
     /**
