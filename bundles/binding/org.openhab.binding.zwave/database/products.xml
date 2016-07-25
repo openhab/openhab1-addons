@@ -1777,7 +1777,8 @@
             </Reference>
             <Model>FGK101</Model>
             <Label lang="en">Door Opening Sensor</Label>
-            <ConfigFile>fibaro/fgk101.xml</ConfigFile>
+            <ConfigFile VersionMax="2.5">fibaro/fgk101.xml</ConfigFile>
+            <ConfigFile VersionMin="3.2">fibaro/fgk101-32.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
