@@ -8,8 +8,7 @@
  */
 package org.openhab.binding.plclogo;
 
-
-import org.openhab.binding.plclogo.internal.PLCLogoBinding;
+import org.openhab.binding.plclogo.PLCLogoBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
@@ -21,12 +20,12 @@ public interface PLCLogoBindingProvider extends BindingProvider {
 	public PLCLogoBindingConfig getBindingConfig(String itemName);
 	
 	/**
-	 * Returns the Type of the Item identified by {@code itemName}
+	 * Returns the item identified by {@code itemName}
 	 * 
-	 * @param itemName the name of the item to find the type for
-	 * @return the type of the Item identified by {@code itemName}
+	 * @param itemName the name of the item to find
+	 * @return item identified by {@code itemName}
 	 */
-	public Item getItemType(String itemName);
+	public Item getItem(String itemName);
 
 }
 

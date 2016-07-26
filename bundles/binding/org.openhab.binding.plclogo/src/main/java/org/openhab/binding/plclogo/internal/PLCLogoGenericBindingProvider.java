@@ -8,41 +8,42 @@
  */
 package org.openhab.binding.plclogo.internal;
 
-import org.openhab.binding.plclogo.PLCLogoBindingProvider;
 import org.openhab.binding.plclogo.PLCLogoBindingConfig;
-import org.openhab.core.binding.BindingConfig;
+import org.openhab.binding.plclogo.PLCLogoBindingProvider;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.*;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * This class is responsible for parsing the binding configuration.
- * 
+ *
  * @author g8kmh
  * @since 1.5.0
  */
 public class PLCLogoGenericBindingProvider extends AbstractGenericBindingProvider implements PLCLogoBindingProvider {
-	private static final Logger logger = 
-			LoggerFactory.getLogger(PLCLogoBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(PLCLogoBinding.class);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getBindingType() {
-		return "plclogo";
-	}
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public Item getItemType(String itemName) {
-		PLCLogoBindingConfig config = (PLCLogoBindingConfig) bindingConfigs.get(itemName);
-		return config != null ? config.getItemType() : null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getBindingType() {
+        return "plclogo";
+    }
+
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public Item getItem(String itemName) {
+        PLCLogoBindingConfig config = (PLCLogoBindingConfig) bindingConfigs.get(itemName);
+        return config != null ? config.getItem() : null;
+    }
 
 	/**
 	 * @{inheritDoc}
@@ -56,25 +57,23 @@ public class PLCLogoGenericBindingProvider extends AbstractGenericBindingProvide
 					+ "', only Switch - Contact Items & Number are allowed - please check your *.items configuration");
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException 
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException
 	{
 		super.processBindingConfiguration(context, item, bindingConfig);
-	
-		PLCLogoBindingConfig config = new PLCLogoBindingConfig(item.getName(), item, bindingConfig);
-		addBindingConfig(item, config);		
+
+		PLCLogoBindingConfig config = new PLCLogoBindingConfig(item, bindingConfig);
+		addBindingConfig(item, config);
 	}
 
-	@Override
-	public PLCLogoBindingConfig getBindingConfig(String itemName) {
-		return (PLCLogoBindingConfig) this.bindingConfigs.get(itemName);
+    @Override
+    public PLCLogoBindingConfig getBindingConfig(String itemName) {
+        return (PLCLogoBindingConfig) this.bindingConfigs.get(itemName);
 
-	}
+    }
 
-	
-	
 }
