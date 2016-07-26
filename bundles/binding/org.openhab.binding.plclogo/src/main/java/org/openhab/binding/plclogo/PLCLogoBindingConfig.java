@@ -1,36 +1,30 @@
 package org.openhab.binding.plclogo;
 
-
-
-import org.openhab.binding.plclogo.internal.PLCLogoBinding;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.binding.plclogo.internal.PLCLogoBinding;
 import org.openhab.binding.plclogo.internal.PLCLogoMemoryConfig;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class PLCLogoBindingConfig implements BindingConfig {
-	private final String itemName;
-	private final String controllerName;
+	private Item item;
+	private final String controller;
 	private final PLCLogoMemoryConfig rdMem;
 	private final PLCLogoMemoryConfig wrMem;
 	private boolean invert;
 	private int analogDelta;
-	private int lastvalue;
-	private Item itemType;
+	private int lastValue;
 	private boolean isset;
 
 	private static final Logger logger =
 			LoggerFactory.getLogger(PLCLogoBinding.class);
 
-
-	public PLCLogoBindingConfig(String itemName, Item itemType, String configString)
+	public PLCLogoBindingConfig(Item item, String configString)
 			throws BindingConfigParseException
 	{
-		this.itemName = itemName;
-		this.itemType = itemType;
+		this.item = item;
 
 		// the config string has the format
 		//
@@ -44,7 +38,7 @@ public class PLCLogoBindingConfig implements BindingConfig {
 		if (dev.length < 2)
 			throw new BindingConfigParseException("invalid item name/memory format: " + configString + ", " + shouldBe);
 
-		controllerName = dev[0];
+		controller = dev[0];
 		rdMem = new PLCLogoMemoryConfig(dev[1]);
 		if (dev.length == 3)
 			wrMem = new PLCLogoMemoryConfig(dev[2]);
@@ -67,18 +61,13 @@ public class PLCLogoBindingConfig implements BindingConfig {
 			}
 		}
 
-		this.lastvalue = 0;
+		this.lastValue = 0;
 		this.isset = false;
 	}
 
-	public String getItemName()
+	public String getController()
 	{
-		return itemName;
-	}
-
-	public String getcontrollerName()
-	{
-		return controllerName;
+		return controller;
 	}
 
 	public PLCLogoMemoryConfig getRD()
@@ -103,13 +92,13 @@ public class PLCLogoBindingConfig implements BindingConfig {
 
 	public int getLastValue()
 	{
-		return this.lastvalue;
+		return this.lastValue;
 	}
 
-	public void setLastValue(int lastvalue)
+	public void setLastValue(int lastValue)
 	{
 		this.isset = true;
-		this.lastvalue = lastvalue;
+		this.lastValue = lastValue;
 	}
 
 	public boolean isSet()
@@ -117,7 +106,7 @@ public class PLCLogoBindingConfig implements BindingConfig {
 		return this.isset;
 	}
 
-	public Item getItemType(){
-		return this.itemType;
+	public Item getItem() {
+		return this.item;
 	}
 }
