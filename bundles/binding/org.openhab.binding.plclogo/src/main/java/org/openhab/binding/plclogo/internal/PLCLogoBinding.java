@@ -18,27 +18,26 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.concurrent.locks.ReentrantLock;
 
 import Moka7.*;
 
 import org.openhab.binding.plclogo.PLCLogoBindingProvider;
 import org.openhab.binding.plclogo.PLCLogoBindingConfig;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.core.types.TypeParser;
+
+import org.apache.commons.lang.StringUtils;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -53,434 +52,404 @@ import org.slf4j.LoggerFactory;
  */
 public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider> implements ManagedService {
 
-	private static final Logger logger = 
-		LoggerFactory.getLogger(PLCLogoBinding.class);
-	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(.*?)$");
+  private final ReentrantLock lock = new ReentrantLock();
+  private static final Logger logger = LoggerFactory.getLogger(PLCLogoBinding.class);
+  private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(.*?)$");
 
+  /** 
+   * the refresh interval which is used to poll values from the PlcLogo
+   * server (optional, defaults to 500ms)
+   */
+  private long refreshInterval = 5000;
 
-	/** 
-	 * the refresh interval which is used to poll values from the PlcLogo
-	 * server (optional, defaults to 500ms)
-	 */
-	private long refreshInterval = 5000;
-	
-	private static Map<String,PLCLogoConfig> controllers = new HashMap<String, PLCLogoConfig>();
+  /** 
+   * Buffer for read/write operations
+   */
+  private byte data[] = new byte[1470];
+  
+  private static Map<String,PLCLogoConfig> controllers = new HashMap<String, PLCLogoConfig>();
 
-	public PLCLogoBinding(){
-		logger.info("PLCLogoBinding constuctor");
-	}
-		
-	
-	public void activate() {
-	}
-	
-	public void deactivate() {
-		for (PLCLogoBindingProvider provider : providers) {
-			provider.removeBindingChangeListener(this);
-		}
+  private int ReadLogoDBArea(S7Client client) {
+    int result = 0;
 
-		providers.clear();
-		Iterator<Entry<String, PLCLogoConfig>> entries = controllers.entrySet().iterator();
-		while (entries.hasNext()){
-			Entry<String, PLCLogoConfig> thisEntry =  entries.next();
-			PLCLogoConfig logoConfig = (PLCLogoConfig) thisEntry.getValue();
-			S7Client LogoS7Client = logoConfig.getS7Client();
-			if (LogoS7Client != null){
-				LogoS7Client.Disconnect();
-			
-		    	}
-		}
-		controllers.clear();
-	}
-	
+    int offset = 0;
+    while ((result == 0) && (offset < data.length)) {
+      byte buffer[] = new byte[Math.min(data.length - offset, 1024)];
+      result = client.ReadArea(S7.S7AreaDB, 1, offset, buffer.length, buffer);
+      System.arraycopy(buffer, 0, data, offset, buffer.length);
+      offset = offset + buffer.length;
+    }
+    
+    return result;
+  }
+  
+  private int WriteLogoDBArea(S7Client client) {
+    return client.WriteArea(S7.S7AreaDB, 1, 0, data.length, data);
+  }
 
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
-	}
+  private void ReconnectLogo(S7Client client) {
+    // try and reconnect
+    client.Disconnect();
+    client.Connect();
+    if (client.Connected) {
+      logger.warn("Reconnect successful");
+    }
+  }
+  
+  public PLCLogoBinding() {
+    logger.info("PLCLogoBinding constuctor");
+  }
+  
+  public void activate() {
+  }
+  
+  public void deactivate() {
+    for (PLCLogoBindingProvider provider : providers) {
+      provider.removeBindingChangeListener(this);
+    }
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected String getName() {
-		return "PLCLogo Polling Service";
-	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void execute() {
-		int resultant;
-		byte Buffer[] = new byte[1024];
-		// the frequently executed code (polling) goes here ...
-		// logger.debug("execute() method is called!");
-		if (!bindingsExist()) {
-			logger.debug("There is no existing plclogo binding configuration => refresh cycle aborted!");
-			return;
-		}		
-		Iterator<Entry<String, PLCLogoConfig>> entries = controllers.entrySet().iterator();
-		while (entries.hasNext()){
-			Entry<String, PLCLogoConfig> thisEntry =  entries.next();
-			String controllerName = (String) thisEntry.getKey();
-			PLCLogoConfig logoConfig = (PLCLogoConfig) thisEntry.getValue();
-			S7Client LogoS7Client = logoConfig.getS7Client();
-			if (LogoS7Client == null)
-				logger.debug("No S7client for "+ controllerName);
-			else {
-		    	int Result = LogoS7Client.ReadArea(S7.S7AreaDB, 1, 0, 1024, Buffer);
-		    	if (Result != 0){
-		    			logger.warn("Failed to read memory - may attempt reconnect");
-		    				// try and reconnect
-		    				LogoS7Client.Disconnect();
-		    				LogoS7Client.Connect();
-		    				if (LogoS7Client.Connected)
-		    					logger.warn("Reconnect successful");
- 			
-		    			return;
-		    	}
-		    	// logger.debug("Got it ");
-			// Now have the LOGO! memory (note: not suitable for S7) - more efficient than multiple reads (test shows <14mS to read all)
-			// iterate through bindings to see what has changed - this approach assumes a small number (< 100)of bindings
-		    // otherwise might see what has changed in memory and map to binding
-			}
-			for (PLCLogoBindingProvider provider : providers) {
-				for (String itemName : provider.getItemNames()){
-					PLCLogoBindingConfig logoBindingConfig = (PLCLogoBindingConfig) provider.getBindingConfig(itemName);
-					if (logoBindingConfig.getcontrollerName().equals(controllerName)){
-						// it is for our currently selected controller
-						int memvalue = Buffer[logoBindingConfig.getRealMemloc()];
-						if ((logoBindingConfig.getMemloc().contains("AI"))||(logoBindingConfig.getMemloc().contains("VW"))||(logoBindingConfig.getMemloc().contains("AM"))||(logoBindingConfig.getMemloc().contains("AQ"))){
-							// It is a 16 bit read (note: not all are in the docs as supported - yet)
-							int mem2value = (int) Buffer[logoBindingConfig.getRealMemloc()+1] &0xff;
-							memvalue = memvalue*256+mem2value;
-						}
-						// logger.debug("Memory is " + memvalue + " at " + logoBindingConfig.getMemloc() );
-						// if a bitwise operation then need to perform mask
-						if ((logoBindingConfig.getItemType() instanceof SwitchItem)|| (logoBindingConfig.getItemType() instanceof ContactItem)) {
-							// bitmask created from bit number
-							int bitmask = (0x0001 << logoBindingConfig.getBit()); // this works for 8 bits only as int is signed
-							resultant = memvalue & bitmask & 0xff;
-						}
-						else{
-							resultant = memvalue;
-						}
-						if (resultant != (logoBindingConfig.getLastvalue())){
-							if ((logoBindingConfig.getMemloc().contains("AI"))||(logoBindingConfig.getMemloc().contains("AM"))||(logoBindingConfig.getMemloc().contains("AQ"))){
-								// check for change being larger than delta
-								if (Math.abs(logoBindingConfig.getLastvalue()-resultant ) < logoBindingConfig.getAnalogDelta()){
-//									logger.debug("Analog value not larger than delta");
-									return;	
-								}
-							}
-							logger.debug("Value changed at " + logoBindingConfig.getitemName() + " to " + resultant);
-							Item itemType = provider.getItemType(itemName);
-							State state = createState(itemType, resultant);
-							eventPublisher.postUpdate(itemName, state);
-							logoBindingConfig.setLastvalue(resultant);
+    providers.clear();
+    Iterator<Entry<String, PLCLogoConfig>> entries = controllers.entrySet().iterator();
+    while (entries.hasNext()) {
+      Entry<String, PLCLogoConfig> thisEntry =  entries.next();
+      PLCLogoConfig logoConfig = (PLCLogoConfig) thisEntry.getValue();
+      S7Client LogoS7Client = logoConfig.getS7Client();
+      if (LogoS7Client != null) {
+        LogoS7Client.Disconnect();
+      }
+    }
+    controllers.clear();
+  }
 
-						}
-					}
-				}
-				
-			}
-		}
-	}
+  /**
+   * @{inheritDoc}
+   */
+  @Override
+  protected long getRefreshInterval() {
+    return refreshInterval;
+  }
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-		// Note itemname is the item name not the controller name/instance!
-		//
-		logger.debug("internalReceiveCommand() is called!");
-		for (PLCLogoBindingProvider provider : providers) {
-			if (!provider.providesBindingFor(itemName))
-				continue;
-			
-			PLCLogoBindingConfig bindingConfig = provider.getBindingConfig(itemName);
-			if ((bindingConfig.getRealMemloc() >849 && bindingConfig.getRealMemloc() < 942 )){
-				logger.warn("Invalid write requested at memory location "+ bindingConfig.getRealMemloc() + " check config");
-				continue;	
-			}
-				
-			if (!controllers.containsKey(bindingConfig.getcontrollerName()))
-				continue;
-			
-			PLCLogoConfig controller = controllers.get(bindingConfig.getcontrollerName());
-		/**************************
-		 * Send command to the LOGO! controller memory
-		 * 
-		 */
-			S7Client LogoS7Client = controller.getS7Client();
-			if (bindingConfig.getItemType() instanceof NumberItem){
-				byte[] valueToStore = new byte[2];
-				if  (command instanceof DecimalType){
-					if (bindingConfig.getMemloc().substring(0, 2).equalsIgnoreCase("VB")){
-					// Number and a byte
-					valueToStore[0] =	(byte) (Integer.parseInt(command.toString()) & 0xff);
-					//Get value from command
-					int Result = LogoS7Client.WriteArea(S7.S7AreaDB, 1, bindingConfig.getRealMemloc(), 1, valueToStore);
-			    	if (Result != 0){
-		    			logger.warn("Failed to write to memory - may attempt reconnect but write failed at  " + bindingConfig.getRealMemloc());
-		    				// try and reconnect
-		    				LogoS7Client.Disconnect();
-		    				LogoS7Client.Connect();
-		    				if (LogoS7Client.Connected)
-		    					logger.warn("Reconnect successful");
-	    			
-		    			return;
-		    	}
-					} else if (bindingConfig.getMemloc().substring(0, 2).equalsIgnoreCase("VW")){
-						// Number and a word
-						valueToStore[1] =	(byte) (Integer.parseInt(command.toString()) & 0xff);
-						valueToStore[0] =	(byte) ((Integer.parseInt(command.toString()) / 256) & 0xff);
-						//Get value from command
-						int Result = LogoS7Client.WriteArea(S7.S7AreaDB, 1, bindingConfig.getRealMemloc(), 2, valueToStore);
-				    	if (Result != 0){
-			    			logger.warn("Failed to write to memory - may attempt reconnect but write failed at  " + bindingConfig.getRealMemloc());
-			    				// try and reconnect
-			    				LogoS7Client.Disconnect();
-			    				LogoS7Client.Connect();
-			    				if (LogoS7Client.Connected)
-			    					logger.warn("Reconnect successful");
-		    			
-			    			return;
-			    	}
-	
-					}
-				}
-			} else if (((bindingConfig.getItemType() instanceof SwitchItem)|| (bindingConfig.getItemType() instanceof ContactItem))&& (command instanceof OnOffType)){
-				byte[] outBuffer = new byte[1];
-				byte bitmask = (byte)(0x01 << bindingConfig.getBit());
-				int cmdaction = ((command == OnOffType.ON) ? 0x01 : 0x00 );
-				int Result = LogoS7Client.ReadArea(S7.S7AreaDB, 1, bindingConfig.getRealMemloc(), 1, outBuffer);
-		    	if (Result != 0){
-	    			logger.warn("Failed to read memory - may attempt reconnect but read for a write failed at  " + bindingConfig.getRealMemloc());
-	    				// try and reconnect
-	    				LogoS7Client.Disconnect();
-	    				LogoS7Client.Connect();
-	    				if (LogoS7Client.Connected)
-	    					logger.warn("Reconnect successful");
-    			
-	    			return;
-	    	}
-				if (command == OnOffType.ON){
-					outBuffer[0] = (byte) (outBuffer[0]| bitmask);
-					logger.debug("plclogo - Sending on");
-				} else if (command == OnOffType.OFF){
-					outBuffer[0] = (byte) (outBuffer[0]& ~bitmask);
-					logger.debug("plclogo - Sending off");
-				}
-				Result = LogoS7Client.WriteArea(S7.S7AreaDB, 1, bindingConfig.getRealMemloc(), 1, outBuffer);
-		    	if (Result != 0){
-	    			logger.warn("Failed to write to memory - may attempt reconnect but write failed at  " + bindingConfig.getRealMemloc());
-	    				// try and reconnect
-	    				LogoS7Client.Disconnect();
-	    				LogoS7Client.Connect();
-	    				if (LogoS7Client.Connected)
-	    					logger.warn("Reconnect successful");
-    			
-	    			return;
-	    	}
-			
-			}
-		
-			
-		}
+  /**
+   * @{inheritDoc}
+   */
+  @Override
+  protected String getName() {
+    return "PLCLogo Polling Service";
+  }
+  
+  /**
+   * @{inheritDoc}
+   */
+  @Override
+  protected void execute() {
+    if (!bindingsExist()) {
+      logger.debug("There is no existing plclogo binding configuration => refresh cycle aborted!");
+      return;
+    }
 
-	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveUpdate() is called!");
-	}
-		
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		InetAddress LogoIP;
-		Boolean configured = false;
-		if (config != null) {
-			String refreshIntervalString = (String) config.get("refresh");
-			if (StringUtils.isNotBlank(refreshIntervalString)) {
-				refreshInterval = Long.parseLong(refreshIntervalString);
-			}
+    Iterator<Entry<String, PLCLogoConfig>> entries = controllers.entrySet().iterator();
+    while (entries.hasNext()) {
+      Entry<String, PLCLogoConfig> thisEntry = entries.next();
+      String controllerName = (String) thisEntry.getKey();
+      PLCLogoConfig logoConfig = (PLCLogoConfig) thisEntry.getValue();
+      S7Client LogoS7Client = logoConfig.getS7Client();
+      if (LogoS7Client == null) {
+        logger.debug("No S7client for "+ controllerName);
+      } else {
+        lock.lock();
+        int result = ReadLogoDBArea(LogoS7Client);
+        lock.unlock();
 
-			Enumeration<String> keys = config.keys();
+        if (result != 0) {
+          logger.warn("Failed to read memory: " + LogoS7Client.ErrorText(result) + " Reconnecting...");
+          ReconnectLogo(LogoS7Client);
+          return;
+        }
+        // Now have the LOGO! memory (note: not suitable for S7) - more efficient than multiple reads (test shows <14mS to read all)
+        // iterate through bindings to see what has changed - this approach assumes a small number (< 100)of bindings
+        // otherwise might see what has changed in memory and map to binding
+      }
+ 
+      for (PLCLogoBindingProvider provider : providers) {
+        for (String itemName : provider.getItemNames()) {
+          PLCLogoBindingConfig config = (PLCLogoBindingConfig) provider.getBindingConfig(itemName);
+          if (config.getControllerName().equals(controllerName)) {
+            int address = config.getAddress();
+            String block = config.getBlock();
 
-			if ( controllers == null ) {
-				controllers = new HashMap<String, PLCLogoConfig>();
-			}
-			
-			while (keys.hasMoreElements()) {
-				String key = (String) keys.nextElement();
+            // it is for our currently selected controller
+            int currentValue = Integer.MIN_VALUE;
+            if (config.isDigital()) {
+              currentValue = S7.GetBitAt(data, address, config.getBit()) ? 1 : 0;
+            } else {
+              currentValue = S7.GetWordAt(data, address);
+            }
 
-				// the config-key enumeration contains additional keys that we
-				// don't want to process here ...
-				if ("service.pid".equals(key)) {
-					continue;
-				}
-			
+            if (currentValue != config.getLastValue()) {
+              int delta = Math.abs(config.getLastValue() - currentValue);
+              if (!config.isDigital() && (delta < config.getAnalogDelta())) {
+                continue;
+              }
 
-				Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
+              Item item = provider.getItem(itemName);
+              boolean isValid = block.startsWith("I") && item instanceof ContactItem;
+              isValid = isValid || (block.startsWith("M") && (item instanceof ContactItem || item instanceof SwitchItem));
+              isValid = isValid || (block.startsWith("Q") && item instanceof SwitchItem);
+              isValid = isValid || (block.startsWith("NI") && item instanceof ContactItem);
+              isValid = isValid || (block.startsWith("NQ") && item instanceof SwitchItem);
+              isValid = isValid || (block.startsWith("VB") && (item instanceof ContactItem || item instanceof SwitchItem));
+              isValid = isValid || (block.startsWith("VW") && (item instanceof ContactItem || item instanceof SwitchItem));
+              if (item instanceof NumberItem || isValid) {
+                eventPublisher.postUpdate(itemName, createState(item, currentValue));
+                config.setLastvalue(currentValue);
+              } else {
+                logger.warn("Block " + block + " is incompatible with item " + item.getName());
+              }
+            }
+          }          
+        }
+      }
+    }
+  }
 
-				if (!matcher.matches()) {
-					continue;
-				}
+  /**
+   * @{inheritDoc}
+   */
+  @Override
+  protected void internalReceiveCommand(String itemName, Command command) {
+    // the code being executed when a command was sent on the openHAB
+    // event bus goes here. This method is only called if one of the 
+    // BindingProviders provide a binding for the given 'itemName'.
+    // Note itemname is the item name not the controller name/instance!
+    //
+    super.internalReceiveCommand(itemName, command);
+    logger.debug("internalReceiveCommand() is called!");
 
-				matcher.reset();
-				matcher.find();
-				String controllerName = matcher.group(1);
-				PLCLogoConfig deviceConfig = controllers.get(controllerName);
-				logger.info("Config for "+ controllerName );
+    for (PLCLogoBindingProvider provider : providers) {
+      if (!provider.providesBindingFor(itemName))
+        continue;
+      
+      PLCLogoBindingConfig config = provider.getBindingConfig(itemName);
+      if ((config.getAddress() < 0) || (config.getAddress() > 1469)) {
+        logger.warn("Invalid write requested at memory location " + config.getAddress() );
+        continue;  
+      }
+        
+      if (!controllers.containsKey(config.getControllerName())) {
+        logger.warn("Invalid write requested for controller "+ config.getControllerName());
+        continue;
+      }
+      
+      // Send command to the LOGO! controller memory
+      PLCLogoConfig controller = controllers.get(config.getControllerName());
 
-				if (deviceConfig == null) {
-					deviceConfig = new PLCLogoConfig(controllerName);
-					controllers.put(controllerName, deviceConfig);
-				}
-				if (matcher.group(2).equals("host")){
-					// matcher.find();
-					String IP = config.get(key).toString();
-					deviceConfig.setIP(IP);
-					logger.info("Config for "+ IP );
-					configured=true;
-				}
-				if (matcher.group(2).equals("remoteTSAP")){
-					// matcher.find();
-					String remoteTSAP = config.get(key).toString();
-					logger.info("Config for " + remoteTSAP );
+      S7Client LogoS7Client = controller.getS7Client();
+      if (LogoS7Client == null) {
+        logger.debug("No S7client for "+ config.getControllerName());
+        return;
+      } else {
+        lock.lock();
+        int result = ReadLogoDBArea(LogoS7Client);
+        if (result == 0) {
+          Item item = config.getItem();
+          int address = config.getAddress();
+          if (item instanceof NumberItem && !config.isDigital()) {
+            if (command instanceof DecimalType) {
+              S7.SetWordAt(data, address, ((DecimalType)command).intValue());
+            }
+          } else if (item instanceof SwitchItem && config.isDigital()) {
+            if (command instanceof OnOffType) {
+              S7.SetBitAt(data, address, config.getBit(), command == OnOffType.ON ? true : false);
+            }
+          }
 
-					deviceConfig.setremoteTSAP(Integer.decode(remoteTSAP));
-				}
-				if (matcher.group(2).equals("localTSAP")){
-					// matcher.find();
-					String localTSAP = config.get(key).toString();
-					logger.info("Config for "+ localTSAP );
+          result = WriteLogoDBArea(LogoS7Client);      
+          if (result != 0) {
+            logger.warn("Failed to write memory: " + LogoS7Client.ErrorText(result) + " Reconnecting...");
+            ReconnectLogo(LogoS7Client);
+          }
+        } else {
+          logger.warn("Failed to read memory: " + LogoS7Client.ErrorText(result) + " Reconnecting...");
+          ReconnectLogo(LogoS7Client);
+        }
+        lock.unlock();
+      }
+    }
+  }
+  
+  /**
+   * @{inheritDoc}
+   */
+  @Override
+  protected void internalReceiveUpdate(String itemName, State newState) {
+    // the code being executed when a state was sent on the openHAB
+    // event bus goes here. This method is only called if one of the 
+    // BindingProviders provide a binding for the given 'itemName'.
+    super.internalReceiveUpdate(itemName, newState);
+    logger.debug("internalReceiveUpdate() is called!");
+  }
+    
+  /**
+   * @{inheritDoc}
+   */
+  @Override
+  public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+    InetAddress LogoIP;
+    Boolean configured = false;
+    if (config != null) {
+      String refreshIntervalString = (String) config.get("refresh");
+      if (StringUtils.isNotBlank(refreshIntervalString)) {
+        refreshInterval = Long.parseLong(refreshIntervalString);
+      }
 
-					deviceConfig.setlocalTSAP(Integer.decode(localTSAP));
-				}
-			} //while
-		Iterator<Entry<String, PLCLogoConfig>> entries = controllers.entrySet().iterator();
-		while (entries.hasNext()){
-			Entry<String, PLCLogoConfig> thisEntry = entries.next();
-			String controllerName = (String) thisEntry.getKey();
-			PLCLogoConfig logoConfig = (PLCLogoConfig) thisEntry.getValue();
-			S7Client LogoS7Client = logoConfig.getS7Client();
-			if (LogoS7Client == null)
-				{LogoS7Client = new Moka7.S7Client();}
-			else
-				LogoS7Client.Disconnect();
-			LogoS7Client.SetConnectionParams(logoConfig.getlogoIP(), logoConfig.getlocalTSAP(), logoConfig.getremoteTSAP());
-			logger.info("About to connect to "+ controllerName );
+      if ( controllers == null ) {
+        controllers = new HashMap<String, PLCLogoConfig>();
+      }
+      
+      Enumeration<String> keys = config.keys();
+      while (keys.hasMoreElements()) {
+        String key = (String) keys.nextElement();
 
-			int connectPDU = LogoS7Client.Connect();
-			if ((connectPDU == 0) && LogoS7Client.Connected ){
-				logger.info("Connected to PLC LOGO! device "+ controllerName );
-			}
-			else {
-				logger.info("Could not connect to PLC LOGO! device "+ controllerName );
-				throw new ConfigurationException("Could not connect to PLC device ",controllerName +" " + logoConfig.getlogoIP().toString() );
-			}
-			logoConfig.setS7Client(LogoS7Client);
-		}
-				
-		setProperlyConfigured(configured);		}
-		else
-		{
-			logger.info("No configuration for PLCLogoBinding" );
+        // the config-key enumeration contains additional keys that we
+        // don't want to process here ...
+        if ("service.pid".equals(key)) {
+          continue;
+        }
+      
+        Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
+        if (!matcher.matches()) {
+          continue;
+        }
 
-		}
+        matcher.reset();
+        matcher.find();
+        String controllerName = matcher.group(1);
+        PLCLogoConfig deviceConfig = controllers.get(controllerName);
+        logger.info("Config for "+ controllerName );
 
-	}
-	
-	
-	private State createState(Item itemType, Object value) {
-		if (itemType instanceof StringType) {
-			return new StringType((String) value);
-		} else if (itemType instanceof NumberItem) {
-			if (value instanceof Number) {
-				return new DecimalType(value.toString());
-			} else if (value instanceof String) {
-				String stringValue = ((String) value).replaceAll("[^\\d|.]", "");
-				return new DecimalType(stringValue);
-			} else {
-				return null;
-			}
-		} else if (itemType instanceof SwitchItem) {
-			return  ((int)value > 0) ? OnOffType.ON : OnOffType.OFF;
-		} else if (itemType instanceof ContactItem)
-			return  ((int)value > 0) ? OpenClosedType.CLOSED: OpenClosedType.OPEN;
-	
-		else {
-			return null;
-		}
-	}
+        if (deviceConfig == null) {
+          deviceConfig = new PLCLogoConfig(controllerName);
+          controllers.put(controllerName, deviceConfig);
+        }
+        if (matcher.group(2).equals("host")) {
+          // matcher.find();
+          String IP = config.get(key).toString();
+          deviceConfig.setIP(IP);
+          logger.info("Config for "+ IP );
+          configured=true;
+        }
+        if (matcher.group(2).equals("remoteTSAP")) {
+          // matcher.find();
+          String remoteTSAP = config.get(key).toString();
+          logger.info("Config for " + remoteTSAP);
 
-	
-	private class PLCLogoConfig {
-		/**
-		 * Class which represents a LOGO! online controller/PLC connection params
-		 * and current instance - there may be multiple PLC's
-		 *  
-		 * @author g8kmh
-		 * @since 1.5.0
-		 */
+          deviceConfig.setremoteTSAP(Integer.decode(remoteTSAP));
+        }
+        if (matcher.group(2).equals("localTSAP")) {
+          // matcher.find();
+          String localTSAP = config.get(key).toString();
+          logger.info("Config for "+ localTSAP);
 
-		private final String instancename;
-		private String logoIP;
-		private int localTSAP = 0x0300;
-		private int remoteTSAP = 0x0200;
-		private S7Client LogoS7Client;
-		
-		public PLCLogoConfig (String instancename){
-			this.instancename = instancename;
-		}
-		public void setIP(String logoIP){
-			this.logoIP = logoIP;
-		}
-		public void setlocalTSAP(int localTSAP){
-			this.localTSAP = localTSAP;
-		}
-		public void setremoteTSAP(int remoteTSAP){
-			this.remoteTSAP = remoteTSAP;
-		}
-		public void setS7Client(S7Client LogoS7Client){
-			this.LogoS7Client=LogoS7Client;
-		}
-		public String getlogoIP(){
-			return logoIP;
-		}
-		public String getintancename(){
-			return instancename;
-		}
-		public int getlocalTSAP(){
-			return localTSAP;
-		}
-		public int getremoteTSAP(){
-			return remoteTSAP;
-		}
-		public S7Client getS7Client(){
-			return LogoS7Client;
-		}
-		}
+          deviceConfig.setlocalTSAP(Integer.decode(localTSAP));
+        }
+      } //while
 
-	}
+    Iterator<Entry<String, PLCLogoConfig>> entries = controllers.entrySet().iterator();
+    while (entries.hasNext()) {
+      Entry<String, PLCLogoConfig> thisEntry = entries.next();
+      String controllerName = (String) thisEntry.getKey();
+      PLCLogoConfig logoConfig = (PLCLogoConfig) thisEntry.getValue();
+      S7Client LogoS7Client = logoConfig.getS7Client();
+      if (LogoS7Client == null) {
+        LogoS7Client = new Moka7.S7Client();
+      } else {
+        LogoS7Client.Disconnect();
+      }
+      LogoS7Client.SetConnectionParams(logoConfig.getlogoIP(), logoConfig.getlocalTSAP(), logoConfig.getremoteTSAP());
+      logger.info("About to connect to "+ controllerName );
+
+      if ((LogoS7Client.Connect() == 0) && LogoS7Client.Connected) {
+        logger.info("Connected to PLC LOGO! device "+ controllerName);
+      }  else {
+        logger.info("Could not connect to PLC LOGO! device "+ controllerName);
+        throw new ConfigurationException("Could not connect to PLC device ", controllerName +" " + logoConfig.getlogoIP().toString() );
+      }
+      logoConfig.setS7Client(LogoS7Client);
+    }
+        
+    setProperlyConfigured(configured);
+    } else {
+      logger.info("No configuration for PLCLogoBinding" );
+    }
+  }
+
+  private State createState(Item item, Object value) {
+    if (item instanceof StringType) {
+      return new StringType((String) value);
+    } else if (item instanceof NumberItem) {
+      if (value instanceof Number) {
+        return new DecimalType(value.toString());
+      } else if (value instanceof String) {
+        String stringValue = ((String) value).replaceAll("[^\\d|.]", "");
+        return new DecimalType(stringValue);
+      } else {
+        return null;
+      }
+    } else if (item instanceof SwitchItem) {
+      return  ((int)value > 0) ? OnOffType.ON : OnOffType.OFF;
+    } else if (item instanceof ContactItem) {
+      return  ((int)value > 0) ? OpenClosedType.CLOSED: OpenClosedType.OPEN;
+    } else {
+      return null;
+    }
+  }
+
+  private class PLCLogoConfig {
+    /**
+     * Class which represents a LOGO! online controller/PLC connection params
+     * and current instance - there may be multiple PLC's
+     *  
+     * @author g8kmh
+     * @since 1.5.0
+     */
+
+    private final String instancename;
+    private String logoIP;
+    private int localTSAP = 0x0300;
+    private int remoteTSAP = 0x0200;
+    private S7Client LogoS7Client;
+    
+    public PLCLogoConfig (String instancename){
+      this.instancename = instancename;
+    }
+    public void setIP(String logoIP){
+      this.logoIP = logoIP;
+    }
+    public void setlocalTSAP(int localTSAP){
+      this.localTSAP = localTSAP;
+    }
+    public void setremoteTSAP(int remoteTSAP){
+      this.remoteTSAP = remoteTSAP;
+    }
+    public void setS7Client(S7Client LogoS7Client){
+      this.LogoS7Client=LogoS7Client;
+    }
+    public String getlogoIP(){
+      return logoIP;
+    }
+    public String getintancename(){
+      return instancename;
+    }
+    public int getlocalTSAP(){
+      return localTSAP;
+    }
+    public int getremoteTSAP(){
+      return remoteTSAP;
+    }
+    public S7Client getS7Client(){
+      return LogoS7Client;
+    }
+    }
+
+  }
 
