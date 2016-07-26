@@ -20,7 +20,7 @@ import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveSceneActivationCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCentralSceneCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Chris Jackson, Robert Savage
  */
-public class ZWaveCentralSceneConverter extends ZWaveCommandClassConverter<ZWaveSceneActivationCommandClass> {
+public class ZWaveCentralSceneConverter extends ZWaveCommandClassConverter<ZWaveCentralSceneCommandClass> {
 
     private static final Logger logger = LoggerFactory.getLogger(ZWaveCentralSceneConverter.class);
 
@@ -66,7 +66,7 @@ public class ZWaveCentralSceneConverter extends ZWaveCommandClassConverter<ZWave
     }
 
     @Override
-    SerialMessage executeRefresh(ZWaveNode node, ZWaveSceneActivationCommandClass commandClass, int endpointId,
+    SerialMessage executeRefresh(ZWaveNode node, ZWaveCentralSceneCommandClass commandClass, int endpointId,
             Map<String, String> arguments) {
         return null;
     }
@@ -156,7 +156,7 @@ public class ZWaveCentralSceneConverter extends ZWaveCommandClassConverter<ZWave
     }
 
     @Override
-    void receiveCommand(Item item, Command command, ZWaveNode node, ZWaveSceneActivationCommandClass commandClass,
+    void receiveCommand(Item item, Command command, ZWaveNode node, ZWaveCentralSceneCommandClass commandClass,
             int endpointId, Map<String, String> arguments) {
     }
 }

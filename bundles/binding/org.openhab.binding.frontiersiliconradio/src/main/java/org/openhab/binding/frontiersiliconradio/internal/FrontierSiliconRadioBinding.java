@@ -325,7 +325,7 @@ public class FrontierSiliconRadioBinding extends AbstractActiveBinding<FrontierS
                     break;
                 default:
                     logger.error(
-                            "command on unkown property: '" + property + "'. Maybe trying to set read-only property?");
+                            "command on unknown property: '" + property + "'. Maybe trying to set read-only property?");
                     break;
             }
         }
