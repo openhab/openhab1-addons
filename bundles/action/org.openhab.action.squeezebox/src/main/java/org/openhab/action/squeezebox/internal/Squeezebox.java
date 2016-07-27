@@ -187,7 +187,7 @@ public class Squeezebox {
         if (!isReady()) {
             return false;
         }
-        return squeezeboxSpeak(playerId, message, -1, true);
+        return squeezeboxSpeak(playerId, message, volume, true);
     }
 
     @ActionDoc(text = "Speak a message via one of your Squeezebox devices using the specified volume and using specified resume status", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
