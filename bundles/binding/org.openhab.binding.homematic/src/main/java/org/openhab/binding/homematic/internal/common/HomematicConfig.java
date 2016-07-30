@@ -176,6 +176,14 @@ public class HomematicConfig {
     }
 
     /**
+     * Returns the BIN-RPC url.
+     */
+    @Deprecated
+    public String getBinRpcCallbackUrl() {
+        return "binary://" + callbackHost + ":" + callbackPort;
+    }
+
+    /**
      * Returns true, if HomematicIP support is enabled.
      */
     public boolean isHomematicIpEnabled() {
