@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry exported="true" kind="lib" path="lib/nanohttpd-2.3.0.jar" sourcepath="/Users/Gerhard/.m2/repository/org/nanohttpd/nanohttpd/2.3.0/nanohttpd-2.3.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/nanohttpd-2.3.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="target/classes"/>
