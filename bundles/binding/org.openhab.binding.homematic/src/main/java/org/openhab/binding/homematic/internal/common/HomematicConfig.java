@@ -49,7 +49,7 @@ import org.osgi.service.cm.ConfigurationException;
  * # Think in hours when configuring (one hour = 3600)
  * # homematic:reconnect.interval=
  *
- * # Enables CCU2 HomematicIP support (optional, default is disabled)
+ * # Enables CCU2 HomematicIP support (optional, default is false)
  * # HomematicIP does currently not support BIN-RPC. Therefore it's disabled by default, because if you don't
  * # have HM-IP devices, the binding still communicates with BIN-RPC. If you enable HM-IP support, the binding
  * # uses XML-RPC.
