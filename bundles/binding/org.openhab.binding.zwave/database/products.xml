@@ -2072,11 +2072,15 @@
             </Reference>
             <Reference>
                 <Type>0100</Type>
-                <Id>0102</Id>
+                <Id>0101</Id>
             </Reference>
             <Reference>
                 <Type>0100</Type>
-                <Id>0101</Id>
+                <Id>0102</Id>
+            </Reference>
+             <Reference>
+                <Type>0100</Type>
+                <Id>0103</Id>
             </Reference>
             <Model>KFOB</Model>
             <Label lang="en">4 button keyfob</Label>
