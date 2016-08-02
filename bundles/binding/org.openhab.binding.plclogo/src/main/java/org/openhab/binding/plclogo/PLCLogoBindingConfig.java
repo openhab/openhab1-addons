@@ -8,14 +8,14 @@ public class PLCLogoBindingConfig implements BindingConfig {
   private final String controller;
   private final String block;
   private final boolean invert;
-  private final int analogDelta;
+  private final int threshold;
   private int lastValue;
   
-  public PLCLogoBindingConfig(Item item, String controller, String block,  boolean invert, int analogDelta) {
+  public PLCLogoBindingConfig(Item item, String controller, String block,  boolean invert, int threshold) {
     this.item = item;
     this.controller = controller;
     this.block = block.toUpperCase();
-    this.analogDelta = analogDelta;
+    this.threshold = threshold;
     this.invert = invert;
     this.lastValue = Integer.MIN_VALUE;    
   }
@@ -96,8 +96,8 @@ public class PLCLogoBindingConfig implements BindingConfig {
     return bit;
   }
   
-  public int getAnalogDelta() {
-    return this.analogDelta;
+  public int getThreshold() {
+    return this.threshold;
   }
   public boolean getInvert() {
     return this.invert;

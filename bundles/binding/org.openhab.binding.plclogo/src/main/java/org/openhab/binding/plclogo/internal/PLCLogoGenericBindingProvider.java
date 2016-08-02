@@ -72,7 +72,7 @@ public class PLCLogoGenericBindingProvider extends AbstractGenericBindingProvide
         //
         String shouldBe = "should be controllername:blocktype [activelow=yes|no]";
 
-        int delta = 0;
+        int threshold = 0;
         boolean invert = false;
 
         String[] segments = bindingConfig.split(" ");
@@ -86,7 +86,7 @@ public class PLCLogoGenericBindingProvider extends AbstractGenericBindingProvide
                     "invalid item name/memory format: " + bindingConfig + ", " + shouldBe);
         }
 
-        // check for invert or analogdelta
+        // check for invert or threshold
         if (segments.length == 2) {
             logger.debug("Addtional binding config " + segments[1]);
             String[] inversion = segments[1].split("=");
@@ -96,12 +96,12 @@ public class PLCLogoGenericBindingProvider extends AbstractGenericBindingProvide
             if ((inversion[0].compareToIgnoreCase("activelow") == 0)) {
                 invert = (inversion[1].compareToIgnoreCase("yes") == 0);
             }
-            if (inversion[0].compareToIgnoreCase("analogdelta") == 0) {
-                delta = Integer.parseInt(inversion[1]);
-                logger.debug("Setting analogDelta " + delta);
+            if (inversion[0].compareToIgnoreCase("threshold") == 0) {
+                threshold = Integer.parseInt(inversion[1]);
+                logger.debug("Setting threshold " + threshold);
             }
         }
-        addBindingConfig(item, new PLCLogoBindingConfig(item, block[0], block[1], invert, delta));
+        addBindingConfig(item, new PLCLogoBindingConfig(item, block[0], block[1], invert, threshold));
     }
 
     @Override

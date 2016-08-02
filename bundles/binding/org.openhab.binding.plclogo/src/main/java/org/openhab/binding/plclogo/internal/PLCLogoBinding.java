@@ -187,7 +187,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 
             if (currentValue != config.getLastValue()) {
               int delta = Math.abs(config.getLastValue() - currentValue);
-              if (!config.isDigital() && (delta < config.getAnalogDelta())) {
+              if (!config.isDigital() && (delta < config.getThreshold())) {
                 continue;
               }
 
@@ -393,6 +393,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
         String stringValue = ((String) value).replaceAll("[^\\d|.]", "");
         return new DecimalType(stringValue);
       } else {
+        logger.warn("Item " + item.getName() + " got invalid value " + value.toString() + ".");
         return null;
       }
     } else if (item instanceof SwitchItem) {
@@ -400,6 +401,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
     } else if (item instanceof ContactItem) {
       return  ((int)value > 0) ? OpenClosedType.CLOSED: OpenClosedType.OPEN;
     } else {
+      logger.warn("Item " + item.getName() + " got invalid value " + value.toString() + ".");
       return null;
     }
   }
