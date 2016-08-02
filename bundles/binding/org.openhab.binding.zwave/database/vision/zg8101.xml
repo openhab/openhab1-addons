@@ -1,25 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>ZG8101</Model>
-	<Label lang="en">Garage Door Tilt Sensor</Label>
-	<CommandClasses>
-		<Class><id>0x20</id></Class>
-		<Class><id>0x30</id></Class>
-		<Class><id>0x71</id></Class>
-		<Class><id>0x72</id></Class>
-		<Class><id>0x80</id></Class>
-		<Class><id>0x84</id></Class>
-		<Class><id>0x85</id></Class>
-		<Class><id>0x86</id></Class>
-	</CommandClasses>
+    <Model>ZG8101</Model>
+    <Label lang="en">Garage Door Tilt Sensor</Label>
 
-	<Associations>
-		<Group>
-			<Index>1</Index>
-			<Maximum>5</Maximum>
-			<Label lang="en">Control Command</Label>
-			<Help lang="en"><![CDATA[Control Command when trip]]></Help>
-		</Group>
-	</Associations>
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x30</id>             <!-- SENSOR_BINARY -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Control Command</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
 </Product>
-

@@ -359,9 +359,13 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
                 case 3:
                     DPTXlator3BitControlled translator3BitControlled = (DPTXlator3BitControlled) translator;
                     if (translator3BitControlled.getStepCode() == 0) {
-                        // Not supported: break
-                        logger.debug("toType: KNX DPT_Control_Dimming: break ignored.");
-                        return null;
+                        /*
+                         * there is no STOP for a IncreaseDecreaseType, so we are just using an INCREASE.
+                         * It is up to the binding to recognize that a start/stop-dimming is in progress and
+                         * stop the dimming accordingly.
+                         */
+                        logger.debug("toType: KNX DPT_Control_Dimming: break received.");
+                        return IncreaseDecreaseType.INCREASE;
                     }
                     switch (subNumber) {
                         case 7:

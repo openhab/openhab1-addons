@@ -161,7 +161,7 @@ public class RFXComLighting6Message extends RFXComBaseMessage {
 
     @Override
     public String generateDeviceId() {
-        return sensorId + groupCode + "." + unitcode;
+        return sensorId + "." + groupCode + "." + unitcode;
     }
 
     @Override

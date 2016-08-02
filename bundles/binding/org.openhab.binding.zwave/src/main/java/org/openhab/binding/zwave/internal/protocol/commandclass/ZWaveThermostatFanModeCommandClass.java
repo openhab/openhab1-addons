@@ -123,7 +123,7 @@ public class ZWaveThermostatFanModeCommandClass extends ZWaveCommandClass
                             logger.debug("NODE {}: Added Fan Mode type {} ({})", this.getNode().getNodeId(),
                                     fanModeTypeToAdd.getLabel(), index);
                         } else {
-                            logger.warn("NODE {}: Uknown fan mode type {}", this.getNode().getNodeId(), index);
+                            logger.warn("NODE {}: Unknown fan mode type {}", this.getNode().getNodeId(), index);
                         }
                     }
                 }

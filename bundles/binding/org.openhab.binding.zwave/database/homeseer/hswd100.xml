@@ -5,19 +5,10 @@
 
     <CommandClasses>
         <Class>
-            <id>0x85</id>             <!-- ASSOCIATION -->
-        </Class>
-        <Class>
-            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
-        </Class>
-        <Class>
-            <id>0x70</id>             <!-- CONFIGURATION -->
-        </Class>
-        <Class>
             <id>0x00</id>             <!-- NO_OPERATION -->
         </Class>
         <Class>
-            <id>0x2B</id>             <!-- SCENE_ACTIVATION -->
+            <id>0x20</id>             <!-- BASIC -->
         </Class>
         <Class>
             <id>0x26</id>             <!-- SWITCH_MULTILEVEL -->
@@ -26,28 +17,37 @@
             <id>0x27</id>             <!-- SWITCH_ALL -->
         </Class>
         <Class>
-            <id>0x86</id>             <!-- VERSION -->
-        </Class>
-        <Class>
-            <id>0x20</id>             <!-- BASIC -->
-        </Class>
-        <Class>
-            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+            <id>0x2B</id>             <!-- SCENE_ACTIVATION -->
         </Class>
         <Class>
             <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
         </Class>
         <Class>
-            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
-        </Class>
-        <Class>
-            <id>0x73</id>             <!-- POWERLEVEL -->
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
         </Class>
         <Class>
             <id>0x5B</id>             <!-- CENTRAL_SCENE -->
         </Class>
         <Class>
             <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
         </Class>
     </CommandClasses>
 
@@ -72,8 +72,28 @@
         </Parameter>
 
         <Parameter>
+            <Index>7</Index>
+            <Label lang="en">Remote Dimming Level Increment</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>99</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>8</Index>
+            <Label lang="en">Remote Dimming Step Duration</Label>
+            <Type>short</Type>
+            <Default>3</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
             <Index>9</Index>
-            <Label lang="en">Dimming Level Increment</Label>
+            <Label lang="en">Local Dimming Level Increment</Label>
             <Type>short</Type>
             <Default>1</Default>
             <Minimum>1</Minimum>
@@ -83,7 +103,7 @@
 
         <Parameter>
             <Index>10</Index>
-            <Label lang="en">Dimming Step Duration</Label>
+            <Label lang="en">Local Dimming Step Duration</Label>
             <Type>short</Type>
             <Default>3</Default>
             <Minimum>1</Minimum>

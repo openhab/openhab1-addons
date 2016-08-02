@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>WA105DBZ</Model>
+    <Label lang="en">Siren</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>0</Index>
+            <Label lang="en">Siren Strobe Mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">All Enabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Siren Only</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Strobe Only</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Alarm auto stop</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">30 seconds</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">60 seconds</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">120 seconds</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Continuous</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Update Controller</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -150,7 +150,7 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected long getRefreshInterval() {
@@ -158,7 +158,7 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected String getName() {
@@ -166,7 +166,7 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected void execute() {
@@ -230,18 +230,14 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 				GpioPinDigitalOutput output = gpio.provisionDigitalOutputPin(mcp, pin, itemName, provider.getDefaultState(itemName));
 				gpioPins.put(itemName, output);
 
-				logger.debug("Provisioned Digital Output for " + itemName );
+				logger.debug("Provisioned Digital Output for " + itemName);
 			} else if (mode.equals(PinMode.DIGITAL_INPUT))  {
-				
-				 /** Note: MCP23017 has no internal pull-down, so I used pull-up and 
-				 *  inverted the button reading logic with a "not" 
-				 **/
 				GpioPinDigitalInput input = gpio.provisionDigitalInputPin(mcp, pin, itemName, PinPullResistance.OFF);
 				input.setDebounce(20);
 				input.addListener(this);
 				gpioPins.put(itemName, input);
 
-				logger.debug("Provisioned Digital Input for " + itemName );
+				logger.debug("Provisioned Digital Input for " + itemName);
 			} else {
 				throw new IllegalArgumentException("Invalid Pin Mode in config " + mode.name());
 			}
@@ -253,11 +249,11 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 	private void unBindGpioPin(MCP23017BindingProvider provider, String itemName) {
 		GpioPin pin = gpioPins.remove(itemName);
 		gpio.unprovisionPin(pin);
-		logger.debug("unbound " + itemName );
+		logger.debug("unbound " + itemName);
 	}
 	
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
@@ -267,9 +263,8 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 		logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
 		
 		// the configuration is guaranteed not to be null, because the component
-		// definition has the
-		// configuration-policy set to require. If set to 'optional' then the
-		// configuration may be null
+		// definition has the configuration-policy set to require. If set to 
+		// 'optional' then the configuration may be null
 		if (command instanceof OnOffType) {
 			final OnOffType switchCommand = (OnOffType) command;
 			
@@ -286,9 +281,9 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 		}
 	}
 
-	/** Note: MCP23017 has no internal pull-down, so I used pull-up and 
-	 *  inverted the button reading logic with a "not" 
-	 **/
+	/**
+	 * @{inheritDoc}
+	 */
 	@Override
 	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
 		GpioPin pin = event.getPin();
@@ -301,7 +296,7 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {

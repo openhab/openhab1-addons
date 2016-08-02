@@ -11,8 +11,10 @@ package org.openhab.binding.knx.internal.bus;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.IllegalClassException;
@@ -22,6 +24,7 @@ import org.openhab.binding.knx.internal.connection.KNXConnection;
 import org.openhab.binding.knx.internal.connection.KNXConnectionListener;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -65,6 +68,9 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
     private KNXBusReaderScheduler mKNXBusReaderScheduler = new KNXBusReaderScheduler();
 
     private boolean mKNXConnectionEstablished;
+
+    private Map<String, DimmerThread> itemDimmerThreads = Collections
+            .synchronizedMap(new HashMap<String, DimmerThread>());
 
     public void activate(ComponentContext componentContext) {
         logger.debug("Calimero library version {}", Settings.getLibraryVersion());
@@ -220,22 +226,15 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
                     for (Datapoint datapoint : datapoints) {
                         Type type = getType(datapoint, asdu);
                         if (type != null) {
-                            // we need to make sure that we won't send out this event to
-                            // the knx bus again, when receiving it on the openHAB bus
-                            ignoreEventList.add(itemName + type.toString());
-                            logger.trace("Added event (item='{}', type='{}') to the ignore event list", itemName,
-                                    type.toString());
-
-                            if (type instanceof Command && isCommandGA(destination)) {
-                                eventPublisher.postCommand(itemName, (Command) type);
-                            } else if (type instanceof State) {
-                                eventPublisher.postUpdate(itemName, (State) type);
+                            if (type instanceof Command && isStartStopEnabled(itemName, destination, datapoint)) {
+                                if (isDimmerThreadRunning(itemName) && type == IncreaseDecreaseType.INCREASE) {
+                                    stopDimmerThread(itemName);
+                                } else {
+                                    startDimmerThread(destination, itemName, (Command) type);
+                                }
                             } else {
-                                throw new IllegalClassException("Cannot process datapoint of type " + type.toString());
+                                sendTypeToItemButNotToKnx(destination, itemName, type);
                             }
-
-                            logger.trace("Processed event (item='{}', type='{}', destination='{}')", itemName,
-                                    type.toString(), destination.toString());
                         } else {
                             final char[] hexCode = "0123456789ABCDEF".toCharArray();
                             StringBuilder sb = new StringBuilder(2 + asdu.length * 2);
@@ -257,12 +256,46 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
         }
     }
 
-    protected void addBindingProvider(KNXBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
+    private boolean isDimmerThreadRunning(String itemName) {
+        DimmerThread dimmerThread = itemDimmerThreads.get(itemName);
+        return dimmerThread != null && dimmerThread.isRunning();
     }
 
-    protected void removeBindingProvider(KNXBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
+    private void sendTypeToItemButNotToKnx(GroupAddress destination, String itemName, Type type) {
+        // we need to make sure that we won't send out this event to
+        // the knx bus again, when receiving it on the openHAB bus
+        ignoreEventList.add(itemName + type.toString());
+        logger.trace("Added event (item='{}', type='{}') to the ignore event list", itemName, type.toString());
+
+        if (type instanceof Command && isCommandGA(destination)) {
+            eventPublisher.postCommand(itemName, (Command) type);
+        } else if (type instanceof State) {
+            eventPublisher.postUpdate(itemName, (State) type);
+        } else {
+            throw new IllegalClassException("Cannot process datapoint of type " + type.toString());
+        }
+
+        logger.trace("Processed event (item='{}', type='{}', destination='{}')", itemName, type.toString(),
+                destination.toString());
+    }
+
+    private boolean isStopCommand(byte[] asdu) {
+        return asdu.length > 0 && (asdu[0] == 0x00 || asdu[0] == 0x08);
+    }
+
+    private boolean isStartStopEnabled(String itemName, GroupAddress destination, Datapoint datapoint) {
+        for (KNXBindingProvider provider : providers) {
+            Iterable<Datapoint> datapoints = provider.getDatapoints(itemName, destination);
+            if (datapoints != null) {
+                for (Datapoint dp : datapoints) {
+                    if (dp.equals(datapoint)) {
+                        return provider.isStartStopGA(destination);
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /*
@@ -470,4 +503,68 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
         }
         return null;
     }
+
+    private void stopDimmerThread(String item) {
+        DimmerThread dimmerThread = itemDimmerThreads.remove(item);
+        if (dimmerThread != null) {
+            dimmerThread.stopRunning();
+        }
+    }
+
+    private void startDimmerThread(GroupAddress destination, String item, Command type) {
+        logger.trace("Starting new dimmer thread for item {}.", item);
+        DimmerThread dimmerThread = new DimmerThread(destination, item, type);
+        itemDimmerThreads.put(item, dimmerThread);
+        dimmerThread.start();
+    }
+
+    private class DimmerThread extends Thread {
+
+        private static final int MAX_LOOPS = 100;
+
+        private static final long SLEEP_PERIOD_MS = 500;
+
+        private GroupAddress destination;
+        private String item;
+        private Command command;
+        private boolean running = true;
+        private int currentLoop = 0;
+
+        public DimmerThread(GroupAddress destination, String item, Command type) {
+            this.destination = destination;
+            this.item = item;
+            this.command = type;
+            setDaemon(true);
+            setName("DimmerThread");
+        }
+
+        public void stopRunning() {
+            running = false;
+        }
+
+        @Override
+        public void run() {
+            while (mayRun()) {
+                logger.debug("Post new value {} for items {}", command, item);
+                sendTypeToItemButNotToKnx(destination, item, command);
+                eventPublisher.postCommand(item, command);
+                try {
+                    Thread.sleep(SLEEP_PERIOD_MS);
+                } catch (InterruptedException e) {
+                    logger.warn("DimmerThread got interrupted. This should not happen.", e);
+                }
+            }
+            this.running = false;
+            logger.trace("Dimmer thread finished.");
+        }
+
+        public boolean isRunning() {
+            return running;
+        }
+
+        private boolean mayRun() {
+            return running && (currentLoop <= MAX_LOOPS);
+        }
+    }
+
 }
