@@ -20,7 +20,8 @@ public enum ProviderName {
     FORECASTIO,
     WORLDWEATHERONLINE,
     YAHOO,
-    HAMWEATHER;
+    HAMWEATHER,
+    METEOBLUE;
 
     /**
      * Parses the string and returns the ProviderName enum.
@@ -40,6 +41,8 @@ public enum ProviderName {
             return YAHOO;
         } else if (HAMWEATHER.toString().equalsIgnoreCase(name)) {
             return HAMWEATHER;
+        } else if (METEOBLUE.toString().equalsIgnoreCase(name)) {
+            return METEOBLUE;
         } else {
             return null;
         }

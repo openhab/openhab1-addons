@@ -31,5 +31,7 @@ public enum ConverterType {
     MULTI_ID,
     WIND_MPS,
     DOUBLE_3H,
-    PRESSURE_TREND;
+    PRESSURE_TREND,
+    JSON_DATE,
+    FEET;
 }
