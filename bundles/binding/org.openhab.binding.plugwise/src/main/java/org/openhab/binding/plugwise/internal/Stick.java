@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.plugwise.internal;
 
+import static org.openhab.binding.plugwise.internal.PlugwiseBinding.*;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -30,6 +32,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.plugwise.PlugwiseCommandType;
 import org.openhab.binding.plugwise.protocol.AcknowledgeMessage;
+import org.openhab.binding.plugwise.protocol.AnnounceAwakeRequestMessage;
+import org.openhab.binding.plugwise.protocol.BroadcastGroupSwitchResponseMessage;
 import org.openhab.binding.plugwise.protocol.CalibrationResponseMessage;
 import org.openhab.binding.plugwise.protocol.ClockGetResponseMessage;
 import org.openhab.binding.plugwise.protocol.InformationResponseMessage;
@@ -37,12 +41,14 @@ import org.openhab.binding.plugwise.protocol.InitialiseRequestMessage;
 import org.openhab.binding.plugwise.protocol.InitialiseResponseMessage;
 import org.openhab.binding.plugwise.protocol.Message;
 import org.openhab.binding.plugwise.protocol.MessageType;
+import org.openhab.binding.plugwise.protocol.ModuleJoinedNetworkRequestMessage;
 import org.openhab.binding.plugwise.protocol.NodeAvailableMessage;
 import org.openhab.binding.plugwise.protocol.NodeAvailableResponseMessage;
 import org.openhab.binding.plugwise.protocol.PowerBufferResponseMessage;
 import org.openhab.binding.plugwise.protocol.PowerInformationResponseMessage;
 import org.openhab.binding.plugwise.protocol.RealTimeClockGetResponseMessage;
 import org.openhab.binding.plugwise.protocol.RoleCallResponseMessage;
+import org.openhab.binding.plugwise.protocol.SenseReportRequestMessage;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -73,6 +79,9 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
 
     /** Plugwise protocol trailer code (hex) */
     private final static String PROTOCOL_TRAILER = "\r\n";
+
+    /** Matches Plugwise responses into the following groups: protocolHeader command sequence payload CRC */
+    private final static Pattern RESPONSE_PATTERN = Pattern.compile("(.{4})(\\w{4})(\\w{4})(\\w*?)(\\w{4})");
 
     // Serial communication fields
     private String port;
@@ -165,6 +174,19 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
         } else {
             return null;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> List<T> getDevicesByClass(Class<T> deviceClass) {
+
+        List<T> result = new ArrayList<T>();
+        for (PlugwiseDevice device : plugwiseDeviceCache) {
+            if (deviceClass.isAssignableFrom(device.getClass())) {
+                result.add((T) device);
+            }
+        }
+
+        return result;
     }
 
     public String getPort() {
@@ -368,8 +390,6 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
     private void parseAndQueue(ByteBuffer readBuffer) {
         if (readBuffer != null) {
 
-            Pattern RESPONSE_PATTERN = Pattern.compile("(.{4})(\\w{4})(\\w{4})(\\w*?)(\\w{4})");
-
             String response = new String(readBuffer.array(), 0, readBuffer.limit());
             response = StringUtils.chomp(response);
 
@@ -387,57 +407,28 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                     String calculatedCRC = getCRCFromString(command + sequence + payload);
                     if (calculatedCRC.equals(CRC)) {
 
-                        logger.debug("Received message: command:{} sequence:{} payload:{}",
-                                MessageType.forValue(Integer.parseInt(command, 16)), Integer.parseInt(sequence, 16),
-                                payload);
+                        int messageTypeNumber = Integer.parseInt(command, 16);
+                        MessageType messageType = MessageType.forValue(messageTypeNumber);
+                        int sequenceNumber = Integer.parseInt(sequence, 16);
 
-                        Message theMessage;
-                        switch (MessageType.forValue(Integer.parseInt(command, 16))) {
-                            case ACKNOWLEDGEMENT:
-                                theMessage = new AcknowledgeMessage(Integer.parseInt(sequence, 16), payload);
-                                break;
-                            case NODE_AVAILABLE:
-                                theMessage = new NodeAvailableMessage(Integer.parseInt(sequence, 16), payload);
-                                break;
-                            case INITIALISE_RESPONSE:
-                                theMessage = new InitialiseResponseMessage(Integer.parseInt(sequence, 16), payload);
-                                break;
-                            case DEVICE_ROLECALL_RESPONSE:
-                                theMessage = new RoleCallResponseMessage(Integer.parseInt(sequence, 16), payload);
-                                break;
-                            case DEVICE_CALIBRATION_RESPONSE:
-                                theMessage = new CalibrationResponseMessage(Integer.parseInt(sequence, 16), payload);
-                                break;
-                            case DEVICE_INFORMATION_RESPONSE:
-                                theMessage = new InformationResponseMessage(Integer.parseInt(sequence, 16), payload);
-                                break;
-                            case REALTIMECLOCK_GET_RESPONSE:
-                                theMessage = new RealTimeClockGetResponseMessage(Integer.parseInt(sequence, 16),
-                                        payload);
-                                break;
-                            case CLOCK_GET_RESPONSE:
-                                theMessage = new ClockGetResponseMessage(Integer.parseInt(sequence, 16), payload);
-                                break;
-                            case POWER_BUFFER_RESPONSE:
-                                theMessage = new PowerBufferResponseMessage(Integer.parseInt(sequence, 16), payload);
-                                break;
-                            case POWER_INFORMATION_RESPONSE:
-                                theMessage = new PowerInformationResponseMessage(Integer.parseInt(sequence, 16),
-                                        payload);
-                                break;
-                            default:
-                                logger.debug("Received unrecognized command:{}", command);
-                                return;
+                        if (messageType == null) {
+                            logger.debug("Received unrecognized messageTypeNumber:{} command:{} sequence:{} payload:{}",
+                                    messageTypeNumber, command, sequenceNumber, payload);
+                            return;
                         }
 
+                        logger.debug("Received message: command:{} sequence:{} payload:{}", messageType, sequenceNumber,
+                                payload);
+
+                        Message message = createMessage(messageType, command, sequenceNumber, payload);
+
                         try {
-                            if (theMessage instanceof AcknowledgeMessage
-                                    && !((AcknowledgeMessage) theMessage).isExtended()) {
-                                logger.debug("Adding to acknowledgedQueue: {}", theMessage);
-                                acknowledgedQueue.put((AcknowledgeMessage) theMessage);
+                            if (message instanceof AcknowledgeMessage && !((AcknowledgeMessage) message).isExtended()) {
+                                logger.debug("Adding to acknowledgedQueue: {}", message);
+                                acknowledgedQueue.put((AcknowledgeMessage) message);
                             } else {
-                                logger.debug("Adding to receivedQueue: {}", theMessage);
-                                receivedQueue.put(theMessage);
+                                logger.debug("Adding to receivedQueue: {}", message);
+                                receivedQueue.put(message);
                             }
                         } catch (InterruptedException e) {
                             Thread.interrupted();
@@ -457,6 +448,42 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
         }
     }
 
+    private Message createMessage(MessageType messageType, String command, int sequenceNumber, String payLoad) {
+        switch (messageType) {
+            case ACKNOWLEDGEMENT:
+                return new AcknowledgeMessage(sequenceNumber, payLoad);
+            case NODE_AVAILABLE:
+                return new NodeAvailableMessage(sequenceNumber, payLoad);
+            case INITIALISE_RESPONSE:
+                return new InitialiseResponseMessage(sequenceNumber, payLoad);
+            case DEVICE_ROLECALL_RESPONSE:
+                return new RoleCallResponseMessage(sequenceNumber, payLoad);
+            case DEVICE_CALIBRATION_RESPONSE:
+                return new CalibrationResponseMessage(sequenceNumber, payLoad);
+            case DEVICE_INFORMATION_RESPONSE:
+                return new InformationResponseMessage(sequenceNumber, payLoad);
+            case REALTIMECLOCK_GET_RESPONSE:
+                return new RealTimeClockGetResponseMessage(sequenceNumber, payLoad);
+            case CLOCK_GET_RESPONSE:
+                return new ClockGetResponseMessage(sequenceNumber, payLoad);
+            case POWER_BUFFER_RESPONSE:
+                return new PowerBufferResponseMessage(sequenceNumber, payLoad);
+            case POWER_INFORMATION_RESPONSE:
+                return new PowerInformationResponseMessage(sequenceNumber, payLoad);
+            case ANNOUNCE_AWAKE_REQUEST:
+                return new AnnounceAwakeRequestMessage(sequenceNumber, payLoad);
+            case BROADCAST_GROUP_SWITCH_RESPONSE:
+                return new BroadcastGroupSwitchResponseMessage(sequenceNumber, payLoad);
+            case MODULE_JOINED_NETWORK_REQUEST:
+                return new ModuleJoinedNetworkRequestMessage(sequenceNumber, payLoad);
+            case SENSE_REPORT_REQUEST:
+                return new SenseReportRequestMessage(sequenceNumber, payLoad);
+            default:
+                logger.debug("Received unrecognized command: {}", command);
+                return null;
+        }
+    }
+
     @Override
     public boolean processMessage(Message message) {
 
@@ -468,25 +495,23 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                 case ACKNOWLEDGEMENT:
                     if (((AcknowledgeMessage) message).isExtended()) {
 
+                        String cpMAC = ((AcknowledgeMessage) message).getCirclePlusMAC();
                         switch (((AcknowledgeMessage) message).getExtensionCode()) {
 
                             case CIRCLEPLUS:
-                                CirclePlus circlePlus11 = (CirclePlus) getDeviceByMAC(
-                                        ((AcknowledgeMessage) message).getCirclePlusMAC());
-                                if (!((AcknowledgeMessage) message).getCirclePlusMAC().equals("")
-                                        && circlePlus11 == null) {
-                                    circlePlus11 = new CirclePlus(((AcknowledgeMessage) message).getCirclePlusMAC(),
-                                            this);
-                                    plugwiseDeviceCache.add(circlePlus11);
-                                    logger.debug("Added a CirclePlus with MAC {} to the cache", circlePlus11.getMAC());
+                                CirclePlus cp = (CirclePlus) getDeviceByMAC(cpMAC);
+                                if (!cpMAC.equals("") && cp == null) {
+                                    cp = new CirclePlus(cpMAC, this, cpMAC);
+                                    plugwiseDeviceCache.add(cp);
+                                    logger.debug("Added a CirclePlus with MAC {} to the cache", cp.getMAC());
                                 }
-                                circlePlus11.updateInformation();
-                                circlePlus11.calibrate();
-                                circlePlus11.setClock();
+                                cp.updateInformation();
+                                cp.calibrate();
+                                cp.setClock();
 
-                                if (circlePlus11 != null) {
+                                if (cp != null) {
                                     // initiate a "role call" request in the network
-                                    circlePlus11.roleCall(0);
+                                    cp.roleCall(0);
                                 }
                                 break;
                             case TIMEOUT:
@@ -548,21 +573,20 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                     // is the network online?
                     if (((InitialiseResponseMessage) message).isOnline()) {
 
-                        CirclePlus circlePlus = (CirclePlus) getDeviceByMAC(
-                                ((InitialiseResponseMessage) message).getCirclePlusMAC());
-                        if (!((InitialiseResponseMessage) message).getCirclePlusMAC().equals("")
-                                && circlePlus == null) {
-                            circlePlus = new CirclePlus(((InitialiseResponseMessage) message).getCirclePlusMAC(), this);
-                            plugwiseDeviceCache.add(circlePlus);
-                            logger.debug("Added a CirclePlus with MAC {} to the cache", circlePlus.getMAC());
+                        String cpMAC = ((InitialiseResponseMessage) message).getCirclePlusMAC();
+                        CirclePlus cp = (CirclePlus) getDeviceByMAC(cpMAC);
+                        if (!cpMAC.equals("") && cp == null) {
+                            cp = new CirclePlus(cpMAC, this, cpMAC);
+                            plugwiseDeviceCache.add(cp);
+                            logger.debug("Added a CirclePlus with MAC {} to the cache", cp.getMAC());
                         }
-                        circlePlus.updateInformation();
-                        circlePlus.calibrate();
-                        circlePlus.setClock();
+                        cp.updateInformation();
+                        cp.calibrate();
+                        cp.setClock();
 
-                        if (circlePlus != null) {
+                        if (cp != null) {
                             // initiate a "role call" request in the network
-                            circlePlus.roleCall(0);
+                            cp.roleCall(0);
                         }
                     } else {
                         logger.debug("The network is not online. nothing to do here");
@@ -622,27 +646,6 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
         return (String.format("%04X", crc).toUpperCase());
     }
 
-    public static class PowerInformationJob implements Job {
-
-        @Override
-        public void execute(JobExecutionContext context) throws JobExecutionException {
-
-            // get the reference to the Stick
-            JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-            Stick theStick = (Stick) dataMap.get("Stick");
-            String MAC = (String) dataMap.get("MAC");
-
-            if (theStick.isInitialised()) {
-                PlugwiseDevice device = theStick.getDeviceByMAC(MAC);
-                if (device != null) {
-                    if (device.getType().equals(DeviceType.Circle) || device.getType().equals(DeviceType.CirclePlus)) {
-                        ((Circle) device).updateCurrentEnergy();
-                    }
-                }
-            }
-        }
-    }
-
     private static class SendThread extends Thread {
         private final Stick stick;
 
@@ -672,13 +675,14 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
             if (message.getAttempts() < stick.maxRetries) {
                 message.increaseAttempts();
 
-                String packedString = PROTOCOL_HEADER + message.toHexString() + PROTOCOL_TRAILER;
+                String messageHexString = message.toHexString();
+                String packedString = PROTOCOL_HEADER + messageHexString + PROTOCOL_TRAILER;
                 ByteBuffer bytebuffer = ByteBuffer.allocate(packedString.length());
                 bytebuffer.put(packedString.getBytes());
                 bytebuffer.rewind();
 
                 try {
-                    logger.debug("Sending: {} as {}", message, message.toHexString());
+                    logger.debug("Sending: {} as {}", message, messageHexString);
                     stick.outputChannel.write(bytebuffer);
                 } catch (IOException e) {
                     logger.error("Error writing '{}' to serial port {}: {}", packedString, stick.port, e.getMessage());
@@ -778,82 +782,67 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
         }
     }
 
-    public static class PowerBufferJob implements Job {
+    public static abstract class AbstractPlugwiseDeviceJob implements Job {
 
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
-            // get the reference to the Stick
+
             JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-            Stick theStick = (Stick) dataMap.get("Stick");
-            String MAC = (String) dataMap.get("MAC");
+            Stick theStick = (Stick) dataMap.get(STICK_JOB_DATA_KEY);
 
             if (theStick.isInitialised()) {
+                String MAC = (String) dataMap.get(MAC_JOB_DATA_KEY);
                 PlugwiseDevice device = theStick.getDeviceByMAC(MAC);
                 if (device != null) {
-                    if (device.getType().equals(DeviceType.Circle) || device.getType().equals(DeviceType.CirclePlus)) {
-                        ((Circle) device).updateEnergy(false);
-                    }
+                    executeDeviceJob(device);
                 }
+            }
+        }
+
+        abstract protected void executeDeviceJob(PlugwiseDevice device);
+    }
+
+    public static class PowerInformationJob extends AbstractPlugwiseDeviceJob {
+        @Override
+        protected void executeDeviceJob(PlugwiseDevice device) {
+            if (device instanceof Circle) {
+                ((Circle) device).updateCurrentEnergy();
             }
         }
     }
 
-    public static class ClockJob implements Job {
-
+    public static class PowerBufferJob extends AbstractPlugwiseDeviceJob {
         @Override
-        public void execute(JobExecutionContext context) throws JobExecutionException {
-            // get the reference to the Stick
-            JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-            Stick theStick = (Stick) dataMap.get("Stick");
-            String MAC = (String) dataMap.get("MAC");
-
-            if (theStick.isInitialised()) {
-                PlugwiseDevice device = theStick.getDeviceByMAC(MAC);
-                if (device != null) {
-                    if (device.getType().equals(DeviceType.Circle) || device.getType().equals(DeviceType.CirclePlus)) {
-                        ((Circle) device).updateSystemClock();
-                    }
-                }
+        protected void executeDeviceJob(PlugwiseDevice device) {
+            if (device instanceof Circle) {
+                ((Circle) device).updateEnergy(false);
             }
         }
     }
 
-    public static class RealTimeClockJob implements Job {
-
+    public static class ClockJob extends AbstractPlugwiseDeviceJob {
         @Override
-        public void execute(JobExecutionContext context) throws JobExecutionException {
-            // get the reference to the Stick
-            JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-            Stick theStick = (Stick) dataMap.get("Stick");
-            String MAC = (String) dataMap.get("MAC");
-
-            if (theStick.isInitialised()) {
-                PlugwiseDevice device = theStick.getDeviceByMAC(MAC);
-                if (device != null) {
-                    if (device.getType().equals(DeviceType.CirclePlus)) {
-                        ((CirclePlus) device).updateRealTimeClock();
-                    }
-                }
+        protected void executeDeviceJob(PlugwiseDevice device) {
+            if (device instanceof Circle) {
+                ((Circle) device).updateSystemClock();
             }
         }
     }
 
-    public static class InformationJob implements Job {
-
+    public static class RealTimeClockJob extends AbstractPlugwiseDeviceJob {
         @Override
-        public void execute(JobExecutionContext context) throws JobExecutionException {
-            // get the reference to the Stick
-            JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-            Stick theStick = (Stick) dataMap.get("Stick");
-            String MAC = (String) dataMap.get("MAC");
+        protected void executeDeviceJob(PlugwiseDevice device) {
+            if (device instanceof CirclePlus) {
+                ((CirclePlus) device).updateRealTimeClock();
+            }
+        }
+    }
 
-            if (theStick.isInitialised()) {
-                PlugwiseDevice device = theStick.getDeviceByMAC(MAC);
-                if (device != null) {
-                    if (device.getType().equals(DeviceType.Circle) || device.getType().equals(DeviceType.CirclePlus)) {
-                        ((Circle) device).updateInformation();
-                    }
-                }
+    public static class InformationJob extends AbstractPlugwiseDeviceJob {
+        @Override
+        protected void executeDeviceJob(PlugwiseDevice device) {
+            if (device instanceof Circle) {
+                ((Circle) device).updateInformation();
             }
         }
     }
