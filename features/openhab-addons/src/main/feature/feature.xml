@@ -416,13 +416,6 @@
     <configfile finalname="${openhab.conf}/services/novelanheatpump.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/novelanheatpump</configfile>
   </feature>
 
-  <feature name="openhab-binding-onkyo" description="Onkyo Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.onkyo/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/onkyo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/onkyo</configfile>
-  </feature>
-
   <feature name="openhab-binding-openenergymonitor" description="OpenEnergyMonitor Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
