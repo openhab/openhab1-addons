@@ -270,6 +270,14 @@
     <configfile finalname="${openhab.conf}/services/culintertechno.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/culintertechno</configfile>
   </feature>
 
+  <feature name="openhab-binding-irtrans" description="IRTrans Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-binding-tcp</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.irtrans/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/irtrans.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/irtrans</configfile>
+  </feature>
+
   <feature name="openhab-binding-knx" description="KNX Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -486,6 +494,13 @@
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.snmp/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/snmp.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/snmp</configfile>
+  </feature>
+
+  <feature name="openhab-binding-souliss" description="Souliss Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.souliss/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/souliss.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/souliss</configfile>
   </feature>
 
   <feature name="openhab-binding-swegonventilation" description="Swegon Ventilation Binding" version="${project.version}">
