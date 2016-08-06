@@ -416,6 +416,10 @@
         </Product>
         <Product>
             <Reference>
+                <Type>0104</Type>
+                <Id>0001</Id>
+            </Reference>
+            <Reference>
                 <Type>0004</Type>
                 <Id>0001</Id>
             </Reference>
@@ -1261,6 +1265,10 @@
         <Product>
             <Reference>
                 <Type>0002</Type>
+                <Id>0070</Id>
+            </Reference>
+            <Reference>
+                <Type>0202</Type>
                 <Id>0070</Id>
             </Reference>
             <Model>ZW112</Model>
