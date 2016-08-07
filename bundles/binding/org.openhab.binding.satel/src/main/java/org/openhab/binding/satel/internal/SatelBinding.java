@@ -270,7 +270,8 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
             return false;
         }
 
-        while (!Thread.interrupted()) {
+        boolean interrupted = false;
+        while (!interrupted) {
             // wait for command state change
             try {
                 synchronized (command) {
@@ -278,6 +279,7 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
                 }
             } catch (InterruptedException e) {
                 // ignore, we will leave the loop on next interruption state check
+                interrupted = true;
             }
             // check current state
             switch (command.getState()) {

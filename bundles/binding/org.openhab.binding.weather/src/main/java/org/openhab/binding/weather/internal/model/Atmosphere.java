@@ -29,33 +29,40 @@ public class Atmosphere {
             @Provider(name = ProviderName.FORECASTIO, property = "humidity", converter = ConverterType.FRACTION_INTEGER),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "humidity"),
             @Provider(name = ProviderName.YAHOO, property = "atmosphere.humidity"),
-            @Provider(name = ProviderName.HAMWEATHER, property = "humidity") })
+            @Provider(name = ProviderName.HAMWEATHER, property = "humidity"),
+            @Provider(name = ProviderName.METEOBLUE, property = "relative_humidity_avg") })
     private Integer humidity;
 
-    @ProviderMappings({ @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.visibility_km"),
+    @ProviderMappings({
+            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.visibility_km"),
             @Provider(name = ProviderName.FORECASTIO, property = "visibility"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "visibility"),
             @Provider(name = ProviderName.YAHOO, property = "atmosphere.visibility"),
             @Provider(name = ProviderName.HAMWEATHER, property = "visibilityKM") })
     private Double visibility;
 
-    @ProviderMappings({ @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.pressure_mb"),
+    @ProviderMappings({
+            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.pressure_mb"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "pressure"),
             @Provider(name = ProviderName.FORECASTIO, property = "pressure"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "pressure"),
             @Provider(name = ProviderName.YAHOO, property = "atmosphere.pressure"),
-            @Provider(name = ProviderName.HAMWEATHER, property = "pressureMB") })
+            @Provider(name = ProviderName.HAMWEATHER, property = "pressureMB"),
+            @Provider(name = ProviderName.METEOBLUE, property = "pressure_hpa") })
     private Double pressure;
 
     @ProviderMappings({
             @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.pressure_trend", converter = ConverterType.PRESSURE_TREND) })
     private String pressureTrend;
 
-    @ProviderMappings({ @Provider(name = ProviderName.FORECASTIO, property = "ozone") })
+    @ProviderMappings({
+            @Provider(name = ProviderName.FORECASTIO, property = "ozone") })
     private Integer ozone;
 
-    @ProviderMappings({ @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.UV"),
-            @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "uvIndex") })
+    @ProviderMappings({
+            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.UV"),
+            @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "uvIndex"),
+            @Provider(name = ProviderName.METEOBLUE, property = "uv_index") })
     private Integer uvIndex;
 
     /**
