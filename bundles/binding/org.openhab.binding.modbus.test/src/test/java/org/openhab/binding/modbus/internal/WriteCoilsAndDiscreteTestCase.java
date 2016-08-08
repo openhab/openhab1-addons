@@ -183,7 +183,6 @@ public class WriteCoilsAndDiscreteTestCase extends TestCaseSupport {
     }
 
     private void verifyRequests(boolean readRequestExpected) throws Exception {
-        // XXX: for test performance reasons, skipping failing tests
         try {
             ArrayList<ModbusRequest> requests = modbustRequestCaptor.getAllReturnValues();
             int expectedDOIndex = nonZeroOffset ? (itemIndex + 1) : itemIndex;
