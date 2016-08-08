@@ -336,10 +336,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
             if (provider.providesBindingFor(itemName)) {
                 ModbusBindingConfig config = provider.getConfig(itemName);
                 if (config.slaveName.equals(slaveName)) {
-                    boolean state = coils.getBit(config.readIndex);
-                    State newState = config.translateBoolean2State(state);
                     ModbusSlave slave = modbusSlaves.get(slaveName);
-
                     if (config.readIndex >= slave.getLength()) {
                         logger.warn(
                                 "Item '{}' read index '{}' is out-of-bounds. Slave '{}' has been configured "
@@ -348,6 +345,8 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
                         continue;
                     }
 
+                    boolean state = coils.getBit(config.readIndex);
+                    State newState = config.translateBoolean2State(state);
                     if (slave.isUpdateUnchangedItems() || !newState.equals(config.getState())) {
                         eventPublisher.postUpdate(itemName, newState);
                         config.setState(newState);
