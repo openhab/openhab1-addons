@@ -60,7 +60,7 @@ import net.wimpi.modbus.util.SerialParameters;
  * @author Dmitry Krasnov
  * @since 1.1.0
  */
-public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>implements ManagedService {
+public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> implements ManagedService {
 
     private static final long DEFAULT_POLL_INTERVAL = 200;
 
@@ -339,6 +339,15 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
                     boolean state = coils.getBit(config.readIndex);
                     State newState = config.translateBoolean2State(state);
                     ModbusSlave slave = modbusSlaves.get(slaveName);
+
+                    if (config.readIndex >= slave.getLength()) {
+                        logger.warn(
+                                "Item '{}' read index '{}' is out-of-bounds. Slave '{}' has been configured "
+                                        + "to read only '{}' bits. Check your configuration!",
+                                itemName, config.readIndex, slaveName, slave.getLength());
+                        continue;
+                    }
+
                     if (slave.isUpdateUnchangedItems() || !newState.equals(config.getState())) {
                         eventPublisher.postUpdate(itemName, newState);
                         config.setState(newState);
