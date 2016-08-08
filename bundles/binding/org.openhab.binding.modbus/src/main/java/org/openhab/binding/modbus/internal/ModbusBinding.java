@@ -60,7 +60,7 @@ import net.wimpi.modbus.util.SerialParameters;
  * @author Dmitry Krasnov
  * @since 1.1.0
  */
-public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>implements ManagedService {
+public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> implements ManagedService {
 
     private static final long DEFAULT_POLL_INTERVAL = 200;
 
@@ -86,7 +86,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
     private static final String TCP_PREFIX = "tcp";
     private static final String SERIAL_PREFIX = "serial";
 
-    private static final String VALID_CONFIG_KEYS = "connection|id|start|length|type|valuetype|rawdatamultiplier|writemultipleregisters|updateunchangeditems";
+    private static final String VALID_CONFIG_KEYS = "connection|id|start|length|type|valuetype|rawdatamultiplier|writemultipleregisters|updateunchangeditems|postundefinedonreaderror";
     private static final Pattern EXTRACT_MODBUS_CONFIG_PATTERN = Pattern.compile(
             "^(" + TCP_PREFIX + "|" + UDP_PREFIX + "|" + SERIAL_PREFIX + "|)\\.(.*?)\\.(" + VALID_CONFIG_KEYS + ")$");
 
@@ -224,6 +224,33 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
             }
 
             if (slave.isUpdateUnchangedItems() || !newState.equals(config.getState())) {
+                eventPublisher.postUpdate(itemName, newState);
+                config.setState(newState);
+            }
+        }
+    }
+
+    /**
+     * Posts update event to OpenHAB bus for all types of slaves when there is a read error
+     *
+     * @param binding ModbusBinding to get item configuration from BindingProviding
+     * @param error
+     * @param itemName item to update
+     */
+    protected void internalUpdateReadErrorItem(String slaveName, Exception error, String itemName) {
+        State newState = UnDefType.UNDEF;
+        for (ModbusBindingProvider provider : providers) {
+            if (!provider.providesBindingFor(itemName)) {
+                continue;
+            }
+            ModbusBindingConfig config = provider.getConfig(itemName);
+            if (!config.slaveName.equals(slaveName)) {
+                continue;
+            }
+
+            ModbusSlave slave = modbusSlaves.get(slaveName);
+            if (slave.isPostUndefinedOnReadError()
+                    && (slave.isUpdateUnchangedItems() || !newState.equals(config.getState()))) {
                 eventPublisher.postUpdate(itemName, newState);
                 config.setState(newState);
             }
@@ -576,6 +603,8 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
                         modbusSlave.setRawDataMultiplier(Double.valueOf(value.toString()));
                     } else if ("updateunchangeditems".equals(configKey)) {
                         modbusSlave.setUpdateUnchangedItems(Boolean.valueOf(value.toString()));
+                    } else if ("postundefinedonreaderror".equals(configKey)) {
+                        modbusSlave.setPostUndefinedOnReadError(Boolean.valueOf(value.toString()));
                     } else {
                         throw new ConfigurationException(configKey,
                                 "the given configKey '" + configKey + "' is unknown");
