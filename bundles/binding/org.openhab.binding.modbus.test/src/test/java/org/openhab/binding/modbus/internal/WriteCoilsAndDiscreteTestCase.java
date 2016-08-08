@@ -12,7 +12,6 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,16 +36,6 @@ import net.wimpi.modbus.procimg.SimpleDigitalOut;
 
 @RunWith(Parameterized.class)
 public class WriteCoilsAndDiscreteTestCase extends TestCaseSupport {
-
-    /**
-     * Known issues
-     * 1. coil is not written if the binding "state" (BitVector) matches the command already
-     */
-    private void setExpectedFailures() {
-        boolean coilSameAsCommand = coilInitialValue ? Arrays.asList(ONE_COMMANDS).contains(command)
-                : Arrays.asList(ZERO_COMMANDS).contains(command);
-        expectingAssertionError = ((ModbusBindingProvider.TYPE_COIL.equals(type) && coilSameAsCommand));
-    }
 
     private static final int BIT_READ_COUNT = 2;
 
@@ -99,7 +88,6 @@ public class WriteCoilsAndDiscreteTestCase extends TestCaseSupport {
     private int itemIndex;
     private Command command;
     private boolean expectedValue;
-    private boolean expectingAssertionError;
     private boolean coilInitialValue;
     private boolean discreteInitialValue;
 
@@ -132,7 +120,6 @@ public class WriteCoilsAndDiscreteTestCase extends TestCaseSupport {
         this.type = type;
         this.itemIndex = itemIndex;
         this.command = command;
-        setExpectedFailures();
         this.expectedValue = expectedValue;
 
     }
@@ -196,10 +183,6 @@ public class WriteCoilsAndDiscreteTestCase extends TestCaseSupport {
     }
 
     private void verifyRequests(boolean readRequestExpected) throws Exception {
-        // XXX: for test performance reasons, skipping failing tests
-        if (expectingAssertionError) {
-            return;
-        }
         try {
             ArrayList<ModbusRequest> requests = modbustRequestCaptor.getAllReturnValues();
             int expectedDOIndex = nonZeroOffset ? (itemIndex + 1) : itemIndex;
@@ -230,28 +213,15 @@ public class WriteCoilsAndDiscreteTestCase extends TestCaseSupport {
                 assertThat(writeRequest.getReference(), is(equalTo(expectedDOIndex)));
             }
         } catch (AssertionError e) {
-            if (expectingAssertionError) {
-                System.err.println(String.format(
-                        "Expected failure: discreteInitial=%s, coilInitial=%s, nonZeroOffset=%s, command=%s, itemIndex=%d, type=%s",
-                        discreteInitialValue, coilInitialValue, nonZeroOffset, command, itemIndex, type));
-                return;
-            } else {
-                System.err.println(String.format(
-                        "Unexpected assertion error: discreteInitial=%s, coilInitial=%s, nonZeroOffset=%s, command=%s, itemIndex=%d, type=%s",
-                        discreteInitialValue, coilInitialValue, nonZeroOffset, command, itemIndex, type));
-                throw new AssertionError("Got unexpected assertion error", e);
-            }
-        }
-        if (expectingAssertionError) {
             System.err.println(String.format(
-                    "Did not get assertion error (as expected): discreteInitial=%s, coilInitial=%s, nonZeroOffset=%s, command=%s, itemIndex=%d, type=%s",
+                    "Unexpected assertion error: discreteInitial=%s, coilInitial=%s, nonZeroOffset=%s, command=%s, itemIndex=%d, type=%s",
                     discreteInitialValue, coilInitialValue, nonZeroOffset, command, itemIndex, type));
-            throw new AssertionError("Did not get assertion error (as expected)");
-        } else {
-            System.err.println(String.format(
-                    "OK: discreteInitial=%s, coilInitial=%s, nonZeroOffset=%s, command=%s, itemIndex=%d, type=%s",
-                    discreteInitialValue, coilInitialValue, nonZeroOffset, command, itemIndex, type));
+            throw new AssertionError("Got unexpected assertion error", e);
+
         }
+        System.err.println(String.format(
+                "OK: discreteInitial=%s, coilInitial=%s, nonZeroOffset=%s, command=%s, itemIndex=%d, type=%s",
+                discreteInitialValue, coilInitialValue, nonZeroOffset, command, itemIndex, type));
     }
 
     private void initSpi() {
