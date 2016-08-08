@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/aws-java-sdk-core-1.10.69.jar" sourcepath="/home/salsam/openhab2-master3/aws-java-sdk-1.10.69/lib/aws-java-sdk-1.10.69-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/aws-java-sdk-core-1.10.69.jar" />
 	<classpathentry exported="true" kind="lib" path="lib/aws-java-sdk-dynamodb-1.10.69.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/aws-java-sdk-kms-1.10.69.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/aws-java-sdk-s3-1.10.69.jar"/>
