@@ -440,7 +440,7 @@ public abstract class ModbusSlave {
             for (String item : items) {
                 updateItem(binding, item);
             }
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             logger.error("ModbusSlave ({}) error getting response from slave", name, e);
         }
 
