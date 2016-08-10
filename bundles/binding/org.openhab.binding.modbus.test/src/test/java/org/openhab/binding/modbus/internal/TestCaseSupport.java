@@ -148,19 +148,20 @@ public class TestCaseSupport {
         return InetAddress.getLocalHost();
     }
 
-    private static Dictionary<String, Object> addSlave(Dictionary<String, Object> config, String protocol,
+    private static Dictionary<String, Object> addSlave(Dictionary<String, Object> config, ServerType serverType,
             String connection, String slaveName, String type, String valuetype, int slaveId, int start, int length) {
         /**
          * Add a modbus slave to config
          */
-        config.put(String.format("%s.%s.connection", protocol, slaveName), connection);
-        config.put(String.format("%s.%s.id", protocol, slaveName), String.valueOf(slaveId));
-        config.put(String.format("%s.%s.type", protocol, slaveName), type);
+        putSlaveConfigParameter(config, serverType, slaveName, "connection", connection);
+        putSlaveConfigParameter(config, serverType, slaveName, "id", String.valueOf(slaveId));
+        putSlaveConfigParameter(config, serverType, slaveName, "type", type);
+
         if (valuetype != null) {
-            config.put(String.format("%s.%s.valuetype", protocol, slaveName), valuetype);
+            putSlaveConfigParameter(config, serverType, slaveName, "valuetype", valuetype);
         }
-        config.put(String.format("%s.%s.start", protocol, slaveName), String.valueOf(start));
-        config.put(String.format("%s.%s.length", protocol, slaveName), String.valueOf(length));
+        putSlaveConfigParameter(config, serverType, slaveName, "start", String.valueOf(start));
+        putSlaveConfigParameter(config, serverType, slaveName, "length", String.valueOf(length));
         return config;
     }
 
@@ -169,19 +170,14 @@ public class TestCaseSupport {
      */
     protected Dictionary<String, Object> addSlave(Dictionary<String, Object> config, String slaveName, String type,
             String valuetype, int start, int length) throws UnknownHostException {
-        String protocol = null;
         String connection;
         if (ServerType.TCP.equals(serverType)) {
             int port = tcpModbusPort;
-            protocol = "tcp";
             connection = String.format("%s:%d", localAddress().getHostAddress(), port);
         } else if (ServerType.UDP.equals(serverType)) {
             int port = udpModbusPort;
-            protocol = "udp";
             connection = String.format("%s:%d", localAddress().getHostAddress(), port);
         } else if (ServerType.SERIAL.equals(serverType)) {
-            protocol = "serial";
-
             connection = String.format("%s:%d:%d:%s:%s:%s", SERIAL_PARAMETERS_CLIENT.getPortName(),
                     SERIAL_PARAMETERS_CLIENT.getBaudRate(), SERIAL_PARAMETERS_CLIENT.getDatabits(),
                     SERIAL_PARAMETERS_CLIENT.getParityString(), SERIAL_PARAMETERS_CLIENT.getStopbitsString(),
@@ -190,7 +186,20 @@ public class TestCaseSupport {
             throw new NotImplementedException();
         }
 
-        return addSlave(config, protocol, connection, slaveName, type, valuetype, 1, start, length);
+        return addSlave(config, serverType, connection, slaveName, type, valuetype, 1, start, length);
+    }
+
+    protected static void putSlaveConfigParameter(Dictionary<String, Object> config, ServerType serverType,
+            String slaveName, String paramName, String paramValue) {
+        String protocol = null;
+        if (ServerType.TCP.equals(serverType)) {
+            protocol = "tcp";
+        } else if (ServerType.UDP.equals(serverType)) {
+            protocol = "udp";
+        } else if (ServerType.SERIAL.equals(serverType)) {
+            protocol = "serial";
+        }
+        config.put(String.format("%s.%s.%s", protocol, slaveName, paramName), paramValue);
     }
 
     protected static Dictionary<String, Object> newLongPollBindingConfig() {

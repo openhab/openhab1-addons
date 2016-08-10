@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.openhab.binding.modbus.ModbusBindingProvider;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.types.UnDefType;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.osgi.service.cm.ConfigurationException;
 
@@ -70,6 +71,35 @@ public class ErroringQueriesTestCase extends TestCaseSupport {
         waitForConnectionsReceived(1);
         waitForRequests(1);
 
+        verifyNoMoreInteractions(eventPublisher);
+    }
+
+    @Test
+    public void testReadingTooMuchWithPostUndef()
+            throws UnknownHostException, ConfigurationException, BindingConfigParseException {
+        spi.addDigitalIn(new SimpleDigitalIn(true));
+        spi.addDigitalOut(new SimpleDigitalOut(true));
+        spi.addDigitalOut(new SimpleDigitalOut(false));
+
+        binding = new ModbusBinding();
+        Dictionary<String, Object> config = newLongPollBindingConfig();
+        addSlave(config, SLAVE_NAME, ModbusBindingProvider.TYPE_DISCRETE, null, 0, 2);
+        putSlaveConfigParameter(config, serverType, SLAVE_NAME, "postundefinedonreaderror", "true");
+        binding.updated(config);
+
+        // Configure items
+        final ModbusGenericBindingProvider provider = new ModbusGenericBindingProvider();
+        provider.processBindingConfiguration("test.items", new SwitchItem("Item1"),
+                String.format("%s:%d", SLAVE_NAME, 0));
+        binding.setEventPublisher(eventPublisher);
+        binding.addBindingProvider(provider);
+
+        binding.execute();
+
+        waitForConnectionsReceived(1);
+        waitForRequests(1);
+
+        verify(eventPublisher).postUpdate("Item1", UnDefType.UNDEF);
         verifyNoMoreInteractions(eventPublisher);
     }
 
