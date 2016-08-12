@@ -5,43 +5,43 @@
 
     <CommandClasses>
         <Class>
-            <id>0x25</id>             <!-- SWITCH_BINARY -->
-        </Class>
-        <Class>
-            <id>0x86</id>             <!-- VERSION -->
-        </Class>
-        <Class>
-            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
-        </Class>
-        <Class>
-            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
-        </Class>
-        <Class>
-            <id>0x85</id>             <!-- ASSOCIATION -->
+            <id>0x00</id>             <!-- NO_OPERATION -->
         </Class>
         <Class>
             <id>0x20</id>             <!-- BASIC -->
         </Class>
         <Class>
-            <id>0x73</id>             <!-- POWERLEVEL -->
-        </Class>
-        <Class>
-            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
-        </Class>
-        <Class>
-            <id>0x70</id>             <!-- CONFIGURATION -->
-        </Class>
-        <Class>
-            <id>0x00</id>             <!-- NO_OPERATION -->
-        </Class>
-        <Class>
-            <id>0x98</id>             <!-- SECURITY -->
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
         </Class>
         <Class>
             <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
         </Class>
         <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
             <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x98</id>             <!-- SECURITY -->
         </Class>
     </CommandClasses>
 
@@ -70,11 +70,16 @@
         <Parameter>
             <Index>6</Index>
             <Label lang="en">Ringtone to play</Label>
-            <Type>short</Type>
+            <Type>list</Type>
             <Default>0</Default>
             <Minimum>0</Minimum>
             <Maximum>100</Maximum>
+            <WriteOnly>true</WriteOnly>
             <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Stop</Label>
+            </Item>
         </Parameter>
 
         <Parameter>
