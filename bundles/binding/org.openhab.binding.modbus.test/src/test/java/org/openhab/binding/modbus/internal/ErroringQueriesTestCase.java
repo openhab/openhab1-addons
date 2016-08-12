@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.openhab.binding.modbus.ModbusBindingProvider;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.types.UnDefType;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.osgi.service.cm.ConfigurationException;
 
@@ -73,6 +74,35 @@ public class ErroringQueriesTestCase extends TestCaseSupport {
         verifyNoMoreInteractions(eventPublisher);
     }
 
+    @Test
+    public void testReadingTooMuchWithPostUndef()
+            throws UnknownHostException, ConfigurationException, BindingConfigParseException {
+        spi.addDigitalIn(new SimpleDigitalIn(true));
+        spi.addDigitalOut(new SimpleDigitalOut(true));
+        spi.addDigitalOut(new SimpleDigitalOut(false));
+
+        binding = new ModbusBinding();
+        Dictionary<String, Object> config = newLongPollBindingConfig();
+        addSlave(config, SLAVE_NAME, ModbusBindingProvider.TYPE_DISCRETE, null, 0, 2);
+        putSlaveConfigParameter(config, serverType, SLAVE_NAME, "postundefinedonreaderror", "true");
+        binding.updated(config);
+
+        // Configure items
+        final ModbusGenericBindingProvider provider = new ModbusGenericBindingProvider();
+        provider.processBindingConfiguration("test.items", new SwitchItem("Item1"),
+                String.format("%s:%d", SLAVE_NAME, 0));
+        binding.setEventPublisher(eventPublisher);
+        binding.addBindingProvider(provider);
+
+        binding.execute();
+
+        waitForConnectionsReceived(1);
+        waitForRequests(1);
+
+        verify(eventPublisher).postUpdate("Item1", UnDefType.UNDEF);
+        verifyNoMoreInteractions(eventPublisher);
+    }
+
     /**
      * Test case for situation where we try to poll too much data.
      *
@@ -85,15 +115,17 @@ public class ErroringQueriesTestCase extends TestCaseSupport {
      * - two discrete inputs
      *
      * Items are follows
-     * - first coil (Item1) -> no output since coil query should fail
-     * - both coils (Item2 and Item3) -> should have valid output
+     * - first (index=0) coil (Item1) -> no output since coil query should fail
+     * - index=1 discrete (Item2) should be OK
+     * - index=2 discrete (Item3) no event transmitted, item readIndex out of bounds. WARN logged
      */
-    @Test(expected = ExpectedFailure.class)
+    @Test
     public void testReadingTooMuchTwoSlaves()
             throws UnknownHostException, ConfigurationException, BindingConfigParseException {
         spi.addDigitalOut(new SimpleDigitalOut(true));
         spi.addDigitalIn(new SimpleDigitalIn(true));
-        spi.addDigitalIn(new SimpleDigitalIn(false));
+        spi.addDigitalIn(new SimpleDigitalIn(true));
+        spi.addDigitalIn(new SimpleDigitalIn(true));
 
         binding = new ModbusBinding();
         Dictionary<String, Object> config = newLongPollBindingConfig();
@@ -120,13 +152,8 @@ public class ErroringQueriesTestCase extends TestCaseSupport {
 
         verify(eventPublisher, never()).postCommand(null, null);
         verify(eventPublisher, never()).sendCommand(null, null);
-        try {
-            verify(eventPublisher).postUpdate("Item2", OnOffType.ON);
-            verify(eventPublisher).postUpdate("Item3", OnOffType.OFF);
-            verifyNoMoreInteractions(eventPublisher);
-        } catch (AssertionError e) {
-            throw new ExpectedFailure();
-        }
+        verify(eventPublisher).postUpdate("Item2", OnOffType.ON);
+        verifyNoMoreInteractions(eventPublisher);
     }
 
 }

@@ -738,7 +738,7 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
             } else if (state == OnOffValue.ON) {
                 tinkerforgeDevice.setState(true);
             } else {
-                logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+                logger.error("{} unknown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
             }
         } catch (TimeoutException e) {
             TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);

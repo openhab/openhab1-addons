@@ -1856,15 +1856,17 @@ public class KNXCoreTypeMapperTest {
         assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
                 testToType(dpt, new byte[] {}, expectedClass));
 
-        // 3 lsb set to 0 indicate a break. oenHAB doesn't support this state or command
-        assertNull("KNXCoreTypeMapper.toType() should return null (decrease break control needs to be ignored)",
-                testToType(dpt, new byte[] { 0x00 }, expectedClass));
+        // 3 lsb set to 0 indicate a break.
+        Type type = testToType(dpt, new byte[] { 0x00 }, expectedClass);
+        assertEquals("KNXCoreTypeMapper.toType() should return IncreaseDecreaseType.INCREASE for break messages",
+                IncreaseDecreaseType.INCREASE, type);
 
-        // 3 lsb set to 0 indicate a break. oenHAB doesn't support this state or command
-        assertNull("KNXCoreTypeMapper.toType() should return null (increase break control needs to be ignored)",
-                testToType(dpt, new byte[] { 0x08 }, expectedClass));
+        // 3 lsb set to 8 indicate a break.
+        type = testToType(dpt, new byte[] { 0x08 }, expectedClass);
+        assertEquals("KNXCoreTypeMapper.toType() should return IncreaseDecreaseType.INCREASE for break messages",
+                IncreaseDecreaseType.INCREASE, type);
 
-        Type type = testToType(dpt, new byte[] { 0x01 }, expectedClass);
+        type = testToType(dpt, new byte[] { 0x01 }, expectedClass);
         testToDPTValue(dpt, type, valueLow);
 
         type = testToType(dpt, new byte[] { 0x0F }, expectedClass);

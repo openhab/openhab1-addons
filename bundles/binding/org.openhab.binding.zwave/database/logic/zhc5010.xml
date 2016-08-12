@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZHC5010</Model>
+    <Label lang="en">FUGA Wall 4-way Switch + Relay</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x26</id>             <!-- SWITCH_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x5B</id>             <!-- CENTRAL_SCENE -->
+        </Class>
+        <Class>
+            <id>0x60</id>             <!-- MULTI_INSTANCE -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x87</id>             <!-- INDICATOR -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en"> Upper paddle buttons mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Separate mode (toggle mode).</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en"> In pair mode, left side sends on/up commands, right side sends off/do</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en"> Lower paddle buttons mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Separate mode (toggle mode)</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">In pair mode, left side sends on/up commands, right side sends off/dow</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>15</Index>
+            <Label lang="en">Relay mode</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>5</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Relay is disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Relay is controlled by button #1</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Relay is controlled by button #2</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Relay is controlled by button #3</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Relay is controlled by button #4</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Relay is activated for one second</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Send Basic Report (On/Off) when button #1 is used.</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Sends Basic Set (On/Off) when button #1 is used.</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>4</Index>
+            <Label lang="en">Sends Binary Switch Set (On/Off) when button #1 is used</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>5</Index>
+            <Label lang="en">Send Binary Toggle Switch Set when button #1 is used</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>7</Index>
+            <Label lang="en">Send Basic Report (On/Off) when button #2 is used</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>8</Index>
+            <Label lang="en">Sends Basic Set (On/Off) when button #2 is used.</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>9</Index>
+            <Label lang="en">Sends Binary Switch Set (On/Off) when button #2 is used.</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>10</Index>
+            <Label lang="en">Send Binary Toggle Switch Set when button #2 is used.</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>12</Index>
+            <Label lang="en">Send Basic Report (On/Off) when button #3 is used.</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>13</Index>
+            <Label lang="en">Sends Basic Set (On/Off) when button #3 is used.</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>14</Index>
+            <Label lang="en">Sends Binary Switch Set (On/Off) when button #3 is used.</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>15</Index>
+            <Label lang="en">Send Binary Toggle Switch Set when button #3 is used</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>17</Index>
+            <Label lang="en">Send Basic Report (On/Off) when button #4 is used.</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>18</Index>
+            <Label lang="en">Sends Basic Set (On/Off) when button #4 is used</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>19</Index>
+            <Label lang="en">Sends Binary Switch Set (On/Off) when button #4 is used</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>20</Index>
+            <Label lang="en">Send Binary Toggle Switch Set when button #4 is used</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

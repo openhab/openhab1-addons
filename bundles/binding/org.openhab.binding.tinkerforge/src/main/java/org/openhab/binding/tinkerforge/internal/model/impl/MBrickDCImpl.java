@@ -1702,7 +1702,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         } else if (state == OnOffValue.ON) {
             setSpeed(Tools.getShortOpt(ConfigOptsSwitchSpeed.SPEED.toString(), opts), null, null, null);
         } else {
-            logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+            logger.error("{} unknown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
         }
     }
 

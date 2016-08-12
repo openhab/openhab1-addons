@@ -416,6 +416,10 @@
         </Product>
         <Product>
             <Reference>
+                <Type>0104</Type>
+                <Id>0001</Id>
+            </Reference>
+            <Reference>
                 <Type>0004</Type>
                 <Id>0001</Id>
             </Reference>
@@ -1000,6 +1004,10 @@
                 <Id>004A</Id>
             </Reference>
             <Reference>
+                <Type>0202</Type>
+                <Id>004A</Id>
+            </Reference>
+            <Reference>
                 <Type>0102</Type>
                 <Id>004A</Id>
             </Reference>
@@ -1263,6 +1271,10 @@
                 <Type>0002</Type>
                 <Id>0070</Id>
             </Reference>
+            <Reference>
+                <Type>0202</Type>
+                <Id>0070</Id>
+            </Reference>
             <Model>ZW112</Model>
             <Label lang="en">Door/Window Sensor 6</Label>
             <ConfigFile>aeon/zw112.xml</ConfigFile>
@@ -1317,6 +1329,10 @@
             <Reference>
                 <Type>6401</Type>
                 <Id>107</Id>
+            </Reference>
+            <Reference>
+                <Type>6401</Type>
+                <Id>01FD</Id>
             </Reference>
             <Model>CT100</Model>
             <Label lang="en">Z-Wave Thermostat</Label>
@@ -1385,6 +1401,15 @@
     <Manufacturer>
         <Name>Vision Security</Name>
         <Id>0109</Id>
+        <Product>
+            <Reference>
+                <Type>0002</Type>
+                <Id>FFFF</Id>
+            </Reference>
+            <Model>YRD220</Model>
+            <Label lang="en">Vision Real Living Touchscreen Deadbolt</Label>
+            <ConfigFile>vision/yrd220.xml</ConfigFile>
+        </Product>
         <Product>
             <Reference>
                 <Type>200D</Type>
@@ -1758,9 +1783,14 @@
                 <Type>0700</Type>
                 <Id>3000</Id>
             </Reference>
+            <Reference>
+                <Type>0701</Type>
+                <Id>1001</Id>
+            </Reference>
             <Model>FGK101</Model>
             <Label lang="en">Door Opening Sensor</Label>
-            <ConfigFile>fibaro/fgk101.xml</ConfigFile>
+            <ConfigFile VersionMax="2.5">fibaro/fgk101.xml</ConfigFile>
+            <ConfigFile VersionMin="3.2">fibaro/fgk101-32.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
@@ -2054,11 +2084,15 @@
             </Reference>
             <Reference>
                 <Type>0100</Type>
-                <Id>0102</Id>
+                <Id>0101</Id>
             </Reference>
             <Reference>
                 <Type>0100</Type>
-                <Id>0101</Id>
+                <Id>0102</Id>
+            </Reference>
+             <Reference>
+                <Type>0100</Type>
+                <Id>0103</Id>
             </Reference>
             <Model>KFOB</Model>
             <Label lang="en">4 button keyfob</Label>
@@ -2770,6 +2804,10 @@
                 <Type>200</Type>
                 <Id>8031</Id>
             </Reference>
+            <Reference>
+                <Type>202</Type>
+                <Id>8031</Id>
+            </Reference>
             <Model>ZTS-110</Model>
             <Label lang="en">Remotec ZTS-110 Z Wave Thermostat</Label>
             <ConfigFile>remotec/zts110.xml</ConfigFile>
@@ -3157,6 +3195,23 @@
             <Label lang="en">Push Button Deadbolt</Label>
             <ConfigFile>yale/yrd210.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0002</Type>
+                <Id>0000</Id>
+            </Reference>
+            <Reference>
+                <Type>0002</Type>
+                <Id>AA00</Id>
+            </Reference>
+            <Reference>
+                <Type>0002</Type>
+                <Id>FFFF</Id>
+            </Reference>
+            <Model>YRD220</Model>
+            <Label lang="en">Yale Real Living Touchscreen Deadbolt</Label>
+            <ConfigFile>yale/yrd220.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0166</Id>
@@ -3439,6 +3494,15 @@
             <Label lang="en">Battery Motion Sensor</Label>
             <ConfigFile>dlink/dch-z120.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0004</Type>
+                <Id>000A</Id>
+            </Reference>
+            <Model>DCH-Z510</Model>
+            <Label lang="en">Siren</Label>
+            <ConfigFile>dlink/dchz510.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>020e</Id>
@@ -3540,4 +3604,17 @@
             <ConfigFile>homeseer/hsws100.xml</ConfigFile>
         </Product>
     </Manufacturer>
+    <Manufacturer>
+        <Id>0234</Id>
+        <Name>Logic Home Control</Name>
+        <Product>
+            <Reference>
+                <Type>0003</Type>
+                <Id>010A</Id>
+            </Reference>
+            <Model>ZHC5010</Model>
+            <Label lang="en">FUGA Wall 4-way Switch + Relay</Label>
+            <ConfigFile>logic/zhc5010.xml</ConfigFile>
+        </Product>
+    </Manufacturer> 
 </Manufacturers>

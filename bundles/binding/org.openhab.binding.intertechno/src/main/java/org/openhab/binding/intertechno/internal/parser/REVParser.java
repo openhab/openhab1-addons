@@ -38,7 +38,7 @@ public class REVParser extends AbstractIntertechnoParser {
             case 'D':
                 return "FFF1";
             default:
-                throw new BindingConfigParseException("Unkown group: " + group);
+                throw new BindingConfigParseException("Unknown group: " + group);
         }
     }
 
@@ -52,7 +52,7 @@ public class REVParser extends AbstractIntertechnoParser {
             case 3:
                 return "FF1";
             default:
-                throw new BindingConfigParseException("Unkwown sub address: " + sub);
+                throw new BindingConfigParseException("Unknown sub address: " + sub);
         }
     }
 
