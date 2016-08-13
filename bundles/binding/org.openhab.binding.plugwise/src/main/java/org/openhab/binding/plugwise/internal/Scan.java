@@ -42,8 +42,8 @@ public class Scan extends PlugwiseDevice {
     protected int recentLogAddress;
     protected String hardwareVersion;
 
-    public Scan(String mac, Stick stick, String friendly) {
-        super(mac, DeviceType.Scan, friendly);
+    public Scan(String mac, Stick stick, String name) {
+        super(mac, DeviceType.Scan, name);
         this.stick = stick;
     }
 

@@ -129,17 +129,17 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
         }
     }
 
-    protected static Comparator<PlugwiseDevice> plugComparator = new Comparator<PlugwiseDevice>() {
+    protected static Comparator<PlugwiseDevice> macComparator = new Comparator<PlugwiseDevice>() {
         @Override
         public int compare(PlugwiseDevice u1, PlugwiseDevice u2) {
             return u1.getMAC().compareTo(u2.getMAC());
         }
     };
 
-    protected static Comparator<PlugwiseDevice> friendlyPlugComparator = new Comparator<PlugwiseDevice>() {
+    protected static Comparator<PlugwiseDevice> nameComparator = new Comparator<PlugwiseDevice>() {
         @Override
         public int compare(PlugwiseDevice u1, PlugwiseDevice u2) {
-            return u1.getFriendlyName().compareTo(u2.getFriendlyName());
+            return u1.getName().compareTo(u2.getName());
         }
     };
 
@@ -155,8 +155,8 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
     protected PlugwiseDevice getDeviceByMAC(String MAC) {
 
         PlugwiseDevice queryDevice = new PlugwiseDevice(MAC, null, "");
-        Collections.sort(plugwiseDeviceCache, plugComparator);
-        int index = Collections.binarySearch(plugwiseDeviceCache, queryDevice, plugComparator);
+        Collections.sort(plugwiseDeviceCache, macComparator);
+        int index = Collections.binarySearch(plugwiseDeviceCache, queryDevice, macComparator);
         if (index >= 0) {
             return plugwiseDeviceCache.get(index);
         } else {
@@ -167,8 +167,8 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
     protected PlugwiseDevice getDeviceByName(String name) {
 
         PlugwiseDevice queryDevice = new PlugwiseDevice(null, null, name);
-        Collections.sort(plugwiseDeviceCache, friendlyPlugComparator);
-        int index = Collections.binarySearch(plugwiseDeviceCache, queryDevice, friendlyPlugComparator);
+        Collections.sort(plugwiseDeviceCache, nameComparator);
+        int index = Collections.binarySearch(plugwiseDeviceCache, queryDevice, nameComparator);
         if (index >= 0) {
             return plugwiseDeviceCache.get(index);
         } else {

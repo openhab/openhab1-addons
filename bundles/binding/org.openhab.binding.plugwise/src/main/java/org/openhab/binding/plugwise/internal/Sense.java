@@ -40,13 +40,13 @@ public class Sense extends PlugwiseDevice {
     protected float temperature;
     protected boolean triggeredState;
 
-    // System variables as kept/maintained by the Scan hardware
+    // System variables as kept/maintained by the Sense hardware
     protected DateTime stamp;
     protected int recentLogAddress;
     protected String hardwareVersion;
 
-    public Sense(String mac, Stick stick, String friendly) {
-        super(mac, DeviceType.Sense, friendly);
+    public Sense(String mac, Stick stick, String name) {
+        super(mac, DeviceType.Sense, name);
         this.stick = stick;
     }
 

@@ -119,76 +119,75 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
         String plugwiseCommand = null;
         int interval = 60;
 
-        if (bindingConfig != null) {
+        if (bindingConfig == null) {
+            logger.warn("bindingConfig for item '{}' is null", item.getName());
+            return;
+        }
 
-            Matcher actionWithJobMatcher = ACTION_CONFIG_WITH_JOB_PATTERN.matcher(bindingConfig);
-            Matcher statusWithJobMatcher = STATUS_CONFIG_WITH_JOB_PATTERN.matcher(bindingConfig);
-            Matcher actionWithoutJobMatcher = ACTION_CONFIG_WITHOUT_JOB_PATTERN.matcher(bindingConfig);
-            Matcher statusWithoutJobMatcher = STATUS_CONFIG_WITHOUT_JOB_PATTERN.matcher(bindingConfig);
+        Matcher actionWithJobMatcher = ACTION_CONFIG_WITH_JOB_PATTERN.matcher(bindingConfig);
+        Matcher statusWithJobMatcher = STATUS_CONFIG_WITH_JOB_PATTERN.matcher(bindingConfig);
+        Matcher actionWithoutJobMatcher = ACTION_CONFIG_WITHOUT_JOB_PATTERN.matcher(bindingConfig);
+        Matcher statusWithoutJobMatcher = STATUS_CONFIG_WITHOUT_JOB_PATTERN.matcher(bindingConfig);
 
-            if (!actionWithJobMatcher.matches() && !statusWithJobMatcher.matches() && !actionWithoutJobMatcher.matches()
-                    && !statusWithoutJobMatcher.matches()) {
-                throw new BindingConfigParseException( //
-                        "Plugwise binding configuration must consist of either:\n" //
-                                + "* 2 parts: [config=" + statusWithoutJobMatcher + "]\n" //
-                                + "* 3 parts: [config=" + statusWithJobMatcher + "]\n" //
-                                + "           [config=" + actionWithoutJobMatcher + "]\n" //
-                                + "* 4 parts: [config=" + actionWithJobMatcher + "]");
+        if (!actionWithJobMatcher.matches() && !statusWithJobMatcher.matches() && !actionWithoutJobMatcher.matches()
+                && !statusWithoutJobMatcher.matches()) {
+            throw new BindingConfigParseException( //
+                    "Plugwise binding configuration must consist of either:\n" //
+                            + "* 2 parts: [config=" + statusWithoutJobMatcher + "]\n" //
+                            + "* 3 parts: [config=" + statusWithJobMatcher + "]\n" //
+                            + "           [config=" + actionWithoutJobMatcher + "]\n" //
+                            + "* 4 parts: [config=" + actionWithJobMatcher + "]");
+        }
+
+        if (actionWithJobMatcher.matches()) {
+            commandAsString = actionWithJobMatcher.group(1);
+            plugwiseID = actionWithJobMatcher.group(2);
+            plugwiseCommand = actionWithJobMatcher.group(3);
+            interval = Integer.valueOf(actionWithJobMatcher.group(4));
+        } else if (statusWithJobMatcher.matches()) {
+            commandAsString = null;
+            plugwiseID = statusWithJobMatcher.group(1);
+            plugwiseCommand = statusWithJobMatcher.group(2);
+            interval = Integer.valueOf(statusWithJobMatcher.group(3));
+        } else if (actionWithoutJobMatcher.matches()) {
+            commandAsString = actionWithoutJobMatcher.group(1);
+            plugwiseID = actionWithoutJobMatcher.group(2);
+            plugwiseCommand = actionWithoutJobMatcher.group(3);
+            interval = -1;
+        } else if (statusWithoutJobMatcher.matches()) {
+            commandAsString = null;
+            plugwiseID = statusWithoutJobMatcher.group(1);
+            plugwiseCommand = statusWithoutJobMatcher.group(2);
+            interval = -1;
+        }
+
+        PlugwiseCommandType type = PlugwiseCommandType.getCommandType(plugwiseCommand);
+
+        if (PlugwiseCommandType.validateBinding(type, item)) {
+
+            PlugwiseBindingConfigElement newElement = new PlugwiseBindingConfigElement(plugwiseID, type, interval);
+
+            Command command = null;
+            if (commandAsString == null) {
+                // for those configuration strings that are not really linked to a openHAB command we
+                // create a dummy Command to be able to store the configuration information
+                // I have choosen to do that with NumberItems
+                NumberItem dummy = new NumberItem(Integer.toString(counter));
+                command = createCommandFromString(dummy, Integer.toString(counter));
+                counter++;
+                config.put(command, newElement);
             } else {
-                if (actionWithJobMatcher.matches()) {
-                    commandAsString = actionWithJobMatcher.group(1);
-                    plugwiseID = actionWithJobMatcher.group(2);
-                    plugwiseCommand = actionWithJobMatcher.group(3);
-                    interval = Integer.valueOf(actionWithJobMatcher.group(4));
-                } else if (statusWithJobMatcher.matches()) {
-                    commandAsString = null;
-                    plugwiseID = statusWithJobMatcher.group(1);
-                    plugwiseCommand = statusWithJobMatcher.group(2);
-                    interval = Integer.valueOf(statusWithJobMatcher.group(3));
-                } else if (actionWithoutJobMatcher.matches()) {
-                    commandAsString = actionWithoutJobMatcher.group(1);
-                    plugwiseID = actionWithoutJobMatcher.group(2);
-                    plugwiseCommand = actionWithoutJobMatcher.group(3);
-                    interval = -1;
-                } else if (statusWithoutJobMatcher.matches()) {
-                    commandAsString = null;
-                    plugwiseID = statusWithoutJobMatcher.group(1);
-                    plugwiseCommand = statusWithoutJobMatcher.group(2);
-                    interval = -1;
-                }
-
-                PlugwiseCommandType type = PlugwiseCommandType.getCommandType(plugwiseCommand);
-
-                if (PlugwiseCommandType.validateBinding(type, item)) {
-
-                    PlugwiseBindingConfigElement newElement = new PlugwiseBindingConfigElement(plugwiseID, type,
-                            interval);
-
-                    Command command = null;
-                    if (commandAsString == null) {
-                        // for those configuration strings that are not really linked to a openHAB command we
-                        // create a dummy Command to be able to store the configuration information
-                        // I have choosen to do that with NumberItems
-                        NumberItem dummy = new NumberItem(Integer.toString(counter));
-                        command = createCommandFromString(dummy, Integer.toString(counter));
-                        counter++;
-                        config.put(command, newElement);
-                    } else {
-                        command = createCommandFromString(item, commandAsString);
-                        config.put(command, newElement);
-                    }
-                } else {
-                    String validItemType = PlugwiseCommandType.getValidItemTypes(plugwiseCommand);
-                    if (StringUtils.isEmpty(validItemType)) {
-                        throw new BindingConfigParseException("'" + bindingConfig + "' is no valid binding type");
-                    } else {
-                        throw new BindingConfigParseException("'" + bindingConfig
-                                + "' is not bound to a valid item type. Valid item type(s): " + validItemType);
-                    }
-                }
+                command = createCommandFromString(item, commandAsString);
+                config.put(command, newElement);
             }
         } else {
-            return;
+            String validItemType = PlugwiseCommandType.getValidItemTypes(plugwiseCommand);
+            if (StringUtils.isEmpty(validItemType)) {
+                throw new BindingConfigParseException("'" + bindingConfig + "' is no valid binding type");
+            } else {
+                throw new BindingConfigParseException("'" + bindingConfig
+                        + "' is not bound to a valid item type. Valid item type(s): " + validItemType);
+            }
         }
     }
 
@@ -282,9 +281,9 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
     @Override
     public PlugwiseCommandType getPlugwiseCommandType(String itemName, Command someCommand) {
         if (itemName != null && someCommand != null) {
-            PlugwiseBindingConfig aConfig = (PlugwiseBindingConfig) bindingConfigs.get(itemName);
-            if (aConfig != null) {
-                PlugwiseBindingConfigElement element = aConfig.get(someCommand);
+            PlugwiseBindingConfig config = (PlugwiseBindingConfig) bindingConfigs.get(itemName);
+            if (config != null) {
+                PlugwiseBindingConfigElement element = config.get(someCommand);
                 if (element != null) {
                     return element.getCommandType();
                 }
@@ -297,9 +296,9 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
     public List<String> getPlugwiseID(String itemName) {
         List<String> ids = new ArrayList<String>();
         for (String anItem : bindingConfigs.keySet()) {
-            PlugwiseBindingConfig aConfig = (PlugwiseBindingConfig) bindingConfigs.get(anItem);
-            for (Command aCommand : aConfig.keySet()) {
-                PlugwiseBindingConfigElement element = aConfig.get(aCommand);
+            PlugwiseBindingConfig config = (PlugwiseBindingConfig) bindingConfigs.get(anItem);
+            for (Command command : config.keySet()) {
+                PlugwiseBindingConfigElement element = config.get(command);
                 if (element != null) {
                     ids.add(element.getId());
                 }
@@ -309,7 +308,7 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
     }
 
     @Override
-    public Set<String> getItemNames(String PlugwiseID, PlugwiseCommandType type) {
+    public Set<String> getItemNames(String plugwiseID, PlugwiseCommandType type) {
 
         Set<String> result = new HashSet<String>();
 
@@ -323,7 +322,7 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
             for (Command command : pbConfig.keySet()) {
                 PlugwiseBindingConfigElement element = pbConfig.get(command);
 
-                if (element.getCommandType() == type && element.getId().equals(PlugwiseID)) {
+                if (element.getCommandType() == type && element.getId().equals(plugwiseID)) {
                     if (!result.contains(anItem)) {
                         result.add(anItem);
                     }
@@ -379,13 +378,13 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
     }
 
     @Override
-    public List<Command> getCommandsByType(String itemName, Class<? extends Command> class1) {
+    public List<Command> getCommandsByType(String itemName, Class<? extends Command> commandClass) {
         List<Command> commands = new ArrayList<Command>();
-        PlugwiseBindingConfig aConfig = (PlugwiseBindingConfig) bindingConfigs.get(itemName);
-        for (Command aCommand : aConfig.keySet()) {
-            PlugwiseBindingConfigElement element = aConfig.get(aCommand);
-            if (element.getCommandType().getTypeClass().equals(class1)) {
-                commands.add(aCommand);
+        PlugwiseBindingConfig config = (PlugwiseBindingConfig) bindingConfigs.get(itemName);
+        for (Command command : config.keySet()) {
+            PlugwiseBindingConfigElement element = config.get(command);
+            if (element.getCommandType().getTypeClass().equals(commandClass)) {
+                commands.add(command);
             }
         }
         return commands;
@@ -394,9 +393,9 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
     @Override
     public List<Command> getAllCommands(String itemName) {
         List<Command> commands = new ArrayList<Command>();
-        PlugwiseBindingConfig aConfig = (PlugwiseBindingConfig) bindingConfigs.get(itemName);
-        for (Command aCommand : aConfig.keySet()) {
-            commands.add(aCommand);
+        PlugwiseBindingConfig config = (PlugwiseBindingConfig) bindingConfigs.get(itemName);
+        for (Command command : config.keySet()) {
+            commands.add(command);
         }
         return commands;
     }

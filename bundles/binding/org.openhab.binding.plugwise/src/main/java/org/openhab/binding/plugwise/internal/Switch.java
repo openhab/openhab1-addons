@@ -36,9 +36,6 @@ public class Switch extends PlugwiseDevice {
     protected boolean leftButtonState;
     protected boolean rightButtonState;
 
-    // System variables as kept/maintained by the Scan hardware
-    protected String hardwareVersion;
-
     public Switch(String mac, Stick stick, String friendly) {
         super(mac, DeviceType.Switch, friendly);
         this.stick = stick;

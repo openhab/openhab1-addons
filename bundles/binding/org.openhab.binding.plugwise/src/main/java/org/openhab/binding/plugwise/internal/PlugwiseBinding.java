@@ -140,7 +140,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                 logger.error(
                         "Plugwise can not add device with name: {} and MAC address: {}, "
                                 + "the same MAC address is already used by device with name: {}",
-                        deviceName, MAC, stick.getDeviceByMAC(MAC).friendlyName);
+                        deviceName, MAC, stick.getDeviceByMAC(MAC).name);
             } else {
                 String deviceType = (String) config.get(deviceName + ".type");
                 PlugwiseDevice device = createPlugwiseDevice(deviceType, MAC, deviceName);
@@ -189,7 +189,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 
     private Set<String> getDeviceNamesFromConfig(Dictionary<String, ?> config) {
 
-        Set<String> deviceNames = new HashSet<String>();
+        Set<String> names = new HashSet<String>();
 
         Enumeration<String> keys = config.keys();
         while (keys.hasMoreElements()) {
@@ -210,11 +210,11 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
             matcher.reset();
             matcher.find();
 
-            String plugwiseID = matcher.group(1);
-            deviceNames.add(plugwiseID);
+            String name = matcher.group(1);
+            names.add(name);
         }
 
-        return deviceNames;
+        return names;
     }
 
     private void validateKeyPatternsInConfig(Dictionary<String, ?> config) {
@@ -263,7 +263,8 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                     }
                 }
             } catch (SchedulerException e) {
-                logger.error("An exception occurred while getting a reference to the Quartz Scheduler");
+                logger.error("An exception occurred while getting a reference to the Quartz Scheduler ({})",
+                        e.getMessage());
             }
 
             stick.close();
@@ -361,8 +362,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 
                 Set<String> qualifiedItems = provider.getItemNames(MAC, ctype);
                 // Make sure we also capture those devices that were pre-defined with a friendly name in a .cfg or alike
-                Set<String> qualifiedItemsFriendly = provider.getItemNames(stick.getDevice(MAC).getFriendlyName(),
-                        ctype);
+                Set<String> qualifiedItemsFriendly = provider.getItemNames(stick.getDevice(MAC).getName(), ctype);
                 qualifiedItems.addAll(qualifiedItemsFriendly);
 
                 Type type = null;
@@ -426,7 +426,8 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                 Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
                 scheduleJobs(sched);
             } catch (SchedulerException e) {
-                logger.error("An exception occurred while getting a reference to the Quartz Scheduler");
+                logger.error("An exception occurred while getting a reference to the Quartz Scheduler ({})",
+                        e.getMessage());
             }
         }
     }

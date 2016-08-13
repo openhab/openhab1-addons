@@ -18,8 +18,8 @@ package org.openhab.binding.plugwise.internal;
  */
 public class Stealth extends Circle {
 
-    public Stealth(String mac, Stick stick, String friendly) {
-        super(mac, stick, friendly);
+    public Stealth(String mac, Stick stick, String name) {
+        super(mac, stick, name);
         type = DeviceType.Stealth;
     }
 

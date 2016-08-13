@@ -36,12 +36,12 @@ public class PlugwiseDevice implements Comparable {
 
     protected String MAC;
     protected DeviceType type;
-    protected String friendlyName;
+    protected String name;
 
-    public PlugwiseDevice(String mac, DeviceType typed, String friendly) {
+    public PlugwiseDevice(String mac, DeviceType type, String name) {
         MAC = mac;
-        type = typed;
-        friendlyName = friendly;
+        this.type = type;
+        this.name = name;
     }
 
     public String getMAC() {
@@ -52,8 +52,8 @@ public class PlugwiseDevice implements Comparable {
         return type;
     }
 
-    public String getFriendlyName() {
-        return friendlyName;
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -64,8 +64,7 @@ public class PlugwiseDevice implements Comparable {
     /**
      *
      * Each Plugwise device needs to know how process the message that are meant for it. Extending classes therefore
-     * have to Override this
-     * method and extend it to include new message types that are relevant for that device class
+     * have to Override this method and extend it to include new message types that are relevant for that device class
      *
      * @param message to process
      * @return
