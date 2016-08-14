@@ -8,10 +8,9 @@
  */
 package org.openhab.binding.plugwise.protocol;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.joda.time.DateTime;
 
 /**
  * Broadcast group switch response
@@ -25,7 +24,7 @@ public class BroadcastGroupSwitchResponseMessage extends Message {
 
     private int portMask;
     private boolean powerState;
-    private DateTime dateTimeReceived = DateTime.now();
+    private Calendar dateTimeReceived = Calendar.getInstance();
 
     public BroadcastGroupSwitchResponseMessage(int sequenceNumber, String payLoad) {
         super(sequenceNumber, payLoad);
@@ -45,7 +44,7 @@ public class BroadcastGroupSwitchResponseMessage extends Message {
         return powerState;
     }
 
-    public DateTime getDateTimeReceived() {
+    public Calendar getDateTimeReceived() {
         return dateTimeReceived;
     }
 

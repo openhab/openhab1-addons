@@ -8,8 +8,8 @@
  */
 package org.openhab.binding.plugwise.internal;
 
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.util.Calendar;
+
 import org.openhab.binding.plugwise.PlugwiseCommandType;
 import org.openhab.binding.plugwise.protocol.AnnounceAwakeRequestMessage;
 import org.openhab.binding.plugwise.protocol.AnnounceAwakeRequestMessage.AwakeReason;
@@ -28,8 +28,6 @@ import org.openhab.binding.plugwise.protocol.ModuleJoinedNetworkRequestMessage;
  * @since 1.9.0
  */
 public class Switch extends PlugwiseDevice {
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     protected Stick stick;
 
@@ -90,7 +88,7 @@ public class Switch extends PlugwiseDevice {
     public boolean processMessage(Message message) {
         if (message != null) {
 
-            String timestamp;
+            Calendar timestamp;
 
             switch (message.getType()) {
                 case ANNOUNCE_AWAKE_REQUEST:
@@ -98,29 +96,26 @@ public class Switch extends PlugwiseDevice {
                     if (awakeReason == AwakeReason.Maintenance || awakeReason == AwakeReason.WakeupButton) {
                         updateInformation();
                     }
-                    timestamp = DATE_TIME_FORMATTER
-                            .print(((AnnounceAwakeRequestMessage) message).getDateTimeReceived());
+                    timestamp = ((AnnounceAwakeRequestMessage) message).getDateTimeReceived();
                     postUpdate(MAC, PlugwiseCommandType.LASTSEEN, timestamp);
                     return true;
 
                 case BROADCAST_GROUP_SWITCH_RESPONSE:
-                    timestamp = DATE_TIME_FORMATTER
-                            .print(((BroadcastGroupSwitchResponseMessage) message).getDateTimeReceived());
+                    timestamp = ((BroadcastGroupSwitchResponseMessage) message).getDateTimeReceived();
                     if (((BroadcastGroupSwitchResponseMessage) message).getPortMask() == 1) {
                         leftButtonState = ((BroadcastGroupSwitchResponseMessage) message).getPowerState();
-                        postUpdate(MAC, PlugwiseCommandType.LEFTBUTTONSTATE, leftButtonState ? "ON" : "OFF");
+                        postUpdate(MAC, PlugwiseCommandType.LEFTBUTTONSTATE, leftButtonState);
                         postUpdate(MAC, PlugwiseCommandType.LEFTBUTTONSTATESTAMP, timestamp);
                     } else if (((BroadcastGroupSwitchResponseMessage) message).getPortMask() == 2) {
                         rightButtonState = ((BroadcastGroupSwitchResponseMessage) message).getPowerState();
-                        postUpdate(MAC, PlugwiseCommandType.RIGHTBUTTONSTATE, rightButtonState ? "ON" : "OFF");
+                        postUpdate(MAC, PlugwiseCommandType.RIGHTBUTTONSTATE, rightButtonState);
                         postUpdate(MAC, PlugwiseCommandType.RIGHTBUTTONSTATESTAMP, timestamp);
                     }
                     postUpdate(MAC, PlugwiseCommandType.LASTSEEN, timestamp);
                     return true;
 
                 case MODULE_JOINED_NETWORK_REQUEST:
-                    timestamp = DATE_TIME_FORMATTER
-                            .print(((ModuleJoinedNetworkRequestMessage) message).getDateTimeReceived());
+                    timestamp = ((ModuleJoinedNetworkRequestMessage) message).getDateTimeReceived();
                     postUpdate(MAC, PlugwiseCommandType.LASTSEEN, timestamp);
                     return true;
 

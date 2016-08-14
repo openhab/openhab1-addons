@@ -8,10 +8,9 @@
  */
 package org.openhab.binding.plugwise.protocol;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.joda.time.DateTime;
 
 /**
  * Module joined network request. Sent when a SED (re)joins the network.
@@ -24,7 +23,7 @@ public class ModuleJoinedNetworkRequestMessage extends Message {
 
     private static final Pattern REQUEST_PATTERN = Pattern.compile("(\\w{16})");
 
-    private DateTime dateTimeReceived = DateTime.now();
+    private Calendar dateTimeReceived = Calendar.getInstance();
 
     public ModuleJoinedNetworkRequestMessage(int sequenceNumber, String payLoad) {
         super(sequenceNumber, payLoad);
@@ -36,7 +35,7 @@ public class ModuleJoinedNetworkRequestMessage extends Message {
         return payLoad;
     }
 
-    public DateTime getDateTimeReceived() {
+    public Calendar getDateTimeReceived() {
         return dateTimeReceived;
     }
 

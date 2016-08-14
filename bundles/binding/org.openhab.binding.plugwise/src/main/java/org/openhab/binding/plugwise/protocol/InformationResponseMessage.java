@@ -8,11 +8,11 @@
  */
 package org.openhab.binding.plugwise.protocol;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
 import org.openhab.binding.plugwise.internal.PlugwiseDevice.DeviceType;
 
 /**
@@ -36,7 +36,7 @@ public class InformationResponseMessage extends Message {
     private int firmwareVersion;
     private DeviceType deviceType;
 
-    private DateTime dateTimeReceived = DateTime.now();
+    private Calendar dateTimeReceived = Calendar.getInstance();
 
     public InformationResponseMessage(int sequenceNumber, String payLoad) {
         super(sequenceNumber, payLoad);
@@ -84,7 +84,7 @@ public class InformationResponseMessage extends Message {
         return payLoad;
     }
 
-    public DateTime getDateTimeReceived() {
+    public Calendar getDateTimeReceived() {
         return dateTimeReceived;
     }
 

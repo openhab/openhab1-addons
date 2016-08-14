@@ -41,8 +41,6 @@ import org.openhab.binding.plugwise.protocol.PowerInformationResponseMessage;
  */
 public class Circle extends PlugwiseDevice {
 
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
-
     private static final float PULSE_FACTOR = 2.1324759f;
 
     protected Stick stick;
@@ -207,7 +205,7 @@ public class Circle extends PlugwiseDevice {
                     hertz = ((InformationResponseMessage) message).getHertz();
                     hardwareVersion = ((InformationResponseMessage) message).getHardwareVersion();
 
-                    postUpdate(MAC, PlugwiseCommandType.CURRENTSTATE, powerState ? "ON" : "OFF");
+                    postUpdate(MAC, PlugwiseCommandType.CURRENTSTATE, powerState);
                     return true;
 
                 case POWER_INFORMATION_RESPONSE:
@@ -220,7 +218,7 @@ public class Circle extends PlugwiseDevice {
                         return true;
                     }
                     postUpdate(MAC, PlugwiseCommandType.CURRENTPOWER, watt);
-                    postUpdate(MAC, PlugwiseCommandType.CURRENTPOWERSTAMP, DATE_TIME_FORMATTER.print(one.getTime()));
+                    postUpdate(MAC, PlugwiseCommandType.CURRENTPOWERSTAMP, one.getTime());
                     return true;
 
                 case POWER_BUFFER_RESPONSE:
@@ -239,8 +237,7 @@ public class Circle extends PlugwiseDevice {
 
                     if (lastHour != null) {
                         postUpdate(MAC, PlugwiseCommandType.LASTHOURCONSUMPTION, pulseTokWh(lastHour));
-                        postUpdate(MAC, PlugwiseCommandType.LASTHOURCONSUMPTIONSTAMP,
-                                DATE_TIME_FORMATTER.print(lastHour.getTime()));
+                        postUpdate(MAC, PlugwiseCommandType.LASTHOURCONSUMPTIONSTAMP, lastHour.getTime());
                     }
 
                     return true;

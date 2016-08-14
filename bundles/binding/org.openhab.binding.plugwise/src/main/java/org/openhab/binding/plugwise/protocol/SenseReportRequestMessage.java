@@ -8,10 +8,9 @@
  */
 package org.openhab.binding.plugwise.protocol;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.joda.time.DateTime;
 
 /**
  * Sense report request
@@ -25,7 +24,7 @@ public class SenseReportRequestMessage extends Message {
 
     private float humidity;
     private float temperature;
-    private DateTime dateTimeReceived = DateTime.now();
+    private Calendar dateTimeReceived = Calendar.getInstance();
 
     public SenseReportRequestMessage(int sequenceNumber, String payLoad) {
         super(sequenceNumber, payLoad);
@@ -45,7 +44,7 @@ public class SenseReportRequestMessage extends Message {
         return temperature;
     }
 
-    public DateTime getDateTimeReceived() {
+    public Calendar getDateTimeReceived() {
         return dateTimeReceived;
     }
 

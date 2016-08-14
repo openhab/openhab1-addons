@@ -14,19 +14,26 @@ import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.IllegalClassException;
+import org.joda.time.DateTime;
 import org.openhab.binding.plugwise.PlugwiseBindingProvider;
 import org.openhab.binding.plugwise.PlugwiseCommandType;
 import org.openhab.binding.plugwise.internal.PlugwiseGenericBindingProvider.PlugwiseBindingConfigElement;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DateTimeType;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -89,7 +96,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
             setupNonStickDevices(config);
             setProperlyConfigured(true);
         } else {
-            logger.error("Plugwise needs at least one Stick in order to operate");
+            logger.warn("Plugwise needs at least one Stick in order to operate");
         }
 
     }
@@ -103,18 +110,18 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
         }
 
         Stick stick = new Stick(port, this);
-        logger.info("Plugwise added Stick connected to serial port {}", port);
+        logger.debug("Plugwise added Stick connected to serial port {}", port);
 
         String interval = (String) config.get("stick.interval");
         if (interval != null) {
             stick.setInterval(Integer.valueOf(interval));
-            logger.info("Setting the interval to send ZigBee PDUs to {} ms", interval);
+            logger.debug("Setting the interval to send ZigBee PDUs to {} ms", interval);
         }
 
         String retries = (String) config.get("stick.retries");
         if (retries != null) {
             stick.setRetries(Integer.valueOf(retries));
-            logger.info("Setting the maximum number of attempts to send a message to ", retries);
+            logger.debug("Setting the maximum number of attempts to send a message to ", retries);
         }
 
         return stick;
@@ -135,9 +142,9 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 
             String MAC = (String) config.get(deviceName + ".mac");
             if (MAC == null || MAC.equals("")) {
-                logger.error("Plugwise can not add device with name {} without a MAC address", deviceName);
+                logger.warn("Plugwise can not add device with name {} without a MAC address", deviceName);
             } else if (stick.getDeviceByMAC(MAC) != null) {
-                logger.error(
+                logger.warn(
                         "Plugwise can not add device with name: {} and MAC address: {}, "
                                 + "the same MAC address is already used by device with name: {}",
                         deviceName, MAC, stick.getDeviceByMAC(MAC).name);
@@ -161,25 +168,25 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
         if ("circleplus".equals(deviceType) || "circleplus".equals(deviceName)) {
             // for backwards compatibility a device with the name 'circleplus' always creates a CirclePlus
             device = new CirclePlus(MAC, stick, deviceName);
-            logger.info("Plugwise created Circle+ with name: {} and MAC address: {}", deviceName, MAC);
+            logger.debug("Plugwise created Circle+ with name: {} and MAC address: {}", deviceName, MAC);
         } else if ("circle".equals(deviceType) || deviceType == null) {
             // for backwards compatibility a device without a deviceType always creates a Circle
             device = new Circle(MAC, stick, deviceName);
-            logger.info("Plugwise created Circle with name: {} and MAC address: {}", deviceName, MAC);
+            logger.debug("Plugwise created Circle with name: {} and MAC address: {}", deviceName, MAC);
         } else if ("scan".equals(deviceType)) {
             device = new Scan(MAC, stick, deviceName);
-            logger.info("Plugwise created Scan with name: {} and MAC address: {}", deviceName, MAC);
+            logger.debug("Plugwise created Scan with name: {} and MAC address: {}", deviceName, MAC);
         } else if ("sense".equals(deviceType)) {
             device = new Sense(MAC, stick, deviceName);
-            logger.info("Plugwise created Sense with name: {} and MAC address: {}", deviceName, MAC);
+            logger.debug("Plugwise created Sense with name: {} and MAC address: {}", deviceName, MAC);
         } else if ("stealth".equals(deviceType)) {
             device = new Stealth(MAC, stick, deviceName);
-            logger.info("Plugwise created Stealth with name: {} and MAC address: {}", deviceName, MAC);
+            logger.debug("Plugwise created Stealth with name: {} and MAC address: {}", deviceName, MAC);
         } else if ("switch".equals(deviceType)) {
             device = new Switch(MAC, stick, deviceName);
-            logger.info("Plugwise created Switch with name: {} and MAC address: {}", deviceName, MAC);
+            logger.debug("Plugwise created Switch with name: {} and MAC address: {}", deviceName, MAC);
         } else {
-            logger.error(
+            logger.warn(
                     "Plugwise can not create device with name: '{}' because it has an unknown device type: '{}'. "
                             + "Known device types are: circle|circleplus|scan|sense|stealth|switch",
                     deviceName, deviceType);
@@ -232,7 +239,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 
             Matcher matcher = EXTRACT_PLUGWISE_CONFIG_PATTERN.matcher(key);
             if (!matcher.matches()) {
-                logger.error("Given plugwise-config-key '" + key
+                logger.warn("Given plugwise-config-key '" + key
                         + "' does not follow the expected pattern '<PlugwiseId>.<mac|type|port|interval>'");
                 continue;
             }
@@ -365,17 +372,17 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                 Set<String> qualifiedItemsFriendly = provider.getItemNames(stick.getDevice(MAC).getName(), ctype);
                 qualifiedItems.addAll(qualifiedItemsFriendly);
 
-                Type type = null;
+                State type = null;
                 try {
-                    type = createStateForType(ctype, value.toString());
+                    type = createStateForType(ctype, value);
                 } catch (BindingConfigParseException e) {
                     logger.error("Error parsing a value {} to a state variable of type {}", value.toString(),
                             ctype.getTypeClass().toString());
                 }
 
-                for (String anItem : qualifiedItems) {
+                for (String item : qualifiedItems) {
                     if (type instanceof State) {
-                        eventPublisher.postUpdate(anItem, (State) type);
+                        eventPublisher.postUpdate(item, type);
                     } else {
                         throw new IllegalClassException(
                                 "Cannot process update of type " + (type == null ? "null" : type.toString()));
@@ -386,16 +393,28 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
     }
 
     @SuppressWarnings("unchecked")
-    private Type createStateForType(PlugwiseCommandType ctype, String value) throws BindingConfigParseException {
+    private State createStateForType(PlugwiseCommandType ctype, Object value) throws BindingConfigParseException {
 
         Class<? extends Type> typeClass = ctype.getTypeClass();
+
+        // the logic below covers all possible command types and value types
+        if (typeClass == DecimalType.class && value instanceof Float) {
+            return new DecimalType((Float) value);
+        } else if (typeClass == OnOffType.class && value instanceof Boolean) {
+            return ((Boolean) value).booleanValue() ? OnOffType.ON : OnOffType.OFF;
+        } else if (typeClass == DateTimeType.class && value instanceof Calendar) {
+            return new DateTimeType((Calendar) value);
+        } else if (typeClass == DateTimeType.class && value instanceof DateTime) {
+            return new DateTimeType(((DateTime) value).toCalendar(Locale.getDefault()));
+        } else if (typeClass == StringType.class && value instanceof String) {
+            return new StringType((String) value);
+        }
+
+        logger.debug("less efficient (generic) logic is applied for converting a Plugwise value "
+                + "(command type class: {}, value class {})", typeClass.getName(), value.getClass().getName());
         List<Class<? extends State>> stateTypeList = new ArrayList<Class<? extends State>>();
-
         stateTypeList.add((Class<? extends State>) typeClass);
-
-        State state = TypeParser.parseState(stateTypeList, value);
-
-        return state;
+        return TypeParser.parseState(stateTypeList, value.toString());
     }
 
     /**
@@ -459,7 +478,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                                 // a circleplus has been added/detected and it is not what is in the binding config
                                 PlugwiseDevice device = new Circle(element.getId(), stick, element.getId());
                                 stick.plugwiseDeviceCache.add(device);
-                                logger.info("Plugwise added Circle with MAC address: {}", element.getId());
+                                logger.debug("Plugwise added Circle with MAC address: {}", element.getId());
                             }
                         } else {
                             logger.warn(
@@ -496,7 +515,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                         try {
                             scheduler.scheduleJob(job, trigger);
                         } catch (SchedulerException e) {
-                            logger.error("An exception occurred while scheduling a Quartz Job");
+                            logger.error("An exception occurred while scheduling a Plugwise Quartz Job", e);
                         }
                     }
                 } else {

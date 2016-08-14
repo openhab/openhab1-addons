@@ -8,12 +8,11 @@
  */
 package org.openhab.binding.plugwise.protocol;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.joda.time.DateTime;
 
 /**
  * Announce awake request message
@@ -64,7 +63,7 @@ public class AnnounceAwakeRequestMessage extends Message {
 
     private AwakeReason awakeReason;
 
-    private DateTime dateTimeReceived = DateTime.now();
+    private Calendar dateTimeReceived = Calendar.getInstance();
 
     public AnnounceAwakeRequestMessage(int sequenceNumber, String payLoad) {
         super(sequenceNumber, payLoad);
@@ -75,7 +74,7 @@ public class AnnounceAwakeRequestMessage extends Message {
         return awakeReason;
     }
 
-    public DateTime getDateTimeReceived() {
+    public Calendar getDateTimeReceived() {
         return dateTimeReceived;
     }
 

@@ -8,9 +8,9 @@
  */
 package org.openhab.binding.plugwise.internal;
 
+import java.util.Calendar;
+
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.openhab.binding.plugwise.PlugwiseCommandType;
 import org.openhab.binding.plugwise.protocol.AnnounceAwakeRequestMessage;
 import org.openhab.binding.plugwise.protocol.AnnounceAwakeRequestMessage.AwakeReason;
@@ -31,8 +31,6 @@ import org.openhab.binding.plugwise.protocol.SenseReportRequestMessage;
  * @since 1.9.0
  */
 public class Sense extends PlugwiseDevice {
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     protected Stick stick;
 
@@ -79,7 +77,7 @@ public class Sense extends PlugwiseDevice {
     public boolean processMessage(Message message) {
         if (message != null) {
 
-            String timestamp;
+            Calendar timestamp;
 
             switch (message.getType()) {
                 case ANNOUNCE_AWAKE_REQUEST:
@@ -87,16 +85,14 @@ public class Sense extends PlugwiseDevice {
                     if (awakeReason == AwakeReason.Maintenance || awakeReason == AwakeReason.WakeupButton) {
                         updateInformation();
                     }
-                    timestamp = DATE_TIME_FORMATTER
-                            .print(((AnnounceAwakeRequestMessage) message).getDateTimeReceived());
+                    timestamp = ((AnnounceAwakeRequestMessage) message).getDateTimeReceived();
                     postUpdate(MAC, PlugwiseCommandType.LASTSEEN, timestamp);
                     return true;
 
                 case BROADCAST_GROUP_SWITCH_RESPONSE:
                     triggeredState = ((BroadcastGroupSwitchResponseMessage) message).getPowerState();
-                    timestamp = DATE_TIME_FORMATTER
-                            .print(((BroadcastGroupSwitchResponseMessage) message).getDateTimeReceived());
-                    postUpdate(MAC, PlugwiseCommandType.TRIGGERED, triggeredState ? "ON" : "OFF");
+                    timestamp = ((BroadcastGroupSwitchResponseMessage) message).getDateTimeReceived();
+                    postUpdate(MAC, PlugwiseCommandType.TRIGGERED, triggeredState);
                     postUpdate(MAC, PlugwiseCommandType.TRIGGEREDSTAMP, timestamp);
                     postUpdate(MAC, PlugwiseCommandType.LASTSEEN, timestamp);
                     return true;
@@ -107,20 +103,19 @@ public class Sense extends PlugwiseDevice {
                                     .plusMinutes(((InformationResponseMessage) message).getMinutes());
                     recentLogAddress = ((InformationResponseMessage) message).getLogAddress();
                     hardwareVersion = ((InformationResponseMessage) message).getHardwareVersion();
-                    timestamp = DATE_TIME_FORMATTER.print(((InformationResponseMessage) message).getDateTimeReceived());
+                    timestamp = ((InformationResponseMessage) message).getDateTimeReceived();
                     postUpdate(MAC, PlugwiseCommandType.LASTSEEN, timestamp);
                     return true;
 
                 case MODULE_JOINED_NETWORK_REQUEST:
-                    timestamp = DATE_TIME_FORMATTER
-                            .print(((ModuleJoinedNetworkRequestMessage) message).getDateTimeReceived());
+                    timestamp = ((ModuleJoinedNetworkRequestMessage) message).getDateTimeReceived();
                     postUpdate(MAC, PlugwiseCommandType.LASTSEEN, timestamp);
                     return true;
 
                 case SENSE_REPORT_REQUEST:
                     humidity = ((SenseReportRequestMessage) message).getHumidity();
                     temperature = ((SenseReportRequestMessage) message).getTemperature();
-                    timestamp = DATE_TIME_FORMATTER.print(((SenseReportRequestMessage) message).getDateTimeReceived());
+                    timestamp = ((SenseReportRequestMessage) message).getDateTimeReceived();
                     postUpdate(MAC, PlugwiseCommandType.HUMIDITY, humidity);
                     postUpdate(MAC, PlugwiseCommandType.TEMPERATURE, temperature);
                     postUpdate(MAC, PlugwiseCommandType.HUMIDITYSTAMP, timestamp);

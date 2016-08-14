@@ -12,8 +12,6 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.openhab.binding.plugwise.PlugwiseCommandType;
 import org.openhab.binding.plugwise.protocol.AcknowledgeMessage;
 import org.openhab.binding.plugwise.protocol.ClockSetRequestMessage;
@@ -52,8 +50,6 @@ import org.slf4j.LoggerFactory;
 public class CirclePlus extends Circle {
 
     private static final Logger logger = LoggerFactory.getLogger(CirclePlus.class);
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     private static final String CIRCLE_PLUS_JOB_DATA_KEY = "CirclePlus";
 
@@ -155,7 +151,7 @@ public class CirclePlus extends Circle {
 
                 case REALTIMECLOCK_GET_RESPONSE:
                     realtimeClock = ((RealTimeClockGetResponseMessage) message).getTime();
-                    postUpdate(MAC, PlugwiseCommandType.REALTIMECLOCK, DATE_TIME_FORMATTER.print(realtimeClock));
+                    postUpdate(MAC, PlugwiseCommandType.REALTIMECLOCK, realtimeClock);
                     return true;
 
                 case ACKNOWLEDGEMENT:
