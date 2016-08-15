@@ -653,7 +653,7 @@
                 <Type>4952</Type>
                 <Id>3031</Id>
             </Reference>
-			<Reference>
+            <Reference>
                 <Type>5052</Type>
                 <Id>3031</Id>
             </Reference>
@@ -1002,7 +1002,7 @@
             <Label lang="de">Tür-Fenster-Sensor</Label>
             <ConfigFile>aeon/doorsensor.xml</ConfigFile>
         </Product>
-		<Product>
+        <Product>
             <Reference>
                 <Type>102</Type>
                 <Id>78</Id>
