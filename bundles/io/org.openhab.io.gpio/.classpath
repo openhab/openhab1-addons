@@ -4,6 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="lib" path="lib/jna-3.2.7.jar"/>
+	<classpathentry kind="lib" path="lib/jna-4.2.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

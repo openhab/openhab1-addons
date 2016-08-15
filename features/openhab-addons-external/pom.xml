@@ -55,6 +55,7 @@
                                 <artifact><file>src/main/resources/conf/ihc.cfg</file><type>cfg</type><classifier>ihc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/influxdb.cfg</file><type>cfg</type><classifier>influxdb</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/insteonplm.cfg</file><type>cfg</type><classifier>insteonplm</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/irtrans.cfg</file><type>cfg</type><classifier>irtrans</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jdbc.cfg</file><type>cfg</type><classifier>jdbc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jpa.cfg</file><type>cfg</type><classifier>jpa</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/knx.cfg</file><type>cfg</type><classifier>knx</classifier></artifact>
@@ -77,8 +78,10 @@
                                 <artifact><file>src/main/resources/conf/nest.cfg</file><type>cfg</type><classifier>nest</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/netatmo.cfg</file><type>cfg</type><classifier>netatmo</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/networkhealth.cfg</file><type>cfg</type><classifier>networkhealth</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/networkupstools.cfg</file><type>cfg</type><classifier>networkupstools</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/nibeheatpump.cfg</file><type>cfg</type><classifier>nibeheatpump</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/nikobus.cfg</file><type>cfg</type><classifier>nikobus</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/novelanheatpump.cfg</file><type>cfg</type><classifier>novelanheatpump</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ntp.cfg</file><type>cfg</type><classifier>ntp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/onewire.cfg</file><type>cfg</type><classifier>onewire</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/onkyo.cfg</file><type>cfg</type><classifier>onkyo</classifier></artifact>
@@ -94,6 +97,7 @@
                                 <artifact><file>src/main/resources/conf/sapp.cfg</file><type>cfg</type><classifier>sapp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/satel.cfg</file><type>cfg</type><classifier>satel</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/snmp.cfg</file><type>cfg</type><classifier>snmp</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/souliss.cfg</file><type>cfg</type><classifier>souliss</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/swegonventilation.cfg</file><type>cfg</type><classifier>swegonventilation</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/systeminfo.cfg</file><type>cfg</type><classifier>systeminfo</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/tcp.cfg</file><type>cfg</type><classifier>tcp</classifier></artifact>

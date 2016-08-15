@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -102,6 +103,9 @@ public class MysqlPersistenceService implements QueryablePersistenceService {
     private int errReconnectThreshold = 0;
 
     private int waitTimeout = -1;
+    
+    // Time used for persisting items, False: MySQL Server time (default), True: openHAB Server time
+    private boolean localtime = false;
 
     private Connection connection = null;
 
@@ -175,6 +179,11 @@ public class MysqlPersistenceService implements QueryablePersistenceService {
         tmpString = (String) config.get("waitTimeout");
         if (StringUtils.isNotBlank(tmpString)) {
             waitTimeout = Integer.parseInt(tmpString);
+        }
+        
+        tmpString = (String) config.get("localtime");
+        if (StringUtils.isNotBlank(tmpString)) {
+        	localtime = Boolean.parseBoolean(tmpString);
         }
 
         // reconnect to the database in case the configuration has changed.
@@ -418,18 +427,33 @@ public class MysqlPersistenceService implements QueryablePersistenceService {
             value = item.getState().toString();
         }
 
+        // Get current timestamp
+        long timeNow = Calendar.getInstance().getTimeInMillis();
+        Timestamp timestamp = new Timestamp(timeNow);
+        
         String sqlCmd = null;
         PreparedStatement statement = null;
         try {
-            sqlCmd = new String(
-                    "INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),?) ON DUPLICATE KEY UPDATE VALUE=?;");
-            statement = connection.prepareStatement(sqlCmd);
-            statement.setString(1, value);
-            statement.setString(2, value);
+            if (localtime) {
+                sqlCmd = new String(
+                        "INSERT INTO " + tableName + " (TIME, VALUE) VALUES(?,?) ON DUPLICATE KEY UPDATE VALUE=?;");
+                statement = connection.prepareStatement(sqlCmd);
+                statement.setTimestamp(1, timestamp);
+                statement.setString(2, value);
+                statement.setString(3, value);
+            }
+            else {
+                sqlCmd = new String(
+                        "INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),?) ON DUPLICATE KEY UPDATE VALUE=?;");
+                statement = connection.prepareStatement(sqlCmd);
+                statement.setString(1, value);
+                statement.setString(2, value);
+            }
+
             statement.executeUpdate();
 
             logger.debug("mySQL: Stored item '{}' as '{}'[{}] in SQL database at {}.", item.getName(),
-                    item.getState().toString(), value, (new java.util.Date()).toString());
+                    item.getState().toString(), value, timestamp.toString());
             logger.debug("mySQL: query: {}", sqlCmd);
 
             // Success
