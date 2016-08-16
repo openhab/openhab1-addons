@@ -1,8 +1,28 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.hideki;
 
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 
+/**
+ * Configuration of hideki binding. Item configuration is done by hideki="Sensor:Channel"
+ * For example: Number HidekiAnemometerTemperature {hideki="Anemometer:Temperature"}
+ * Valid sensors are: HYGROMETER, THERMOMETER, PLUVIOMETER, ANEMOMETER and UVMETER
+ * Hygro/Thermometer supports TEMPERATURE, HUMIDITY and BATTERY channels.
+ * Pluviometer support LEVEL channel only.
+ * Anemometer supports TEMPERATURE, CHILL, SPEED, GUST and DIRECTION channels.
+ * UV-meter supports TEMPERATURE, MED and UV channels.
+ * 
+ * @author Alexander Falkenstern
+ * @since 1.8.0
+ */
 public class HidekiBindingConfig implements BindingConfig {
   private Item item;
   private int type;
@@ -45,7 +65,7 @@ public class HidekiBindingConfig implements BindingConfig {
   }
 
   public String getSensorChannel() {
-    switch(this.type) {
+    switch(getSensorType()) {
       case 0x1E: { // Sensor returns temperature, humidity and battery state
         if(!channel.equals("TEMPERATURE") && !channel.equals("HUMIDITY") && !channel.equals("BATTERY")) {
           this.channel = "";
@@ -59,9 +79,8 @@ public class HidekiBindingConfig implements BindingConfig {
         break;
       }
       case 0x0C: { // Sensor returns temperature, windchill, speed, gust and wind direction
-        if(!channel.equals("TEMPERATURE") && !channel.equals("CHILL") && !channel.equals("SPEED")) {
-          this.channel = "";
-        } else if(!channel.equals("GUST") && !channel.equals("DIRECTION")) {
+        if(!channel.equals("TEMPERATURE") && !channel.equals("CHILL") && !channel.equals("SPEED") &&
+           !channel.equals("GUST") && !channel.equals("DIRECTION")) {
           this.channel = "";
         }
         break;

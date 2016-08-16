@@ -17,13 +17,13 @@ import org.openhab.core.items.Item;
  * @since 1.5.0
  */
 public interface HidekiBindingProvider extends BindingProvider {		
-	public HidekiBindingConfig getBindingConfig(String itemName);
+  public HidekiBindingConfig getBindingConfig(String itemName);
 	
-	/**
-	 * Returns the item identified by {@code itemName}
-	 * 
-	 * @param itemName the name of the item to find
-	 * @return item identified by {@code itemName}
-	 */
-	public Item getItem(String itemName);
+  /**
+   * Returns the item identified by {@code itemName}
+   * 
+   * @param itemName the name of the item to find
+   * @return item identified by {@code itemName}
+   */
+  public Item getItem(String itemName);
 }

@@ -21,32 +21,31 @@ import org.slf4j.LoggerFactory;
  */
 public final class HidekiActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(HidekiActivator.class); 
-	
-	private static BundleContext context;
-	
-	/**
-	 * Called whenever the OSGi framework starts our bundle
-	 */
-	public void start(BundleContext bc) throws Exception {
-		context = bc;
-		logger.info("Hideki binding has been started.");
-	}
+  private static final Logger logger = LoggerFactory.getLogger(HidekiActivator.class);
 
-	/**
-	 * Called whenever the OSGi framework stops our bundle
-	 */
-	public void stop(BundleContext bc) throws Exception {
-		context = null;
-		logger.info("Hideki binding has been stopped.");
-	}
-	
-	/**
-	 * Returns the bundle context of this bundle
-	 * @return the bundle context
-	 */
-	public static BundleContext getContext() {
-		return context;
-	}
-	
+  private static BundleContext context;
+
+  /**
+   * Called whenever the OSGi framework starts our bundle
+   */
+  public void start(BundleContext bc) throws Exception {
+    context = bc;
+    logger.info("Hideki binding has been started.");
+  }
+
+  /**
+   * Called whenever the OSGi framework stops our bundle
+   */
+  public void stop(BundleContext bc) throws Exception {
+    context = null;
+    logger.info("Hideki binding has been stopped.");
+  }
+
+  /**
+   * Returns the bundle context of this bundle
+   * @return the bundle context
+   */
+  public static BundleContext getContext() {
+    return context;
+  }
 }

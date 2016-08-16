@@ -35,6 +35,7 @@ import java.util.Dictionary;
  */
 public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> implements ManagedService {
 
+  private boolean decoderRuns = false;
   private static final Logger logger = LoggerFactory.getLogger(HidekiBinding.class);
 
   /** 
@@ -49,20 +50,22 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
   private int pin = 27;
 
   public HidekiBinding() {
-    logger.info("HidekiBinding constuctor");
+    logger.info("HidekiBinding constructor");
   }
   
   public void activate() {
-    HidekiDecoder.startDecoder(pin);
   }
   
   public void deactivate() {
     for (HidekiBindingProvider provider : providers) {
       provider.removeBindingChangeListener(this);
     }
-
     providers.clear();
-    HidekiDecoder.stopDecoder(pin);
+
+    if(decoderRuns) {
+      HidekiDecoder.stopDecoder(pin);
+      decoderRuns = false;
+    }
   }
 
   /**
@@ -91,8 +94,17 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
       return;
     }
 
+    if(!decoderRuns) {
+      decoderRuns = (HidekiDecoder.startDecoder(pin) == 0);
+      if(!decoderRuns) {
+        HidekiDecoder.stopDecoder(pin);
+        decoderRuns = (HidekiDecoder.startDecoder(pin) == 0);
+      }
+      logger.debug("Hideki decoder on pin " + pin + " started: " + decoderRuns);
+    }
+
     int[] data = HidekiDecoder.getDecodedData();
-    if(data != null) {
+    if((data != null) && decoderRuns) {
       for (HidekiBindingProvider provider : providers) {
         for (String itemName : provider.getItemNames()) {
           HidekiBindingConfig config = (HidekiBindingConfig)provider.getBindingConfig(itemName);
@@ -101,7 +113,7 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
             if(channel.equals("TEMPERATURE")) {
               double value = Double.MAX_VALUE;
               if(config.getSensorType() != 0x0D) {
-                value = (data[5] & 0x0F) * 10 + (data[4] >> 4) + (data[4]  & 0x0F) * 0.1;
+                value = (data[5] & 0x0F) * 10 + (data[4] >> 4) + (data[4] & 0x0F) * 0.1;
                 if((data[5] >> 4) != 0x0C) {
                   value = (data[5] >> 4) == 0x04 ? -value : Double.MAX_VALUE;
                 }
@@ -116,10 +128,11 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
               int value = (data[2] >> 6) > 0 ? 1 : 0;
               this.eventPublisher.postUpdate(itemName, new DecimalType(value));
             } else if(channel.equals("LEVEL")) {
+              static int last = Integer.MAX_VALUE;
               int value = (data[5] << 8) + data[4];
-              this.eventPublisher.postUpdate(itemName, new DecimalType(0.7 * value));
+              this.eventPublisher.postUpdate(itemName, new DecimalType(0.7 * (last - value)));
             } else if(channel.equals("CHILL")) {
-              double value = (data[7] & 0x0F) * 10 + (data[6] >> 4) + (data[6]  & 0x0F) * 0.1;
+              double value = (data[7] & 0x0F) * 10 + (data[6] >> 4) + (data[6] & 0x0F) * 0.1;
               if((data[7] >> 4) != 0x0C) {
                 value = (data[7] >> 4) == 0x04 ? -value : Double.MAX_VALUE;
               }
@@ -131,7 +144,7 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
               double value = (data[9] >> 4) / 10.0 + (data[10] & 0x0F) + (data[10] >> 4) * 10.0;
               this.eventPublisher.postUpdate(itemName, new DecimalType(1.60934 * value));
             } else if(channel.equals("DIRECTION")) {
-              int segment = data[11] >> 4;
+              int segment = (data[11] >> 4);
               segment = segment ^ (segment & 8) >> 1;
               segment = segment ^ (segment & 4) >> 1;
               segment = segment ^ (segment & 2) >> 1;
@@ -181,29 +194,34 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
    * @{inheritDoc}
    */
   @Override
-  public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+  public synchronized void updated(Dictionary<String, ?> config) throws ConfigurationException {
     if (config != null) {
-      HidekiDecoder.stopDecoder(pin);
-
-      String refreshIntervalString = (String) config.get("refresh");
-      if (StringUtils.isNotBlank(refreshIntervalString)) {
-        refreshInterval = Long.parseLong(refreshIntervalString);
+      if(decoderRuns) {
+        HidekiDecoder.stopDecoder(pin);
+        decoderRuns = false;
       }
 
-      String timeout = (String) config.get("timeout");
-      if (StringUtils.isNotBlank(timeout)) {
-        HidekiDecoder.setTimeOut(Integer.parseInt(timeout));
+      String intervalString = (String) config.get("refresh");
+      if (StringUtils.isNotBlank(intervalString)) {
+        refreshInterval = Long.parseLong(intervalString);
+        logger.debug("Set refresh interval to " + intervalString);
+      }
+
+      String timeoutString = (String) config.get("timeout");
+      if (StringUtils.isNotBlank(timeoutString)) {
+        HidekiDecoder.setTimeOut(Integer.parseInt(timeoutString));
+        logger.debug("Set timeout to " + timeoutString);
       }
 
       String pinString = (String) config.get("pin");
       if (StringUtils.isNotBlank(pinString)) {
         pin = Integer.parseInt(pinString);
+        logger.debug("Set pin to " + pinString);
       }
      
-      HidekiDecoder.startDecoder(pin);
       setProperlyConfigured(true);
     } else {
-      logger.info("No configuration for HidekiBinding" );
+      logger.warn("No configuration for hideki binding found" );
     }
   }
 }

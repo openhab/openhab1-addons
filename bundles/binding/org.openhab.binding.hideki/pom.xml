@@ -22,7 +22,7 @@
 	<name>openHAB Hideki Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
-  
+
 	<build>
 		<plugins>
 			<plugin>
