@@ -785,7 +785,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
                     for (ZWaveDbConfigurationParameter parameter : configList) {
                         // Some parameters don't return anything, so don't request them!
                         if (parameter.WriteOnly != null && parameter.WriteOnly == true) {
-                            configurationCommandClass.setParameterWriteOnly(parameter.Index, true);
+                            configurationCommandClass.setParameterWriteOnly(parameter.Index, parameter.Size, true);
                             continue;
                         }
 
