@@ -53,9 +53,15 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
     logger.info("HidekiBinding constructor");
   }
   
+  /**
+   * @{inheritDoc}
+   */
   public void activate() {
   }
   
+  /**
+   * @{inheritDoc}
+   */
   public void deactivate() {
     for (HidekiBindingProvider provider : providers) {
       provider.removeBindingChangeListener(this);
@@ -113,50 +119,40 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
             if(channel.equals("TEMPERATURE")) {
               double value = Double.MAX_VALUE;
               if(config.getSensorType() != 0x0D) {
-                value = (data[5] & 0x0F) * 10 + (data[4] >> 4) + (data[4] & 0x0F) * 0.1;
-                if((data[5] >> 4) != 0x0C) {
-                  value = (data[5] >> 4) == 0x04 ? -value : Double.MAX_VALUE;
-                }
+                HidekiBaseTemperatureSensor sensor = new HidekiBaseTemperatureSensor(data);
+                value = sensor.getTemperature();
               } else {
-                value = (data[4] >> 4) + (data[4] & 0x0F) / 10.0 + (data[5] & 0x0F) * 10.0;
+                HidekiUVMeter sensor = new HidekiUVMeter(data);
+                value = sensor.getTemperature();
               }
               this.eventPublisher.postUpdate(itemName, new DecimalType(value));
             } else if(channel.equals("HUMIDITY")) {
-              int value = (data[6] >> 4) * 10 + (data[6] & 0x0F);
-              this.eventPublisher.postUpdate(itemName, new DecimalType(value));
+              HidekiThermometer sensor = new HidekiThermometer(data);
+              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getHumidity()));
             } else if(channel.equals("BATTERY")) {
-              int value = (data[2] >> 6) > 0 ? 1 : 0;
-              this.eventPublisher.postUpdate(itemName, new DecimalType(value));
+              HidekiThermometer sensor = new HidekiThermometer(data);
+              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getBatteryState() ? 1 : 0));
             } else if(channel.equals("LEVEL")) {
-              static int last = Integer.MAX_VALUE;
-              int value = (data[5] << 8) + data[4];
-              this.eventPublisher.postUpdate(itemName, new DecimalType(0.7 * (last - value)));
+              HidekiPluviometer sensor = new HidekiPluviometer(data);
+              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getRainLevel()));
             } else if(channel.equals("CHILL")) {
-              double value = (data[7] & 0x0F) * 10 + (data[6] >> 4) + (data[6] & 0x0F) * 0.1;
-              if((data[7] >> 4) != 0x0C) {
-                value = (data[7] >> 4) == 0x04 ? -value : Double.MAX_VALUE;
-              }
-              this.eventPublisher.postUpdate(itemName, new DecimalType(value));
+              HidekiAnemometer sensor = new HidekiAnemometer(data);
+              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getChill()));
             } else if(channel.equals("SPEED")) {
-              double value = (data[8] >> 4) + (data[8] & 0x0F) / 10.0 + (data[9] & 0x0F) * 10.0;
-              this.eventPublisher.postUpdate(itemName, new DecimalType(1.60934 * value));
+              HidekiAnemometer sensor = new HidekiAnemometer(data);
+              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getSpeed()));
             } else if(channel.equals("GUST")) {
-              double value = (data[9] >> 4) / 10.0 + (data[10] & 0x0F) + (data[10] >> 4) * 10.0;
-              this.eventPublisher.postUpdate(itemName, new DecimalType(1.60934 * value));
+              HidekiAnemometer sensor = new HidekiAnemometer(data);
+              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getGust()));
             } else if(channel.equals("DIRECTION")) {
-              int segment = (data[11] >> 4);
-              segment = segment ^ (segment & 8) >> 1;
-              segment = segment ^ (segment & 4) >> 1;
-              segment = segment ^ (segment & 2) >> 1;
-              this.eventPublisher.postUpdate(itemName, new DecimalType(22.5 * (-segment & 0xF)));
+              HidekiAnemometer sensor = new HidekiAnemometer(data);
+              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getDirection()));
             } else if(channel.equals("MED")) {
-              // MED stay for "minimal erythema dose"
-              // Some says: 1 MED/h = 2.778 UV-Index, another 1 MED/h = 2.33 UV-Index
-              double value = (data[5] >> 4) / 10.0 + (data[6] & 0x0F) + (data[6] >> 4) * 10.0;
-              this.eventPublisher.postUpdate(itemName, new DecimalType(value));
+              HidekiUVMeter sensor = new HidekiUVMeter(data);
+              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getMED()));
             } else if(channel.equals("UV")) {
-              double value = (data[7] >> 4) + (data[7] & 0x0F) / 10.0 + (data[8] & 0x0F) * 10.0;
-              this.eventPublisher.postUpdate(itemName, new DecimalType(value));
+              HidekiUVMeter sensor = new HidekiUVMeter(data);
+              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getUVIndex()));
             }
           }
         }
