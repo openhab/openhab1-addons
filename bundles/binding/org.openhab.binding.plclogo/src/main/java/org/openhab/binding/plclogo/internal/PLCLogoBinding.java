@@ -97,7 +97,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
   }
   
   public PLCLogoBinding() {
-    logger.info("PLCLogoBinding constuctor");
+    logger.info("PLCLogoBinding constructor");
   }
   
   public void activate() {
@@ -343,14 +343,14 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
           String remoteTSAP = config.get(key).toString();
           logger.info("Config for " + remoteTSAP);
 
-          deviceConfig.setremoteTSAP(Integer.decode(remoteTSAP));
+          deviceConfig.setRemoteTSAP(Integer.decode(remoteTSAP));
         }
         if (matcher.group(2).equals("localTSAP")) {
           // matcher.find();
           String localTSAP = config.get(key).toString();
           logger.info("Config for "+ localTSAP);
 
-          deviceConfig.setlocalTSAP(Integer.decode(localTSAP));
+          deviceConfig.setLocalTSAP(Integer.decode(localTSAP));
         }
       } //while
 
@@ -365,7 +365,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
       } else {
         LogoS7Client.Disconnect();
       }
-      LogoS7Client.SetConnectionParams(logoConfig.getlogoIP(), logoConfig.getlocalTSAP(), logoConfig.getremoteTSAP());
+      LogoS7Client.SetConnectionParams(logoConfig.getlogoIP(), logoConfig.getLocalTSAP(), logoConfig.getRemoteTSAP());
       logger.info("About to connect to "+ controllerName );
 
       if ((LogoS7Client.Connect() == 0) && LogoS7Client.Connected) {
@@ -427,10 +427,10 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
     public void setIP(String logoIP){
       this.logoIP = logoIP;
     }
-    public void setlocalTSAP(int localTSAP){
+    public void setLocalTSAP(int localTSAP){
       this.localTSAP = localTSAP;
     }
-    public void setremoteTSAP(int remoteTSAP){
+    public void setRemoteTSAP(int remoteTSAP){
       this.remoteTSAP = remoteTSAP;
     }
     public void setS7Client(S7Client LogoS7Client){
@@ -442,10 +442,10 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
     public String getintancename(){
       return instancename;
     }
-    public int getlocalTSAP(){
+    public int getLocalTSAP(){
       return localTSAP;
     }
-    public int getremoteTSAP(){
+    public int getRemoteTSAP(){
       return remoteTSAP;
     }
     public S7Client getS7Client(){
