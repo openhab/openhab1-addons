@@ -8,11 +8,6 @@
  */
 package org.openhab.binding.mcp23017.internal;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.mcp23017.MCP23017BindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
@@ -20,9 +15,12 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+
+import org.apache.commons.lang.StringUtils;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.pi4j.gpio.extension.mcp.MCP23017GpioProvider;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
@@ -37,6 +35,11 @@ import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implement this class if you are going create an actively polling service like
@@ -70,9 +73,9 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 	 */
 	private long refreshInterval = 60000;
 	
-    /**
-     * the polling interval mcp23071 check interrupt register (optional, defaults to 50ms)
-     */
+  /**
+   * the polling interval mcp23071 check interrupt register (optional, defaults to 50ms)
+   */
 	private int pollingInterval = 50;
 
 	public MCP23017Binding() {
@@ -98,12 +101,12 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 			refreshInterval = Long.parseLong(refreshIntervalString);
 		}
 
-        // to override the default polling interval one has to add a
-        // parameter to openhab.cfg like <bindingName>:polling=<intervalInMs>
-        String pollingIntervalString = (String) configuration.get("polling");
-        if (StringUtils.isNotBlank(pollingIntervalString)) {
-            pollingInterval = Integer.parseInt(pollingIntervalString);
-        }
+    // to override the default polling interval one has to add a
+    // parameter to openhab.cfg like <bindingName>:polling=<intervalInMs>
+    String pollingIntervalString = (String) configuration.get("polling");
+    if (StringUtils.isNotBlank(pollingIntervalString)) {
+      pollingInterval = Integer.parseInt(pollingIntervalString);
+    }
 		
 		// read further config parameters here ...
 		logger.debug("mcp23017 activated " + this.hashCode());
