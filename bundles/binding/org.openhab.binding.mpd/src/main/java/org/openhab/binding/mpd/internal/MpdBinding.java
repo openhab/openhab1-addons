@@ -53,6 +53,7 @@ import org.bff.javampd.objects.MPDSong;
 import org.openhab.binding.mpd.MpdBindingProvider;
 import org.openhab.binding.mpd.internal.MultiClickDetector.MultiClickListener;
 import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
@@ -83,7 +84,7 @@ import org.slf4j.LoggerFactory;
  *
  * @since 0.8.0
  */
-public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements ManagedService, VolumeChangeListener,
+public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements ManagedService, VolumeChangeListener,
         PlayerBasicChangeListener, TrackPositionChangeListener, MultiClickListener<Command> {
 
     private static final String MPD_SCHEDULER_GROUP = "MPD";
@@ -130,6 +131,10 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
         if (command instanceof PercentType) {
             // we have received volume adjustment request
             matchingPlayerCommand = "PERCENT";
+            params = command;
+        } else if (command instanceof DecimalType) {
+            // we have received play song id request
+            matchingPlayerCommand = "NUMBER";
             params = command;
         } else {
             matchingPlayerCommand = command.toString();
@@ -244,6 +249,15 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
                         } else {
                             logger.debug("Song not found: {}", commandParams);
                         }
+
+                        break;
+                    case PLAYSONGID:
+                        logger.debug("Play id {}", ((DecimalType) commandParams).intValue());
+
+                        MPDSong song = new MPDSong();
+                        // song.setId(Integer.parseInt((String) commandParams));
+                        song.setId(((DecimalType) commandParams).intValue());
+                        player.playId(song);
 
                         break;
                     case ENABLE:
@@ -463,6 +477,15 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
             if (StringUtils.isNotBlank(itemName)) {
                 eventPublisher.postUpdate(itemName, new StringType(artist));
                 logger.debug("Updated artist: {}, {}", itemName, artist);
+            }
+        }
+
+        int songID = newSong.getId();
+        itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.PLAYSONGID);
+        for (String itemName : itemNames) {
+            if (StringUtils.isNotBlank(itemName)) {
+                eventPublisher.postUpdate(itemName, new DecimalType(songID));
+                logger.debug("Updated songid: {}, {}", itemName, songID);
             }
         }
     }
