@@ -114,48 +114,53 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
     if((data != null) && decoderRuns) {
       for (HidekiBindingProvider provider : providers) {
         for (String itemName : provider.getItemNames()) {
+          HidekiBaseSensor sensor = new HidekiBaseSensor(data);
+          if(sensor.getSensorType() != provider.getSensorType(itemName)) {
+            continue;
+          }
+          
           String channel = provider.getSensorChannel(itemName);
           switch(provider.getSensorType(itemName)) {
             case HidekiThermometer.TYPE: {
-              HidekiThermometer sensor = new HidekiThermometer(data);
+              HidekiThermometer thermometer = new HidekiThermometer(data);
               if(channel.equals("TEMPERATURE")) {
-                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getTemperature()));
+                this.eventPublisher.postUpdate(itemName, new DecimalType(thermometer.getTemperature()));
               } else if(channel.equals("HUMIDITY")) {
-                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getHumidity()));
+                this.eventPublisher.postUpdate(itemName, new DecimalType(thermometer.getHumidity()));
               } else if(channel.equals("BATTERY")) {
-                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getBatteryState() ? 1 : 0));
+                this.eventPublisher.postUpdate(itemName, new DecimalType(thermometer.getBatteryState() ? 1 : 0));
               }
             }
             case HidekiPluviometer.TYPE: {
-              HidekiPluviometer sensor = new HidekiPluviometer(data);
+              HidekiPluviometer pluviometer = new HidekiPluviometer(data);
               if(channel.equals("LEVEL")) {
-                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getRainLevel()));
+                this.eventPublisher.postUpdate(itemName, new DecimalType(pluviometer.getRainLevel()));
               }
               break;
             }
             case HidekiAnemometer.TYPE: {
-              HidekiAnemometer sensor = new HidekiAnemometer(data);
+              HidekiAnemometer anemometer = new HidekiAnemometer(data);
               if(channel.equals("TEMPERATURE")) {
-                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getTemperature()));
+                this.eventPublisher.postUpdate(itemName, new DecimalType(anemometer.getTemperature()));
               } else if(channel.equals("CHILL")) {
-                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getChill()));
+                this.eventPublisher.postUpdate(itemName, new DecimalType(anemometer.getChill()));
               } else if(channel.equals("SPEED")) {
-                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getSpeed()));
+                this.eventPublisher.postUpdate(itemName, new DecimalType(anemometer.getSpeed()));
               } else if(channel.equals("GUST")) {
-                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getGust()));
+                this.eventPublisher.postUpdate(itemName, new DecimalType(anemometer.getGust()));
               } else if(channel.equals("DIRECTION")) {
-                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getDirection()));
+                this.eventPublisher.postUpdate(itemName, new DecimalType(anemometer.getDirection()));
               }
               break;
             }
             case HidekiUVMeter.TYPE: {
-              HidekiUVMeter sensor = new HidekiUVMeter(data);
+              HidekiUVMeter uvmeter = new HidekiUVMeter(data);
               if(channel.equals("TEMPERATURE")) {
-                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getTemperature()));
+                this.eventPublisher.postUpdate(itemName, new DecimalType(uvmeter.getTemperature()));
               } else if(channel.equals("MED")) {
-                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getMED()));
+                this.eventPublisher.postUpdate(itemName, new DecimalType(uvmeter.getMED()));
               } else if(channel.equals("UV")) {
-                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getUVIndex()));
+                this.eventPublisher.postUpdate(itemName, new DecimalType(uvmeter.getUVIndex()));
               }
               break;
             }
