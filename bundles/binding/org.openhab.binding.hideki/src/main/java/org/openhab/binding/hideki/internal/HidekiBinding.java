@@ -112,9 +112,9 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
 
     int[] data = HidekiDecoder.getDecodedData();
     if((data != null) && decoderRuns) {
+      HidekiBaseSensor sensor = new HidekiBaseSensor(data);
       for (HidekiBindingProvider provider : providers) {
         for (String itemName : provider.getItemNames()) {
-          HidekiBaseSensor sensor = new HidekiBaseSensor(data);
           if(sensor.getSensorType() != provider.getSensorType(itemName)) {
             continue;
           }
@@ -125,11 +125,14 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
               HidekiThermometer thermometer = new HidekiThermometer(data);
               if(channel.equals("TEMPERATURE")) {
                 this.eventPublisher.postUpdate(itemName, new DecimalType(thermometer.getTemperature()));
-              } else if(channel.equals("HUMIDITY")) {
+              }
+              if(channel.equals("HUMIDITY")) {
                 this.eventPublisher.postUpdate(itemName, new DecimalType(thermometer.getHumidity()));
-              } else if(channel.equals("BATTERY")) {
+              }
+              if(channel.equals("BATTERY")) {
                 this.eventPublisher.postUpdate(itemName, new DecimalType(thermometer.getBatteryState() ? 1 : 0));
               }
+              break;
             }
             case HidekiPluviometer.TYPE: {
               HidekiPluviometer pluviometer = new HidekiPluviometer(data);
@@ -142,13 +145,17 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
               HidekiAnemometer anemometer = new HidekiAnemometer(data);
               if(channel.equals("TEMPERATURE")) {
                 this.eventPublisher.postUpdate(itemName, new DecimalType(anemometer.getTemperature()));
-              } else if(channel.equals("CHILL")) {
+              }
+              if(channel.equals("CHILL")) {
                 this.eventPublisher.postUpdate(itemName, new DecimalType(anemometer.getChill()));
-              } else if(channel.equals("SPEED")) {
+              }
+              if(channel.equals("SPEED")) {
                 this.eventPublisher.postUpdate(itemName, new DecimalType(anemometer.getSpeed()));
-              } else if(channel.equals("GUST")) {
+              }
+              if(channel.equals("GUST")) {
                 this.eventPublisher.postUpdate(itemName, new DecimalType(anemometer.getGust()));
-              } else if(channel.equals("DIRECTION")) {
+              }
+              if(channel.equals("DIRECTION")) {
                 this.eventPublisher.postUpdate(itemName, new DecimalType(anemometer.getDirection()));
               }
               break;
@@ -157,9 +164,11 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
               HidekiUVMeter uvmeter = new HidekiUVMeter(data);
               if(channel.equals("TEMPERATURE")) {
                 this.eventPublisher.postUpdate(itemName, new DecimalType(uvmeter.getTemperature()));
-              } else if(channel.equals("MED")) {
+              }
+              if(channel.equals("MED")) {
                 this.eventPublisher.postUpdate(itemName, new DecimalType(uvmeter.getMED()));
-              } else if(channel.equals("UV")) {
+              }
+              if(channel.equals("UV")) {
                 this.eventPublisher.postUpdate(itemName, new DecimalType(uvmeter.getUVIndex()));
               }
               break;
