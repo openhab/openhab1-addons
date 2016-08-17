@@ -10,6 +10,8 @@ package org.openhab.binding.hideki.internal;
 
 public class HidekiAnemometer extends HidekiBaseTemperatureSensor {
 
+  public static final int TYPE = 0x0C;
+
   // private constructor
   private HidekiAnemometer() {
     super(); // forbid object construction
@@ -21,7 +23,7 @@ public class HidekiAnemometer extends HidekiBaseTemperatureSensor {
   public HidekiAnemometer(int [] data) throws IllegalArgumentException {
     super(data);
 
-    if(getSensorType() != 0x0C) {
+    if(getSensorType() != HidekiAnemometer.TYPE) {
       throw new IllegalArgumentException("Invalid anemometer data.");
     }
   }

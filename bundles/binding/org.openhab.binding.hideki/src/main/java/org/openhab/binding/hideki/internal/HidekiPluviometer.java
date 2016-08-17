@@ -10,6 +10,8 @@ package org.openhab.binding.hideki.internal;
 
 public class HidekiPluviometer extends HidekiBaseSensor {
 
+  public static final int TYPE = 0x0E;
+
   // private constructor
   private HidekiPluviometer() {
     super(); // forbid object construction
@@ -21,7 +23,7 @@ public class HidekiPluviometer extends HidekiBaseSensor {
   public HidekiPluviometer(int [] data) throws IllegalArgumentException {
     super(data);
 
-    if(getSensorType() != 0x0E) {
+    if(getSensorType() != HidekiPluviometer.TYPE) {
       throw new IllegalArgumentException("Invalid pluviometer data.");
     }
   }

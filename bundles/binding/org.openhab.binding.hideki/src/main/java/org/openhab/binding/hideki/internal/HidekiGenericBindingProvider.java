@@ -71,19 +71,19 @@ public class HidekiGenericBindingProvider extends AbstractGenericBindingProvider
     }
 
     HidekiBindingConfig config = new HidekiBindingConfig(item, configString[0], configString[1]);
-    if((config.getSensorType() != HidekiBindingConfig.INVALID_TYPE) && (config.getSensorChannel() != "")) {
+    if((config.getSensorType() != HidekiBaseSensor.INVALID) && (config.getSensorChannel() != "")) {
       addBindingConfig(item, config);
     } else {
       logger.warn("Invalid binding " + bindingConfig + " for item " + item.getName() + " found");
-      if(config.getSensorType() == HidekiBindingConfig.INVALID_TYPE) {
+      if(config.getSensorType() == HidekiBaseSensor.INVALID) {
         logger.warn("Valid sensors are: HYGROMETER, THERMOMETER, PLUVIOMETER, ANEMOMETER and UVMETER");
-      } else if(config.getSensorType() == 0x1E) {
+      } else if(config.getSensorType() == HidekiThermometer.TYPE) {
         logger.warn("Valid channels for hygro/thermometer are TEMPERATURE, HUMIDITY and BATTERY");
-      } else if(config.getSensorType() == 0x0E) {
+      } else if(config.getSensorType() == HidekiPluviometer.TYPE) {
         logger.warn("Valid channel for pluviometer is LEVEL");
-      } else if(config.getSensorType() == 0x0C) {
+      } else if(config.getSensorType() == HidekiAnemometer.TYPE) {
         logger.warn("Valid channels for anemometer are TEMPERATURE, CHILL, SPEED, GUST and DIRECTION");
-      } else if(config.getSensorType() == 0x0D) {
+      } else if(config.getSensorType() == HidekiUVMeter.TYPE) {
         logger.warn("Valid channels for uv-meter are TEMPERATURE, MED and UV");
       } else {
         logger.warn("Please report unknown sensor and channels");

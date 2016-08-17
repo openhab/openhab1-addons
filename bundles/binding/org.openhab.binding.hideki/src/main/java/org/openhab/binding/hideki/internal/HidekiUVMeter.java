@@ -10,6 +10,8 @@ package org.openhab.binding.hideki.internal;
 
 public class HidekiUVMeter extends HidekiBaseTemperatureSensor {
 
+  public static final int TYPE = 0x0D;
+
   // private constructor
   private HidekiUVMeter() {
     super(); // forbid object construction
@@ -21,7 +23,7 @@ public class HidekiUVMeter extends HidekiBaseTemperatureSensor {
   public HidekiUVMeter(int [] data) throws IllegalArgumentException {
     super(data);
 
-    if(getSensorType() != 0x0D) {
+    if(getSensorType() != HidekiUVMeter.TYPE) {
       throw new IllegalArgumentException("Invalid UV-Meter data.");
     }
   }

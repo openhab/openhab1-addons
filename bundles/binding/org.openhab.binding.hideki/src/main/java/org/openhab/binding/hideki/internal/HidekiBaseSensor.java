@@ -18,6 +18,8 @@ public class HidekiBaseSensor {
 
   private int[] data = null;
 
+  public static final int INVALID = 0x00;
+  
   // protected constructor
   protected HidekiBaseSensor() {
   }

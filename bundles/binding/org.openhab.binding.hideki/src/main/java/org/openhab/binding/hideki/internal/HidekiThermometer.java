@@ -10,6 +10,8 @@ package org.openhab.binding.hideki.internal;
 
 public class HidekiThermometer extends HidekiBaseTemperatureSensor {
 
+  public static final int TYPE = 0x1E;
+
   // private constructor
   private HidekiThermometer() {
     super(); // forbid object construction
@@ -21,7 +23,7 @@ public class HidekiThermometer extends HidekiBaseTemperatureSensor {
   public HidekiThermometer(int [] data) throws IllegalArgumentException {
     super(data);
 
-    if(getSensorType() != 0x1E) {
+    if(getSensorType() != HidekiThermometer.TYPE) {
       throw new IllegalArgumentException("Invalid thermo/hygrometer data.");
     }
   }

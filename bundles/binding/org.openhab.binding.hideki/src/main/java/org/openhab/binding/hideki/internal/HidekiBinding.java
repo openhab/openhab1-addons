@@ -118,7 +118,7 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
             String channel = config.getSensorChannel();
             if(channel.equals("TEMPERATURE")) {
               double value = Double.MAX_VALUE;
-              if(config.getSensorType() != 0x0D) {
+              if(config.getSensorType() != HidekiUVMeter.TYPE) {
                 HidekiBaseTemperatureSensor sensor = new HidekiBaseTemperatureSensor(data);
                 value = sensor.getTemperature();
               } else {
