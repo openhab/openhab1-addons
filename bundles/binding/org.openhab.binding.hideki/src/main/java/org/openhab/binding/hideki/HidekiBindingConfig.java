@@ -8,12 +8,6 @@
  */
 package org.openhab.binding.hideki;
 
-import org.openhab.binding.hideki.internal.HidekiBaseSensor;
-import org.openhab.binding.hideki.internal.HidekiAnemometer;
-import org.openhab.binding.hideki.internal.HidekiThermometer;
-import org.openhab.binding.hideki.internal.HidekiPluviometer;
-import org.openhab.binding.hideki.internal.HidekiUVMeter;
-
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 
@@ -29,82 +23,7 @@ import org.openhab.core.items.Item;
  * @author Alexander Falkenstern
  * @since 1.8.0
  */
-public class HidekiBindingConfig implements BindingConfig {
-  private Item item;
-  private int type;
-  private String channel;
-  
-  public HidekiBindingConfig(Item item, String sensor, String channel) {
-    this.item = item;
-    this.channel = channel.toUpperCase();
-
-    this.type = HidekiBaseSensor.INVALID;
-    switch(sensor.toUpperCase()) {
-      case "HYGROMETER":
-      case "THERMOMETER": {
-        type = HidekiThermometer.TYPE;
-        break;
-      }
-      case "PLUVIOMETER": {
-        type = HidekiPluviometer.TYPE;
-        break;
-      }
-      case "ANEMOMETER": {
-        type = HidekiAnemometer.TYPE;
-        break;
-      }
-      case "UVMETER": {
-        type = HidekiUVMeter.TYPE;
-        break;
-      }
-      default: {
-        this.channel = "";
-        break;
-      }
-    }
-  }
-  
-  public int getSensorType() {
-    return this.type;
-  }
-
-  public String getSensorChannel() {
-    switch(getSensorType()) {
-      case HidekiThermometer.TYPE: { // Sensor returns temperature, humidity and battery state
-        if(!channel.equals("TEMPERATURE") && !channel.equals("HUMIDITY") && !channel.equals("BATTERY")) {
-          this.channel = "";
-        }
-        break;
-      }
-      case HidekiPluviometer.TYPE: { // Sensor returns rain level
-        if(!channel.equals("LEVEL")) {
-          this.channel = "";
-        }
-        break;
-      }
-      case HidekiAnemometer.TYPE: { // Sensor returns temperature, windchill, speed, gust and wind direction
-        if(!channel.equals("TEMPERATURE") && !channel.equals("CHILL") && !channel.equals("SPEED") &&
-           !channel.equals("GUST") && !channel.equals("DIRECTION")) {
-          this.channel = "";
-        }
-        break;
-      }
-      case HidekiUVMeter.TYPE: { // Sensor returns temperature, MED and UV index
-        if(!channel.equals("TEMPERATURE") && !channel.equals("MED") && !channel.equals("UV")) {
-          this.channel = "";
-        }
-        break;
-      }
-      default: {
-        this.channel = "";
-        break;
-      }
-    }
-    
-    return this.channel;
-  }
-
-  public Item getItem() {
-    return this.item;
-  }
+public interface HidekiBindingConfig extends BindingConfig {
+  public int getSensorType();
+  public String getSensorChannel();
 }

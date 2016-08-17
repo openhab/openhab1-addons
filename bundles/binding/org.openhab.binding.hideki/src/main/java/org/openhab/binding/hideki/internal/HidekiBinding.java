@@ -35,8 +35,9 @@ import java.util.Dictionary;
  */
 public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> implements ManagedService {
 
-  private boolean decoderRuns = false;
   private static final Logger logger = LoggerFactory.getLogger(HidekiBinding.class);
+
+  private boolean decoderRuns = false;
 
   /** 
    * the refresh interval which is used to poll values from the hideki
@@ -113,46 +114,53 @@ public class HidekiBinding extends AbstractActiveBinding<HidekiBindingProvider> 
     if((data != null) && decoderRuns) {
       for (HidekiBindingProvider provider : providers) {
         for (String itemName : provider.getItemNames()) {
-          HidekiBindingConfig config = (HidekiBindingConfig)provider.getBindingConfig(itemName);
-          if((data[3] & 0x1F) == config.getSensorType()) {
-            String channel = config.getSensorChannel();
-            if(channel.equals("TEMPERATURE")) {
-              double value = Double.MAX_VALUE;
-              if(config.getSensorType() != HidekiUVMeter.TYPE) {
-                HidekiBaseTemperatureSensor sensor = new HidekiBaseTemperatureSensor(data);
-                value = sensor.getTemperature();
-              } else {
-                HidekiUVMeter sensor = new HidekiUVMeter(data);
-                value = sensor.getTemperature();
+          String channel = provider.getSensorChannel(itemName);
+          switch(provider.getSensorType(itemName)) {
+            case HidekiThermometer.TYPE: {
+              HidekiThermometer sensor = new HidekiThermometer(data);
+              if(channel.equals("TEMPERATURE")) {
+                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getTemperature()));
+              } else if(channel.equals("HUMIDITY")) {
+                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getHumidity()));
+              } else if(channel.equals("BATTERY")) {
+                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getBatteryState() ? 1 : 0));
               }
-              this.eventPublisher.postUpdate(itemName, new DecimalType(value));
-            } else if(channel.equals("HUMIDITY")) {
-              HidekiThermometer sensor = new HidekiThermometer(data);
-              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getHumidity()));
-            } else if(channel.equals("BATTERY")) {
-              HidekiThermometer sensor = new HidekiThermometer(data);
-              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getBatteryState() ? 1 : 0));
-            } else if(channel.equals("LEVEL")) {
+            }
+            case HidekiPluviometer.TYPE: {
               HidekiPluviometer sensor = new HidekiPluviometer(data);
-              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getRainLevel()));
-            } else if(channel.equals("CHILL")) {
+              if(channel.equals("LEVEL")) {
+                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getRainLevel()));
+              }
+              break;
+            }
+            case HidekiAnemometer.TYPE: {
               HidekiAnemometer sensor = new HidekiAnemometer(data);
-              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getChill()));
-            } else if(channel.equals("SPEED")) {
-              HidekiAnemometer sensor = new HidekiAnemometer(data);
-              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getSpeed()));
-            } else if(channel.equals("GUST")) {
-              HidekiAnemometer sensor = new HidekiAnemometer(data);
-              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getGust()));
-            } else if(channel.equals("DIRECTION")) {
-              HidekiAnemometer sensor = new HidekiAnemometer(data);
-              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getDirection()));
-            } else if(channel.equals("MED")) {
+              if(channel.equals("TEMPERATURE")) {
+                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getTemperature()));
+              } else if(channel.equals("CHILL")) {
+                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getChill()));
+              } else if(channel.equals("SPEED")) {
+                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getSpeed()));
+              } else if(channel.equals("GUST")) {
+                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getGust()));
+              } else if(channel.equals("DIRECTION")) {
+                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getDirection()));
+              }
+              break;
+            }
+            case HidekiUVMeter.TYPE: {
               HidekiUVMeter sensor = new HidekiUVMeter(data);
-              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getMED()));
-            } else if(channel.equals("UV")) {
-              HidekiUVMeter sensor = new HidekiUVMeter(data);
-              this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getUVIndex()));
+              if(channel.equals("TEMPERATURE")) {
+                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getTemperature()));
+              } else if(channel.equals("MED")) {
+                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getMED()));
+              } else if(channel.equals("UV")) {
+                this.eventPublisher.postUpdate(itemName, new DecimalType(sensor.getUVIndex()));
+              }
+              break;
+            }
+            default: {
+              break;
             }
           }
         }

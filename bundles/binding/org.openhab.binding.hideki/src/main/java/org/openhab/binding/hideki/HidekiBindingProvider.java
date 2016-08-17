@@ -10,20 +10,27 @@ package org.openhab.binding.hideki;
 
 import org.openhab.binding.hideki.HidekiBindingConfig;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.items.Item;
 
 /**
  * @author Alexander Falkenstern
  * @since 1.5.0
  */
-public interface HidekiBindingProvider extends BindingProvider {		
+public interface HidekiBindingProvider extends BindingProvider {
   public HidekiBindingConfig getBindingConfig(String itemName);
-	
+
   /**
-   * Returns the item identified by {@code itemName}
+   * Returns the sensor type indetified by {@code itemName}
    * 
    * @param itemName the name of the item to find
-   * @return item identified by {@code itemName}
+   * @return sensor type identified by {@code itemName}
    */
-  public Item getItem(String itemName);
+  public int getSensorType(String itemName);
+
+  /**
+   * Returns the sensor channel indetified by {@code itemName}
+   * 
+   * @param itemName the name of the item to find
+   * @return sensor channel identified by {@code itemName}
+   */
+  public String getSensorChannel(String itemName);
 }

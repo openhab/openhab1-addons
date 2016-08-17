@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.hideki.internal;
 
+import org.openhab.binding.hideki.internal.HidekiGenericBindingConfig;
+
 import org.openhab.binding.hideki.HidekiBindingConfig;
 import org.openhab.binding.hideki.HidekiBindingProvider;
 import org.openhab.core.items.Item;
@@ -25,6 +27,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.5.0
  */
 public class HidekiGenericBindingProvider extends AbstractGenericBindingProvider implements HidekiBindingProvider {
+
   private static final Logger logger = LoggerFactory.getLogger(HidekiGenericBindingProvider.class);
 
   /**
@@ -38,11 +41,20 @@ public class HidekiGenericBindingProvider extends AbstractGenericBindingProvider
    * @{inheritDoc}
    */
   @Override
-  public Item getItem(String itemName) {
+  public int getSensorType(String itemName) {
     HidekiBindingConfig config = getBindingConfig(itemName);
-    return config != null ? config.getItem() : null;
+    return config != null ? config.getSensorType() : HidekiBaseSensor.INVALID;
   }
 
+   /**
+   * @{inheritDoc}
+   */
+  @Override
+  public String getSensorChannel(String itemName) {
+    HidekiBindingConfig config = getBindingConfig(itemName);
+    return config != null ? config.getSensorChannel() : "";
+  }
+ 
   /**
    * @{inheritDoc}
    */
@@ -70,7 +82,7 @@ public class HidekiGenericBindingProvider extends AbstractGenericBindingProvider
       throw new BindingConfigParseException("Invalid item format " + bindingConfig + ", " + "should be sensor:value");
     }
 
-    HidekiBindingConfig config = new HidekiBindingConfig(item, configString[0], configString[1]);
+    HidekiBindingConfig config = new HidekiGenericBindingConfig(configString[0], configString[1]);
     if((config.getSensorType() != HidekiBaseSensor.INVALID) && (config.getSensorChannel() != "")) {
       addBindingConfig(item, config);
     } else {
