@@ -202,9 +202,12 @@ struct DecoderData {
   uint8_t data[DATA_BUFFER_LENGTH];
 } DecoderData;
 
-static const unsigned int LOW_TIME = 183;
-static const unsigned int MID_TIME = 726;
-static const unsigned int HIGH_TIME = 1464;
+// Set limits according to
+// http://jeelabs.org/2010/04/16/cresta-sensor/index.html
+// http://jeelabs.org/2010/04/17/improved-ook-scope/index.html
+static const unsigned int LOW_TIME = 200; //183;
+static const unsigned int MID_TIME = 750; //726;
+static const unsigned int HIGH_TIME = 1300; //1464;
 
 void* decode(void* parameter)
 {
