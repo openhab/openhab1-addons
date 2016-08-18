@@ -147,6 +147,8 @@ public class MpdGenericBindingProvider extends AbstractGenericBindingProvider im
                 itemNames.add(itemName);
             } else if (mpdConfig.containsKey("ARTIST") && PlayerCommandTypeMapping.TRACKARTIST.equals(playerCommand)) {
                 itemNames.add(itemName);
+            } else if (mpdConfig.containsKey("NUMBER") && PlayerCommandTypeMapping.PLAYSONGID.equals(playerCommand)) {
+                itemNames.add(itemName);
             } else if (mpdConfig.containsKey(playerCommand.type.toString())) {
                 // we check to make sure the binding config contains
                 // playerId:playerCommand otherwise we get extra items
@@ -192,7 +194,7 @@ public class MpdGenericBindingProvider extends AbstractGenericBindingProvider im
      * config strings and use it to answer the requests to the MPD binding
      * provider.
      */
-    static class MpdBindingConfig extends HashMap<String, String>implements BindingConfig {
+    static class MpdBindingConfig extends HashMap<String, String> implements BindingConfig {
 
         /** generated serialVersion UID */
         private static final long serialVersionUID = 6164971643530954095L;
