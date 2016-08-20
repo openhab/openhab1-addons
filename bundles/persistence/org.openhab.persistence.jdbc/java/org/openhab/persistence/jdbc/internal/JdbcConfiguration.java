@@ -85,13 +85,14 @@ public class JdbcConfiguration {
         String url = (String) configuration.get("url");
         Properties parsedURL = StringUtilsExt.parseJdbcURL(url);
 
-        if (user == null || StringUtils.isBlank(user)) {
+        if (user.equalsIgnoreCase("false") || StringUtils.isBlank(user)) {
             logger.warn(
                     "JDBC::updateConfig: SQL user is missing - please configure the jdbc:user parameter in openhab.cfg");
-        } else if (password == null || StringUtils.isBlank(password)) {
+        } else if (password.equalsIgnoreCase("false") || StringUtils.isBlank(password)) {
             logger.warn("JDBC::updateConfig: SQL password is missing. Attempting to connect without password. "
                     + "To specify a password configure the jdbc:password parameter in openhab.cfg.");
-        } else if (!(url == null || StringUtils.isBlank(url) || parsedURL.getProperty("parseValid") == "false")) {
+        } else if (!(url.equalsIgnoreCase("false") || StringUtils.isBlank(url)
+                || parsedURL.getProperty("parseValid") == "false")) {
             logger.debug("JDBC::updateConfig: mandatory user={}", user);
             logger.debug("JDBC::updateConfig: mandatory password=<masked> password.length={}", password.length());
             logger.debug("JDBC::updateConfig: mandatory url={}", url);

@@ -49,7 +49,7 @@ public class JdbcHsqldbDAO extends JdbcBaseDAO {
         // http://hsqldb.org/doc/guide/dataaccess-chapt.html#dac_merge_statement
         // SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( NOW(), CAST( ? as #dbType#) )";
         SQL_INSERT_ITEM_VALUE = "MERGE INTO #tableName# "
-                + "USING (VALUES #TABLEPRIMARYVALUE#, CAST( ? as #dbType#)) temp (TIME, VALUE) ON (#tableName#.TIME=temp.TIME) "
+                + "USING (VALUES #tablePrimaryValue#, CAST( ? as #dbType#)) temp (TIME, VALUE) ON (#tableName#.TIME=temp.TIME) "
                 + "WHEN NOT MATCHED THEN INSERT (TIME, VALUE) VALUES (temp.TIME, temp.VALUE)";
     }
 
@@ -106,8 +106,8 @@ public class JdbcHsqldbDAO extends JdbcBaseDAO {
     public void doStoreItemValue(Item item, ItemVO vo) {
         vo = storeItemValueProvider(item, vo);
         String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE,
-                new String[] { "#tableName#", "#dbType#", "#tableName#", "#TABLEPRIMARYVALUE#" }, new String[] {
-                        vo.getTableName(), vo.getDbType(), vo.getTableName(), sqlTypes.get("TABLEPRIMARYVALUE") });
+                new String[] { "#tableName#", "#dbType#", "#tableName#", "#tablePrimaryValue#" }, new String[] {
+                        vo.getTableName(), vo.getDbType(), vo.getTableName(), sqlTypes.get("tablePrimaryValue") });
         Object[] params = new Object[] { vo.getValue() };
         logger.debug("JDBC::doStoreItemValue sql={} value='{}'", sql, vo.getValue());
         Yank.execute(sql, params);

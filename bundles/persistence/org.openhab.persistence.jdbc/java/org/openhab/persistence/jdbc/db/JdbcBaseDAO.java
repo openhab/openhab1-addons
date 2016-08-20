@@ -143,8 +143,8 @@ public class JdbcBaseDAO {
         SQL_DELETE_ITEMS_ENTRY = "DELETE FROM items WHERE ItemName=#itemname#";
         SQL_GET_ITEMID_TABLE_NAMES = "SELECT itemid, itemname FROM #itemsManageTable#";
         SQL_GET_ITEM_TABLES = "SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE' AND table_schema=#jdbcUriDatabaseName# AND NOT table_name=#itemsManageTable#";
-        SQL_CREATE_ITEM_TABLE = "CREATE TABLE IF NOT EXISTS #tableName# (time #TABLEPRIMARYKEY# NOT NULL, value #dbType#, PRIMARY KEY(time))";
-        SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( #TABLEPRIMARYVALUE#, ? ) ON DUPLICATE KEY UPDATE VALUE= ?";
+        SQL_CREATE_ITEM_TABLE = "CREATE TABLE IF NOT EXISTS #tableName# (time #tablePrimaryKey# NOT NULL, value #dbType#, PRIMARY KEY(time))";
+        SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( #tablePrimaryValue#, ? ) ON DUPLICATE KEY UPDATE VALUE= ?";
     }
 
     /**
@@ -162,8 +162,8 @@ public class JdbcBaseDAO {
         sqlTypes.put("ROLLERSHUTTERITEM", "TINYINT");
         sqlTypes.put("STRINGITEM", "VARCHAR(65500)");// jdbc max 21845
         sqlTypes.put("SWITCHITEM", "VARCHAR(6)");
-        sqlTypes.put("TABLEPRIMARYKEY", "TIMESTAMP");
-        sqlTypes.put("TABLEPRIMARYVALUE", "NOW()");
+        sqlTypes.put("tablePrimaryKey", "TIMESTAMP");
+        sqlTypes.put("tablePrimaryValue", "NOW()");
     }
 
     /**
@@ -317,16 +317,16 @@ public class JdbcBaseDAO {
 
     public void doCreateItemTable(ItemVO vo) {
         String sql = StringUtilsExt.replaceArrayMerge(SQL_CREATE_ITEM_TABLE,
-                new String[] { "#tableName#", "#dbType#", "#TABLEPRIMARYKEY#" },
-                new String[] { vo.getTableName(), vo.getDbType(), sqlTypes.get("TABLEPRIMARYKEY") });
+                new String[] { "#tableName#", "#dbType#", "#tablePrimaryKey#" },
+                new String[] { vo.getTableName(), vo.getDbType(), sqlTypes.get("tablePrimaryKey") });
         Yank.execute(sql, null);
     }
 
     public void doStoreItemValue(Item item, ItemVO vo) {
         vo = storeItemValueProvider(item, vo);
         String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE,
-                new String[] { "#tableName#", "#TABLEPRIMARYVALUE#" },
-                new String[] { vo.getTableName(), sqlTypes.get("TABLEPRIMARYVALUE") });
+                new String[] { "#tableName#", "#tablePrimaryValue#" },
+                new String[] { vo.getTableName(), sqlTypes.get("tablePrimaryValue") });
         Object[] params = new Object[] { vo.getValue(), vo.getValue() };
         logger.debug("JDBC::doStoreItemValue sql={} value='{}'", sql, vo.getValue());
         Yank.execute(sql, params);

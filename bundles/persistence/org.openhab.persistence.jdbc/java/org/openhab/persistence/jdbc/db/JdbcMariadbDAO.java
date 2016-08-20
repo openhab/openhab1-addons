@@ -73,8 +73,8 @@ public class JdbcMariadbDAO extends JdbcBaseDAO {
         // Initialize sqlTypes, depending on DB version for example
         if (dbMeta.isDbVersionGreater(5, 1)) {
             sqlTypes.put("DATETIMEITEM", "TIMESTAMP(3)");
-            sqlTypes.put("TABLEPRIMARYKEY", "TIMESTAMP(3)");
-            sqlTypes.put("TABLEPRIMARYVALUE", "NOW(3)");
+            sqlTypes.put("tablePrimaryKey", "TIMESTAMP(3)");
+            sqlTypes.put("tablePrimaryValue", "NOW(3)");
         }
     }
 

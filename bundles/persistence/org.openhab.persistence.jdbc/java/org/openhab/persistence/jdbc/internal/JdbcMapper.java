@@ -49,7 +49,7 @@ public class JdbcMapper {
         if (openConnection()) {
             if (conf.getDbName() == null) {
                 logger.debug(
-                        "JDBC::pingDB asking db for name as absolutelly first db action, after connection is established.");
+                        "JDBC::pingDB asking db for name as absolutely first db action, after connection is established.");
                 String dbName = conf.getDBDAO().doGetDB();
                 conf.setDbName(dbName);
                 ret = dbName.length() > 0;

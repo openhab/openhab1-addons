@@ -59,7 +59,7 @@ public class JdbcPostgresqlDAO extends JdbcBaseDAO {
         // for later use, PostgreSql > 9.5 to prevent PRIMARY key violation use:
         // SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( NOW(), CAST( ? as #dbType#) ) ON
         // CONFLICT DO NOTHING";
-        SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( #TABLEPRIMARYVALUE#, CAST( ? as #dbType#) )";
+        SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( #tablePrimaryValue#, CAST( ? as #dbType#) )";
     }
 
     /**
@@ -135,8 +135,8 @@ public class JdbcPostgresqlDAO extends JdbcBaseDAO {
     public void doStoreItemValue(Item item, ItemVO vo) {
         vo = storeItemValueProvider(item, vo);
         String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE,
-                new String[] { "#tableName#", "#dbType#", "#TABLEPRIMARYVALUE#" },
-                new String[] { vo.getTableName(), vo.getDbType(), sqlTypes.get("TABLEPRIMARYVALUE") });
+                new String[] { "#tableName#", "#dbType#", "#tablePrimaryValue#" },
+                new String[] { vo.getTableName(), vo.getDbType(), sqlTypes.get("tablePrimaryValue") });
         Object[] params = new Object[] { vo.getValue() };
         logger.debug("JDBC::doStoreItemValue sql={} value='{}'", sql, vo.getValue());
         Yank.execute(sql, params);

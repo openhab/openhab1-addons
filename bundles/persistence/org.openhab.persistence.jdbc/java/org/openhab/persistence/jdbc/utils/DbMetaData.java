@@ -12,7 +12,7 @@ import com.zaxxer.hikari.HikariDataSource;
 /**
  *
  * @author Helmut Lehmeyer
- * @since 1.8.0
+ * @since 1.9.0
  */
 public class DbMetaData {
 
@@ -40,14 +40,14 @@ public class DbMetaData {
                 dbMajorVersion = meta.getDatabaseMajorVersion();
                 logger.debug("dbMajorVersion = '{}'", dbMajorVersion);
             } catch (Exception e) {
-                logger.error("Asking for 'dbMajorVersion' is a unsupported: '{}'", e);
+                logger.error("Asking for 'dbMajorVersion' is a unsupported: '{}'", e.getMessage());
             }
 
             try {
                 dbMinorVersion = meta.getDatabaseMinorVersion();
                 logger.debug("dbMinorVersion = '{}'", dbMinorVersion);
             } catch (Exception e) {
-                logger.error("Asking for 'dbMajorVersion' is a unsupported: '{}'", e);
+                logger.error("Asking for 'dbMajorVersion' is a unsupported: '{}'", e.getMessage());
             }
 
             driverMajorVersion = meta.getDriverMajorVersion();
@@ -63,7 +63,7 @@ public class DbMetaData {
             logger.debug("dbProductVersion = '{}'", dbProductVersion);
 
         } catch (SQLException e1) {
-            logger.error("Asking for 'dbMajorVersion' seams to be unsupported: '{}'", e1);
+            logger.error("Asking for 'dbMajorVersion' seems to be unsupported: '{}'", e1.getMessage());
         }
 
     }
