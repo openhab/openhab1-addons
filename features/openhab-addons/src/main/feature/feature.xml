@@ -665,15 +665,6 @@
       </feature>
   -->
 
-  <!-- voice -->
-
-  <feature name="openhab-voice-marytts" description="Mary TTS" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.multimedia.tts.marytts/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/marytts.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/marytts</configfile>
-  </feature>
-
   <!-- shared features, not end user facing -->
   <feature name="openhab-io-gpio" description="GPIO IO" version="${project.version}">
     <feature>openhab-runtime-base</feature>
