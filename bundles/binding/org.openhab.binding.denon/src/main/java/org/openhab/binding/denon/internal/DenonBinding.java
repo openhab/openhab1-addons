@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author Jeroen Idserda
  * @since 1.7.0
  */
-public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider>implements ManagedService {
+public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider> implements ManagedService {
 
     private static final String CONFIG_REFRESH = "refresh";
 
@@ -46,6 +46,10 @@ public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider>imp
     private static final String CONFIG_UPDATE_TYPE_TELNET = "telnet";
 
     private static final String CONFIG_SERVICE_PID = "service.pid";
+
+    private static final String CONFIG_TELNET_PORT = "telnetPort";
+
+    private static final String CONFIG_HTTP_PORT = "httpPort";
 
     private static final String SWITCH_INPUT = "SI";
 
@@ -178,6 +182,10 @@ public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider>imp
                         if (!value.equals(CONFIG_UPDATE_TYPE_TELNET) && !value.equals(CONFIG_UPDATE_TYPE_HTTP)) {
                             logger.warn("Invalid connection type {} for instance {}, using default", value, instance);
                         }
+                    } else if (CONFIG_TELNET_PORT.equals(option)) {
+                        connection.setTelnetPort(Integer.parseInt(value));
+                    } else if (CONFIG_HTTP_PORT.equals(option)) {
+                        connection.setHttpPort(Integer.parseInt(value));
                     }
                 }
             }
