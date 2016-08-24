@@ -61,6 +61,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.UnitProperties;
 import com.digitaldan.jomnilinkII.MessageTypes.properties.ZoneProperties;
 import com.digitaldan.jomnilinkII.MessageTypes.statuses.AreaStatus;
 import com.digitaldan.jomnilinkII.MessageTypes.statuses.AudioZoneStatus;
+import com.digitaldan.jomnilinkII.MessageTypes.statuses.AuxSensorStatus;
 import com.digitaldan.jomnilinkII.MessageTypes.statuses.Status;
 import com.digitaldan.jomnilinkII.MessageTypes.statuses.ThermostatStatus;
 import com.digitaldan.jomnilinkII.MessageTypes.statuses.UnitStatus;
@@ -412,8 +413,12 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
                         c.enableNotifications();
 
                         if (generateItems) {
-                            OmnilinkItemGenerator gen = new OmnilinkItemGenerator(c);
-                            logger.info(gen.generateItemsAndGroups());
+                            try {
+                                OmnilinkItemGenerator gen = new OmnilinkItemGenerator(c);
+                                logger.info(gen.generateItemsAndGroups());
+                            } catch (Exception e) {
+                                logger.error("Could not generate items", e);
+                            }
                         }
 
                         // update known items with state
@@ -881,25 +886,30 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
             unit.getProperties().updateUnit((UnitStatus) status);
             updateItemsForDevice(unit);
         } else if (status instanceof ThermostatStatus && thermostatMap.containsKey(number)) {
-            logger.debug("Updating thermo " + number);
+            logger.debug("Updating thermo {}", number);
             Thermostat thermo = thermostatMap.get(number);
             thermo.getProperties().updateThermostat((ThermostatStatus) status);
             updateItemsForDevice(thermo);
         } else if (status instanceof AudioZoneStatus && audioZoneMap.containsKey(number)) {
-            logger.debug("Updating audioZone " + number);
+            logger.debug("Updating audioZone {}", number);
             AudioZone az = audioZoneMap.get(number);
             az.getProperties().updateAudioZone((AudioZoneStatus) status);
             updateItemsForDevice(az);
         } else if (status instanceof AreaStatus && areaMap.containsKey(number)) {
-            logger.debug("Updating area " + number);
+            logger.debug("Updating area {}", number);
             Area area = areaMap.get(number);
             area.getProperties().updateArea((AreaStatus) status);
             updateItemsForDevice(area);
         } else if (status instanceof ZoneStatus && zoneMap.containsKey(number)) {
-            logger.debug("Updating zone " + number);
+            logger.debug("Updating zone {}", number);
             Zone zone = zoneMap.get(number);
             zone.getProperties().updateZone((ZoneStatus) status);
             updateItemsForDevice(zone);
+        } else if (status instanceof AuxSensorStatus && auxMap.containsKey(number)) {
+            logger.debug("Updating aux {}", number);
+            Auxiliary aux = auxMap.get(number);
+            aux.getProperties().updateAuxSensor((AuxSensorStatus) status);
+            updateItemsForDevice(aux);
         }
     }
 
