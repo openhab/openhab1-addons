@@ -26,6 +26,7 @@ import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
  * (https://github.com/fcrisciani/java-myhome-library) released under EPL
  *
  * @author Tom De Vlaminck, Lago Moreno
+ * @author Julian Divett - added CEN plus support
  * @serial 1.0
  * @since 1.7.0
  */
@@ -388,6 +389,35 @@ public class MonitorSessionThread extends Thread {
                     logger.debug("other CEN Basic or Evolved message");
                 }
             }
+            if (who.equals("25")) {
+                objectClass = "CEN_Plus";
+                objectName = who + "*" + where;
+                what = frameParts[2];
+                String[] what_parts = what.split("#");
+
+                if (what_parts.length == 2) {
+                    // push button n
+                    event.addProperty("push_button_n", what_parts[1]);
+                    if (what_parts[0].equals("21")) {
+                        // type of pressure
+                        event.addProperty("pressure", "Short pressure");
+                    }
+                    if (what_parts[0].equals("22")) {
+                        // type of pressure
+                        event.addProperty("pressure", "Start of extended pressure");
+                    }
+                    if (what_parts[0].equals("24")) {
+                        // type of pressure
+                        event.addProperty("pressure", "Release after an extended pressure");
+                    }
+                    if (what_parts[0].equals("23")) {
+                        // type of pressure
+                        event.addProperty("pressure", "Extended pressure");
+                    }
+                } else {
+                    logger.debug("CEN Plus message");
+                }
+            }
 
             event.addProperty("who", who);
             if (where != null) {
@@ -685,6 +715,32 @@ public class MonitorSessionThread extends Thread {
                     } else {
                         messageDescription = "other CEN Basic or Evolved message";
                     }
+
+                    // CEN (Plus)
+                case 25:
+                    messageType = "CEN Plus";
+                    objectClass = "CENPlus";
+
+                    what_parts = what.split("#");
+
+                    if (what_parts.length == 2) {
+                        if (what_parts[0].equalsIgnoreCase("21")) {
+                            // type of pressure
+                            messageDescription = "Short pressure";
+                        } else if (what_parts[0].equalsIgnoreCase("22")) {
+                            // type of pressure
+                            messageDescription = "Start of extended pressure";
+                        } else if (what_parts[0].equalsIgnoreCase("23")) {
+                            // type of pressure
+                            messageDescription = "Extended pressure";
+                        } else if (what_parts[0].equalsIgnoreCase("24")) {
+                            // type of pressure
+                            messageDescription = "Release after an extended pressure";
+                        }
+                    } else {
+                        messageDescription = "other CEN Basic or Evolved message";
+                    }
+
             } // close switch(who)
 
             if (who != null) {

@@ -17,14 +17,12 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
-import org.openhab.core.types.UnDefType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +31,12 @@ import be.devlaminck.openwebnet.OpenWebNet;
 import be.devlaminck.openwebnet.ProtocolRead;
 
 /**
- * This class connects to the openweb gateway of bticino (MH200(N)). It opens a
- * monitor session to retrieve the events and creates, for every command
- * received, a command on the bus.
+ * This class connects to the openweb gateway of bticino (MH200(N)) It opens a
+ * monitor session to retrieve the events And creates (for every) command
+ * received a command on the bus
  *
  * @author Tom De Vlaminck
+ * @author Julian Divett - added CEN Plus support
  * @serial 1.0
  * @since 1.7.0
  */
@@ -92,7 +91,7 @@ public class BticinoDevice implements IBticinoEventListener {
 
     /**
      * Initialize this device
-     * 
+     *
      * @throws InitializationException
      */
     public void initialize() throws InitializationException {
@@ -102,7 +101,7 @@ public class BticinoDevice implements IBticinoEventListener {
 
     /**
      * Start this device
-     * 
+     *
      */
     public void startDevice() {
         if (m_open_web_net == null) {
@@ -142,36 +141,33 @@ public class BticinoDevice implements IBticinoEventListener {
                 switch (l_who) {
                     // Lights
                     case 1: {
-                        if (command instanceof IncreaseDecreaseType ) {
-                            if( IncreaseDecreaseType.INCREASE.equals(command) ) {
+                        if (command instanceof IncreaseDecreaseType) {
+                            if (IncreaseDecreaseType.INCREASE.equals(command)) {
                                 logger.debug("Light received INCREASE command.");
                                 l_pr.addProperty("what", "30");
-                            }
-                            else {
+                            } else {
                                 logger.debug("Light received DECREASE command.");
                                 l_pr.addProperty("what", "31");
                             }
-                        }
-                        else if (command instanceof PercentType) {
-                            PercentType pType = (PercentType)command;
-                            //take percentage and divide by 10, round 1 (ie 0 to 10 is the result, nothing else)
-                            int percentValue = (int)(Math.floor(pType.intValue()/10F));
+                        } else if (command instanceof PercentType) {
+                            PercentType pType = (PercentType) command;
+                            // take percentage and divide by 10, round 1 (ie 0 to 10 is the result, nothing else)
+                            int percentValue = (int) (Math.floor(pType.intValue() / 10F));
                             logger.debug("Set light value to {}", percentValue);
                             l_pr.addProperty("what", String.valueOf(percentValue));
-                        }
-                        else if (command instanceof OnOffType) {
+                        } else if (command instanceof OnOffType) {
                             if (OnOffType.ON.equals(command)) {
                                 l_pr.addProperty("what", "1");
                             } else {
                                 l_pr.addProperty("what", "0");
                             }
-                        }
-                        else {
-                            logger.warn("Received unknown command type for lighting: '{}'", command.getClass().getName());
+                        } else {
+                            logger.warn("Received unknown command type for lighting: '{}'",
+                                    command.getClass().getName());
                         }
                         break;
                     }
-                        // Shutter
+                    // Shutter
                     case 2: {
                         if (UpDownType.UP.equals(command)) {
                             l_pr.addProperty("what", "1");
@@ -182,12 +178,24 @@ public class BticinoDevice implements IBticinoEventListener {
                         }
                         break;
                     }
-                        // CEN Basic & Evolved
+                    // CEN Basic & Evolved
                     case 15: {
                         // Only for the on type, send a CEN event (aka a pushbutton
                         // device)
                         // the CEN can start a scenario on eg. a MH200N gateway
                         // device
+                        if (OnOffType.ON.equals(command)) {
+                            l_pr.addProperty("what", itemBindingConfig.what);
+                        }
+                        break;
+                    }
+                    // CEN Plus
+                    case 25: {
+                        // Only for the on type, send a CEN event (aka a pushbutton
+                        // device)
+                        // Openwebnet adds a the number 2 to the where id (so CEN Number 43 becomes 243)
+                        // which ideally could be stripped out
+
                         if (OnOffType.ON.equals(command)) {
                             l_pr.addProperty("what", itemBindingConfig.what);
                         }
@@ -263,6 +271,36 @@ public class BticinoDevice implements IBticinoEventListener {
                         }
                     }
                 }
+
+                // Note this uses the postUpdate function of Openhab instead of sendCommand which is used
+                // by the CEN 15 function. The sendCommmand function was not working although this may have
+                // been because I do not have a MH200 gateway. The postUpdate function seems to cure this.
+
+                else if (p_protocol_read.getProperty("messageType").equalsIgnoreCase("CEN Plus")) {
+                    // Pushbutton virtual address must match
+                    if (l_binding_config.what.equalsIgnoreCase(p_protocol_read.getProperty("what"))) {
+                        logger.debug("Gateway [" + m_gateway_id + "], RECEIVED EVENT FOR SwitchItem ["
+                                + l_item.getName() + "], TRANSLATE TO OPENHAB BUS EVENT");
+
+                        if (p_protocol_read.getProperty("messageDescription").equalsIgnoreCase("Short pressure")) {
+                            // only returns when finished
+                            eventPublisher.postUpdate(l_item.getName(), OnOffType.ON);
+                        } else if (p_protocol_read.getProperty("messageDescription")
+                                .equalsIgnoreCase("Start of extended pressure")) {
+                            // only returns when finished
+                            eventPublisher.postUpdate(l_item.getName(), OnOffType.ON);
+                        } else if (p_protocol_read.getProperty("messageDescription")
+                                .equalsIgnoreCase("Extended pressure")) {
+                            // only returns when finished
+                            eventPublisher.postUpdate(l_item.getName(), OnOffType.ON);
+                        } else if (p_protocol_read.getProperty("messageDescription")
+                                .equalsIgnoreCase("Release after an extended pressure")) {
+                            // only returns when finished
+                            eventPublisher.postUpdate(l_item.getName(), OnOffType.ON);
+                        }
+                    }
+                }
+
             } else if (l_item instanceof RollershutterItem) {
                 logger.debug("Gateway [" + m_gateway_id + "], RECEIVED EVENT FOR RollershutterItem [" + l_item.getName()
                         + "], TRANSLATE TO OPENHAB BUS EVENT");
