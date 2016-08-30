@@ -10,12 +10,14 @@ package org.openhab.binding.satel.config;
 
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openhab.binding.satel.SatelBindingConfig;
 import org.openhab.binding.satel.command.ControlObjectCommand;
 import org.openhab.binding.satel.command.IntegraStateCommand;
 import org.openhab.binding.satel.command.SatelCommand;
 import org.openhab.binding.satel.internal.event.IntegraStateEvent;
 import org.openhab.binding.satel.internal.event.SatelEvent;
+import org.openhab.binding.satel.internal.types.DoorsControl;
 import org.openhab.binding.satel.internal.types.DoorsState;
 import org.openhab.binding.satel.internal.types.IntegraType;
 import org.openhab.binding.satel.internal.types.ObjectType;
@@ -24,6 +26,7 @@ import org.openhab.binding.satel.internal.types.OutputState;
 import org.openhab.binding.satel.internal.types.PartitionControl;
 import org.openhab.binding.satel.internal.types.PartitionState;
 import org.openhab.binding.satel.internal.types.StateType;
+import org.openhab.binding.satel.internal.types.ZoneControl;
 import org.openhab.binding.satel.internal.types.ZoneState;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
@@ -183,9 +186,34 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
                             outputs, userCode);
 
                 case DOORS:
-                    break;
+                    // for doors you can also control outputs of type 101, but we do not support this feature
+                    // anyway we need to send list of outputs, so we have 'dummy' array for this purpose
+                    byte[] doors = getObjectBitset(8);
+                    byte[] dummy = new byte[(integraType == IntegraType.I256_PLUS) ? 32 : 16];
+                    if (switchOn) {
+                        return new ControlObjectCommand(DoorsControl.OPEN, ArrayUtils.addAll(dummy, doors), userCode);
+                    } else {
+                        return null;
+                    }
 
                 case ZONE:
+                    byte[] zones = getObjectBitset((integraType == IntegraType.I256_PLUS) ? 32 : 16);
+                    switch ((ZoneState) this.stateType) {
+                        case BYPASS:
+                            return new ControlObjectCommand(switchOn ? ZoneControl.BYPASS : ZoneControl.UNBYPASS, zones,
+                                    userCode);
+
+                        case ISOLATE:
+                            if (switchOn) {
+                                return new ControlObjectCommand(ZoneControl.ISOLATE, zones, userCode);
+                            } else {
+                                return null;
+                            }
+
+                        default:
+                            // do nothing for other types of state
+                            break;
+                    }
                     break;
 
                 case PARTITION:
@@ -227,8 +255,8 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
                                             : PartitionControl.ARM_MODE_3) : PartitionControl.DISARM,
                                     partitions, userCode);
 
-                        // do nothing for other types of state
                         default:
+                            // do nothing for other types of state
                             break;
                     }
             }
