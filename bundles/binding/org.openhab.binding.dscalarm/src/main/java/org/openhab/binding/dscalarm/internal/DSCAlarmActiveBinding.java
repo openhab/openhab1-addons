@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.6.0
  */
 
-public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBindingProvider>implements ManagedService, DSCAlarmEventListener, DSCAlarmActionProvider {
+public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBindingProvider> implements ManagedService, DSCAlarmEventListener, DSCAlarmActionProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(DSCAlarmActiveBinding.class);
 
@@ -1265,7 +1265,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
                 return api.sendCommand(apiCode, data);
             }
         } catch (Exception e) {
-            logger.error("sendDSCAlarmCommand(): Failed to send DSC Alarm Command! - {}", e);
+            logger.error("sendDSCAlarmCommand(): Failed to Send DSC Alarm Command! - {}", e);
             return false;
         }
     }
