@@ -8,6 +8,7 @@
  */
 package org.openhab.persistence.jdbc.internal;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
@@ -85,13 +86,25 @@ public class JdbcConfiguration {
         String url = (String) configuration.get("url");
         Properties parsedURL = StringUtilsExt.parseJdbcURL(url);
 
-        if (user == null || StringUtils.isBlank(user)) {
+        if (StringUtils.isBlank(user)) {
             logger.warn(
                     "JDBC::updateConfig: SQL user is missing - please configure the jdbc:user parameter in openhab.cfg");
-        } else if (password == null || StringUtils.isBlank(password)) {
+        } else if (StringUtils.isBlank(password)) {
             logger.warn("JDBC::updateConfig: SQL password is missing. Attempting to connect without password. "
                     + "To specify a password configure the jdbc:password parameter in openhab.cfg.");
-        } else if (!(url == null || StringUtils.isBlank(url) || parsedURL.getProperty("parseValid") == "false")) {
+        } else if (StringUtils.isBlank(url)) {
+            logger.warn(
+                    "JDBC::updateConfig: SQL url is missing - please configure url in openhab.cfg like 'jdbc:<service>:<host>[:<port>;<attributes>]'");
+        } else if ("false".equalsIgnoreCase(parsedURL.getProperty("parseValid"))) {
+            Enumeration<?> en = parsedURL.propertyNames();
+            String enstr = "";
+            for (Object key : Collections.list(en)) {
+                enstr += key + " = " + parsedURL.getProperty("" + key) + "\n";
+            }
+            logger.warn(
+                    "JDBC::updateConfig: SQL url is not well formated:\n{}Please configure url in openhab.cfg like 'jdbc:<service>:<host>[:<port>;<attributes>]'",
+                    enstr);
+        } else {
             logger.debug("JDBC::updateConfig: mandatory user={}", user);
             logger.debug("JDBC::updateConfig: mandatory password=<masked> password.length={}", password.length());
             logger.debug("JDBC::updateConfig: mandatory url={}", url);
@@ -193,9 +206,6 @@ public class JdbcConfiguration {
 
             logger.debug("JDBC::updateConfig: configuration complete. service={}", getName());
 
-        } else {
-            logger.warn(
-                    "JDBC::updateConfig: url The SQL database URL is missing - please configure the jdbc:url parameter in openhab.cfg");
         }
     }
 
