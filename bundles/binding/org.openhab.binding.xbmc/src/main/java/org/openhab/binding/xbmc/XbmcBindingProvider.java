@@ -13,7 +13,7 @@ import org.openhab.core.binding.BindingProvider;
 /**
  * Binding provider interface. Defines how to get properties from a binding configuration.
  * 
- * @author tlan, Ben Jones
+ * @author tlan, Ben Jones, plebs 
  * @since 1.5.0
  */
 public interface XbmcBindingProvider extends BindingProvider {
