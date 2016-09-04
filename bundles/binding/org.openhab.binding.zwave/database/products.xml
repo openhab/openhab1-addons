@@ -2415,6 +2415,20 @@
         <Product>
             <Reference>
                 <Type>0001</Type>
+                <Id>0009</Id>
+            </Reference>
+            <Model>PAN03</Model>
+            <Label lang="en">In Wall Single Relay(1 Way) Switch Module 1x 3.0kW
+                with power meter
+            </Label>
+            <Label lang="de">Einbau einfach Schalter Modul 1x 3.0kW mit
+                Leeistungsmessung
+            </Label>
+            <ConfigFile>philio/pan03.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>0001</Type>
                 <Id>0003</Id>
             </Reference>
             <Model>PAN04-1</Model>
