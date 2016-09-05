@@ -41,13 +41,15 @@ public class JdbcSqliteDAO extends JdbcBaseDAO {
         logger.debug("JDBC::initSqlQueries: '{}'", this.getClass().getSimpleName());
         SQL_IF_TABLE_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND name='#searchTable#'";
         SQL_CREATE_ITEMS_TABLE_IF_NOT = "CREATE TABLE IF NOT EXISTS #itemsManageTable# (ItemId INTEGER PRIMARY KEY AUTOINCREMENT, #colname# #coltype# NOT NULL)";
-        SQL_INSERT_ITEM_VALUE = "INSERT OR IGNORE INTO #tableName# (TIME, VALUE) VALUES( DATETIME('now'), CAST( ? as #dbType#) )";
+        SQL_INSERT_ITEM_VALUE = "INSERT OR IGNORE INTO #tableName# (TIME, VALUE) VALUES( #tablePrimaryValue#, CAST( ? as #dbType#) )";
     }
 
     /**
      * INFO: http://www.java2s.com/Code/Java/Database-SQL-JDBC/StandardSQLDataTypeswithTheirJavaEquivalents.htm
      */
     private void initSqlTypes() {
+        logger.debug("JDBC::initSqlTypes: Initialize the type array");
+        sqlTypes.put("tablePrimaryValue", "strftime('%Y-%m-%d %H:%M:%f' , 'now' , 'localtime')");
     }
 
     /**
@@ -80,8 +82,9 @@ public class JdbcSqliteDAO extends JdbcBaseDAO {
     @Override
     public void doStoreItemValue(Item item, ItemVO vo) {
         vo = storeItemValueProvider(item, vo);
-        String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE, new String[] { "#tableName#", "#dbType#" },
-                new String[] { vo.getTableName(), vo.getDbType() });
+        String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE,
+                new String[] { "#tableName#", "#dbType#", "#tablePrimaryValue#" },
+                new String[] { vo.getTableName(), vo.getDbType(), sqlTypes.get("tablePrimaryValue") });
         Object[] params = new Object[] { vo.getValue() };
         logger.debug("JDBC::doStoreItemValue sql={} value='{}'", sql, vo.getValue());
         Yank.execute(sql, params);

@@ -49,6 +49,8 @@ public class JdbcPostgresqlDAO extends JdbcBaseDAO {
 
     private void initSqlQueries() {
         logger.debug("JDBC::initSqlQueries: '{}'", this.getClass().getSimpleName());
+        // System Information Functions: https://www.postgresql.org/docs/9.2/static/functions-info.html
+        SQL_GET_DB = "SELECT CURRENT_DATABASE()";
         SQL_IF_TABLE_EXISTS = "SELECT * FROM PG_TABLES WHERE TABLENAME='#searchTable#'";
         SQL_CREATE_ITEMS_TABLE_IF_NOT = "CREATE TABLE IF NOT EXISTS #itemsManageTable# (itemid SERIAL NOT NULL, #colname# #coltype# NOT NULL, CONSTRAINT #itemsManageTable#_pkey PRIMARY KEY (itemid))";
         SQL_CREATE_NEW_ENTRY_IN_ITEMS_TABLE = "INSERT INTO items (itemname) SELECT itemname FROM #itemsManageTable# UNION VALUES ('#itemname#') EXCEPT SELECT itemname FROM items";
@@ -57,7 +59,7 @@ public class JdbcPostgresqlDAO extends JdbcBaseDAO {
         // for later use, PostgreSql > 9.5 to prevent PRIMARY key violation use:
         // SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( NOW(), CAST( ? as #dbType#) ) ON
         // CONFLICT DO NOTHING";
-        SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( NOW(), CAST( ? as #dbType#) )";
+        SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( #tablePrimaryValue#, CAST( ? as #dbType#) )";
     }
 
     /**
@@ -132,8 +134,9 @@ public class JdbcPostgresqlDAO extends JdbcBaseDAO {
     @Override
     public void doStoreItemValue(Item item, ItemVO vo) {
         vo = storeItemValueProvider(item, vo);
-        String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE, new String[] { "#tableName#", "#dbType#" },
-                new String[] { vo.getTableName(), vo.getDbType() });
+        String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE,
+                new String[] { "#tableName#", "#dbType#", "#tablePrimaryValue#" },
+                new String[] { vo.getTableName(), vo.getDbType(), sqlTypes.get("tablePrimaryValue") });
         Object[] params = new Object[] { vo.getValue() };
         logger.debug("JDBC::doStoreItemValue sql={} value='{}'", sql, vo.getValue());
         Yank.execute(sql, params);
