@@ -13,6 +13,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.xbmc.XbmcBindingProvider;
 import org.openhab.binding.xbmc.rpc.XbmcConnector;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -32,10 +33,10 @@ import org.slf4j.LoggerFactory;
  * All item updates are received asynchronously via the web socket All item
  * commands are sent via the web socket
  *
- * @author tlan, Ben Jones
+ * @author tlan, Ben Jones, Plebs
  * @since 1.5.0
  */
-public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider>implements ManagedService {
+public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider> implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(XbmcActiveBinding.class);
 
@@ -46,12 +47,12 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
      * the refresh interval which is used to check for lost connections
      * (optional, defaults to 60000ms)
      */
-    private long refreshInterval = 60000;
+    private long refreshInterval = 60000L;
 
     @Override
     public void activate() {
         logger.debug(getName() + " activate()");
-        setProperlyConfigured(true);
+		//setProperlyConfigured(true); // <-Removed as it has been moved to the "updated" call 
     }
 
     @Override
@@ -310,6 +311,28 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
                 connector.playerStop();
             } else if (property.equals("Input.ExecuteAction")) {
                 connector.inputExecuteAction(command.toString());
+            } else if (property.equals("Input.Back")) {
+                connector.inputBack();
+            } else if (property.equals("Input.ContextMenu")) {
+                connector.inputContextMenu();
+            } else if (property.equals("Input.Down")) {
+                connector.inputDown();
+            } else if (property.equals("Input.Home")) {
+                connector.inputHome();
+            } else if (property.equals("Input.Info")) {
+                connector.inputInfo();
+            } else if (property.equals("Input.Left")) {
+                connector.inputLeft();
+            } else if (property.equals("Input.Right")) {
+                connector.inputRight();
+            } else if (property.equals("Input.Select")) {
+                connector.inputSelect();
+            } else if (property.equals("Input.ShowCodec")) {
+                connector.inputShowCodec();
+            } else if (property.equals("Input.ShowOSD")) {
+                connector.inputShowOSD();
+            } else if (property.equals("Input.Up")) {
+                connector.inputUp();
             } else if (property.equals("GUI.ShowNotification")) {
                 connector.showNotification("openHAB", command.toString());
             } else if (property.equals("System.Shutdown") && command == OnOffType.OFF) {
@@ -388,10 +411,20 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
         Map<String, XbmcHost> hosts = new HashMap<String, XbmcHost>();
 
         if (config != null) {
+
+            String refreshIntervalString = (String) config.get("refreshInterval");
+            if (StringUtils.isNotBlank(refreshIntervalString)) {
+                refreshInterval = Long.parseLong(refreshIntervalString);
+            }
+
             Enumeration<String> keys = config.keys();
 
             while (keys.hasMoreElements()) {
+                // Ignore "refreshInterval" key
                 String key = keys.nextElement();
+                if ("refreshInterval".equals(key)) {
+                    continue;
+                }
 
                 if ("service.pid".equals(key)) {
                     continue;
@@ -426,6 +459,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
                 hosts.put(hostname, host);
             }
 
+            setProperlyConfigured(true);
             nameHostMapper = hosts;
             registerAllWatches();
         }

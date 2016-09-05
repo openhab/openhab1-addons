@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Extension of the default OSGi bundle activator
  *
- * @author tlan, Ben Jones
+ * @author tlan, Ben Jones,plebs
  * @since 1.5.0
  */
 public final class XbmcActivator implements BundleActivator {

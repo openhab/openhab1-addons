@@ -131,11 +131,14 @@ public abstract class RpcCall {
         try {
             // we fire this request off asynchronously and let the completeHandler
             // process any response as necessary (can be null)
+            logger.debug("Write JSON: " + writeJson(request)); // Stefano: logging the JSON request
             ListenableFuture<Response> future = client.preparePost(uri).setBody(writeJson(request))
                     .setHeader("content-type", "application/json").setHeader("accept", "application/json")
                     .execute(new AsyncCompletionHandler<Response>() {
                         @Override
                         public Response onCompleted(Response response) throws Exception {
+                            logger.debug("Read JSON: " + response.getResponseBody()); // Stefano: logging the JSON
+                                                                                      // response
                             Map<String, Object> json = readJson(response.getResponseBody());
 
                             // if we get an error then throw an exception to stop the
