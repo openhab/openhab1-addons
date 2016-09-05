@@ -2418,7 +2418,7 @@
                 <Id>0009</Id>
             </Reference>
             <Model>PAN03</Model>
-            <Label lang="en">In Wall Single Relay(1 Way) Switch Module 1x 3.0kW
+            <Label lang="en">In Wall Single Relay (1 Way) Switch Module 1x 3.0kW
                 with power meter
             </Label>
             <Label lang="de">Einbau einfach Schalter Modul 1x 3.0kW mit
@@ -2432,7 +2432,7 @@
                 <Id>0003</Id>
             </Reference>
             <Model>PAN04-1</Model>
-            <Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW
+            <Label lang="en">In Wall Dual Relay (1 Way) Switch Module 2x 1.5kW
                 with power meter
             </Label>
             <Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit
@@ -2446,7 +2446,7 @@
                 <Id>0012</Id>
             </Reference>
             <Model>PAN04-1B</Model>
-            <Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW
+            <Label lang="en">In Wall Dual Relay (1 Way) Switch Module 2x 1.5kW
                 with power meter
             </Label>
             <Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit
@@ -2460,7 +2460,7 @@
                 <Id>0004</Id>
             </Reference>
             <Model>PAN06-1</Model>
-            <Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW
+            <Label lang="en">In Wall Dual Relay (1 Way) Switch Module 2x 1.5kW
             </Label>
             <Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW</Label>
             <ConfigFile>philio/pan06_1.xml</ConfigFile>
@@ -2471,7 +2471,7 @@
                 <Id>0013</Id>
             </Reference>
             <Model>PAN06-1A</Model>
-            <Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW
+            <Label lang="en">In Wall Dual Relay (1 Way) Switch Module 2x 1.5kW
             </Label>
             <Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW</Label>
             <ConfigFile>philio/pan06_1a.xml</ConfigFile>
