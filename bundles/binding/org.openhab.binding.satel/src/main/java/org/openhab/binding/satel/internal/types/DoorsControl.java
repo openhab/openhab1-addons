@@ -11,36 +11,24 @@ package org.openhab.binding.satel.internal.types;
 import java.util.BitSet;
 
 /**
- * Available partition control types.
+ * Available doors control types.
  *
  * @author Krzysztof Goworek
- * @since 1.7.0
+ * @since 1.9.0
  */
-public enum PartitionControl implements ControlType {
-    ARM_MODE_0(0x80),
-    ARM_MODE_1(0x81),
-    ARM_MODE_2(0x82),
-    ARM_MODE_3(0x83),
-    DISARM(0x84),
-    CLEAR_ALARM(0x85),
-    FORCE_ARM_MODE_0(0xa0),
-    FORCE_ARM_MODE_1(0xa1),
-    FORCE_ARM_MODE_2(0xa2),
-    FORCE_ARM_MODE_3(0xa3);
+public enum DoorsControl implements ControlType {
+    OPEN(0x8A);
 
     private static final BitSet stateBits;
 
     static {
-        // for simplicity we just add all partition states here
         stateBits = new BitSet();
-        for (PartitionState state : PartitionState.values()) {
-            stateBits.set(state.getRefreshCommand());
-        }
+        stateBits.set(DoorsState.OPENED.getRefreshCommand());
     }
 
     private byte controlCommand;
 
-    PartitionControl(int controlCommand) {
+    DoorsControl(int controlCommand) {
         this.controlCommand = (byte) controlCommand;
     }
 
@@ -57,7 +45,7 @@ public enum PartitionControl implements ControlType {
      */
     @Override
     public ObjectType getObjectType() {
-        return ObjectType.PARTITION;
+        return ObjectType.DOORS;
     }
 
     /**
