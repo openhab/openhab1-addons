@@ -58,8 +58,11 @@ public class PlayerGetItem extends RpcCall {
             if (property.equals("Player.Label")) {
                 continue;
             }
-            String paramProperty = getParamProperty(property);
-            paramProperties.add(paramProperty);
+            if (property.startsWith("Player.")) {
+                // properties entered as 'Player.Title' etc - so strip the first 7 chars
+                String paramProperty = getParamProperty(property);
+                paramProperties.add(paramProperty);
+            }
         }
 
         Map<String, Object> params = new HashMap<String, Object>();
@@ -125,4 +128,5 @@ public class PlayerGetItem extends RpcCall {
         // properties entered as 'Player.Title' etc - so strip the first 7 chars
         return property.substring(7).toLowerCase();
     }
+
 }

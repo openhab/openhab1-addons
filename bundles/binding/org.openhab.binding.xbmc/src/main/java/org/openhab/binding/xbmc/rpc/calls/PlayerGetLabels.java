@@ -21,12 +21,12 @@ import org.slf4j.LoggerFactory;
 import com.ning.http.client.AsyncHttpClient;
 
 /**
- * Player.GetProperties RPC
+ * Player.GetLabels RPC
  *
  * @author Ben Jones
  * @since 1.5.0
  */
-public class PlayerGetProperties extends RpcCall {
+public class PlayerGetLabels extends RpcCall {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcCall.class);
 
@@ -35,7 +35,7 @@ public class PlayerGetProperties extends RpcCall {
 
     private Map<String, Object> item;
 
-    public PlayerGetProperties(AsyncHttpClient client, String uri) {
+    public PlayerGetLabels(AsyncHttpClient client, String uri) {
         super(client, uri);
     }
 
@@ -49,28 +49,29 @@ public class PlayerGetProperties extends RpcCall {
 
     @Override
     protected String getName() {
-        return "Player.GetProperties";
+        return "XBMC.GetInfoLabels";
     }
 
     @Override
     protected Map<String, Object> getParams() {
         List<String> paramProperties = new ArrayList<String>();
         for (String property : properties) {
-            if (property.startsWith("Property.")) {
+            if (property.startsWith("Label.")) {
                 String paramProperty = getParamProperty(property);
                 paramProperties.add(paramProperty);
             }
         }
+
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("playerid", playerId);
-        params.put("properties", paramProperties);
+        // params.put("playerid", playerId);
+        params.put("labels", paramProperties);
         return params;
     }
 
     @Override
     protected void processResponse(Map<String, Object> response) {
         Map<String, Object> result = getMap(response, "result");
-        // item = getMap(result, "item");
+        // item = getMap(result, "label");
         item = result;
     }
 
@@ -122,8 +123,7 @@ public class PlayerGetProperties extends RpcCall {
     }
 
     private String getParamProperty(String property) {
-        // properties entered as 'Property.Title' etc - so strip the first 9 chars
-        return property.substring(9).toLowerCase();
+        // properties entered as 'Label.Title' etc - so strip the first 6 chars
+        return property.substring(6); // It should not be in lowercase
     }
-
 }
