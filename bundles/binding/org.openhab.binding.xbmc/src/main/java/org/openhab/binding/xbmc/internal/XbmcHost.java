@@ -48,19 +48,20 @@ public class XbmcHost {
         this.hostname = hostname;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public void setRsPort(int rsPort) {
         this.rsPort = rsPort;
+    }
+
+    public void setWsPort(int wsPort) {
+        this.wsPort = wsPort;
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public void setWsPort(int wsPort) {
-        this.wsPort = wsPort;
+    public void setPassword(String password) {
+        this.password = password;
     }
+
 }
