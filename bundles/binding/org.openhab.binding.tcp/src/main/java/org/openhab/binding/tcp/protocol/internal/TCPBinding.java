@@ -267,14 +267,18 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
             String transformationType = parts[0];
             String transformationFunction = parts[1];
 
-            TransformationService transformationService = TransformationHelper
-                    .getTransformationService(TCPActivator.getContext(), transformationType);
-            if (transformationService != null) {
-                transformedResponse = transformationService.transform(transformationFunction, response);
+           if (transformationType = "") {     // test for empty type first to avoid the WARN from getTransformationService
+                transformedResponse = transformationFunction;
             } else {
-                transformedResponse = response;
-                logger.warn("couldn't transform response because transformationService of type '{}' is unavailable",
-                        transformationType);
+                TransformationService transformationService = TransformationHelper
+                        .getTransformationService(TCPActivator.getContext(), transformationType);
+                if (transformationService != null) {
+                    transformedResponse = transformationService.transform(transformationFunction, response);
+                } else {
+                    transformedResponse = response;
+                    logger.warn("couldn't transform response because transformationService of type '{}' is unavailable",
+                            transformationType);
+                }
             }
         } catch (Exception te) {
             logger.error("transformation throws exception [transformation=" + transformation + ", response=" + response
