@@ -267,7 +267,7 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
             String transformationType = parts[0];
             String transformationFunction = parts[1];
 
-           if (transformationType = "") {     // test for empty type first to avoid the WARN from getTransformationService
+           if (transformationType == "") {     // test for empty type first to avoid the WARN from getTransformationService
                 transformedResponse = transformationFunction;
             } else {
                 TransformationService transformationService = TransformationHelper
