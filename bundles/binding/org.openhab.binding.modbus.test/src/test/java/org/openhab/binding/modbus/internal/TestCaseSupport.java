@@ -148,7 +148,7 @@ public class TestCaseSupport {
         return InetAddress.getLocalHost();
     }
 
-    private static Dictionary<String, Object> addSlave(Dictionary<String, Object> config, ServerType serverType,
+    protected static Dictionary<String, Object> addSlave(Dictionary<String, Object> config, ServerType serverType,
             String connection, String slaveName, String type, String valuetype, int slaveId, int start, int length) {
         /**
          * Add a modbus slave to config
