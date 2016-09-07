@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -82,11 +82,13 @@ public class ZWaveConverterHandler {
         converters.put(CommandClass.METER, new ZWaveMeterConverter(controller, eventPublisher));
         converters.put(CommandClass.BASIC, new ZWaveBasicConverter(controller, eventPublisher));
         converters.put(CommandClass.SCENE_ACTIVATION, new ZWaveSceneConverter(controller, eventPublisher));
+        converters.put(CommandClass.CENTRAL_SCENE, new ZWaveCentralSceneConverter(controller, eventPublisher));
         converters.put(CommandClass.FIBARO_FGRM_222, new FibaroFGRM222Converter(controller, eventPublisher));
         converters.put(CommandClass.ALARM, new ZWaveAlarmConverter(controller, eventPublisher));
         converters.put(CommandClass.CONFIGURATION, new ZWaveConfigurationConverter(controller, eventPublisher));
         converters.put(CommandClass.INDICATOR, new ZWaveIndicatorConverter(controller, eventPublisher));
         converters.put(CommandClass.WAKE_UP, new ZWaveWakeUpConverter(controller, eventPublisher));
+        converters.put(CommandClass.CLOCK, new ZWaveClockConverter(controller, eventPublisher));
 
         infoConverter = new ZWaveInfoConverter(controller, eventPublisher);
 

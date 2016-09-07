@@ -85,6 +85,10 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>i
         try {
             // send info request
             final InfoResponse response = createProtocol().info();
+            if (response == null) {
+                // already logged
+                return;
+            }
             for (NeoHubBindingProvider provider : providers) {
                 for (String itemName : provider.getItemNames()) {
                     final String device = provider.getNeoStatDevice(itemName);
@@ -120,7 +124,7 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>i
             case Standby:
                 return deviceInfo.isStandby() ? OnOffType.ON : OnOffType.OFF;
             case Heating:
-                return deviceInfo.isHeating() ? OnOffType.ON : OnOffType.OFF;
+                return (deviceInfo.isHeating() || deviceInfo.isPreHeat()) ? OnOffType.ON : OnOffType.OFF;
             default:
                 throw new IllegalStateException(
                         String.format("No result mapping configured for this neo stat property: %s", property));

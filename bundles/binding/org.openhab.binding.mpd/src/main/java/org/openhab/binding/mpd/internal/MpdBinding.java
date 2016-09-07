@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -53,6 +53,7 @@ import org.bff.javampd.objects.MPDSong;
 import org.openhab.binding.mpd.MpdBindingProvider;
 import org.openhab.binding.mpd.internal.MultiClickDetector.MultiClickListener;
 import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
@@ -83,7 +84,7 @@ import org.slf4j.LoggerFactory;
  *
  * @since 0.8.0
  */
-public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements ManagedService, VolumeChangeListener,
+public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements ManagedService, VolumeChangeListener,
         PlayerBasicChangeListener, TrackPositionChangeListener, MultiClickListener<Command> {
 
     private static final String MPD_SCHEDULER_GROUP = "MPD";
@@ -130,6 +131,10 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
         if (command instanceof PercentType) {
             // we have received volume adjustment request
             matchingPlayerCommand = "PERCENT";
+            params = command;
+        } else if (command instanceof DecimalType) {
+            // we have received play song id request
+            matchingPlayerCommand = "NUMBER";
             params = command;
         } else {
             matchingPlayerCommand = command.toString();
@@ -178,11 +183,11 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
 
     /**
      * Executes the given <code>playerCommandLine</code> on the MPD. The
-     * <code>playerCommandLine</code> is split into it's properties
+     * <code>playerCommandLine</code> is split into its properties
      * <code>playerId</code> and <code>playerCommand</code>.
      *
      * @param playerCommandLine the complete commandLine which gets splitted into
-     *            it's properties.
+     *            its properties.
      */
     private void executePlayerCommand(String playerCommandLine, Object commandParams) {
         String[] commandParts = playerCommandLine.split(":");
@@ -246,6 +251,15 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
                         }
 
                         break;
+                    case PLAYSONGID:
+                        logger.debug("Play id {}", ((DecimalType) commandParams).intValue());
+
+                        MPDSong song = new MPDSong();
+                        // song.setId(Integer.parseInt((String) commandParams));
+                        song.setId(((DecimalType) commandParams).intValue());
+                        player.playId(song);
+
+                        break;
                     case ENABLE:
                     case DISABLE:
                         Integer outputId = Integer.valueOf((String) commandParams);
@@ -266,7 +280,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
             } catch (MPDPlayerException pe) {
                 logger.error("error while executing {} command: " + pe.getMessage(), pCommand);
             } catch (Exception e) {
-                logger.warn("unknow playerCommand '{}'", playerCommand);
+                logger.warn("unknown playerCommand '{}'", playerCommand);
             }
         } else {
             logger.warn("didn't find player configuration instance for playerId '{}'", playerId);
@@ -465,6 +479,15 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
                 logger.debug("Updated artist: {}, {}", itemName, artist);
             }
         }
+
+        int songID = newSong.getId();
+        itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.PLAYSONGID);
+        for (String itemName : itemNames) {
+            if (StringUtils.isNotBlank(itemName)) {
+                eventPublisher.postUpdate(itemName, new DecimalType(songID));
+                logger.debug("Updated songid: {}, {}", itemName, songID);
+            }
+        }
     }
 
     /**
@@ -619,7 +642,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
             Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(MPD_SCHEDULER_GROUP));
             if (jobKeys.size() > 0) {
                 sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
-                logger.debug("Found {} jobs to delete from DefaulScheduler (keys={})", jobKeys.size(), jobKeys);
+                logger.debug("Found {} jobs to delete from DefaultScheduler (keys={})", jobKeys.size(), jobKeys);
             }
         } catch (SchedulerException e) {
             logger.warn("Couldn't remove job: {}", e.getMessage());

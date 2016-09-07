@@ -30,6 +30,7 @@
                         </goals>
                         <configuration>
                             <artifacts>
+                                <artifact><file>src/main/resources/conf/alarmdecoder.cfg</file><type>cfg</type><classifier>alarmdecoder</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/anel.cfg</file><type>cfg</type><classifier>anel</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/astro.cfg</file><type>cfg</type><classifier>astro</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/caldavCommand.cfg</file><type>cfg</type><classifier>caldavCommand</classifier></artifact>
@@ -46,20 +47,28 @@
                                 <artifact><file>src/main/resources/conf/epsonprojector.cfg</file><type>cfg</type><classifier>epsonprojector</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/freeswitch.cfg</file><type>cfg</type><classifier>freeswitch</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/garadget.cfg</file><type>cfg</type><classifier>garadget</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/gc100ir.cfg</file><type>cfg</type><classifier>gc100ir</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/gpio.cfg</file><type>cfg</type><classifier>gpio</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/heatmiser.cfg</file><type>cfg</type><classifier>heatmiser</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/homematic.cfg</file><type>cfg</type><classifier>homematic</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/http.cfg</file><type>cfg</type><classifier>http</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ihc.cfg</file><type>cfg</type><classifier>ihc</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/influxdb.cfg</file><type>cfg</type><classifier>influxdb</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/insteonplm.cfg</file><type>cfg</type><classifier>insteonplm</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/irtrans.cfg</file><type>cfg</type><classifier>irtrans</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jdbc.cfg</file><type>cfg</type><classifier>jdbc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jpa.cfg</file><type>cfg</type><classifier>jpa</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/knx.cfg</file><type>cfg</type><classifier>knx</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/koubachi.cfg</file><type>cfg</type><classifier>koubachi</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/lgtv.cfg</file><type>cfg</type><classifier>lgtv</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/logging.cfg</file><type>cfg</type><classifier>logging</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mail.cfg</file><type>cfg</type><classifier>mail</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/mapdb.cfg</file><type>cfg</type><classifier>mapdb</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/marytts.cfg</file><type>cfg</type><classifier>marytts</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/milight.cfg</file><type>cfg</type><classifier>milight</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mios.cfg</file><type>cfg</type><classifier>mios</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/modbus.cfg</file><type>cfg</type><classifier>modbus</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/mochadx10.cfg</file><type>cfg</type><classifier>mochadx10</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mqtt.cfg</file><type>cfg</type><classifier>mqtt</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mqtt-eventbus.cfg</file><type>cfg</type><classifier>mqtt-eventbus</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mqtt-persistence.cfg</file><type>cfg</type><classifier>mqtt-persistence</classifier></artifact>
@@ -69,13 +78,18 @@
                                 <artifact><file>src/main/resources/conf/nest.cfg</file><type>cfg</type><classifier>nest</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/netatmo.cfg</file><type>cfg</type><classifier>netatmo</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/networkhealth.cfg</file><type>cfg</type><classifier>networkhealth</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/networkupstools.cfg</file><type>cfg</type><classifier>networkupstools</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/nibeheatpump.cfg</file><type>cfg</type><classifier>nibeheatpump</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/nikobus.cfg</file><type>cfg</type><classifier>nikobus</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/novelanheatpump.cfg</file><type>cfg</type><classifier>novelanheatpump</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ntp.cfg</file><type>cfg</type><classifier>ntp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/onewire.cfg</file><type>cfg</type><classifier>onewire</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/onkyo.cfg</file><type>cfg</type><classifier>onkyo</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/openenergymonitor.cfg</file><type>cfg</type><classifier>openenergymonitor</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/owserver.cfg</file><type>cfg</type><classifier>owserver</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pebble.cfg</file><type>cfg</type><classifier>pebble</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/prowl.cfg</file><type>cfg</type><classifier>prowl</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/powermax.cfg</file><type>cfg</type><classifier>powermax</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pushover.cfg</file><type>cfg</type><classifier>pushover</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/rwesmarthome.cfg</file><type>cfg</type><classifier>rwesmarthome</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/rrd4j.cfg</file><type>cfg</type><classifier>rrd4j</classifier></artifact>
@@ -83,10 +97,13 @@
                                 <artifact><file>src/main/resources/conf/sapp.cfg</file><type>cfg</type><classifier>sapp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/satel.cfg</file><type>cfg</type><classifier>satel</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/snmp.cfg</file><type>cfg</type><classifier>snmp</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/souliss.cfg</file><type>cfg</type><classifier>souliss</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/swegonventilation.cfg</file><type>cfg</type><classifier>swegonventilation</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/systeminfo.cfg</file><type>cfg</type><classifier>systeminfo</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/tcp.cfg</file><type>cfg</type><classifier>tcp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/telegram.cfg</file><type>cfg</type><classifier>telegram</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/tinkerforge.cfg</file><type>cfg</type><classifier>tinkerforge</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/twitter.cfg</file><type>cfg</type><classifier>twitter</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/urtsi.cfg</file><type>cfg</type><classifier>urtsi</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/weather.cfg</file><type>cfg</type><classifier>weather</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/xbmc.cfg</file><type>cfg</type><classifier>xbmc</classifier></artifact>

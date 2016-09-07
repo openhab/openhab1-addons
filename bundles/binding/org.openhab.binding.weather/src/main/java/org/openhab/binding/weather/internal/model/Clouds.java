@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,7 +22,8 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
  */
 public class Clouds {
 
-    @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "clouds.all"),
+    @ProviderMappings({
+            @Provider(name = ProviderName.OPENWEATHERMAP, property = "clouds.all"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "clouds"),
             @Provider(name = ProviderName.FORECASTIO, property = "cloudCover", converter = ConverterType.FRACTION_INTEGER),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "cloudcover"),

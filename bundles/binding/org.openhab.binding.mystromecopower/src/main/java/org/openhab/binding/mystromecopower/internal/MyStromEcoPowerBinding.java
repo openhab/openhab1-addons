@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -145,6 +145,8 @@ public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowe
             return;
         }
 
+        List<MystromDevice> devices = this.mystromClient.getDevicesState();
+
         for (MyStromEcoPowerBindingProvider provider : providers) {
             for (String itemName : provider.getItemNames()) {
                 logger.debug("Mystrom eco power switch '{}' state will be updated", itemName);
@@ -153,8 +155,14 @@ public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowe
                 String id = this.devicesMap.get(friendlyName);
 
                 if (id != null) {
-                    MystromDevice device;
-                    device = this.mystromClient.getDeviceInfo(id);
+                    MystromDevice device = null;
+
+                    for (MystromDevice searchDevice : devices) {
+                        if (searchDevice.id.equals(id)) {
+                            device = searchDevice;
+                            break;
+                        }
+                    }
 
                     if (device != null) {
                         if (provider.getIsSwitch(itemName)) {
@@ -172,7 +180,7 @@ public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowe
                         }
                     }
                 } else {
-                    logger.warn("The device itemName '{}' not found on discovery verify device is not offline",
+                    logger.warn("The device itemName '{}' not found on discovery. Verify device is not offline",
                             itemName);
                 }
             }
@@ -198,7 +206,7 @@ public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowe
             if (deviceId != null) {
                 if (provider.getIsSwitch(itemName)) {
                     try {
-                        logger.debug("Command '{}' is about to be send to item '{}'", command, itemName);
+                        logger.debug("Command '{}' is about to be sent to item '{}'", command, itemName);
 
                         if (OnOffType.ON.equals(command) || OnOffType.OFF.equals(command)) {
                             // on/off command
@@ -253,7 +261,7 @@ public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowe
                     }
                 }
             } else {
-                logger.error("Unable to send command to '{}' device is not in discovery table", itemName);
+                logger.error("Unable to send command to '{}'. Device is not in discovery table", itemName);
             }
         }
     }

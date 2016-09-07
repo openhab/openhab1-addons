@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,7 +31,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * Z-Wave Command Class. Z-Wave device functions are controlled
  * by command classes. A command class can be have one or multiple
  * commands allowing the use of a certain function of the device.
- * 
+ *
  * @author Brian Crosby
  * @since 1.3.0
  */
@@ -60,7 +60,7 @@ public abstract class ZWaveCommandClass {
 
     /**
      * Protected constructor. Initiates a new instance of a Command Class.
-     * 
+     *
      * @param node the node this instance commands.
      * @param controller the controller to send messages to.
      * @param endpoint the endpoint this Command class belongs to.
@@ -74,7 +74,7 @@ public abstract class ZWaveCommandClass {
 
     /**
      * Returns the node this command class belongs to.
-     * 
+     *
      * @return node
      */
     protected ZWaveNode getNode() {
@@ -83,7 +83,7 @@ public abstract class ZWaveCommandClass {
 
     /**
      * Sets the node this command class belongs to.
-     * 
+     *
      * @param node the node to set
      */
     public void setNode(ZWaveNode node) {
@@ -92,7 +92,7 @@ public abstract class ZWaveCommandClass {
 
     /**
      * Returns the controller to send messages to.
-     * 
+     *
      * @return controller
      */
     protected ZWaveController getController() {
@@ -101,7 +101,7 @@ public abstract class ZWaveCommandClass {
 
     /**
      * Sets the controller to send messages to.
-     * 
+     *
      * @param controller the controller to set
      */
     public void setController(ZWaveController controller) {
@@ -110,7 +110,7 @@ public abstract class ZWaveCommandClass {
 
     /**
      * Returns the endpoint this command class belongs to.
-     * 
+     *
      * @return the endpoint this command class belongs to.
      */
     public ZWaveEndpoint getEndpoint() {
@@ -119,7 +119,7 @@ public abstract class ZWaveCommandClass {
 
     /**
      * Sets the endpoint this command class belongs to.
-     * 
+     *
      * @param endpoint the endpoint to set
      */
     public void setEndpoint(ZWaveEndpoint endpoint) {
@@ -128,7 +128,7 @@ public abstract class ZWaveCommandClass {
 
     /**
      * Returns the version of the command class.
-     * 
+     *
      * @return node
      */
     public int getVersion() {
@@ -137,7 +137,7 @@ public abstract class ZWaveCommandClass {
 
     /**
      * Sets the version number for this command class.
-     * 
+     *
      * @param version. The version number to set.
      */
     public void setVersion(int version) {
@@ -154,7 +154,7 @@ public abstract class ZWaveCommandClass {
     /**
      * Set options for this command class.
      * Options are provided from the device configuration database
-     * 
+     *
      * @param options class
      * @return true if options set ok
      */
@@ -165,7 +165,7 @@ public abstract class ZWaveCommandClass {
     /**
      * Returns the number of instances of this command class
      * in case the node supports the MULTI_INSTANCE command class (Version 1).
-     * 
+     *
      * @return the number of instances
      */
     public int getInstances() {
@@ -175,7 +175,7 @@ public abstract class ZWaveCommandClass {
     /**
      * Returns the number of instances of this command class
      * in case the node supports the MULTI_INSTANCE command class (Version 1).
-     * 
+     *
      * @param instances. The number of instances.
      */
     public void setInstances(int instances) {
@@ -184,14 +184,14 @@ public abstract class ZWaveCommandClass {
 
     /**
      * Returns the command class.
-     * 
+     *
      * @return command class
      */
     public abstract CommandClass getCommandClass();
 
     /**
      * Handles an incoming application command request.
-     * 
+     *
      * @param serialMessage the incoming message to process.
      * @param offset the offset position from which to start message processing.
      * @param endpoint the endpoint or instance number this message is meant for.
@@ -201,7 +201,7 @@ public abstract class ZWaveCommandClass {
     /**
      * Gets an instance of the right command class.
      * Returns null if the command class is not found.
-     * 
+     *
      * @param i the code to instantiate
      * @param node the node this instance commands.
      * @param controller the controller to send messages to.
@@ -214,7 +214,7 @@ public abstract class ZWaveCommandClass {
     /**
      * Gets an instance of the right command class.
      * Returns null if the command class is not found.
-     * 
+     *
      * @param classId the code to instantiate
      * @param node the node this instance commands.
      * @param controller the controller to send messages to.
@@ -225,6 +225,7 @@ public abstract class ZWaveCommandClass {
             ZWaveEndpoint endpoint) {
         try {
             CommandClass commandClass = CommandClass.getCommandClass(classId);
+            // Catch the manufacturer specific command class
             if (commandClass != null && commandClass.equals(CommandClass.MANUFACTURER_PROPRIETARY)) {
                 commandClass = CommandClass.getCommandClass(node.getManufacturer(), node.getDeviceType());
             }
@@ -258,7 +259,7 @@ public abstract class ZWaveCommandClass {
 
     /**
      * Extract a decimal value from a byte array.
-     * 
+     *
      * @param buffer the buffer to be parsed.
      * @param offset the offset at which to start reading
      * @return the extracted decimal value
@@ -299,7 +300,7 @@ public abstract class ZWaveCommandClass {
 
     /**
      * Extract a decimal value from a byte array.
-     * 
+     *
      * @param buffer the buffer to be parsed.
      * @param offset the offset at which to start reading
      * @return the extracted decimal value
@@ -326,7 +327,7 @@ public abstract class ZWaveCommandClass {
 
     /**
      * Encodes a decimal value as a byte array.
-     * 
+     *
      * @param value the decimal value to encode
      * @param index the value index
      * @return the value buffer
@@ -378,7 +379,7 @@ public abstract class ZWaveCommandClass {
      * Command class enumeration. Lists all command classes available.
      * Unsupported command classes by the binding return null for the command class Class.
      * Taken from: http://wiki.micasaverde.com/index.php/ZWave_Command_Classes
-     * 
+     *
      * @author Jan-Willem Spuij
      * @since 1.3.0
      */
@@ -425,6 +426,7 @@ public abstract class ZWaveCommandClass {
         CRC_16_ENCAP(0x56, "CRC_16_ENCAP", ZWaveCRC16EncapsulationCommandClass.class),
         ASSOCIATION_GROUP_INFO(0x59, "ASSOCIATION_GROUP_INFO", null),
         DEVICE_RESET_LOCALLY(0x5a, "DEVICE_RESET_LOCALLY", null),
+        CENTRAL_SCENE(0x5b, "CENTRAL_SCENE", ZWaveCentralSceneCommandClass.class),
         ZWAVE_PLUS_INFO(0x5e, "ZWAVE_PLUS_INFO", null),
         MULTI_INSTANCE(0x60, "MULTI_INSTANCE", ZWaveMultiInstanceCommandClass.class),
         DOOR_LOCK(0x62, "DOOR_LOCK", null),
@@ -441,7 +443,7 @@ public abstract class ZWaveCommandClass {
         REMOTE_ASSOCIATION_ACTIVATE(0x7C, "REMOTE_ASSOCIATION_ACTIVATE", null),
         REMOTE_ASSOCIATION(0x7D, "REMOTE_ASSOCIATION", null),
         BATTERY(0x80, "BATTERY", ZWaveBatteryCommandClass.class),
-        CLOCK(0x81, "CLOCK", null),
+        CLOCK(0x81, "CLOCK", ZWaveClockCommandClass.class),
         HAIL(0x82, "HAIL", ZWaveHailCommandClass.class),
         WAKE_UP(0x84, "WAKE_UP", ZWaveWakeUpCommandClass.class),
         ASSOCIATION(0x85, "ASSOCIATION", ZWaveAssociationCommandClass.class),
@@ -477,7 +479,8 @@ public abstract class ZWaveCommandClass {
         NON_INTEROPERABLE(0xF0, "NON_INTEROPERABLE", null),
 
         // MANUFACTURER_PROPRIETARY class definitions are defined by the manufacturer and device id
-        FIBARO_FGRM_222(0x010F, 0x0301, "FIBARO_FGRM_222", FibaroFGRM222CommandClass.class);
+        FIBARO_FGRM_222(0x010F, 0x0301, "FIBARO_FGRM_222", FibaroFGRM222CommandClass.class),
+        FIBARO_FGRM_222_1(0x010F, 0x0302, "FIBARO_FGRM_222", FibaroFGRM222CommandClass.class);
 
         /**
          * A mapping between the integer code and its corresponding
@@ -532,7 +535,7 @@ public abstract class ZWaveCommandClass {
         /**
          * Lookup function based on the command class code.
          * Returns null if there is no command class with code i
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the command class.
          */
@@ -558,7 +561,7 @@ public abstract class ZWaveCommandClass {
         /**
          * Lookup function based on the command class label.
          * Returns null if there is no command class with that label.
-         * 
+         *
          * @param label the label to lookup
          * @return enumeration value of the command class.
          */

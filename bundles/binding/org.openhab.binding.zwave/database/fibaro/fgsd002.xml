@@ -4,7 +4,10 @@
 	<Label lang="en">Smoke Detector</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
-		<Class><id>0x31</id></Class>
+		<Class>
+            <id>0x31</id>
+            <isGetSupported>false</isGetSupported>
+		</Class>
 		<Class><id>0x70</id></Class>
 		<Class><id>0x74</id></Class>
 		<Class><id>0x7A</id></Class>

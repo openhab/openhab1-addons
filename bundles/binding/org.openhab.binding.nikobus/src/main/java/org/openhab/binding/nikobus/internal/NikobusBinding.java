@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -60,7 +60,7 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider>imple
     private ExecutorService statusRequestService = Executors.newSingleThreadExecutor();
 
     public NikobusBinding() {
-        // setup a command receiver in it's own thread
+        // setup a command receiver in its own thread
         commandReceiver = new NikobusCommandReceiver(this);
         commandReceiver.setBufferQueue(serialInterface.getBufferQueue());
         Thread receiverThread = new Thread(commandReceiver);

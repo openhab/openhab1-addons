@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,13 +13,13 @@ import java.util.Dictionary;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.intertechno.CULIntertechnoBindingProvider;
 import org.openhab.binding.intertechno.IntertechnoBindingConfig;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.io.transport.cul.CULCommunicationException;
-import org.openhab.io.transport.cul.CULDeviceException;
 import org.openhab.io.transport.cul.CULHandler;
-import org.openhab.io.transport.cul.CULManager;
+import org.openhab.io.transport.cul.CULLifecycleListener;
+import org.openhab.io.transport.cul.CULLifecycleManager;
 import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -33,22 +33,16 @@ import org.slf4j.LoggerFactory;
  * @author Till Klocke
  * @since 1.4.0
  */
-public class CULIntertechnoBinding extends AbstractActiveBinding<CULIntertechnoBindingProvider>
-        implements ManagedService {
+public class CULIntertechnoBinding extends AbstractBinding<CULIntertechnoBindingProvider>implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(CULIntertechnoBinding.class);
-
-    /**
-     * Which CUL device should we use, i.e. serial:/dev/tyyACM0
-     */
-    private final static String KEY_DEVICE_NAME = "device";
 
     /**
      * How often should the command be repeated? See <a
      * href="http://culfw.de/commandref.html">Culfw Command Ref</a> for more
      * details.
      */
-    private final static String KEY_REPITIONS = "repetitions";
+    private final static String KEY_REPETITIONS = "repetitions";
     /**
      * How long should one pulse be? See <a
      * href="http://culfw.de/commandref.html">Culfw Command Ref</a> for more
@@ -56,83 +50,42 @@ public class CULIntertechnoBinding extends AbstractActiveBinding<CULIntertechnoB
      */
     private final static String KEY_WAVE_LENGTH = "wavelength";
 
-    private CULHandler cul;
+    private final CULLifecycleManager culHandlerLifecycle;
 
-    private String deviceName;
-    private int repititions = 6;
-    private int wavelength = 420;
-
-    /**
-     * the refresh interval which is used to poll values from the CULIntertechno
-     * server (optional, defaults to 60000ms)
-     */
-    private long refreshInterval = 60000;
+    private Integer repetitions;
+    private Integer wavelength;
 
     public CULIntertechnoBinding() {
+        culHandlerLifecycle = new CULLifecycleManager(CULMode.SLOW_RF, new CULLifecycleListener() {
+
+            @Override
+            public void open(CULHandler cul) throws CULCommunicationException {
+                if (wavelength != null) {
+                    cul.send("it" + wavelength);
+                }
+                if (repetitions != null) {
+                    cul.send("isr" + repetitions);
+                }
+            }
+
+            @Override
+            public void close(CULHandler cul) {
+            }
+        });
     }
 
     @Override
     public void activate() {
-        bindCULHandler();
+        culHandlerLifecycle.open();
     }
 
     @Override
     public void deactivate() {
-        if (cul != null) {
-            CULManager.close(cul);
-        }
-    }
-
-    private void setNewDeviceName(String newDeviceName) {
-        if (!StringUtils.isEmpty(newDeviceName) && !newDeviceName.equals(deviceName)) {
-            if (cul != null) {
-                CULManager.close(cul);
-            }
-            deviceName = newDeviceName;
-            bindCULHandler();
-        }
-    }
-
-    private void bindCULHandler() {
-        if (!StringUtils.isEmpty(deviceName)) {
-            try {
-                cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF);
-                cul.send("it" + wavelength);
-                cul.send("isr" + repititions);
-            } catch (CULDeviceException e) {
-                logger.error("Can't open CUL", e);
-            } catch (CULCommunicationException e) {
-                logger.error("Can't set intertechno parameters", e);
-            }
-        }
+        culHandlerLifecycle.close();
     }
 
     /**
-     * @{inheritDoc
-     */
-    @Override
-    protected long getRefreshInterval() {
-        return refreshInterval;
-    }
-
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    protected String getName() {
-        return "CULIntertechno Refresh Service";
-    }
-
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    protected void execute() {
-        // the frequently executed code (polling) goes here ...
-        logger.debug("execute() method is called!");
-    }
-
-    /**
+     *
      * @{inheritDoc
      */
     @Override
@@ -144,7 +97,7 @@ public class CULIntertechnoBinding extends AbstractActiveBinding<CULIntertechnoB
                 break;
             }
         }
-        if (config != null && command instanceof OnOffType) {
+        if (config != null && culHandlerLifecycle.isCulReady() && command instanceof OnOffType) {
             OnOffType type = (OnOffType) command;
             String commandValue = null;
             switch (type) {
@@ -157,7 +110,7 @@ public class CULIntertechnoBinding extends AbstractActiveBinding<CULIntertechnoB
             }
             if (commandValue != null) {
                 try {
-                    cul.send("is" + config.getAddress() + commandValue);
+                    culHandlerLifecycle.getCul().send("is" + config.getAddress() + commandValue);
                 } catch (CULCommunicationException e) {
                     logger.error("Can't write to CUL", e);
                 }
@@ -181,35 +134,17 @@ public class CULIntertechnoBinding extends AbstractActiveBinding<CULIntertechnoB
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
         if (config != null) {
-
-            // to override the default refresh interval one has to add a
-            // parameter to openhab.cfg like
-            // <bindingName>:refresh=<intervalInMs>
-            String refreshIntervalString = (String) config.get("refresh");
-            if (StringUtils.isNotBlank(refreshIntervalString)) {
-                refreshInterval = Long.parseLong(refreshIntervalString);
+            Integer parsedRepetitions = parseOptionalNumericParameter(KEY_REPETITIONS, config);
+            if (parsedRepetitions != null) {
+                this.repetitions = parsedRepetitions;
             }
 
-            Integer repititions = parseOptionalNumericParameter(KEY_REPITIONS, config);
-            if (repititions != null) {
-                this.repititions = repititions.intValue();
+            Integer parsedWavelength = parseOptionalNumericParameter(KEY_WAVE_LENGTH, config);
+            if (parsedWavelength != null) {
+                this.wavelength = parsedWavelength;
             }
 
-            Integer wavelength = parseOptionalNumericParameter(KEY_WAVE_LENGTH, config);
-            if (wavelength != null) {
-                this.wavelength = wavelength.intValue();
-            }
-
-            // Parse device last, so we already know all relevant parameter
-            String deviceName = (String) config.get(KEY_DEVICE_NAME);
-            if (StringUtils.isEmpty(deviceName)) {
-                setProperlyConfigured(false);
-                throw new ConfigurationException(KEY_DEVICE_NAME, "The device mustn't be empty");
-            } else {
-                setNewDeviceName(deviceName);
-            }
-
-            setProperlyConfigured(true);
+            culHandlerLifecycle.config(config);
         }
     }
 
@@ -222,7 +157,6 @@ public class CULIntertechnoBinding extends AbstractActiveBinding<CULIntertechnoB
                 value = Integer.parseInt(valueString);
                 return value;
             } catch (NumberFormatException e) {
-                setProperlyConfigured(false);
                 throw new ConfigurationException(key, "Can't parse number");
             }
         }

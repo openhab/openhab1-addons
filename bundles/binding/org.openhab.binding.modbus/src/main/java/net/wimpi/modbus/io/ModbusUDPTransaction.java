@@ -51,6 +51,8 @@ public class ModbusUDPTransaction implements ModbusTransaction {
 
     private Mutex m_TransactionLock = new Mutex();
 
+    private long m_RetryDelayMillis;
+
     /**
      * Constructs a new <tt>ModbusUDPTransaction</tt>
      * instance.
@@ -180,6 +182,9 @@ public class ModbusUDPTransaction implements ModbusTransaction {
             m_RetryCounter = 0;
 
             while (m_RetryCounter <= m_Retries) {
+                if (m_RetryCounter != 0) {
+                    Thread.sleep(m_RetryDelayMillis);
+                }
                 try {
                     // toggle the id
                     m_Request.setTransactionID(c_TransactionID.increment());
@@ -237,5 +242,15 @@ public class ModbusUDPTransaction implements ModbusTransaction {
      */
     protected void checkValidity() throws ModbusException {
     }// checkValidity
+
+    @Override
+    public long getRetryDelayMillis() {
+        return m_RetryDelayMillis;
+    }
+
+    @Override
+    public void setRetryDelayMillis(long retryDelayMillis) {
+        this.m_RetryDelayMillis = retryDelayMillis;
+    }
 
 }// class ModbusUDPTransaction

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -53,7 +53,7 @@ public class BindingConfigParser<TYPE extends BindingConfig> {
             try {
                 config.getClass().getDeclaredField(key).set(config, value);
             } catch (Exception e) {
-                logger.error("Could set value " + value + " to attribute " + key + " in class EnoceanBindingConfig");
+                logger.error("Could not set value " + value + " to attribute " + key + " in class EnoceanBindingConfig");
             }
         }
 

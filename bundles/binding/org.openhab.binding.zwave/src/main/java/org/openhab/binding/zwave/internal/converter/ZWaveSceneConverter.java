@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  * ZWaveSceneConverter class. Converters between binding items
  * and the Z-Wave API for scene controllers.
- * 
+ *
  * @author Chris Jackson
  * @since 1.4.0
  */
@@ -40,7 +40,7 @@ public class ZWaveSceneConverter extends ZWaveCommandClassConverter<ZWaveSceneAc
     /**
      * Constructor. Creates a new instance of the {@link ZWaveConverterBase}
      * class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use to send messages.
      * @param eventPublisher the {@link EventPublisher} that can be used to send updates.
      */
@@ -69,17 +69,28 @@ public class ZWaveSceneConverter extends ZWaveCommandClassConverter<ZWaveSceneAc
 
     @Override
     void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String, String> arguments) {
-        if (arguments.get("scene") == null) {
+        if (arguments.get("scene") == null || arguments.get("state") == null) {
+            logger.warn("NODE {}: Scene arguments not set scene={} state={}", event.getNodeId(), arguments.get("scene"),
+                    arguments.get("state"));
             return;
         }
 
-        int scene = Integer.parseInt(arguments.get("scene"));
+        Integer scene = null;
+        Integer state = null;
+        try {
+            scene = Integer.parseInt(arguments.get("scene"));
+            state = Integer.parseInt(arguments.get("state"));
+        } catch (NumberFormatException e) {
+            logger.error("NODE {}: Number format exception {} {}", event.getNodeId(), arguments.get("scene"),
+                    arguments.get("state"));
+            return;
+        }
+
         if (scene != (Integer) event.getValue()) {
             return;
         }
-        Integer state = Integer.parseInt(arguments.get("state"));
-        ZWaveStateConverter<?, ?> converter = this.getStateConverter(item, state);
 
+        ZWaveStateConverter<?, ?> converter = this.getStateConverter(item, state);
         if (converter == null) {
             logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(),
                     event.getNodeId(), event.getEndpoint());

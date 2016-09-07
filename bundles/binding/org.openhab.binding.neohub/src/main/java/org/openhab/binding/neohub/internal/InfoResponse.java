@@ -43,6 +43,8 @@ class InfoResponse {
         private Boolean standby;
         @JsonProperty("HEATING")
         private Boolean heating;
+        @JsonProperty("PREHEAT")
+        private Boolean preHeat;
 
         public BigDecimal getCurrentSetTemperature() {
             return currentSetTemperature;
@@ -66,6 +68,10 @@ class InfoResponse {
 
         public Boolean isHeating() {
             return heating;
+        }
+
+        public Boolean isPreHeat() {
+            return preHeat;
         }
 
         public String getDeviceName() {

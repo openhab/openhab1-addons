@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -73,7 +73,10 @@ public class RFXComUndecodedRFMessage extends RFXComBaseMessage {
         }
     }
 
-    private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA);
+    private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(
+        RFXComValueSelector.RAW_DATA,
+        RFXComValueSelector.DATA
+    );
 
     public SubType subType = SubType.UNKNOWN;
     private byte[] rawData = new byte[0];
@@ -140,18 +143,15 @@ public class RFXComUndecodedRFMessage extends RFXComBaseMessage {
         org.openhab.core.types.State state = UnDefType.UNDEF;
 
         if (valueSelector.getItemClass() == StringItem.class) {
-
             if (valueSelector == RFXComValueSelector.RAW_DATA) {
-
                 state = new StringType(DatatypeConverter.printHexBinary(rawMessage));
-
+            } else if (valueSelector == RFXComValueSelector.DATA) {
+                state = new StringType(DatatypeConverter.printHexBinary(rawData));
             } else {
                 throw new RFXComException("Can't convert " + valueSelector + " to StringItem");
             }
         } else {
-
             throw new RFXComException("Can't convert " + valueSelector + " to " + valueSelector.getItemClass());
-
         }
 
         return state;

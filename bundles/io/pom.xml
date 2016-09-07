@@ -23,12 +23,12 @@
     <module>org.openhab.io.gcal.test</module>
     <module>org.openhab.io.gpio</module>
     <module>org.openhab.io.harmonyhub</module>
-    <module>org.openhab.io.multimedia.tts.freetts</module>
+<!--    <module>org.openhab.io.multimedia.tts.freetts</module>
     <module>org.openhab.io.multimedia.tts.googletts</module>
     <module>org.openhab.io.multimedia.tts.googletts.test</module>
     <module>org.openhab.io.multimedia.tts.macintalk</module>
     <module>org.openhab.io.multimedia.tts.marytts</module>
-    <module>org.openhab.io.multimedia.tts.speechdispatcher</module>
+    <module>org.openhab.io.multimedia.tts.speechdispatcher</module>-->
     <!--module>org.openhab.io.myopenhab</module-->
     <module>org.openhab.io.squeezeserver</module>
     <module>org.openhab.io.transport.cul</module>

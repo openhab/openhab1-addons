@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -117,8 +117,9 @@ public final class Util {
             if (config.getUrl().startsWith(HTTP_URL_PREFIX)) {
                 log.error("do not use '{}' if no ssl is used", CalDavLoaderImpl.PROP_DISABLE_CERTIFICATE_VERIFICATION);
             }
-            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create()
-                    .setHostnameVerifier(new AllowAllHostnameVerifier());
+            log.trace("connecting to caldav '{}' with disabled certificate verification (url={}, username={}, password={})", 
+                    config.getKey(), config.getUrl(), config.getUsername(), config.getPassword());
+            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setHostnameVerifier(new AllowAllHostnameVerifier());
             try {
                 httpClientBuilder.setSslcontext(new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
                     @Override
@@ -134,12 +135,16 @@ public final class Util {
                 log.error("error verifying certificate", e);
             }
             if (StringUtils.isEmpty(config.getUsername()) && StringUtils.isEmpty(config.getPassword())) {
+                log.trace("connecting without credentials for '{}'", config.getKey());
                 return new SardineImpl(httpClientBuilder);
             } else {
                 return new SardineImpl(httpClientBuilder, config.getUsername(), config.getPassword());
             }
         } else {
+            log.trace("connecting to caldav '{}' (url={}, username={}, password={})", 
+                    config.getKey(), config.getUrl(), config.getUsername(), config.getPassword());
             if (StringUtils.isEmpty(config.getUsername()) && StringUtils.isEmpty(config.getPassword())) {
+                log.trace("connecting without credentials for '{}'", config.getKey());
                 return new SardineImpl();
             } else {
                 return new SardineImpl(config.getUsername(), config.getPassword());

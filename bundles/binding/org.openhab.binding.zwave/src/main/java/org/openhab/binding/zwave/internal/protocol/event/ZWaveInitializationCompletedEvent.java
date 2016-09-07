@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,7 @@ package org.openhab.binding.zwave.internal.protocol.event;
  * Indicates that the ZWaveController has completed
  * the initialization phase and is ready to start
  * accepting commands and receiving events.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */
@@ -22,7 +22,7 @@ public class ZWaveInitializationCompletedEvent extends ZWaveEvent {
     /**
      * Constructor. Creates a new instance of the ZWaveTransactionCompletedEvent
      * class.
-     * 
+     *
      * @param nodeId the nodeId of the event. Must be set to the controller node.
      */
     public ZWaveInitializationCompletedEvent(int nodeId) {

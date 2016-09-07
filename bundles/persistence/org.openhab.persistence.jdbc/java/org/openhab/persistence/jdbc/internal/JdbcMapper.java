@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,6 +22,11 @@ import org.openhab.persistence.jdbc.model.ItemsVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ *
+ * @author Helmut Lehmeyer
+ * @since 1.8.0
+ */
 public class JdbcMapper {
     static final Logger logger = LoggerFactory.getLogger(JdbcMapper.class);
 
@@ -43,6 +48,8 @@ public class JdbcMapper {
         long timerStart = System.currentTimeMillis();
         if (openConnection()) {
             if (conf.getDbName() == null) {
+                logger.debug(
+                        "JDBC::pingDB asking db for name as absolutely first db action, after connection is established.");
                 String dbName = conf.getDBDAO().doGetDB();
                 conf.setDbName(dbName);
                 ret = dbName.length() > 0;
@@ -161,7 +168,7 @@ public class JdbcMapper {
         logger.debug("JDBC::openConnection isDriverAvailable: {}", conf.isDriverAvailable());
         if (conf.isDriverAvailable() && !conf.isDbConnected()) {
             logger.info("JDBC::openConnection: Driver is available::Yank setupDataSource");
-            Yank.setupDataSource(conf.getHikariConfiguration());
+            Yank.setupDefaultConnectionPool(conf.getHikariConfiguration());
             conf.setDbConnected(true);
             return true;
         } else if (!conf.isDriverAvailable()) {
@@ -175,11 +182,11 @@ public class JdbcMapper {
     protected void closeConnection() {
         logger.debug("JDBC::closeConnection");
         // Closes all open connection pools
-        Yank.releaseDataSource();
+        Yank.releaseDefaultConnectionPool();
         conf.setDbConnected(false);
     }
 
-    protected boolean checkDBAcessability() {
+    protected boolean checkDBAccessability() {
         // Check if connection is valid
         if (initialized) {
             return true;

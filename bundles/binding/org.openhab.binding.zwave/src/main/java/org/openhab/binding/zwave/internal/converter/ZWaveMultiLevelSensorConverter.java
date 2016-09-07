@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * ZWaveMultiLevelSensorConverter class. Converter for communication with the
  * {@link ZWaveMultiLevelSensorCommandClass}. Implements polling of the sensor
  * status and receiving of sensor events.
- * 
+ *
  * @author Jan-Willem Spuij
  * @author Chris Jackson
  * @since 1.4.0
@@ -50,7 +50,7 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveMultiLevelSensorConverter} class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use for sending messages.
      * @param eventPublisher the {@link EventPublisher} to use to publish events.
      */

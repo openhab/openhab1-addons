@@ -33,7 +33,7 @@
 			<Help lang="de">Die zusätzliche Sirene lässt ein anderes akustisches Signal ertönen, das sich von der Signalisierung eines Rauchalarms unterscheidet. Dieser Ton geht an und aus. Der Parameter definiert die Gesamtlänge des Intervalls in Sekunden.</Help>
 		</Parameter>		
 		<Parameter>
-			<Index>1</Index>
+			<Index>2</Index>
 			<Type>int</Type>
             <Minimum>1</Minimum>
             <Maximum>63</Maximum>			
