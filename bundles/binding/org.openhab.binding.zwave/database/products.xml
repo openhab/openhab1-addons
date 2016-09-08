@@ -3008,6 +3008,14 @@
             <Label lang="en">Wall Plug</Label>
             <ConfigFile>wintop/easyplug.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>1200</Type>
+                <Id>5502</Id>
+            </Reference>
+            <Model>DHSZWDMIW01</Model>
+            <Label lang="en">DHS Z-Wave Micro Dimmer</Label>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>84</Id>
