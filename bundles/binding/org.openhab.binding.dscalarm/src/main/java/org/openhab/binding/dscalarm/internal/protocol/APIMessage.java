@@ -606,10 +606,12 @@ public class APIMessage {
                     case LCDUpdate: /* 901 */
                         apiName = "LCD Update";
                         apiDescription = apiCodeReceived + ": Text of the IT-100 menu has changed.";
+                        apiMessageType = APIMessageType.KEYPAD_EVENT;
                         break;
                     case LCDCursor: /* 902 */
                         apiName = "LCD Cursor";
                         apiDescription = apiCodeReceived + ": Cursor position has changed.";
+                        apiMessageType = APIMessageType.KEYPAD_EVENT;
                         break;
                     case LEDStatus: /* 903 */
                         apiName = "LED Status";
