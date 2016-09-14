@@ -36,7 +36,32 @@ public enum DoorsState implements StateType {
      * {@inheritDoc}
      */
     @Override
+    public int getPayloadLength(boolean extendedCmd) {
+        return 8;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ObjectType getObjectType() {
         return ObjectType.DOORS;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getStartByte() {
+        return 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getBytesCount(boolean extendedCmd) {
+        return getPayloadLength(extendedCmd);
+    }
+
 }
