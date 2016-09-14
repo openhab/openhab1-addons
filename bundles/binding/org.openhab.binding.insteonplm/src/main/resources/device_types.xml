@@ -255,10 +255,10 @@ Example entry:
  <device productKey="F00.00.10">
      <model>2342-2</model>
      <description>Mini Remote</description>
-     <feature name="buttonA">RemoteButtonA</feature>
-     <feature name="buttonB">RemoteButtonB</feature>
-     <feature name="buttonC">RemoteButtonC</feature>
-     <feature name="buttonD">RemoteButtonD</feature>     
+     <feature name="buttonA">RemoteButton1</feature>
+     <feature name="buttonB">RemoteButton2</feature>
+     <feature name="buttonC">RemoteButton3</feature>
+     <feature name="buttonD">RemoteButton4</feature>     
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -439,5 +439,18 @@ Example entry:
      <feature name="switch">GenericSwitch</feature>
      <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ <device productKey="F00.00.20">
+     <model>2342-222</model>
+     <description>Mini Remote (8 Button)</description>
+     <feature name="buttonA">RemoteButton2</feature>
+     <feature name="buttonB">RemoteButton1</feature>
+     <feature name="buttonC">RemoteButton4</feature>
+     <feature name="buttonD">RemoteButton3</feature>
+     <feature name="buttonE">RemoteButton6</feature>
+     <feature name="buttonF">RemoteButton5</feature>
+     <feature name="buttonG">RemoteButton8</feature>
+     <feature name="buttonH">RemoteButton7</feature>
+      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 </xml>
