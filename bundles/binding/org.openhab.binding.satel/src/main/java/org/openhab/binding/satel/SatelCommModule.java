@@ -47,4 +47,11 @@ public interface SatelCommModule {
      */
     String getTextEncoding();
 
+    /**
+     * Overrides user code configured in settings.
+     * 
+     * @param userCode user code to set
+     */
+    void setUserCode(String userCode);
+
 }
