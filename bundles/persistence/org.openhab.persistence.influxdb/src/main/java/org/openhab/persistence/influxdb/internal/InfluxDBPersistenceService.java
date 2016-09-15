@@ -76,6 +76,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
   private static final String DEFAULT_URL = "http://127.0.0.1:8086";
   private static final String DEFAULT_DB = "openhab";
   private static final String DEFAULT_USER = "openhab";
+  private static final String DEFAULT_RETENTION_POLICY = "autogen";
   private static final String DIGITAL_VALUE_OFF = "0";
   private static final String DIGITAL_VALUE_ON = "1";
   private static final String VALUE_COLUMN_NAME = "value";
@@ -88,6 +89,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
   private String url;
   private String user;
   private String password;
+  private String retentionPolicy;
   private boolean isProperlyConfigured;
   private boolean connected;
 
@@ -127,6 +129,12 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     if (isBlank(dbName)) {
       dbName = DEFAULT_DB;
       logger.debug("using default db name {}", DEFAULT_DB);
+    }
+
+    retentionPolicy = (String) config.get("retentionPolicy");
+    if (isBlank(retentionPolicy)) {
+      retentionPolicy = DEFAULT_RETENTION_POLICY;
+      logger.debug("using default retentionPolicy {}", DEFAULT_RETENTION_POLICY);
     }
 
     isProperlyConfigured = true;
@@ -241,7 +249,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
         Point.measurement(name).field(VALUE_COLUMN_NAME, value)
             .time(System.currentTimeMillis(), timeUnit).build();
     try {
-      influxDB.write(dbName, "default", point);
+      influxDB.write(dbName, retentionPolicy, point);
     } catch (RuntimeException e) {
       logger.error("storing failed with exception for item: {}", name);
       handleDatabaseException(e);
