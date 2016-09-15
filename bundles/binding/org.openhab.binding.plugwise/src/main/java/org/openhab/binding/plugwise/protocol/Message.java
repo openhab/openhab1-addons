@@ -134,8 +134,13 @@ public abstract class Message {
     abstract protected void parsePayLoad();
 
     public String toHexString() {
-        String result = null;
-        result = typeToHexString() + sequenceNumberToHexString() + MACToHexString() + payLoadToHexString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(typeToHexString());
+        sb.append(sequenceNumberToHexString());
+        sb.append(MACToHexString());
+        sb.append(payLoadToHexString());
+
+        String result = sb.toString();
         String CRC = getCRC(result);
         result = result + CRC;
 

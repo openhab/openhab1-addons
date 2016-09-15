@@ -24,34 +24,34 @@ import org.openhab.core.types.Command;
 public interface PlugwiseBindingProvider extends AutoUpdateBindingProvider {
 
     /**
-     * Returns a <code>List</code> of matching Plugwise ids (associated to <code>itemName</code>.
+     * Returns a <code>List</code> of matching Plugwise IDs (associated to <code>itemName</code>.
      *
-     * @param itemName the item for which to find a Plugwise id
-     * @return a List of matching Plugwise ids or <code>null</code> if no matching Plugwise id
+     * @param itemName the item for which to find a Plugwise ID
+     * @return a List of matching Plugwise ids or <code>null</code> if no matching Plugwise ID
      *         could be found.
      */
     public List<String> getPlugwiseID(String itemName);
 
     /**
-     * Returns the matching Plugwise id (associated to <code>itemName</code> and aCommand).
+     * Returns the matching Plugwise ID (associated to <code>itemName</code> and aCommand).
      *
-     * @param itemName the item for which to find a Plugwise id
-     * @param aCommand the a command
-     * @return a List of matching Plugwise ids or <code>null</code> if no matching Plugwise id
+     * @param itemName the item for which to find a Plugwise ID (the device MAC or name)
+     * @param command the a command
+     * @return a List of matching Plugwise IDs or <code>null</code> if no matching Plugwise ID
      *         could be found.
      */
-    public String getPlugwiseID(String itemName, Command aCommand);
+    public String getPlugwiseID(String itemName, Command command);
 
     /**
      * Returns the matching Plugwise command (associated to <code>itemName</code> and aCommand).
      *
-     * @param PlugwiseID the plugwise id
+     * @param plugwiseID the Plugwise ID (the device MAC or name)
      * @param type the type
-     * @return a List of matching Plugwise ids or <code>null</code> if no matching Plugwise id
+     * @return a List of matching Plugwise IDs or <code>null</code> if no matching Plugwise ID
      *         could be found.
      */
 
-    public Set<String> getItemNames(String PlugwiseID, PlugwiseCommandType type);
+    public Set<String> getItemNames(String plugwiseID, PlugwiseCommandType type);
 
     /**
      * Gets the interval list. the Interval list is a list of Plugwise Configuration elements that is used to schedule
@@ -68,19 +68,19 @@ public interface PlugwiseBindingProvider extends AutoUpdateBindingProvider {
      * Gets the commands by type.
      *
      * @param itemName the item name
-     * @param class1 the class1
+     * @param commandClass the command class
      * @return the commands by type
      */
-    public List<Command> getCommandsByType(String itemName, Class<? extends Command> class1);
+    public List<Command> getCommandsByType(String itemName, Class<? extends Command> commandClass);
 
     /**
      * Gets the corresponding plugwise command type for a given Item and Command
      *
      * @param itemName the item name
-     * @param someCommand the command
+     * @param command the command
      * @return the plugwise command type
      */
-    public PlugwiseCommandType getPlugwiseCommandType(String itemName, Command someCommand);
+    public PlugwiseCommandType getPlugwiseCommandType(String itemName, Command command);
 
     /**
      * Gets all the openHAB commands for the given Item
