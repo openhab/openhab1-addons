@@ -526,6 +526,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
                                 endpointPoolConfig.setInterConnectDelayMillis(Long.parseLong(settingIterator.next()));
 
                                 endpointPoolConfig.setConnectMaxTries(Integer.parseInt(settingIterator.next()));
+                                endpointPoolConfig.setConnectTimeoutMillis(Integer.parseInt(settingIterator.next()));
                             } catch (NoSuchElementException e) {
                                 // Some of the optional parameters are missing -- it's ok!
                             }
@@ -535,7 +536,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
                                                 + "Expecting at most 6 parameters: hostname (mandatory) and "
                                                 + "optionally (in this order) port number, "
                                                 + "interTransactionDelayMillis, reconnectAfterMillis,"
-                                                + "interConnectDelayMillis, connectMaxTries.", key);
+                                                + "interConnectDelayMillis, connectMaxTries, connectTimeout.", key);
                                 throw new ConfigurationException(key, errMsg);
                             }
                         } else if (modbusSlave instanceof ModbusSerialSlave) {
