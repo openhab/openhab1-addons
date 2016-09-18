@@ -23,8 +23,8 @@ import com.ning.http.client.AsyncHttpClient;
 /**
  * Player.GetProperties RPC
  *
- * @author Ben Jones
- * @since 1.5.0
+ * @author Plebs
+ * @since 1.9.0
  */
 public class PlayerGetProperties extends RpcCall {
 

@@ -23,6 +23,8 @@ import com.ning.http.client.AsyncHttpClient;
  *
  * @author tlan, Ben Jones, Marcel Erkel
  * @since 1.5.0
+ * @author tlan, Ben Jones, Plebs
+ * @since 1.9.0
  */
 public class PlayerGetItem extends RpcCall {
 

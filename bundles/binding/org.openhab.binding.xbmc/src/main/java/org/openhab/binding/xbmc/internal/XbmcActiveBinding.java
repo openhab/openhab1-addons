@@ -33,8 +33,10 @@ import org.slf4j.LoggerFactory;
  * All item updates are received asynchronously via the web socket All item
  * commands are sent via the web socket
  *
- * @author tlan, Ben Jones, Plebs
+ * @author tlan, Ben Jones
  * @since 1.5.0
+ * @author tlan, Ben Jones, Plebs
+ * @since 1.9.0
  */
 public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider> implements ManagedService {
 
@@ -311,28 +313,8 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
                 connector.playerStop();
             } else if (property.equals("Input.ExecuteAction")) {
                 connector.inputExecuteAction(command.toString());
-            } else if (property.equals("Input.Back")) {
-                connector.inputBack();
-            } else if (property.equals("Input.ContextMenu")) {
-                connector.inputContextMenu();
-            } else if (property.equals("Input.Down")) {
-                connector.inputDown();
-            } else if (property.equals("Input.Home")) {
-                connector.inputHome();
-            } else if (property.equals("Input.Info")) {
-                connector.inputInfo();
-            } else if (property.equals("Input.Left")) {
-                connector.inputLeft();
-            } else if (property.equals("Input.Right")) {
-                connector.inputRight();
-            } else if (property.equals("Input.Select")) {
-                connector.inputSelect();
-            } else if (property.equals("Input.ShowCodec")) {
-                connector.inputShowCodec();
-            } else if (property.equals("Input.ShowOSD")) {
-                connector.inputShowOSD();
-            } else if (property.equals("Input.Up")) {
-                connector.inputUp();
+            } else if (property.startsWith("Input.ExecuteAction.")) {
+                connector.inputExecuteAction(property.substring(20).toLowerCase());
             } else if (property.equals("GUI.ShowNotification")) {
                 connector.showNotification("openHAB", command.toString());
             } else if (property.equals("System.Shutdown") && command == OnOffType.OFF) {
@@ -455,7 +437,6 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
                 if ("password".equals(parts[1])) {
                     host.setPassword(value);
                 }
-
                 hosts.put(hostname, host);
             }
 

@@ -28,18 +28,7 @@ import org.openhab.binding.xbmc.rpc.calls.ApplicationGetProperties;
 import org.openhab.binding.xbmc.rpc.calls.ApplicationSetVolume;
 import org.openhab.binding.xbmc.rpc.calls.FilesPrepareDownload;
 import org.openhab.binding.xbmc.rpc.calls.GUIShowNotification;
-import org.openhab.binding.xbmc.rpc.calls.InputBack;
-import org.openhab.binding.xbmc.rpc.calls.InputContextMenu;
-import org.openhab.binding.xbmc.rpc.calls.InputDown;
 import org.openhab.binding.xbmc.rpc.calls.InputExecuteAction;
-import org.openhab.binding.xbmc.rpc.calls.InputHome;
-import org.openhab.binding.xbmc.rpc.calls.InputInfo;
-import org.openhab.binding.xbmc.rpc.calls.InputLeft;
-import org.openhab.binding.xbmc.rpc.calls.InputRight;
-import org.openhab.binding.xbmc.rpc.calls.InputSelect;
-import org.openhab.binding.xbmc.rpc.calls.InputShowCodec;
-import org.openhab.binding.xbmc.rpc.calls.InputShowOSD;
-import org.openhab.binding.xbmc.rpc.calls.InputUp;
 import org.openhab.binding.xbmc.rpc.calls.JSONRPCPing;
 import org.openhab.binding.xbmc.rpc.calls.PVRGetChannels;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetActivePlayers;
@@ -76,6 +65,8 @@ import com.ning.http.client.websocket.WebSocketUpgradeHandler;
  *
  * @author tlan, Ben Jones, Ard van der Leeuw
  * @since 1.5.0
+ * @author tlan, Ben Jones, Ard van der Leeuw, Plebs
+ * @since 1.9.0
  */
 public class XbmcConnector {
 
@@ -138,7 +129,7 @@ public class XbmcConnector {
 
     /***
      * Check if the connection to the XBMC instance is active
-     * 
+     *
      * @return true if an active connection to the XBMC instance exists, false otherwise
      */
     public boolean isConnected() {
@@ -152,7 +143,7 @@ public class XbmcConnector {
     /**
      * Attempts to create a connection to the XBMC host and begin listening
      * for updates over the async http web socket
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws IOException
@@ -289,15 +280,16 @@ public class XbmcConnector {
 
     /**
      * Create a mapping between an item and an xbmc property
-     * 
+     *
      * @param itemName
      *            The name of the item which should receive updates
      * @param property
      *            The property of this xbmc instance, which is to be
      *            watched for changes
-     * 
+     *
      */
     public void addItem(String itemName, String property) {
+        logger.debug("Mapping: itemname=" + itemName + " & property = " + property);
         if (!watches.containsKey(itemName)) {
             watches.put(itemName, property);
         }
@@ -320,7 +312,7 @@ public class XbmcConnector {
 
     /**
      * Update the status of the current player
-     * 
+     *
      * @param updatePolledPropertiesOnly
      *            If updatePolledPropertiesOnly is true, only update the Player properties that need to be polled
      *            If updatePolledPropertiesOnly is false, update the Player state itself as well
@@ -411,61 +403,6 @@ public class XbmcConnector {
         final PlayerOpen playeropen = new PlayerOpen(client, httpUri);
         playeropen.setFile(file);
         playeropen.execute();
-    }
-
-    public void inputBack() {
-        final InputBack inputback = new InputBack(client, httpUri);
-        inputback.execute();
-    }
-
-    public void inputContextMenu() {
-        final InputContextMenu inputcontextmenu = new InputContextMenu(client, httpUri);
-        inputcontextmenu.execute();
-    }
-
-    public void inputDown() {
-        final InputDown inputdown = new InputDown(client, httpUri);
-        inputdown.execute();
-    }
-
-    public void inputHome() {
-        final InputHome inputhome = new InputHome(client, httpUri);
-        inputhome.execute();
-    }
-
-    public void inputInfo() {
-        final InputInfo inputinfo = new InputInfo(client, httpUri);
-        inputinfo.execute();
-    }
-
-    public void inputLeft() {
-        final InputLeft inputleft = new InputLeft(client, httpUri);
-        inputleft.execute();
-    }
-
-    public void inputRight() {
-        final InputRight inputright = new InputRight(client, httpUri);
-        inputright.execute();
-    }
-
-    public void inputSelect() {
-        final InputSelect inputselect = new InputSelect(client, httpUri);
-        inputselect.execute();
-    }
-
-    public void inputShowCodec() {
-        final InputShowCodec inputshowcodec = new InputShowCodec(client, httpUri);
-        inputshowcodec.execute();
-    }
-
-    public void inputShowOSD() {
-        final InputShowOSD inputshowosd = new InputShowOSD(client, httpUri);
-        inputshowosd.execute();
-    }
-
-    public void inputUp() {
-        final InputUp inputup = new InputUp(client, httpUri);
-        inputup.execute();
     }
 
     public void inputExecuteAction(String action) {
@@ -611,7 +548,7 @@ public class XbmcConnector {
 
     /**
      * Request an update for the Player properties from XBMC
-     * 
+     *
      * @param playerId
      *            The id of the currently active player
      */
@@ -621,7 +558,7 @@ public class XbmcConnector {
 
     /**
      * Request an update for the Player properties from XBMC
-     * 
+     *
      * @param playerId
      *            The id of the currently active player
      * @param updatePolledPropertiesOnly
@@ -665,7 +602,7 @@ public class XbmcConnector {
                 }
             }
 
-            // make the request for the player item details
+            // make the request for the player item details using GETINFO
             if (!propertiesInfo.isEmpty()) {
                 final PlayerGetItem item = new PlayerGetItem(client, httpUri);
                 item.setPlayerId(playerId);
@@ -777,7 +714,7 @@ public class XbmcConnector {
 
     /**
      * get a distinct list of player properties we have items configured for
-     * 
+     *
      * @return
      *         A list of property names
      */
@@ -787,7 +724,7 @@ public class XbmcConnector {
 
     /**
      * get a distinct list of player properties we have items configured for
-     * 
+     *
      * @param updatePolledPropertiesOnly
      *            Only get the properties that need to be refreshed by polling if true,
      *            otherwise get all the properties that have items configured for

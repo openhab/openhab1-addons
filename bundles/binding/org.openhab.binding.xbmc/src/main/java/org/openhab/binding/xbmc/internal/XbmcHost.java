@@ -13,6 +13,8 @@ package org.openhab.binding.xbmc.internal;
  *
  * @author tlan, Ben Jones
  * @since 1.5.0
+ * @author tlan, Ben Jones, Plebs
+ * @since 1.9.0
  */
 public class XbmcHost {
 
