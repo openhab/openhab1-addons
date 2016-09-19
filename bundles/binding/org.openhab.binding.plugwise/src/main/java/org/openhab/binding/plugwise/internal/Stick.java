@@ -129,20 +129,6 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
         }
     }
 
-    protected static Comparator<PlugwiseDevice> macComparator = new Comparator<PlugwiseDevice>() {
-        @Override
-        public int compare(PlugwiseDevice u1, PlugwiseDevice u2) {
-            return u1.getMAC().compareTo(u2.getMAC());
-        }
-    };
-
-    protected static Comparator<PlugwiseDevice> nameComparator = new Comparator<PlugwiseDevice>() {
-        @Override
-        public int compare(PlugwiseDevice u1, PlugwiseDevice u2) {
-            return u1.getName().compareTo(u2.getName());
-        }
-    };
-
     protected PlugwiseDevice getDevice(String id) {
         PlugwiseDevice someDevice = getDeviceByMAC(id);
         if (someDevice == null) {
@@ -153,27 +139,21 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
     }
 
     protected PlugwiseDevice getDeviceByMAC(String MAC) {
-
-        PlugwiseDevice queryDevice = new PlugwiseDevice(MAC, null, "");
-        Collections.sort(plugwiseDeviceCache, macComparator);
-        int index = Collections.binarySearch(plugwiseDeviceCache, queryDevice, macComparator);
-        if (index >= 0) {
-            return plugwiseDeviceCache.get(index);
-        } else {
-            return null;
+        for (PlugwiseDevice device : plugwiseDeviceCache) {
+            if (MAC.equals(device.getMAC())) {
+                return device;
+            }
         }
+        return null;
     }
 
     protected PlugwiseDevice getDeviceByName(String name) {
-
-        PlugwiseDevice queryDevice = new PlugwiseDevice(null, null, name);
-        Collections.sort(plugwiseDeviceCache, nameComparator);
-        int index = Collections.binarySearch(plugwiseDeviceCache, queryDevice, nameComparator);
-        if (index >= 0) {
-            return plugwiseDeviceCache.get(index);
-        } else {
-            return null;
+        for (PlugwiseDevice device : plugwiseDeviceCache) {
+            if (name.equals(device.getName())) {
+                return device;
+            }
         }
+        return null;
     }
 
     @SuppressWarnings("unchecked")

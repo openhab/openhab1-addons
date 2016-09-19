@@ -519,7 +519,8 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                         }
                     }
                 } else {
-                    logger.error("Error scheduling a Quartz Job for a non-defined Plugwise device");
+                    logger.error("Error scheduling a Quartz Job for a non-defined Plugwise device (" + element.getId()
+                            + ")");
                 }
             }
         }
