@@ -18,6 +18,7 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
@@ -138,12 +139,12 @@ public abstract class ModbusSlave {
      * @param command OpenHAB command received
      * @param config
      */
-    public void executeCommand(Command command, ModbusBindingConfig config) {
+    public void executeCommand(Command command, int readRegister, int writeRegister) {
         try {
             if (ModbusBindingProvider.TYPE_COIL.equals(getType())) {
-                setCoil(command, config);
+                setCoil(command, readRegister, writeRegister);
             } else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {
-                setRegister(command, config);
+                setRegister(command, readRegister, writeRegister);
             }
         } catch (Exception e) {
             // Error already logged, just continue as normal
@@ -182,9 +183,8 @@ public abstract class ModbusSlave {
      * @throws ModbusException ModbusIOException on IO errors, ModbusSlaveException with protocol level exceptions
      * @throws ModbusUnexpectedTransactionIdException when response transaction id does not match the request
      */
-    private void setCoil(Command command, ModbusBindingConfig config)
+    private void setCoil(Command command, int readRegister, int writeRegister)
             throws ModbusConnectionException, ModbusException, ModbusUnexpectedTransactionIdException {
-        int writeRegister = config.writeIndex;
         boolean b = translateCommand2Boolean(command);
         doSetCoil(getStart() + writeRegister, b);
     }
@@ -198,16 +198,15 @@ public abstract class ModbusSlave {
      * @throws ModbusException ModbusIOException on IO errors, ModbusSlaveException with protocol level exceptions
      * @throws ModbusUnexpectedTransactionIdException when response transaction id does not match the request
      */
-    protected void setRegister(Command command, ModbusBindingConfig config)
+    protected void setRegister(Command command, int readIndex, int writeRegister)
             throws ModbusConnectionException, ModbusException, ModbusUnexpectedTransactionIdException {
-        int readIndex = config.readIndex;
-        int writeRegister = getStart() + config.writeIndex;
+        writeRegister += getStart();
 
         Register newValue;
         if (command instanceof IncreaseDecreaseType) {
             newValue = readCachedRegisterValue(readIndex);
             if (newValue == null) {
-                logger.warn("Not polled value for item {}. Cannot process command {}", config.getItemName(), command);
+                logger.warn("Not polled value. Cannot process command {}", command);
                 return;
             }
             if (command.equals(IncreaseDecreaseType.INCREASE)) {
@@ -218,7 +217,7 @@ public abstract class ModbusSlave {
         } else if (command instanceof UpDownType) {
             newValue = readCachedRegisterValue(readIndex);
             if (newValue == null) {
-                logger.warn("Not polled value for item {}. Cannot process command {}", config.getItemName(), command);
+                logger.warn("Not polled value. Cannot process command {}", command);
                 return;
             }
             if (command.equals(UpDownType.UP)) {
@@ -243,9 +242,16 @@ public abstract class ModbusSlave {
             } else if (command.equals(OpenClosedType.CLOSED)) {
                 newValue.setValue(0);
             }
+        } else if (command instanceof StopMoveType) {
+            newValue = new SimpleRegister();
+            if (command.equals(StopMoveType.MOVE)) {
+            newValue.setValue(0);
+            } 
+            else if (command.equals(StopMoveType.STOP)) {
+                newValue.setValue(1);
+            }
         } else {
-            logger.warn("Item {} received unsupported command: {}. Not setting register.", config.getItemName(),
-                    command);
+            logger.warn("received unsupported command: {}. Not setting register.", command);
             return;
         }
 
