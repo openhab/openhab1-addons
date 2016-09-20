@@ -23,8 +23,8 @@ import com.ning.http.client.AsyncHttpClient;
 /**
  * Player.GetProperties RPC
  *
- * @author Plebs
- * @since 1.9.0
+ * @author Ben jones, Plebs
+ * @since 1.5.0
  */
 public class PlayerGetProperties extends RpcCall {
 
@@ -70,7 +70,6 @@ public class PlayerGetProperties extends RpcCall {
     @Override
     protected void processResponse(Map<String, Object> response) {
         Map<String, Object> result = getMap(response, "result");
-        // item = getMap(result, "item");
         item = result;
     }
 

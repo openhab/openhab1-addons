@@ -21,10 +21,8 @@ import com.ning.http.client.AsyncHttpClient;
 /**
  * Player.GetItem RPC
  *
- * @author tlan, Ben Jones, Marcel Erkel
+ * @author tlan, Ben Jones, Marcel Erkel, Plebs
  * @since 1.5.0
- * @author tlan, Ben Jones, Plebs
- * @since 1.9.0
  */
 public class PlayerGetItem extends RpcCall {
 

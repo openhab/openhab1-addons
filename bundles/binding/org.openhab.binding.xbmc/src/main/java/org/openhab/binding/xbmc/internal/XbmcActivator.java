@@ -18,9 +18,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author tlan, Ben Jones
  * @since 1.5.0
- * @author tlan, Ben Jones, Plebs
- * @since 1.9.0
- 
  */
 public final class XbmcActivator implements BundleActivator {
 

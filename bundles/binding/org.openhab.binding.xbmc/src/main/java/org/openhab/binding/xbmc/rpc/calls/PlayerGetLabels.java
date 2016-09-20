@@ -23,9 +23,7 @@ import com.ning.http.client.AsyncHttpClient;
 /**
  * Player.GetLabels RPC
  *
- * @author Ben Jones
- * @since 1.5.0
- * @author tlan, Ben Jones, Plebs
+ * @author Plebs
  * @since 1.9.0
  */
 public class PlayerGetLabels extends RpcCall {
@@ -65,7 +63,6 @@ public class PlayerGetLabels extends RpcCall {
         }
 
         Map<String, Object> params = new HashMap<String, Object>();
-        // params.put("playerid", playerId);
         params.put("labels", paramProperties);
         return params;
     }
@@ -73,7 +70,6 @@ public class PlayerGetLabels extends RpcCall {
     @Override
     protected void processResponse(Map<String, Object> response) {
         Map<String, Object> result = getMap(response, "result");
-        // item = getMap(result, "label");
         item = result;
     }
 

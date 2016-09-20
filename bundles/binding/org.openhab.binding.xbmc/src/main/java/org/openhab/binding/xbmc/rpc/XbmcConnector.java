@@ -63,10 +63,8 @@ import com.ning.http.client.websocket.WebSocketUpgradeHandler;
 /**
  * Manages the web socket connection for a single XBMC instance.
  *
- * @author tlan, Ben Jones, Ard van der Leeuw
- * @since 1.5.0
  * @author tlan, Ben Jones, Ard van der Leeuw, Plebs
- * @since 1.9.0
+ * @since 1.5.0
  */
 public class XbmcConnector {
 
@@ -289,7 +287,7 @@ public class XbmcConnector {
      *
      */
     public void addItem(String itemName, String property) {
-        logger.debug("Mapping: itemname=" + itemName + " & property = " + property);
+		logger.debug("Mapping: itemname = {} & property = {}", itemName, property);
         if (!watches.containsKey(itemName)) {
             watches.put(itemName, property);
         }
@@ -614,7 +612,6 @@ public class XbmcConnector {
                         // now update each of the openHAB items for each property
                         for (String property : propertiesInfo) {
                             String value = item.getPropertyValue(property);
-                            // logger.debug("UPDATEfromGETINFO: property=" + property + " & value=" + value);
                             if (property.equals("Player.Fanart")) {
                                 updateFanartUrl(property, value);
                             } else {
@@ -637,7 +634,6 @@ public class XbmcConnector {
                         // now update each of the openHAB items for each property
                         for (String property : propertiesProperties) {
                             String value = item2.getPropertyValue(property);
-                            // logger.debug("UPDATEfromGETPROPERTIES: property=" + property + " & value=" + value);
                             updateProperty(property, value);
                         }
                     }
@@ -647,7 +643,6 @@ public class XbmcConnector {
             // make the request for the player item3 details using GETLABELS
             if (!propertiesLabels.isEmpty()) {
                 final PlayerGetLabels item3 = new PlayerGetLabels(client, httpUri);
-                // item3.setPlayerId(playerId);
                 item3.setProperties(propertiesLabels);
 
                 item3.execute(new Runnable() {
@@ -656,7 +651,6 @@ public class XbmcConnector {
                         // now update each of the openHAB items for each property
                         for (String property : propertiesLabels) {
                             String value = item3.getPropertyValue(property);
-                            // logger.debug("UPDATEfromGETLABELS: property=" + property + " & value=" + value);
                             updateProperty(property, value);
                         }
                     }

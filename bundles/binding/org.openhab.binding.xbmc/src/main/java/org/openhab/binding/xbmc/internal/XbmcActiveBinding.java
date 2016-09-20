@@ -33,10 +33,8 @@ import org.slf4j.LoggerFactory;
  * All item updates are received asynchronously via the web socket All item
  * commands are sent via the web socket
  *
- * @author tlan, Ben Jones
- * @since 1.5.0
  * @author tlan, Ben Jones, Plebs
- * @since 1.9.0
+ * @since 1.5.0
  */
 public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider> implements ManagedService {
 
@@ -54,7 +52,6 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
     @Override
     public void activate() {
         logger.debug(getName() + " activate()");
-		//setProperlyConfigured(true); // <-Removed as it has been moved to the "updated" call 
     }
 
     @Override
@@ -331,6 +328,8 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
                 connector.playerOpenPVR(command.toString(), 2);
             } else if (property.equals("PVR.OpenRadio")) {
                 connector.playerOpenPVR(command.toString(), 1);
+            } else if (property.equals("Refresh")) {
+                execute();
             }
 
         } catch (Exception e) {
