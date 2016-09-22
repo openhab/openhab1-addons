@@ -132,7 +132,7 @@ public class Pushsafer {
                 if (StringUtils.containsIgnoreCase(response, API_RETURN_STATUS_SUCCESS)) {
                     return true;
                 } else {
-                    logger.error("Received error message from Pushsafer: " + responseMessage);
+                    logger.error("Received error message from Pushsafer: " + response);
                     return false;
                 }
             } catch (Exception e) {
