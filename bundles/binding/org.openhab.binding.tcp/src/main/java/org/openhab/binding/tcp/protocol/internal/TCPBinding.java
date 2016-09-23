@@ -258,7 +258,7 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
                 } else {
                     transformedResponse = response;
                     logger.warn("couldn't transform response because transformationService of type '{}' is unavailable",
-                            transformationType);
+                            transformationServiceName);
                 }
             } catch (Exception te) {
                 logger.error("transformation throws exception [transformation=" + transformation + ", response=" + response
