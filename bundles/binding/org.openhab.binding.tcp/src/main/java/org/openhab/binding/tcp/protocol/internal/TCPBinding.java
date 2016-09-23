@@ -261,32 +261,37 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
 
     protected String transformResponse(String transformation, String response) {
         String transformedResponse;
-
-        try {
-            String[] parts = splitTransformationConfig(transformation);
-            String transformationType = parts[0];
-            String transformationFunction = parts[1];
-
-           if (transformationType == "") {     // test for empty type first to avoid the WARN from getTransformationService
-                transformedResponse = transformationFunction;
-            } else {
+        Matcher matcher = EXTRACT_FUNCTION_PATTERN.matcher(transformation);
+        String transformationServiceName;
+        String transformationServiceParam;
+        
+        if (StringUtils.isEmpty(transformation) || transformation.equalsIgnoreCase("default")) {
+        	transformedResponse = response;
+        } else if (matcher.matches()) {
+            matcher.reset();
+            matcher.find();
+            transformationServiceName = matcher.group(1);
+            transformationServiceParam = matcher.group(2);
+            try {
                 TransformationService transformationService = TransformationHelper
-                        .getTransformationService(TCPActivator.getContext(), transformationType);
+                        .getTransformationService(TCPActivator.getContext(), transformationServiceName);
                 if (transformationService != null) {
-                    transformedResponse = transformationService.transform(transformationFunction, response);
+                    transformedResponse = transformationService.transform(transformationServiceParam, response);
                 } else {
                     transformedResponse = response;
                     logger.warn("couldn't transform response because transformationService of type '{}' is unavailable",
-                            transformationType);
+                            transformationServiceName);
                 }
+            } catch (Exception te) {
+                logger.error("transformation throws exception [transformation=" + transformation + ", response=" + response
+                        + "]", te);
+    
+                // in case of an error we return the response without any
+                // transformation
+                transformedResponse = response;
             }
-        } catch (Exception te) {
-            logger.error("transformation throws exception [transformation=" + transformation + ", response=" + response
-                    + "]", te);
-
-            // in case of an error we return the response without any
-            // transformation
-            transformedResponse = response;
+        } else {
+            transformedResponse = transformation;
         }
 
         logger.debug("transformed response is '{}'", transformedResponse);
