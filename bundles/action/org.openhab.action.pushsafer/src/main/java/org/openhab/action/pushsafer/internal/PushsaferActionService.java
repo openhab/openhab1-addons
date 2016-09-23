@@ -18,62 +18,59 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class registers an OSGi service for the Pushsafer action. Pushsafer is a
- * web based service that allows pushing of messages to mobile devices.
- * 
+ * This class registers an OSGi service for the Pushsafer action. Pushsafer is
+ * a web based service that allows pushing of messages to mobile devices.
+ *
  * @author Chris Graham
  * @since 1.5.0
  */
 public class PushsaferActionService implements ActionService, ManagedService {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(PushsaferActionService.class);
+    private static final Logger logger = LoggerFactory.getLogger(PushsaferActionService.class);
 
-	/**
-	 * Indicates whether this action is properly configured which means all
-	 * necessary configurations are set. This flag can be checked by the action
-	 * methods before executing code.
-	 */
-	static boolean isProperlyConfigured = false;
+    /**
+     * Indicates whether this action is properly configured which means all
+     * necessary configurations are set. This flag can be checked by the action
+     * methods before executing code.
+     */
+    static boolean isProperlyConfigured = false;
 
-	public PushsaferActionService() {
-		// nothing to do
-	}
+    public PushsaferActionService() {
+        // nothing to do
+    }
 
-	public void activate() {
-		logger.debug("Pushsafer action service activated");
-	}
+    public void activate() {
+        logger.debug("Pushsafer action service activated");
+    }
 
-	public void deactivate() {
-		logger.debug("Pushsafer action service deactivated");
-	}
+    public void deactivate() {
+        logger.debug("Pushsafer action service deactivated");
+    }
 
-	@Override
-	public String getActionClassName() {
-		return Pushsafer.class.getCanonicalName();
-	}
+    @Override
+    public String getActionClassName() {
+        return Pushsafer.class.getCanonicalName();
+    }
 
-	@Override
-	public Class<?> getActionClass() {
-		return Pushsafer.class;
-	}
+    @Override
+    public Class<?> getActionClass() {
+        return Pushsafer.class;
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
-		logger.debug("Configuration file is being parsed but ignored.");
-		if (config != null) {
-			logger.debug("Configuration data exists but ignored.");
-		} else {
-			// Messages can be sent by providing API Key and User key in the
-			// action binding, so no issue here.
-			logger.debug("The configurations information was empty. No defaults for Pushsafer loaded.");
-		}
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+        logger.debug("Configuration file is being parsed but ignored.");
+        if (config != null) {
+            logger.debug("Configuration data exists but ignored.");
+        } else {
+            // Messages can be sent by providing API Key and User key in the action binding, so no issue here.
+            logger.debug("The configurations information was empty. No defaults for Pushsafer loaded.");
+        }
 
-		isProperlyConfigured = true;
-	}
+        isProperlyConfigured = true;
+    }
 
 }
