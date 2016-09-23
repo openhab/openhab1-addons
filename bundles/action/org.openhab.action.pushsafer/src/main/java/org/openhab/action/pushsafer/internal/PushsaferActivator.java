@@ -14,43 +14,44 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Extension of the default OSGi bundle activator for Pushsafer. Pushsafer is
- * a web based service that allows pushing of messages to mobile devices.
- *
+ * Extension of the default OSGi bundle activator for Pushsafer. Pushsafer is a
+ * web based service that allows pushing of messages to mobile devices.
+ * 
  * @author Chris Graham
  * @since 1.5.0
  */
 public final class PushsaferActivator implements BundleActivator {
 
-    private static Logger logger = LoggerFactory.getLogger(PushsaferActivator.class);
+	private static Logger logger = LoggerFactory
+			.getLogger(PushsaferActivator.class);
 
-    private static BundleContext context;
+	private static BundleContext context;
 
-    /**
-     * Called whenever the OSGi framework starts our bundle
-     */
-    @Override
-    public void start(BundleContext bc) throws Exception {
-        context = bc;
-        logger.debug("Pushsafer action has been started.");
-    }
+	/**
+	 * Called whenever the OSGi framework starts our bundle
+	 */
+	@Override
+	public void start(BundleContext bc) throws Exception {
+		context = bc;
+		logger.debug("Pushsafer action has been started.");
+	}
 
-    /**
-     * Called whenever the OSGi framework stops our bundle
-     */
-    @Override
-    public void stop(BundleContext bc) throws Exception {
-        context = null;
-        logger.debug("Pushsafer action has been stopped.");
-    }
+	/**
+	 * Called whenever the OSGi framework stops our bundle
+	 */
+	@Override
+	public void stop(BundleContext bc) throws Exception {
+		context = null;
+		logger.debug("Pushsafer action has been stopped.");
+	}
 
-    /**
-     * Returns the bundle context of this bundle
-     * 
-     * @return the bundle context
-     */
-    public static BundleContext getContext() {
-        return context;
-    }
+	/**
+	 * Returns the bundle context of this bundle
+	 * 
+	 * @return the bundle context
+	 */
+	public static BundleContext getContext() {
+		return context;
+	}
 
 }
