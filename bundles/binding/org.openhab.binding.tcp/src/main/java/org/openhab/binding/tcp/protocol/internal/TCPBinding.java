@@ -236,29 +236,6 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
     protected void configureChannel(Channel channel) {
     }
 
-    /**
-     * Splits a transformation configuration string into its two parts - the
-     * transformation type and the function/pattern to apply.
-     *
-     * @param transformation the string to split
-     * @return a string array with exactly two entries for the type and the function
-     */
-    protected String[] splitTransformationConfig(String transformation) {
-        Matcher matcher = EXTRACT_FUNCTION_PATTERN.matcher(transformation);
-
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException("given transformation function '" + transformation
-                    + "' does not follow the expected pattern '<function>(<pattern>)'");
-        }
-        matcher.reset();
-
-        matcher.find();
-        String type = matcher.group(1);
-        String pattern = matcher.group(2);
-
-        return new String[] { type, pattern };
-    }
-
     protected String transformResponse(String transformation, String response) {
         String transformedResponse;
         Matcher matcher = EXTRACT_FUNCTION_PATTERN.matcher(transformation);
