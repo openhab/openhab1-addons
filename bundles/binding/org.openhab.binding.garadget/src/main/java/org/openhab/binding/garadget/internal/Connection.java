@@ -287,9 +287,9 @@ public class Connection {
                 proc.handleResponse(statusCode, responseBody);
             }
         } catch (HttpException he) {
-            logger.warn(he.toString());
+            logger.warn("{}", he);
         } catch (IOException ioe) {
-            logger.debug(ioe.toString());
+            logger.debug("{}", ioe);
         } finally {
             method.releaseConnection();
         }
