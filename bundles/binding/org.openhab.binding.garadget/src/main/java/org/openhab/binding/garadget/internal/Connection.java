@@ -287,9 +287,9 @@ public class Connection {
                 proc.handleResponse(statusCode, responseBody);
             }
         } catch (HttpException he) {
-            logger.warn("Fatal protocol violation: {}", he.toString());
+            logger.warn(he.toString());
         } catch (IOException ioe) {
-            logger.warn("Fatal transport error: {}", ioe.toString());
+            logger.debug(ioe.toString());
         } finally {
             method.releaseConnection();
         }
