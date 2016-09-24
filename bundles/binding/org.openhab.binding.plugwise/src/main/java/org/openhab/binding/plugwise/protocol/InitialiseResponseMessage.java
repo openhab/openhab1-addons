@@ -23,6 +23,9 @@ import org.apache.commons.lang.StringUtils;
  */
 public class InitialiseResponseMessage extends Message {
 
+    private static final Pattern RESPONSE_PATTERN = Pattern
+            .compile("(\\w{16})(\\w{2})(\\w{2})(\\w{16})(\\w{4})(\\w{2})");
+
     boolean online;
     String networkID;
     String unknown1;
@@ -59,9 +62,6 @@ public class InitialiseResponseMessage extends Message {
 
     @Override
     protected void parsePayLoad() {
-
-        Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{2})(\\w{2})(\\w{16})(\\w{4})(\\w{2})");
-
         Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
         if (matcher.matches()) {
             MAC = matcher.group(1);

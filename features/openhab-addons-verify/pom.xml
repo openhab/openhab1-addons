@@ -13,7 +13,7 @@
     <artifactId>openhab-addons-verify</artifactId>
     <packaging>pom</packaging>
 
-    <name>openHAB 2 Feature Verification</name>
+    <name>openHAB Feature Verification</name>
 
     <dependencies>
         <dependency>

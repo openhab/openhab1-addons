@@ -478,6 +478,28 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
                     for (ZWaveCommandClass zwaveVersionClass : node.getCommandClasses()) {
                         logger.debug("NODE {}: Node advancer: VERSION - checking {}, version is {}", node.getNodeId(),
                                 zwaveVersionClass.getCommandClass().getLabel(), zwaveVersionClass.getVersion());
+
+                        // See if we want to force the version of this command class
+                        // We now should know all the command classes, so run through the database and set any options
+                        database = new ZWaveProductDatabase();
+                        if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(),
+                                node.getApplicationVersion()) == true) {
+                            List<ZWaveDbCommandClass> classList = database.getProductCommandClasses();
+                            if (classList != null) {
+                                // Loop through the command classes in the data and update the records...
+                                for (ZWaveDbCommandClass dbClass : classList) {
+                                    if (dbClass.version != null
+                                            && zwaveVersionClass.getCommandClass().getKey() == dbClass.Id) {
+                                        logger.debug("NODE {}: Node advancer: VERSION - Set {} to Version {}",
+                                                node.getNodeId(), zwaveVersionClass.getCommandClass().getLabel(),
+                                                dbClass.version);
+
+                                        zwaveVersionClass.setVersion(dbClass.version);
+                                    }
+                                }
+                            }
+                        }
+
                         if (version != null && zwaveVersionClass.getMaxVersion() > 1
                                 && zwaveVersionClass.getVersion() == 0) {
                             logger.debug("NODE {}: Node advancer: VERSION - queued   {}", node.getNodeId(),
