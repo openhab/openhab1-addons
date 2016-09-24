@@ -1838,6 +1838,10 @@
                 <Id>1001</Id>
             </Reference>
             <Reference>
+                <Type>0B01</Type>
+                <Id>1002</Id>
+            </Reference>
+            <Reference>
                 <Type>0B00</Type>
                 <Id>2001</Id>
             </Reference>
@@ -1847,7 +1851,8 @@
             </Reference>
             <Model>FGFS101</Model>
             <Label lang="en">Flood Sensor</Label>
-            <ConfigFile>fibaro/fgfs101.xml</ConfigFile>
+            <ConfigFile VersionMax="3.0">fibaro/fgfs101.xml</ConfigFile>
+            <ConfigFile VersionMin="3.2" VersionMax="25.0">fibaro/fgfs101-32.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
@@ -3154,6 +3159,16 @@
             <Reference>
                 <Type>0004</Type>
                 <Id>0002</Id>
+            </Reference>
+            <Model>009402</Model>
+            <Label lang="en">10 Year Smoke Detector with Siren Function</Label>
+            <ConfigFile>popp/009402.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <!-- Removed due to conflict with 9402 - needs to be resolved -->
+                <Type>FFFE</Type>
+                <Id>FFFE</Id>
             </Reference>
             <Model>005107</Model>
             <Label lang="en">Solar Powered Outdoor Siren</Label>
