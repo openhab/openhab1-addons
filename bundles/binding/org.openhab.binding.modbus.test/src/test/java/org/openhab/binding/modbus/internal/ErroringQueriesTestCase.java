@@ -12,6 +12,8 @@ import static org.mockito.Mockito.*;
 
 import java.net.UnknownHostException;
 import java.util.Dictionary;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.openhab.binding.modbus.ModbusBindingProvider;
@@ -72,6 +74,58 @@ public class ErroringQueriesTestCase extends TestCaseSupport {
         waitForRequests(1);
 
         verifyNoMoreInteractions(eventPublisher);
+    }
+
+    @Test
+    public void testConnectionTimeout()
+            throws UnknownHostException, ConfigurationException, BindingConfigParseException, InterruptedException {
+        /**
+         * Test that connection timeout is handled properly
+         *
+         * In the test we have non-responding slave (see http://stackoverflow.com/a/904609), and we use connection
+         * timeout of 300ms
+         *
+         * We assert that after 100ms the binding still have not given up on the connection (no UNDEF posted to the
+         * event bus)
+         * but after 400ms from the connection, the UNDEF is there.
+         */
+
+        binding = new ModbusBinding();
+        Dictionary<String, Object> config = newLongPollBindingConfig();
+        addSlave(config, ServerType.TCP, "10.255.255.1:9999:0:0:0:1:300", SLAVE_NAME,
+                ModbusBindingProvider.TYPE_DISCRETE, null, 0, 0, 2);
+        putSlaveConfigParameter(config, serverType, SLAVE_NAME, "postundefinedonreaderror", "true");
+
+        binding.updated(config);
+
+        // Configure items
+        final ModbusGenericBindingProvider provider = new ModbusGenericBindingProvider();
+        provider.processBindingConfiguration("test.items", new SwitchItem("Item1"),
+                String.format("%s:%d", SLAVE_NAME, 0));
+        binding.setEventPublisher(eventPublisher);
+        binding.addBindingProvider(provider);
+
+        final CountDownLatch lock = new CountDownLatch(1);
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                binding.execute();
+                lock.countDown();
+            };
+        };
+        try {
+            thread.start();
+            lock.await(100, TimeUnit.MILLISECONDS);
+            // After 100ms the binding has not yet given up, i.e. no UNDEF posted to event bus
+            verifyNoMoreInteractions(eventPublisher);
+
+            // After 100ms+300ms the timeout of 300ms has passed and UNDEF should have been posted
+            lock.await(300, TimeUnit.MILLISECONDS);
+            verify(eventPublisher).postUpdate("Item1", UnDefType.UNDEF);
+            verifyNoMoreInteractions(eventPublisher);
+        } finally {
+            thread.interrupt();
+        }
     }
 
     @Test

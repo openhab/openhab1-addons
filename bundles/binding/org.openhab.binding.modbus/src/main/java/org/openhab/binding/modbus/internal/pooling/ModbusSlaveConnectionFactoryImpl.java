@@ -93,7 +93,12 @@ public class ModbusSlaveConnectionFactoryImpl
                 if (address == null) {
                     return null;
                 }
-                TCPMasterConnection connection = new TCPMasterConnection(address, key.getPort());
+                EndpointPoolConfiguration config = endpointPoolConfigs.get(key);
+                int connectTimeoutMillis = 0;
+                if (config != null) {
+                    connectTimeoutMillis = config.getConnectTimeoutMillis();
+                }
+                TCPMasterConnection connection = new TCPMasterConnection(address, key.getPort(), connectTimeoutMillis);
                 logger.trace("Created connection {} for endpoint {}", connection, key);
                 return connection;
             }
