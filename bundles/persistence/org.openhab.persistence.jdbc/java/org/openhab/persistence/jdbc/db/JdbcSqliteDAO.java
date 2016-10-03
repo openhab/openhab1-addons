@@ -39,6 +39,8 @@ public class JdbcSqliteDAO extends JdbcBaseDAO {
 
     private void initSqlQueries() {
         logger.debug("JDBC::initSqlQueries: '{}'", this.getClass().getSimpleName());
+        SQL_GET_DB = "PRAGMA DATABASE_LIST"; // "SELECT SQLITE_VERSION()"; // "PRAGMA DATABASE_LIST"->db Path/Name
+                                             // "PRAGMA SCHEMA_VERSION";
         SQL_IF_TABLE_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND name='#searchTable#'";
         SQL_CREATE_ITEMS_TABLE_IF_NOT = "CREATE TABLE IF NOT EXISTS #itemsManageTable# (ItemId INTEGER PRIMARY KEY AUTOINCREMENT, #colname# #coltype# NOT NULL)";
         SQL_INSERT_ITEM_VALUE = "INSERT OR IGNORE INTO #tableName# (TIME, VALUE) VALUES( #tablePrimaryValue#, CAST( ? as #dbType#) )";
@@ -66,6 +68,12 @@ public class JdbcSqliteDAO extends JdbcBaseDAO {
     /**************
      * ITEMS DAOs *
      **************/
+
+    @Override
+    public String doGetDB() {
+        return Yank.queryColumn(SQL_GET_DB, "file", String.class, null).get(0);
+    }
+
     @Override
     public ItemsVO doCreateItemsTableIfNot(ItemsVO vo) {
         String sql = StringUtilsExt.replaceArrayMerge(SQL_CREATE_ITEMS_TABLE_IF_NOT,
