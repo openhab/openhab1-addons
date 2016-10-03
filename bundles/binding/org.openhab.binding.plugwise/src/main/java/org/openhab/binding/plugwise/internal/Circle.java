@@ -26,6 +26,8 @@ import org.openhab.binding.plugwise.protocol.PowerBufferResponseMessage;
 import org.openhab.binding.plugwise.protocol.PowerChangeRequestMessage;
 import org.openhab.binding.plugwise.protocol.PowerInformationRequestMessage;
 import org.openhab.binding.plugwise.protocol.PowerInformationResponseMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class that represents a Plugwise Circle device
@@ -41,11 +43,14 @@ import org.openhab.binding.plugwise.protocol.PowerInformationResponseMessage;
  */
 public class Circle extends PlugwiseDevice {
 
+    private static Logger logger = LoggerFactory.getLogger(Circle.class);
+
     private static final float PULSE_FACTOR = 2.1324759f;
 
     protected Stick stick;
 
     // Calibration data, required to calculate energy consumption
+    protected boolean calibrated;
     protected float gaina;
     protected float gainb;
     protected float offtot;
@@ -192,6 +197,7 @@ public class Circle extends PlugwiseDevice {
                     gainb = ((CalibrationResponseMessage) message).getGainb();
                     offtot = ((CalibrationResponseMessage) message).getOfftot();
                     offruis = ((CalibrationResponseMessage) message).getOffruis();
+                    calibrated = true;
 
                     return true;
 
@@ -210,11 +216,19 @@ public class Circle extends PlugwiseDevice {
 
                 case POWER_INFORMATION_RESPONSE:
 
+                    if (!calibrated) {
+                        logger.debug(
+                                "{} with name: {} and MAC address: {} received power information without "
+                                        + "being calibrated, calibrating and skipping response",
+                                getType().name(), name, MAC);
+                        calibrate();
+                        return true;
+                    }
                     one = ((PowerInformationResponseMessage) message).getOneSecond();
                     float watt = pulseToWatt(one);
                     if (watt > 10000) {
-                        // the Circle reporting this information is in a kind of error state.
-                        // we just skip these values
+                        logger.debug("{} with name: {} and MAC address: {} is in a kind of error state, "
+                                + "skipping power information response", type.name(), name, MAC);
                         return true;
                     }
                     postUpdate(MAC, PlugwiseCommandType.CURRENTPOWER, watt);
