@@ -287,7 +287,7 @@ public class XbmcConnector {
      *
      */
     public void addItem(String itemName, String property) {
-		logger.debug("Mapping: itemname = {} & property = {}", itemName, property);
+        logger.debug("Mapping: itemname = {} & property = {}", itemName, property);
         if (!watches.containsKey(itemName)) {
             watches.put(itemName, property);
         }
