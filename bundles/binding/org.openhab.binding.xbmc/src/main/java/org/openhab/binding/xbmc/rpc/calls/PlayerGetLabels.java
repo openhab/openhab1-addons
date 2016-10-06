@@ -15,23 +15,27 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.xbmc.rpc.RpcCall;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ning.http.client.AsyncHttpClient;
 
 /**
- * Player.GetItem RPC
+ * Player.GetLabels RPC
  *
- * @author tlan, Ben Jones, Marcel Erkel, Plebs
- * @since 1.5.0
+ * @author Plebs
+ * @since 1.9.0
  */
-public class PlayerGetItem extends RpcCall {
+public class PlayerGetLabels extends RpcCall {
+
+    private static final Logger logger = LoggerFactory.getLogger(RpcCall.class);
 
     private int playerId;
     private List<String> properties;
 
     private Map<String, Object> item;
 
-    public PlayerGetItem(AsyncHttpClient client, String uri) {
+    public PlayerGetLabels(AsyncHttpClient client, String uri) {
         super(client, uri);
     }
 
@@ -45,36 +49,28 @@ public class PlayerGetItem extends RpcCall {
 
     @Override
     protected String getName() {
-        return "Player.GetItem";
+        return "XBMC.GetInfoLabels";
     }
 
     @Override
     protected Map<String, Object> getParams() {
         List<String> paramProperties = new ArrayList<String>();
         for (String property : properties) {
-            if (property.equals("Player.Type")) {
-                continue;
-            }
-            if (property.equals("Player.Label")) {
-                continue;
-            }
-            if (property.startsWith("Player.")) {
-                // properties entered as 'Player.Title' etc - so strip the first 7 chars
+            if (property.startsWith("Label.")) {
                 String paramProperty = getParamProperty(property);
                 paramProperties.add(paramProperty);
             }
         }
 
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("playerid", playerId);
-        params.put("properties", paramProperties);
+        params.put("labels", paramProperties);
         return params;
     }
 
     @Override
     protected void processResponse(Map<String, Object> response) {
         Map<String, Object> result = getMap(response, "result");
-        item = getMap(result, "item");
+        item = result;
     }
 
     public String getPropertyValue(String property) {
@@ -125,7 +121,7 @@ public class PlayerGetItem extends RpcCall {
     }
 
     private String getParamProperty(String property) {
-        // properties entered as 'Player.Title' etc - so strip the first 7 chars
-        return property.substring(7).toLowerCase();
+        // properties entered as 'Label.Title' etc - so strip the first 6 chars
+        return property.substring(6); // It should not be in lowercase
     }
 }
