@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.xbmc.rpc.calls;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import org.openhab.binding.xbmc.rpc.RpcCall;
@@ -16,35 +16,28 @@ import org.openhab.binding.xbmc.rpc.RpcCall;
 import com.ning.http.client.AsyncHttpClient;
 
 /**
- * JSONRPC.Ping RPC
+ * Input.Down RPC
  *
- * @author Ben Jones
+ * @author Il Plebs
  * @since 1.5.0
  */
-public class JSONRPCPing extends RpcCall {
+public class InputDown extends RpcCall {
 
-    private boolean pong = false;
-
-    public JSONRPCPing(AsyncHttpClient client, String uri) {
+    public InputDown(AsyncHttpClient client, String uri) {
         super(client, uri);
     }
 
     @Override
     protected String getName() {
-        return "JSONRPC.Ping";
+        return "Input.Down";
     }
 
     @Override
     protected Map<String, Object> getParams() {
-        return new HashMap<String, Object>();
+        return Collections.emptyMap();
     }
 
     @Override
     protected void processResponse(Map<String, Object> response) {
-        pong = response.containsKey("result") && response.get("result").equals("pong");
-    }
-
-    public boolean isPong() {
-        return pong;
     }
 }
