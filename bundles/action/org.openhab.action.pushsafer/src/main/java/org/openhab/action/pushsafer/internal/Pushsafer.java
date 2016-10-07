@@ -81,8 +81,9 @@ public class Pushsafer {
                 if ((message.length() + title.length()) <= API_MAX_MESSAGE_LENGTH) {
                     addEncodedParameter(data, MESSAGE_KEY_MESSAGE, message);
                 } else {
+            logger.error("Unsupported encoding: {}", SatelActionService.satelCommModule.getTextEncoding());
 
-                    logger.error("Together, the event message and title total more than " + API_MAX_MESSAGE_LENGTH + " characters.");
+                    logger.error("Together, the event message and title total more than {} characters.", API_MAX_MESSAGE_LENGTH);
                     return false;
                 }
             } else {
@@ -117,14 +118,13 @@ public class Pushsafer {
 
             String content = data.toString();
 
-            logger.debug("Executing post to " + API_URL + " with the following content: " + content);
+            logger.debug("Executing post to {} with the following content: {}", API_URL, content);
             String response = HttpUtil.executeUrl("POST", API_URL, IOUtils.toInputStream(content), CONTENT_TYPE, timeout);
-            logger.debug("Raw response: " + response);
+            logger.debug("Raw response: {}", response);
 
             try {
                 if (StringUtils.isEmpty(response)) {
-                    logger.error(
-                        "Received an empty response from our Pushsafer API call. This can mean either we are having trouble connecting to the Pushsafer API or the Pushsafer API is actively enforcing rate limits with a connection time-out.");
+                    logger.error("Received an empty response from our Pushsafer API call. This can mean either we are having trouble connecting to the Pushsafer API or the Pushsafer API is actively enforcing rate limits with a connection time-out.");
                     return false;
                 }
 
@@ -132,17 +132,17 @@ public class Pushsafer {
                     return true;
                 } else {
 
-                    logger.error("Received error message from Pushsafer: " + response);
+                    logger.error("Received error message from Pushsafer: {}", response);
                     return false;
                 }
             } catch (Exception e) {
 
-                logger.warn("Can't parse response from Pushsafer: " + response, e);
+                logger.warn("Can't parse response from Pushsafer: {}", e);
                 return false;
             }
         } catch (Exception e) {
 
-            logger.error("An error occurred while notifying your mobile device.", e);
+            logger.error("An error occurred while notifying your mobile device: {}", e);
             return false;
         }
     }
