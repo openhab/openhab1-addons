@@ -41,7 +41,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Some common methods to be used in both HTTP-In-Binding and HTTP-Out-Binding
  * 
