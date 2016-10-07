@@ -82,7 +82,7 @@ public class Pushsafer {
                     addEncodedParameter(data, MESSAGE_KEY_MESSAGE, message);
                 } else {
 
-                    logger.error("Together, the event message and title total more than " + API_MAX_MESSAGE_LENGTH + " characters.");
+                    logger.error("Together, the event message and title total more than {} characters.",API_MAX_MESSAGE_LENGTH);
                     return false;
                 }
             } else {
