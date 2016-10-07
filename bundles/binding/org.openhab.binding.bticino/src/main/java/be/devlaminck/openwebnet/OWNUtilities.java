@@ -27,7 +27,7 @@ import java.util.GregorianCalendar;
 public class OWNUtilities {
 
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * OWN Control Messages
 	 */
@@ -35,9 +35,10 @@ public class OWNUtilities {
 	public final static String MSG_OPEN_NACK = "*#*0##";
 
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * Create the frame to send to the own gateway
+	 * 
 	 * @param c
 	 * @return
 	 */
@@ -57,9 +58,10 @@ public class OWNUtilities {
 	}
 
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * Get datetime on format "dd/MM/yyyy HH:mm:ss"
+	 * 
 	 * @return
 	 */
 	public static String getDateTime() {
@@ -69,9 +71,10 @@ public class OWNUtilities {
 	}
 
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * Convert temperature from bticino bus format to readeable format
+	 * 
 	 * @param temperature
 	 * @return
 	 */
@@ -87,9 +90,10 @@ public class OWNUtilities {
 	}
 
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * Convert day from number to name
+	 * 
 	 * @param dayNumber
 	 * @return
 	 */
@@ -124,9 +128,10 @@ public class OWNUtilities {
 	}
 
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * Get model name from model number
+	 * 
 	 * @param modelNumber
 	 * @return
 	 */
@@ -150,6 +155,6 @@ public class OWNUtilities {
 		}
 		return (model);
 	}
-	
+
 	// ------------------------------------------------------------------------
 }
