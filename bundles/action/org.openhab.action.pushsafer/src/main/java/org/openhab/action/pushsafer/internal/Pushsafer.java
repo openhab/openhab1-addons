@@ -117,9 +117,9 @@ public class Pushsafer {
 
             String content = data.toString();
 
-            logger.debug("Executing post to " + API_URL + " with the following content: " + content);
+            logger.debug("Executing post with the following content: {}",content);
             String response = HttpUtil.executeUrl("POST", API_URL, IOUtils.toInputStream(content), CONTENT_TYPE, timeout);
-            logger.debug("Raw response: " + response);
+            logger.debug("Raw response: {}",response);
 
             try {
                 if (StringUtils.isEmpty(response)) {
@@ -132,17 +132,17 @@ public class Pushsafer {
                     return true;
                 } else {
 
-                    logger.error("Received error message from Pushsafer: " + response);
+                    logger.error("Received error message from Pushsafer: {}",response);
                     return false;
                 }
             } catch (Exception e) {
 
-                logger.warn("Can't parse response from Pushsafer: " + response, e);
+                logger.warn("Can't parse response from Pushsafer: {}",response);
                 return false;
             }
         } catch (Exception e) {
 
-            logger.error("An error occurred while notifying your mobile device.", e);
+            logger.error("An error occurred while notifying your mobile device.");
             return false;
         }
     }
