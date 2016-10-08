@@ -98,9 +98,14 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             return;
         }
         try {
-            db = new DynamoDBClient(dbConfig);
-            if (!checkConnection()) {
-                logger.error("dynamodb: database connection does not work for now, will retry to use the database.");
+            boolean connectionOK = maybeConnectAndCheckConnection();
+            if (db == null) {
+                // Could not even construct DynamoDBClient. Abort.
+                return;
+            }
+            if (!connectionOK) {
+                logger.error("Failed to establish the dynamodb database connection. "
+                        + "Connection will be retried later on persistence service query/store.");
             }
         } catch (Exception e) {
             logger.error("Error constructing dynamodb client", e);
@@ -115,9 +120,21 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
         resetClient();
     }
 
-    private boolean checkConnection() {
+    /**
+     * Initializes DynamoDBClient (db field), if necessary, and checks the connection.
+     *
+     * If DynamoDBClient constructor throws an exception, error is logged and false is returned.
+     *
+     * @return whether connection was successful.
+     */
+    private boolean maybeConnectAndCheckConnection() {
         if (db == null) {
-            return false;
+            try {
+                db = new DynamoDBClient(dbConfig);
+            } catch (Exception e) {
+                logger.error("Error constructing dynamodb client", e);
+                return false;
+            }
         }
         return db.checkConnection();
     }
@@ -240,7 +257,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             logger.warn("Configuration for dynamodb not yet loaded or broken. Not storing item.");
             return;
         }
-        if (!checkConnection()) {
+        if (!maybeConnectAndCheckConnection()) {
             logger.warn("DynamoDB not connected. Not storing item.");
             return;
         }
@@ -278,7 +295,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             logger.warn("Configuration for dynamodb not yet loaded or broken. Not storing item.");
             return Collections.emptyList();
         }
-        if (!checkConnection()) {
+        if (!maybeConnectAndCheckConnection()) {
             logger.warn("DynamoDB not connected. Not storing item.");
             return Collections.emptyList();
         }
