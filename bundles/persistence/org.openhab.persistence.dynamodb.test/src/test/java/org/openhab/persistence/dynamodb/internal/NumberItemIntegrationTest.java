@@ -18,6 +18,11 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
 
+/**
+ *
+ * @author Sami Salonen
+ *
+ */
 public class NumberItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "number";

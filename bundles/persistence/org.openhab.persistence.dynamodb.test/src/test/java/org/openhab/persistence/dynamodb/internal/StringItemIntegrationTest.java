@@ -15,6 +15,11 @@ import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 
+/**
+ *
+ * @author Sami Salonen
+ *
+ */
 public class StringItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "string";

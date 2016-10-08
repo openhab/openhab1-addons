@@ -12,6 +12,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+/**
+ *
+ * @author Sami Salonen
+ *
+ */
 public class DynamoDBTableNameResolverTest {
 
     @Test

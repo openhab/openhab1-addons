@@ -19,6 +19,7 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 /**
  * Shallow wrapper for Dynamo DB wrappers
  *
+ * @author Sami Salonen
  */
 public class DynamoDBClient {
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBClient.class);

@@ -58,6 +58,8 @@ import com.google.common.collect.ImmutableMap;
  *
  * The default database name is "openhab"
  *
+ * @author Sami Salonen
+ *
  */
 public class DynamoDBPersistenceService implements QueryablePersistenceService {
 

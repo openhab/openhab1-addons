@@ -27,6 +27,7 @@ import org.openhab.library.tel.items.CallItem;
 /**
  * Test for AbstractDynamoDBItem.getDynamoItemClass
  *
+ * @author Sami Salonen
  */
 public class AbstractDynamoDBItemGetDynamoItemClass {
 

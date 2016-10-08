@@ -35,6 +35,11 @@ import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
+/**
+ * 
+ * @author Sami Salonen
+ *
+ */
 public class BaseIntegrationTest {
     protected static final Logger logger = LoggerFactory.getLogger(DynamoDBPersistenceService.class);
     protected static DynamoDBPersistenceService service;

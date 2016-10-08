@@ -46,9 +46,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Base class for all DynamoDBItem. Represents openhab Item serialized in a suitable format for the database
+ * Base class for all DynamoDBItem. Represents openHAB Item serialized in a suitable format for the database
  *
  * @param <T> Type of the state as accepted by the AWS SDK.
+ *
+ * @author Sami Salonen
  */
 public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
 

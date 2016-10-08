@@ -13,6 +13,13 @@ import java.util.Date;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.HistoricItem;
 
+/**
+ * Represents openHAB Item serialized in a suitable format for the database
+ *
+ * @param <T> Type of the state as accepted by the AWS SDK.
+ *
+ * @author Sami Salonen
+ */
 public interface DynamoDBItem<T> {
 
     static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";

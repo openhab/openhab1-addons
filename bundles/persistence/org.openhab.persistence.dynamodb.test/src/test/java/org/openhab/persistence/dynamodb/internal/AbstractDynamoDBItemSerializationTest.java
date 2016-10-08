@@ -47,6 +47,7 @@ import org.openhab.library.tel.types.CallType;
 /**
  * Test for AbstractDynamoDBItem.fromState and AbstractDynamoDBItem.asHistoricItem for all kind of states
  *
+ * @author Sami Salonen
  */
 public class AbstractDynamoDBItemSerializationTest {
 

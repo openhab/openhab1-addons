@@ -8,6 +8,12 @@
  */
 package org.openhab.persistence.dynamodb.internal;
 
+/**
+ * The DynamoDBTableNameResolver resolves DynamoDB table name for a given item.
+ *
+ * @author Sami Salonen
+ *
+ */
 public class DynamoDBTableNameResolver {
 
     private final String tablePrefix;

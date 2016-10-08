@@ -19,6 +19,11 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 
+/**
+ *
+ * @author Sami Salonen
+ *
+ */
 public class RollershutterItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "rollershutter";

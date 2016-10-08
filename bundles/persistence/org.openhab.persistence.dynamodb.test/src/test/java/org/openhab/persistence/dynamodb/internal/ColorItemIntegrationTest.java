@@ -18,6 +18,11 @@ import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 
+/**
+ * 
+ * @author Sami Salonen
+ *
+ */
 public class ColorItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static HSBType color(double hue, int saturation, int brightness) {

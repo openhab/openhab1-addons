@@ -15,6 +15,11 @@ import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.State;
 
+/**
+ *
+ * @author Sami Salonen
+ *
+ */
 public class SwitchItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "switch";

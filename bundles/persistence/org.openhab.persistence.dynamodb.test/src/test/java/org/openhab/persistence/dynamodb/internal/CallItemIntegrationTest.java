@@ -17,6 +17,11 @@ import org.openhab.core.types.State;
 import org.openhab.library.tel.items.CallItem;
 import org.openhab.library.tel.types.CallType;
 
+/**
+ * 
+ * @author Sami Salonen
+ *
+ */
 public class CallItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "call";

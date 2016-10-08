@@ -15,6 +15,11 @@ import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 
+/**
+ *
+ * @author Sami Salonen
+ *
+ */
 public class DimmerItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "dimmer";

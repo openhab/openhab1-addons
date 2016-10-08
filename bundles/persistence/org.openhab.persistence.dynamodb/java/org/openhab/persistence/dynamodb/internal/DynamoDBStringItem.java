@@ -18,6 +18,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 /**
  * DynamoDBItem for items that can be serialized as DynamoDB string
  *
+ * @author Sami Salonen
  */
 @DynamoDBDocument
 public class DynamoDBStringItem extends AbstractDynamoDBItem<String> {

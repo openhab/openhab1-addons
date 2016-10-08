@@ -16,6 +16,11 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.PointType;
 import org.openhab.core.types.State;
 
+/**
+ *
+ * @author Sami Salonen
+ *
+ */
 public class LocationItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "location";

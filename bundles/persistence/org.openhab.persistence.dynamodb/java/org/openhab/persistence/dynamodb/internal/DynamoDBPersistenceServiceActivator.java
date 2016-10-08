@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Extension of the default OSGi bundle activator
  *
+ * @author Sami Salonen
+ *
  */
 public class DynamoDBPersistenceServiceActivator implements BundleActivator {
 

@@ -16,6 +16,11 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.State;
 
+/**
+ * 
+ * @author Sami Salonen
+ *
+ */
 public class ContactItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "contact";

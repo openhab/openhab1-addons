@@ -17,6 +17,7 @@ import org.openhab.core.types.State;
 /**
  * This is a Java bean used to return historic items from Dynamodb.
  *
+ * @author Sami Salonen
  */
 public class DynamoDBHistoricItem implements HistoricItem {
     final private String name;

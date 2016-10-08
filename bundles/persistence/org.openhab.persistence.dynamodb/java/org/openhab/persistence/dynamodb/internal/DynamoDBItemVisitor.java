@@ -11,6 +11,8 @@ package org.openhab.persistence.dynamodb.internal;
 /**
  * Visitor for DynamoDBItem
  *
+ * @author Sami Salonen
+ *
  */
 public interface DynamoDBItemVisitor {
 

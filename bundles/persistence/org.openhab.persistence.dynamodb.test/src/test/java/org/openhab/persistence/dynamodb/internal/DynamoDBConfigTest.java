@@ -22,6 +22,11 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.google.common.collect.ImmutableMap;
 
+/**
+ *
+ * @author Sami Salonen
+ *
+ */
 public class DynamoDBConfigTest {
 
     @Rule

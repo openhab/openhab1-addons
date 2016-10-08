@@ -25,6 +25,7 @@ import com.amazonaws.regions.Regions;
 /**
  * Configuration for DynamoDB connections
  *
+ * @author Sami Salonen
  */
 public class DynamoDBConfig {
     public static final String DEFAULT_TABLE_PREFIX = "openhab-";

@@ -41,7 +41,7 @@ import org.openhab.core.types.State;
  *
  * See DimmerItemIntegrationTest for example how to use this base class.
  *
- *
+ * @author Sami Salonen
  *
  */
 public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest {

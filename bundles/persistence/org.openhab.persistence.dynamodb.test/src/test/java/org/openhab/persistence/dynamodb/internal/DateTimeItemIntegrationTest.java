@@ -17,6 +17,11 @@ import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.types.State;
 
+/**
+ *
+ * @author Sami Salonen
+ *
+ */
 public class DateTimeItemIntegrationTest extends AbstractTwoItemIntegrationTest {
 
     private static final String name = "datetime";
