@@ -170,7 +170,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
                 // No table present, continue with creation
                 db.getDynamoClient().createTable(request);
             } catch (AmazonClientException e) {
-                logger.error("Exception when creation table (descibe): {}", e.getMessage());
+                logger.error("Table creation failed due to error in describeTable operation", e);
                 return false;
             }
 
@@ -178,7 +178,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             return waitForTableToBecomeActive(tableName);
 
         } catch (AmazonClientException e) {
-            logger.error("Exception when creation table: {}", e.getMessage());
+            logger.error("Exception when creating table", e);
             return false;
         }
 
@@ -451,9 +451,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
                 item = itemRegistry.getItem(itemName);
             }
         } catch (ItemNotFoundException e1) {
-            logger.error("Unable to get item type for {}", itemName);
-            // Set type to null - data will be returned as StringType
-            item = null;
+            logger.error("Unable to get item {} from registry", itemName);
         }
         return item;
     }
