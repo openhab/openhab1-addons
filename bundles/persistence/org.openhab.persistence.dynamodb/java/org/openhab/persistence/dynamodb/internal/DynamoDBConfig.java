@@ -45,10 +45,16 @@ public class DynamoDBConfig {
         try {
             String regionName = (String) config.get("region");
             if (isBlank(regionName)) {
-                logger.error("Speficy region to use. Valid values include: " + StringUtils.join(Regions.values(), ','));
+                invalidRegionLogHelp(regionName);
                 return null;
             }
-            Region region = Region.getRegion(Regions.fromName(regionName));
+            final Region region;
+            try {
+                region = Region.getRegion(Regions.fromName(regionName));
+            } catch (IllegalArgumentException e) {
+                invalidRegionLogHelp(regionName);
+                return null;
+            }
 
             AWSCredentials credentials;
             String accessKey = (String) config.get("accessKey");
@@ -141,4 +147,8 @@ public class DynamoDBConfig {
         return writeCapacityUnits;
     }
 
+    private static void invalidRegionLogHelp(String region) {
+        logger.error("Specify valid AWS region to use, got {}. Valid values include: {}", region,
+                StringUtils.join(Regions.values(), ','));
+    }
 }
