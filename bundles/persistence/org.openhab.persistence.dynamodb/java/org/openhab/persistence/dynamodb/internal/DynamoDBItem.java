@@ -27,7 +27,7 @@ public interface DynamoDBItem<T> {
      * Convert this AbstractDynamoItem as HistoricItem.
      *
      * @param item Item representing this item. Used to determine item type.
-     * @return
+     * @return HistoricItem representing this DynamoDBItem.
      */
     HistoricItem asHistoricItem(Item item);
 

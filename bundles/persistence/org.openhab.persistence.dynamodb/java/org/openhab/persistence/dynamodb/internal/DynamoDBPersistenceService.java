@@ -68,9 +68,9 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
     private DynamoDBTableNameResolver tableNameResolver;
 
     /**
-     * For testing
+     * For testing. Allows access to underlying DynamoDBClient.
      *
-     * @return
+     * @return DynamoDBClient connected to AWS Dyanamo DB.
      */
     DynamoDBClient getDb() {
         return db;
@@ -129,7 +129,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
      *
      * @param mapper
      * @param dtoClass
-     * @return
+     * @return whether table creation succeeded.
      */
     private synchronized boolean createTable(DynamoDBMapper mapper, Class<?> dtoClass) {
         if (db == null) {
@@ -324,7 +324,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
      * Construct dynamodb query from filter
      *
      * @param filter
-     * @return
+     * @return DynamoDBQueryExpression corresponding to the given FilterCriteria
      */
     private DynamoDBQueryExpression<DynamoDBItem<?>> createQueryExpression(FilterCriteria filter) {
         final DynamoDBStringItem itemHash = new DynamoDBStringItem(filter.getItemName(), null, null);
@@ -399,7 +399,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
      * Convert op to string suitable for dynamodb filter expression
      *
      * @param op
-     * @return
+     * @return string representation corresponding to the given the Operator
      */
     private static String operatorAsString(Operator op) {
         switch (op) {
@@ -425,7 +425,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
      * Retrieves the item for the given name from the item registry
      *
      * @param itemName
-     * @return
+     * @return item with the given name, or null if no such item exists in item registry.
      */
     private Item getItemFromRegistry(String itemName) {
         Item item = null;
