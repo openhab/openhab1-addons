@@ -23,10 +23,24 @@ import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.types.State;
 
 /**
+ * This is abstract class helping with integration testing the persistence service. Different kind of queries are tested
+ * against actual dynamo db database.
+ *
+ *
+ * Inheritor of this base class needs to store two states of one item in a static method annotated with @BeforeClass.
+ * This
+ * static
+ * class should update the private static fields
+ * beforeStore (date before storing anything), afterStore1 (after storing first item, but before storing second item),
+ * afterStore2 (after storing second item). The item name must correspond to getItemName. The first state needs to be
+ * smaller than the second state.
+ *
+ * To have more comprehensive tests, the inheritor class can define getQueryItemStateBetween to provide a value between
+ * the two states. Null can be used to omit the additional tests.
+ *
+ *
  * See DimmerItemIntegrationTest for example how to use this base class.
  *
- * Implementor need to store two items. The first one needs to be smaller than the second. Protected static timestamps
- * in this class needs to be updated
  *
  *
  */
@@ -53,7 +67,7 @@ public abstract class AbstractTwoItemIntegrationTest extends BaseIntegrationTest
     protected abstract State getSecondItemState();
 
     /**
-     * State that is between the first and second
+     * State that is between the first and second. Use null to omit extended tests using this value.
      *
      * @return
      */
