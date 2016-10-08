@@ -153,7 +153,7 @@ public class HttpUtil {
 	public static String executeUrl(String httpMethod, String url, Properties httpHeaders, InputStream content, String contentType, int timeout, String proxyHost, Integer proxyPort, String proxyUser, String proxyPassword, String nonProxyHosts) {
 		
 		HttpClient client = new HttpClient();
-
+		
 		// only configure a proxy if a host is provided
 		if (StringUtils.isNotBlank(proxyHost) && proxyPort != null && shouldUseProxy(url, nonProxyHosts)) {
 			client.getHostConfiguration().setProxy(proxyHost, proxyPort);
@@ -162,7 +162,7 @@ public class HttpUtil {
 					new UsernamePasswordCredentials(proxyUser, proxyPassword));
 			}
 		}
-
+		  
 		HttpMethod method = HttpUtil.createHttpMethod(httpMethod, url);
         method.getParams().setSoTimeout(timeout);
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
@@ -333,39 +333,20 @@ public class HttpUtil {
 	public static HttpMethod createHttpMethod(String httpMethodString, String url) {
 		
 		if ("GET".equals(httpMethodString)) {
-			try {
-				return new GetMethod(url);
-			}catch(Exception e) {
-				logger.error("Failed to create GET method: {}", e.getMessage());
-				return null;
-			 }
+			return new GetMethod(url);
 		}
 		else if ("PUT".equals(httpMethodString)) {
-			try {
-				return new PutMethod(url);
-			}catch(Exception e) {
-				logger.error("Failed to create PUT method: {}", e.getMessage());
-				return null;
-			 }
+	        return new PutMethod(url);
 		}
 		else if ("POST".equals(httpMethodString)) {
-			try {
-				return new PostMethod(url);
-			}catch(Exception e) {
-				logger.error("Failed to create POST method: {}", e.getMessage());
-				return null;
-			 }
+	        return new PostMethod(url);
 		}
 		else if ("DELETE".equals(httpMethodString)) {
-			try {
-				return new DeleteMethod(url);
-			}catch(Exception e) {
-				logger.error("Failed to create DELETE method: {}", e.getMessage());
-				return null;
-			 }
+	        return new DeleteMethod(url);
 		}
 		else {
 			throw new IllegalArgumentException("given httpMethod '" + httpMethodString + "' is unknown");
 		}
 	}
+
 }
