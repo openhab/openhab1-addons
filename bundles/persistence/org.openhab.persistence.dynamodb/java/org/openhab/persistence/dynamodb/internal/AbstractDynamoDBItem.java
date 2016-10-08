@@ -186,7 +186,10 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
         return new DynamoDBHistoricItem(getName(), state[0], getTime());
     }
 
-    // getter and setter must be defined in the child class in order to have it working with AWS SDK
+    /**
+     * We define all getter and setters as abstract and require the inheritor class implement those. Having the getter
+     * and setter implementations here in the parent class does not work with introspection done by AWS SDK.
+     */
 
     /*
      * (non-Javadoc)
