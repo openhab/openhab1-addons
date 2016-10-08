@@ -101,11 +101,12 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
         try {
             boolean connectionOK = maybeConnectAndCheckConnection();
             if (db == null) {
-                // Could not even construct DynamoDBClient. Abort.
+                logger.error("Error creating dynamodb database client. Aborting service activation.");
                 return;
             }
             if (!connectionOK) {
-                logger.error("Failed to establish the dynamodb database connection. "
+                // client creation succeeded but connection is not OK.
+                logger.warn("Failed to establish the dynamodb database connection. "
                         + "Connection will be retried later on persistence service query/store.");
             }
         } catch (Exception e) {
