@@ -85,7 +85,6 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
     }
 
     public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
-        logger.debug("dynamodb persistence service activated");
         resetClient();
         try {
             dbConfig = DynamoDBConfig.fromConfig(config);
@@ -108,6 +107,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             return;
         }
         isProperlyConfigured = true;
+        logger.debug("dynamodb persistence service activated");
     }
 
     public void deactivate() {
