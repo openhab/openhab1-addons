@@ -20,7 +20,9 @@ public class SwitchItemIntegrationTest extends AbstractTwoItemIntegrationTest {
     private static final String name = "switch";
     private static final OnOffType state1 = OnOffType.OFF;
     private static final OnOffType state2 = OnOffType.ON;
-    private static final OnOffType stateBetween = null; // no such that exists
+    // There is no OnOffType state value between OFF and ON.
+    // Omit extended query tests AbstractTwoItemIntegrationTest by setting stateBetween to null.
+    private static final OnOffType stateBetween = null;
 
     @BeforeClass
     public static void storeData() throws InterruptedException {

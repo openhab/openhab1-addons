@@ -21,7 +21,9 @@ public class ContactItemIntegrationTest extends AbstractTwoItemIntegrationTest {
     private static final String name = "contact";
     private static final OpenClosedType state1 = OpenClosedType.CLOSED;
     private static final OpenClosedType state2 = OpenClosedType.OPEN;
-    private static final OnOffType stateBetween = null; // no such that exists
+    // There is no OpenClosedType state value between CLOSED and OPEN.
+    // Omit extended query tests AbstractTwoItemIntegrationTest by setting stateBetween to null.
+    private static final OnOffType stateBetween = null;
 
     @BeforeClass
     public static void storeData() throws InterruptedException {
