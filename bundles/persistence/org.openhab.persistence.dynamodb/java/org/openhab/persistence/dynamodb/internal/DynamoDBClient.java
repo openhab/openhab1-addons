@@ -11,7 +11,6 @@ package org.openhab.persistence.dynamodb.internal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.regions.Region;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
@@ -51,8 +50,8 @@ public class DynamoDBClient {
     public boolean checkConnection() {
         try {
             dynamo.listTables(1).firstPage();
-        } catch (AmazonClientException e) {
-            logger.error("Got internal server error when trying to list tables: {}", e);
+        } catch (Exception e) {
+            logger.error("Got internal server error when trying to list tables: {}", e.getMessage());
             return false;
         }
         return true;
