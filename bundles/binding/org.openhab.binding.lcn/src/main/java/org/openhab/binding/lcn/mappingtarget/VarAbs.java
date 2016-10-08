@@ -161,10 +161,16 @@ public class VarAbs extends TargetWithLcnAddr {
                 }
                 if (LcnDefs.Var.toVarId(this.var) != -1) {
                     // Absolute commands for variables are not supported.
-                    // We fake the missing command by using reset and relative commands.
-                    conn.queue(this.addr, !this.addr.isGroup(), PckGenerator.varReset(this.var, is2013));
-                    conn.queue(this.addr, !this.addr.isGroup(),
-                            PckGenerator.varRel(this.var, LcnDefs.RelVarRef.CURRENT, value.toNative(), is2013));
+                    if (this.addr.getId() == 4 && this.addr.isGroup()) {
+                        // group 4 are status messages
+                        conn.queue(this.addr, !this.addr.isGroup(),
+                                PckGenerator.updateStatusVar(this.var, value.toNative()));
+                    } else {
+                        // We fake the missing command by using reset and relative commands.
+                        conn.queue(this.addr, !this.addr.isGroup(), PckGenerator.varReset(this.var, is2013));
+                        conn.queue(this.addr, !this.addr.isGroup(),
+                                PckGenerator.varRel(this.var, LcnDefs.RelVarRef.CURRENT, value.toNative(), is2013));
+                    }
                 } else {
                     conn.queue(this.addr, !this.addr.isGroup(), PckGenerator.varAbs(this.var, value.toNative()));
                 }
