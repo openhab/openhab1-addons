@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.PaginationLoadingStrategy;
@@ -317,7 +318,16 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
 
         DynamoDBQueryExpression<DynamoDBItem<?>> queryExpression = createQueryExpression(filter);
         @SuppressWarnings("rawtypes")
-        PaginatedQueryList<? extends DynamoDBItem> paginatedList = mapper.query(dtoClass, queryExpression);
+        final PaginatedQueryList<? extends DynamoDBItem> paginatedList;
+        try {
+            paginatedList = mapper.query(dtoClass, queryExpression);
+        } catch (AmazonServiceException e) {
+            logger.error(
+                    "DynamoDB query raised unexpected exception: {}. Returning empty collection. "
+                            + "Status code 400 (resource not found) might occur if table was just created.",
+                    e.getMessage());
+            return Collections.emptyList();
+        }
         for (int itemIndexOnPage = 0; itemIndexOnPage < filter.getPageSize(); itemIndexOnPage++) {
             int itemIndex = filter.getPageNumber() * filter.getPageSize() + itemIndexOnPage;
             DynamoDBItem<?> dynamoItem;
