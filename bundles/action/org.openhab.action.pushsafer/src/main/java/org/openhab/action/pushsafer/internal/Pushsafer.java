@@ -6,6 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.openhab.action.pushsafer.internal;
 
 import java.io.IOException;
@@ -31,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * for sending messages via the Pushsafer mobile device push service..
  *
  * @author Chris Graham / Kevin Siml
- * @since 1.5.0
+ * @since 1.9.0
  */
 public class Pushsafer {
 
@@ -59,10 +60,10 @@ public class Pushsafer {
 
     // Primary method for sending a message to the Pushsafer API
     @
-    ActionDoc(text = "Send a notification to your iOS, Android or Win10 device. Private or Alias Key and message are required. All other can effectively be null. Check the Pushsafer.com API for more informations: https://www.pushsafer.com/en/pushapi", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    ActionDoc(text = "Send a notification to your iOS, Android or Win10 device. Private or Alias Key and message are required. All other can be null. Check the Pushsafer.com API for more information: https://www.pushsafer.com/en/pushapi", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
     public static boolean pushsafer(@ParamDoc(name = "apiKey", text = "Your Private or Alias Key.") String apiKey,
 
-        @ParamDoc(name = "message", text = "Your message.") String message, @ParamDoc(name = "title", text = "Your message's title.") String title, @ParamDoc(name = "device", text = " Your device or device group id to send the message directly to that device(s), rather than all of your devices.") String device, @ParamDoc(name = "icon", text = "A icon to show with your message.") String icon, @ParamDoc(name = "vibration", text = "A title for your supplementary URL, otherwise just the URL is shown.") String vibration, @ParamDoc(name = "sound", text = "The id of one of the sounds to override the default sound.") String sound) {
+        @ParamDoc(name = "message", text = "Your message.") String message, @ParamDoc(name = "title", text = "Your message's title.") String title, @ParamDoc(name = "device", text = " Your device or device group id to send the message directly to that device, rather than all of your devices.") String device, @ParamDoc(name = "icon", text = "A icon to show with your message.") String icon, @ParamDoc(name = "vibration", text = "How often the device should vibrate (1-3 or leave empty).") String vibration, @ParamDoc(name = "sound", text = "The id of one of the sounds to override the default sound.") String sound) {
 
         StringBuilder data = new StringBuilder();
 
@@ -142,7 +143,7 @@ public class Pushsafer {
             }
         } catch (Exception e) {
 
-            logger.error("An error occurred while notifying your mobile device.");
+            logger.error("An error occurred while notifying your mobile device: {}",e);
             return false;
         }
     }
