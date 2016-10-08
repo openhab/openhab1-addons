@@ -2600,6 +2600,15 @@
             <Label lang="en">Thermostatic Valve</Label>
             <ConfigFile>eurotronic/stellaz.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0002</Type>
+                <Id>0001</Id>
+            </Reference>
+            <Model>CometZ</Model>
+            <Label lang="en">Thermostatic Valve</Label>
+            <ConfigFile>eurotronic/cometz.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0111</Id>
