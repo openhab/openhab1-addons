@@ -1663,6 +1663,15 @@
         </Product>
         <Product>
             <Reference>
+                <Type>0203</Type>
+                <Id>1000</Id>
+            </Reference>
+            <Model>FGS223</Model>
+            <Label lang="en">Double Switch 2 </Label>
+            <ConfigFile>fibaro/fgs223.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0100</Type>
                 <Id>0107</Id>
             </Reference>
