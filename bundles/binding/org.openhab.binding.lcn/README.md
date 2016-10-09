@@ -265,6 +265,7 @@ Example S000M005, threshold 3-4 (register is 3!):
 
 1. `VAR` and `VAR_RESET` with modules before 170206: If the command's target is an LCN group, those older modules require special commands to work: `VAR_OLD`, `VAR_RESET_OLD`
 1. Thresholds with modules before 170206: Older modules only have threshold register 1 (but 5 instead of 4 values!). If the command's target is an LCN group, those older modules require special commands to work: `THRESHOLD_ADD_OLD`, `THRESHOLD_SUB_OLD`, `THRESHOLD_REL_OLD`
+1. `VAR`: If the command's target is LCN group number 4, the value of the variable will be sent as status message. This makes it possible to send 12 status messages per segment and fetch these values by the modules.
 
 ## 3.5 LCN Regulators (additions to variables)
 
