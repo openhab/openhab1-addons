@@ -55,6 +55,7 @@
                                 <artifact><file>src/main/resources/conf/ihc.cfg</file><type>cfg</type><classifier>ihc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/influxdb.cfg</file><type>cfg</type><classifier>influxdb</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/insteonplm.cfg</file><type>cfg</type><classifier>insteonplm</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/ipx800.cfg</file><type>cfg</type><classifier>ipx800</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/irtrans.cfg</file><type>cfg</type><classifier>irtrans</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jdbc.cfg</file><type>cfg</type><classifier>jdbc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jpa.cfg</file><type>cfg</type><classifier>jpa</classifier></artifact>
