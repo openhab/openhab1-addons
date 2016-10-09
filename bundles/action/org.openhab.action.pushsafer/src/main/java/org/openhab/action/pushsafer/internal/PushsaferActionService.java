@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * a web based service that allows pushing of messages to mobile devices.
  *
  * @author Chris Graham
- * @since 1.5.0
+ * @since 1.9.0
  */
 public class PushsaferActionService implements ActionService, ManagedService {
 
