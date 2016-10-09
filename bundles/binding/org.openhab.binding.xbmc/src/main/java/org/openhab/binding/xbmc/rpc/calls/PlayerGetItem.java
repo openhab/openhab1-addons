@@ -21,7 +21,7 @@ import com.ning.http.client.AsyncHttpClient;
 /**
  * Player.GetItem RPC
  *
- * @author tlan, Ben Jones, Marcel Erkel
+ * @author tlan, Ben Jones, Marcel Erkel, Plebs
  * @since 1.5.0
  */
 public class PlayerGetItem extends RpcCall {
@@ -58,8 +58,11 @@ public class PlayerGetItem extends RpcCall {
             if (property.equals("Player.Label")) {
                 continue;
             }
-            String paramProperty = getParamProperty(property);
-            paramProperties.add(paramProperty);
+            if (property.startsWith("Player.")) {
+                // properties entered as 'Player.Title' etc - so strip the first 7 chars
+                String paramProperty = getParamProperty(property);
+                paramProperties.add(paramProperty);
+            }
         }
 
         Map<String, Object> params = new HashMap<String, Object>();

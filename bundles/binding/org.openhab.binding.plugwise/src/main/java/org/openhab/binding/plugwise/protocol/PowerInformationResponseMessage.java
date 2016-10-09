@@ -23,6 +23,9 @@ import org.openhab.binding.plugwise.internal.Energy;
  */
 public class PowerInformationResponseMessage extends Message {
 
+    private static final Pattern RESPONSE_PATTERN = Pattern
+            .compile("(\\w{16})(\\w{4})(\\w{4})(\\w{8})(\\w{4})(\\w{4})(\\w{4})");
+
     private Energy oneSecond;
     private Energy eightSecond;
     private Energy allSeconds;
@@ -45,8 +48,6 @@ public class PowerInformationResponseMessage extends Message {
 
     @Override
     protected void parsePayLoad() {
-        Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{4})(\\w{4})(\\w{8})(\\w{4})(\\w{4})(\\w{4})");
-
         Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
         if (matcher.matches()) {
             MAC = matcher.group(1);

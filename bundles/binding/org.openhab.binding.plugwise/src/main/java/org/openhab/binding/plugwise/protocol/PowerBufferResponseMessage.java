@@ -21,6 +21,9 @@ import org.openhab.binding.plugwise.internal.Energy;
  */
 public class PowerBufferResponseMessage extends Message {
 
+    private static final Pattern RESPONSE_PATTERN = Pattern
+            .compile("(\\w{16})(\\w{8})(\\w{8})(\\w{8})(\\w{8})(\\w{8})(\\w{8})(\\w{8})(\\w{8})(\\w{8})");
+
     Energy[] datapoints;
     private int logAddress;
 
@@ -48,9 +51,6 @@ public class PowerBufferResponseMessage extends Message {
 
     @Override
     protected void parsePayLoad() {
-        Pattern RESPONSE_PATTERN = Pattern
-                .compile("(\\w{16})(\\w{8})(\\w{8})(\\w{8})(\\w{8})(\\w{8})(\\w{8})(\\w{8})(\\w{8})(\\w{8})");
-
         Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
         if (matcher.matches()) {
             MAC = matcher.group(1);

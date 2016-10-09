@@ -1663,6 +1663,15 @@
         </Product>
         <Product>
             <Reference>
+                <Type>0203</Type>
+                <Id>1000</Id>
+            </Reference>
+            <Model>FGS223</Model>
+            <Label lang="en">Double Switch 2 </Label>
+            <ConfigFile>fibaro/fgs223.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0100</Type>
                 <Id>0107</Id>
             </Reference>
@@ -1838,6 +1847,10 @@
                 <Id>1001</Id>
             </Reference>
             <Reference>
+                <Type>0B01</Type>
+                <Id>1002</Id>
+            </Reference>
+            <Reference>
                 <Type>0B00</Type>
                 <Id>2001</Id>
             </Reference>
@@ -1847,7 +1860,8 @@
             </Reference>
             <Model>FGFS101</Model>
             <Label lang="en">Flood Sensor</Label>
-            <ConfigFile>fibaro/fgfs101.xml</ConfigFile>
+            <ConfigFile VersionMax="3.0">fibaro/fgfs101.xml</ConfigFile>
+            <ConfigFile VersionMin="3.2" VersionMax="25.0">fibaro/fgfs101-32.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
@@ -2413,12 +2427,22 @@
             <ConfigFile>philio/pst02b.xml</ConfigFile>
         </Product>
         <Product>
+           <Reference>
+                <Type>0001</Type>
+                <Id>000f</Id>
+            </Reference>
+            <Model>PAN03</Model>
+            <Label lang="en">In Wall Single Relay (1 Way) Switch Module 1x 3.0kW with power meter</Label>
+            <Label lang="de">Einbau einfach Schalter Modul 1x 3.0kW mit Leistungsmessung</Label>
+            <ConfigFile>philio/pan03.xml</ConfigFile>
+        </Product>
+        <Product>
             <Reference>
                 <Type>0001</Type>
                 <Id>0003</Id>
             </Reference>
             <Model>PAN04-1</Model>
-            <Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW
+            <Label lang="en">In Wall Dual Relay (1 Way) Switch Module 2x 1.5kW
                 with power meter
             </Label>
             <Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit
@@ -2432,7 +2456,7 @@
                 <Id>0012</Id>
             </Reference>
             <Model>PAN04-1B</Model>
-            <Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW
+            <Label lang="en">In Wall Dual Relay (1 Way) Switch Module 2x 1.5kW
                 with power meter
             </Label>
             <Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit
@@ -2446,7 +2470,7 @@
                 <Id>0004</Id>
             </Reference>
             <Model>PAN06-1</Model>
-            <Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW
+            <Label lang="en">In Wall Dual Relay (1 Way) Switch Module 2x 1.5kW
             </Label>
             <Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW</Label>
             <ConfigFile>philio/pan06_1.xml</ConfigFile>
@@ -2457,7 +2481,7 @@
                 <Id>0013</Id>
             </Reference>
             <Model>PAN06-1A</Model>
-            <Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW
+            <Label lang="en">In Wall Dual Relay (1 Way) Switch Module 2x 1.5kW
             </Label>
             <Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW</Label>
             <ConfigFile>philio/pan06_1a.xml</ConfigFile>
@@ -2584,6 +2608,15 @@
             <Model>EUR_STELLAZ</Model>
             <Label lang="en">Thermostatic Valve</Label>
             <ConfigFile>eurotronic/stellaz.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>0002</Type>
+                <Id>0001</Id>
+            </Reference>
+            <Model>CometZ</Model>
+            <Label lang="en">Thermostatic Valve</Label>
+            <ConfigFile>eurotronic/cometz.xml</ConfigFile>
         </Product>
     </Manufacturer>
     <Manufacturer>
@@ -3008,6 +3041,14 @@
             <Label lang="en">Wall Plug</Label>
             <ConfigFile>wintop/easyplug.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>1200</Type>
+                <Id>5502</Id>
+            </Reference>
+            <Model>DHSZWDMIW01</Model>
+            <Label lang="en">DHS Z-Wave Micro Dimmer</Label>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>84</Id>
@@ -3136,6 +3177,16 @@
             <Reference>
                 <Type>0004</Type>
                 <Id>0002</Id>
+            </Reference>
+            <Model>009402</Model>
+            <Label lang="en">10 Year Smoke Detector with Siren Function</Label>
+            <ConfigFile>popp/009402.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <!-- Removed due to conflict with 9402 - needs to be resolved -->
+                <Type>FFFE</Type>
+                <Id>FFFE</Id>
             </Reference>
             <Model>005107</Model>
             <Label lang="en">Solar Powered Outdoor Siren</Label>

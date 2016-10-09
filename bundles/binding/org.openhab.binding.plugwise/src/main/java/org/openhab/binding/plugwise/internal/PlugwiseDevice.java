@@ -27,17 +27,21 @@ public class PlugwiseDevice implements Comparable {
     public enum DeviceType {
         Stick,
         Circle,
-        CirclePlus
+        CirclePlus,
+        Scan,
+        Sense,
+        Stealth,
+        Switch
     };
 
     protected String MAC;
     protected DeviceType type;
-    protected String friendlyName;
+    protected String name;
 
-    public PlugwiseDevice(String mac, DeviceType typed, String friendly) {
+    public PlugwiseDevice(String mac, DeviceType type, String name) {
         MAC = mac;
-        type = typed;
-        friendlyName = friendly;
+        this.type = type;
+        this.name = name;
     }
 
     public String getMAC() {
@@ -48,8 +52,8 @@ public class PlugwiseDevice implements Comparable {
         return type;
     }
 
-    public String getFriendlyName() {
-        return friendlyName;
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -58,11 +62,10 @@ public class PlugwiseDevice implements Comparable {
     }
 
     /**
-     * 
+     *
      * Each Plugwise device needs to know how process the message that are meant for it. Extending classes therefore
-     * have to Override this
-     * method and extend it to include new message types that are relevant for that device class
-     * 
+     * have to Override this method and extend it to include new message types that are relevant for that device class
+     *
      * @param message to process
      * @return
      */
@@ -82,8 +85,8 @@ public class PlugwiseDevice implements Comparable {
      * delegate this posting to another more superior class
      * For example, Circle(+) will pass this on to the Stick, and the Stick will pass it on to the Plugwise Binding
      * Each device class has to override this method to make it specific for that device class
-     * 
-     * 
+     *
+     *
      * @param MAC of the Plugwise device
      * @param type of Plugwise Command
      * @param value to be posted

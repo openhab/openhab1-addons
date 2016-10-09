@@ -11,7 +11,7 @@ package org.openhab.binding.satel.internal.types;
 import java.util.BitSet;
 
 /**
- * Available zone control types.
+ * Available partition control types.
  *
  * @author Krzysztof Goworek
  * @since 1.7.0

@@ -313,4 +313,12 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
         return this.satelModule.getIntegraVersion();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
+    }
+
 }
