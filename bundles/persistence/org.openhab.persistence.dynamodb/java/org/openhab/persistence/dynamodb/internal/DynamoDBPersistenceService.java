@@ -51,7 +51,7 @@ import com.google.common.collect.ImmutableMap;
 
 /**
  * This is the implementation of the DynamoDB {@link PersistenceService}. It persists item values
- * using the <a href="https://aws.amazon.com/dynamodb/">Amazon DynamoDB</a> time series database. The states (
+ * using the <a href="https://aws.amazon.com/dynamodb/">Amazon DynamoDB</a> database. The states (
  * {@link State}) of an {@link Item} are persisted in a time series with names equal to the name of
  * the item. All values are stored using integers or doubles, {@link OnOffType} and
  * {@link OpenClosedType} are stored using 0 or 1.
