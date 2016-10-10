@@ -89,17 +89,14 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
 
     public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
         resetClient();
-        try {
-            dbConfig = DynamoDBConfig.fromConfig(config);
-            if (dbConfig == null) {
-                throw new IllegalArgumentException("Something was wrong with configuration");
-            }
-
-            tableNameResolver = new DynamoDBTableNameResolver(dbConfig.getTablePrefix());
-        } catch (Exception e) {
-            logger.error("Error with configuration: {}", e);
+        dbConfig = DynamoDBConfig.fromConfig(config);
+        if (dbConfig == null) {
+            // Configuration was invalid. Abort service activation.
+            // Error is already logger in fromConfig.
             return;
         }
+
+        tableNameResolver = new DynamoDBTableNameResolver(dbConfig.getTablePrefix());
         try {
             boolean connectionOK = maybeConnectAndCheckConnection();
             if (db == null) {

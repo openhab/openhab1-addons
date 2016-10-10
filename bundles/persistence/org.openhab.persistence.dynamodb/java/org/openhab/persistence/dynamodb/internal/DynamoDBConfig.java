@@ -42,7 +42,17 @@ public class DynamoDBConfig {
     private long readCapacityUnits = DEFAULT_READ_CAPACITY_UNITS;
     private long writeCapacityUnits = DEFAULT_WRITE_CAPACITY_UNITS;
 
-    public static DynamoDBConfig fromConfig(Map<String, Object> config) throws Exception {
+    /**
+     *
+     * @param config persistence service configuration
+     * @return DynamoDB configuration. Returns null in case of configuration errors
+     */
+    public static DynamoDBConfig fromConfig(Map<String, Object> config) {
+        if (config == null || config.isEmpty()) {
+            logger.error("Configuration not provided! At least AWS region and credentials must be provided.");
+            return null;
+        }
+
         try {
             String regionName = (String) config.get("region");
             if (isBlank(regionName)) {
@@ -110,7 +120,8 @@ public class DynamoDBConfig {
 
             return new DynamoDBConfig(region, credentials, table, createTable, readCapacityUnits, writeCapacityUnits);
         } catch (Exception e) {
-            throw e;
+            logger.error("Error with configuration", e);
+            return null;
         }
     }
 

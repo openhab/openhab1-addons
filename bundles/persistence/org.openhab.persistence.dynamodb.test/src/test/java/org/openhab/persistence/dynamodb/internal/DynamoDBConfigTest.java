@@ -76,6 +76,26 @@ public class DynamoDBConfigTest {
     }
 
     @Test
+    public void testNullConfiguration() throws Exception {
+        assertNull(DynamoDBConfig.fromConfig(null));
+    }
+
+    @Test
+    public void testEmptyConfiguration() throws Exception {
+        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.of()));
+    }
+
+    @Test
+    public void testRegionWithInvalidProfilesConfigFile() throws Exception {
+        File credsFile = folder.newFile("creds");
+        FileUtils.write(credsFile, "[fooprofile]\n" + "aws_access_key_idINVALIDKEY=testAccessKey\n"
+                + "aws_secret_access_key=testSecretKey\n" + "aws_session_token=testSessionToken\n");
+
+        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.<String, Object>of("region", "eu-west-1",
+                "profilesConfigFile", credsFile.getAbsolutePath(), "profile", "fooprofile")));
+    }
+
+    @Test
     public void testRegionWithProfilesConfigFileMissingProfile() throws Exception {
         File credsFile = folder.newFile("creds");
         FileUtils.write(credsFile, "[fooprofile]\n" + "aws_access_key_id=testAccessKey\n"
