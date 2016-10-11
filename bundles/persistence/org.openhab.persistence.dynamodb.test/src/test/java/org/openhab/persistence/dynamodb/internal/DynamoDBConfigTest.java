@@ -82,7 +82,7 @@ public class DynamoDBConfigTest {
 
     @Test
     public void testEmptyConfiguration() throws Exception {
-        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.of()));
+        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.<String, Object>of()));
     }
 
     @Test
