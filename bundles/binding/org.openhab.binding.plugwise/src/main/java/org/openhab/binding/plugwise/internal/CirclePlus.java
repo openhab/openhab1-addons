@@ -8,9 +8,6 @@
  */
 package org.openhab.binding.plugwise.internal;
 
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.TriggerBuilder.newTrigger;
-
 import org.joda.time.DateTime;
 import org.openhab.binding.plugwise.PlugwiseCommandType;
 import org.openhab.binding.plugwise.protocol.AcknowledgeMessage;
@@ -20,16 +17,10 @@ import org.openhab.binding.plugwise.protocol.RealTimeClockGetRequestMessage;
 import org.openhab.binding.plugwise.protocol.RealTimeClockGetResponseMessage;
 import org.openhab.binding.plugwise.protocol.RoleCallRequestMessage;
 import org.openhab.binding.plugwise.protocol.RoleCallResponseMessage;
-import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,15 +42,13 @@ public class CirclePlus extends Circle {
 
     private static final Logger logger = LoggerFactory.getLogger(CirclePlus.class);
 
-    private static final String CIRCLE_PLUS_JOB_DATA_KEY = "CirclePlus";
+    public static final String CIRCLE_PLUS_JOB_DATA_KEY = "CirclePlus";
 
     protected DateTime realtimeClock;
 
     public CirclePlus(String mac, Stick stick, String friendly) {
         super(mac, stick, friendly);
         type = DeviceType.CirclePlus;
-
-        scheduleSetCirclePlusClockJob();
     }
 
     public boolean setClock() {
@@ -70,24 +59,6 @@ public class CirclePlus extends Circle {
         ClockSetRequestMessage message = new ClockSetRequestMessage(MAC, stamp);
         stick.sendMessage(message);
         return true;
-    }
-
-    private void scheduleSetCirclePlusClockJob() {
-        JobDataMap map = new JobDataMap();
-        map.put(CIRCLE_PLUS_JOB_DATA_KEY, this);
-
-        JobDetail job = newJob(SetClockJob.class).withIdentity(MAC + "-SetCirclePlusClock", "Plugwise")
-                .usingJobData(map).build();
-
-        CronTrigger trigger = newTrigger().withIdentity(MAC + "-SetCirclePlusClock", "Plugwise").startNow()
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?")).build();
-
-        try {
-            Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
-            sched.scheduleJob(job, trigger);
-        } catch (SchedulerException e) {
-            logger.error("Error scheduling Circle+ setClock Quartz Job", e);
-        }
     }
 
     /**
