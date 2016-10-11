@@ -1615,6 +1615,15 @@
         <Name>Fibaro System</Name>
         <Product>
             <Reference>
+                <Type>FB10</Type>
+                <Id>1014</Id>
+            </Reference>
+            <Model>FGPB101</Model>
+            <Label lang="en">A real push button (switch) available in several colors.</Label>
+            <ConfigFile>fibaro/fgpb101.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0402</Type>
                 <Id>1002</Id>
             </Reference>
