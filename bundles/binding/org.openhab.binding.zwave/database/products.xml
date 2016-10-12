@@ -1615,6 +1615,10 @@
         <Name>Fibaro System</Name>
         <Product>
             <Reference>
+                <Type>0F01</Type>
+                <Id>1000</Id>
+            </Reference>
+            <Reference>
                 <Type>FB10</Type>
                 <Id>1014</Id>
             </Reference>
