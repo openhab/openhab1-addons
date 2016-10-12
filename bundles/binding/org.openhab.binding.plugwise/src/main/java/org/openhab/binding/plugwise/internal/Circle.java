@@ -47,6 +47,22 @@ public class Circle extends PlugwiseDevice {
 
     private static final float PULSE_FACTOR = 2.1324759f;
 
+    private static final int POWER_STATE_RETRIES = 3;
+
+    private class PendingPowerStateChange {
+
+        final boolean state;
+        int retries;
+
+        PendingPowerStateChange(boolean state) {
+            this.state = state;
+        }
+
+        public String getStateAsString() {
+            return state ? "ON" : "OFF";
+        }
+    }
+
     protected Stick stick;
 
     // Calibration data, required to calculate energy consumption
@@ -56,7 +72,7 @@ public class Circle extends PlugwiseDevice {
     protected float offtot;
     protected float offruis;
 
-    // System variables as kept/maintaned by the Circle hardware
+    // System variables as kept/maintained by the Circle hardware
     protected DateTime stamp;
     protected LocalTime systemClock;
     protected int recentLogAddress;
@@ -66,6 +82,10 @@ public class Circle extends PlugwiseDevice {
     protected String hardwareVersion;
     protected DateTime firmwareVersion;
     protected Energy one;
+
+    // Pending power state changes are tracked for retries and temporarily
+    // ignoring an outdated result of an InformationJob
+    protected PendingPowerStateChange pendingPowerStateChange;
 
     public Circle(String mac, Stick stick, String friendly) {
         super(mac, DeviceType.Circle, friendly);
@@ -79,8 +99,10 @@ public class Circle extends PlugwiseDevice {
     public boolean setPowerState(String state) {
         if (state != null) {
             if (state.equals("ON") || state.equals("OPEN") || state.equals("UP")) {
+                pendingPowerStateChange = new PendingPowerStateChange(true);
                 return setPowerState(true);
             } else if (state.equals("OFF") || state.equals("CLOSED") || state.equals("DOWN")) {
+                pendingPowerStateChange = new PendingPowerStateChange(false);
                 return setPowerState(false);
             }
         }
@@ -88,8 +110,8 @@ public class Circle extends PlugwiseDevice {
     }
 
     public boolean setPowerState(boolean state) {
-        PowerChangeRequestMessage message = new PowerChangeRequestMessage(MAC, state);
-        stick.sendMessage(message);
+        stick.sendPriorityMessage(new PowerChangeRequestMessage(MAC, state));
+        stick.sendPriorityMessage(new InformationRequestMessage(MAC));
         return true;
     }
 
@@ -211,7 +233,31 @@ public class Circle extends PlugwiseDevice {
                     hertz = ((InformationResponseMessage) message).getHertz();
                     hardwareVersion = ((InformationResponseMessage) message).getHardwareVersion();
 
-                    postUpdate(MAC, PlugwiseCommandType.CURRENTSTATE, powerState);
+                    if (pendingPowerStateChange != null) {
+                        if (powerState == pendingPowerStateChange.state) {
+                            pendingPowerStateChange = null;
+                        } else {
+                            // power state change message may be lost or an InformationJob may have queried the power
+                            // state just before the power state change message arrived
+                            if (pendingPowerStateChange.retries < POWER_STATE_RETRIES) {
+                                pendingPowerStateChange.retries++;
+                                logger.warn("Retrying to switch {} {} {} (retry #{})", type.name().toString(),
+                                        this.getName(), pendingPowerStateChange.getStateAsString(),
+                                        pendingPowerStateChange.retries);
+                                setPowerState(pendingPowerStateChange.state);
+                            } else {
+                                logger.warn("Failed to switch {} {} {} after {} retries", type.name().toString(),
+                                        this.getName(), pendingPowerStateChange.getStateAsString(),
+                                        pendingPowerStateChange.retries);
+                                pendingPowerStateChange = null;
+                            }
+                        }
+                    }
+
+                    if (pendingPowerStateChange == null) {
+                        postUpdate(MAC, PlugwiseCommandType.CURRENTSTATE, powerState);
+                    }
+
                     return true;
 
                 case POWER_INFORMATION_RESPONSE:

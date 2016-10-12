@@ -17,13 +17,13 @@ import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TooManyListenersException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -94,6 +94,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
     private static int maxBufferSize = 1024;
     private final ReentrantLock sentQueueLock = new ReentrantLock();
     private BlockingQueue<Message> sendQueue = new ArrayBlockingQueue<Message>(maxBufferSize, true);
+    private BlockingQueue<Message> prioritySendQueue = new ArrayBlockingQueue<Message>(maxBufferSize, true);
     private BlockingQueue<AcknowledgeMessage> acknowledgedQueue = new ArrayBlockingQueue<AcknowledgeMessage>(
             maxBufferSize, true);
     private BlockingQueue<Message> sentQueue = new ArrayBlockingQueue<Message>(maxBufferSize, true);
@@ -348,6 +349,17 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                 sendQueue.put(message);
             } catch (InterruptedException e) {
                 logger.error("Interrupted while adding to sendQueue: {}", message);
+            }
+        }
+    }
+
+    public void sendPriorityMessage(Message message) {
+        if (message != null && isInitialised()) {
+            try {
+                logger.debug("Adding to prioritySendQueue: {}", message);
+                prioritySendQueue.put(message);
+            } catch (InterruptedException e) {
+                logger.error("Interrupted while adding to prioritySendQueue: {}", message);
             }
         }
     }
@@ -639,7 +651,16 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
         public void run() {
             while (true) {
                 try {
-                    Message message = stick.sendQueue.take();
+                    Message message = stick.prioritySendQueue.poll();
+
+                    if (message == null) {
+                        message = stick.sendQueue.poll(100, TimeUnit.MILLISECONDS);
+                    }
+
+                    if (message == null) {
+                        continue;
+                    }
+
                     sendMessage(message);
                     sleep(stick.interval);
                 } catch (InterruptedException e) {

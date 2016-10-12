@@ -28,6 +28,7 @@ import org.apache.commons.lang.IllegalClassException;
 import org.joda.time.DateTime;
 import org.openhab.binding.plugwise.PlugwiseBindingProvider;
 import org.openhab.binding.plugwise.PlugwiseCommandType;
+import org.openhab.binding.plugwise.internal.CirclePlus.SetClockJob;
 import org.openhab.binding.plugwise.internal.PlugwiseGenericBindingProvider.PlugwiseBindingConfigElement;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DateTimeType;
@@ -41,6 +42,8 @@ import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -340,7 +343,6 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                     case CURRENTSTATE:
                         if (plug instanceof Circle) {
                             result = ((Circle) plug).setPowerState(commandAsString);
-                            ((Circle) plug).updateInformation();
                         }
                     default:
                         break;
@@ -521,6 +523,28 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                 } else {
                     logger.error("Error scheduling a Quartz Job for a non-defined Plugwise device (" + element.getId()
                             + ")");
+                }
+            }
+        }
+
+        List<CirclePlus> cps = stick.getDevicesByClass(CirclePlus.class);
+        if (!cps.isEmpty()) {
+            CirclePlus cp = cps.get(0);
+            String jobName = cp.MAC + "-SetCirclePlusClock";
+
+            if (!isExistingJob(scheduler, jobName)) {
+                JobDataMap map = new JobDataMap();
+                map.put(CirclePlus.CIRCLE_PLUS_JOB_DATA_KEY, cp);
+
+                JobDetail job = newJob(SetClockJob.class).withIdentity(jobName, "Plugwise").usingJobData(map).build();
+                CronTrigger trigger = newTrigger().withIdentity(jobName, "Plugwise").startNow()
+                        .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?")).build();
+
+                try {
+                    Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+                    sched.scheduleJob(job, trigger);
+                } catch (SchedulerException e) {
+                    logger.error("Error scheduling Circle+ setClock Quartz Job", e);
                 }
             }
         }
