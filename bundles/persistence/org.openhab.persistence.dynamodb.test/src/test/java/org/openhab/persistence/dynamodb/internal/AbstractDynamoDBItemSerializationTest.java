@@ -12,12 +12,11 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ColorItem;
@@ -150,7 +149,7 @@ public class AbstractDynamoDBItemSerializationTest {
     @Test
     public void testDateTimeTypeLocalWithDateTimeItem() throws IOException {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getTimeZone(ZoneId.ofOffset("UTC", ZoneOffset.ofHours(3))));
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+03:00"));
         calendar.setTimeInMillis(1468773487050L); // GMT: Sun, 17 Jul 2016 16:38:07.050 GMT
         DynamoDBItem<?> dbitem = testStateGeneric(new DateTimeType(calendar), "2016-07-17T16:38:07.050Z");
 
@@ -163,7 +162,7 @@ public class AbstractDynamoDBItemSerializationTest {
     @Test
     public void testDateTimeTypeLocalWithStringItem() throws IOException {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getTimeZone(ZoneId.ofOffset("UTC", ZoneOffset.ofHours(3))));
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+03:00"));
         calendar.setTimeInMillis(1468773487050L); // GMT: Sun, 17 Jul 2016 16:38:07.050 GMT
         DynamoDBItem<?> dbitem = testStateGeneric(new DateTimeType(calendar), "2016-07-17T16:38:07.050Z");
         testAsHistoricGeneric(dbitem, new StringItem("foo"), new StringType("2016-07-17T16:38:07.050Z"));
@@ -172,8 +171,10 @@ public class AbstractDynamoDBItemSerializationTest {
     @Test
     public void testPointTypeWithLocationItem() throws IOException {
         final PointType point = new PointType(new DecimalType(60.3), new DecimalType(30.2), new DecimalType(510.90));
-        String expected = String.join(",", point.getLatitude().toBigDecimal().toString(),
-                point.getLongitude().toBigDecimal().toString(), point.getAltitude().toBigDecimal().toString());
+        String expected = StringUtils.join(
+                new String[] { point.getLatitude().toBigDecimal().toString(),
+                        point.getLongitude().toBigDecimal().toString(), point.getAltitude().toBigDecimal().toString() },
+                ",");
         DynamoDBItem<?> dbitem = testStateGeneric(point, expected);
         testAsHistoricGeneric(dbitem, new LocationItem("foo"), point);
     }
