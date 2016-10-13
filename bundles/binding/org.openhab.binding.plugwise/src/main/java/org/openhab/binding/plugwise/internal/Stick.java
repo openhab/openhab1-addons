@@ -497,11 +497,11 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                                     plugwiseDeviceCache.add(cp);
                                     logger.debug("Added a CirclePlus with MAC {} to the cache", cp.getMAC());
                                 }
-                                cp.updateInformation();
-                                cp.calibrate();
-                                cp.setClock();
 
                                 if (cp != null) {
+                                    cp.updateInformation();
+                                    cp.calibrate();
+                                    cp.setClock();
                                     // initiate a "role call" request in the network
                                     cp.roleCall(0);
                                 }
@@ -511,22 +511,25 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                                 // Get the original request message from sentQueue and resend it
                                 logger.error("Received timeout ack for: {}", message);
 
+                                Message sentMessage = null;
                                 sentQueueLock.lock();
-                                Iterator<Message> messageIterator = sentQueue.iterator();
-                                Message aMessage = null;
-                                while (messageIterator.hasNext()) {
-                                    aMessage = messageIterator.next();
-                                    if (aMessage.getSequenceNumber() == message.getSequenceNumber()) {
-                                        logger.debug("Timeout: removing from the sentQueue: {}", aMessage);
-                                        sentQueue.remove(aMessage);
-                                        break;
+                                try {
+                                    Iterator<Message> messageIterator = sentQueue.iterator();
+                                    while (messageIterator.hasNext()) {
+                                        sentMessage = messageIterator.next();
+                                        if (sentMessage.getSequenceNumber() == message.getSequenceNumber()) {
+                                            logger.debug("Timeout: removing from the sentQueue: {}", sentMessage);
+                                            sentQueue.remove(sentMessage);
+                                            break;
+                                        }
                                     }
+                                } finally {
+                                    sentQueueLock.unlock();
                                 }
-                                sentQueueLock.unlock();
 
-                                if (aMessage != null) {
-                                    aMessage.setSequenceNumber(0);
-                                    sendMessage(aMessage);
+                                if (sentMessage != null) {
+                                    sentMessage.setSequenceNumber(0);
+                                    sendMessage(sentMessage);
                                 }
 
                                 return false;
@@ -572,11 +575,11 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                             plugwiseDeviceCache.add(cp);
                             logger.debug("Added a CirclePlus with MAC {} to the cache", cp.getMAC());
                         }
-                        cp.updateInformation();
-                        cp.calibrate();
-                        cp.setClock();
 
                         if (cp != null) {
+                            cp.updateInformation();
+                            cp.calibrate();
+                            cp.setClock();
                             // initiate a "role call" request in the network
                             cp.roleCall(0);
                         }
@@ -706,15 +709,18 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                     // place the sent message in the sent Q
                     logger.debug("Adding to sentQueue: {}", message);
                     stick.sentQueueLock.lock();
-                    if (stick.sentQueue.size() == maxBufferSize) {
-                        // For some @#$@#$ reason plugwise devices, or the Stick, does not send responses
-                        // to Requests. They clog the sentQueue. Let's flush some part of the queue
-                        Message someMessage = stick.sentQueue.poll();
-                        logger.debug("Flushing from sentQueue: {}", someMessage);
+                    try {
+                        if (stick.sentQueue.size() == maxBufferSize) {
+                            // For some @#$@#$ reason plugwise devices, or the Stick, does not send responses
+                            // to Requests. They clog the sentQueue. Let's flush some part of the queue
+                            Message someMessage = stick.sentQueue.poll();
+                            logger.debug("Flushing from sentQueue: {}", someMessage);
 
+                        }
+                        stick.sentQueue.put(message);
+                    } finally {
+                        stick.sentQueueLock.unlock();
                     }
-                    stick.sentQueue.put(message);
-                    stick.sentQueueLock.unlock();
                 }
             } else {
                 // max attempts reached
@@ -769,16 +775,19 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
 
             if (result) {
                 stick.sentQueueLock.lock();
-                Iterator<Message> messageIterator = stick.sentQueue.iterator();
-                while (messageIterator.hasNext()) {
-                    Message aMessage = messageIterator.next();
-                    if (aMessage.getSequenceNumber() == message.getSequenceNumber()) {
-                        logger.debug("Removing from sentQueue: {}", aMessage);
-                        stick.sentQueue.remove(aMessage);
-                        break;
+                try {
+                    Iterator<Message> messageIterator = stick.sentQueue.iterator();
+                    while (messageIterator.hasNext()) {
+                        Message sentMessage = messageIterator.next();
+                        if (sentMessage.getSequenceNumber() == message.getSequenceNumber()) {
+                            logger.debug("Removing from sentQueue: {}", sentMessage);
+                            stick.sentQueue.remove(sentMessage);
+                            break;
+                        }
                     }
+                } finally {
+                    stick.sentQueueLock.unlock();
                 }
-                stick.sentQueueLock.unlock();
             }
         }
     }

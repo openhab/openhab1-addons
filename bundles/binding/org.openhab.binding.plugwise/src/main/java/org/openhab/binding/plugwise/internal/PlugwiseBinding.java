@@ -286,10 +286,10 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
     protected void internalReceiveCommand(String itemName, Command command) {
 
         PlugwiseBindingProvider provider = findFirstMatchingBindingProvider(itemName);
-        String commandAsString = command.toString();
 
         if (command != null) {
 
+            String commandAsString = command.toString();
             List<Command> commands = new ArrayList<Command>();
 
             // check if the command is valid for this item by checking if a pw ID exists

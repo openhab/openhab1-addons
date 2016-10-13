@@ -82,7 +82,7 @@ public class InitialiseResponseMessage extends Message {
 
     @Override
     protected String payLoadToHexString() {
-        return unknown1 + String.format("%02X", online ? "1" : "0") + networkID + shortNetworkID + unknown2;
+        return unknown1 + String.format("%02X", online ? 1 : 0) + networkID + shortNetworkID + unknown2;
     }
 
 }
