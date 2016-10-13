@@ -157,10 +157,12 @@ public class ComfoAirConnector {
                 // 31 is max. response length
                 byte[] readBuffer = new byte[31];
 
+                int loopCounter = 0;
                 do {
                     while (inputStream.available() > 0) {
 
                         int bytes = inputStream.read(readBuffer);
+                        logger.debug("input loop {} received: {}", loopCounter++, dumpData(readBuffer));
 
                         // merge bytes
                         byte[] mergedBytes = new byte[responseBlock.length + bytes];
@@ -178,6 +180,8 @@ public class ComfoAirConnector {
                     }
 
                 } while (inputStream.available() > 0);
+
+                logger.debug("receive RAW DATA: " + dumpData(responseBlock));
 
                 // check for ACK
                 if (responseBlock.length >= 2 && responseBlock[0] == (byte) 0x07 && responseBlock[1] == (byte) 0xf3) {
@@ -197,7 +201,6 @@ public class ComfoAirConnector {
                             && responseBlock[responseBlock.length - 1] == (byte) 0x0f
                             && (responseBlock[5] & 0xff) == command.getReplyCmd()) {
 
-                        logger.debug("receive RAW DATA: " + dumpData(responseBlock));
 
                         byte[] cleanedBlock = cleanupBlock(responseBlock);
 
@@ -236,6 +239,9 @@ public class ComfoAirConnector {
                         logger.warn(String.format("skip CMD: %02x", command.getReplyCmd()) + " DATA: "
                                 + dumpData(cleanedBlock));
                     }
+                }
+                else {
+                		logger.error("Malformatted response: {}", dumpData(responseBlock));
                 }
 
             } catch (IOException e) {
