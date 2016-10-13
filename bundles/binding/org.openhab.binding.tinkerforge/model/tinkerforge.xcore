@@ -71,6 +71,7 @@ import com.tinkerforge.BrickletThermocouple
 import com.tinkerforge.BrickletUVLight
 import com.tinkerforge.BrickletCO2
 import com.tinkerforge.BrickStepper
+import com.tinkerforge.BrickletAnalogOutV2
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -142,6 +143,7 @@ type TinkerBrickletOLED64x48 wraps BrickletOLED64x48
 type TinkerBrickletThermocouple wraps BrickletThermocouple
 type TinkerBrickletUVLight wraps BrickletUVLight
 type TinkerBrickletCO2 wraps BrickletCO2
+type TinkerBrickletAnalogOutV2 wraps BrickletAnalogOutV2
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -497,6 +499,12 @@ class JoystickYPosition extends JoystickDevice, MSensor<MDecimalValue> {
 class JoystickButton extends JoystickDevice, MSensor<SwitchState>,
 	MTFConfigConsumer<ButtonConfiguration> {
 		readonly String deviceType = "joystick_button"
+}
+
+class MBrickletAnalogOutV2 extends MSensor<MDecimalValue>, MDevice<TinkerBrickletAnalogOutV2>, SetPointActor<DimmableConfiguration>{
+    readonly String deviceType = "bricklet_analog_out_v2"
+    BigDecimal minValueDevice = "0"
+    BigDecimal maxValueDevice = "12000"
 }
 
 class MBrickServo extends MDevice<MTinkerBrickServo>, MSubDeviceHolder<MServo> {
