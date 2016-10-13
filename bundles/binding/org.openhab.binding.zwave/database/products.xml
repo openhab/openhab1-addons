@@ -2900,6 +2900,15 @@
         <Name>Qubino</Name>
         <Product>
             <Reference>
+                <Type>0005</Type>
+                <Id>0051</Id>
+            </Reference>
+            <Model>ZMNHID</Model>
+            <Label lang="en">Flush on/off thermostat</Label>
+            <ConfigFile>qubino/zmnhid.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>2</Type>
                 <Id>2</Id>
             </Reference>
