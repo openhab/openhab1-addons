@@ -23,8 +23,8 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *        The following features are supported:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#getDigitalState <em>Digital State</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#getDigitalState <em>Digital
+ *        State</em>}</li>
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDigitalActor()

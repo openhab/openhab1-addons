@@ -49,14 +49,14 @@ import com.tinkerforge.TimeoutException;
  *        <em>Sensor Value</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getLogger
  *        <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getUid <em>Uid</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#isPoll <em>Poll</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getUid
+ *        <em>Uid</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#isPoll
+ *        <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getEnabledA
  *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getSubId
- *        <em>Sub Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getSubId <em>Sub
+ *        Id</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getMbrick
  *        <em>Mbrick</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getDeviceType

@@ -20,10 +20,10 @@ package org.openhab.binding.tinkerforge.internal.model;
  *        The following features are supported:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.ObjectTemperature#getDeviceType <em>Device Type</em>
- *        }</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.ObjectTemperature#getEmissivity <em>Emissivity</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.ObjectTemperature#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.ObjectTemperature#getEmissivity
+ *        <em>Emissivity</em>}</li>
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getObjectTemperature()

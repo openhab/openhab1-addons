@@ -19,13 +19,14 @@ import com.tinkerforge.BrickletSolidStateRelay;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletSolidStateRelay#getDeviceType <em>Device Type</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletSolidStateRelay#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletSolidStateRelay()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletSolidStateRelay> org.openhab.binding.tinkerforge.internal.model.MSwitchActor"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletSolidStateRelay>
+ *        org.openhab.binding.tinkerforge.internal.model.MSwitchActor"
  * @generated
  */
 public interface MBrickletSolidStateRelay extends MDevice<BrickletSolidStateRelay>, MSwitchActor {

@@ -54,14 +54,14 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getTfConfig <em>Tf Config</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getCallbackPeriod
- * <em>Callback Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getCallbackPeriod <em>Callback
+ * Period</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getGain <em>Gain</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getIntegrationTime
  * <em>Integration Time</em>}</li>

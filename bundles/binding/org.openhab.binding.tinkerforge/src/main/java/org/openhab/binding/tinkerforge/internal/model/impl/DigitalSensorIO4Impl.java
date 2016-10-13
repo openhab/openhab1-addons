@@ -48,24 +48,24 @@ import com.tinkerforge.TimeoutException;
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getLogger <em>Logger</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getEnabledA
- *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getSubId <em>Sub Id</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getMbrick <em>Mbrick</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getEnabledA <em>Enabled
+ *        A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getSubId <em>Sub
+ *        Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getMbrick
+ *        <em>Mbrick</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getGenericDeviceId
  *        <em>Generic Device Id</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getSensorValue
- *        <em>Sensor Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getTfConfig
- *        <em>Tf Config</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getSensorValue <em>Sensor
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#isPullUpResistorEnabled
  *        <em>Pull Up Resistor Enabled</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getPin <em>Pin</em>}</li>

@@ -335,6 +335,16 @@ public interface ModelFactory extends EFactory {
     JoystickButton createJoystickButton();
 
     /**
+     * Returns a new object of class '<em>MBricklet Analog Out V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Analog Out V2</em>'.
+     * @generated
+     */
+    MBrickletAnalogOutV2 createMBrickletAnalogOutV2();
+
+    /**
      * Returns a new object of class '<em>MBrick Servo</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

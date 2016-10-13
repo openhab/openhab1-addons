@@ -24,13 +24,18 @@ import com.tinkerforge.BrickletHallEffect;
  *        The following features are supported:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletHallEffect#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletHallEffect#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletHallEffect()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletHallEffect> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.DigitalValue> org.openhab.binding.tinkerforge.internal.model.CallbackListener org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletHallEffect>
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.DigitalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.CallbackListener
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>"
  * @generated
  */
 public interface MBrickletHallEffect extends MDevice<BrickletHallEffect>, MSensor<HighLowValue>, CallbackListener,

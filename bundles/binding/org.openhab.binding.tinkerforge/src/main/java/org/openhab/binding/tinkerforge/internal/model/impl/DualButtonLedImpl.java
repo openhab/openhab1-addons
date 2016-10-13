@@ -51,8 +51,8 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getEnabledA <em>Enabled A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getDigitalState
- * <em>Digital State</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getDigitalState <em>Digital
+ * State</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getTfConfig <em>Tf Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getDeviceType <em>Device Type</em>}
  * </li>

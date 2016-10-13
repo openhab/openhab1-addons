@@ -25,10 +25,10 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DimmableConfigurationImpl#getMinValue
- * <em>Min Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DimmableConfigurationImpl#getMaxValue
- * <em>Max Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DimmableConfigurationImpl#getMinValue <em>Min
+ * Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DimmableConfigurationImpl#getMaxValue <em>Max
+ * Value</em>}</li>
  * </ul>
  *
  * @generated

@@ -22,8 +22,8 @@ import java.math.BigDecimal;
  *        The following features are supported:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.VCDevicePower#getDeviceType <em>Device Type</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.VCDevicePower#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.VCDevicePower#getThreshold <em>Threshold</em>}</li>
  *        </ul>
  *

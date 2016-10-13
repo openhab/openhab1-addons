@@ -23,8 +23,8 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ElectrodeImpl#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ElectrodeImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        </ul>
  *
  * @generated

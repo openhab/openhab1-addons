@@ -56,33 +56,33 @@ import com.tinkerforge.TimeoutException;
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getLogger <em>Logger</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getEnabledA
- *        <em>Enabled A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getEnabledA <em>Enabled
+ *        A</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getTinkerforgeDevice
  *        <em>Tinkerforge Device</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getIpConnection
- *        <em>Ip Connection</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getConnectedUid
- *        <em>Connected Uid</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getPosition <em>Position</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getIpConnection <em>Ip
+ *        Connection</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getConnectedUid <em>Connected
+ *        Uid</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getPosition
+ *        <em>Position</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getDeviceIdentifier
  *        <em>Device Identifier</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getName <em>Name</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getBrickd <em>Brickd</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getBrickd
+ *        <em>Brickd</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getMsubdevices
  *        <em>Msubdevices</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getDebouncePeriod
  *        <em>Debounce Period</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getTfConfig
- *        <em>Tf Config</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        </ul>
  *
  * @generated

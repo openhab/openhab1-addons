@@ -44,10 +44,10 @@ import org.slf4j.Logger;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperStatusLedImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperStatusLedImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperStatusLedImpl#getDigitalState
- * <em>Digital State</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperStatusLedImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperStatusLedImpl#getDigitalState <em>Digital
+ * State</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperStatusLedImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated

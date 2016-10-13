@@ -17,8 +17,12 @@ import com.tinkerforge.BrickStepper;
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickStepper()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickStepper> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.MStepperDevice> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MTinkerBrickStepper>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
+ *        <org.openhab.binding.tinkerforge.internal.model.MStepperDevice>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration>"
  * @generated
  */
 public interface MBrickStepper extends MDevice<BrickStepper>, MSubDeviceHolder<MStepperDevice>,

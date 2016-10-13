@@ -54,10 +54,10 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl#getEnabledA <em>Enabled A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl#getSensorValue <em>Sensor Value</em>
- * }</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl#getCallbackPeriod
- * <em>Callback Period</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl#getCallbackPeriod <em>Callback
+ * Period</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl#getTfConfig <em>Tf Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl#getDeviceType <em>Device Type</em>}
  * </li>

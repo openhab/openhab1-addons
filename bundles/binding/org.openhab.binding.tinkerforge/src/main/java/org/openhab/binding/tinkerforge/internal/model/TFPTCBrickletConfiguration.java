@@ -46,8 +46,8 @@ public interface TFPTCBrickletConfiguration extends TFConfig {
     Short getNoiseRejectionFilter();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration#getNoiseRejectionFilter
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration#getNoiseRejectionFilter
      * <em>Noise Rejection Filter</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -76,9 +76,9 @@ public interface TFPTCBrickletConfiguration extends TFConfig {
     Short getWireMode();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration#getWireMode <em>Wire Mode</em>}'
-     * attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration#getWireMode <em>Wire
+     * Mode</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

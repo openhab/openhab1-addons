@@ -26,17 +26,22 @@ import com.tinkerforge.BrickletMoisture;
  *        The following features are supported:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture#getDeviceType <em>Device Type</em>
- *        }</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture#getThreshold <em>Threshold</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture#getMovingAverage
- *        <em>Moving Average</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture#getThreshold
+ *        <em>Threshold</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture#getMovingAverage <em>Moving
+ *        Average</em>}</li>
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletMoisture()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletMoisture> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletMoisture>
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration>
+ *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
 public interface MBrickletMoisture extends MDevice<BrickletMoisture>, MSensor<DecimalValue>,

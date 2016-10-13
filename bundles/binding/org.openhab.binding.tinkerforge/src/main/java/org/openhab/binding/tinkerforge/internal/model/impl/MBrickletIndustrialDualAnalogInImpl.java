@@ -75,8 +75,8 @@ import com.tinkerforge.TimeoutException;
  * <em>Name</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getBrickd
  * <em>Brickd</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getTfConfig
- * <em>Tf Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getMsubdevices
  * <em>Msubdevices</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getDeviceType

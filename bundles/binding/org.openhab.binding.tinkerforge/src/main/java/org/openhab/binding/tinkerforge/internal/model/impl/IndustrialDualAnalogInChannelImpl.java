@@ -56,16 +56,16 @@ import com.tinkerforge.TimeoutException;
  * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#getUid <em>Uid</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#isPoll <em>Poll</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#isPoll
+ * <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#getEnabledA
  * <em>Enabled A</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#getSubId
- * <em>Sub Id</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#getSubId <em>Sub
+ * Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#getMbrick
  * <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#getTfConfig
- * <em>Tf Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#getCallbackPeriod
  * <em>Callback Period</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#getDeviceType

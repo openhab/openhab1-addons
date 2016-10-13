@@ -22,8 +22,8 @@ package org.openhab.binding.tinkerforge.internal.model;
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getAddress
  *        <em>Address</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getUnit <em>Unit</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getUnit
+ *        <em>Unit</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getRepeats
  *        <em>Repeats</em>}</li>
  *        </ul>
@@ -52,8 +52,8 @@ public interface RemoteSwitchBConfiguration extends DimmableConfiguration {
     Long getAddress();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getAddress <em>Address</em>}'
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getAddress <em>Address</em>}'
      * attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -111,8 +111,8 @@ public interface RemoteSwitchBConfiguration extends DimmableConfiguration {
     Short getRepeats();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getRepeats <em>Repeats</em>}'
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration#getRepeats <em>Repeats</em>}'
      * attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

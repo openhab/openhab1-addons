@@ -52,10 +52,10 @@ import com.tinkerforge.TimeoutException;
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getLogger
  *        <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getUid <em>Uid</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#isPoll <em>Poll</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getUid
+ *        <em>Uid</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#isPoll
+ *        <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getEnabledA
  *        <em>Enabled A</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getTinkerforgeDevice
@@ -68,14 +68,14 @@ import com.tinkerforge.TimeoutException;
  *        <em>Position</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getDeviceIdentifier
  *        <em>Device Identifier</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getName <em>Name</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getName
+ *        <em>Name</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getBrickd
  *        <em>Brickd</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getSensorValue
  *        <em>Sensor Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getCallbackPeriod
  *        <em>Callback Period</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getDeviceType

@@ -39,12 +39,12 @@ import org.openhab.binding.tinkerforge.internal.model.TFConfig;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getSubid <em>Subid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getOhid <em>Ohid</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getSubDeviceIds
- *        <em>Sub Device Ids</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getTfConfig <em>Tf Config</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getOhConfig <em>Oh Config</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getSubDeviceIds <em>Sub Device
+ *        Ids</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getOhConfig <em>Oh
+ *        Config</em>}</li>
  *        </ul>
  *
  * @generated

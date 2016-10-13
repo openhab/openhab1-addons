@@ -44,10 +44,10 @@ import com.tinkerforge.TimeoutException;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getPositionPrefix
- * <em>Position Prefix</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getPositionSuffix
- * <em>Position Suffix</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getPositionPrefix <em>Position
+ * Prefix</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getPositionSuffix <em>Position
+ * Suffix</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getContrast <em>Contrast</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#isInvert <em>Invert</em>}</li>
@@ -55,26 +55,26 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getEnabledA <em>Enabled A</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getIpConnection
- * <em>Ip Connection</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getConnectedUid
- * <em>Connected Uid</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getIpConnection <em>Ip
+ * Connection</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getConnectedUid <em>Connected
+ * Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getPosition <em>Position</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getDeviceIdentifier
- * <em>Device Identifier</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getDeviceIdentifier <em>Device
+ * Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getName <em>Name</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getBrickd <em>Brickd</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getText <em>Text</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getTfConfig <em>Tf Config</em>
- * }</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getTfConfig <em>Tf
+ * Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated

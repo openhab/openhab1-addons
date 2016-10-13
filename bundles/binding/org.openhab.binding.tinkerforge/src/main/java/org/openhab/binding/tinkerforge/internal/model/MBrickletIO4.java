@@ -22,13 +22,18 @@ import com.tinkerforge.BrickletIO4;
  *        The following features are supported:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletIO4#getDeviceType <em>Device Type</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletIO4#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletIO4()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletIO4> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.IO4Device> org.openhab.binding.tinkerforge.internal.model.InterruptListener org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletIO4>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
+ *        <org.openhab.binding.tinkerforge.internal.model.IO4Device>
+ *        org.openhab.binding.tinkerforge.internal.model.InterruptListener
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration>"
  * @generated
  */
 public interface MBrickletIO4 extends MDevice<BrickletIO4>, MSubDeviceHolder<IO4Device>, InterruptListener,

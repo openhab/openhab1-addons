@@ -51,8 +51,8 @@ public interface LaserRangeFinderConfiguration extends TFConfig {
     short getDistanceAverageLength();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getDistanceAverageLength
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getDistanceAverageLength
      * <em>Distance Average Length</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -81,8 +81,8 @@ public interface LaserRangeFinderConfiguration extends TFConfig {
     short getVelocityAverageLength();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getVelocityAverageLength
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getVelocityAverageLength
      * <em>Velocity Average Length</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -111,8 +111,8 @@ public interface LaserRangeFinderConfiguration extends TFConfig {
     short getMode();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getMode <em>Mode</em>}'
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getMode <em>Mode</em>}'
      * attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -141,8 +141,8 @@ public interface LaserRangeFinderConfiguration extends TFConfig {
     Boolean getEnableLaserOnStartup();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getEnableLaserOnStartup
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getEnableLaserOnStartup
      * <em>Enable Laser On Startup</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

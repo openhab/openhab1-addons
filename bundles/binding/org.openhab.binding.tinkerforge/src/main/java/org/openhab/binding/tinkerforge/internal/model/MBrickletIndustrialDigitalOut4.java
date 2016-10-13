@@ -27,8 +27,10 @@ import com.tinkerforge.BrickletIndustrialDigitalOut4;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletIndustrialDigitalOut4()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletIndustrialDigitalOut4> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletIndustrialDigitalOut4>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
+ *        <org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4>"
  * @generated
  */
 public interface MBrickletIndustrialDigitalOut4

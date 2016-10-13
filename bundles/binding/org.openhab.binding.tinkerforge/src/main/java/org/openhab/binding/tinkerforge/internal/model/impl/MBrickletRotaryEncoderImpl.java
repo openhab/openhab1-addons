@@ -51,12 +51,12 @@ import com.tinkerforge.IPConnection;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getEnabledA
- * <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getIpConnection
- * <em>Ip Connection</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getIpConnection <em>Ip
+ * Connection</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getConnectedUid
  * <em>Connected Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getPosition
@@ -68,8 +68,8 @@ import com.tinkerforge.IPConnection;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getMsubdevices
  * <em>Msubdevices</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated

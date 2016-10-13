@@ -49,15 +49,15 @@ import org.slf4j.Logger;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#isPoll <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getEnabledA <em>Enabled A</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getTinkerforgeDevice
- * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getIpConnection
- * <em>Ip Connection</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getConnectedUid
- * <em>Connected Uid</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getTinkerforgeDevice <em>Tinkerforge
+ * Device</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getIpConnection <em>Ip
+ * Connection</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getConnectedUid <em>Connected
+ * Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getPosition <em>Position</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getDeviceIdentifier
- * <em>Device Identifier</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getDeviceIdentifier <em>Device
+ * Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getName <em>Name</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getBrickd <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickStepperImpl#getMsubdevices <em>Msubdevices</em>}

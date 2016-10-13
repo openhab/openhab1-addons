@@ -65,41 +65,41 @@ import com.tinkerforge.TimeoutException;
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getSensorValue <em>Sensor Value</em>
- *        }</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getSwitchState <em>Switch State</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getSensorValue <em>Sensor
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getSwitchState <em>Switch
+ *        State</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getLogger <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#isPoll <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getEnabledA <em>Enabled A</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getSubId <em>Sub Id</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMbrick <em>Mbrick</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getDirection <em>Direction</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getDirection
+ *        <em>Direction</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getTfConfig <em>Tf Config</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMinValue <em>Min Value</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMaxValue <em>Max Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPercentValue
- *        <em>Percent Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getDeviceType <em>Device Type</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPercentValue <em>Percent
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getVelocity <em>Velocity</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getAcceleration
  *        <em>Acceleration</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMaxPosition <em>Max Position</em>
- *        }</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMinPosition <em>Min Position</em>
- *        }</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPulseWidthMin
- *        <em>Pulse Width Min</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPulseWidthMax
- *        <em>Pulse Width Max</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMaxPosition <em>Max
+ *        Position</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMinPosition <em>Min
+ *        Position</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPulseWidthMin <em>Pulse Width
+ *        Min</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPulseWidthMax <em>Pulse Width
+ *        Max</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPeriod <em>Period</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getOutputVoltage
- *        <em>Output Voltage</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getTargetPosition
- *        <em>Target Position</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getOutputVoltage <em>Output
+ *        Voltage</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getTargetPosition <em>Target
+ *        Position</em>}</li>
  *        </ul>
  *
  * @generated

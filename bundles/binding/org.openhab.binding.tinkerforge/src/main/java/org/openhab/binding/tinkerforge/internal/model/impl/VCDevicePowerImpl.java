@@ -51,24 +51,24 @@ import com.tinkerforge.TimeoutException;
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getSensorValue
- *        <em>Sensor Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getLogger <em>Logger</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getSensorValue <em>Sensor
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getEnabledA
- *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getSubId <em>Sub Id</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getMbrick <em>Mbrick</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getSubId <em>Sub
+ *        Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getMbrick
+ *        <em>Mbrick</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getCallbackPeriod
  *        <em>Callback Period</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl#getThreshold
  *        <em>Threshold</em>}</li>
  *        </ul>

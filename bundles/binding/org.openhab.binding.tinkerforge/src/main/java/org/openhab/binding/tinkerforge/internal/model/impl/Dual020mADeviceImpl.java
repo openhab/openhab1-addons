@@ -54,14 +54,14 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getCallbackPeriod
- * <em>Callback Period</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getCallbackPeriod <em>Callback
+ * Period</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getTfConfig <em>Tf Config</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getDeviceType <em>Device Type</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getThreshold <em>Threshold</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getSensorNum <em>Sensor Num</em>}

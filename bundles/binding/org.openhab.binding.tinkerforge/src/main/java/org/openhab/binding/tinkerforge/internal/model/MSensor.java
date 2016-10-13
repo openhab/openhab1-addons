@@ -52,8 +52,8 @@ public interface MSensor<DeviceValue extends TinkerforgeValue> extends EObject {
     DeviceValue getSensorValue();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MSensor#getSensorValue
-     * <em>Sensor Value</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MSensor#getSensorValue <em>Sensor
+     * Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

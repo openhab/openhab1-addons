@@ -34,8 +34,8 @@ public interface OHConfig extends EObject {
     /**
      * Returns the value of the '<em><b>Oh Tf Devices</b></em>' containment reference list.
      * The list contents are of type {@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice}&lt;?, ?>.
-     * It is bidirectional and its opposite is '
-     * {@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getOhConfig <em>Oh Config</em>}'.
+     * It is bidirectional and its opposite is
+     * '{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getOhConfig <em>Oh Config</em>}'.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Oh Tf Devices</em>' containment reference list isn't clear,

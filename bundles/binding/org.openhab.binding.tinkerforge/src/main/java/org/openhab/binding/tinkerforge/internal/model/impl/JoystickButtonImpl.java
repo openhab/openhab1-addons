@@ -51,8 +51,8 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getTfConfig <em>Tf Config</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getDeviceType <em>Device Type</em>}

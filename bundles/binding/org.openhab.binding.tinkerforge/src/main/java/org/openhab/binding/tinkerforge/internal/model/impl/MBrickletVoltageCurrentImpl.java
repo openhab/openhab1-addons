@@ -57,8 +57,8 @@ import com.tinkerforge.TimeoutException;
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getLogger
  *        <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getUid <em>Uid</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getUid
+ *        <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#isPoll
  *        <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getEnabledA
@@ -80,8 +80,8 @@ import com.tinkerforge.TimeoutException;
  *        <em>Brickd</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getMsubdevices
  *        <em>Msubdevices</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getDeviceType
  *        <em>Device Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getAveraging

@@ -28,17 +28,22 @@ import com.tinkerforge.BrickletTemperature;
  *        The following features are supported:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#getDeviceType
- *        <em>Device Type</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#getThreshold <em>Threshold</em>
- *        }</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#isSlowI2C <em>Slow I2C</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#getThreshold
+ *        <em>Threshold</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#isSlowI2C <em>Slow
+ *        I2C</em>}</li>
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletTemperature()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletTemperature> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletTemperature>
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration>
+ *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
 public interface MBrickletTemperature extends MDevice<BrickletTemperature>, MSensor<DecimalValue>,

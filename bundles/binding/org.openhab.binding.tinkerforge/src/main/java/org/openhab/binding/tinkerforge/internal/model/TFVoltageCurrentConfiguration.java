@@ -53,8 +53,8 @@ public interface TFVoltageCurrentConfiguration extends TFConfig {
     Short getAveraging();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration#getAveraging
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration#getAveraging
      * <em>Averaging</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -83,8 +83,8 @@ public interface TFVoltageCurrentConfiguration extends TFConfig {
     Short getVoltageConversionTime();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration#getVoltageConversionTime
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration#getVoltageConversionTime
      * <em>Voltage Conversion Time</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -113,8 +113,8 @@ public interface TFVoltageCurrentConfiguration extends TFConfig {
     Short getCurrentConversionTime();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration#getCurrentConversionTime
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration#getCurrentConversionTime
      * <em>Current Conversion Time</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

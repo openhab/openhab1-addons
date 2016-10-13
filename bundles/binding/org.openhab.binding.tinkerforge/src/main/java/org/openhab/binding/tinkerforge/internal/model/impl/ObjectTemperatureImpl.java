@@ -50,27 +50,27 @@ import com.tinkerforge.TimeoutException;
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getSensorValue
- *        <em>Sensor Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getLogger <em>Logger</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getSensorValue <em>Sensor
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getUid <em>Uid</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#isPoll <em>Poll</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getEnabledA
- *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getSubId <em>Sub Id</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getMbrick <em>Mbrick</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#isPoll
+ *        <em>Poll</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getSubId <em>Sub
+ *        Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getMbrick
+ *        <em>Mbrick</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getCallbackPeriod
  *        <em>Callback Period</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getThreshold
  *        <em>Threshold</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl#getEmissivity
  *        <em>Emissivity</em>}</li>
  *        </ul>

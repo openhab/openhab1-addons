@@ -49,8 +49,8 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getEnabledA <em>Enabled A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getDigitalState <em>Digital State</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getDigitalState <em>Digital
+ * State</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getDeviceType <em>Device Type</em>}
  * </li>
  * </ul>

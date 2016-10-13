@@ -41,16 +41,16 @@ import org.slf4j.Logger;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperUnderVoltageImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperUnderVoltageImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperUnderVoltageImpl#getEnabledA
- * <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperUnderVoltageImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperUnderVoltageImpl#getSubId <em>Sub Id</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperUnderVoltageImpl#getMbrick <em>Mbrick</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperUnderVoltageImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperUnderVoltageImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperUnderVoltageImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperUnderVoltageImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated

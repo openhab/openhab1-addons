@@ -142,8 +142,8 @@ public interface MBaseDevice extends EObject {
     AtomicBoolean getEnabledA();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBaseDevice#getEnabledA
-     * <em>Enabled A</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBaseDevice#getEnabledA <em>Enabled
+     * A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

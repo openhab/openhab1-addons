@@ -22,15 +22,20 @@ import com.tinkerforge.BrickletLEDStrip;
  *        The following features are supported:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip#getDeviceType <em>Device Type</em>
- *        }</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip#getColorMapping
- *        <em>Color Mapping</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip#getColorMapping <em>Color
+ *        Mapping</em>}</li>
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLEDStrip()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletLEDStrip> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.LEDGroup>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor
+ *        org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletLEDStrip>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
+ *        <org.openhab.binding.tinkerforge.internal.model.LEDGroup>"
  * @generated
  */
 public interface MBrickletLEDStrip extends ProgrammableColorActor, MDevice<BrickletLEDStrip>,

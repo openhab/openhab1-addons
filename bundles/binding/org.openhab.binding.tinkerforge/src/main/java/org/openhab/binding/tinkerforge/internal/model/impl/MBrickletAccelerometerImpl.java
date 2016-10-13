@@ -59,12 +59,12 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getEnabledA
- * <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getIpConnection
- * <em>Ip Connection</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getIpConnection <em>Ip
+ * Connection</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getConnectedUid
  * <em>Connected Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getPosition
@@ -76,14 +76,14 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getMsubdevices
  * <em>Msubdevices</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getTfConfig
- * <em>Tf Config</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getDeviceType
- * <em>Device Type</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getDataRate
- * <em>Data Rate</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getFullScale
- * <em>Full Scale</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getDeviceType <em>Device
+ * Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getDataRate <em>Data
+ * Rate</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getFullScale <em>Full
+ * Scale</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getFilterBandwidth
  * <em>Filter Bandwidth</em>}</li>
  * </ul>

@@ -62,24 +62,24 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getIpConnection
- * <em>Ip Connection</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getConnectedUid
- * <em>Connected Uid</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getIpConnection <em>Ip
+ * Connection</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getConnectedUid <em>Connected
+ * Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getPosition <em>Position</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getDeviceIdentifier
- * <em>Device Identifier</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getDeviceIdentifier <em>Device
+ * Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getName <em>Name</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getBrickd <em>Brickd</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getMsubdevices <em>Msubdevices</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getMsubdevices
+ * <em>Msubdevices</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getTfConfig <em>Tf Config</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getDeviceType <em>Device Type</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getGain <em>Gain</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getIntegrationTime
- * <em>Integration Time</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getIntegrationTime <em>Integration
+ * Time</em>}</li>
  * </ul>
  *
  * @generated

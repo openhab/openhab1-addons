@@ -24,8 +24,8 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellConfigurationImpl#getMovingAverage
- * <em>Moving Average</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellConfigurationImpl#getMovingAverage <em>Moving
+ * Average</em>}</li>
  * </ul>
  *
  * @generated

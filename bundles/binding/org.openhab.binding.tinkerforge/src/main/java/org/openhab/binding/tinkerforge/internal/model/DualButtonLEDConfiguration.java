@@ -17,8 +17,8 @@ package org.openhab.binding.tinkerforge.internal.model;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration#isAutotoggle <em>Autotoggle</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration#isAutotoggle
+ * <em>Autotoggle</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDualButtonLEDConfiguration()
@@ -45,9 +45,9 @@ public interface DualButtonLEDConfiguration extends TFConfig {
     boolean isAutotoggle();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration#isAutotoggle <em>Autotoggle</em>
-     * }' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration#isAutotoggle
+     * <em>Autotoggle</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

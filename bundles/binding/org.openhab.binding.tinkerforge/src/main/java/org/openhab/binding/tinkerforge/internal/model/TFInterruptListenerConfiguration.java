@@ -48,8 +48,8 @@ public interface TFInterruptListenerConfiguration extends TFConfig {
     long getDebouncePeriod();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration#getDebouncePeriod
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration#getDebouncePeriod
      * <em>Debounce Period</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

@@ -41,15 +41,15 @@ import org.slf4j.Logger;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperConsumptionImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperConsumptionImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperConsumptionImpl#getEnabledA <em>Enabled A</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperConsumptionImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperConsumptionImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperConsumptionImpl#getMbrick <em>Mbrick</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperConsumptionImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperConsumptionImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperConsumptionImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperConsumptionImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated

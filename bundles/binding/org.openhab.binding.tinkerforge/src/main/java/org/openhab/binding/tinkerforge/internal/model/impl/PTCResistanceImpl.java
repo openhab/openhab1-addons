@@ -53,11 +53,11 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCResistanceImpl#getEnabledA <em>Enabled A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCResistanceImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCResistanceImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCResistanceImpl#getSensorValue <em>Sensor Value</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCResistanceImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCResistanceImpl#getTfConfig <em>Tf Config</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCResistanceImpl#getCallbackPeriod
- * <em>Callback Period</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCResistanceImpl#getCallbackPeriod <em>Callback
+ * Period</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCResistanceImpl#getDeviceType <em>Device Type</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCResistanceImpl#getThreshold <em>Threshold</em>}

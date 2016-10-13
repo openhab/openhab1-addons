@@ -29,10 +29,10 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * <em>Frameduration</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getClockfrequency
  * <em>Clockfrequency</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getColorMapping
- * <em>Color Mapping</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getSubDevices
- * <em>Sub Devices</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getColorMapping <em>Color
+ * Mapping</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getSubDevices <em>Sub
+ * Devices</em>}</li>
  * </ul>
  *
  * @generated

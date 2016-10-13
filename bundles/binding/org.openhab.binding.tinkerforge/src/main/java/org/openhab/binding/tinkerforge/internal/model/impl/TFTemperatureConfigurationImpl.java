@@ -24,8 +24,8 @@ import org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFTemperatureConfigurationImpl#isSlowI2C
- * <em>Slow I2C</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFTemperatureConfigurationImpl#isSlowI2C <em>Slow
+ * I2C</em>}</li>
  * </ul>
  *
  * @generated

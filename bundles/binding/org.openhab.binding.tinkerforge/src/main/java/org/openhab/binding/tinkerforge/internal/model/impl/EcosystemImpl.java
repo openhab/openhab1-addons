@@ -44,8 +44,8 @@ import org.slf4j.Logger;
  *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.EcosystemImpl#getLogger <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.EcosystemImpl#getMbrickds <em>Mbrickds</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.EcosystemImpl#getMbrickds
+ *        <em>Mbrickds</em>}</li>
  *        </ul>
  *
  * @generated

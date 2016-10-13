@@ -62,37 +62,37 @@ import com.tinkerforge.TimeoutException;
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getSensorValue
- *        <em>Sensor Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getSwitchState
- *        <em>Switch State</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getLogger <em>Logger</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getSensorValue <em>Sensor
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getSwitchState <em>Switch
+ *        State</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getEnabledA
- *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getSubId <em>Sub Id</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMbrick <em>Mbrick</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMinValue
- *        <em>Min Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMaxValue
- *        <em>Max Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getPercentValue
- *        <em>Percent Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getDeviceType
- *        <em>Device Type</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getAddress <em>Address</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getSubId <em>Sub
+ *        Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMbrick
+ *        <em>Mbrick</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMinValue <em>Min
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMaxValue <em>Max
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getPercentValue <em>Percent
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getAddress
+ *        <em>Address</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getUnit <em>Unit</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getRepeats <em>Repeats</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getAbsDimmValue
- *        <em>Abs Dimm Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getRepeats
+ *        <em>Repeats</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getAbsDimmValue <em>Abs Dimm
+ *        Value</em>}</li>
  *        </ul>
  *
  * @generated

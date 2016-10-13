@@ -50,17 +50,17 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getEnabledA <em>Enabled A</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getMbrick <em>Mbrick</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getTfConfig <em>Tf Config</em>
- * }</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated

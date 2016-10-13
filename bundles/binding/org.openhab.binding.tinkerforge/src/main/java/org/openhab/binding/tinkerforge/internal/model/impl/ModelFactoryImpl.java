@@ -41,6 +41,7 @@ import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletAnalogIn;
 import com.tinkerforge.BrickletAnalogInV2;
+import com.tinkerforge.BrickletAnalogOutV2;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletCO2;
 import com.tinkerforge.BrickletColor;
@@ -192,6 +193,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createJoystickYPosition();
             case ModelPackage.JOYSTICK_BUTTON:
                 return createJoystickButton();
+            case ModelPackage.MBRICKLET_ANALOG_OUT_V2:
+                return createMBrickletAnalogOutV2();
             case ModelPackage.MBRICK_SERVO:
                 return createMBrickServo();
             case ModelPackage.MSERVO:
@@ -632,6 +635,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createTinkerBrickletUVLightFromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_CO2:
                 return createTinkerBrickletCO2FromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_ANALOG_OUT_V2:
+                return createTinkerBrickletAnalogOutV2FromString(eDataType, initialValue);
             case ModelPackage.HSB_TYPE:
                 return createHSBTypeFromString(eDataType, initialValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -849,6 +854,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertTinkerBrickletUVLightToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_CO2:
                 return convertTinkerBrickletCO2ToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_ANALOG_OUT_V2:
+                return convertTinkerBrickletAnalogOutV2ToString(eDataType, instanceValue);
             case ModelPackage.HSB_TYPE:
                 return convertHSBTypeToString(eDataType, instanceValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -1230,6 +1237,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public JoystickButton createJoystickButton() {
         JoystickButtonImpl joystickButton = new JoystickButtonImpl();
         return joystickButton;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletAnalogOutV2 createMBrickletAnalogOutV2() {
+        MBrickletAnalogOutV2Impl mBrickletAnalogOutV2 = new MBrickletAnalogOutV2Impl();
+        return mBrickletAnalogOutV2;
     }
 
     /**
@@ -4577,6 +4595,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertTinkerBrickletCO2ToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletAnalogOutV2 createTinkerBrickletAnalogOutV2FromString(EDataType eDataType, String initialValue) {
+        return (BrickletAnalogOutV2) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletAnalogOutV2ToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 

@@ -46,17 +46,17 @@ import com.tinkerforge.TimeoutException;
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getSwitchState
- *        <em>Switch State</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getSwitchState <em>Switch
+ *        State</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getLogger <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getEnabledA <em>Enabled A</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getSubId <em>Sub Id</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getMbrick <em>Mbrick</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        </ul>
  *
  * @generated

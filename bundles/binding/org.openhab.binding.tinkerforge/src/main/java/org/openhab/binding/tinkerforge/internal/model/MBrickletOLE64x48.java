@@ -17,8 +17,12 @@ import com.tinkerforge.BrickletOLED64x48;
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletOLE64x48()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.OLEDBricklet org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletOLED64x48> org.openhab.binding.tinkerforge.internal.model.MTextActor org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.OLEDBricklet
+ *        org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletOLED64x48>
+ *        org.openhab.binding.tinkerforge.internal.model.MTextActor
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration>"
  * @generated
  */
 public interface MBrickletOLE64x48

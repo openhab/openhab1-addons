@@ -46,24 +46,24 @@ import com.tinkerforge.BrickletLCD20x4;
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getSensorValue
- *        <em>Sensor Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getLogger <em>Logger</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getSensorValue <em>Sensor
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getEnabledA
- *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getSubId <em>Sub Id</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getMbrick <em>Mbrick</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getDeviceType
- *        <em>Device Type</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getButtonNum
- *        <em>Button Num</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getSubId <em>Sub
+ *        Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getMbrick
+ *        <em>Mbrick</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getButtonNum <em>Button
+ *        Num</em>}</li>
  *        </ul>
  *
  * @generated

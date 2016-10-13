@@ -48,28 +48,28 @@ import com.tinkerforge.TimeoutException;
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getSwitchState
- *        <em>Switch State</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getLogger <em>Logger</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getSwitchState <em>Switch
+ *        State</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getEnabledA
- *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getSubId <em>Sub Id</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getMbrick <em>Mbrick</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getDeviceType
- *        <em>Device Type</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getHouseCode
- *        <em>House Code</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getReceiverCode
- *        <em>Receiver Code</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getRepeats <em>Repeats</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getSubId <em>Sub
+ *        Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getMbrick
+ *        <em>Mbrick</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getHouseCode <em>House
+ *        Code</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getReceiverCode <em>Receiver
+ *        Code</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl#getRepeats
+ *        <em>Repeats</em>}</li>
  *        </ul>
  *
  * @generated

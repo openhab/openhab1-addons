@@ -50,18 +50,18 @@ import com.tinkerforge.TimeoutException;
  *        <em>Digital State</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getLogger
  *        <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getUid <em>Uid</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getUid
+ *        <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#isPoll
  *        <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getEnabledA
  *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getSubId
- *        <em>Sub Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getSubId <em>Sub
+ *        Id</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getMbrick
  *        <em>Mbrick</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getPin <em>Pin</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getPin
+ *        <em>Pin</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getDeviceType
  *        <em>Device Type</em>}</li>
  *        </ul>

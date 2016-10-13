@@ -49,25 +49,25 @@ import com.tinkerforge.TimeoutException;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getLogger <em>Logger</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#isPoll <em>Poll</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getEnabledA
- * <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getSubId <em>Sub Id</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getMbrick <em>Mbrick</em>
- * }</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getTfConfig
- * <em>Tf Config</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getMbrick
+ * <em>Mbrick</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getCallbackPeriod
  * <em>Callback Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getThreshold
  * <em>Threshold</em>}</li>
  * </ul>

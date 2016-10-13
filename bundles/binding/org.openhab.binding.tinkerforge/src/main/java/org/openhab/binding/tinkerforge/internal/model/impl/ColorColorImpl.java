@@ -57,8 +57,8 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getSensorValue <em>Sensor Value</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getTfConfig <em>Tf Config</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getCallbackPeriod
- * <em>Callback Period</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getCallbackPeriod <em>Callback
+ * Period</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getDeviceType <em>Device Type</em>}
  * </li>
  * </ul>

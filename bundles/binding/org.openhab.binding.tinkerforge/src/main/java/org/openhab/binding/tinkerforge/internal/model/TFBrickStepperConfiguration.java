@@ -11,14 +11,14 @@ package org.openhab.binding.tinkerforge.internal.model;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getMaxVelocity
- * <em>Max Velocity</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getMaxVelocity <em>Max
+ * Velocity</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getAcceleration
  * <em>Acceleration</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getDeacceleration
  * <em>Deacceleration</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getMotorCurrent
- * <em>Motor Current</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getMotorCurrent <em>Motor
+ * Current</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getStepMode <em>Step Mode</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getDecay <em>Decay</em>}</li>
@@ -51,9 +51,9 @@ public interface TFBrickStepperConfiguration extends TFBaseConfiguration {
     int getMaxVelocity();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getMaxVelocity
-     * <em>Max Velocity</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getMaxVelocity <em>Max
+     * Velocity</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -81,8 +81,8 @@ public interface TFBrickStepperConfiguration extends TFBaseConfiguration {
     int getAcceleration();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getAcceleration
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getAcceleration
      * <em>Acceleration</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -111,8 +111,8 @@ public interface TFBrickStepperConfiguration extends TFBaseConfiguration {
     int getDeacceleration();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getDeacceleration
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getDeacceleration
      * <em>Deacceleration</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -141,9 +141,9 @@ public interface TFBrickStepperConfiguration extends TFBaseConfiguration {
     int getMotorCurrent();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getMotorCurrent
-     * <em>Motor Current</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getMotorCurrent <em>Motor
+     * Current</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -171,9 +171,9 @@ public interface TFBrickStepperConfiguration extends TFBaseConfiguration {
     short getStepMode();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getStepMode <em>Step Mode</em>}
-     * ' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getStepMode <em>Step
+     * Mode</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -230,9 +230,9 @@ public interface TFBrickStepperConfiguration extends TFBaseConfiguration {
     boolean isSyncRect();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#isSyncRect <em>Sync Rect</em>}'
-     * attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#isSyncRect <em>Sync
+     * Rect</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -260,9 +260,9 @@ public interface TFBrickStepperConfiguration extends TFBaseConfiguration {
     long getTimeBase();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getTimeBase <em>Time Base</em>}
-     * ' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getTimeBase <em>Time
+     * Base</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

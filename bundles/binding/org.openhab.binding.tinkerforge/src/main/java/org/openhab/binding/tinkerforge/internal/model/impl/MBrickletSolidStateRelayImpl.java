@@ -43,17 +43,17 @@ import com.tinkerforge.TimeoutException;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getLogger <em>Logger</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#isPoll <em>Poll</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getEnabledA
- * <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getIpConnection
- * <em>Ip Connection</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getIpConnection <em>Ip
+ * Connection</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getConnectedUid
  * <em>Connected Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getPosition
@@ -62,12 +62,12 @@ import com.tinkerforge.TimeoutException;
  * <em>Device Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getName <em>Name</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getBrickd <em>Brickd</em>
- * }</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getSwitchState
- * <em>Switch State</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getBrickd
+ * <em>Brickd</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getSwitchState <em>Switch
+ * State</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated

@@ -39,8 +39,8 @@ public interface BrickletOLEDConfiguration extends TFConfig {
     Short getContrast();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration#getContrast <em>Contrast</em>}'
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration#getContrast <em>Contrast</em>}'
      * attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

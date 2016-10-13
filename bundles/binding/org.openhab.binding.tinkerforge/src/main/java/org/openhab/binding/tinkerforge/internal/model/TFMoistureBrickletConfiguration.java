@@ -47,8 +47,8 @@ public interface TFMoistureBrickletConfiguration extends TFBaseConfiguration {
     Short getMovingAverage();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration#getMovingAverage
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration#getMovingAverage
      * <em>Moving Average</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

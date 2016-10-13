@@ -51,20 +51,20 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getEnabledA
- * <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getSubId <em>Sub Id</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getMbrick <em>Mbrick</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getTfConfig
- * <em>Tf Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getCallbackPeriod
  * <em>Callback Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated

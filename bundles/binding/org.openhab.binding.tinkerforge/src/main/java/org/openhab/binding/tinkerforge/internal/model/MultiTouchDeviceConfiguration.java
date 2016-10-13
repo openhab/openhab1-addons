@@ -47,8 +47,8 @@ public interface MultiTouchDeviceConfiguration extends TFConfig {
     Boolean getDisableElectrode();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration#getDisableElectrode
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration#getDisableElectrode
      * <em>Disable Electrode</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

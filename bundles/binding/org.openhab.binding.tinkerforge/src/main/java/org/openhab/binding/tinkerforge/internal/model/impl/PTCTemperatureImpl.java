@@ -54,12 +54,12 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getTfConfig <em>Tf Config</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getCallbackPeriod
- * <em>Callback Period</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getCallbackPeriod <em>Callback
+ * Period</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getDeviceType <em>Device Type</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getThreshold <em>Threshold</em>}

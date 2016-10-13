@@ -51,29 +51,29 @@ import com.tinkerforge.TimeoutException;
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getDigitalState
  *        <em>Digital State</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getLogger <em>Logger</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getEnabledA
- *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getSubId <em>Sub Id</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getMbrick <em>Mbrick</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getEnabledA <em>Enabled
+ *        A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getSubId <em>Sub
+ *        Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getMbrick
+ *        <em>Mbrick</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getGenericDeviceId
  *        <em>Generic Device Id</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getTfConfig
- *        <em>Tf Config</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getDeviceType
- *        <em>Device Type</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getPort <em>Port</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getPort
+ *        <em>Port</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getPin <em>Pin</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getDefaultState
  *        <em>Default State</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#isKeepOnReconnect
- *        <em>Keep On Reconnect</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#isKeepOnReconnect <em>Keep
+ *        On Reconnect</em>}</li>
  *        </ul>
  *
  * @generated

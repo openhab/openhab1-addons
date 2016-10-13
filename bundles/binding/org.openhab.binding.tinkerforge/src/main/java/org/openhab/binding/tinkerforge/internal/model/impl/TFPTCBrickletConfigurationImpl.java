@@ -25,8 +25,8 @@ import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFPTCBrickletConfigurationImpl#getNoiseRejectionFilter
  * <em>Noise Rejection Filter</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFPTCBrickletConfigurationImpl#getWireMode
- * <em>Wire Mode</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFPTCBrickletConfigurationImpl#getWireMode <em>Wire
+ * Mode</em>}</li>
  * </ul>
  *
  * @generated

@@ -24,235 +24,6 @@ import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
-import org.openhab.binding.tinkerforge.internal.model.AccelerometerCoordinate;
-import org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice;
-import org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection;
-import org.openhab.binding.tinkerforge.internal.model.AccelerometerLed;
-import org.openhab.binding.tinkerforge.internal.model.AccelerometerSubIds;
-import org.openhab.binding.tinkerforge.internal.model.AccelerometerTemperature;
-import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
-import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
-import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.BrickStepperSubIds;
-import org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice;
-import org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
-import org.openhab.binding.tinkerforge.internal.model.ColorActor;
-import org.openhab.binding.tinkerforge.internal.model.ColorBrickletSubIds;
-import org.openhab.binding.tinkerforge.internal.model.ColorColor;
-import org.openhab.binding.tinkerforge.internal.model.ColorColorTemperature;
-import org.openhab.binding.tinkerforge.internal.model.ColorIlluminance;
-import org.openhab.binding.tinkerforge.internal.model.ColorLed;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSwitchSpeed;
-import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
-import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
-import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
-import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
-import org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.Dual020mADevice;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonButton;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLed;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
-import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
-import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
-import org.openhab.binding.tinkerforge.internal.model.Electrode;
-import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
-import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
-import org.openhab.binding.tinkerforge.internal.model.IO4Device;
-import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
-import org.openhab.binding.tinkerforge.internal.model.IODevice;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOutSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInSubIds;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
-import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
-import org.openhab.binding.tinkerforge.internal.model.JoystickButton;
-import org.openhab.binding.tinkerforge.internal.model.JoystickDevice;
-import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
-import org.openhab.binding.tinkerforge.internal.model.JoystickXPosition;
-import org.openhab.binding.tinkerforge.internal.model.JoystickYPosition;
-import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
-import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
-import org.openhab.binding.tinkerforge.internal.model.LEDGroup;
-import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDevice;
-import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDistance;
-import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderLaser;
-import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderSubIds;
-import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderVelocity;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellDevice;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellLed;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellSubIds;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellWeight;
-import org.openhab.binding.tinkerforge.internal.model.MActor;
-import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
-import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
-import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
-import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
-import org.openhab.binding.tinkerforge.internal.model.MBrickStepper;
-import org.openhab.binding.tinkerforge.internal.model.MBrickd;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogInV2;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletCO2;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletColor;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDustDetector;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletHallEffect;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDual020mA;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletPTC;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletPiezoSpeaker;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletRotaryEncoder;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletSolidStateRelay;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletThermocouple;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletTilt;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletUVLight;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent;
-import org.openhab.binding.tinkerforge.internal.model.MDevice;
-import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
-import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
-import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
-import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
-import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
-import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
-import org.openhab.binding.tinkerforge.internal.model.MSensor;
-import org.openhab.binding.tinkerforge.internal.model.MServo;
-import org.openhab.binding.tinkerforge.internal.model.MStepperChipTemperature;
-import org.openhab.binding.tinkerforge.internal.model.MStepperConsumption;
-import org.openhab.binding.tinkerforge.internal.model.MStepperCurrent;
-import org.openhab.binding.tinkerforge.internal.model.MStepperDevice;
-import org.openhab.binding.tinkerforge.internal.model.MStepperDrive;
-import org.openhab.binding.tinkerforge.internal.model.MStepperExternalVoltage;
-import org.openhab.binding.tinkerforge.internal.model.MStepperPosition;
-import org.openhab.binding.tinkerforge.internal.model.MStepperStackVoltage;
-import org.openhab.binding.tinkerforge.internal.model.MStepperState;
-import org.openhab.binding.tinkerforge.internal.model.MStepperStatusLed;
-import org.openhab.binding.tinkerforge.internal.model.MStepperSteps;
-import org.openhab.binding.tinkerforge.internal.model.MStepperUnderVoltage;
-import org.openhab.binding.tinkerforge.internal.model.MStepperVelocity;
-import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
-import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
-import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
-import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
-import org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice;
-import org.openhab.binding.tinkerforge.internal.model.MTextActor;
-import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
-import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.MoveActor;
-import org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice;
-import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds;
-import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
-import org.openhab.binding.tinkerforge.internal.model.NumberActor;
-import org.openhab.binding.tinkerforge.internal.model.OHConfig;
-import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
-import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
-import org.openhab.binding.tinkerforge.internal.model.OLEDBricklet;
-import org.openhab.binding.tinkerforge.internal.model.ObjectTemperature;
-import org.openhab.binding.tinkerforge.internal.model.PTCConnected;
-import org.openhab.binding.tinkerforge.internal.model.PTCDevice;
-import org.openhab.binding.tinkerforge.internal.model.PTCResistance;
-import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
-import org.openhab.binding.tinkerforge.internal.model.PTCTemperature;
-import org.openhab.binding.tinkerforge.internal.model.PercentTypeActor;
-import org.openhab.binding.tinkerforge.internal.model.ProgrammableActor;
-import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
-import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
-import org.openhab.binding.tinkerforge.internal.model.Proximity;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.RotaryEncoder;
-import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderButton;
-import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderDevice;
-import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderSubIds;
-import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
-import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
-import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
-import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
-import org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFAnalogInV2Configuration;
-import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFConfig;
-import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
-import org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent;
-import org.openhab.binding.tinkerforge.internal.model.VCDevicePower;
-import org.openhab.binding.tinkerforge.internal.model.VCDeviceVoltage;
-import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice;
-import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
 import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
@@ -275,6 +46,7 @@ import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletAnalogIn;
 import com.tinkerforge.BrickletAnalogInV2;
+import com.tinkerforge.BrickletAnalogOutV2;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletCO2;
 import com.tinkerforge.BrickletColor;
@@ -934,6 +706,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EClass joystickButtonEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletAnalogOutV2EClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -2550,6 +2330,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EDataType tinkerBrickletCO2EDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType tinkerBrickletAnalogOutV2EDataType = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -5286,6 +5074,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
     @Override
     public EAttribute getJoystickButton_DeviceType() {
         return (EAttribute) joystickButtonEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletAnalogOutV2() {
+        return mBrickletAnalogOutV2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletAnalogOutV2_DeviceType() {
+        return (EAttribute) mBrickletAnalogOutV2EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletAnalogOutV2_MinValueDevice() {
+        return (EAttribute) mBrickletAnalogOutV2EClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletAnalogOutV2_MaxValueDevice() {
+        return (EAttribute) mBrickletAnalogOutV2EClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -10445,6 +10273,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EDataType getTinkerBrickletAnalogOutV2() {
+        return tinkerBrickletAnalogOutV2EDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EDataType getHSBType() {
         return hsbTypeEDataType;
@@ -10856,6 +10694,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         joystickButtonEClass = createEClass(JOYSTICK_BUTTON);
         createEAttribute(joystickButtonEClass, JOYSTICK_BUTTON__DEVICE_TYPE);
+
+        mBrickletAnalogOutV2EClass = createEClass(MBRICKLET_ANALOG_OUT_V2);
+        createEAttribute(mBrickletAnalogOutV2EClass, MBRICKLET_ANALOG_OUT_V2__DEVICE_TYPE);
+        createEAttribute(mBrickletAnalogOutV2EClass, MBRICKLET_ANALOG_OUT_V2__MIN_VALUE_DEVICE);
+        createEAttribute(mBrickletAnalogOutV2EClass, MBRICKLET_ANALOG_OUT_V2__MAX_VALUE_DEVICE);
 
         mBrickServoEClass = createEClass(MBRICK_SERVO);
         createEAttribute(mBrickServoEClass, MBRICK_SERVO__DEVICE_TYPE);
@@ -11521,6 +11364,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         tinkerBrickletThermocoupleEDataType = createEDataType(TINKER_BRICKLET_THERMOCOUPLE);
         tinkerBrickletUVLightEDataType = createEDataType(TINKER_BRICKLET_UV_LIGHT);
         tinkerBrickletCO2EDataType = createEDataType(TINKER_BRICKLET_CO2);
+        tinkerBrickletAnalogOutV2EDataType = createEDataType(TINKER_BRICKLET_ANALOG_OUT_V2);
         hsbTypeEDataType = createEDataType(HSB_TYPE);
         upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
         percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -11909,6 +11753,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         g2 = createEGenericType(this.getButtonConfiguration());
         g1.getETypeArguments().add(g2);
         joystickButtonEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        mBrickletAnalogOutV2EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMDevice());
+        g2 = createEGenericType(this.getTinkerBrickletAnalogOutV2());
+        g1.getETypeArguments().add(g2);
+        mBrickletAnalogOutV2EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getSetPointActor());
+        g2 = createEGenericType(this.getDimmableConfiguration());
+        g1.getETypeArguments().add(g2);
+        mBrickletAnalogOutV2EClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getMDevice());
         g2 = createEGenericType(this.getMTinkerBrickServo());
         g1.getETypeArguments().add(g2);
@@ -13340,6 +13196,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEAttribute(getJoystickButton_DeviceType(), theEcorePackage.getEString(), "deviceType", "joystick_button", 0,
                 1, JoystickButton.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
                 !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mBrickletAnalogOutV2EClass, MBrickletAnalogOutV2.class, "MBrickletAnalogOutV2", !IS_ABSTRACT,
+                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMBrickletAnalogOutV2_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "bricklet_analog_out_v2", 0, 1, MBrickletAnalogOutV2.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
+                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletAnalogOutV2_MinValueDevice(), theEcorePackage.getEBigDecimal(), "minValueDevice",
+                "0", 0, 1, MBrickletAnalogOutV2.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+                !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletAnalogOutV2_MaxValueDevice(), theEcorePackage.getEBigDecimal(), "maxValueDevice",
+                "12000", 0, 1, MBrickletAnalogOutV2.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+                !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(mBrickServoEClass, MBrickServo.class, "MBrickServo", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
@@ -14990,6 +14858,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
                 !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(tinkerBrickletCO2EDataType, BrickletCO2.class, "TinkerBrickletCO2", IS_SERIALIZABLE,
                 !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(tinkerBrickletAnalogOutV2EDataType, BrickletAnalogOutV2.class, "TinkerBrickletAnalogOutV2",
+                IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE,
                 !IS_GENERATED_INSTANCE_CLASS);

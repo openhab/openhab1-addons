@@ -11,8 +11,8 @@ package org.openhab.binding.tinkerforge.internal.model;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration#getAveraging <em>Averaging</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration#getAveraging
+ * <em>Averaging</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration#getThermocoupleType
  * <em>Thermocouple Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration#getFilter <em>Filter</em>}</li>
@@ -41,9 +41,9 @@ public interface TFThermocoupleConfiguration extends TFBaseConfiguration {
     Short getAveraging();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration#getAveraging <em>Averaging</em>
-     * }' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration#getAveraging
+     * <em>Averaging</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -71,8 +71,8 @@ public interface TFThermocoupleConfiguration extends TFBaseConfiguration {
     String getThermocoupleType();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration#getThermocoupleType
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration#getThermocoupleType
      * <em>Thermocouple Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -101,8 +101,8 @@ public interface TFThermocoupleConfiguration extends TFBaseConfiguration {
     String getFilter();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration#getFilter <em>Filter</em>}'
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration#getFilter <em>Filter</em>}'
      * attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

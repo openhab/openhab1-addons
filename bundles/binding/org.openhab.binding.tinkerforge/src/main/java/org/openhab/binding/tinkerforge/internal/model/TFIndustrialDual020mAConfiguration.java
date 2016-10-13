@@ -17,8 +17,8 @@ package org.openhab.binding.tinkerforge.internal.model;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration#getSampleRate
- * <em>Sample Rate</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration#getSampleRate <em>Sample
+ * Rate</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFIndustrialDual020mAConfiguration()
@@ -44,8 +44,8 @@ public interface TFIndustrialDual020mAConfiguration extends TFConfig {
     Short getSampleRate();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration#getSampleRate
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration#getSampleRate
      * <em>Sample Rate</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

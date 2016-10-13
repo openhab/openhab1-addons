@@ -20,11 +20,11 @@ package org.openhab.binding.tinkerforge.internal.model;
  *        The following features are supported:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getDeviceType <em>Device Type</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getHouseCode <em>House Code</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getReceiverCode <em>Receiver Code</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getReceiverCode <em>Receiver
+ *        Code</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getRepeats <em>Repeats</em>}</li>
  *        </ul>
  *
@@ -69,8 +69,8 @@ public interface RemoteSwitchA extends RemoteSwitch, MTFConfigConsumer<RemoteSwi
     Short getHouseCode();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getHouseCode
-     * <em>House Code</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA#getHouseCode <em>House
+     * Code</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

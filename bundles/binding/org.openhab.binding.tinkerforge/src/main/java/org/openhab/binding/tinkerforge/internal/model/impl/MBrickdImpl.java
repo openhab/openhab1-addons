@@ -111,23 +111,23 @@ import com.tinkerforge.TimeoutException;
  *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getLogger <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getIpConnection
- *        <em>Ip Connection</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getIpConnection <em>Ip
+ *        Connection</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getHost <em>Host</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getPort <em>Port</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getAuthkey <em>Authkey</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getIsConnected
- *        <em>Is Connected</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isAutoReconnect
- *        <em>Auto Reconnect</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isReconnected <em>Reconnected</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getConnectedCounter
- *        <em>Connected Counter</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getIsConnected <em>Is
+ *        Connected</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isAutoReconnect <em>Auto
+ *        Reconnect</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isReconnected
+ *        <em>Reconnected</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getConnectedCounter <em>Connected
+ *        Counter</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getTimeout <em>Timeout</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getMdevices <em>Mdevices</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getEcosystem <em>Ecosystem</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getEcosystem
+ *        <em>Ecosystem</em>}</li>
  *        </ul>
  *
  * @generated

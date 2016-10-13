@@ -54,24 +54,24 @@ import com.tinkerforge.TimeoutException;
  *        <em>Sensor Value</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getLogger
  *        <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getUid <em>Uid</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#isPoll <em>Poll</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getEnabledA
- *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getSubId <em>Sub Id</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getUid
+ *        <em>Uid</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#isPoll
+ *        <em>Poll</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getSubId <em>Sub
+ *        Id</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getMbrick
  *        <em>Mbrick</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getCallbackPeriod
  *        <em>Callback Period</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getThreshold
  *        <em>Threshold</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        </ul>
  *
  * @generated

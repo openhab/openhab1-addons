@@ -23,13 +23,17 @@ import com.tinkerforge.BrickletColor;
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletColor#getDeviceType <em>Device Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletColor#getGain <em>Gain</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletColor#getIntegrationTime <em>Integration Time</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletColor#getIntegrationTime <em>Integration
+ * Time</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletColor()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletColor> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletColor>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
+ *        <org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration>"
  * @generated
  */
 public interface MBrickletColor extends MDevice<BrickletColor>, MSubDeviceHolder<BrickletColorDevice>,
@@ -70,8 +74,8 @@ public interface MBrickletColor extends MDevice<BrickletColor>, MSubDeviceHolder
     Short getGain();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletColor#getGain <em>Gain</em>
-     * }' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletColor#getGain
+     * <em>Gain</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

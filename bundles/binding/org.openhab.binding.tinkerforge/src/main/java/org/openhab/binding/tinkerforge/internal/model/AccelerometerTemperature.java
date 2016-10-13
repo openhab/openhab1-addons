@@ -21,13 +21,14 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerTemperature#getDeviceType <em>Device Type</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerTemperature#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getAccelerometerTemperature()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>"
  * @generated
  */
 public interface AccelerometerTemperature extends AccelerometerDevice, MSensor<DecimalValue> {

@@ -17,8 +17,9 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMStepperSteps()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MStepperDevice org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MStepperDevice
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>"
  * @generated
  */
 public interface MStepperSteps extends MStepperDevice, MSensor<DecimalValue> {

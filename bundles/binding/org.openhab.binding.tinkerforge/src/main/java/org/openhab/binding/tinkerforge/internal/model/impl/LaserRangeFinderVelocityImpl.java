@@ -49,25 +49,25 @@ import com.tinkerforge.TimeoutException;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getLogger <em>Logger</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#isPoll <em>Poll</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getEnabledA
- * <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getSubId <em>Sub Id</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getMbrick <em>Mbrick</em>
- * }</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getTfConfig
- * <em>Tf Config</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getMbrick
+ * <em>Mbrick</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getCallbackPeriod
  * <em>Callback Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getThreshold
  * <em>Threshold</em>}</li>
  * </ul>

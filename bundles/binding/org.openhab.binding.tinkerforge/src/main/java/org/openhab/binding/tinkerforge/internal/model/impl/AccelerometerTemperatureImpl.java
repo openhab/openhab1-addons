@@ -44,21 +44,21 @@ import com.tinkerforge.TimeoutException;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getLogger <em>Logger</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#isPoll <em>Poll</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getEnabledA
- * <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getSubId <em>Sub Id</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getMbrick <em>Mbrick</em>
- * }</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getMbrick
+ * <em>Mbrick</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated

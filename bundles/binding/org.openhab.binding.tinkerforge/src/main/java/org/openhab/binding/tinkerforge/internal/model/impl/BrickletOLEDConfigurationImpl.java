@@ -22,8 +22,8 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletOLEDConfigurationImpl#getContrast
  * <em>Contrast</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletOLEDConfigurationImpl#isInvert <em>Invert</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletOLEDConfigurationImpl#isInvert
+ * <em>Invert</em>}</li>
  * </ul>
  *
  * @generated

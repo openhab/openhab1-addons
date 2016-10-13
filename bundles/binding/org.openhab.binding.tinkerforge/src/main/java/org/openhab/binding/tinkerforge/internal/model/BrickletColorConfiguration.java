@@ -76,8 +76,8 @@ public interface BrickletColorConfiguration extends TFConfig {
     Short getIntegrationTime();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getIntegrationTime
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getIntegrationTime
      * <em>Integration Time</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

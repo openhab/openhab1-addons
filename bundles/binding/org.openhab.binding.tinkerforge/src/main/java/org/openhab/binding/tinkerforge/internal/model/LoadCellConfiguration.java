@@ -19,8 +19,8 @@ package org.openhab.binding.tinkerforge.internal.model;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration#getMovingAverage
- * <em>Moving Average</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration#getMovingAverage <em>Moving
+ * Average</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLoadCellConfiguration()
@@ -46,9 +46,9 @@ public interface LoadCellConfiguration extends TFBaseConfiguration {
     short getMovingAverage();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration#getMovingAverage
-     * <em>Moving Average</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration#getMovingAverage <em>Moving
+     * Average</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

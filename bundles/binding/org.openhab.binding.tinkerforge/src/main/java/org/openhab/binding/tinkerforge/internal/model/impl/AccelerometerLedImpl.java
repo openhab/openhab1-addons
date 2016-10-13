@@ -50,10 +50,10 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerLedImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerLedImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerLedImpl#getDigitalState
- * <em>Digital State</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerLedImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerLedImpl#getDigitalState <em>Digital
+ * State</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerLedImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated

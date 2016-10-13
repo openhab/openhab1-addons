@@ -24,13 +24,16 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *        The following features are supported:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice#getThreshold <em>Threshold</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice#getThreshold
+ *        <em>Threshold</em>}</li>
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMTemperatureIRDevice()
- * @model interface="true" abstract="true" superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MSubDevice<org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model interface="true" abstract="true" superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR>
+ *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
 public interface MTemperatureIRDevice

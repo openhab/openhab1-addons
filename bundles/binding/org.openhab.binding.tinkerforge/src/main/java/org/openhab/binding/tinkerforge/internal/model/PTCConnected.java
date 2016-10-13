@@ -23,8 +23,9 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getPTCConnected()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.PTCDevice org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.DigitalValue>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.PTCDevice
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.DigitalValue>"
  * @generated
  */
 public interface PTCConnected extends PTCDevice, MSensor<HighLowValue> {

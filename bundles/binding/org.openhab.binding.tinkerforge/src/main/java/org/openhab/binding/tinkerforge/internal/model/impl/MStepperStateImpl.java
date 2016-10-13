@@ -43,8 +43,8 @@ import org.slf4j.Logger;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperStateImpl#getEnabledA <em>Enabled A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperStateImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperStateImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperStateImpl#getSensorValue <em>Sensor Value</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperStateImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MStepperStateImpl#getDeviceType <em>Device Type</em>}
  * </li>
  * </ul>

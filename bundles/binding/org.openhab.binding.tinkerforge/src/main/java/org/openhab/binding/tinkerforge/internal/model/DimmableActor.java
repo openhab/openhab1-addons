@@ -49,8 +49,8 @@ public interface DimmableActor<TC extends DimmableConfiguration> extends MTFConf
     BigDecimal getMinValue();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor#getMinValue
-     * <em>Min Value</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor#getMinValue <em>Min
+     * Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -78,8 +78,8 @@ public interface DimmableActor<TC extends DimmableConfiguration> extends MTFConf
     BigDecimal getMaxValue();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor#getMaxValue
-     * <em>Max Value</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor#getMaxValue <em>Max
+     * Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

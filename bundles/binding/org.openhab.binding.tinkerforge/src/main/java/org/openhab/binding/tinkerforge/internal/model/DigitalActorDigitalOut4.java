@@ -21,8 +21,8 @@ package org.openhab.binding.tinkerforge.internal.model;
  *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4#getPin <em>Pin</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDigitalActorDigitalOut4()

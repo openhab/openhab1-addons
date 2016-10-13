@@ -23,8 +23,8 @@ import org.eclipse.emf.ecore.EObject;
  *        The following features are supported:
  *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder#getMsubdevices <em>Msubdevices</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder#getMsubdevices
+ *        <em>Msubdevices</em>}</li>
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMSubDeviceHolder()
@@ -34,8 +34,8 @@ import org.eclipse.emf.ecore.EObject;
 public interface MSubDeviceHolder<S extends MSubDevice<?>> extends EObject {
     /**
      * Returns the value of the '<em><b>Msubdevices</b></em>' containment reference list.
-     * It is bidirectional and its opposite is '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MSubDevice#getMbrick <em>Mbrick</em>}'.
+     * It is bidirectional and its opposite is
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MSubDevice#getMbrick <em>Mbrick</em>}'.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Msubdevices</em>' containment reference list isn't clear,

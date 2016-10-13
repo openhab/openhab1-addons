@@ -27,8 +27,10 @@ import com.tinkerforge.BrickletIndustrialQuadRelay;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMIndustrialQuadRelayBricklet()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletIndustrialQuadRelay> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletIndustrialQuadRelay>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
+ *        <org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay>"
  * @generated
  */
 public interface MIndustrialQuadRelayBricklet

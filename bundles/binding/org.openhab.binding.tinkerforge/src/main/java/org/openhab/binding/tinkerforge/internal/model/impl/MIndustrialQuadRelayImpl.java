@@ -49,14 +49,14 @@ import com.tinkerforge.TimeoutException;
  *        <em>Switch State</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getLogger
  *        <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getUid <em>Uid</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#isPoll <em>Poll</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getUid
+ *        <em>Uid</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#isPoll
+ *        <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getEnabledA
  *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getSubId
- *        <em>Sub Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getSubId <em>Sub
+ *        Id</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getMbrick
  *        <em>Mbrick</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getDeviceType

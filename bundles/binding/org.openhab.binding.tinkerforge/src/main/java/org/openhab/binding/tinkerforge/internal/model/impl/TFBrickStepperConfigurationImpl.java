@@ -19,22 +19,22 @@ import org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguratio
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickStepperConfigurationImpl#getMaxVelocity
- * <em>Max Velocity</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickStepperConfigurationImpl#getMaxVelocity <em>Max
+ * Velocity</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickStepperConfigurationImpl#getAcceleration
  * <em>Acceleration</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickStepperConfigurationImpl#getDeacceleration
  * <em>Deacceleration</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickStepperConfigurationImpl#getMotorCurrent
  * <em>Motor Current</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickStepperConfigurationImpl#getStepMode
- * <em>Step Mode</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickStepperConfigurationImpl#getStepMode <em>Step
+ * Mode</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickStepperConfigurationImpl#getDecay
  * <em>Decay</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickStepperConfigurationImpl#isSyncRect
- * <em>Sync Rect</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickStepperConfigurationImpl#getTimeBase
- * <em>Time Base</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickStepperConfigurationImpl#isSyncRect <em>Sync
+ * Rect</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickStepperConfigurationImpl#getTimeBase <em>Time
+ * Base</em>}</li>
  * </ul>
  *
  * @generated
