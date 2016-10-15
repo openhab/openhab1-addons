@@ -36,6 +36,7 @@ import org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ColorBrickletSubIds;
+import org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
@@ -202,7 +203,8 @@ public class ConfigurationHandler {
         bricklet_oled64x48,
         bricklet_thermocouple,
         bricklet_uvlight,
-        bricklet_co2
+        bricklet_co2,
+        bricklet_analog_out_v2
     }
 
     public ConfigurationHandler() {
@@ -414,7 +416,13 @@ public class ConfigurationHandler {
                 ohtfDevice.setTfConfig(tfBaseConfiguration);
                 fillupConfig(ohtfDevice, deviceConfig);
             }
-
+        } else if (deviceType.equals(TypeKey.bricklet_analog_out_v2.name())) {
+            logger.debug("{} setting bricklet analog v2 config", LoggerConstants.CONFIG);
+            DimmableConfiguration analogOutV2Configuration = modelFactory.createDimmableConfiguration();
+            OHTFDevice<DimmableConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+            ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+            ohtfDevice.setTfConfig(analogOutV2Configuration);
+            fillupConfig(ohtfDevice, deviceConfig);
         } else if (deviceType.equals(TypeKey.brick_dc.name())) {
             logger.debug("{} setting dc config", LoggerConstants.CONFIG);
             TFBrickDCConfiguration tfBrickDCConfiguration = modelFactory.createTFBrickDCConfiguration();

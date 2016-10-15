@@ -137,7 +137,7 @@ import org.slf4j.LoggerFactory;
  * @author Theo Weiss
  * @since 1.3.0
  */
-public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBindingProvider>implements ManagedService {
+public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBindingProvider> implements ManagedService {
 
     private static final String CONFIG_KEY_HOSTS = "hosts";
 
@@ -450,6 +450,9 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
             if (featureID == ModelPackage.COLOR_ACTOR__COLOR) {
                 processValue((MBaseDevice) actor, notification);
             }
+        } else if (notification.getNotifier() instanceof DimmableActor<?>) {
+            DimmableActor<?> actor = (DimmableActor<?>) notification.getNotifier();
+            processValue((MBaseDevice) actor, notification);
         } else if (notification.getNotifier() instanceof MBrickd) {
             MBrickd brickd = (MBrickd) notification.getNotifier();
             int featureID = notification.getFeatureID(MBrickd.class);
