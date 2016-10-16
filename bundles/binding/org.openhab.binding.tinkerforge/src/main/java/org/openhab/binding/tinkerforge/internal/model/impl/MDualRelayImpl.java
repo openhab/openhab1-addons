@@ -831,7 +831,7 @@ public class MDualRelayImpl extends MinimalEObjectImpl.Container implements MDua
                 logger.debug("setSwitchState on");
                 getMbrick().getTinkerforgeDevice().setSelectedState(relayNum, true);
             } else {
-                logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+                logger.error("{} unknown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
             }
             setSwitchState(state);
         } catch (TimeoutException e) {

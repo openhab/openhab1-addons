@@ -11,11 +11,11 @@ For further Information please refer to our homepage http://www.openhab.org. The
 ## Demo
 
 To see openHAB in action, you can directly access our demo server - choose one of these options:
-- Check out the [Classic UI on the demo server](http://demo.openhab.org:8080/openhab.app?sitemap=demo) (use !WebKit-based browser, e.g. Safari or Chrome)
-- Check out the [GreenT UI on the demo server](http://demo.openhab.org:8080/greent/) (use !WebKit-based browser, e.g. Safari or Chrome)
+- Check out the [Basic UI on the demo server](http://demo.openhab.org:8080/basicui/app) (use !WebKit-based browser, e.g. Safari or Chrome)
+- Check out the [Classic UI on the demo server](http://demo.openhab.org:8080/classicui/app) (use !WebKit-based browser, e.g. Safari or Chrome)
 - Install the [native Android client](https://play.google.com/store/apps/details?id=org.openhab.habdroid) from the Google Play Store on your Android 4.x smartphone, which is preconfigured to use the demo server.
 - Install the [native iOS client from the AppStore](http://itunes.apple.com/us/app/openhab/id492054521?mt=8) on your iPhone, iPod Touch or iPad, which is preconfigured to use the demo server.
-- Try the [REST API](http://demo.openhab.org:8080/rest) directly on the demo server
+- Try the [REST API](http://demo.openhab.org:8080/doc/index.html) directly on the demo server
 
 If you just want to watch for a start, you might also like our [YouTube channel](http://www.youtube.com/playlist?list=PLGlxCdrGUagz6lfgo9SlNLhdwI4la_VSv)!
 
@@ -50,7 +50,7 @@ If you are looking for support, please check out the [different support channels
 
 As any good open source project, openHAB welcomes any participation in the project. Read more in the [how to contribute](https://github.com/openhab/openhab-distro/blob/master/CONTRIBUTING.md) guide.
 
-If you are a developer and want to jump right into the sources and execute openHAB from within Eclipse, please have a look at the [IDE setup](https://github.com/openhab/openhab-distro/blob/master/docs/sources/development/ide.md) procedures.
+If you are a developer and want to jump right into the sources and execute openHAB from within Eclipse, please have a look at the [IDE setup](http://docs.openhab.org/developers/development/ide.html) procedures.
 
 [![](http://raw.github.com/wiki/openhab/openhab/images/twitter.png)](http://twitter.com/openHAB)
 

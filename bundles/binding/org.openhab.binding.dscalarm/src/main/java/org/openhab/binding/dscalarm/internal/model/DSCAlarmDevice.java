@@ -38,8 +38,7 @@ public abstract class DSCAlarmDevice {
      * @param config
      * @param publisher
      */
-    public abstract void handleEvent(Item item, DSCAlarmBindingConfig config, EventPublisher publisher,
-            DSCAlarmEvent event);
+    public abstract void handleEvent(Item item, DSCAlarmBindingConfig config, EventPublisher publisher, DSCAlarmEvent event);
 
     /**
      * Update a DSC Alarm Device Property

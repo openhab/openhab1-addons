@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,7 +121,10 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
             do {
                 // 1. read to function code, create request and read function specific bytes
                 synchronized (m_ByteIn) {
+                    // Make ComPort blocking
+                    m_CommPort.enableReceiveThreshold(1);
                     int uid = m_InputStream.read();
+                    logger.trace("Managed to read at least one byte");
                     if (uid != -1) {
                         int fc = m_InputStream.read();
                         m_ByteInOut.reset();
@@ -150,7 +154,7 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
                                     + ModbusUtil.toHex(m_ByteIn.getBuffer(), 0, dlength));
                         }
                     } else {
-                        throw new IOException("Error reading response");
+                        throw new IOException("Error reading response (EOF)");
                     }
 
                     // read response
@@ -167,6 +171,8 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
             logger.error("Last request: {}", ModbusUtil.toHex(lastRequest));
             logger.error("{}: {}", errMsg, ex.getMessage());
             throw new ModbusIOException("I/O exception - " + errMsg);
+        } finally {
+            m_CommPort.disableReceiveThreshold();
         }
     }// readResponse
 
@@ -191,12 +197,8 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
 
     @Override
     public void close() throws IOException {
-        if (m_InputStream != null) {
-            m_InputStream.close();
-        }
-        if (m_OutputStream != null) {
-            m_OutputStream.close();
-        }
+        IOUtils.closeQuietly(m_InputStream);
+        IOUtils.closeQuietly(m_OutputStream);
         super.close();
     }// close
 
@@ -217,6 +219,7 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
                 case 0x15: // write log entry (60000 memory reference)
                 case 0x17:
                     // read the byte count;
+                    setReceiveThreshold(1);
                     bc = m_InputStream.read();
                     out.write(bc);
                     // now get the specified number of bytes and the 2 CRC bytes
@@ -256,6 +259,7 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
                     break;
                 case 0x18:
                     // read the byte count word
+                    setReceiveThreshold(1);
                     bc = m_InputStream.read();
                     out.write(bc);
                     bc2 = m_InputStream.read();

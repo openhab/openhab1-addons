@@ -525,7 +525,7 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
                 logger.debug("setSwitchState on");
                 brickletLCD20x4.backlightOn();
             } else {
-                logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+                logger.error("{} unknown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
             }
             setSwitchState(state);
         } catch (TimeoutException e) {

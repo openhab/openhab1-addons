@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZW4002</Model>
+    <Label lang="en">In-Wall Smart Fan Control</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x26</id>             <!-- SWITCH_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Night Light</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">LED on when switch is OFF</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">LED on when switch is ON</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">LED always off</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Invert Switch</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">No</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Yes</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+</Product>

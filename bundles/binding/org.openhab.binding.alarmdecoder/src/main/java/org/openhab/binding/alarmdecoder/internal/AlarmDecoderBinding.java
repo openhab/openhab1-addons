@@ -317,6 +317,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
                 m_port.disableReceiveFraming();
                 m_port.disableReceiveThreshold();
                 m_reader = new BufferedReader(new InputStreamReader(m_port.getInputStream()));
+                m_writer = new BufferedWriter(new OutputStreamWriter(m_port.getOutputStream()));
                 logger.info("connected to serial port: {}", m_serialDeviceName);
                 startMsgReader();
             } else {

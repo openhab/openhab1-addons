@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * Binding that get information from the Visonic alarm system.
  * The binding is listening to openHAB event bus and is able to send few commands to the alarm system
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxBinding extends AbstractActiveBinding<PowerMaxBindingProvider>

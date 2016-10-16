@@ -225,6 +225,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
         configurationParameter = this.configParameters.get(index);
         if (configurationParameter == null) {
             configurationParameter = new ConfigurationParameter(index, 0, 1);
+            configParameters.put(index, configurationParameter);
         }
 
         configurationParameter.setReadOnly(readOnly);
@@ -238,13 +239,14 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
      * @param index the parameter index
      * @param writeOnly true if the parameter can not be read
      */
-    public void setParameterWriteOnly(Integer index, boolean writeOnly) {
+    public void setParameterWriteOnly(Integer index, Integer size, boolean writeOnly) {
         ConfigurationParameter configurationParameter;
 
         // Check if the parameter exists in our list
         configurationParameter = this.configParameters.get(index);
         if (configurationParameter == null) {
-            configurationParameter = new ConfigurationParameter(index, 0, 1);
+            configurationParameter = new ConfigurationParameter(index, 0, size);
+            configParameters.put(index, configurationParameter);
         }
 
         configurationParameter.setWriteOnly(writeOnly);

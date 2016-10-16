@@ -20,9 +20,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<hikari.version>2.4.2</hikari.version>
+		<hikari.version>2.4.7</hikari.version>
 		<dbutils.version>1.6</dbutils.version>
-		<yank.version>3.1.0</yank.version>
+		<yank.version>3.2.0</yank.version>
 		<bundle.symbolicName>org.openhab.persistence.jdbc</bundle.symbolicName>
 		<bundle.namespace>org.openhab.persistence.jdbc</bundle.namespace>
 		<classpath.ext>lib/</classpath.ext>

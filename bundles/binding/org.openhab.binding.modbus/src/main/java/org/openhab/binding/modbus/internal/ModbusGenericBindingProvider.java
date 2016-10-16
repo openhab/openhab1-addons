@@ -140,7 +140,10 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
          */
         String slaveName;
         /**
-         * State of Item
+         * State of Item. Initialized to null so that
+         * UnDefType.UNDEF (which might be transmitted
+         * in case of errors)
+         * is considered unequal to the initial value.
          */
         private State state = null;
 
@@ -172,6 +175,8 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
          * Calculates new item state based on the new boolean value, current item state and item class
          * Used with item bound to "coil" type slaves
          *
+         * Returns UnDefType.UNDEF for Number and other "uncompatible" item types
+         *
          * @param b new boolean value
          * @param c class of the current item state
          * @param itemClass class of the item
@@ -200,6 +205,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
             } else if (c == OpenClosedType.class && itemClass == ContactItem.class) {
                 return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
             } else {
+                // Number items
                 return UnDefType.UNDEF;
             }
         }

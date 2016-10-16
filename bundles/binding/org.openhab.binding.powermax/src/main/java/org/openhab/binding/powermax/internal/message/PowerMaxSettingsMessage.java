@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A class for SETTINGS and SETTINGS_ITEM messages handling
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxSettingsMessage extends PowerMaxBaseMessage {

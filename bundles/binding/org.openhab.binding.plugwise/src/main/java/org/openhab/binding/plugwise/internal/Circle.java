@@ -18,7 +18,6 @@ import org.openhab.binding.plugwise.protocol.CalibrationRequestMessage;
 import org.openhab.binding.plugwise.protocol.CalibrationResponseMessage;
 import org.openhab.binding.plugwise.protocol.ClockGetRequestMessage;
 import org.openhab.binding.plugwise.protocol.ClockGetResponseMessage;
-import org.openhab.binding.plugwise.protocol.ClockSetRequestMessage;
 import org.openhab.binding.plugwise.protocol.InformationRequestMessage;
 import org.openhab.binding.plugwise.protocol.InformationResponseMessage;
 import org.openhab.binding.plugwise.protocol.Message;
@@ -27,6 +26,8 @@ import org.openhab.binding.plugwise.protocol.PowerBufferResponseMessage;
 import org.openhab.binding.plugwise.protocol.PowerChangeRequestMessage;
 import org.openhab.binding.plugwise.protocol.PowerInformationRequestMessage;
 import org.openhab.binding.plugwise.protocol.PowerInformationResponseMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class that represents a Plugwise Circle device
@@ -42,17 +43,36 @@ import org.openhab.binding.plugwise.protocol.PowerInformationResponseMessage;
  */
 public class Circle extends PlugwiseDevice {
 
-    private final static float PULSE_FACTOR = 2.1324759f;
+    private static Logger logger = LoggerFactory.getLogger(Circle.class);
+
+    private static final float PULSE_FACTOR = 2.1324759f;
+
+    private static final int POWER_STATE_RETRIES = 3;
+
+    private class PendingPowerStateChange {
+
+        final boolean state;
+        int retries;
+
+        PendingPowerStateChange(boolean state) {
+            this.state = state;
+        }
+
+        public String getStateAsString() {
+            return state ? "ON" : "OFF";
+        }
+    }
 
     protected Stick stick;
 
     // Calibration data, required to calculate energy consumption
+    protected boolean calibrated;
     protected float gaina;
     protected float gainb;
     protected float offtot;
     protected float offruis;
 
-    // System variables as kept/maintaned by the Circle hardware
+    // System variables as kept/maintained by the Circle hardware
     protected DateTime stamp;
     protected LocalTime systemClock;
     protected int recentLogAddress;
@@ -62,6 +82,10 @@ public class Circle extends PlugwiseDevice {
     protected String hardwareVersion;
     protected DateTime firmwareVersion;
     protected Energy one;
+
+    // Pending power state changes are tracked for retries and temporarily
+    // ignoring an outdated result of an InformationJob
+    protected PendingPowerStateChange pendingPowerStateChange;
 
     public Circle(String mac, Stick stick, String friendly) {
         super(mac, DeviceType.Circle, friendly);
@@ -75,8 +99,10 @@ public class Circle extends PlugwiseDevice {
     public boolean setPowerState(String state) {
         if (state != null) {
             if (state.equals("ON") || state.equals("OPEN") || state.equals("UP")) {
+                pendingPowerStateChange = new PendingPowerStateChange(true);
                 return setPowerState(true);
             } else if (state.equals("OFF") || state.equals("CLOSED") || state.equals("DOWN")) {
+                pendingPowerStateChange = new PendingPowerStateChange(false);
                 return setPowerState(false);
             }
         }
@@ -84,18 +110,8 @@ public class Circle extends PlugwiseDevice {
     }
 
     public boolean setPowerState(boolean state) {
-        PowerChangeRequestMessage message = new PowerChangeRequestMessage(MAC, state);
-        stick.sendMessage(message);
-        return true;
-    }
-
-    public boolean setClock() {
-        return setClock(DateTime.now());
-    }
-
-    public boolean setClock(DateTime stamp) {
-        ClockSetRequestMessage message = new ClockSetRequestMessage(MAC, stamp);
-        stick.sendMessage(message);
+        stick.sendPriorityMessage(new PowerChangeRequestMessage(MAC, state));
+        stick.sendPriorityMessage(new InformationRequestMessage(MAC));
         return true;
     }
 
@@ -203,6 +219,7 @@ public class Circle extends PlugwiseDevice {
                     gainb = ((CalibrationResponseMessage) message).getGainb();
                     offtot = ((CalibrationResponseMessage) message).getOfftot();
                     offruis = ((CalibrationResponseMessage) message).getOffruis();
+                    calibrated = true;
 
                     return true;
 
@@ -216,21 +233,52 @@ public class Circle extends PlugwiseDevice {
                     hertz = ((InformationResponseMessage) message).getHertz();
                     hardwareVersion = ((InformationResponseMessage) message).getHardwareVersion();
 
-                    postUpdate(MAC, PlugwiseCommandType.CURRENTSTATE, powerState ? "ON" : "OFF");
+                    if (pendingPowerStateChange != null) {
+                        if (powerState == pendingPowerStateChange.state) {
+                            pendingPowerStateChange = null;
+                        } else {
+                            // power state change message may be lost or an InformationJob may have queried the power
+                            // state just before the power state change message arrived
+                            if (pendingPowerStateChange.retries < POWER_STATE_RETRIES) {
+                                pendingPowerStateChange.retries++;
+                                logger.warn("Retrying to switch {} {} {} (retry #{})", type.name().toString(),
+                                        this.getName(), pendingPowerStateChange.getStateAsString(),
+                                        pendingPowerStateChange.retries);
+                                setPowerState(pendingPowerStateChange.state);
+                            } else {
+                                logger.warn("Failed to switch {} {} {} after {} retries", type.name().toString(),
+                                        this.getName(), pendingPowerStateChange.getStateAsString(),
+                                        pendingPowerStateChange.retries);
+                                pendingPowerStateChange = null;
+                            }
+                        }
+                    }
+
+                    if (pendingPowerStateChange == null) {
+                        postUpdate(MAC, PlugwiseCommandType.CURRENTSTATE, powerState);
+                    }
+
                     return true;
 
                 case POWER_INFORMATION_RESPONSE:
 
-                    one = ((PowerInformationResponseMessage) message).getOneSecond();
-                    if (pulseToWatt(one) > 10000) {
-                        // the Circle reporting this information is in a kind of error state.
-                        // we just skip these values
+                    if (!calibrated) {
+                        logger.debug(
+                                "{} with name: {} and MAC address: {} received power information without "
+                                        + "being calibrated, calibrating and skipping response",
+                                getType().name(), name, MAC);
+                        calibrate();
                         return true;
                     }
-                    postUpdate(MAC, PlugwiseCommandType.CURRENTPOWER, pulseToWatt(one));
-
-                    DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
-                    postUpdate(MAC, PlugwiseCommandType.CURRENTPOWERSTAMP, fmt.print(one.getTime()));
+                    one = ((PowerInformationResponseMessage) message).getOneSecond();
+                    float watt = pulseToWatt(one);
+                    if (watt > 10000) {
+                        logger.debug("{} with name: {} and MAC address: {} is in a kind of error state, "
+                                + "skipping power information response", type.name(), name, MAC);
+                        return true;
+                    }
+                    postUpdate(MAC, PlugwiseCommandType.CURRENTPOWER, watt);
+                    postUpdate(MAC, PlugwiseCommandType.CURRENTPOWERSTAMP, one.getTime());
                     return true;
 
                 case POWER_BUFFER_RESPONSE:
@@ -249,8 +297,7 @@ public class Circle extends PlugwiseDevice {
 
                     if (lastHour != null) {
                         postUpdate(MAC, PlugwiseCommandType.LASTHOURCONSUMPTION, pulseTokWh(lastHour));
-                        fmt = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
-                        postUpdate(MAC, PlugwiseCommandType.LASTHOURCONSUMPTIONSTAMP, fmt.print(lastHour.getTime()));
+                        postUpdate(MAC, PlugwiseCommandType.LASTHOURCONSUMPTIONSTAMP, lastHour.getTime());
                     }
 
                     return true;

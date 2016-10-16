@@ -144,8 +144,9 @@ public abstract class AbstractWeatherParser implements WeatherParser {
         }
 
         Precipitation precip = weather.getPrecipitation();
-        if (weather.getProvider() == ProviderName.FORECASTIO
-                && StringUtils.equalsIgnoreCase("snow", precip.getType())) {
+        if ((weather.getProvider() == ProviderName.FORECASTIO && StringUtils.equalsIgnoreCase("snow", precip.getType()))
+                || (weather.getProvider() == ProviderName.METEOBLUE
+                        && StringUtils.equalsIgnoreCase("1", precip.getType()))) {
             precip.setSnow(precip.getRain());
             precip.setRain(null);
         }

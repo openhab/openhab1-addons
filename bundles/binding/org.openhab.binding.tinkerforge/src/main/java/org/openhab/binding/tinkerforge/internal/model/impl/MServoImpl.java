@@ -1368,7 +1368,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
                 return;
             }
         } else {
-            logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+            logger.error("{} unknown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
         }
         setPoint(position, opts);
     }

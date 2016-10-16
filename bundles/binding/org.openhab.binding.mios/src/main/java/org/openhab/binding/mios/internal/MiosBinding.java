@@ -134,7 +134,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider>implements 
         logger.debug("bindingChanged: start provider '{}', itemName '{}'", provider, itemName);
 
         if (provider instanceof MiosBindingProvider) {
-            registerWatch((MiosBindingProvider) provider, itemName);
+            registerItemWatch((MiosBindingProvider) provider, itemName);
         }
     }
 
@@ -144,44 +144,29 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider>implements 
     @Override
     public void allBindingsChanged(BindingProvider provider) {
         logger.debug("allBindingsChanged: start provider '{}'", provider);
+        registerProviderWatch(provider);
+    }
 
+    private void registerProviderWatch(BindingProvider provider) {
+        logger.debug("registerProviderWatch: start miosProvider '{}'", provider);
         if (provider instanceof MiosBindingProvider) {
             MiosBindingProvider miosProvider = (MiosBindingProvider) provider;
 
             for (String itemName : provider.getItemNames()) {
-                registerWatch(miosProvider, itemName);
+                registerItemWatch(miosProvider, itemName);
             }
         }
     }
 
-    private void registerAllWatches() {
-        logger.debug("registerAllWatches: start");
+    private void registerItemWatch(MiosBindingProvider miosProvider, String itemName) {
+        logger.debug("registerItemWatch: start miosProvider '{}', itemName '{}'", miosProvider, itemName);
 
-        for (BindingProvider provider : providers) {
-            logger.debug("registerAllWatches: provider '{}'", provider.getClass());
-
-            if (provider instanceof MiosBindingProvider) {
-                MiosBindingProvider miosProvider = (MiosBindingProvider) provider;
-
-                for (String itemName : provider.getItemNames()) {
-                    registerWatch(miosProvider, itemName);
-                }
-            }
+        MiosUnitConnector connector = getMiosConnector(miosProvider.getMiosUnitName(itemName));
+        if (connector != null) {
+            connector.restart();
+        } else {
+            logger.debug("registerItemWatch: no connector miosProvider '{}', itemName='{}'", miosProvider, itemName);
         }
-    }
-
-    private void registerWatch(MiosBindingProvider miosProvider, String itemName) {
-        logger.debug("registerWatch: start miosProvider '{}', itemName '{}'", miosProvider, itemName);
-
-        String unitName = miosProvider.getMiosUnitName(itemName);
-
-        // Minimally we need to do this part, so that the MiosConnector objects
-        // get brought into existence (and threads started)
-        // Joy! Getters with side-effects.
-
-        // TODO: Work out a cleaner entry point for the Child connections to get
-        // started.
-        MiosUnitConnector connector = getMiosConnector(unitName);
     }
 
     private String getMiosUnitName(String itemName) {
@@ -331,14 +316,14 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider>implements 
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
         logger.trace(getName() + " updated()");
 
-        Map<String, MiosUnit> units = new HashMap<String, MiosUnit>();
-
         // Under openHAB 2.0, we get called shortly after activate(), but mios.cfg
         // hasn't yet been loaded, so we're passed a null properties object.
         // We're called again later, so it'll get established correctly at that point.
         if (properties == null) {
             return;
         }
+
+        Map<String, MiosUnit> units = new HashMap<String, MiosUnit>();
 
         Enumeration<String> keys = properties.keys();
         while (keys.hasMoreElements()) {
@@ -400,8 +385,28 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider>implements 
             }
         }
 
+        // Close out pre-existing connections
+        if (nameUnitMapper != null) {
+            MiosUnitConnector connector;
+            for (String unitName: nameUnitMapper.keySet()) {
+                connector = connectors.get(unitName);
+                if (connector != null) {
+                    try {
+                        connector.close();
+                    } catch (Exception e) {
+                        // Suppress
+                    }
+                }
+            }
+        }
+
         nameUnitMapper = units;
-        registerAllWatches();
+
+        // Reregister, since the connections will change.
+        for (BindingProvider provider : providers) {
+            logger.debug("updated: provider '{}'", provider.getClass());
+            registerProviderWatch(provider);
+        }
     }
 
     /**
