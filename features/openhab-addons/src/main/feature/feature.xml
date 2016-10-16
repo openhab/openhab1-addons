@@ -363,6 +363,7 @@
     <configfile finalname="${openhab.conf}/transform/miosTStatModeStatusCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-tstatmodestatuscommand</configfile>
     <configfile finalname="${openhab.conf}/transform/miosTStatSetpointCoolCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-tstatsetpointcoolcommand</configfile>
     <configfile finalname="${openhab.conf}/transform/miosTStatSetpointHeatCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-tstatsetpointheatcommand</configfile>
+    <configfile finalname="${openhab.conf}/transform/miosTStatSetpointCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-tstatsetpointcommand</configfile>
     <configfile finalname="${openhab.conf}/transform/miosUPnPRenderingControlMuteCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-upnprenderingcontrolmutecommand</configfile>
     <configfile finalname="${openhab.conf}/transform/miosUPnPRenderingControlVolumeCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-upnprenderingcontrolvolumecommand</configfile>
     <configfile finalname="${openhab.conf}/transform/miosUPnPTransportStatePlayModeCommand.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-upnptransportstateplaymodecommand</configfile>

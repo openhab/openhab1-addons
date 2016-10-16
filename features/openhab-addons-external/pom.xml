@@ -135,6 +135,7 @@
                                 <artifact><file>src/main/resources/transform/miosTStatModeStatusCommand.map</file><type>map</type><classifier>mios-tstatmodestatuscommand</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosTStatSetpointCoolCommand.map</file><type>map</type><classifier>mios-tstatsetpointcoolcommand</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosTStatSetpointHeatCommand.map</file><type>map</type><classifier>mios-tstatsetpointheatcommand</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosTStatSetpointCommand.map</file><type>map</type><classifier>mios-tstatsetpointcommand</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosUPnPRenderingControlMuteCommand.map</file><type>map</type><classifier>mios-upnprenderingcontrolmutecommand</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosUPnPRenderingControlVolumeCommand.map</file><type>map</type><classifier>mios-upnprenderingcontrolvolumecommand</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosUPnPTransportStatePlayModeCommand.map</file><type>map</type><classifier>mios-upnptransportstateplaymodecommand</classifier></artifact>
