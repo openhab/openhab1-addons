@@ -1426,6 +1426,15 @@
         <Id>0109</Id>
         <Product>
             <Reference>
+                <Type>2022</Type>
+                <Id>2201</Id>
+            </Reference>
+            <Model>ZD2105</Model>
+            <Label lang="en">Recessed Door Window Sensor</Label>
+            <ConfigFile>vision/zd2105.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0002</Type>
                 <Id>FFFF</Id>
             </Reference>
