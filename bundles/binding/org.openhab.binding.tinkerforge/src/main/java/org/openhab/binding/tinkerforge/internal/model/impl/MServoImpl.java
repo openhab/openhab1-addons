@@ -110,7 +110,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSensorValue()
      * @generated
      * @ordered
@@ -131,7 +131,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSwitchState()
      * @generated
      * @ordered
@@ -142,7 +142,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -153,7 +153,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -164,7 +164,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -175,7 +175,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -186,7 +186,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -196,7 +196,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -206,7 +206,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -217,7 +217,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -228,7 +228,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSubId()
      * @generated
      * @ordered
@@ -239,7 +239,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSubId()
      * @generated
      * @ordered
@@ -250,7 +250,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getDirection() <em>Direction</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDirection()
      * @generated
      * @ordered
@@ -261,7 +261,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getDirection() <em>Direction</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDirection()
      * @generated
      * @ordered
@@ -272,7 +272,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getTfConfig()
      * @generated
      * @ordered
@@ -283,7 +283,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getMinValue() <em>Min Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getMinValue()
      * @generated
      * @ordered
@@ -293,7 +293,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getMinValue() <em>Min Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getMinValue()
      * @generated
      * @ordered
@@ -303,7 +303,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getMaxValue() <em>Max Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getMaxValue()
      * @generated
      * @ordered
@@ -313,7 +313,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getMaxValue() <em>Max Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getMaxValue()
      * @generated
      * @ordered
@@ -323,7 +323,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getPercentValue() <em>Percent Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPercentValue()
      * @generated
      * @ordered
@@ -333,7 +333,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getPercentValue() <em>Percent Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPercentValue()
      * @generated
      * @ordered
@@ -343,7 +343,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -354,7 +354,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -365,7 +365,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getVelocity() <em>Velocity</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getVelocity()
      * @generated
      * @ordered
@@ -376,7 +376,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getVelocity() <em>Velocity</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getVelocity()
      * @generated
      * @ordered
@@ -387,7 +387,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getAcceleration() <em>Acceleration</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getAcceleration()
      * @generated
      * @ordered
@@ -398,7 +398,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getAcceleration() <em>Acceleration</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getAcceleration()
      * @generated
      * @ordered
@@ -409,7 +409,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getMaxPosition() <em>Max Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getMaxPosition()
      * @generated
      * @ordered
@@ -420,7 +420,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getMaxPosition() <em>Max Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getMaxPosition()
      * @generated
      * @ordered
@@ -431,7 +431,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getMinPosition() <em>Min Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getMinPosition()
      * @generated
      * @ordered
@@ -442,7 +442,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getMinPosition() <em>Min Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getMinPosition()
      * @generated
      * @ordered
@@ -453,7 +453,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getPulseWidthMin() <em>Pulse Width Min</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPulseWidthMin()
      * @generated
      * @ordered
@@ -464,7 +464,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getPulseWidthMin() <em>Pulse Width Min</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPulseWidthMin()
      * @generated
      * @ordered
@@ -475,7 +475,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getPulseWidthMax() <em>Pulse Width Max</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPulseWidthMax()
      * @generated
      * @ordered
@@ -486,7 +486,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getPulseWidthMax() <em>Pulse Width Max</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPulseWidthMax()
      * @generated
      * @ordered
@@ -497,7 +497,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getPeriod() <em>Period</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPeriod()
      * @generated
      * @ordered
@@ -508,7 +508,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getPeriod() <em>Period</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPeriod()
      * @generated
      * @ordered
@@ -519,7 +519,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getOutputVoltage() <em>Output Voltage</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getOutputVoltage()
      * @generated
      * @ordered
@@ -530,7 +530,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getOutputVoltage() <em>Output Voltage</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getOutputVoltage()
      * @generated
      * @ordered
@@ -541,7 +541,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The default value of the '{@link #getTargetPosition() <em>Target Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getTargetPosition()
      * @generated
      * @ordered
@@ -551,7 +551,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
      * The cached value of the '{@link #getTargetPosition() <em>Target Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getTargetPosition()
      * @generated
      * @ordered
@@ -563,7 +563,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     protected MServoImpl() {
@@ -573,7 +573,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -584,7 +584,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -595,23 +595,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setSensorValue(DecimalValue newSensorValue) {
         DecimalValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__SENSOR_VALUE, oldSensorValue,
                     sensorValue));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -622,23 +621,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setSwitchState(OnOffValue newSwitchState) {
         OnOffValue oldSwitchState = switchState;
         switchState = newSwitchState;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__SWITCH_STATE, oldSwitchState,
                     switchState));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -649,22 +647,21 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__LOGGER, oldLogger, logger));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -675,22 +672,21 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__UID, oldUid, uid));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -701,22 +697,21 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__POLL, oldPoll, poll));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -727,23 +722,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__ENABLED_A, oldEnabledA,
                     enabledA));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -754,23 +748,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setVelocity(int newVelocity) {
         int oldVelocity = velocity;
         velocity = newVelocity;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__VELOCITY, oldVelocity,
                     velocity));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -781,23 +774,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setAcceleration(int newAcceleration) {
         int oldAcceleration = acceleration;
         acceleration = newAcceleration;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__ACCELERATION, oldAcceleration,
                     acceleration));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -808,23 +800,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setMaxPosition(Short newMaxPosition) {
         Short oldMaxPosition = maxPosition;
         maxPosition = newMaxPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__MAX_POSITION, oldMaxPosition,
                     maxPosition));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -835,23 +826,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setMinPosition(Short newMinPosition) {
         Short oldMinPosition = minPosition;
         minPosition = newMinPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__MIN_POSITION, oldMinPosition,
                     minPosition));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -862,23 +852,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPulseWidthMin(int newPulseWidthMin) {
         int oldPulseWidthMin = pulseWidthMin;
         pulseWidthMin = newPulseWidthMin;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__PULSE_WIDTH_MIN,
                     oldPulseWidthMin, pulseWidthMin));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -889,23 +878,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPulseWidthMax(int newPulseWidthMax) {
         int oldPulseWidthMax = pulseWidthMax;
         pulseWidthMax = newPulseWidthMax;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__PULSE_WIDTH_MAX,
                     oldPulseWidthMax, pulseWidthMax));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -916,22 +904,21 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPeriod(int newPeriod) {
         int oldPeriod = period;
         period = newPeriod;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__PERIOD, oldPeriod, period));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -942,23 +929,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setOutputVoltage(int newOutputVoltage) {
         int oldOutputVoltage = outputVoltage;
         outputVoltage = newOutputVoltage;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__OUTPUT_VOLTAGE, oldOutputVoltage,
                     outputVoltage));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -969,17 +955,16 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setTargetPosition(short newTargetPosition) {
         short oldTargetPosition = targetPosition;
         targetPosition = newTargetPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__TARGET_POSITION,
                     oldTargetPosition, targetPosition));
-        }
     }
 
     /**
@@ -1376,7 +1361,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1387,49 +1372,46 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__SUB_ID, oldSubId, subId));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public MBrickServo getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MSERVO__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.MSERVO__MBRICK)
             return null;
-        }
         return (MBrickServo) eContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public MBrickServo basicGetMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MSERVO__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.MSERVO__MBRICK)
             return null;
-        }
         return (MBrickServo) eInternalContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public NotificationChain basicSetMbrick(MBrickServo newMbrick, NotificationChain msgs) {
@@ -1440,37 +1422,32 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setMbrick(MBrickServo newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MSERVO__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__MBRICK, newMbrick, newMbrick));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1481,23 +1458,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setDirection(DirectionValue newDirection) {
         DirectionValue oldDirection = direction;
         direction = newDirection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__DIRECTION, oldDirection,
                     direction));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1508,7 +1484,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public NotificationChain basicSetTfConfig(TFServoConfiguration newTfConfig, NotificationChain msgs) {
@@ -1517,11 +1493,10 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MSERVO__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -1529,35 +1504,31 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setTfConfig(TFServoConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MSERVO__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MSERVO__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__TF_CONFIG, newTfConfig,
                     newTfConfig));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1568,23 +1539,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setMinValue(BigDecimal newMinValue) {
         BigDecimal oldMinValue = minValue;
         minValue = newMinValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__MIN_VALUE, oldMinValue,
                     minValue));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1595,23 +1565,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setMaxValue(BigDecimal newMaxValue) {
         BigDecimal oldMaxValue = maxValue;
         maxValue = newMaxValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__MAX_VALUE, oldMaxValue,
                     maxValue));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1622,23 +1591,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPercentValue(PercentValue newPercentValue) {
         PercentValue oldPercentValue = percentValue;
         percentValue = newPercentValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__PERCENT_VALUE, oldPercentValue,
                     percentValue));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1649,16 +1617,15 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MSERVO__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickServo) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -1667,7 +1634,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1684,7 +1651,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1700,7 +1667,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1721,9 +1688,8 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
             case ModelPackage.MSERVO__SUB_ID:
                 return getSubId();
             case ModelPackage.MSERVO__MBRICK:
-                if (resolve) {
+                if (resolve)
                     return getMbrick();
-                }
                 return basicGetMbrick();
             case ModelPackage.MSERVO__DIRECTION:
                 return getDirection();
@@ -1762,7 +1728,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1841,7 +1807,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1920,7 +1886,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1980,7 +1946,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -2069,7 +2035,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -2158,7 +2124,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -2245,7 +2211,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -2296,14 +2262,13 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (sensorValue: ");
