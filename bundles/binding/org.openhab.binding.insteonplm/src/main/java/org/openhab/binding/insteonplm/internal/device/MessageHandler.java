@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A message handler processes incoming Insteon messages and reacts by publishing
  * corresponding messages on the openhab bus, updating device state etc.
- * 
+ *
  * @author Daniel Pfrommer
  * @author Bernd Pfrommer
  * @since 1.5.0
@@ -46,7 +46,7 @@ public abstract class MessageHandler {
 
     /**
      * Constructor
-     * 
+     *
      * @param p state publishing object for dissemination of state changes
      */
     MessageHandler(DeviceFeature p) {
@@ -57,7 +57,7 @@ public abstract class MessageHandler {
      * Method that processes incoming message. The cmd1 parameter
      * has been extracted earlier already (to make a decision which message handler to call),
      * and is passed in as an argument so cmd1 does not have to be extracted from the message again.
-     * 
+     *
      * @param group all-link group or -1 if not specified
      * @param cmd1 the insteon cmd1 field
      * @param msg the received insteon message
@@ -68,7 +68,7 @@ public abstract class MessageHandler {
 
     /**
      * Method to send an extended insteon message for querying a device
-     * 
+     *
      * @param f DeviceFeature that is being currently handled
      * @param aCmd1 cmd1 for message to be sent
      * @param aCmd2 cmd2 for message to be sent
@@ -88,7 +88,7 @@ public abstract class MessageHandler {
 
     /**
      * Check if group matches
-     * 
+     *
      * @param group group to test for
      * @return true if group matches or no group is specified
      */
@@ -99,7 +99,7 @@ public abstract class MessageHandler {
 
     /**
      * Retrieve group parameter or -1 if no group is specified
-     * 
+     *
      * @return group parameter
      */
     public int getGroup() {
@@ -108,7 +108,7 @@ public abstract class MessageHandler {
 
     /**
      * Helper function to get an integer parameter for the handler
-     * 
+     *
      * @param key name of the int parameter (as specified in device features!)
      * @param def default to return if parameter not found
      * @return value of int parameter (or default if not found)
@@ -129,7 +129,7 @@ public abstract class MessageHandler {
 
     /**
      * Helper function to get a String parameter for the handler
-     * 
+     *
      * @param key name of the String parameter (as specified in device features!)
      * @param def default to return if parameter not found
      * @return value of parameter (or default if not found)
@@ -140,7 +140,7 @@ public abstract class MessageHandler {
 
     /**
      * Helper function to get a double parameter for the handler
-     * 
+     *
      * @param key name of the parameter (as specified in device features!)
      * @param def default to return if parameter not found
      * @return value of parameter (or default if not found)
@@ -158,7 +158,7 @@ public abstract class MessageHandler {
 
     /**
      * Test if message refers to the button configured for given feature
-     * 
+     *
      * @param msg received message
      * @param f device feature to test
      * @return true if we have no button configured or the message is for this button
@@ -178,7 +178,7 @@ public abstract class MessageHandler {
 
     /**
      * Test if parameter matches value
-     * 
+     *
      * @param param name of parameter to match
      * @param msg message to search
      * @param field field name to match
@@ -197,7 +197,7 @@ public abstract class MessageHandler {
 
     /**
      * Test if message matches the filter parameters
-     * 
+     *
      * @param msg message to be tested against
      * @return true if message matches
      */
@@ -233,7 +233,7 @@ public abstract class MessageHandler {
 
     /**
      * Determines is an incoming ALL LINK message is a duplicate
-     * 
+     *
      * @param msg the received ALL LINK message
      * @return true if this message is a duplicate
      */
@@ -266,7 +266,7 @@ public abstract class MessageHandler {
 
     /**
      * Advance the state of the state machine that suppresses duplicates
-     * 
+     *
      * @param group the insteon group of the broadcast message
      * @param hops number of hops left
      * @param a what type of group message came in (action etc)
@@ -284,7 +284,7 @@ public abstract class MessageHandler {
 
     /**
      * Extract button information from message
-     * 
+     *
      * @param msg the message to extract from
      * @param the device feature (needed for debug printing)
      * @return the button number or -1 if no button found
@@ -306,7 +306,7 @@ public abstract class MessageHandler {
 
     /**
      * Shorthand to return class name for logging purposes
-     * 
+     *
      * @return name of the class
      */
     protected String nm() {
@@ -315,7 +315,7 @@ public abstract class MessageHandler {
 
     /**
      * Set parameter map
-     * 
+     *
      * @param hm the parameter map for this message handler
      */
     public void setParameters(HashMap<String, String> hm) {
@@ -519,7 +519,7 @@ public abstract class MessageHandler {
          * Handle the case where no buttons have been configured.
          * In this situation, the only return values should be 0 (light off)
          * or 0xff (light on)
-         * 
+         *
          * @param cmd2
          */
         void handleNoButtons(int cmd2, InsteonAddress a, Msg msg) {
@@ -542,7 +542,7 @@ public abstract class MessageHandler {
          * 22|6543|11
          * They used the basis of the 8-button remote, and assigned
          * the ON button to 1+2, the OFF button to 7+8
-         * 
+         *
          * @param cmd cmd byte as received in message
          * @param button button to test (number in range 1..8)
          * @return true if button is lit, false otherwise
@@ -907,7 +907,7 @@ public abstract class MessageHandler {
         @Override
         public void handleMessage(int group, byte cmd1, Msg msg, DeviceFeature f, String fromPort) {
             m_feature.publish(OpenClosedType.CLOSED, StateChangeType.ALWAYS);
-            sendExtendedQuery(f, (byte) 0x2e, (byte) 00);
+            // sendExtendedQuery(f, (byte) 0x2e, (byte) 00);
         }
     }
 
@@ -919,7 +919,7 @@ public abstract class MessageHandler {
         @Override
         public void handleMessage(int group, byte cmd1, Msg msg, DeviceFeature f, String fromPort) {
             m_feature.publish(OpenClosedType.OPEN, StateChangeType.ALWAYS);
-            sendExtendedQuery(f, (byte) 0x2e, (byte) 00);
+            // sendExtendedQuery(f, (byte) 0x2e, (byte) 00);
         }
     }
 
@@ -1174,7 +1174,7 @@ public abstract class MessageHandler {
 
     /**
      * Factory method for creating handlers of a given name using java reflection
-     * 
+     *
      * @param name the name of the handler to create
      * @param params
      * @param f the feature for which to create the handler
