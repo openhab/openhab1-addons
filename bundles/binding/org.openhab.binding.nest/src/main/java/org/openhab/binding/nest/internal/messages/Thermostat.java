@@ -35,6 +35,7 @@ public class Thermostat extends AbstractDevice {
         HEAT("heat"),
         COOL("cool"),
         HEAT_COOL("heat-cool"),
+        ECO("eco"),
         OFF("off");
 
         private final String mode;
@@ -99,6 +100,40 @@ public class Thermostat extends AbstractDevice {
         }
     }
 
+    /**
+     * Possible values for time_to_target_training
+     */
+    public static enum TimeToTargetTraining {
+        TRAINING("training"),
+        READY("ready");
+
+        private final String training;
+
+        private TimeToTargetTraining(String training) {
+            this.training = training;
+        }
+
+        @JsonValue
+        public String value() {
+            return training;
+        }
+
+        @JsonCreator
+        public static TimeToTargetTraining forValue(String v) {
+            for (TimeToTargetTraining tr : TimeToTargetTraining.values()) {
+                if (tr.equals(v)) {
+                    return tr;
+                }
+            }
+            throw new IllegalArgumentException("Invalid time_to_target_training: " + v);
+        }
+
+        @Override
+        public String toString() {
+            return this.training;
+        }
+    }
+
     private Boolean can_cool;
     private Boolean can_heat;
     private Boolean is_using_emergency_heat;
@@ -113,6 +148,10 @@ public class Thermostat extends AbstractDevice {
     private BigDecimal target_temperature_high_c;
     private BigDecimal target_temperature_low_f;
     private BigDecimal target_temperature_low_c;
+    private BigDecimal eco_temperature_high_f;
+    private BigDecimal eco_temperature_high_c;
+    private BigDecimal eco_temperature_low_f;
+    private BigDecimal eco_temperature_low_c;
     private BigDecimal away_temperature_high_f;
     private BigDecimal away_temperature_high_c;
     private BigDecimal away_temperature_low_f;
@@ -129,6 +168,13 @@ public class Thermostat extends AbstractDevice {
     private String locked_temp_min_c;
     private String locked_temp_max_c;
     private String label;
+    private Boolean sunlight_correction_enabled;
+    private Boolean sunlight_correction_active;
+    private String where_name;
+    private Integer fan_timer_duration;
+    private Integer time_to_target;
+    private TimeToTargetTraining time_to_target_training;
+    private HvacMode previous_hvac_mode;
 
     public Thermostat(@JsonProperty("device_id") String device_id) {
         super(device_id);
@@ -313,7 +359,39 @@ public class Thermostat extends AbstractDevice {
     }
 
     /**
-     * @return Maximum 'away' temperature, displayed in whole degrees Fahrenheit (1°F)
+     * @return Maximum Eco Temperature, displayed in whole degrees Fahrenheit (1°F). Used when hvac_mode = "eco".
+     */
+    @JsonProperty("eco_temperature_high_f")
+    public BigDecimal getEco_temperature_high_f() {
+        return this.eco_temperature_high_f;
+    }
+
+    /**
+     * @return Maximum Eco Temperature, displayed in half degrees Celsius (0.5°C). Used when hvac_mode = "eco".
+     */
+    @JsonProperty("eco_temperature_high_c")
+    public BigDecimal getEco_temperature_high_c() {
+        return this.eco_temperature_high_c;
+    }
+
+    /**
+     * @return Minimum Eco Temperature, displayed in whole degrees Fahrenheit (1°F). Used when hvac_mode = "eco".
+     */
+    @JsonProperty("eco_temperature_low_f")
+    public BigDecimal getEco_temperature_low_f() {
+        return this.eco_temperature_low_f;
+    }
+
+    /**
+     * @return Minimum Eco Temperature, displayed in half degrees Celsius (0.5°C). Used when hvac_mode = "eco".
+     */
+    @JsonProperty("eco_temperature_low_c")
+    public BigDecimal getEco_temperature_low_c() {
+        return this.eco_temperature_low_c;
+    }
+
+    /**
+     * @return Maximum 'away' temperature, displayed in whole degrees Fahrenheit (1°F) (DEPRECATED)
      */
     @JsonProperty("away_temperature_high_f")
     public BigDecimal getAway_temperature_high_f() {
@@ -321,7 +399,7 @@ public class Thermostat extends AbstractDevice {
     }
 
     /**
-     * @return Maximum 'away' temperature, displayed in half degrees Celsius (0.5°C)
+     * @return Maximum 'away' temperature, displayed in half degrees Celsius (0.5°C) (DEPRECATED)
      */
     @JsonProperty("away_temperature_high_c")
     public BigDecimal getAway_temperature_high_c() {
@@ -329,7 +407,7 @@ public class Thermostat extends AbstractDevice {
     }
 
     /**
-     * @return Minimum 'away' temperature, displayed in whole degrees Fahrenheit (1°F)
+     * @return Minimum 'away' temperature, displayed in whole degrees Fahrenheit (1°F) (DEPRECATED)
      */
     @JsonProperty("away_temperature_low_f")
     public BigDecimal getAway_temperature_low_f() {
@@ -337,7 +415,7 @@ public class Thermostat extends AbstractDevice {
     }
 
     /**
-     * @return Minimum 'away' temperature, displayed in half degrees Celsius (0.5°C)
+     * @return Minimum 'away' temperature, displayed in half degrees Celsius (0.5°C) (DEPRECATED)
      */
     @JsonProperty("away_temperature_low_c")
     public BigDecimal getAway_temperature_low_c() {
@@ -449,11 +527,93 @@ public class Thermostat extends AbstractDevice {
     }
 
     /**
+     * Get the thermostat custom label.
+     */
+    @JsonProperty("label")
+    public String getLabel() {
+        return this.label;
+    }
+
+    /**
      * Set the thermostat custom label.
      */
     @JsonProperty("label")
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    /**
+     * @return Sunblock enabled status. Used with sunlight_correction_active.
+     *         When true, Sunblock technology is enabled, and the Thermostat is automatically adjusting to
+     *         direct sunlight, reading and setting the correct temperature.
+     */
+    @JsonProperty("sunlight_correction_enabled")
+    public Boolean getSunlight_correction_enabled() {
+        return this.sunlight_correction_enabled;
+    }
+
+    /**
+     * @return Sunblock active status. Used with sunlight_correction_enabled.
+     *         When true, indicates that the Thermostat is located in direct sunlight.
+     */
+    @JsonProperty("sunlight_correction_active")
+    public Boolean getSunlight_correction_active() {
+        return this.sunlight_correction_active;
+    }
+
+    /**
+     * @return The display name of the device. Associated with the thermostat where_id.
+     *         Can be any room name from a list we provide, or a custom name.
+     */
+    @JsonProperty("where_name")
+    public String getWhere_name() {
+        return this.where_name;
+    }
+
+    /**
+     * @return the length of time (in minutes) that the fan is set to run.
+     */
+    @JsonProperty("fan_timer_duration")
+    public Integer getFan_timer_duration() {
+        return this.fan_timer_duration;
+    }
+
+    /**
+     * Set the length of time (in minutes) that the fan is set to run.
+     *
+     * @param fan_timer_duration Allowed values are 15, 30, 45, 60, 120, 240, 480, 960
+     */
+    @JsonProperty("fan_timer_duration")
+    public void setFan_timer_duration(Integer fan_timer_duration) {
+        this.fan_timer_duration = fan_timer_duration;
+    }
+
+    /**
+     * @return The time, in minutes, that it will take for the structure to reach the target temperature.
+     */
+    @JsonProperty("time_to_target")
+    public Integer getTime_to_target() {
+        return this.time_to_target;
+    }
+
+    /**
+     * @return When in training mode, the Nest Thermostat learns about the HVAC system and discovers how
+     *         much time it takes to reach the target temperature. When the Thermostat has enough information to
+     *         make a reasonable estimate of the time to reach the target temperature, this value will change from
+     *         "training" to "ready".
+     */
+    @JsonProperty("time_to_target_training")
+    public TimeToTargetTraining getTime_to_target_training() {
+        return this.time_to_target_training;
+    }
+
+    /**
+     * @return the last-selected hvac_mode. Used when switching from hvac_mode = "eco" on a device with outdated
+     *         firmware.
+     */
+    @JsonProperty("previous_hvac_mode")
+    public HvacMode getPrevious_hvac_mode() {
+        return this.previous_hvac_mode;
     }
 
     @Override
@@ -474,6 +634,10 @@ public class Thermostat extends AbstractDevice {
         builder.append("target_temperature_high_c", this.target_temperature_high_c);
         builder.append("target_temperature_low_f", this.target_temperature_low_f);
         builder.append("target_temperature_low_c", this.target_temperature_low_c);
+        builder.append("eco_temperature_high_f", this.eco_temperature_high_f);
+        builder.append("eco_temperature_high_c", this.eco_temperature_high_c);
+        builder.append("eco_temperature_low_f", this.eco_temperature_low_f);
+        builder.append("eco_temperature_low_c", this.eco_temperature_low_c);
         builder.append("away_temperature_high_f", this.away_temperature_high_f);
         builder.append("away_temperature_high_c", this.away_temperature_high_c);
         builder.append("away_temperature_low_f", this.away_temperature_low_f);
@@ -490,6 +654,13 @@ public class Thermostat extends AbstractDevice {
         builder.append("locked_temp_min_c", this.locked_temp_min_c);
         builder.append("locked_temp_max_c", this.locked_temp_max_c);
         builder.append("label", this.label);
+        builder.append("sunlight_correction_enabled", this.sunlight_correction_enabled);
+        builder.append("sunlight_correction_active", this.sunlight_correction_active);
+        builder.append("where_name", this.where_name);
+        builder.append("fan_timer_duration", this.fan_timer_duration);
+        builder.append("time_to_target", this.time_to_target);
+        builder.append("time_to_target_training", this.time_to_target_training);
+        builder.append("previous_hvac_mode", this.previous_hvac_mode);
 
         return builder.toString();
     }
