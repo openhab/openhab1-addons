@@ -223,7 +223,7 @@ public class Telegram {
             parts[1] = new FilePart("photo",
                     new ByteArrayPartSource(String.format("image.%s", imageType), imageFromURL));
             if (caption != null) {
-                parts[2] = new StringPart("caption", caption);
+                parts[2] = new StringPart("caption", caption, "UTF-8");
             }
             postMethod.setRequestEntity(new MultipartRequestEntity(parts, postMethod.getParams()));
 

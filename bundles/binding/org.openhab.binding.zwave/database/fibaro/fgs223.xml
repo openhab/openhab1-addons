@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>FGS223</Model>
+    <Label lang="en">Double Switch 2 </Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x22</id>             <!-- APPLICATION_STATUS -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x32</id>             <!-- METER -->
+        </Class>
+        <Class>
+            <id>0x56</id>             <!-- CRC_16_ENCAP -->
+        </Class>
+        <Class>
+            <id>0x5B</id>             <!-- CENTRAL_SCENE -->
+        </Class>
+        <Class>
+            <id>0x60</id>             <!-- MULTI_INSTANCE -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>9</Index>
+            <Label lang="en">Restore state after power failure</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">off after power loss</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">restore last state</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>10</Index>
+            <Label lang="en">First channel operating mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>5</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">standard operation</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">delay ON</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">delay OFF</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">auto ON</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">auto OFF</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">flashing mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>11</Index>
+            <Label lang="en">1st ch. reaction to switch</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">cancel mode and set target state</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">no reaction to switch - mode runs until it ends</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">reset timer - start counting from the beginning</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>12</Index>
+            <Label lang="en">time parameter for delay/auto ON/OFF modes</Label>
+            <Type>short</Type>
+            <Default>50</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>13</Index>
+            <Label lang="en">1st ch. pulse time for flashing mode</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>1</Minimum>
+            <Maximum>32000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>15</Index>
+            <Label lang="en">2nd ch. operating mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>5</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">standard operation</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">delay ON</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">delay OFF</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">auto ON</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">auto OFF</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">flashing mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>16</Index>
+            <Label lang="en">2nd ch. reaction to switch</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">cancel mode and set target state</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">no reaction to switch - mode runs until it ends</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">reset timer - start counting from the beginning</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>17</Index>
+            <Label lang="en">2nd ch. time parameter for delay</Label>
+            <Type>short</Type>
+            <Default>50</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>18</Index>
+            <Label lang="en">2nd ch. pulse time for flashing mode</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>1</Minimum>
+            <Maximum>32000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>20</Index>
+            <Label lang="en">Switch type</Label>
+            <Type>list</Type>
+            <Default>2</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">momentary switch</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">toggle switch stable</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">toggle switch</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>21</Index>
+            <Label lang="en">Flashing mode - reports</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">the device does not send reports</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">the device sends reports</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>27</Index>
+            <Label lang="en">Associations in Z-Wave network security mode</Label>
+            <Type>list</Type>
+            <Default>15</Default>
+            <Minimum>1</Minimum>
+            <Maximum>15</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">no group sent as secure</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">2nd group sent as secure</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">3rd group sent as secure</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">4th group sent as secure</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">5th group sent as secure</Label>
+            </Item>
+            <Item>
+                <Value>15</Value>
+                <Label lang="en">all groups sent as secure</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>28</Index>
+            <Label lang="en">S1 switch - scenes sent</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>8</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">no scenes sent</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Key pressed 1 time</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Key pressed 2 times</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Key pressed 3 times</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">Key Hold Down and Key Released</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>29</Index>
+            <Label lang="en">S2 switch - scenes sent</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>8</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">no scenes sent</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Key pressed 1 time</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Key pressed 2 times</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Key pressed 3 times</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">Key Hold Down and Key Released</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>30</Index>
+            <Label lang="en">S1 assocs. sent to 2nd and 3rd group</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>8</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">All actions are active by default</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">ignore turning ON with 1 click of the switch</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">ignore turning OFF with 1 click of the switch</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">ignore holding and releasing the switch</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">ignore double click of the switch</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>31</Index>
+            <Label lang="en">S1 ON val sent to 2nd and 3rd groups</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>32</Index>
+            <Label lang="en">S1 OFF val sent to 2nd and 3rd groups</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>33</Index>
+            <Label lang="en">S1 DblClick val sent to 2nd and 3rd groups</Label>
+            <Type>short</Type>
+            <Default>99</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>35</Index>
+            <Label lang="en">S2 assocs. sent to 4th and 5th group</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>8</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">All actions are active by default</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">ignore turning on with 1 click of the switch</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">ignore turning off with 1 click of the switch</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">ignore holding and releasing the switch</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">ignore double click of the switch</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>36</Index>
+            <Label lang="en">S2 ON val sent to 4th and 5th groups</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>37</Index>
+            <Label lang="en">S2 OFF val sent to 4th and 5th groups</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>38</Index>
+            <Label lang="en">S2 DblClick val sent to 4th and 5th groups</Label>
+            <Type>short</Type>
+            <Default>99</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>40</Index>
+            <Label lang="en">Reaction to General Alarm</Label>
+            <Type>list</Type>
+            <Default>3</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">alarm frame is ignored</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">turn ON after receiving the alarm frame</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">turn OFF after receiving the alarm frame</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">flash after receiving the alarm frame</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>41</Index>
+            <Label lang="en">Reaction to Flood Alarm</Label>
+            <Type>list</Type>
+            <Default>2</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">alarm frame is ignored</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">turn ON after receiving the alarm frame</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">turn OFF after receiving the alarm frame</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">flash after receiving the alarm frame</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>42</Index>
+            <Label lang="en">Reaction to CO/CO2/Smoke Alarm</Label>
+            <Type>list</Type>
+            <Default>3</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">alarm frame is ignored</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">turn ON after receiving the alarm frame</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">turn OFF after receiving the alarm frame</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">flash after receiving the alarm frame</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>43</Index>
+            <Label lang="en">Reaction to Heat Alarm</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">alarm frame is ignored</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">turn ON after receiving the alarm frame</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">turn OFF after receiving the alarm frame</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">flash after receiving the alarm frame</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>44</Index>
+            <Label lang="en">Flashing alarm duration</Label>
+            <Type>short</Type>
+            <Default>600</Default>
+            <Minimum>1</Minimum>
+            <Maximum>32000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>50</Index>
+            <Label lang="en">First channel - power reports</Label>
+            <Type>short</Type>
+            <Default>20</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>51</Index>
+            <Label lang="en">1st ch min time between reports</Label>
+            <Type>short</Type>
+            <Default>10</Default>
+            <Minimum>0</Minimum>
+            <Maximum>120</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>53</Index>
+            <Label lang="en">1st ch energy reports</Label>
+            <Type>short</Type>
+            <Default>100</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>54</Index>
+            <Label lang="en">Second channel - power reports</Label>
+            <Type>short</Type>
+            <Default>20</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <ReadOnly>true</ReadOnly>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>55</Index>
+            <Label lang="en">2nd ch min time between reports</Label>
+            <Type>short</Type>
+            <Default>10</Default>
+            <Minimum>0</Minimum>
+            <Maximum>120</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>57</Index>
+            <Label lang="en">2nd ch energy reports</Label>
+            <Type>short</Type>
+            <Default>100</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>58</Index>
+            <Label lang="en">Periodic power reports</Label>
+            <Type>short</Type>
+            <Default>3600</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>59</Index>
+            <Label lang="en">Periodic energy reports</Label>
+            <Type>short</Type>
+            <Default>3600</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>60</Index>
+            <Label lang="en">Include own energy</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">function inactive</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">function active</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">On/Off (S1)</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Dimmer (S1)</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>4</Index>
+            <Label lang="en">On/Off (S2)</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>5</Index>
+            <Label lang="en">Dimmer (S2)</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>
