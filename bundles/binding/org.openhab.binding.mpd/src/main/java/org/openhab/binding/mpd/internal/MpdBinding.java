@@ -219,20 +219,10 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
                         player.stop();
                         break;
                     case VOLUME_INCREASE:
-                        int result = player.getVolume() + VOLUME_CHANGE_SIZE;
-                        if (volumeInvalid(result)) {
-                            logger.warn("Command ignored because the resulting volume would be invalid: {}", result);
-                        } else {
-                            player.setVolume(result);
-                        }
+                        player.setVolume(player.getVolume() + VOLUME_CHANGE_SIZE);
                         break;
                     case VOLUME_DECREASE:
-                        result = player.getVolume() - VOLUME_CHANGE_SIZE;
-                        if (volumeInvalid(result)) {
-                            logger.warn("Command ignored because the resulting volume would be invalid: {}", result);
-                        } else {
-                            player.setVolume(result);
-                        }
+                        player.setVolume(player.getVolume() - VOLUME_CHANGE_SIZE);
                         break;
                     case NEXT:
                         player.playNext();
@@ -283,12 +273,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
                         break;
                     case VOLUME:
                         logger.debug("Volume adjustment received: '{}' '{}'", pCommand, commandParams);
-                        result = ((PercentType) commandParams).intValue();
-                        if (volumeInvalid(result)) {
-                            logger.warn("Command ignored because the volume is invalid: {}", result);
-                        } else {
-                            player.setVolume(result);
-                        }
+                        player.setVolume(((PercentType) commandParams).intValue());
                         break;
 
                 }
