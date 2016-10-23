@@ -172,7 +172,7 @@ public class Thermostat extends AbstractDevice {
     private Boolean sunlight_correction_active;
     private String where_name;
     private Integer fan_timer_duration;
-    private Integer time_to_target;
+    private String time_to_target;
     private TimeToTargetTraining time_to_target_training;
     private HvacMode previous_hvac_mode;
 
@@ -590,9 +590,10 @@ public class Thermostat extends AbstractDevice {
 
     /**
      * @return The time, in minutes, that it will take for the structure to reach the target temperature.
+     *         Possible values are "~0", "<5", "~15", "~90", ">120"
      */
     @JsonProperty("time_to_target")
-    public Integer getTime_to_target() {
+    public String getTime_to_target() {
         return this.time_to_target;
     }
 
