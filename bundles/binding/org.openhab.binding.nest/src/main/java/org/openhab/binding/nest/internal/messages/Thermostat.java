@@ -36,7 +36,8 @@ public class Thermostat extends AbstractDevice {
         COOL("cool"),
         HEAT_COOL("heat-cool"),
         ECO("eco"),
-        OFF("off");
+        OFF("off"),
+        BLANK("");
 
         private final String mode;
 
