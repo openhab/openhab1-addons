@@ -101,40 +101,6 @@ public class Thermostat extends AbstractDevice {
         }
     }
 
-    /**
-     * Possible values for time_to_target_training
-     */
-    public static enum TimeToTargetTraining {
-        TRAINING("training"),
-        READY("ready");
-
-        private final String training;
-
-        private TimeToTargetTraining(String training) {
-            this.training = training;
-        }
-
-        @JsonValue
-        public String value() {
-            return training;
-        }
-
-        @JsonCreator
-        public static TimeToTargetTraining forValue(String v) {
-            for (TimeToTargetTraining tr : TimeToTargetTraining.values()) {
-                if (tr.equals(v)) {
-                    return tr;
-                }
-            }
-            throw new IllegalArgumentException("Invalid time_to_target_training: " + v);
-        }
-
-        @Override
-        public String toString() {
-            return this.training;
-        }
-    }
-
     private Boolean can_cool;
     private Boolean can_heat;
     private Boolean is_using_emergency_heat;
@@ -174,7 +140,7 @@ public class Thermostat extends AbstractDevice {
     private String where_name;
     private Integer fan_timer_duration;
     private String time_to_target;
-    private TimeToTargetTraining time_to_target_training;
+    private String time_to_target_training;
     private HvacMode previous_hvac_mode;
 
     public Thermostat(@JsonProperty("device_id") String device_id) {
@@ -605,7 +571,7 @@ public class Thermostat extends AbstractDevice {
      *         "training" to "ready".
      */
     @JsonProperty("time_to_target_training")
-    public TimeToTargetTraining getTime_to_target_training() {
+    public String getTime_to_target_training() {
         return this.time_to_target_training;
     }
 
