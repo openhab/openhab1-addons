@@ -22,7 +22,8 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
  */
 public class Clouds {
 
-    @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "clouds.all"),
+    @ProviderMappings({
+            @Provider(name = ProviderName.OPENWEATHERMAP, property = "clouds.all"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "clouds"),
             @Provider(name = ProviderName.FORECASTIO, property = "cloudCover", converter = ConverterType.FRACTION_INTEGER),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "cloudcover"),

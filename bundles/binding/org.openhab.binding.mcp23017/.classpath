@@ -6,7 +6,6 @@
 	<classpathentry kind="src" path="src/main/resources/"/>
 	<classpathentry exported="true" kind="lib" path="lib/pi4j-core.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/pi4j-gpio-extension.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/pi4j-service.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/quick-json-1.0.2.3.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

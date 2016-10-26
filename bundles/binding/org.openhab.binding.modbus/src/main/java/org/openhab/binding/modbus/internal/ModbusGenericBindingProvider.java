@@ -140,7 +140,10 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
          */
         String slaveName;
         /**
-         * State of Item
+         * State of Item. Initialized to null so that
+         * UnDefType.UNDEF (which might be transmitted
+         * in case of errors)
+         * is considered unequal to the initial value.
          */
         private State state = null;
 

@@ -16,7 +16,7 @@ Import-Package: gnu.io,
  org.apache.http.client,
  org.apache.http.client.methods,
  org.apache.http.impl.client,
- org.apache.http.params;version="4.1.4",
+ org.apache.http.params,
  org.apache.http.util,
  org.openhab.core.autoupdate,
  org.openhab.core.binding,
@@ -35,5 +35,5 @@ Export-Package: org.openhab.binding.insteonplm
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
-Require-Bundle: org.apache.httpcomponents.httpcore
+Bundle-ClassPath: lib/httpcore-4.1.4.jar,
+ .

@@ -39,7 +39,7 @@ public abstract class AbstractDevice extends AbstractMessagePart implements Data
     }
 
     /**
-     * @return the unique thermostat identifier.
+     * @return the unique device identifier.
      */
     @JsonProperty("device_id")
     public String getDevice_id() {

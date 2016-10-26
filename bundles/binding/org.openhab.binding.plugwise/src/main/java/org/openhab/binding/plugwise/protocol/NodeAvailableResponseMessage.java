@@ -30,7 +30,7 @@ public class NodeAvailableResponseMessage extends Message {
 
     @Override
     protected String payLoadToHexString() {
-        return String.format("%02X", acceptanceCode ? "01" : "00") + destinationMAC;
+        return String.format("%02X", acceptanceCode ? 1 : 0) + destinationMAC;
     }
 
     @Override

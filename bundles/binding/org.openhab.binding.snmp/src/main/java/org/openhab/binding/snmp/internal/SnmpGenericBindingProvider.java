@@ -87,19 +87,19 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 
     /** {@link Pattern} which matches an In-Binding */
     private static final Pattern IN_BINDING_PATTERN = Pattern
-            .compile("<\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
+            .compile("<\\[([0-9.a-zA-Z/]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
     private static final Pattern IN_BINDING_PATTERN_TRANSFORM = Pattern
-            .compile("<\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+):(.*)?\\]");
+            .compile("<\\[([0-9.a-zA-Z/]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+):(.*)?\\]");
     private static final Pattern IN_BINDING_PATTERN_VERSION = Pattern
-            .compile("<\\[([0-9.a-zA-Z]+):(v1|v2c|v3):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
+            .compile("<\\[([0-9.a-zA-Z/]+):(v1|v2c|v3):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
     private static final Pattern IN_BINDING_PATTERN_VERSION_TRANSFORM = Pattern
-            .compile("<\\[([0-9.a-zA-Z]+):(v1|v2c|v3):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+):(.*)?\\]");
+            .compile("<\\[([0-9.a-zA-Z/]+):(v1|v2c|v3):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+):(.*)?\\]");
 
-    /** {@link Pattern} which matches an In-Binding */
+    /** {@link Pattern} which matches an Out-Binding */
     private static final Pattern OUT_BINDING_PATTERN = Pattern
-            .compile(">\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
+            .compile(">\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z/]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
     private static final Pattern OUT_BINDING_PATTERN_VERSION = Pattern
-            .compile(">\\[([0-9.a-zA-Z]+):(v1|v2c|v3):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
+            .compile(">\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z/]+):(v1|v2c|v3):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
 
     /**
      * {@inheritDoc}
@@ -154,11 +154,11 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 
     /**
      * Parses a SNMP-OUT configuration by using the regular expression
-     * <code>([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)</code>.
+     * <code>([0-9.a-zA-Z/]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)</code>.
      * Where the groups should contain the following content:
      * <ul>
      * <li>Command</li>
-     * <li>url</li>
+     * <li>url: ip[/port], port is optional, default: 161</li>
      * <li>[Optional]Version: v1, v2c, v3</li>
      * <li>SNMP community</li>
      * <li>OID</li>
@@ -166,10 +166,10 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
      * </ul>
      * 
      * Parses a SNMP-IN configuration by using the regular expression
-     * <code>([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)</code>.
+     * <code>([0-9.a-zA-Z/]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)</code>.
      * Where the groups should contain the following content:
      * <ul>
-     * <li>url</li>
+     * <li>url: ip[/port], port is optional, default: 161</li>
      * <li>[Optional]Version: v1, v2c, v3</li>
      * <li>SNMP community</li>
      * <li>OID</li>
@@ -201,7 +201,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
             }
             if (inMatcher.matches()) {
                 SnmpBindingConfigElement newElement = new SnmpBindingConfigElement();
-                newElement.address = GenericAddress.parse("udp:" + inMatcher.group(1).toString() + "/161");
+                newElement.address = parseAddress(inMatcher.group(1).toString());
                 newElement.snmpVersion = SnmpConstants.version1;
                 newElement.community = new OctetString(inMatcher.group(2).toString());
                 newElement.oid = new OID(inMatcher.group(3).toString());
@@ -218,7 +218,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
                 }
                 if (inMatcher.matches()) {
                     SnmpBindingConfigElement newElement = new SnmpBindingConfigElement();
-                    newElement.address = GenericAddress.parse("udp:" + inMatcher.group(1).toString() + "/161");
+                    newElement.address = parseAddress(inMatcher.group(1).toString());
                     String version = inMatcher.group(2).toString();
                     if (version.equals("v3")) {
                         newElement.snmpVersion = SnmpConstants.version3;
@@ -241,7 +241,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
             if (outMatcher.matches()) {
                 SnmpBindingConfigElement newElement = new SnmpBindingConfigElement();
                 String commandAsString = outMatcher.group(1).toString();
-                newElement.address = GenericAddress.parse("udp:" + outMatcher.group(2).toString() + "/161");
+                newElement.address = parseAddress(outMatcher.group(2).toString());
                 newElement.snmpVersion = SnmpConstants.version1;
                 newElement.community = new OctetString(outMatcher.group(3).toString());
                 newElement.oid = new OID(outMatcher.group(4).toString());
@@ -260,7 +260,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
                 if (outMatcher.matches()) {
                     SnmpBindingConfigElement newElement = new SnmpBindingConfigElement();
                     String commandAsString = outMatcher.group(1).toString();
-                    newElement.address = GenericAddress.parse("udp:" + outMatcher.group(2).toString() + "/161");
+                    newElement.address = parseAddress(outMatcher.group(2).toString());
                     String version = inMatcher.group(3).toString();
                     if (version.equals("v3")) {
                         newElement.snmpVersion = SnmpConstants.version3;
@@ -293,6 +293,11 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
         } else {
             return;
         }
+    }
+
+    private Address parseAddress(String s) {
+        String address = s.contains("/") ? s : s + "/161";
+        return GenericAddress.parse("udp:" + address);
     }
 
     /**

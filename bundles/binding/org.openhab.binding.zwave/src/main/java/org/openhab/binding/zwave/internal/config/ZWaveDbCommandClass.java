@@ -28,6 +28,9 @@ public class ZWaveDbCommandClass {
     // Endpoint number - if we want to set these options for a specific endpoint
     public Integer endpoint;
 
+    // Force the version of this command class
+    public Integer version;
+
     // If we want to remove this class, set to true
     public Boolean remove;
 
