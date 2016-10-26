@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>FGPB101</Model>
+    <Label lang="en">A real push button (switch) available in several colors.</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x56</id>             <!-- CRC_16_ENCAP -->
+        </Class>
+        <Class>
+            <id>0x5B</id>             <!-- CENTRAL_SCENE -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en"> Scenes sent to the controller</Label>
+            <Type>short</Type>
+            <Default>127</Default>
+            <Minimum>1</Minimum>
+            <Maximum>127</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Associations in Z-Wave network Security Mode</Label>
+            <Type>short</Type>
+            <Default>7</Default>
+            <Minimum>1</Minimum>
+            <Maximum>7</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>10</Index>
+            <Label lang="en"> Key Pressed 1 time – command sent to 2nd group</Label>
+            <Type>short</Type>
+            <Default>3</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>11</Index>
+            <Label lang="en"> Key Pressed 1 time – value of SWITCH ON sent to 2nd group</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>12</Index>
+            <Label lang="en"> Key Pressed 2 times – command sent to 2nd group</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>13</Index>
+            <Label lang="en">Key Pressed 2 times – value of SWITCH ON sent to 2nd group</Label>
+            <Type>short</Type>
+            <Default>99</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>14</Index>
+            <Label lang="en">Key Pressed 3 times – command sent to 2nd group</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>15</Index>
+            <Label lang="en">Key Pressed 3 times – value of SWITCH ON sent to 2nd group</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>20</Index>
+            <Label lang="en"> Key Pressed 1 time – command sent to 3rd group</Label>
+            <Type>short</Type>
+            <Default>3</Default>
+            <Minimum>1</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>21</Index>
+            <Label lang="en">Key Pressed 1 time – value of SWITCH ON sent to 3rd group</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>22</Index>
+            <Label lang="en"> Key Pressed 2 times – command sent to 3rd group</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>23</Index>
+            <Label lang="en">Key Pressed 2 times – value of SWITCH ON sent to 3rd group</Label>
+            <Type>short</Type>
+            <Default>99</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>24</Index>
+            <Label lang="en">Key Pressed 3 times – command sent to 3rd group</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>25</Index>
+            <Label lang="en">Key Pressed 3 times – value of SWITCH ON sent to 3rd group</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>29</Index>
+            <Label lang="en">Key Held Down – command sent to 3rd group</Label>
+            <Type>short</Type>
+            <Default>3</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>30</Index>
+            <Label lang="en">Alarm frame triggers</Label>
+            <Type>short</Type>
+            <Default>127</Default>
+            <Minimum>1</Minimum>
+            <Maximum>127</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">On/Off</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Dimmer</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>4</Index>
+            <Label lang="en">Alarm</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

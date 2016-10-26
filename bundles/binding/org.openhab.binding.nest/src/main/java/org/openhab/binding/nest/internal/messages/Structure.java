@@ -39,7 +39,7 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
     public static enum AwayState {
         HOME("home"),
         AWAY("away"),
-        AUTO_AWAY("auto-away"),
+        AUTO_AWAY("auto-away"), // deprecated by Oct 2016 API update
         UNKNOWN("unknown");
 
         private final String state;

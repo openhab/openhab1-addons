@@ -141,19 +141,28 @@ public class MpdGenericBindingProvider extends AbstractGenericBindingProvider im
         Set<String> itemNames = new HashSet<String>();
         for (String itemName : bindingConfigs.keySet()) {
             MpdBindingConfig mpdConfig = (MpdBindingConfig) bindingConfigs.get(itemName);
-            if (mpdConfig.containsKey("PERCENT") && PlayerCommandTypeMapping.VOLUME.equals(playerCommand)) {
-                itemNames.add(itemName);
-            } else if (mpdConfig.containsKey("TITLE") && PlayerCommandTypeMapping.TRACKINFO.equals(playerCommand)) {
-                itemNames.add(itemName);
-            } else if (mpdConfig.containsKey("ARTIST") && PlayerCommandTypeMapping.TRACKARTIST.equals(playerCommand)) {
-                itemNames.add(itemName);
-            } else if (mpdConfig.containsKey("NUMBER") && PlayerCommandTypeMapping.PLAYSONGID.equals(playerCommand)) {
-                itemNames.add(itemName);
-            } else if (mpdConfig.containsKey(playerCommand.type.toString())) {
+            String key;
+            switch (playerCommand) {
+                case VOLUME:
+                    key = "PERCENT";
+                    break;
+                case TRACKINFO:
+                    key = "TITLE";
+                    break;
+                case TRACKARTIST:
+                    key = "ARTIST";
+                    break;
+                case PLAYSONGID:
+                    key = "NUMBER";
+                default:
+                    key = playerCommand.type.toString();
+                    break;
+            }
+            if (mpdConfig.containsKey(key)) {
                 // we check to make sure the binding config contains
                 // playerId:playerCommand otherwise we get extra items
-                String actual = mpdConfig.get(playerCommand.type.toString());
-                String expected = playerId + ":" + playerCommand.toString().toLowerCase();
+                String actual = mpdConfig.get(key);
+                String expected = playerId + ":" + playerCommand.getPlayerCommand();
                 if (StringUtils.equals(actual, expected)) {
                     itemNames.add(itemName);
                 }
