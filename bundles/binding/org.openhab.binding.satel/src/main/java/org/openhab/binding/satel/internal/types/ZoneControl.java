@@ -17,22 +17,16 @@ import java.util.BitSet;
  * @since 1.9.0
  */
 public enum ZoneControl implements ControlType {
-    BYPASS(0x86),
-    UNBYPASS(0x87),
-    ISOLATE(0x90);
-
-    private static final BitSet stateBits;
-
-    static {
-        stateBits = new BitSet();
-        stateBits.set(ZoneState.BYPASS.getRefreshCommand());
-        stateBits.set(ZoneState.ISOLATE.getRefreshCommand());
-    }
+    BYPASS(0x86, ZoneState.BYPASS),
+    UNBYPASS(0x87, ZoneState.BYPASS),
+    ISOLATE(0x90, ZoneState.ISOLATE);
 
     private byte controlCommand;
+    private BitSet stateBits;
 
-    ZoneControl(int controlCommand) {
+    ZoneControl(int controlCommand, ZoneState... controlledStates) {
         this.controlCommand = (byte) controlCommand;
+        this.stateBits = getStatesBitSet(controlledStates);
     }
 
     /**
@@ -56,6 +50,14 @@ public enum ZoneControl implements ControlType {
      */
     @Override
     public BitSet getControlledStates() {
+        return stateBits;
+    }
+
+    private static BitSet getStatesBitSet(ZoneState... states) {
+        BitSet stateBits = new BitSet();
+        for (ZoneState state : states) {
+            stateBits.set(state.getRefreshCommand());
+        }
         return stateBits;
     }
 

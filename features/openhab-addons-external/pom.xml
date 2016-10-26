@@ -55,6 +55,7 @@
                                 <artifact><file>src/main/resources/conf/ihc.cfg</file><type>cfg</type><classifier>ihc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/influxdb.cfg</file><type>cfg</type><classifier>influxdb</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/insteonplm.cfg</file><type>cfg</type><classifier>insteonplm</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/ipx800.cfg</file><type>cfg</type><classifier>ipx800</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/irtrans.cfg</file><type>cfg</type><classifier>irtrans</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jdbc.cfg</file><type>cfg</type><classifier>jdbc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jpa.cfg</file><type>cfg</type><classifier>jpa</classifier></artifact>
@@ -92,6 +93,7 @@
                                 <artifact><file>src/main/resources/conf/powermax.cfg</file><type>cfg</type><classifier>powermax</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/prowl.cfg</file><type>cfg</type><classifier>prowl</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pushover.cfg</file><type>cfg</type><classifier>pushover</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/pushsafer.cfg</file><type>cfg</type><classifier>pushsafer</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/rwesmarthome.cfg</file><type>cfg</type><classifier>rwesmarthome</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/rrd4j.cfg</file><type>cfg</type><classifier>rrd4j</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/samsungac.cfg</file><type>cfg</type><classifier>samsungac</classifier></artifact>
@@ -133,6 +135,7 @@
                                 <artifact><file>src/main/resources/transform/miosTStatModeStatusCommand.map</file><type>map</type><classifier>mios-tstatmodestatuscommand</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosTStatSetpointCoolCommand.map</file><type>map</type><classifier>mios-tstatsetpointcoolcommand</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosTStatSetpointHeatCommand.map</file><type>map</type><classifier>mios-tstatsetpointheatcommand</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosTStatSetpointCommand.map</file><type>map</type><classifier>mios-tstatsetpointcommand</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosUPnPRenderingControlMuteCommand.map</file><type>map</type><classifier>mios-upnprenderingcontrolmutecommand</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosUPnPRenderingControlVolumeCommand.map</file><type>map</type><classifier>mios-upnprenderingcontrolvolumecommand</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosUPnPTransportStatePlayModeCommand.map</file><type>map</type><classifier>mios-upnptransportstateplaymodecommand</classifier></artifact>
