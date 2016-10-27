@@ -6,6 +6,7 @@
 
     <name>DSMR Binding</name>
     <description>The DSMR Binding obtains data from a Dutch smart meter ("Slimme meter" in Dutch) via the P1-port.</description>
+    <author>Marcel Volaart</author>
 
     <config-description>
         <parameter name="port" type="text" required="true">
