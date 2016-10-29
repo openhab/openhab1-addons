@@ -23,6 +23,8 @@ import org.openhab.core.types.Command;
  * taken into account.
  *
  * @author Thomas.Eichstaedt-Engelen
+ * @author Chris Carman
+ *
  * @since 0.6.0
  */
 public interface HttpBindingProvider extends BindingProvider {
@@ -58,6 +60,18 @@ public interface HttpBindingProvider extends BindingProvider {
      *         url could be found.
      */
     String getUrl(String itemName, Command command);
+
+    /**
+     * Returns the body to use according to <code>itemName</code> and
+     * <code>command</code>. Is used by HTTP-Out-Binding.
+     *
+     * @param itemName the item for which to find a body
+     * @param command the openHAB command for which to find a configuration
+     *
+     * @return the matching body or <code>null</code> if no matching
+     *         body could be found.
+     */
+    String getBody(String itemName, Command command);
 
     /**
      * Returns HTTP headers to use according to <code>itemName</code> and
