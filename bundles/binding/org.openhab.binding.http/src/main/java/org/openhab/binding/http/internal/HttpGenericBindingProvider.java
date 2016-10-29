@@ -228,7 +228,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 
     /**
      * Parses an http-out configuration by using the regular expression
-     * <code>(.*?):([A-Z]*):(https?:.*)(:(.*))?</code>. Where the groups should contain the
+     * <code>(.*?):([A-Z]*):(.*)</code>. Where the groups should contain the
      * following content:
      * <ul>
      * <li>1 - command</li>
