@@ -235,6 +235,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
         query.setFilterCategory(config.getFilterCategory());
         return query;
     }
+
     private synchronized void updateItem(String itemName, CalDavConfig config, List<CalDavEvent> events) {
         if (config.getType() == Type.PRESENCE) {
             List<CalDavEvent> subList = getActiveEvents(events);
@@ -290,6 +291,10 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
                     String startEnd2 = DF.print(event.getStart()) + " - " + DF.print(event.getEnd());
                     String name = event.getName();
                     command = new StringType(name + " @ " + startEnd2);
+                    break;
+                case CALENDAR:
+                    command = new StringType(event.getCalendarId());
+                    break;
             }
 
             logger.debug("sending command {} for item {}", command, itemName);
