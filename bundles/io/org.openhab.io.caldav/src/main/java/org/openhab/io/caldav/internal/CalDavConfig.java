@@ -27,6 +27,7 @@ public class CalDavConfig {
     private boolean disableCertificateVerification;
     private boolean lastModifiedFileTimeStampValid = true;
     private String charset = Charset.defaultCharset().name();
+    private boolean oauth = false;
 
     public CalDavConfig() {
     }
@@ -121,15 +122,20 @@ public class CalDavConfig {
         this.charset = charset;
     }
 
+    public boolean isOauth() {
+        return oauth;
+    }
+
+    public void setOauth(boolean oauth) {
+        this.oauth = oauth;
+    }
+
     @Override
     public String toString() {
-        return "CalDavConfig [key=" + key + ", username=" + username
-                + ", password=" + password + ", url=" + url
-                + ", reloadMinutes=" + reloadMinutes + ", preloadMinutes="
-                + preloadMinutes + ", disableCertificateVerification="
-                + disableCertificateVerification
-                + ", lastModifiedFileTimeStampValid="
-                + lastModifiedFileTimeStampValid + "]";
+        return "CalDavConfig [key=" + key + ", username=" + username + ", password=" + password + ", url=" + url
+                + ", reloadMinutes=" + reloadMinutes + ", preloadMinutes=" + preloadMinutes
+                + ", disableCertificateVerification=" + disableCertificateVerification
+                + ", lastModifiedFileTimeStampValid=" + lastModifiedFileTimeStampValid + "]";
     }
 
 }

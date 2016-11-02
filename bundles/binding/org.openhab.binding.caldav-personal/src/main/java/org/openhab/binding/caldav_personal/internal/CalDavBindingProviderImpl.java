@@ -43,13 +43,13 @@ import org.slf4j.LoggerFactory;
 public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider implements CalDavBindingProvider {
     private static final Logger logger = LoggerFactory.getLogger(CalDavBindingProviderImpl.class);
 
-    private static final String REGEX_CALENDAR = "calendar:'?([A-Za-z-_]+(, ?[A-Za-z-_]+)*)'?";
+    private static final String REGEX_CALENDAR = "calendar:'?([A-Za-z0-9-_]+(, ?[A-Za-z0-9-_]+)*)'?";
     private static final String REGEX_TYPE = "type:'?([A-Za-z]+)'?";
-    private static final String REGEX_EVENT_NR = "eventNr:'?([0-9]+)'?"; 
+    private static final String REGEX_EVENT_NR = "eventNr:'?([0-9]+)'?";
     private static final String REGEX_VALUE = "value:'?([A-Za-z]+)'?";
-    private static final String REGEX_FILTER_NAME = "filter-name:'?([A-Za-z\\.\\*\\+\\- \\|]+)'?";
+    private static final String REGEX_FILTER_NAME = "filter-name:'?([A-Za-zÄÖÜäöüß\\.\\*\\+\\- \\|]+)'?";
     private static final String REGEX_FILTER_CATEGORY = "filter-category:'?([A-Za-z-_]+(, ?[A-Za-z-_]+)*)'?";
-    
+
     /**
      * {@inheritDoc}
      */
@@ -93,7 +93,7 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
                 calendar.add(str.trim());
             }
         }
-        
+
         String type = CalDavBindingProviderImpl.getConfigValue(bindingConfig, REGEX_TYPE);
         Type typeEnum = null;
         String eventNr = CalDavBindingProviderImpl.getConfigValue(bindingConfig, REGEX_EVENT_NR);
@@ -107,8 +107,8 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
                 filterCategory.add(str.trim());
             }
         }
-        
-        logger.trace("found values: calendar={}, type={}, eventNr={}, value={}, filterName={}, filterCategory={}", 
+
+        logger.trace("found values: calendar={}, type={}, eventNr={}, value={}, filterName={}, filterCategory={}",
                 calendar, type, eventNr, value, filterName, filterCategory);
 
         if (calendar == null || calendar.size() == 0) {
@@ -149,11 +149,10 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
         }
 
         logger.debug("adding item: {}", item.getName());
-        this.addBindingConfig(item, new CalDavConfig(
-                calendar, typeEnum, NumberUtils.toInt(eventNr == null ? "0" : eventNr), valueEnum, filterName, filterCategory)
-        );
+        this.addBindingConfig(item, new CalDavConfig(calendar, typeEnum,
+                NumberUtils.toInt(eventNr == null ? "0" : eventNr), valueEnum, filterName, filterCategory));
     }
-    
+
     public static String getConfigValue(String input, String regex) {
         Matcher matcher = Pattern.compile(regex).matcher(input);
         if (matcher.find()) {
