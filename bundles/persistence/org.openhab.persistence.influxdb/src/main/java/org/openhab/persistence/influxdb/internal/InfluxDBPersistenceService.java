@@ -77,7 +77,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     private static final String DEFAULT_URL = "http://127.0.0.1:8086";
     private static final String DEFAULT_DB = "openhab";
     private static final String DEFAULT_USER = "openhab";
-    private static final String DEFAULT_RETENTION_POLICY = "default";
+    private static final String DEFAULT_RETENTION_POLICY = "autogen";
     private static final String DIGITAL_VALUE_OFF = "0";
     private static final String DIGITAL_VALUE_ON = "1";
     private static final String VALUE_COLUMN_NAME = "value";
@@ -283,7 +283,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
         query.append("select ");
         query.append(VALUE_COLUMN_NAME);
         query.append(" ");
-        query.append("from ");
+        query.append("from " + retentionPolicy + ".");
 
         if (filter.getItemName() != null) {
             query.append(filter.getItemName());
