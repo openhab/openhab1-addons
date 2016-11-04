@@ -8,8 +8,10 @@
  */
 package org.openhab.binding.knx.internal.config;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.openhab.binding.knx.config.KNXBindingProvider;
@@ -95,6 +97,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /** the binding type to register for as a binding config reader */
     public static final String KNX_BINDING_TYPE = "knx";
+
+    /** the suffix to mark a group address for start-stop-dimming */
+    private static final String START_STOP_MARKER_SUFFIX = "ss";
 
     //Logger
     private static Logger logger = LoggerFactory.getLogger(KNXGenericBindingProvider.class);
@@ -457,8 +462,16 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
                     String ga = (segments.length == 1) ? segments[0].trim() : segments[1].trim();
 
+                    // determine start/stop behavior
+                    Boolean startStopBehavior = Boolean.FALSE;
+                    if (ga.endsWith(START_STOP_MARKER_SUFFIX)) {
+                        startStopBehavior = Boolean.TRUE;
+                        ga = ga.substring(0, ga.length() - START_STOP_MARKER_SUFFIX.length());
+                    }
+
                     // create group address and datapoint
                     GroupAddress groupAddress = new GroupAddress(ga);
+                    configItem.startStopMap.put(groupAddress, startStopBehavior);
                     Datapoint dp;
                     if (j != 0 || item.getAcceptedCommandTypes().size() == 0) {
                         dp = new StateDP(groupAddress, item.getName(), 0, dptID);
@@ -529,5 +542,28 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
         public Datapoint readableDataPoint = null;
         public DatapointMap allDataPoints = new DatapointMap();
         public int autoRefreshInSecs = 0;
+        public Map<GroupAddress, Boolean> startStopMap = new HashMap<GroupAddress, Boolean>();
+    }
+
+    /**
+     * Determines if the given group address is marked for start-stop dimming.
+     *
+     * @param groupAddress the group address to check start-stop dimming for
+     * @returns true, if the given group address is marked for start-stop dimming, false otherwise.
+     */
+    @Override
+    public boolean isStartStopGA(GroupAddress groupAddress) {
+        synchronized (bindingConfigs) {
+            for (BindingConfig config : bindingConfigs.values()) {
+                KNXBindingConfig knxConfig = (KNXBindingConfig) config;
+                for (KNXBindingConfigItem configItem : knxConfig) {
+                    Boolean startStopBehavior = configItem.startStopMap.get(groupAddress);
+                    if (startStopBehavior != null) {
+                        return startStopBehavior;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

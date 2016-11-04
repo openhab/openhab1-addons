@@ -16,6 +16,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * Class representing pooling related configuration of a single endpoint
  *
+ * This class implements equals hashcode constract, and thus is suitable for use as keys in HashMaps, for example.
+ *
  */
 public class EndpointPoolConfiguration {
 
@@ -42,6 +44,12 @@ public class EndpointPoolConfiguration {
      * One can use 0ms to denote reconnection after every transaction (default).
      */
     private int reconnectAfterMillis;
+
+    /**
+     * How long before we give up establishing the connection. In milliseconds. Default of 0 means that system/OS
+     * default is respected.
+     */
+    private int connectTimeoutMillis;
 
     private static StandardToStringStyle toStringStyle = new StandardToStringStyle();
 
@@ -81,17 +89,26 @@ public class EndpointPoolConfiguration {
         this.passivateBorrowMinMillis = passivateBorrowMinMillis;
     }
 
+    public int getConnectTimeoutMillis() {
+        return connectTimeoutMillis;
+    }
+
+    public void setConnectTimeoutMillis(int connectTimeoutMillis) {
+        this.connectTimeoutMillis = connectTimeoutMillis;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(2149, 3117).append(passivateBorrowMinMillis).append(interConnectDelayMillis)
-                .append(connectMaxTries).append(reconnectAfterMillis).toHashCode();
+                .append(connectMaxTries).append(reconnectAfterMillis).append(connectTimeoutMillis).toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, toStringStyle).append("passivateBorrowMinMillis", passivateBorrowMinMillis)
                 .append("interConnectDelayMillis", interConnectDelayMillis).append("connectMaxTries", connectMaxTries)
-                .append("reconnectAfterMillis", reconnectAfterMillis).toString();
+                .append("reconnectAfterMillis", reconnectAfterMillis)
+                .append("connectTimeoutMillis", connectTimeoutMillis).toString();
     }
 
     @Override
@@ -109,7 +126,7 @@ public class EndpointPoolConfiguration {
         return new EqualsBuilder().append(passivateBorrowMinMillis, rhs.passivateBorrowMinMillis)
                 .append(interConnectDelayMillis, rhs.interConnectDelayMillis)
                 .append(connectMaxTries, rhs.connectMaxTries).append(reconnectAfterMillis, rhs.reconnectAfterMillis)
-                .isEquals();
+                .append(connectTimeoutMillis, rhs.connectTimeoutMillis).isEquals();
     }
 
 }

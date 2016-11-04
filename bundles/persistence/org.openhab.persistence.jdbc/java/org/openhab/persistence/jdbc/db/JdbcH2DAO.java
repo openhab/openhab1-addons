@@ -41,7 +41,7 @@ public class JdbcH2DAO extends JdbcBaseDAO {
         SQL_IF_TABLE_EXISTS = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='#searchTable#'";
         // SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( NOW(), CAST( ? as #dbType#) )";
         // http://stackoverflow.com/questions/19768051/h2-sql-database-insert-if-the-record-does-not-exist
-        SQL_INSERT_ITEM_VALUE = "MERGE INTO #tableName# (TIME, VALUE) VALUES( NOW(), CAST( ? as #dbType#) )";
+        SQL_INSERT_ITEM_VALUE = "MERGE INTO #tableName# (TIME, VALUE) VALUES( #tablePrimaryValue#, CAST( ? as #dbType#) )";
     }
 
     /**
@@ -71,8 +71,9 @@ public class JdbcH2DAO extends JdbcBaseDAO {
     @Override
     public void doStoreItemValue(Item item, ItemVO vo) {
         vo = storeItemValueProvider(item, vo);
-        String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE, new String[] { "#tableName#", "#dbType#" },
-                new String[] { vo.getTableName(), vo.getDbType() });
+        String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE,
+                new String[] { "#tableName#", "#dbType#", "#tablePrimaryValue#" },
+                new String[] { vo.getTableName(), vo.getDbType(), sqlTypes.get("tablePrimaryValue") });
         Object[] params = new Object[] { vo.getValue() };
         logger.debug("JDBC::doStoreItemValue sql={} value='{}'", sql, vo.getValue());
         Yank.execute(sql, params);

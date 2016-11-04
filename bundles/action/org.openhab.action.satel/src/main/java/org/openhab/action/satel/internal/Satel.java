@@ -156,6 +156,15 @@ public class Satel {
         }
     }
 
+    @ActionDoc(text = "Overrides configured user code. It will be used for all operations that require authorization.")
+    public static void satelSetUserCode(@ParamDoc(name = "userCode", text = "user code to set") String userCode) {
+        if (SatelActionService.satelCommModule == null) {
+            logger.debug("Satel communication module not available - execution aborted!");
+        } else {
+            SatelActionService.satelCommModule.setUserCode(userCode);
+        }
+    }
+
     private static class EventDescription {
         String eventText;
         int descKind;

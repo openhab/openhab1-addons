@@ -22,19 +22,25 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
  */
 public class Wind {
 
-    @ProviderMappings({ @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.wind_kph"),
+    @ProviderMappings({
+            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.wind_kph"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "avewind.kph"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "speed"),
             @Provider(name = ProviderName.FORECASTIO, property = "windSpeed", converter = ConverterType.WIND_MPS),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "windspeedKmph"),
             @Provider(name = ProviderName.YAHOO, property = "wind.speed"),
-            @Provider(name = ProviderName.HAMWEATHER, property = "windSpeedKPH") })
+            @Provider(name = ProviderName.HAMWEATHER, property = "windSpeedKPH"),
+            @Provider(name = ProviderName.METEOBLUE, property = "wind_speed"),
+            @Provider(name = ProviderName.METEOBLUE, property = "wind_speed_max") })
     private Double speed;
 
-    @ProviderMappings({ @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "winddir16Point") })
+    @ProviderMappings({
+            @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "winddir16Point"),
+            @Provider(name = ProviderName.METEOBLUE, property = "wind_direction_dominant") })
     private String direction;
 
-    @ProviderMappings({ @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.wind_degrees"),
+    @ProviderMappings({
+            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.wind_degrees"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "avewind.degrees"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "deg"),
             @Provider(name = ProviderName.FORECASTIO, property = "windBearing"),
@@ -43,12 +49,15 @@ public class Wind {
             @Provider(name = ProviderName.HAMWEATHER, property = "windDirDEG") })
     private Integer degree;
 
-    @ProviderMappings({ @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.wind_gust_kph"),
+    @ProviderMappings({
+            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.wind_gust_kph"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "wind.gust"),
-            @Provider(name = ProviderName.HAMWEATHER, property = "windGustKPH") })
+            @Provider(name = ProviderName.HAMWEATHER, property = "windGustKPH"),
+            @Provider(name = ProviderName.METEOBLUE, property = "wind_gust_max") })
     private Double gust;
 
-    @ProviderMappings({ @Provider(name = ProviderName.YAHOO, property = "wind.chill"),
+    @ProviderMappings({
+            @Provider(name = ProviderName.YAHOO, property = "wind.chill"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "windchill_c"),
             @Provider(name = ProviderName.HAMWEATHER, property = "windchillC") })
     private Double chill;

@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.9.0
  */
 
-public class VDRBinding extends AbstractBinding<VDRBindingProvider>implements ManagedService {
+public class VDRBinding extends AbstractBinding<VDRBindingProvider> implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(VDRBinding.class);
 

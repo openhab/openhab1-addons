@@ -21,6 +21,6 @@ Bundle-ClassPath: .,
  lib/okhttp-2.4.0.jar,
  lib/okio-1.4.0.jar,
  lib/retrofit-1.9.0.jar,
- lib/influxdb-java-2.1.jar
+ lib/influxdb-java-2.2.jar
 Service-Component: OSGI-INF/influxdb.xml
 Bundle-Activator: org.openhab.persistence.influxdb.internal.InfluxDBPersistenceServiceActivator

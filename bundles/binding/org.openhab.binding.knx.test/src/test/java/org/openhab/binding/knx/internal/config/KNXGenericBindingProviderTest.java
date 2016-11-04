@@ -167,6 +167,48 @@ public class KNXGenericBindingProviderTest {
         assertEquals(false, provider.providesBindingFor("someotheritem"));
     }
 
+    @Test
+    public void testIsStartStopGA() throws BindingConfigParseException, KNXFormatException {
+        provider.processBindingConfiguration("text", item1, "<4/2/10+0/2/10, 5.005:4/2/11+0/2/11, +4/2/12ss, 4/2/13ss");
+
+        // method under Test
+        assertFalse(provider.isStartStopGA(new GroupAddress("4/2/10")));
+        assertFalse(provider.isStartStopGA(new GroupAddress("0/2/10")));
+
+        assertFalse(provider.isStartStopGA(new GroupAddress("4/2/11")));
+        assertFalse(provider.isStartStopGA(new GroupAddress("0/2/11")));
+
+        assertTrue(provider.isStartStopGA(new GroupAddress("4/2/12")));
+
+        assertTrue(provider.isStartStopGA(new GroupAddress("4/2/13")));
+
+        provider.processBindingConfiguration("text", item1, "<4/2/10ss+0/2/10, 5.005:4/2/11+0/2/11ss, +4/2/12, 4/2/13");
+
+        // method under Test
+        assertTrue(provider.isStartStopGA(new GroupAddress("4/2/10")));
+        assertFalse(provider.isStartStopGA(new GroupAddress("0/2/10")));
+
+        assertFalse(provider.isStartStopGA(new GroupAddress("4/2/11")));
+        assertTrue(provider.isStartStopGA(new GroupAddress("0/2/11")));
+
+        assertFalse(provider.isStartStopGA(new GroupAddress("4/2/12")));
+
+        assertFalse(provider.isStartStopGA(new GroupAddress("4/2/13")));
+
+        provider.processBindingConfiguration("text", item1, "<4/2/10+0/2/10ss, 5.005:4/2/11ss+0/2/11, +4/2/12, 4/2/13");
+
+        // method under Test
+        assertFalse(provider.isStartStopGA(new GroupAddress("4/2/10")));
+        assertTrue(provider.isStartStopGA(new GroupAddress("0/2/10")));
+
+        assertTrue(provider.isStartStopGA(new GroupAddress("4/2/11")));
+        assertFalse(provider.isStartStopGA(new GroupAddress("0/2/11")));
+
+        assertFalse(provider.isStartStopGA(new GroupAddress("4/2/12")));
+
+        assertFalse(provider.isStartStopGA(new GroupAddress("4/2/13")));
+    }
+
     private class TestItem extends GenericItem {
 
         private List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();

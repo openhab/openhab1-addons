@@ -357,7 +357,7 @@ public class API {
                     break;
                 }
 
-                if (!interfaceType.equals(DSCAlarmInterfaceType.IT100)) {
+                if (interfaceType.equals(DSCAlarmInterfaceType.IT100)) {
                     data = apiData[0] + String.format("%-6s", dscAlarmUserCode).replace(' ', '0');
                 } else {
                     data = apiData[0] + dscAlarmUserCode;
@@ -392,10 +392,30 @@ public class API {
                 validCommand = true;
                 break;
             case KeyStroke: /* 070 */
-                if (apiData[0] == null || apiData[0].length() != 1 || !apiData[0].matches("[0-9]|A|#|\\*")) {
-                    logger.error("sendCommand(): \'keystroke\' must be a single character string from 0 to 9, *, #, or A, it was: {}", apiData[0]);
+                if (interfaceType.equals(DSCAlarmInterfaceType.ENVISALINK)) {
+                    if (apiData[0] == null || apiData[0].length() != 1 || !apiData[0].matches("[0-9]|A|\\*|#")) {
+                        logger.error("sendCommand(): \'keystroke\' must be a single character string from 0 to 9, *, #, or A, it was: {}", apiData[0]);
+                        break;
+                    }
+                } else if (interfaceType.equals(DSCAlarmInterfaceType.IT100)) {
+                    if (apiData[0] == null || apiData[0].length() != 1 || !apiData[0].matches("[0-9]|\\*|#|F|A|P|[a-e]|<|>|=|\\^|L")) {
+                        logger.error("sendCommand(): \'keystroke\' must be a single character string from 0 to 9, *, #, F, A, P, a to e, <, >, =, or ^, it was: {}", apiData[0]);
+                        break;
+                    } else if (apiData[0].equals("L")) { /* Long Key Press */
+                        try {
+                            Thread.sleep(1500);
+                            data = "^";
+                            validCommand = true;
+                            break;
+                        } catch (InterruptedException e) {
+                            logger.error("sendCommand(): \'keystroke\': Error with Long Key Press!");
+                            break;
+                        }
+                    }
+                } else {
                     break;
                 }
+
                 data = apiData[0];
                 validCommand = true;
                 break;
