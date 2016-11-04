@@ -267,7 +267,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
             return feed;
         } catch (Exception e) {
-            logger.error("downloading CalenarEventFeed throws exception: {}", e.getMessage());
+            logger.error("downloading CalendarEventFeed throws exception: {}", e.getMessage());
         }
 
         return null;
@@ -330,8 +330,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
             if (StringUtils.isBlank(eventContent)) {
                 logger.debug(
-                        "found event '{}' with no content, add this event to the excluded "
-                                + "TimeRangesCalendar - this event could be referenced by the modifiedBy clause",
+                        "found event '{}' with no content, add this event to the excluded TimeRangesCalendar - this event could be referenced by the modifiedBy clause",
                         eventTitle);
 
                 if (!calendarCache.containsKey(eventTitle)) {
@@ -419,8 +418,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
         } else {
             eventContent.startCommands = StringUtils.trimToEmpty(commandContent);
             logger.debug(
-                    "given event content doesn't match regular expression to "
-                            + "extract start-, end commands - using whole content as startCommand ({})",
+                    "given event content doesn't match regular expression to extract start-, end commands - using whole content as startCommand ({})",
                     commandContent);
         }
 
@@ -444,7 +442,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
         String jobIdentity = event.getICalUID() + (isStartEvent ? "_start" : "_end");
 
         if (StringUtils.isBlank(content)) {
-            logger.debug("content of job '" + jobIdentity + "' is empty -> no task will be created!");
+            logger.debug("content of job '{}' is empty -> no task will be created!", jobIdentity);
             return null;
         }
 
@@ -509,7 +507,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
                 scheduler.scheduleJob(job, trigger);
                 triggersCreated = true;
             } catch (SchedulerException se) {
-                logger.warn("scheduling Trigger '" + trigger + "' throws an exception.", se);
+                logger.warn("scheduling Trigger '{}' throws an exception: {}", trigger, se);
             }
         }
         // }
@@ -653,12 +651,14 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
                 logger.info(
                         "################################################################################################");
 
-                logger.debug("Got access code");
-                logger.debug("user code :" + device.user_code);
-                logger.debug("device code :" + device.device_code);
-                logger.debug("expires in:" + device.expires_in);
-                logger.debug("interval :" + device.interval);
-                logger.debug("verification_url :" + device.verification_url);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Got access code");
+                    logger.debug("user code : {}", device.user_code);
+                    logger.debug("device code : {}", device.device_code);
+                    logger.debug("expires in: {}", device.expires_in);
+                    logger.debug("interval : {}", device.interval);
+                    logger.debug("verification_url : {}", device.verification_url);
+                }
 
                 mapData = new HashMap<String, String>();
                 mapData.put("client_id", client_id);
@@ -677,10 +677,10 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
                     if (deviceToken.access_token != null) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Got access token");
-                            logger.debug("device access token: " + deviceToken.access_token);
-                            logger.debug("device token_type: " + deviceToken.token_type);
-                            logger.debug("device refresh_token: " + deviceToken.refresh_token);
-                            logger.debug("device expires_in: " + deviceToken.expires_in);
+                            logger.debug("device access token: {}", deviceToken.access_token);
+                            logger.debug("device token_type: {}", deviceToken.token_type);
+                            logger.debug("device refresh_token: {}", deviceToken.refresh_token);
+                            logger.debug("device expires_in: {}", deviceToken.expires_in);
                         }
                         break;
                     }
@@ -699,7 +699,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
                 credential = loadCredential(TOKEN_STORE_USER_ID, datastore);
             }
         } catch (Exception e) {
-            logger.warn("getCredential got exception: " + e.getMessage());
+            logger.warn("getCredential got exception: {}", e.getMessage());
         }
 
         return credential;
@@ -716,11 +716,12 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
             credential.setAccessToken(stored.getAccessToken());
             credential.setRefreshToken(stored.getRefreshToken());
             credential.setExpirationTimeMilliseconds(stored.getExpirationTimeMilliseconds());
-
-            logger.debug("Loaded credential");
-            logger.debug("device access token: " + stored.getAccessToken());
-            logger.debug("device refresh_token: " + stored.getRefreshToken());
-            logger.debug("device expires_in: " + stored.getExpirationTimeMilliseconds());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Loaded credential");
+                logger.debug("device access token: {}", stored.getAccessToken());
+                logger.debug("device refresh_token: {}", stored.getRefreshToken());
+                logger.debug("device expires_in: {}", stored.getExpirationTimeMilliseconds());
+            }
         }
         return credential;
     }
