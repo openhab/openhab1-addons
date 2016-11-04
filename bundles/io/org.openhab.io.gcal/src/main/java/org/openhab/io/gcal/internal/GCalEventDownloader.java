@@ -234,7 +234,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
             }
 
             if (calendarID == null) {
-                logger.error("Calendar {} not found", calendar_name);
+                logger.warn("Calendar {} not found", calendar_name);
                 return null;
             }
         } else {
@@ -481,8 +481,6 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
         String jobIdentity = event.getICalUID() + (isStartEvent ? "_start" : "_end");
 
-        // List<When> times = event.getTimes();
-        // for (When time : times) {
         EventDateTime date = isStartEvent ? event.getStart() : event.getEnd();
         long dateValue = date.getDateTime().getValue();
 
@@ -677,14 +675,16 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
                     deviceToken = postRequest.execute().parseAs(DeviceToken.class);
 
                     if (deviceToken.access_token != null) {
-                        logger.debug("Got access token");
-                        logger.debug("device access token: " + deviceToken.access_token);
-                        logger.debug("device token_type: " + deviceToken.token_type);
-                        logger.debug("device refresh_token: " + deviceToken.refresh_token);
-                        logger.debug("device expires_in: " + deviceToken.expires_in);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Got access token");
+                            logger.debug("device access token: " + deviceToken.access_token);
+                            logger.debug("device token_type: " + deviceToken.token_type);
+                            logger.debug("device refresh_token: " + deviceToken.refresh_token);
+                            logger.debug("device expires_in: " + deviceToken.expires_in);
+                        }
                         break;
                     }
-                    logger.debug("waiting for " + device.interval + " seconds");
+                    logger.debug("waiting for {} seconds", device.interval);
                     Thread.sleep(device.interval * 1000);
 
                 } while (true);
@@ -699,7 +699,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
                 credential = loadCredential(TOKEN_STORE_USER_ID, datastore);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("getCredential got exception: " + e.getMessage());
         }
 
         return credential;
