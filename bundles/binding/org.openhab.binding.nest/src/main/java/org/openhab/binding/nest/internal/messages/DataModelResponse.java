@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.nest.internal.messages;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -30,5 +31,14 @@ public class DataModelResponse extends DataModel implements Response {
     @Override
     public boolean isError() {
         return this.error != null;
+    }
+
+    @Override
+    public String toString() {
+        final ToStringBuilder builder = createToStringBuilder();
+        builder.appendSuper(super.toString());
+        builder.append("error", this.error);
+
+        return builder.toString();
     }
 }
