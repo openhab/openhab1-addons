@@ -77,7 +77,7 @@ public class JdbcPostgresqlDAO extends JdbcBaseDAO {
         sqlTypes.put("ROLLERSHUTTERITEM", "SMALLINT");
         sqlTypes.put("STRINGITEM", "VARCHAR");
         sqlTypes.put("SWITCHITEM", "VARCHAR");
-        logger.debug("JDBC::initSqlTypes: Initialize the type array sqlTypes={}", sqlTypes.values());
+        logger.debug("JDBC::initSqlTypes: Initialized the type array sqlTypes={}", sqlTypes.values());
     }
 
     /**
