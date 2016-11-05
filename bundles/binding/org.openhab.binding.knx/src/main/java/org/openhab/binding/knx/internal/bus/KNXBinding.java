@@ -121,7 +121,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
      */
     @Override
     protected void internalReceiveUpdate(String itemName, State newState) {
-        logger.debug("Received update (item='{}', state='{}')", itemName, newState.toString());
+        logger.trace("Received update (item='{}', state='{}')", itemName, newState.toString());
         if (!isEcho(itemName, newState)) {
             writeToKNX(itemName, newState);
         }
