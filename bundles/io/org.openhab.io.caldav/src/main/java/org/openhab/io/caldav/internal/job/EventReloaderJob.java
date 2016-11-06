@@ -373,16 +373,18 @@ public class EventReloaderJob implements Job {
         final ComponentList<CalendarComponent> vEventComponents = calendar.getComponents(Component.VEVENT);
         for (CalendarComponent comp : vEventComponents) {
             VEvent vEvent = (VEvent) comp;
-            log.trace("loading event: " + vEvent.getUid().getValue() + ":" + vEvent.getSummary().getValue());
+            String eventId = vEvent.getUid().getValue();
+            String eventName = "";
+            if (vEvent.getSummary() != null) {
+                eventName = vEvent.getSummary().getValue();
+            }
+            log.trace("loading event: " + eventId + ":" + eventName);
 
             // 'LastModified' in VEvent is optional
             org.joda.time.DateTime eventLastModified = null;
             if (vEvent.getLastModified() != null) {
                 eventLastModified = new org.joda.time.DateTime(vEvent.getLastModified().getDateTime());
             }
-
-            String eventId = vEvent.getUid().getValue();
-            final String eventName = vEvent.getSummary().getValue();
 
             oldEventIds.remove(calendarFile.getFilename() + OLD_EVENT_SPLIT_CHAR + eventId);
 
