@@ -2513,6 +2513,10 @@
                 <Type>0001</Type>
                 <Id>0006</Id>
             </Reference>
+            <Reference>
+                <Type>0001</Type>
+                <Id>0015</Id>
+            </Reference>
             <Model>PAN08</Model>
             <Label lang="en">Relay Insert for Blind Control</Label>
             <ConfigFile>philio/pan08.xml</ConfigFile>
