@@ -27,9 +27,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.util.CompatibilityHints;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.joda.time.DateTimeZone;
 import org.openhab.core.service.AbstractActiveService;
@@ -61,6 +58,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.sardine.Sardine;
+
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.util.CompatibilityHints;
 
 /**
  * Loads all events from the configured calDAV servers. This is done with an
@@ -120,7 +120,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
     }
 
     private void removeAllJobs() throws SchedulerException {
-        if(scheduler!=null) {
+        if (scheduler != null) {
             scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_RELOADER))));
             scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_START))));
             scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_END))));
@@ -518,7 +518,44 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                             if (calDavEvent.getCategoryList() == null) {
                                 continue;
                             } else {
-                                if (!calDavEvent.getCategoryList().containsAll(query.getFilterCategory())) {
+                                boolean eventCategoriesMatchFilterCategories = false;
+                                switch (Boolean.toString(query.getFilterCategoryMatchesAny())) {
+                                    case "false":
+                                        eventCategoriesMatchFilterCategories = calDavEvent.getCategoryList()
+                                                .containsAll(query.getFilterCategory());
+                                        break;
+
+                                    case "true":
+                                        int filterCategoriesIndex = 0;
+                                        List<String> filterCategories = query.getFilterCategory();
+                                        List<String> eventCategories = calDavEvent.getCategoryList();
+                                        // browse filter categories, which are not null
+                                        while (eventCategoriesMatchFilterCategories == false
+                                                && filterCategoriesIndex < filterCategories.size()) {
+                                            int eventCategoriesIndex = 0;
+                                            // browse event categories, which can be null
+                                            while (eventCategoriesMatchFilterCategories == false
+                                                    && eventCategoriesIndex < eventCategories.size()) {
+                                                if (eventCategories.get(eventCategoriesIndex).equalsIgnoreCase(
+                                                        filterCategories.get(filterCategoriesIndex))) {
+                                                    eventCategoriesMatchFilterCategories = true;
+                                                }
+                                                eventCategoriesIndex++;
+                                            }
+
+                                            filterCategoriesIndex++;
+                                        }
+                                        break;
+
+                                    default:
+                                        break;
+                                }
+                                /*
+                                 * if (!calDavEvent.getCategoryList().containsAll(query.getFilterCategory())) {
+                                 * continue;
+                                 * }
+                                 */
+                                if (!eventCategoriesMatchFilterCategories) {
                                     continue;
                                 }
                             }
