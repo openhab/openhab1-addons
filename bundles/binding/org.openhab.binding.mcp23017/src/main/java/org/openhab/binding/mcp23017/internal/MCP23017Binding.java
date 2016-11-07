@@ -35,6 +35,7 @@ import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
+import com.pi4j.wiringpi.GpioUtil;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -53,7 +54,7 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 
 	private static final Logger logger = LoggerFactory.getLogger(MCP23017Binding.class);
 	
-	private final GpioController gpio = GpioFactory.getInstance();
+	private final GpioController gpio;
 
 	private Map<String, GpioPin> gpioPins = new HashMap<String, GpioPin>();
 
@@ -79,6 +80,10 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 	private int pollingInterval = 50;
 
 	public MCP23017Binding() {
+		// ask for non privileged access (run without root)
+		GpioUtil.enableNonPrivilegedAccess();
+		// now create a controller
+		gpio = GpioFactory.getInstance();
 	}
 
 	/**
