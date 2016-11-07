@@ -86,8 +86,8 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
     private static final Logger logger = LoggerFactory.getLogger(GCalEventDownloader.class);
 
-    private static String client_id = "923938667558-3agtjnqnlfq4ku2v6veoradnt88291du.apps.googleusercontent.com";
-    private static String client_secret = "ow_sZCtGTD316vnWm7zOGXfL";
+    private static String client_id = "";
+    private static String client_secret = "";
     private static String calendar_name = "primary";
     private static String filter = "";
 
@@ -577,17 +577,29 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
             String usernameString = (String) config.get("client_id");
             if (!StringUtils.isBlank(usernameString)) {
                 client_id = usernameString;
+            } else {
+                logger.error(
+                        "gcal:client_id must be configured in openhab.cfg. Refer to wiki how to create client_id/client_secret pair");
+                throw new ConfigurationException("client_id",
+                        "gcal:client_id must be configured in openhab.cfg. Refer to wiki how to create client_id/client_secret");
             }
 
             String passwordString = (String) config.get("client_secret");
             if (!StringUtils.isBlank(passwordString)) {
                 client_secret = passwordString;
+            } else {
+                logger.error(
+                        "gcal:client_secret must be configured in openhab.cfg. Refer to wiki how to create client_id/client_secret pair");
+                throw new ConfigurationException("client_secret",
+                        "gcal:client_secret must be configured in openhab.cfg. Refer to wiki how to create client_id/client_secret pair");
             }
 
             String urlString = (String) config.get("calendar_name");
             if (!StringUtils.isBlank(urlString)) {
                 calendar_name = urlString;
             } else {
+                logger.error(
+                        "gcal:calendar_name must be configured in openhab.cfg. Calendar name or word primary MUST be specified");
                 throw new ConfigurationException("calendar_name",
                         "gcal:calendar_name must be configured in openhab.cfg. Calendar name or word primary MUST be specified");
             }
