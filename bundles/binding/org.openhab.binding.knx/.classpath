@@ -3,7 +3,7 @@
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
 	<classpathentry exported="true" kind="lib" path="lib/calimero-rxtx-2.0a3.jar"/>
-	<classpathentry kind="lib" path="lib/calimero-core-2.2.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/calimero-core-2.3-beta.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>

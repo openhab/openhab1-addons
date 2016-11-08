@@ -229,13 +229,13 @@ public abstract class ZWaveCommandClass {
                 commandClass = CommandClass.getCommandClass(node.getManufacturer(), node.getDeviceType());
             }
             if (commandClass == null) {
-                logger.warn(String.format("NODE %d: Unknown command class 0x%02x", node.getNodeId(), classId));
+                logger.debug(String.format("NODE %d: Unknown command class 0x%02x", node.getNodeId(), classId));
                 return null;
             }
             Class<? extends ZWaveCommandClass> commandClassClass = commandClass.getCommandClassClass();
 
             if (commandClassClass == null) {
-                logger.warn("NODE {}: Unsupported command class {}", node.getNodeId(), commandClass.getLabel(),
+                logger.debug("NODE {}: Unsupported command class {}", node.getNodeId(), commandClass.getLabel(),
                         classId);
                 return null;
             }

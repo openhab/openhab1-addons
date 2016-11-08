@@ -84,7 +84,7 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
             int commandClassCode = serialMessage.getMessagePayloadByte(offset + 1);
             commandClass = CommandClass.getCommandClass(commandClassCode);
             if (commandClass == null) {
-                logger.error(String.format("NODE %d: Unknown command class 0x%02x", getNode().getNodeId(),
+                logger.debug(String.format("NODE %d: Unknown command class 0x%02x", getNode().getNodeId(),
                         commandClassCode));
             } else {
                 logger.debug("NODE {}: Incoming command class {}", getNode().getNodeId(), commandClass.getLabel());
@@ -107,7 +107,7 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
                 }
 
                 if (zwaveCommandClass == null) {
-                    logger.error("NODE {}: CommandClass %s not implemented.", this.getNode().getNodeId(),
+                    logger.debug("NODE {}: CommandClass %s not implemented.", this.getNode().getNodeId(),
                             commandClass.getLabel());
                 } else {
                     logger.debug("NODE {}: Calling handleApplicationCommandRequest.", this.getNode().getNodeId());

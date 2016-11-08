@@ -709,6 +709,15 @@
             <Label lang="en">In-Wall Smart Fan Control</Label>
             <ConfigFile>ge/zw4002.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>4953</Type>
+                <Id>3133</Id>
+            </Reference>
+            <Model>ZW6302</Model>
+            <Label lang="en">Portable Smart Motion Sensor</Label>
+            <ConfigFile>ge/zw6302.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0064</Id>
@@ -1426,6 +1435,15 @@
         <Id>0109</Id>
         <Product>
             <Reference>
+                <Type>2022</Type>
+                <Id>2201</Id>
+            </Reference>
+            <Model>ZD2105</Model>
+            <Label lang="en">Recessed Door Window Sensor</Label>
+            <ConfigFile>vision/zd2105.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0002</Type>
                 <Id>FFFF</Id>
             </Reference>
@@ -1613,6 +1631,19 @@
     <Manufacturer>
         <Id>010F</Id>
         <Name>Fibaro System</Name>
+        <Product>
+            <Reference>
+                <Type>0F01</Type>
+                <Id>1000</Id>
+            </Reference>
+            <Reference>
+                <Type>FB10</Type>
+                <Id>1014</Id>
+            </Reference>
+            <Model>FGPB101</Model>
+            <Label lang="en">A real push button (switch) available in several colors.</Label>
+            <ConfigFile>fibaro/fgpb101.xml</ConfigFile>
+        </Product>
         <Product>
             <Reference>
                 <Type>0402</Type>
@@ -2491,6 +2522,10 @@
                 <Type>0001</Type>
                 <Id>0006</Id>
             </Reference>
+            <Reference>
+                <Type>0001</Type>
+                <Id>0015</Id>
+            </Reference>
             <Model>PAN08</Model>
             <Label lang="en">Relay Insert for Blind Control</Label>
             <ConfigFile>philio/pan08.xml</ConfigFile>
@@ -2885,6 +2920,15 @@
     <Manufacturer>
         <Id>159</Id>
         <Name>Qubino</Name>
+        <Product>
+            <Reference>
+                <Type>0005</Type>
+                <Id>0051</Id>
+            </Reference>
+            <Model>ZMNHID</Model>
+            <Label lang="en">Flush on/off thermostat</Label>
+            <ConfigFile>qubino/zmnhid.xml</ConfigFile>
+        </Product>
         <Product>
             <Reference>
                 <Type>2</Type>

@@ -256,6 +256,29 @@ public final class PckGenerator {
     }
 
     /**
+     * Generates a command that send variable status updates.
+     * PCHK provides this variables by itself on selected segments
+     * is only possible with group 4
+     * 
+     * @param var the target variable to set
+     * @param value the absolute value to set
+     * @return the PCK command (without address header) as text
+     * @throws IllegalArgumentException
+     */
+    public static String updateStatusVar(LcnDefs.Var var, int value) throws IllegalArgumentException {
+        int id = LcnDefs.Var.toVarId(var);
+        if (id != -1) {
+            // define variable to set, offset 0x01000000
+            int x2cmd = id | 0x40;
+            int b1 = (value >> 8) & 0xff;
+            int b2 = value & 0xff;
+            return String.format("X2%03d%03d%03d", x2cmd, b1, b2);
+        }
+        // Setting variables and thresholds absolute not implemented in LCN firmware yet
+        throw new IllegalArgumentException();
+    }
+
+    /**
      * Generates a command that resets a variable to 0.
      * 
      * @param var the target variable to set 0
