@@ -74,7 +74,7 @@ public class JdbcConfiguration {
     public void updateConfig(Map<Object, Object> config) {
         configuration = config;
 
-        logger.debug("JDBC::updateConfig: configuration.size = " + configuration.size());
+        logger.debug("JDBC::updateConfig: configuration.size = {}", configuration.size());
 
         // mandatory user
         String user = (String) configuration.get("user");
@@ -102,7 +102,7 @@ public class JdbcConfiguration {
                 enstr += key + " = " + parsedURL.getProperty("" + key) + "\n";
             }
             logger.warn(
-                    "JDBC::updateConfig: SQL url is not well formated:\n{}Please configure url in openhab.cfg like 'jdbc:<service>:<host>[:<port>;<attributes>]'",
+                    "JDBC::updateConfig: SQL url is not well formatted: {}\nPlease configure url in openhab.cfg like 'jdbc:<service>:<host>[:<port>;<attributes>]'",
                     enstr);
         } else {
             logger.debug("JDBC::updateConfig: mandatory user={}", user);
@@ -217,7 +217,7 @@ public class JdbcConfiguration {
         logger.debug("JDBC::updateConfig: found serviceName = '{}'", serviceName);
         if (StringUtils.isBlank(sn) || sn.length() < 2) {
             logger.error(
-                    "JDBC::updateConfig: url Required database url like 'jdbc:<service>:<host>[:<port>;<attributes>]' - please configure the jdbc:url parameter in openhab.cfg");
+                    "JDBC::updateConfig: Required database url like 'jdbc:<service>:<host>[:<port>;<attributes>]' - please configure the jdbc:url parameter in openhab.cfg");
         } else {
             serviceName = sn;
         }
@@ -275,10 +275,10 @@ public class JdbcConfiguration {
         } catch (ClassNotFoundException e) {
             driverAvailable = false;
             logger.error(
-                    "JDBC::updateConfig: could NOT load JDBC-driverClassName or JDBC-dataSourceClassName ClassNotFoundException: '{}'",
+                    "JDBC::updateConfig: could NOT load JDBC-driverClassName or JDBC-dataSourceClassName. ClassNotFoundException: '{}'",
                     e.getMessage());
             String warn = ""
-                    + "\n\n\t!!!\n\tTo avoid this error, place a appropriate JDBC driver file for serviceName '{}' in addons directory.\n"
+                    + "\n\n\t!!!\n\tTo avoid this error, place an appropriate JDBC driver file for serviceName '{}' in addons directory.\n"
                     + "\tCopy missing JDBC-Driver-jar to your OpenHab/addons Folder.\n\t!!!\n" + "\tDOWNLOAD: \n";
             if (serviceName.equals("derby")) {
                 warn += "\tDerby:     version >= 10.11.1.1 from          http://mvnrepository.com/artifact/org.apache.derby/derby\n";
