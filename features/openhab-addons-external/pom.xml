@@ -46,6 +46,7 @@
                                 <artifact><file>src/main/resources/conf/enphaseenergy.cfg</file><type>cfg</type><classifier>enphaseenergy</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/enocean.cfg</file><type>cfg</type><classifier>enocean</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/epsonprojector.cfg</file><type>cfg</type><classifier>epsonprojector</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/fatekplc.cfg</file><type>cfg</type><classifier>fatekplc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/freeswitch.cfg</file><type>cfg</type><classifier>freeswitch</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/garadget.cfg</file><type>cfg</type><classifier>garadget</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/gc100ir.cfg</file><type>cfg</type><classifier>gc100ir</classifier></artifact>
