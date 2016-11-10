@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,7 @@ import org.openhab.core.binding.BindingConfig;
  * This is a helper class holding binding specific configuration details.
  *
  * @author cvanorman
- * @since 1.8.0-SNAPSHOT
+ * @since 1.9.0
  */
 public class UPBBindingConfig implements BindingConfig {
     private Byte id;
@@ -27,8 +27,9 @@ public class UPBBindingConfig implements BindingConfig {
 
     /**
      * Instantiate a new UPBBindingConfig
-     * 
+     *
      * @param properties
+     * @param dimmable
      */
     public UPBBindingConfig(String[] properties, boolean dimmable) {
         this.dimmable = dimmable;
@@ -49,7 +50,7 @@ public class UPBBindingConfig implements BindingConfig {
     }
 
     /**
-     * @return the request property or null if it is not specified.
+     * @return the requested property or null if it is not specified.
      */
     public String getProperty(String property) {
         return properties.get(property);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -34,9 +34,9 @@ import gnu.io.UnsupportedCommOperationException;
  * and from the UPB modem.
  *
  * @author cvanorman
- * @since 1.8.0-SNAPSHOT
+ * @since 1.9.0
  */
-public class UPBBinding extends AbstractActiveBinding<UPBBindingProvider>implements UPBReader.Listener {
+public class UPBBinding extends AbstractActiveBinding<UPBBindingProvider> implements UPBReader.Listener {
 
     private static final Logger logger = LoggerFactory.getLogger(UPBBinding.class);
 
@@ -47,7 +47,7 @@ public class UPBBinding extends AbstractActiveBinding<UPBBindingProvider>impleme
     private UPBWriter upbWriter;
 
     /**
-     * the refresh interval which is used to poll values from the upb server
+     * the refresh interval which is used to poll values from the UPB server
      * (optional, defaults to 3600000ms)
      */
     private long refreshInterval = 3600000;
@@ -260,54 +260,57 @@ public class UPBBinding extends AbstractActiveBinding<UPBBindingProvider>impleme
      */
     @Override
     public void messageReceived(UPBMessage message) {
-        if (message.getType() == Type.MESSAGE_REPORT) {
-            String sourceName = getItemName(message.getSource(), false);
-            String destinationName = getItemName(message.getDestination(), message.getControlWord().isLink());
-            UPBBindingConfig sourceConfig = getConfig(sourceName);
-            UPBBindingConfig destinationConfig = getConfig(destinationName);
+        if (message.getType() != Type.MESSAGE_REPORT) {
+            return;
+        }
 
-            String itemName = isValidId(message.getDestination()) ? destinationName : sourceName;
-            UPBBindingConfig config = isValidId(message.getDestination()) ? destinationConfig : sourceConfig;
+        String sourceName = getItemName(message.getSource(), false);
+        String destinationName = getItemName(message.getDestination(), message.getControlWord().isLink());
+        UPBBindingConfig sourceConfig = getConfig(sourceName);
+        UPBBindingConfig destinationConfig = getConfig(destinationName);
 
-            if (itemName != null && config != null) {
-                State newState = null;
-                byte level = 100;
+        String itemName = isValidId(message.getDestination()) ? destinationName : sourceName;
+        UPBBindingConfig config = isValidId(message.getDestination()) ? destinationConfig : sourceConfig;
 
-                switch (message.getCommand()) {
-                    case GOTO:
-                    case DEVICE_STATE:
-                    case ACTIVATE:
+        if (itemName == null || config == null) {
+            logger.debug("Received message for unknown {} with id {}.",
+                    message.getControlWord().isLink() ? "Link" : "Device", message.getDestination() & 0xff);
+            return;
+        }
 
-                        if (message.getArguments() != null && message.getArguments().length > 0) {
-                            level = message.getArguments()[0];
-                        } else {
-                            level = (byte) (message.getCommand() == UPBMessage.Command.ACTIVATE ? 100 : 0);
-                        }
+        State newState = null;
+        byte level = 100;
 
-                        // Links will send FF (-1) for their level.
-                        if (level == -1 || level >= 100 || (level > 0 && !config.isDimmable())) {
-                            newState = OnOffType.ON;
-                        } else if (level == 0) {
-                            newState = OnOffType.OFF;
-                        } else {
-                            newState = new PercentType(level);
-                        }
-                        break;
-                    case DEACTIVATE:
-                        newState = OnOffType.OFF;
-                        break;
-                    default:
-                        break;
+        switch (message.getCommand()) {
+            case GOTO:
+            case DEVICE_STATE:
+            case ACTIVATE:
+
+                if (message.getArguments() != null && message.getArguments().length > 0) {
+                    level = message.getArguments()[0];
+                } else {
+                    level = (byte) (message.getCommand() == UPBMessage.Command.ACTIVATE ? 100 : 0);
                 }
 
-                if (newState != null) {
-                    logger.debug("Posting update: {},{}", itemName, newState);
-                    eventPublisher.postUpdate(itemName, newState);
+                // Links will send FF (-1) for their level.
+                if (level == -1 || level >= 100 || (level > 0 && !config.isDimmable())) {
+                    newState = OnOffType.ON;
+                } else if (level == 0) {
+                    newState = OnOffType.OFF;
+                } else {
+                    newState = new PercentType(level);
                 }
-            } else {
-                logger.debug("Received message for unknown {} with id {}.",
-                        message.getControlWord().isLink() ? "Link" : "Device", message.getDestination() & 0xff);
-            }
+                break;
+            case DEACTIVATE:
+                newState = OnOffType.OFF;
+                break;
+            default:
+                break;
+        }
+
+        if (newState != null) {
+            logger.debug("Posting update: {},{}", itemName, newState);
+            eventPublisher.postUpdate(itemName, newState);
         }
     }
 
