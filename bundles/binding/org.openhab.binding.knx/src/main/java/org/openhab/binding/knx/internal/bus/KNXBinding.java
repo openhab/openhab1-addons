@@ -69,6 +69,9 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
 
     private boolean mKNXConnectionEstablished;
 
+    /** if true knx is started in openHAB 2 */
+    private Boolean operatingEnvironmentIsFelix;
+
     private Map<String, DimmerThread> itemDimmerThreads = Collections
             .synchronizedMap(new HashMap<String, DimmerThread>());
 
@@ -107,9 +110,21 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
      */
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
-        logger.trace("Received command (item='{}', command='{}')", itemName, command.toString());
-        if (!isEcho(itemName, command)) {
-            writeToKNX(itemName, command);
+        logger.trace(
+                "1. internalReceiveCommand from openHAB (item='{}', command='{}', operatingEnvironmentIsFelix = '{}'",
+                itemName, command.toString(), operatingEnvironmentIsFelix);
+
+        // openHAB1: After receiving a command from openHAB1, NO update event is triggered later.
+        // openHAB2: After receiving a command from openHAB2, ALWAYS update event is triggered later.
+        // In openHAB2 we ignore this command and wait for receiving the update event from openHAB,
+        // then only this is sent to the KNX bus by openHAB2
+
+        if (getEnvironmentIsFelix() == true) {
+            // ignore internalReceiveCommand in openHAB 2
+        } else {
+            if (!isEcho(itemName, command)) {
+                writeToKNX(itemName, command);
+            }
         }
     }
 
@@ -121,7 +136,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
      */
     @Override
     protected void internalReceiveUpdate(String itemName, State newState) {
-        logger.trace("Received update (item='{}', state='{}')", itemName, newState.toString());
+        logger.trace("2. internalReceiveUpdate from openHAB (item='{}', state='{}')", itemName, newState.toString());
         if (!isEcho(itemName, newState)) {
             writeToKNX(itemName, newState);
         }
@@ -137,6 +152,15 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
         } else {
             return false;
         }
+    }
+
+    private boolean getEnvironmentIsFelix() {
+        if (operatingEnvironmentIsFelix == null) {
+            StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
+            logger.trace("4.  getEnvironmentIsFelix = '{}'", stacktrace[5].getClassName());
+            operatingEnvironmentIsFelix = stacktrace[5].getClassName().contains("felix");
+        }
+        return operatingEnvironmentIsFelix;
     }
 
     private void writeToKNX(String itemName, Type value) {
