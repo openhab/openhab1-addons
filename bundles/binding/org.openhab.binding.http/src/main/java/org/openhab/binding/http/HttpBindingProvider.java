@@ -109,7 +109,9 @@ public interface HttpBindingProvider extends BindingProvider {
     String getTransformation(String itemName);
 
     /**
-     * Returns a {@link State} that is appropriate to the item to which
+     * Returns a {@link State} that is one of the named item's accepted data
+     * types, parsed from <code>value</code>. If <code>value</code> cannot be parsed
+     * into an accepted data type, <code>null</code> is returned.
      *
      * @param itemName the item for which to produce a {@link State)
      * @param value the string from which to produce a {@link State)
