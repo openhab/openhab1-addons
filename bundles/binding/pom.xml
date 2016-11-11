@@ -26,6 +26,7 @@
     <module>org.openhab.binding.networkhealth</module>
     <module>org.openhab.binding.exec</module>
     <module>org.openhab.binding.exec.test</module>
+    <module>org.openhab.binding.fatekplc</module>
     <module>org.openhab.binding.http</module>
     <module>org.openhab.binding.http.test</module>
     <module>org.openhab.binding.hue</module>
@@ -184,5 +185,6 @@
     <module>org.openhab.binding.smarthomatic</module>
     <module>org.openhab.binding.gc100ir</module>
     <module>org.openhab.binding.powermax</module>
+    <module>org.openhab.binding.upb</module>
   </modules>
 </project>
