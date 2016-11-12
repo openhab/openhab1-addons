@@ -123,11 +123,11 @@ public class EventReloaderJob implements Job {
 
             // printAllEvents();
         } catch (SardineException e) {
-            log.error("error while loading calendar entries: " + e.getMessage() + " (" + e.getStatusCode() + " - "
-                    + e.getResponsePhrase() + ")", e);
+            log.error("error while loading calendar entries: {} ({} - {} )", e.getMessage(), e.getStatusCode(),
+                    e.getResponsePhrase(), e);
             throw new JobExecutionException("error while loading calendar entries", e, false);
         } catch (Exception e) {
-            log.error("error while loading calendar entries: " + e.getMessage(), e);
+            log.error("error while loading calendar entries: {}", e.getMessage(), e);
             throw new JobExecutionException("error while loading calendar entries", e, false);
         }
     }
@@ -383,7 +383,7 @@ public class EventReloaderJob implements Job {
 
     /**
      * Returns a list of categories or an empty list if none found.
-     * 
+     *
      * @param vEvent
      * @return
      */
@@ -391,31 +391,20 @@ public class EventReloaderJob implements Job {
         PropertyList propertyCategoryList = vEvent.getProperties(Property.CATEGORIES);
         ArrayList<String> splittedCategoriesToReturn = new ArrayList<String>();
         if (propertyCategoryList != null) {
-            for (int categorieslinenum = 0; categorieslinenum < propertyCategoryList.size(); categorieslinenum++) {
-                Property propertyCategory = propertyCategoryList.get(categorieslinenum);
+            for (int categoriesLineNum = 0; categoriesLineNum < propertyCategoryList.size(); categoriesLineNum++) {
+                Property propertyCategory = propertyCategoryList.get(categoriesLineNum);
                 String categories = propertyCategory.getValue();
                 if (categories != null) {
                     String[] categoriesSplit = StringUtils.split(categories, ",");
-                    for (String macategorie : categoriesSplit) {
-                        if (!splittedCategoriesToReturn.contains(macategorie)) {
-                            splittedCategoriesToReturn.add(macategorie);
+                    for (String category : categoriesSplit) {
+                        if (!splittedCategoriesToReturn.contains(category)) {
+                            splittedCategoriesToReturn.add(category);
                         }
                     }
                 }
             }
         }
-        /*
-         * Property propertyCategory = vEvent.getProperty(Property.CATEGORIES);
-         * if (propertyCategory != null) {
-         * String categories = propertyCategory.getValue();
-         * if (categories != null) {
-         * String[] categoriesSplit = StringUtils.split(categories, ",");
-         * return Arrays.asList(categoriesSplit);
-         * }
-         * 
-         * }
-         * return new ArrayList<String>();
-         */
+
         return splittedCategoriesToReturn;
     }
 
