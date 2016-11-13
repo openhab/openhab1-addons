@@ -251,7 +251,8 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 
         if (!matcher.matches()) {
             throw new BindingConfigParseException("bindingConfig '" + bindingConfig
-                    + "' doesn't contain a valid out-binding-configuration. A valid configuration is matched by the RegExp '(.*?):([A-Z]*):(.*)'");
+                    + "' doesn't contain a valid out-binding-configuration. A valid configuration is matched by the RegExp '"
+                    + OUT_BINDING_PATTERN + "'");
         }
         matcher.reset();
 

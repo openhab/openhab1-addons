@@ -202,12 +202,11 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
                             } else {
                                 transformedResponse = response;
                                 logger.warn(
-                                        "couldn't transform response because transformationService of type '{}' is unavailable",
+                                        "Couldn't transform response because transformationService of type '{}' is unavailable",
                                         transformationType);
                             }
                         } catch (TransformationException te) {
-                            logger.error("transformation throws exception [transformation=" + transformation
-                                    + ", response=" + response + "]", te);
+                            logger.error("Transformation '{}' threw an exception. [response={}]", transformation, response, te);
 
                             // in case of an error we return the response without any
                             // transformation
