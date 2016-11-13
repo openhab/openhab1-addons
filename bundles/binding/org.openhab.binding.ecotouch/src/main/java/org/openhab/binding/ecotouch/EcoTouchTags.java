@@ -380,6 +380,24 @@ public enum EcoTouchTags {
         }
     },
 
+    // German: Hysterese Heizung
+    TYPE_HYSTERESIS_HEATING {
+        {
+            command = "hysteresis_heating";
+            itemClass = NumberItem.class;
+            tagName = "A61";
+        }
+    },
+
+    // German: Außentemperatur gemittelt über 1h (scheinbar identisch zu A2)
+    TYPE_TEMPERATURE2_OUTSIDE_1H {
+        {
+            command = "temperature2_outside_1h";
+            itemClass = NumberItem.class;
+            tagName = "A90";
+        }
+    },
+
     // German: Heizkurve - nviNormAussen
     TYPE_NVINORMAUSSEN {
         {
@@ -425,10 +443,10 @@ public enum EcoTouchTags {
         }
     },
 
-    // German: undokumentiert: Anzeige Heizkreis-Temp Ist (??)
-    TYPE_DSP_HEAT_CURRENT {
+    // German: undokumentiert: Heizkreis Soll-Temp bei 0° Aussen
+    TYPE_TEMP_SET_0DEG {
         {
-            command = "heatTempCurrent";
+            command = "tempSet0Deg";
             itemClass = NumberItem.class;
             tagName = "A97";
         }
@@ -449,6 +467,42 @@ public enum EcoTouchTags {
             command = "nviSollKuehlen";
             itemClass = NumberItem.class;
             tagName = "A109";
+        }
+    },
+
+    // German: Temperaturveränderung Heizkreis bei PV-Ertrag
+    TYPE_TEMPCHANGE_HEATING_PV {
+        {
+            command = "tempchange_heating_pv";
+            itemClass = NumberItem.class;
+            tagName = "A682";
+        }
+    },
+
+    // German: Temperaturveränderung Kühlkreis bei PV-Ertrag
+    TYPE_TEMPCHANGE_COOLING_PV {
+        {
+            command = "tempchange_cooling_pv";
+            itemClass = NumberItem.class;
+            tagName = "A683";
+        }
+    },
+
+    // German: Temperaturveränderung Warmwasser bei PV-Ertrag
+    TYPE_TEMPCHANGE_WARMWATER_PV {
+        {
+            command = "tempchange_warmwater_pv";
+            itemClass = NumberItem.class;
+            tagName = "A684";
+        }
+    },
+
+    // German: Temperaturveränderung Pool bei PV-Ertrag
+    TYPE_TEMPCHANGE_POOL_PV {
+        {
+            command = "tempchange_pool_pv";
+            itemClass = NumberItem.class;
+            tagName = "A685";
         }
     },
 
@@ -624,6 +678,16 @@ public enum EcoTouchTags {
         }
     },
 
+    // German: undokumentiert: vermutlich Betriebsmodus PV 0=Aus, 1=Auto, 2=Ein
+    TYPE_ENABLE_PV {
+        {
+            command = "enable_pv";
+            itemClass = NumberItem.class;
+            tagName = "I41";
+            type = Type.Word;
+        }
+    },
+
     // German: Status der Wärmepumpenkomponenten
     TYPE_STATE {
         {
@@ -783,6 +847,16 @@ public enum EcoTouchTags {
             command = "interruptions";
             itemClass = NumberItem.class;
             tagName = "I53";
+            type = Type.Word;
+        }
+    },
+
+    // German: Serviceebene (0: normal, 1: service)
+    TYPE_STATE_SERVICE {
+        {
+            command = "state_service";
+            itemClass = NumberItem.class;
+            tagName = "I135";
             type = Type.Word;
         }
     },
