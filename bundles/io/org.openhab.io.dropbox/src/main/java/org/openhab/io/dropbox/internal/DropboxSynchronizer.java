@@ -103,6 +103,9 @@ public class DropboxSynchronizer implements ManagedService {
     /** The default directory to download files from Dropbox to (currently '.') */
     private static final String DEFAULT_CONTENT_DIR = getConfigDirFolder();
 
+    //a user's personal access token retrieved from openhab.cfg only; null by default
+    private static String personalAccessToken = null;
+
     /**
      * the base directory to synchronize with openHAB, configure 'filter' to select files (defaults to
      * DEFAULT_CONTENT_DIR)
@@ -178,7 +181,6 @@ public class DropboxSynchronizer implements ManagedService {
                 startAuthentication();
             } catch (DbxException e) {
                 logger.warn("Couldn't start authentication process: {}", e.getMessage());
-                ;
             }
         }
     }
@@ -193,15 +195,24 @@ public class DropboxSynchronizer implements ManagedService {
      * @see <a href="https://github.com/openhab/openhab/wiki/Dropbox-IO">openHAB Dropbox IO Wiki</a>
      */
     public void startAuthentication() throws DbxException {
-        DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(requestConfig, appInfo);
-        String authUrl = webAuth.start();
+        if( personalAccessToken == null ) {
+            DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(requestConfig, appInfo);
+            String authUrl = webAuth.start();
 
-        logger.info("#########################################################################################");
-        logger.info("# Dropbox-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
-        logger.info("# 1. Open URL '{}'", authUrl);
-        logger.info("# 2. Allow openHAB to access Dropbox");
-        logger.info("# 3. Paste the authorisation code here using the command 'finishAuthentication \"<token>\"'");
-        logger.info("#########################################################################################");
+            logger.info("#########################################################################################");
+            logger.info("# Dropbox-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
+            logger.info("# 1. Open URL '{}'", authUrl);
+            logger.info("# 2. Allow openHAB to access Dropbox");
+            logger.info("# 3. Paste the authorisation code here using the command 'finishAuthentication \"<token>\"'");
+            logger.info("#########################################################################################");
+        }
+        else {
+            logger.info("#########################################################################################");
+            logger.info("# Starting auth using personal access token");
+            logger.info("#########################################################################################");
+            writeAccessToken(personalAccessToken);
+            startSynchronizationJobs();
+        }
     }
 
     /**
@@ -288,7 +299,7 @@ public class DropboxSynchronizer implements ManagedService {
 
     /**
      * Synchronizes all changes from the local filesystem into Dropbox. Changes
-     * are identified by the files' <code>lastModified</code> attribut. If there
+     * are identified by the files' <code>lastModified</code> attribute. If there
      * are less files locally the additional files will be deleted from the
      * Dropbox. New files will be uploaded or overwritten if they exist already.
      * 
@@ -606,6 +617,14 @@ public class DropboxSynchronizer implements ManagedService {
                 DropboxSynchronizer.appSecret = appSecretString;
             }
 
+            String pat = (String) config.get("personalAccessToken");
+            if( isNotBlank(pat)) {
+                DropboxSynchronizer.personalAccessToken = pat;
+            }
+            else {
+                logger.debug("Didn't find a personal access token.");
+            }
+
             if (isBlank(DropboxSynchronizer.appKey) || isBlank(DropboxSynchronizer.appSecret)) {
                 throw new ConfigurationException("dropbox:appkey",
                         "The parameters 'appkey' or 'appsecret' are missing! Please refer to your 'openhab.cfg'");
@@ -672,9 +691,9 @@ public class DropboxSynchronizer implements ManagedService {
                 logger.debug("authenticated: scheduling jobs");
                 scheduleJobs();
             } else {
-                logger.debug("Dropbox-Bundle isn't authorized properly, so the synchronization jobs "
+                logger.debug("Dropbox bundle isn't authorized properly, so the synchronization jobs "
                         + "won't be started! Please re-initiate the authorization process by restarting the "
-                        + "Dropbox-Bundle through OSGi console.");
+                        + "Dropbox bundle through the OSGi console.");
             }
         }
     }
