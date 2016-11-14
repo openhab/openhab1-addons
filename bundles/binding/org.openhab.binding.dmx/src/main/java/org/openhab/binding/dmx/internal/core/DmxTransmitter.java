@@ -27,6 +27,14 @@ import org.slf4j.LoggerFactory;
  */
 public final class DmxTransmitter extends TimerTask {
 
+    /* REPEAT_INTERVAL is 750 ms (results in 800-1000ms) repetition time */
+    private static final int REPEAT_INTERVAL = 750;
+    private static final int REPEAT_COUNT = 3;
+
+    public static final int REPEAT_MODE_ALWAYS = 0;
+    public static final int REPEAT_MODE_NEVER = 1;
+    public static final int REPEAT_MODE_REDUCED = 2;
+
     private static Logger logger = LoggerFactory.getLogger(DmxTransmitter.class);
 
     private DmxUniverse universe = new DmxUniverse();
@@ -34,8 +42,12 @@ public final class DmxTransmitter extends TimerTask {
     private DmxService service;
 
     private boolean running;
+    private int repeatMode = 0;
 
     private boolean suspended;
+
+    private long lastTransmit = 0;
+    private int packetRepeatCount = 0;
 
     /**
      * Default constructor.
@@ -56,13 +68,31 @@ public final class DmxTransmitter extends TimerTask {
 
         running = true;
         try {
+            long now = System.currentTimeMillis();
             byte[] b = universe.calculateBuffer();
-            if (universe.getBufferChanged()) {
+            if (universe.getBufferChanged() || (repeatMode == REPEAT_MODE_ALWAYS)) {
+                logger.trace("DMX Buffer changed or repeat mode always");
                 DmxConnection conn = service.getConnection();
                 if (conn != null) {
                     conn.sendDmx(b);
                     universe.notifyStatusListeners();
                 }
+                lastTransmit = now;
+                packetRepeatCount = 0;
+            } else if ((repeatMode == REPEAT_MODE_REDUCED)
+                    && ((packetRepeatCount < REPEAT_COUNT) || ((now - lastTransmit) > REPEAT_INTERVAL))) {
+                logger.trace("DMX Buffer needs refresh, sending");
+                DmxConnection conn = service.getConnection();
+                if (conn != null) {
+                    conn.sendDmx(b);
+                    universe.notifyStatusListeners();
+                }
+                if (packetRepeatCount < REPEAT_COUNT) {
+                    packetRepeatCount++;
+                }
+                lastTransmit = now;
+            } else {
+                logger.trace("DMX output suppressed");
             }
         } catch (Exception e) {
             logger.error("Error sending dmx values.", e);
@@ -79,8 +109,8 @@ public final class DmxTransmitter extends TimerTask {
     }
 
     /**
-     * Suspend/resume transmittting.
-     * 
+     * Suspend/resume transmitting.
+     *
      * @param suspend
      *            true to suspend
      */
@@ -89,8 +119,18 @@ public final class DmxTransmitter extends TimerTask {
     }
 
     /**
+     * change transmitter refresh cycle
+     *
+     * @param refreshInterval
+     *            interval in ms (if output did not change)
+     */
+    public void setRepeatMode(int repeatMode) {
+        this.repeatMode = repeatMode;
+    }
+
+    /**
      * Get the DMX channel in the current universe.
-     * 
+     *
      * @param channel
      *            number
      * @return DMX channel
