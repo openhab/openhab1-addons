@@ -22,6 +22,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -46,10 +47,10 @@ public class XplGenericBindingProvider extends AbstractGenericBindingProvider im
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof NumberItem || item instanceof StringItem)) {
+        if (!(item instanceof SwitchItem || item instanceof NumberItem || item instanceof StringItem || item instanceof ContactItem) ) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
-                    + "', only String, Switch and Number are allowed - please check your *.items configuration");
+                    + "', only String, Switch, Contact and Number are allowed - please check your *.items configuration");
         }
     }
 
