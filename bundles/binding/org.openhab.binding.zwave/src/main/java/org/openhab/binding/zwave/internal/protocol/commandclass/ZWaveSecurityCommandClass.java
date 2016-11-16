@@ -204,6 +204,15 @@ public abstract class ZWaveSecurityCommandClass extends ZWaveCommandClass {
     private static final int ENCAPSULATED_FOOTER_LENGTH = 9;
 
     /**
+     * Security encapsulated messages have much higher overhead than normal messages so we must use care to ensure we do
+     * not bombard devices with messages or they can stop responding. To avoid bombardment, a similar message check is
+     * performed so that if someone hits lock, then unlock, only the unlock command is sent. We only apply this logic to
+     * specific command classes, as specified in this list
+     */
+    private static final List<CommandClass> SIMILAR_FRAME_COMMAND_CLASS_LIST = Arrays
+            .asList(new CommandClass[] { CommandClass.DOOR_LOCK, CommandClass.BATTERY });
+
+    /**
      * Queue of {@link ZWaveSecurityPayloadFrame} that are waiting for nonces
      * so they can be encapsulated and set.
      *
@@ -577,12 +586,13 @@ public abstract class ZWaveSecurityCommandClass extends ZWaveCommandClass {
                 boolean shouldRemove = false;
                 byte[] newMessageTwoBytes = new byte[2];
                 System.arraycopy(securityPayloadFrameList.get(0).getMessageBytes(), 0, newMessageTwoBytes, 0, 2);
+                CommandClass newMessageCommandClass = CommandClass.getCommandClass(newMessageTwoBytes[0] & 0xff);
                 // Expired frame check
                 if (System.currentTimeMillis() > aFrameFromQueue.getExpirationTime()) {
                     shouldRemove = true;
                     logger.warn("NODE {}: Expired from payloadEncapsulationQueue: {}", getNode().getNodeId(),
                             aFrameFromQueue);
-                } else {
+                } else if (SIMILAR_FRAME_COMMAND_CLASS_LIST.contains(newMessageCommandClass)) {
                     // Duplicate message check - if the queue already contains a message like this one, replace it
                     // Compare the first 2 bytes (command class and operation) to do so
                     byte[] aFrameFromQueueTwoBytes = new byte[2];
@@ -1157,33 +1167,6 @@ public abstract class ZWaveSecurityCommandClass extends ZWaveCommandClass {
             logger.debug("NODE {}: Starting Z-Wave thread: security encapsulation", getNode().getNodeId());
             while (true) {
                 try {
-                    if (lastEncapsulatedRequstMessage != null
-                            && lastEncapsulatedRequstMessage.isSecurityTransactionComplete()) {
-                        // Look ahead in the queue for duplicate messages, if found, ignore them since this was
-                        // successful. This is required because security encapsulated messages incur a lot of overhead
-                        // on the controller and the device. The user (or other logic in the code) could fire off
-                        // many duplicates (such as BATTERY_GET on startup) which just holds up other operations.
-                        Iterator<ZWaveSecurityPayloadFrame> iter = payloadEncapsulationQueue.iterator();
-                        SerialMessage successfulMessage = lastEncapsulatedRequstMessage.getSecurityPayload()
-                                .getOriginalMessage();
-                        while (iter.hasNext()) {
-                            ZWaveSecurityPayloadFrame securityPayloadToBeSent = iter.next();
-                            SerialMessage messageToBeSent = securityPayloadToBeSent.getOriginalMessage();
-                            boolean shouldRemove = Arrays.equals(messageToBeSent.getMessagePayload(),
-                                    successfulMessage.getMessagePayload());
-                            logger.debug(
-                                    "NODE {}: success look ahead check: shouldRemove={} messageToBeSent={} successfulMessage={}",
-                                    getNode().getNodeId(), shouldRemove,
-                                    SerialMessage.bb2hex(messageToBeSent.getMessagePayload()),
-                                    SerialMessage.bb2hex(successfulMessage.getMessagePayload()));
-                            if (shouldRemove) {
-                                removeFromEncapsulationQueue(securityPayloadToBeSent, iter,
-                                        "look ahead found identical message");
-                            }
-                        }
-                        lastEncapsulatedRequstMessage = null; // We're done with it
-                    }
-
                     boolean transmitNext = lastEncapsulatedRequstMessage == null;
                     if (!transmitNext && lastEncapsulatedRequstMessage.hasBeenTransmitted()) {
                         // Recompute the timeout each time
