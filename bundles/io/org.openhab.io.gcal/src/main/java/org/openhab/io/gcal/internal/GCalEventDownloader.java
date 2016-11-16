@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,6 +65,7 @@ import com.google.api.client.util.DateTime;
 import com.google.api.client.util.Key;
 import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
@@ -90,6 +92,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
     private static String client_secret = "";
     private static String calendar_name = "primary";
     private static String filter = "";
+    private static CalendarListEntry calendarID = null;
 
     /** holds the current refresh interval, default to 900000ms (15 minutes) */
     public static int refreshInterval = 900000;
@@ -197,7 +200,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
      *         <code>now</code> and <code>now + 2 * refreshInterval</code> to reduce
      *         the amount of events to process.
      */
-    public static Events downloadEventFeed() {
+    private static Events downloadEventFeed() {
         // TODO: teichsta: there could be more than one calender url in openHAB.cfg
         // for now we accept this limitation of downloading just one feed ...
 
@@ -209,46 +212,24 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
         Credential credential = getCredential();
 
         // set up global Calendar instance
-        com.google.api.services.calendar.Calendar client = new com.google.api.services.calendar.Calendar.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName("openHAB").build();
+        Calendar client = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName("openHAB")
+                .build();
 
-        String calendarID = null;
+        CalendarListEntry calendarID = getCalendarId(client);
 
-        if (!calendar_name.equals("primary")) {
-            CalendarList calfeed = null;
-            try {
-                calfeed = client.calendarList().list().execute();
-            } catch (com.google.api.client.auth.oauth2.TokenResponseException ae) {
-                logger.error("authentication failed: {}", ae.getMessage());
-            } catch (IOException e1) {
-                logger.error("authentication I/O exception: {}", e1.getMessage());
-            }
-
-            if (calfeed != null && calfeed.getItems() != null) {
-                for (CalendarListEntry entry : calfeed.getItems()) {
-                    if (entry.getSummary().equals(calendar_name)) {
-                        calendarID = entry.getId();
-                        logger.debug("Got calendar {} CalendarID: {}", calendar_name, calendarID);
-                    }
-                }
-            }
-
-            if (calendarID == null) {
-                logger.warn("Calendar {} not found", calendar_name);
-                return null;
-            }
-        } else {
-            calendarID = calendar_name;
+        if (calendarID == null) {
+            return null;
         }
 
-        DateTime start = new DateTime(new Date());
-        DateTime end = new DateTime(start.getValue() + (2 * refreshInterval));
+        DateTime start = new DateTime(new Date(), TimeZone.getTimeZone(calendarID.getTimeZone()));
+        DateTime end = new DateTime(new Date(start.getValue() + (2 * refreshInterval)),
+                TimeZone.getTimeZone(calendarID.getTimeZone()));
         logger.debug("Downloading calendar feed for time interval: {} to  {} ", start, end);
 
         Events feed = null;
         try {
-            com.google.api.services.calendar.Calendar.Events.List l = client.events().list(calendarID)
-                    .setSingleEvents(true).setTimeMin(start).setTimeMax(end);
+            Calendar.Events.List l = client.events().list(calendarID.getId()).setSingleEvents(true).setTimeMin(start)
+                    .setTimeMax(end);
 
             // add the fulltext filter if it has been configured
             if (StringUtils.isNotBlank(filter)) {
@@ -271,6 +252,46 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
         }
 
         return null;
+    }
+
+    /**
+     * Return calendarID based on calendar name.
+     * if calendar name is "primary" not check primary - just return primary
+     *
+     * @param calendar object
+     */
+    public static CalendarListEntry getCalendarId(Calendar client) {
+        if (calendarID != null) {
+            return calendarID;
+        }
+
+        CalendarList calfeed = null;
+        try {
+            calfeed = client.calendarList().list().execute();
+        } catch (com.google.api.client.auth.oauth2.TokenResponseException ae) {
+            logger.error("authentication failed: {}", ae.getMessage());
+            return null;
+        } catch (IOException e1) {
+            logger.error("authentication I/O exception: {}", e1.getMessage());
+            return null;
+        }
+
+        if (calfeed != null && calfeed.getItems() != null) {
+            for (CalendarListEntry entry : calfeed.getItems()) {
+                if ((entry.getSummary().equals(calendar_name))
+                        || (calendar_name.equals("primary")) && entry.isPrimary()) {
+                    calendarID = entry;
+                    logger.debug("Got calendar {} CalendarID: {}", calendar_name, calendarID);
+                }
+            }
+        }
+
+        if (calendarID == null) {
+            logger.warn("Calendar {} not found", calendar_name);
+            return null;
+        }
+
+        return calendarID;
     }
 
     /**
@@ -366,7 +387,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
                 boolean triggersCreated = createTriggerAndSchedule(startJob, event, modifiedByEvent, true);
 
                 if (triggersCreated) {
-                    logger.info("created new startJob '{}' with details '{}'", eventTitle,
+                    logger.debug("created new startJob '{}' with details '{}'", eventTitle,
                             createJobInfo(event, startJob));
                 }
 
@@ -376,7 +397,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
                     triggersCreated = createTriggerAndSchedule(endJob, event, modifiedByEvent, false);
 
                     if (triggersCreated) {
-                        logger.info("created new endJob '{}' with details '{}'", eventTitle,
+                        logger.debug("created new endJob '{}' with details '{}'", eventTitle,
                                 createJobInfo(event, endJob));
                     }
                 }
@@ -615,7 +636,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
         }
     }
 
-    private static Credential getCredential() {
+    public static Credential getCredential() {
         Credential credential = null;
         try {
             File tokenPath = null;
