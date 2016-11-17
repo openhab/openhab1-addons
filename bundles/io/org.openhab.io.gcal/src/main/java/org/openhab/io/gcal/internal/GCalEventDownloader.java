@@ -12,7 +12,6 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +30,7 @@ import javax.annotation.meta.When;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.LongRange;
 import org.openhab.core.service.AbstractActiveService;
+import org.openhab.io.gcal.auth.GCalGoogleOAuth;
 import org.openhab.io.gcal.internal.util.ExecuteCommandJob;
 import org.openhab.io.gcal.internal.util.TimeRangeCalendar;
 import org.osgi.service.cm.ConfigurationException;
@@ -45,29 +45,13 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.api.client.auth.oauth2.BearerToken;
-import com.google.api.client.auth.oauth2.ClientParametersAuthentication;
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.auth.oauth2.DataStoreCredentialRefreshListener;
-import com.google.api.client.auth.oauth2.StoredCredential;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.UrlEncodedContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.Clock;
 import com.google.api.client.util.DateTime;
-import com.google.api.client.util.Key;
-import com.google.api.client.util.store.DataStore;
-import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.CalendarScopes;
-import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
@@ -83,16 +67,11 @@ import com.google.api.services.calendar.model.Events;
 public class GCalEventDownloader extends AbstractActiveService implements ManagedService {
 
     private static final String GCAL_SCHEDULER_GROUP = "gcal";
-    private static final String TOKEN_PATH = "gcal";
-    private static final String TOKEN_STORE_USER_ID = "openhab";
 
     private static final Logger logger = LoggerFactory.getLogger(GCalEventDownloader.class);
 
-    private static String client_id = "";
-    private static String client_secret = "";
     private static String calendar_name = "primary";
     private static String filter = "";
-    private static CalendarListEntry calendarID = null;
 
     /** holds the current refresh interval, default to 900000ms (15 minutes) */
     public static int refreshInterval = 900000;
@@ -113,30 +92,6 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
      */
     private static final Pattern EXTRACT_MODIFIEDBY_CONTENT = Pattern.compile("(.*?)modified by\\s*?\\{(.*?)\\}.*",
             Pattern.DOTALL);
-
-    public static class Device {
-        @Key
-        public String device_code;
-        @Key
-        public String user_code;
-        @Key
-        public String verification_url;
-        @Key
-        public int expires_in;
-        @Key
-        public int interval;
-    }
-
-    public static class DeviceToken {
-        @Key
-        public String access_token;
-        @Key
-        public String token_type;
-        @Key
-        public String refresh_token;
-        @Key
-        public int expires_in;
-    }
 
     public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
@@ -209,13 +164,8 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
             return null;
         }
         // authorization
-        Credential credential = getCredential();
 
-        // set up global Calendar instance
-        Calendar client = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName("openHAB")
-                .build();
-
-        CalendarListEntry calendarID = getCalendarId(client);
+        CalendarListEntry calendarID = GCalGoogleOAuth.getCalendarId(calendar_name);
 
         if (calendarID == null) {
             return null;
@@ -228,6 +178,11 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
         Events feed = null;
         try {
+            Credential credential = GCalGoogleOAuth.getCredential(false);
+
+            // set up global Calendar instance
+            Calendar client = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+                    .setApplicationName("openHAB").build();
             Calendar.Events.List l = client.events().list(calendarID.getId()).setSingleEvents(true).setTimeMin(start)
                     .setTimeMax(end);
 
@@ -252,46 +207,6 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
         }
 
         return null;
-    }
-
-    /**
-     * Return calendarID based on calendar name.
-     * if calendar name is "primary" not check primary - just return primary
-     *
-     * @param calendar object
-     */
-    public static CalendarListEntry getCalendarId(Calendar client) {
-        if (calendarID != null) {
-            return calendarID;
-        }
-
-        CalendarList calfeed = null;
-        try {
-            calfeed = client.calendarList().list().execute();
-        } catch (com.google.api.client.auth.oauth2.TokenResponseException ae) {
-            logger.error("authentication failed: {}", ae.getMessage());
-            return null;
-        } catch (IOException e1) {
-            logger.error("authentication I/O exception: {}", e1.getMessage());
-            return null;
-        }
-
-        if (calfeed != null && calfeed.getItems() != null) {
-            for (CalendarListEntry entry : calfeed.getItems()) {
-                if ((entry.getSummary().equals(calendar_name))
-                        || (calendar_name.equals("primary")) && entry.isPrimary()) {
-                    calendarID = entry;
-                    logger.debug("Got calendar {} CalendarID: {}", calendar_name, calendarID);
-                }
-            }
-        }
-
-        if (calendarID == null) {
-            logger.warn("Calendar {} not found", calendar_name);
-            return null;
-        }
-
-        return calendarID;
     }
 
     /**
@@ -597,7 +512,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
             String usernameString = (String) config.get("client_id");
             if (!StringUtils.isBlank(usernameString)) {
-                client_id = usernameString;
+                GCalGoogleOAuth.setClientId(usernameString);
             } else {
                 logger.error(
                         "gcal:client_id must be configured in openhab.cfg. Refer to wiki how to create client_id/client_secret pair");
@@ -607,7 +522,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
             String passwordString = (String) config.get("client_secret");
             if (!StringUtils.isBlank(passwordString)) {
-                client_secret = passwordString;
+                GCalGoogleOAuth.setClientSecret(passwordString);
             } else {
                 logger.error(
                         "gcal:client_secret must be configured in openhab.cfg. Refer to wiki how to create client_id/client_secret pair");
@@ -620,9 +535,9 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
                 calendar_name = urlString;
             } else {
                 logger.error(
-                        "gcal:calendar_name must be configured in openhab.cfg. Calendar name or word primary MUST be specified");
+                        "gcal:calendar_name must be configured in openhab.cfg. Calendar name or word \"primary\"  MUST be specified");
                 throw new ConfigurationException("calendar_name",
-                        "gcal:calendar_name must be configured in openhab.cfg. Calendar name or word primary MUST be specified");
+                        "gcal:calendar_name must be configured in openhab.cfg. Calendar name or word \"primary\"  MUST be specified");
             }
 
             filter = (String) config.get("filter");
@@ -632,143 +547,14 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
                 refreshInterval = Integer.parseInt(refreshString);
             }
 
+            if (GCalGoogleOAuth.getCredential(true) == null) {
+                logger.error("Cannnot obtain credential based on provided client_id/client_secret");
+                throw new ConfigurationException("Credential error",
+                        "Cannnot obtain credential based on provided client_id/client_secret");
+            }
+
             setProperlyConfigured(true);
         }
     }
 
-    public static Credential getCredential() {
-        Credential credential = null;
-        try {
-            File tokenPath = null;
-            String userdata = System.getProperty("smarthome.userdata");
-            if (StringUtils.isEmpty(userdata)) {
-                tokenPath = new File("etc");
-            } else {
-                tokenPath = new File(userdata);
-            }
-
-            File tokenFile = new File(tokenPath, TOKEN_PATH);
-
-            FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(tokenFile);
-            DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore("gcal_oauth2_token");
-
-            credential = loadCredential("openhab", datastore);
-            if (credential == null) {
-
-                GenericUrl genericUrl = new GenericUrl("https://accounts.google.com/o/oauth2/device/code");
-
-                Map<String, String> mapData = new HashMap<String, String>();
-                mapData.put("client_id", client_id);
-                mapData.put("scope", CalendarScopes.CALENDAR);
-                UrlEncodedContent content = new UrlEncodedContent(mapData);
-                HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
-                    @Override
-                    public void initialize(HttpRequest request) {
-                        request.setParser(new JsonObjectParser(JSON_FACTORY));
-                    }
-                });
-                HttpRequest postRequest = requestFactory.buildPostRequest(genericUrl, content);
-
-                Device device = postRequest.execute().parseAs(Device.class);
-                // no access token/secret specified so display the authorisation URL in the log
-                logger.info(
-                        "################################################################################################");
-                logger.info("# Google-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
-                logger.info("# 1. Open URL '{}'", device.verification_url);
-                logger.info("# 2. Type provided code {} ", device.user_code);
-                logger.info("# 3. Grant openHAB access to your Google calendar");
-                logger.info(
-                        "# 4. openHAB will automatically detect the permiossions and complete the authentication process");
-                logger.info("# NOTE: You will only have {} mins before openHAB gives up waiting for the access!!!",
-                        device.expires_in);
-                logger.info(
-                        "################################################################################################");
-
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Got access code");
-                    logger.debug("user code : {}", device.user_code);
-                    logger.debug("device code : {}", device.device_code);
-                    logger.debug("expires in: {}", device.expires_in);
-                    logger.debug("interval : {}", device.interval);
-                    logger.debug("verification_url : {}", device.verification_url);
-                }
-
-                mapData = new HashMap<String, String>();
-                mapData.put("client_id", client_id);
-                mapData.put("client_secret", client_secret);
-                mapData.put("code", device.device_code);
-                mapData.put("grant_type", "http://oauth.net/grant_type/device/1.0");
-
-                content = new UrlEncodedContent(mapData);
-                postRequest = requestFactory
-                        .buildPostRequest(new GenericUrl("https://accounts.google.com/o/oauth2/token"), content);
-
-                DeviceToken deviceToken;
-                do {
-                    deviceToken = postRequest.execute().parseAs(DeviceToken.class);
-
-                    if (deviceToken.access_token != null) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Got access token");
-                            logger.debug("device access token: {}", deviceToken.access_token);
-                            logger.debug("device token_type: {}", deviceToken.token_type);
-                            logger.debug("device refresh_token: {}", deviceToken.refresh_token);
-                            logger.debug("device expires_in: {}", deviceToken.expires_in);
-                        }
-                        break;
-                    }
-                    logger.debug("waiting for {} seconds", device.interval);
-                    Thread.sleep(device.interval * 1000);
-
-                } while (true);
-
-                StoredCredential dataCredential = new StoredCredential();
-                dataCredential.setAccessToken(deviceToken.access_token);
-                dataCredential.setRefreshToken(deviceToken.refresh_token);
-                dataCredential.setExpirationTimeMilliseconds((long) deviceToken.expires_in * 1000);
-
-                datastore.set(TOKEN_STORE_USER_ID, dataCredential);
-
-                credential = loadCredential(TOKEN_STORE_USER_ID, datastore);
-            }
-        } catch (Exception e) {
-            logger.warn("getCredential got exception: {}", e.getMessage());
-        }
-
-        return credential;
-    }
-
-    private static Credential loadCredential(String userId, DataStore<StoredCredential> credentialDataStore)
-            throws IOException {
-        Credential credential = newCredential(userId, credentialDataStore);
-        if (credentialDataStore != null) {
-            StoredCredential stored = credentialDataStore.get(userId);
-            if (stored == null) {
-                return null;
-            }
-            credential.setAccessToken(stored.getAccessToken());
-            credential.setRefreshToken(stored.getRefreshToken());
-            credential.setExpirationTimeMilliseconds(stored.getExpirationTimeMilliseconds());
-            if (logger.isDebugEnabled()) {
-                logger.debug("Loaded credential");
-                logger.debug("device access token: {}", stored.getAccessToken());
-                logger.debug("device refresh_token: {}", stored.getRefreshToken());
-                logger.debug("device expires_in: {}", stored.getExpirationTimeMilliseconds());
-            }
-        }
-        return credential;
-    }
-
-    private static Credential newCredential(String userId, DataStore<StoredCredential> credentialDataStore) {
-
-        Credential.Builder builder = new Credential.Builder(BearerToken.authorizationHeaderAccessMethod())
-                .setTransport(HTTP_TRANSPORT).setJsonFactory(JSON_FACTORY)
-                .setTokenServerEncodedUrl("https://accounts.google.com/o/oauth2/token")
-                .setClientAuthentication(new ClientParametersAuthentication(client_id, client_secret))
-                .setRequestInitializer(null).setClock(Clock.SYSTEM);
-
-        builder.addRefreshListener(new DataStoreCredentialRefreshListener(userId, credentialDataStore));
-
-        return builder.build();
-    }
 }

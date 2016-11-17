@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.PersistenceService;
+import org.openhab.io.gcal.auth.GCalGoogleOAuth;
 import org.osgi.framework.BundleContext;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
@@ -61,6 +62,7 @@ public class GCalPersistenceService implements PersistenceService {
     private static final Logger logger = LoggerFactory.getLogger(GCalPersistenceService.class);
 
     private static final String GCAL_SCHEDULER_GROUP = "GoogleCalendar";
+    private static String calendar_name = "";
 
     /** the upload interval (optional, defaults to 10 seconds) */
     private static int uploadInterval = 10;
@@ -101,6 +103,14 @@ public class GCalPersistenceService implements PersistenceService {
             } catch (IllegalArgumentException iae) {
                 logger.warn("couldn't parse '{}' to an integer");
             }
+        }
+
+        String urlString = (String) config.get("calendar_name");
+        if (!StringUtils.isBlank(urlString)) {
+            calendar_name = urlString;
+        } else {
+            logger.warn(
+                    "gcal-persistence:calendar_name must be configured in openhab.cfg. Calendar name or word \"primary\" MUST be specified");
         }
 
         String executeScriptString = (String) config.get("executescript");
@@ -225,7 +235,7 @@ public class GCalPersistenceService implements PersistenceService {
             logger.trace("going to upload {} calendar entries to Google now ...", entries.size());
             Calendar calendarClient = null;
             if (entries.size() > 0) {
-                Credential credential = org.openhab.io.gcal.internal.GCalEventDownloader.getCredential();
+                Credential credential = GCalGoogleOAuth.getCredential(false);
                 if (credential == null) {
                     logger.error(
                             "Please configure gcal:client_id/gcal:client_secret in openhab.cfg. Refer to wiki how to create client_id/client_secret pair");
@@ -268,8 +278,7 @@ public class GCalPersistenceService implements PersistenceService {
                         "Please configure gcal:client_id/gcal:client_secret in openhab.cfg. Refer to wiki how to create client_id/client_secret pair");
             } else {
                 // set up global Calendar instance
-                CalendarListEntry calendarID = org.openhab.io.gcal.internal.GCalEventDownloader
-                        .getCalendarId(calendarClient);
+                CalendarListEntry calendarID = GCalGoogleOAuth.getCalendarId(calendar_name);
                 if (calendarID != null) {
                     return calendarClient.events().insert(calendarID.getId(), event).execute();
                 }
