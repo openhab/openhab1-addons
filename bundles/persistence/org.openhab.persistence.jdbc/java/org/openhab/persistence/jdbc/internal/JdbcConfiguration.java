@@ -116,12 +116,12 @@ public class JdbcConfiguration {
         setDBDAOClass(parsedURL.getProperty("dbShortcut")); // derby, h2, hsqldb, mariadb, mysql, postgresql,
                                                             // sqlite
         // set user
-        if (user != null && !StringUtils.isBlank(user)) {
+        if (StringUtils.isNotBlank(user)) {
             dBDAO.databaseProps.setProperty("dataSource.user", user);
         }
 
         // set password
-        if (password != null & !StringUtils.isBlank(password)) {
+        if (StringUtils.isNotBlank(password)) {
             dBDAO.databaseProps.setProperty("dataSource.password", password);
         }
 
@@ -160,7 +160,7 @@ public class JdbcConfiguration {
 
         String rt = (String) configuration.get("rebuildTableNames");
         if (StringUtils.isNotBlank(rt)) {
-            rebuildTableNames = "true".equals(rt) ? Boolean.parseBoolean(rt) : false;
+            rebuildTableNames = Boolean.parseBoolean(rt);
             logger.debug("JDBC::updateConfig: rebuildTableNames={}", rebuildTableNames);
         }
 
