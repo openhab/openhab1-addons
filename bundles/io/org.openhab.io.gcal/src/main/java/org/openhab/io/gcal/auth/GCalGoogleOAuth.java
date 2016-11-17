@@ -46,8 +46,8 @@ import com.google.api.services.calendar.model.CalendarListEntry;
  * Service which downloads Calendar events, parses their content and creates
  * Quartz-jobs and triggers out of them.
  *
- * @author Thomas.Eichstaedt-Engelen
- * @since 0.7.0
+ * @author Adam Pienczykowski
+ * @since 1.9.0
  */
 public class GCalGoogleOAuth {
 
@@ -92,18 +92,14 @@ public class GCalGoogleOAuth {
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
     /**
-     * <p>
      * Setup OAuth2 client_id used for authentication
-     * </p>
      */
     public static void setClientId(String id) {
         client_id = id;
     }
 
     /**
-     * <p>
      * Setup OAuth2 client_secret used for authentication
-     * </p>
      */
     public static void setClientSecret(String secret) {
         client_secret = secret;
