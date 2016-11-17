@@ -84,6 +84,7 @@
     <module>org.openhab.binding.tinkerforge</module>
     <module>org.openhab.binding.nibeheatpump</module>
     <module>org.openhab.binding.zwave</module>
+    <module>org.openhab.binding.zwave.test</module>
     <module>org.openhab.binding.nikobus</module>
     <module>org.openhab.binding.nikobus.test</module>
     <module>org.openhab.binding.enocean</module>

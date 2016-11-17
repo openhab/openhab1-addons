@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB ZWave Tests
+Bundle-SymbolicName: org.openhab.binding.zwave.test
+Bundle-Version: 1.9.0.qualifier
+Bundle-Vendor: openHAB.org
+Fragment-Host: org.openhab.binding.zwave
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit;bundle-version="4.8.1"
+Bundle-ClassPath: lib/mockito-all-1.9.5.jar,
+ lib/slf4j-jdk14-1.6.4.jar,
+ .
+Import-Package: org.slf4j, org.osgi.framework, ch.qos.logback.classic, ch.qos.logback.core
