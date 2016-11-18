@@ -28,6 +28,7 @@
             <label>Password</label>
             <description>Password of the display unit.</description>
             <default>wtkadmin</default>
+            <context>password</context>
         </parameter>
     </config-description>
 
