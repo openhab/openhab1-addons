@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,6 +39,12 @@ public abstract class AbstractSessionItem {
 
     @XmlAttribute
     private String duration;
+
+    @XmlAttribute
+    private String grandparentThumb;
+
+    @XmlAttribute
+    private String thumb;
 
     @XmlElement(name = "Player")
     private Player player;
@@ -89,6 +95,22 @@ public abstract class AbstractSessionItem {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public String getGrandparentThumb() {
+        return grandparentThumb;
+    }
+
+    public void setGrandparentThumb(String grandparentThumb) {
+        this.grandparentThumb = grandparentThumb;
+    }
+
+    public String getThumb() {
+        return thumb;
+    }
+
+    public void setThumb(String thumb) {
+        this.thumb = thumb;
     }
 
     public Player getPlayer() {

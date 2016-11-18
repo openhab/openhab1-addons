@@ -25,7 +25,8 @@ Import-Package: gnu.io,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.satel
+Export-Package: org.openhab.binding.satel,
+ org.openhab.binding.satel.command
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml

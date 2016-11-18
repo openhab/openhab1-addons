@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -49,7 +49,7 @@ public class ZWaveProductDatabase {
 
     /**
      * Constructor for the product database
-     * 
+     *
      * @param Language
      *            defines the language in which all labels will be returned
      */
@@ -60,7 +60,7 @@ public class ZWaveProductDatabase {
 
     /**
      * Constructor for the product database
-     * 
+     *
      * @param Language
      *            defines the language in which all labels will be returned
      */
@@ -99,7 +99,7 @@ public class ZWaveProductDatabase {
 
     /**
      * Loads the product file relating to the requested version.
-     * 
+     *
      * @param version the required device version
      * @return filename of the product file
      */
@@ -150,6 +150,9 @@ public class ZWaveProductDatabase {
     }
 
     public List<ZWaveDbManufacturer> GetManufacturers() {
+        if (database == null || database.Manufacturer == null) {
+            return Collections.emptyList();
+        }
         return database.Manufacturer;
     }
 
@@ -163,12 +166,12 @@ public class ZWaveProductDatabase {
 
     /**
      * Finds the manufacturer in the database.
-     * 
+     *
      * @param manufacturerId
      * @return true if the manufacturer was found
      */
     public boolean FindManufacturer(int manufacturerId) {
-        if (database == null) {
+        if (database == null || database.Manufacturer == null) {
             return false;
         }
 
@@ -187,7 +190,7 @@ public class ZWaveProductDatabase {
 
     /**
      * Finds a product in the database
-     * 
+     *
      * @param manufacturerId
      *            The manufacturer ID
      * @param productType
@@ -207,7 +210,7 @@ public class ZWaveProductDatabase {
     /**
      * Finds a product in the database. FindManufacturer must be called before
      * this function.
-     * 
+     *
      * @param productType
      *            The product type
      * @param productId
@@ -234,7 +237,7 @@ public class ZWaveProductDatabase {
     /**
      * Returns the manufacturer name. FindManufacturer or FindProduct must be
      * called before this method.
-     * 
+     *
      * @return String with the manufacturer name, or null if not found.
      */
     public String getManufacturerName() {
@@ -248,7 +251,7 @@ public class ZWaveProductDatabase {
     /**
      * Returns the manufacturer ID. FindManufacturer or FindProduct must be
      * called before this method.
-     * 
+     *
      * @return Integer with the manufacturer ID, or null if not found.
      */
     public Integer getManufacturerId() {
@@ -261,7 +264,7 @@ public class ZWaveProductDatabase {
 
     /**
      * Returns the product name. FindProduct must be called before this method.
-     * 
+     *
      * @return String with the product name, or null if not found.
      */
     public String getProductName() {
@@ -274,7 +277,7 @@ public class ZWaveProductDatabase {
 
     /**
      * Returns the product model. FindProduct must be called before this method.
-     * 
+     *
      * @return String with the product model, or null if not found.
      */
     public String getProductModel() {
@@ -288,7 +291,7 @@ public class ZWaveProductDatabase {
     /**
      * Returns the number of endpoints from the database. FindProduct must be
      * called before this method.
-     * 
+     *
      * @return number of endpoints
      */
     public Integer getProductEndpoints() {
@@ -302,7 +305,7 @@ public class ZWaveProductDatabase {
     /**
      * Checks if a specific command class is implemented by the device.
      * FindProduct must be called before this method.
-     * 
+     *
      * @param classNumber
      *            the class number to check
      * @return true if the class is supported
@@ -328,7 +331,7 @@ public class ZWaveProductDatabase {
     /**
      * Returns the command classes implemented by the device.
      * FindProduct must be called before this method.
-     * 
+     *
      * @return true if the class is supported
      */
     public List<ZWaveDbCommandClass> getProductCommandClasses() {
@@ -346,7 +349,7 @@ public class ZWaveProductDatabase {
     /**
      * Returns the configuration parameters list. FindProduct must be called
      * before this method.
-     * 
+     *
      * @return List of configuration parameters
      */
     public List<ZWaveDbConfigurationParameter> getProductConfigParameters() {
@@ -360,7 +363,7 @@ public class ZWaveProductDatabase {
     /**
      * Returns the associations list. FindProduct must be called before this
      * method.
-     * 
+     *
      * @return List of association groups
      */
     public List<ZWaveDbAssociationGroup> getProductAssociationGroups() {
@@ -380,7 +383,7 @@ public class ZWaveProductDatabase {
      * Helper function to find the label associated with the specified database
      * language If no language is defined, or if the label cant be found in the
      * specified language the english label will be returned.
-     * 
+     *
      * @param labelList
      *            A List defining the label
      * @return String of the respective language
@@ -405,7 +408,7 @@ public class ZWaveProductDatabase {
     /**
      * enum defining the languages used for the multilingual labels in the
      * product database
-     * 
+     *
      */
     public enum Languages {
         ENGLISH("en"),

@@ -34,7 +34,7 @@ public class SimpleDigitalOut implements DigitalOut {
 
     /**
      * Constructs a new <tt>SimpleDigitalOut</tt> instance.
-     * It's state will be invalid.
+     * Its state will be invalid.
      */
     public SimpleDigitalOut() {
     }// constructor

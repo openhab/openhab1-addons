@@ -36,15 +36,12 @@
 			<Size>1</Size>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Set to 1 for a Single Wall Switch without
-					Indicator Light or for Two
-					Wall Switches
+				<Label lang="en">Set to 1 for a Single Wall Switch without Indicator Light or for Two Wall Switches
 				</Label>
 			</Item>
 			<Item>
 				<Value>2</Value>
-				<Label lang="en">Set to 2 for a Single Wall Switch with Indicator
-					Light</Label>
+				<Label lang="en">Set to 2 for a Single Wall Switch with Indicator Light</Label>
 			</Item>
 		</Parameter>
 	</Configuration>

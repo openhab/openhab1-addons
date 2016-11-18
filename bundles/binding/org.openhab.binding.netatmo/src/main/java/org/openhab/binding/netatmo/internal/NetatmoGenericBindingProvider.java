@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -293,18 +293,18 @@ public class NetatmoGenericBindingProvider extends AbstractGenericBindingProvide
             String measureTypeString;
             switch (configParts.length) {
                 case 2:
-                    config.deviceId = configParts[0];
+                    config.deviceId = configParts[0].toLowerCase();
                     measureTypeString = configParts[1];
                     break;
                 case 3:
-                    config.deviceId = configParts[0];
-                    config.moduleId = configParts[1];
+                    config.deviceId = configParts[0].toLowerCase();
+                    config.moduleId = configParts[1].toLowerCase();
                     measureTypeString = configParts[2];
                     break;
                 case 4:
                     config.userid = configParts[0];
-                    config.deviceId = configParts[1];
-                    config.moduleId = configParts[2];
+                    config.deviceId = configParts[1].toLowerCase();
+                    config.moduleId = configParts[2].toLowerCase();
                     measureTypeString = configParts[3];
                     break;
                 default:

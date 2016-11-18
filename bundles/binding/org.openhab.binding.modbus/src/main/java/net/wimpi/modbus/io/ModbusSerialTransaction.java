@@ -49,6 +49,7 @@ public class ModbusSerialTransaction implements ModbusTransaction {
     private ModbusResponse m_Response;
     private boolean m_ValidityCheck = Modbus.DEFAULT_VALIDITYCHECK;
     private int m_Retries = Modbus.DEFAULT_RETRIES;
+    private long m_RetryDelayMillis;
     private int m_TransDelayMS = Modbus.DEFAULT_TRANSMIT_DELAY;
     private SerialConnection m_SerialCon;
 
@@ -175,7 +176,6 @@ public class ModbusSerialTransaction implements ModbusTransaction {
             // while holding the lock on the IO object
             synchronized (m_IO) {
                 int tries = 0;
-                boolean finished = false;
 
                 // toggle the id
                 m_Request.setTransactionID(c_TransactionID.increment());
@@ -193,14 +193,26 @@ public class ModbusSerialTransaction implements ModbusTransaction {
                         m_IO.writeMessage(m_Request);
                         // read response message
                         m_Response = m_IO.readResponse();
-                        finished = true;
+                        break;
                     } catch (ModbusIOException e) {
-                        if (++tries >= m_Retries) {
+                        tries++;
+                        logger.error(
+                                "execute try {}/{} error: {}. Request: {} (unit id {} & transaction {}). Serial parameters: {}",
+                                tries, m_Retries, e.getMessage(), m_Request, m_Request.getUnitID(),
+                                m_Request.getTransactionID(), m_SerialCon.getParameters());
+                        if (tries >= m_Retries) {
+                            logger.error(
+                                    "execute reached max tries {}, throwing last error: {}. Request: {}. Serial parameters: {}",
+                                    m_Retries, e.getMessage(), m_Request, m_SerialCon.getParameters());
                             throw e;
                         }
-                        logger.error("execute try {} error: {}", tries, e.getMessage());
+                        Thread.sleep(m_RetryDelayMillis);
                     }
-                } while (!finished);
+                } while (true);
+                if (tries > 0) {
+                    logger.info("execute eventually succeeded with {} re-tries. Request: {}. Serial parameters: {}",
+                            tries, m_Request, m_SerialCon.getParameters());
+                }
             }
 
             // 4. deal with exceptions
@@ -239,5 +251,15 @@ public class ModbusSerialTransaction implements ModbusTransaction {
      */
     protected void checkValidity() throws ModbusException {
     }// checkValidity
+
+    @Override
+    public long getRetryDelayMillis() {
+        return m_RetryDelayMillis;
+    }
+
+    @Override
+    public void setRetryDelayMillis(long retryDelayMillis) {
+        this.m_RetryDelayMillis = retryDelayMillis;
+    }
 
 }// class ModbusSerialTransaction

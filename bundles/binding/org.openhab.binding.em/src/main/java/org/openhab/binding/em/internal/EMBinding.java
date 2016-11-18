@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,12 +16,11 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.em.EMBindingProvider;
 import org.openhab.binding.em.internal.EMBindingConfig.Datapoint;
 import org.openhab.binding.em.internal.EMBindingConfig.EMType;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.io.transport.cul.CULDeviceException;
-import org.openhab.io.transport.cul.CULHandler;
+import org.openhab.io.transport.cul.CULLifecycleListenerListenerRegisterer;
+import org.openhab.io.transport.cul.CULLifecycleManager;
 import org.openhab.io.transport.cul.CULListener;
-import org.openhab.io.transport.cul.CULManager;
 import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -35,108 +34,43 @@ import org.slf4j.LoggerFactory;
  * @author Till Klocke
  * @since 1.4.0
  */
-public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implements ManagedService, CULListener {
+public class EMBinding extends AbstractBinding<EMBindingProvider>implements ManagedService, CULListener {
 
     private static final Logger logger = LoggerFactory.getLogger(EMBinding.class);
 
-    private final static String CONFIG_KEY_DEVICE_NAME = "device";
-    private long refreshInterval = 60000;
-    private String deviceName;
-
-    private CULHandler cul;
+    private final CULLifecycleManager culHandlerLifecycle;
 
     private Map<String, Integer> counterMap = new HashMap<String, Integer>();
 
     public EMBinding() {
+        culHandlerLifecycle = new CULLifecycleManager(CULMode.SLOW_RF,
+                new CULLifecycleListenerListenerRegisterer(this));
     }
 
     @Override
     public void activate() {
+        culHandlerLifecycle.open();
     }
 
     @Override
     public void deactivate() {
-        closeCUL();
+        culHandlerLifecycle.close();
     }
 
-    private void closeCUL() {
-        if (cul != null) {
-            cul.unregisterListener(this);
-            CULManager.close(cul);
-        }
+    protected void addBindingProvider(EMBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
     }
 
-    /**
-     * If the device name has changed, try to close the old device handler and
-     * create a new one
-     * 
-     * @param deviceName
-     *            The new deviceName
-     */
-    private void setNewDeviceName(String deviceName) {
-        if (deviceName != null && this.deviceName != null && this.deviceName.equals(deviceName)) {
-            return;
-        }
-        if (this.deviceName != null && cul != null) {
-            closeCUL();
-        }
-        try {
-            cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF);
-            cul.registerListener(this);
-            this.deviceName = deviceName;
-        } catch (CULDeviceException e) {
-            logger.error("Can't get CULHandler", e);
-        }
+    protected void removeBindingProvider(EMBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**
-     * @{inheritDoc
-     */
-    @Override
-    protected long getRefreshInterval() {
-        return refreshInterval;
-    }
-
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    protected String getName() {
-        return "EM Refresh Service";
-    }
-
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    protected void execute() {
-        // Nothing to do
-    }
-
-    /**
-     * @{inheritDoc
+     * @{inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        if (config != null) {
-
-            // to override the default refresh interval one has to add a
-            // parameter to openhab.cfg like
-            // <bindingName>:refresh=<intervalInMs>
-            String refreshIntervalString = (String) config.get("refresh");
-            if (StringUtils.isNotBlank(refreshIntervalString)) {
-                refreshInterval = Long.parseLong(refreshIntervalString);
-            }
-
-            String deviceName = (String) config.get(CONFIG_KEY_DEVICE_NAME);
-            if (!StringUtils.isEmpty(deviceName)) {
-                setNewDeviceName(deviceName);
-            } else {
-                setProperlyConfigured(false);
-                throw new ConfigurationException(CONFIG_KEY_DEVICE_NAME, "Device name not configured");
-            }
-            setProperlyConfigured(true);
-        }
+        culHandlerLifecycle.config(config);
     }
 
     @Override
@@ -144,12 +78,11 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implement
         if (!StringUtils.isEmpty(data) && data.startsWith("E")) {
             parseDataLine(data);
         }
-
     }
 
     /**
      * Parse the received line of data and create updates for configured items
-     * 
+     *
      * @param data
      */
     private void parseDataLine(String data) {
@@ -178,7 +111,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implement
     /**
      * Update an item given in the configuration with the given value multiplied
      * by the correction factor
-     * 
+     *
      * @param config
      * @param value
      */
@@ -189,7 +122,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implement
 
     /**
      * Check if we have received a new message to not consume repeated messages
-     * 
+     *
      * @param address
      * @param counter
      * @return
@@ -208,7 +141,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implement
     private EMBindingConfig findConfig(EMType type, String address, Datapoint datapoint) {
         EMBindingConfig emConfig = null;
         for (EMBindingProvider provider : this.providers) {
-            emConfig = provider.getConfigByTypeAndAddressAndDatapoint(type, address, Datapoint.CUMULATED_VALUE);
+            emConfig = provider.getConfigByTypeAndAddressAndDatapoint(type, address, datapoint);
             if (emConfig != null) {
                 return emConfig;
             }
@@ -219,7 +152,6 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implement
     @Override
     public void error(Exception e) {
         logger.error("Exception instead of new data from CUL", e);
-
     }
 
 }

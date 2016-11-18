@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
 
 /**
- * This thread reads every event on the bticino bus and the converts & publishes
+ * This thread reads every event on the bticino bus and then converts & publishes
  * it to the openhab
  *
  * Based on code from Mauro Cicolella (as part of the FREEDOMOTIC framework)
@@ -40,13 +40,16 @@ public class MonitorSessionThread extends Thread {
     @Override
     public void run() {
         // connect to own gateway
+        logger.debug("Connecting to ipaddress {} on port {}", ipAddress, port);
         pluginReference.myPlant = new MyHomeJavaConnector(ipAddress, port);
         try {
             pluginReference.myPlant.startMonitoring();
             while (!Thread.interrupted()) {
                 try {
                     String readFrame = pluginReference.myPlant.readMonitoring();
-                    buildEventFromFrame(readFrame);
+                    if (readFrame != null) {
+                        buildEventFromFrame(readFrame);
+                    }
                 } catch (InterruptedException ex) {
                     logger.error("MonitorSessionThread.run, exception : " + ex.getMessage());
                 }

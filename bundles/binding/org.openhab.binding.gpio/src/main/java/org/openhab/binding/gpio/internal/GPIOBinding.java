@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -74,6 +74,14 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider>implements 
         super.bindingChanged(provider, itemName);
     }
 
+    protected void addBindingProvider(GPIOBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(GPIOBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
 
@@ -116,7 +124,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider>implements 
     /**
      * Called when GPIO OSGi service is available, creates and configure
      * backend objects for configured items.
-     * 
+     *
      * @param gpio GPIO OSGi service
      */
     public void bindGPIO(GPIO gpio) {
@@ -135,7 +143,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider>implements 
     /**
      * Called when GPIO OSGi service is stopped, deletes previously
      * created backend objects for configured items.
-     * 
+     *
      * @param gpio GPIO OSGi service
      */
     public void unbindGPIO(GPIO gpio) {
@@ -210,7 +218,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider>implements 
 
     /**
      * Changes backend GPIO pin object for the item.
-     * 
+     *
      * @param provider binding provider
      * @param itemName the name of the item which to process
      */
@@ -301,7 +309,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider>implements 
 
     /**
      * Setup new backend GPIO pin object and relate it with the item.
-     * 
+     *
      * @param provider binding provider
      * @param itemName the name of the item which to process
      */
@@ -379,7 +387,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider>implements 
 
     /**
      * Destroys backend GPIO pin object and clear relationship with the item.
-     * 
+     *
      * @param itemName the name of the item which to process
      */
     private void deleteItem(String itemName) {

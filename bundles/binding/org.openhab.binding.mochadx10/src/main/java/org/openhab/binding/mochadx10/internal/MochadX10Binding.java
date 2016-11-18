@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * @author Jack Sleuters
  * @since 1.7.0
  */
-public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>implements ManagedService {
+public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider> implements ManagedService {
     static final Logger logger = LoggerFactory.getLogger(MochadX10Binding.class);
 
     /**
@@ -67,7 +67,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
      * to know whether the last issued command was a 'dim' or a 'bright' command. If it
      * was a 'dim' command, the 'bright' command has to be issued to realize stop functionality.
      * If it was a 'bright' command, the 'dim' command has to be issued.
-     * 
+     *
      * This map keeps track of the last issued command per X10 address
      */
     private Map<String, Command> lastIssuedCommand = new HashMap<String, Command>(); // required to determine the X10
@@ -78,9 +78,9 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
      * brightness level in a relative way. Therefore, it is required to keep the absolute level of such module.
      * According to discussions on the openhab forums, it is bad practice to use the item registry to retrieve
      * the current level of a module. Therefore, it is stored internally in this binding.
-     * 
+     *
      * 'currentLevel' maps an X10 address string on a level value
-     * 
+     *
      * One could initialize this map with all possible X10 addresses and a default level value. However,
      * in practice a lot less than 256 X10 modules will be connected. To keep memory usage as low as possible,
      * the map is not initialized. When the current level of a module with an address that is not yet in the map
@@ -114,12 +114,17 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
      * can be received from the Mochad X10 server. The first message specifies the full address 'D1'
      * the second message only specifies the 'houseCode' part of the address. This means that
      * the unitCode of the previous X10 address should be used.
-     * 
+     *
      * 03/11 22:08:01 Rx PL HouseUnit: D1
      * 03/11 22:08:40 Rx PL House: D Func: Bright(1)
-     * 
+     *
      */
     private MochadX10Address previousX10Address;
+
+    /**
+     * Used to prevent reconnection when shutting down
+     */
+    private boolean isShuttingDown = false;
 
     /**
      * The regular expression to check whether the ip address of the host is correct
@@ -147,7 +152,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
 
         /**
          * Constructor
-         * 
+         *
          * @param binding This binding
          */
         public ReceiveThread(MochadX10Binding binding) {
@@ -156,7 +161,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
 
         /**
          * Process a message received by the Mochad X10 host
-         * 
+         *
          * @param msg string containing the received message
          */
         private void processIncomingMessage(String msg) {
@@ -207,6 +212,15 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
         }
     }
 
+    protected void addBindingProvider(MochadX10BindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(MochadX10BindingProvider bindingProvider) {
+        logger.trace("Mochad X10 Binding removeBindingProvider called");
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
         if (properties != null) {
@@ -237,6 +251,8 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
     @Override
     public void deactivate() {
         // Close the connection with the Mochad X10 Server
+        logger.trace("Mochad X10 deactivate called");
+        isShuttingDown = true;
         disconnectFromMochadX10Server();
 
         super.deactivate();
@@ -259,6 +275,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
      * Connect to the Mochad X10 host
      */
     private void connectToMochadX10Server() {
+        logger.trace("Mochad X10 - connectToMochadX10Server called");
         try {
             client = new Socket(hostIp, hostPort);
 
@@ -279,11 +296,14 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
      * after the binding was disconnected from the host.
      */
     private void disconnectFromMochadX10Server() {
+        logger.trace("disconnectFromMochadX10Server called");
         try {
-            in.close();
-            out.close();
+            logger.trace("Closing socket");
             client.close();
-
+            logger.trace("Closing BufferedReader");
+            in.close();
+            logger.trace("Closing DataOutputStream");
+            out.close();
             logger.debug("Disconnected from Mochad X10 server");
         } catch (IOException e) {
             logger.error("IOException: " + e.getMessage() + " while trying to disconnect from Mochad X10 host: "
@@ -295,14 +315,24 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
      * Reconnect to the Mochad X10 host after the connection to it was lost.
      */
     private void reconnectToMochadX10Server() {
-        disconnectFromMochadX10Server();
-        connectToMochadX10Server();
-        logger.debug("Reconnected to Mochad X10 server");
+        if (!isShuttingDown) {
+            logger.trace("reconnectToMochadX10Server called");
+            disconnectFromMochadX10Server();
+            try {
+                Thread.sleep(20000); // Wait 20 secs before retrying
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+            connectToMochadX10Server();
+            logger.trace("Reconnected to Mochad X10 server");
+        } else {
+            logger.trace("Aborting reconnect to Mochad X10 server as deactivate in progress");
+        }
     }
 
     /**
      * Check if the specified port number is a valid.
-     * 
+     *
      * @param port The port number to check
      * @return true when valid, false otherwise
      */
@@ -322,7 +352,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
 
     /**
      * Check if the specified ip address is a valid.
-     * 
+     *
      * @param hostIp The ip address to check to check
      * @return true when valid, false otherwise
      */
@@ -337,7 +367,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
     /**
      * Given an X10 address (<houseCode><unitCode>) find the name of the
      * corresponding bounded item
-     * 
+     *
      * @param address The X10 address
      * @return The name of the corresponding item, null if no corresponding
      *         item could be found.
@@ -359,7 +389,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
 
     /**
      * Lookup of the configuration of the named item.
-     * 
+     *
      * @param itemName
      * @return The configuration, null otherwise.
      */
@@ -476,7 +506,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
 
     /**
      * Retrieve the current level [0..100] of the X10 module identified by 'address'
-     * 
+     *
      * @param address the X10 address
      * @return if the level was stored at least once, the current level otherwise -1
      */
@@ -489,7 +519,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
 
     /**
      * Retrieve the output stream of the established socket connection
-     * 
+     *
      * @return the output stream
      */
     public DataOutputStream getOut() {

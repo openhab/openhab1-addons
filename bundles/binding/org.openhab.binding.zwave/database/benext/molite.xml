@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>Molite</Model>
+    <Label lang="en">Movement sensor with temperature and light sensor</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x30</id>             <!-- SENSOR_BINARY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Reset to factory settings</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Mode timeout</Label>
+            <Type>short</Type>
+            <Default>900</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Switch off time</Label>
+            <Type>short</Type>
+            <Default>45</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">sensitivity</Label>
+            <Type>short</Type>
+            <Default>80</Default>
+            <Minimum>0</Minimum>
+            <Maximum>127</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">The mode</Label>
+            <Type>list</Type>
+            <Default>2</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Mode 1: no detection possible. Battery save mode.</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Mode 2: normal operation mode: send on after detection and off after g</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Mode 3: Z-Wave chip is always on to request e.g. version or manufactur</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>6</Index>
+            <Label lang="en">The temperature offset</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>7</Index>
+            <Label lang="en">Light table 100 %</Label>
+            <Type>short</Type>
+            <Default>17</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>8</Index>
+            <Label lang="en">Light table 90 %</Label>
+            <Type>short</Type>
+            <Default>38</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>9</Index>
+            <Label lang="en">Light table 80 %</Label>
+            <Type>short</Type>
+            <Default>85</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>10</Index>
+            <Label lang="en">Light table 70 %</Label>
+            <Type>short</Type>
+            <Default>186</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>11</Index>
+            <Label lang="en">Light table 60 %</Label>
+            <Type>short</Type>
+            <Default>407</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>12</Index>
+            <Label lang="en">Light table 50 %</Label>
+            <Type>short</Type>
+            <Default>891</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>13</Index>
+            <Label lang="en">Light table 40 %</Label>
+            <Type>short</Type>
+            <Default>1949</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>14</Index>
+            <Label lang="en">Light table 30 %</Label>
+            <Type>short</Type>
+            <Default>4265</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>15</Index>
+            <Label lang="en">Light table 20 %</Label>
+            <Type>short</Type>
+            <Default>9332</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>16</Index>
+            <Label lang="en">Light table 10 %</Label>
+            <Type>short</Type>
+            <Default>20417</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Devices to be switched on when motion detected and off after on time</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>

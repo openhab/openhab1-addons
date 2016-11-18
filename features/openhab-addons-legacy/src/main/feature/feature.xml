@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2010-2016 by the respective copyright holders.
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+-->
+<features name="${project.artifactId}-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+
+  <repository>mvn:de.maggu2810.kat.features/apache-httpcomponents/${kat.version}/xml/features</repository>
+
+  <!-- binding -->
+
+  <feature name="openhab-binding-astro1" description="Astro Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.astro/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/astro.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/astro</configfile>
+  </feature>
+
+  <feature name="openhab-binding-homematic1" description="Homematic Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.homematic/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/homematic.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/homematic</configfile>
+  </feature>
+
+  <feature name="openhab-binding-netatmo1" description="Netatmo Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.netatmo/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/netatmo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/netatmo</configfile>
+  </feature>
+
+  <feature name="openhab-binding-networkhealth" description="NetworkHealth Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.networkhealth/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/networkhealth.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/networkhealth</configfile>
+  </feature>
+
+  <feature name="openhab-binding-onkyo1" description="Onkyo Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.onkyo/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/onkyo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/onkyo</configfile>
+  </feature>
+
+
+  <feature name="openhab-binding-systeminfo1" description="System Info Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.systeminfo/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/systeminfo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/systeminfo</configfile>
+  </feature>
+
+  <feature name="openhab-binding-urtsi1" description="Somfy URTSI II Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.urtsi/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/urtsi.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/urtsi</configfile>
+  </feature>
+
+  <feature name="openhab-binding-zwave1" description="Z-Wave Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.zwave/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/zwave.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/zwave</configfile>
+  </feature>
+
+</features>

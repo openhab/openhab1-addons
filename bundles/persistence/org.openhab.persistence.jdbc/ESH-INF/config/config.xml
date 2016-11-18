@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config-description:config-descriptions
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:config-description="http://eclipse.org/smarthome/schemas/config-description/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/config-description/v1.0.0
+        http://eclipse.org/smarthome/schemas/config-description-1.0.0.xsd">
+
+	<config-description uri="persistence:jdbc">
+
+		<!-- 
+		# I N S T A L L   J D B C   P E R S I S T E N C E   S E R V I C E 
+		#
+		# https://github.com/openhab/openhab/wiki/JDBC-Persistence
+		#
+		# Tested databases/url-prefix: jdbc:derby, jdbc:h2, jdbc:hsqldb, jdbc:mariadb, jdbc:mysql, jdbc:postgresql, jdbc:sqlite
+		# 
+		# derby, h2, hsqldb, sqlite can be embedded, 
+		# If no database is available it will be created, for example the url 'jdbc:h2:./testH2' creates a new DB in OpenHab Folder. 
+		#
+		# Create new database, for example on a MySQL-Server use: 
+		# CREATE DATABASE 'yourDB' CHARACTER SET utf8 COLLATE utf8_general_ci;
+		 -->
+		 
+        <!--    
+                # D A T A B A S E  C O N F I G
+				# Some URL-Examples, 'service' identifies and activates internally the correct jdbc driver.
+				# required database url like 'jdbc:<service>:<host>[:<port>;<attributes>]'
+				# jdbc:url=jdbc:derby:./testDerby;create=true
+				# jdbc:url=jdbc:h2:./testH2
+				# jdbc:url=jdbc:hsqldb:./testHsqlDb
+				# jdbc:url=jdbc:mariadb://192.168.0.1:3306/testMariadb
+				# jdbc:url=jdbc:mysql://192.168.0.1:3306/testMysql
+				# jdbc:url=jdbc:postgresql://192.168.0.1:5432/testPostgresql
+				# jdbc:url=jdbc:sqlite:./testSqlite.db
+		-->
+        <parameter name="url" type="text" required="true">
+            <label>Database URL</label>
+            <description><![CDATA[Defines required database URL and optional path and parameters.<br>
+            Required database url like 'jdbc:<service>:<host>[:<port>;<attributes>]'<br>
+            Parameter 'service' is used as identifier for the selected jdbc driver.
+            URL-Examples:<br>
+            jdbc:derby:./testDerby;create=true<br>
+            jdbc:h2:./testH2<br>
+            jdbc:hsqldb:./testHsqlDb<br>
+            jdbc:mariadb://192.168.0.1:3306/testMariadb<br>
+            jdbc:mysql://192.168.0.1:3306/testMysql<br>
+            jdbc:postgresql://192.168.0.1:5432/testPostgresql<br>
+            jdbc:sqlite:./testSqlite.db]]></description>
+        </parameter>
+
+        <parameter name="user" type="text" required="false">
+            <label>Database User</label>
+            <description><![CDATA[Defines optional database user.]]></description>
+        </parameter>
+        
+        <parameter name="password" type="text" required="false">
+            <label>Database Password</label>
+            <description><![CDATA[Defines optional database password.]]></description>
+        </parameter>
+        
+        <!--    
+                # I T E M   O P E R A T I O N S
+		        # optional tweaking SQL datatypes
+		        # see: https://mybatis.github.io/mybatis-3/apidocs/reference/org/apache/ibatis/type/JdbcType.html   
+		        # see: http://www.h2database.com/html/datatypes.html
+		        # see: http://www.postgresql.org/docs/9.3/static/datatype.html
+		        # defaults:
+		        #sqltype.CALL          =   VARCHAR(200)
+		        #sqltype.COLOR         =   VARCHAR(70)
+		        #sqltype.CONTACT       =   VARCHAR(6)
+		        #sqltype.DATETIME      =   DATETIME
+		        #sqltype.DIMMER        =   TINYINT
+		        #sqltype.LOCATION      =   VARCHAR(30)
+		        #sqltype.NUMBER        =   DOUBLE
+		        #sqltype.ROLLERSHUTTER =   TINYINT
+		        #sqltype.STRING        =   VARCHAR(65500)
+		        #sqltype.SWITCH        =   VARCHAR(6)
+		        
+		        # For Itemtype "Number" default decimal digit count (optional, default: 3) 
+		        #numberDecimalcount=
+         -->
+        <parameter name="sqltype.CALL" type="text" required="false">
+            <label>SqlType CALL</label>
+            <description><![CDATA[Overrides used JDBC/SQL datatype for CALL <br>(optional, default: "VARCHAR(200)"). <br>
+            General about JdbcTypes/SqlTypes see: https://mybatis.github.io/mybatis-3/apidocs/reference/org/apache/ibatis/type/JdbcType.html <br> 
+            see: http://www.h2database.com/html/datatypes.html <br>
+            see: http://www.postgresql.org/docs/9.5/static/datatype.html]]></description>
+        </parameter>
+        <parameter name="sqltype.COLOR" type="text" required="false">
+            <label>SqlType COLOR</label>
+            <description><![CDATA[Overrides used JDBC/SQL datatype for COLOR <br>(optional, default: "VARCHAR(70)").]]></description>
+        </parameter>
+        <parameter name="sqltype.CONTACT" type="text" required="false">
+            <label>SqlType CONTACT</label>
+            <description><![CDATA[Overrides used JDBC/SQL datatype for CONTACT <br>(optional, default: "VARCHAR(6)").]]></description>
+        </parameter>
+        <parameter name="sqltype.DATETIME" type="text" required="false">
+            <label>SqlType DATETIME</label>
+            <description><![CDATA[Overrides used JDBC/SQL datatype for DATETIME <br>(optional, default: "DATETIME").]]></description>
+        </parameter>
+        <parameter name="sqltype.DIMMER" type="text" required="false">
+            <label>SqlType DIMMER</label>
+            <description><![CDATA[Overrides used JDBC/SQL datatype for DIMMER <br>(optional, default: "TINYINT").]]></description>
+        </parameter>
+        <parameter name="sqltype.LOCATION" type="text" required="false">
+            <label>SqlType LOCATION</label>
+            <description><![CDATA[Overrides used JDBC/SQL datatype for LOCATION <br>(optional, default: "VARCHAR(30)").]]></description>
+        </parameter>
+        <parameter name="sqltype.NUMBER" type="text" required="false">
+            <label>SqlType NUMBER</label>
+            <description><![CDATA[Overrides used JDBC/SQL datatype for NUMBER <br>(optional, default: "DOUBLE").]]></description>
+        </parameter>
+        <parameter name="sqltype.ROLLERSHUTTER" type="text" required="false">
+            <label>SqlType ROLLERSHUTTER</label>
+            <description><![CDATA[Overrides used JDBC/SQL datatype for ROLLERSHUTTER <br>(optional, default: "TINYINT").]]></description>
+        </parameter>
+        <parameter name="sqltype.STRING" type="text" required="false">
+            <label>SqlType STRING</label>
+            <description><![CDATA[Overrides used JDBC/SQL datatype for STRING <br>(optional, default: "VARCHAR(65500)").]]></description>
+        </parameter>
+        <parameter name="sqltype.SWITCH" type="text" required="false">
+            <label>SqlType SWITCH</label>
+            <description><![CDATA[Overrides used JDBC/SQL datatype for SWITCH <br>(optional, default: "VARCHAR(6)").]]></description>
+        </parameter>
+        
+        <!--    
+                # T A B L E   O P E R A T I O N S
+				# Tablename Prefix String (optional, default: "item") 
+				# for Migration from MYSQL-Bundle set to 'Item'.
+				#tableNamePrefix=Item
+
+				# Tablename Prefix generation, using Item real names or "item" (optional, default: false -> "item") 
+				# If true, 'tableNamePrefix' is ignored.
+				#tableUseRealItemNames=
+				tableUseRealItemNames=true
+				
+				# Tablename Suffix length (optional, default: 4 -> 0001-9999) 
+				# for Migration from MYSQL-Bundle set to 0.
+				#tableIdDigitCount=
+				
+				# Rename existing Tables using tableUseRealItemNames and tableIdDigitCount (optional, default: false) 
+				# USE WITH CARE! Deactivate after Renaming is done!
+				#rebuildTableNames=true
+         -->
+        <parameter name="tableNamePrefix" type="text" required="false">
+            <label>Tablename Prefix String</label>
+            <description><![CDATA[Tablename prefix string <br>(optional, default: "item"). <br>
+            For migration from MYSQL-Bundle set to 'Item'.]]></description>
+        </parameter>
+        <parameter name="tableUseRealItemNames" type="text" required="false">
+            <label>Tablename Realname Generation</label>
+            <description><![CDATA[Enables Tablename prefix generation per Items realname <br>(optional, default: disabled -> "Tablename Prefix String" is used). <br> 
+            If true, 'Tablename Prefix String' is ignored.]]></description>
+            <options>
+                <option value="true">Enable</option>
+                <option value="false">Disable</option>
+            </options>
+        </parameter>
+        <parameter name="tableIdDigitCount" type="text" required="false">
+            <label>Tablename Suffix ID Count</label>
+            <description><![CDATA[Tablename Suffix ID Count <br>(optional, default: 4 -> 0001-9999). <br>
+            For migration from MYSQL-Bundle set to 0.]]></description>
+        </parameter>
+        <parameter name="rebuildTableNames" type="text" required="false">
+            <label>Tablename Rebuild</label>
+            <description><![CDATA[Rename existing tables using 'Tablename Realname Generation' and 'Tablename Suffix ID Count', (optional, default: disabled). <br>
+            USE WITH CARE! Deactivate after renaming is done!]]></description>
+            <options>
+                <option value="true">Enable</option>
+                <option value="false">Disable</option>
+            </options>
+        </parameter>
+        
+        <!--    
+                # D A T A B A S E  C O N N E C T I O N S
+                # Some embeded Databases can handle only one Connection (optional, default: configured per database in packet org.openhab.persistence.jdbc.db.* )
+                # see: https://github.com/brettwooldridge/HikariCP/issues/256
+                # maximumPoolSize = 1
+                # minimumIdle = 1
+         -->
+        <parameter name="maximumPoolSize" type="text" required="false">
+            <label>Connections Max Pool Size</label>
+            <description><![CDATA[Overrides max pool size in database connection. <br>(optional, default: differs each Database)<br>
+            https://github.com/brettwooldridge/HikariCP/issues/256]]></description>
+        </parameter>
+        <parameter name="minimumIdle" type="text" required="false">
+            <label>Connections Min Idle</label>
+            <description><![CDATA[Overrides min idle database connections. <br>(optional, default: differs each Database)<br>
+            https://github.com/brettwooldridge/HikariCP/issues/256]]></description>
+        </parameter>
+        
+        <!--    
+                # T I M E K E E P I N G
+				# (optional, default: false) 
+				#enableLogTime=true
+         -->
+        <parameter name="enableLogTime" type="text" required="false">
+            <label>Timekeeping Enable</label>
+            <description><![CDATA[Enables a time, performance measurement. <br>(optional, default: disabled)]]></description>
+            <options>
+                <option value="true">Enable</option>
+                <option value="false">Disable</option>
+            </options>
+        </parameter>
+        
+	</config-description>
+
+</config-description:config-descriptions>

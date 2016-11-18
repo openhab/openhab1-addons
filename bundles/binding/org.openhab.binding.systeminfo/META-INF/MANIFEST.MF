@@ -10,6 +10,28 @@ Bundle-Activator: org.openhab.binding.systeminfo.internal.SysteminfoActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Systeminfo Binding of the open Home Aut
  omation Bus (openHAB)
+Bundle-NativeCode: lib/amd64/freebsd/6/libsigar.so;processor=amd64;osname=freebsd;osversion=6,
+ lib/amd64/linux/libsigar.so;processor=amd64;osname=linux,
+ lib/amd64/solaris/libsigar.so;processor=amd64;osname=solaris,
+ lib/amd64/winnt/sigar.dll;processor=amd64;osname=win32;osname=Windows8;osname=Windows 8;osname=Win8;osname=Windows10;osname=Windows 10;osname=Win10,
+ lib/arm/linux/libsigar-cubian.so;lib/arm/linux/libsigar-odroid-u3.so;lib/arm/linux/libsigar-raspbian.so;processor=arm;osname=linux,
+ lib/ia64/hpux/11/libsigar.sl;processor=ia64w;osname=hpux,
+ lib/ia64/linux/libsigar.so;processor=ia64w;osname=linux,
+ lib/pa/hpux/11/libsigar.sl;processor=parisc;osname=hpux,
+ lib/ppc/aix/5/libsigar.so;processor=ppc;osname=aix,
+ lib/ppc/linux/libsigar.so;processor=ppc;osname=linux,
+ lib/ppc64/aix/5/libsigar.so;processor=ppc64;osname=aix,
+ lib/ppc64/linux/libsigar.so;processor=ppc64;osname=linux,
+ lib/s390x/linux/libsigar.so;processor=s390x;osname=linux,
+ lib/sparc/solaris/libsigar.so;processor=sparc;osname=solaris,
+ lib/sparc64/solaris/libsigar.so;processor=sparcv9;osname=solaris,
+ lib/universal/macosx/libsigar.dylib;processor=x86;osname=macosx,
+ lib/universal64/macosx/libsigar.dylib;processor=x86_64;osname=macosx,
+ lib/x86/freebsd/5/libsigar.so;processor=x86;osname=freebsd;osversion=5,
+ lib/x86/freebsd/6/libsigar.so;processor=x86;osname=freebsd;osversion=6,
+ lib/x86/linux/libsigar.so;processor=x86;osname=linux,
+ lib/x86/solaris/libsigar.so;processor=x86;osname=solaris,
+ lib/x86/winnt/sigar.dll;processor=x86;osname=win32;osname=Windows8;osname=Windows 8;osname=Win8;osname=Windows10;osname=Windows 10;osname=Win10
 Import-Package: org.apache.commons.lang,
  org.eclipse.emf.ecore,
  org.openhab.core.binding,
@@ -28,5 +50,5 @@ Export-Package: org.openhab.binding.systeminfo
 Bundle-DocURL: http://www.openhab.org
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
- lib/sigar-1.6.4.jar
+ lib/sigar.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

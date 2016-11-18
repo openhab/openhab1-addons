@@ -43,33 +43,61 @@
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
 
-<feature name="RemoteButtonA">
+<feature name="RemoteButton1">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x11" button="1" group="1">LightOnSwitchHandler</message-handler>
 	<message-handler cmd="0x13" button="1" group="1">LightOffSwitchHandler</message-handler>
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
-<feature name="RemoteButtonB">
-	<message-dispatcher>DefaultDispatcher</message-dispatcher>
-	<message-handler cmd="0x03" group="2">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="2" group="2">LightOnSwitchHandler</message-handler>
-	<message-handler cmd="0x13" button="2" group="2">LightOffSwitchHandler</message-handler>
-	<poll-handler>NoPollHandler</poll-handler>
+<feature name="RemoteButton2">
+    	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+    	<message-handler cmd="0x03" group="2">NoOpMsgHandler</message-handler>
+    	<message-handler cmd="0x11" button="2" group="2">LightOnSwitchHandler</message-handler>
+    	<message-handler cmd="0x13" button="2" group="2">LightOffSwitchHandler</message-handler>
+    	<poll-handler>NoPollHandler</poll-handler>
 </feature>
-<feature name="RemoteButtonC">
-	<message-dispatcher>DefaultDispatcher</message-dispatcher>
-	<message-handler cmd="0x03" group="3">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="3" group="3">LightOnSwitchHandler</message-handler>
-	<message-handler cmd="0x13" button="3" group="3">LightOffSwitchHandler</message-handler>
-	<poll-handler>NoPollHandler</poll-handler>
+<feature name="RemoteButton3">
+    	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+    	<message-handler cmd="0x03" group="3">NoOpMsgHandler</message-handler>
+    	<message-handler cmd="0x11" button="3" group="3">LightOnSwitchHandler</message-handler>
+    	<message-handler cmd="0x13" button="3" group="3">LightOffSwitchHandler</message-handler>
+    	<poll-handler>NoPollHandler</poll-handler>
 </feature>
-<feature name="RemoteButtonD">
-	<message-dispatcher>DefaultDispatcher</message-dispatcher>
-	<message-handler cmd="0x03" group="4">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="4" group="4">LightOnSwitchHandler</message-handler>
-	<message-handler cmd="0x13" button="4" group="4">LightOffSwitchHandler</message-handler>
-	<poll-handler>NoPollHandler</poll-handler>
+<feature name="RemoteButton4">
+    	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+    	<message-handler cmd="0x03" group="4">NoOpMsgHandler</message-handler>
+    	<message-handler cmd="0x11" button="4" group="4">LightOnSwitchHandler</message-handler>
+    	<message-handler cmd="0x13" button="4" group="4">LightOffSwitchHandler</message-handler>
+    	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="RemoteButton5">
+    	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+    	<message-handler cmd="0x03" group="5">NoOpMsgHandler</message-handler>
+    	<message-handler cmd="0x11" button="5" group="5">LightOnSwitchHandler</message-handler>
+    	<message-handler cmd="0x13" button="5" group="5">LightOffSwitchHandler</message-handler>
+    	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="RemoteButton6">
+    	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+    	<message-handler cmd="0x03" group="6">NoOpMsgHandler</message-handler>
+    	<message-handler cmd="0x11" button="6" group="6">LightOnSwitchHandler</message-handler>
+    	<message-handler cmd="0x13" button="6" group="6">LightOffSwitchHandler</message-handler>
+    	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="RemoteButton7">
+    	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+    	<message-handler cmd="0x03" group="7">NoOpMsgHandler</message-handler>
+    	<message-handler cmd="0x11" button="7" group="7">LightOnSwitchHandler</message-handler>
+    	<message-handler cmd="0x13" button="7" group="7">LightOffSwitchHandler</message-handler>
+    	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="RemoteButton8">
+    	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+    	<message-handler cmd="0x03" group="8">NoOpMsgHandler</message-handler>
+    	<message-handler cmd="0x11" button="8" group="8">LightOnSwitchHandler</message-handler>
+    	<message-handler cmd="0x13" button="8" group="8">LightOffSwitchHandler</message-handler>
+    	<poll-handler>NoPollHandler</poll-handler>
 </feature>
 <feature name="LoadSwitchButton">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>

@@ -1,5 +1,0 @@
-INCREASE=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=?++)
-DECREASE=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=?--)
-OFF=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=0)
-ON=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=100)
-_defaultCommand=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=??)

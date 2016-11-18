@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2016, openHAB.org and others.
+    Copyright (c) 2010-2016 by the respective copyright holders.
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -18,5 +18,5 @@
    <property name="service.pid" type="String" value="org.openhab.nibeheatpump"/>
    
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
-   <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.nibeheatpump.NibeHeatPumpBindingProvider" name="nibeheatpumpBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
+   <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.nibeheatpump.NibeHeatPumpBindingProvider" name="NibeHeatPumpBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
 </scr:component>
