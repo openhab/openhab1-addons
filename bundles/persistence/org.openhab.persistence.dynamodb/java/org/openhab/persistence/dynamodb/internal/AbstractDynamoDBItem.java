@@ -189,57 +189,9 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
     }
 
     /**
-     * We define all getter and setters as abstract and require the inheritor class implement those. Having the getter
-     * and setter implementations here in the parent class does not work with introspection done by AWS SDK.
+     * We define all getter and setters in the child class implement those. Having the getter
+     * and setter implementations here in the parent class does not work with introspection done by AWS SDK (1.11.56).
      */
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#getName()
-     */
-    @Override
-    public abstract String getName();
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#getState()
-     */
-    @Override
-    public abstract T getState();
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#getTime()
-     */
-    @Override
-    public abstract Date getTime();
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#setName(java.lang.String)
-     */
-    @Override
-    public abstract void setName(String name);
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#setState(T)
-     */
-    @Override
-    public abstract void setState(T state);
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.persistence.dynamodb.internal.DynamoItem#setTime(java.util.Date)
-     */
-    @Override
-    public abstract void setTime(Date time);
 
     /*
      * (non-Javadoc)
