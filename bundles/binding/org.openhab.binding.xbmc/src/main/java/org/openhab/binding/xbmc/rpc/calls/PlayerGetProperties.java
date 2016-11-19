@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,27 +13,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.xbmc.rpc.RpcCall;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.ning.http.client.AsyncHttpClient;
 
 /**
  * Player.GetProperties RPC
  *
- * @author Ben jones, Plebs
+ * @author Ben Jones
  * @since 1.5.0
  */
 public class PlayerGetProperties extends RpcCall {
 
-    private static final Logger logger = LoggerFactory.getLogger(RpcCall.class);
-
     private int playerId;
-    private List<String> properties;
 
-    private Map<String, Object> item;
+    private boolean paused = false;
 
     public PlayerGetProperties(AsyncHttpClient client, String uri) {
         super(client, uri);
@@ -43,10 +37,6 @@ public class PlayerGetProperties extends RpcCall {
         this.playerId = playerId;
     }
 
-    public void setProperties(List<String> properties) {
-        this.properties = properties;
-    }
-
     @Override
     protected String getName() {
         return "Player.GetProperties";
@@ -54,75 +44,25 @@ public class PlayerGetProperties extends RpcCall {
 
     @Override
     protected Map<String, Object> getParams() {
-        List<String> paramProperties = new ArrayList<String>();
-        for (String property : properties) {
-            if (property.startsWith("Property.")) {
-                String paramProperty = getParamProperty(property);
-                paramProperties.add(paramProperty);
-            }
-        }
+        List<String> properties = new ArrayList<String>();
+        properties.add("speed");
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("playerid", playerId);
-        params.put("properties", paramProperties);
+        params.put("properties", properties);
         return params;
     }
 
     @Override
     protected void processResponse(Map<String, Object> response) {
         Map<String, Object> result = getMap(response, "result");
-        item = result;
+
+        if (result.containsKey("speed")) {
+            paused = (Integer) result.get("speed") == 0;
+        }
     }
 
-    public String getPropertyValue(String property) {
-        String paramProperty = getParamProperty(property);
-        if (!item.containsKey(paramProperty)) {
-            return null;
-        }
-
-        Object value = item.get(paramProperty);
-
-        if (value instanceof List<?>) {
-            List<?> values = (List<?>) value;
-
-            // check if list contains any values
-            if (values.size() == 0) {
-                return null;
-            }
-
-            // some properties come back as a list with an indexer
-            String paramPropertyIndex = getPropertyValue(paramProperty + "id");
-            int propertyIndex;
-            if (!StringUtils.isEmpty(paramPropertyIndex)) {
-                // attempt to parse the property index
-                try {
-                    propertyIndex = Integer.parseInt(paramPropertyIndex);
-                } catch (NumberFormatException e) {
-                    return null;
-                }
-
-                // check if the index is valid
-                if (propertyIndex < 0 || propertyIndex >= values.size()) {
-                    return null;
-                }
-            } else {
-                // some properties come back as a list without an indexer,
-                // e.g. artist, for these we return the first in the list
-                propertyIndex = 0;
-            }
-
-            value = values.get(propertyIndex);
-        }
-
-        if (value == null) {
-            return null;
-        }
-
-        return value.toString();
+    public boolean isPaused() {
+        return paused;
     }
-
-    private String getParamProperty(String property) {
-        // properties entered as 'Property.Title' etc - so strip the first 9 chars
-        return property.substring(9).toLowerCase();
-    }
-
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
 
 /**
  * Node status event is used to signal if a node is alive or dead
- *
+ * 
  * @author Chris Jackson
  * @since 1.5.0
  */
@@ -22,7 +22,7 @@ public class ZWaveNodeStatusEvent extends ZWaveEvent {
     /**
      * Constructor. Creates a new instance of the ZWaveNetworkEvent
      * class.
-     *
+     * 
      * @param nodeId the nodeId of the event.
      */
     public ZWaveNodeStatusEvent(int nodeId, ZWaveNodeState state) {

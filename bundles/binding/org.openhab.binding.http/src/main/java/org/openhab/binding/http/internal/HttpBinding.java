@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,12 +23,25 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DateTimeItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DateTimeType;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
+import org.openhab.core.types.TypeParser;
 import org.openhab.io.net.http.HttpUtil;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -42,25 +55,20 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @author Pauli Anttila
  * @auther Ben Jones
- * @author John Cocula
  * @since 0.6.0
  */
-public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> implements ManagedService {
+public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>implements ManagedService {
 
     static final Logger logger = LoggerFactory.getLogger(HttpBinding.class);
 
     protected static final String CONFIG_TIMEOUT = "timeout";
     protected static final String CONFIG_GRANULARITY = "granularity";
-    protected static final String CONFIG_FORMAT = "format";
 
     /** the timeout to use for connecting to a given host (defaults to 5000 milliseconds) */
     private int timeout = 5000;
 
     /** the interval to find new refresh candidates (defaults to 1000 milliseconds) */
     private int granularity = 1000;
-
-    /** whether to substitute time and/or state into the URL */
-    private boolean format = true;
 
     private Map<String, Long> lastUpdateMap = new HashMap<String, Long>();
 
@@ -133,9 +141,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
             for (String itemName : provider.getInBindingItemNames()) {
 
                 String url = provider.getUrl(itemName);
-                if (format) {
-                    url = String.format(url, Calendar.getInstance().getTime());
-                }
+                url = String.format(url, Calendar.getInstance().getTime());
 
                 Properties headers = provider.getHttpHeaders(itemName);
                 int refreshInterval = provider.getRefreshInterval(itemName);
@@ -197,12 +203,11 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 
                         logger.debug("transformed response is '{}'", transformedResponse);
 
-                        State state = provider.getState(itemName, transformedResponse);
+                        Class<? extends Item> itemType = provider.getItemType(itemName);
+                        State state = createState(itemType, transformedResponse);
+
                         if (state != null) {
                             eventPublisher.postUpdate(itemName, state);
-                        } else {
-                            logger.debug("Couldn't create state for item '{}' from string '{}'", itemName,
-                                    transformedResponse);
                         }
                     }
 
@@ -236,6 +241,38 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
     }
 
     /**
+     * Returns a {@link State} which is inherited from the {@link Item}s
+     * accepted DataTypes. The call is delegated to the {@link TypeParser}. If
+     * <code>item</code> is <code>null</code> the {@link StringType} is used.
+     *
+     * @param itemType
+     * @param transformedResponse
+     *
+     * @return a {@link State} which type is inherited by the {@link TypeParser}
+     *         or a {@link StringType} if <code>item</code> is <code>null</code>
+     */
+    private State createState(Class<? extends Item> itemType, String transformedResponse) {
+        try {
+            if (itemType.isAssignableFrom(NumberItem.class)) {
+                return DecimalType.valueOf(transformedResponse);
+            } else if (itemType.isAssignableFrom(ContactItem.class)) {
+                return OpenClosedType.valueOf(transformedResponse);
+            } else if (itemType.isAssignableFrom(SwitchItem.class)) {
+                return OnOffType.valueOf(transformedResponse);
+            } else if (itemType.isAssignableFrom(RollershutterItem.class)) {
+                return PercentType.valueOf(transformedResponse);
+            } else if (itemType.isAssignableFrom(DateTimeItem.class)) {
+                return DateTimeType.valueOf(transformedResponse);
+            } else {
+                return StringType.valueOf(transformedResponse);
+            }
+        } catch (Exception e) {
+            logger.debug("Couldn't create state of type '{}' for value '{}'", itemType, transformedResponse);
+            return StringType.valueOf(transformedResponse);
+        }
+    }
+
+    /**
      * Finds the corresponding binding provider, replaces formatting markers
      * in the url (@see java.util.Formatter for further information) and executes
      * the formatted url.
@@ -255,9 +292,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 
         String httpMethod = provider.getHttpMethod(itemName, command);
         String url = provider.getUrl(itemName, command);
-        if (format) {
-            url = String.format(url, Calendar.getInstance().getTime(), value);
-        }
+        url = String.format(url, Calendar.getInstance().getTime(), value);
 
         if (isNotBlank(httpMethod) && isNotBlank(url)) {
             HttpUtil.executeUrl(httpMethod, url, provider.getHttpHeaders(itemName, command), null, null, timeout);
@@ -375,11 +410,6 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
                 String granularityString = (String) config.get(CONFIG_GRANULARITY);
                 if (StringUtils.isNotBlank(granularityString)) {
                     granularity = Integer.parseInt(granularityString);
-                }
-
-                String formatString = (String) config.get(CONFIG_FORMAT);
-                if (StringUtils.isNotBlank(formatString)) {
-                    format = formatString.equalsIgnoreCase("true");
                 }
 
                 // Parse page cache config

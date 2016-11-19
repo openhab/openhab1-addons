@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,7 @@ package org.openhab.binding.zwave.internal.protocol.event;
  * Network event signals that a network function has completed.
  * This is used to notify higher layers of network functions so they
  * can be handled by (for example) a network heal process.
- *
+ * 
  * @author Chris Jackson
  * @since 1.4.0
  */
@@ -23,7 +23,7 @@ public class ZWaveNetworkEvent extends ZWaveEvent {
     /**
      * Constructor. Creates a new instance of the ZWaveNetworkEvent
      * class.
-     *
+     * 
      * @param nodeId the nodeId of the event.
      */
     public ZWaveNetworkEvent(Type type, int nodeId, State state) {

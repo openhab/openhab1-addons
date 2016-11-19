@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -44,7 +44,7 @@ public class WeatherBinding extends AbstractBinding<WeatherBindingProvider>imple
     }
 
     /**
-     * Sets providers in WeatherContext and generates metadata from the weather
+     * Set providers in WeatherContext and generates metadata from the weater
      * model annotations.
      */
     @Override
@@ -71,32 +71,16 @@ public class WeatherBinding extends AbstractBinding<WeatherBindingProvider>imple
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        if (config == null) {
-            logger.warn("Unable to find any configuration settings for weather binding. Check openhab.cfg.");
-            throw new ConfigurationException("weather",
-                    "Unable to find any configuration settings for weather binding. Check openhab.cfg.");
+        if (config != null) {
+            context.getJobScheduler().stop();
+
+            context.getConfig().parse(config);
+            context.getConfig().dump();
+
+            if (context.getConfig().isValid()) {
+                context.getJobScheduler().restart();
+            }
         }
-
-        context.getJobScheduler().stop();
-
-        context.getConfig().parse(config);
-        context.getConfig().dump();
-
-        if (context.getConfig().isValid()) {
-            context.getJobScheduler().restart();
-        } else {
-            logger.warn("Unable to restart weather job because weather configuration is not valid. Check openhab.cfg.");
-            throw new ConfigurationException("weather",
-                    "Unable to restart weather job because weather configuration is not valid. Check openhab.cfg.");
-        }
-    }
-
-    protected void addBindingProvider(WeatherBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(WeatherBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -104,15 +88,8 @@ public class WeatherBinding extends AbstractBinding<WeatherBindingProvider>imple
      */
     @Override
     public void allBindingsChanged(BindingProvider provider) {
-        if (!context.getConfig().finishedParsing()) {
-            return;
-        }
-
         if (context.getConfig().isValid()) {
             context.getJobScheduler().restart();
-        } else {
-            logger.warn(
-                    "All bindings changed, but unable to restart weather job because weather configuration is not valid. Check openhab.cfg.");
         }
     }
 
@@ -121,17 +98,10 @@ public class WeatherBinding extends AbstractBinding<WeatherBindingProvider>imple
      */
     @Override
     public void bindingChanged(BindingProvider provider, String itemName) {
-        if (!context.getConfig().finishedParsing()) {
-            return;
-        }
-
         if (context.getConfig().isValid()) {
             if (provider instanceof WeatherBindingProvider) {
                 context.getJobScheduler().restart();
             }
-        } else {
-            logger.debug("Binding for item '{}' changed, but unable to restart weather job "
-                    + " because weather configuration is not valid. Check openhab.cfg.", itemName);
         }
         super.bindingChanged(provider, itemName);
     }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -75,7 +75,7 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
 
     /**
      * Called by the SCR to activate the component with its configuration read from CAS
-     *
+     * 
      * @param bundleContext BundleContext of the Bundle that defines this component
      * @param configuration Configuration properties for this component obtained from the ConfigAdmin service
      */
@@ -218,14 +218,6 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
                                                                           // needed for finding item map
             }
         }
-    }
-
-    protected void addBindingProvider(FritzboxTr064BindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(FritzboxTr064BindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
     }
 
 }

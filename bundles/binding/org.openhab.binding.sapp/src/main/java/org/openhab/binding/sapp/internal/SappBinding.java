@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -93,7 +93,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider>imple
 
     /**
      * Called by the SCR to activate the component with its configuration read from CAS
-     *
+     * 
      * @param bundleContext
      *            BundleContext of the Bundle that defines this component
      * @param configuration
@@ -158,7 +158,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider>imple
     /**
      * Called by the SCR to deactivate the component when either the configuration is removed or mandatory references
      * are no longer satisfied or the component has simply been stopped.
-     *
+     * 
      * @param reason
      *            Reason code for the deactivation:<br>
      *            <ul>
@@ -194,14 +194,6 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider>imple
         return "Sapp Refresh Service";
     }
 
-    protected void addBindingProvider(SappBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(SappBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     @Override
     public void allBindingsChanged(BindingProvider provider) {
         ((SappBindingProvider) provider).getSappUpdatePendingRequests()
@@ -215,7 +207,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider>imple
 
     /**
      * Sets locally the item registry
-     *
+     * 
      * @param itemRegistry
      *            the item registry
      */
@@ -227,7 +219,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider>imple
 
     /**
      * Unsets locally the item registry
-     *
+     * 
      * @param itemRegistry
      *            the item registry
      */
@@ -609,9 +601,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider>imple
 
     /**
      * Find the first matching {@link ChannelBindingProvider} according to <code>itemName</code>
-     *
+     * 
      * @param itemName
-     *
+     * 
      * @return the matching binding provider or <code>null</code> if no binding provider could be found
      */
 

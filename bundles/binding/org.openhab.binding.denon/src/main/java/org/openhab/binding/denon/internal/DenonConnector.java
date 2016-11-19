@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,13 +10,10 @@ package org.openhab.binding.denon.internal;
 
 import java.beans.Introspector;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -53,6 +50,7 @@ import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
+import org.openhab.io.net.http.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -555,7 +553,7 @@ public class DenonConnector {
 
     private <T> T getDocument(String uri, Class<T> response) {
         try {
-            String result = doHttpRequest("GET", uri, null);
+            String result = HttpUtil.executeUrl("GET", uri, REQUEST_TIMEOUT_MS);
 
             if (StringUtils.isNotBlank(result)) {
                 JAXBContext jc = JAXBContext.newInstance(response);
@@ -584,7 +582,8 @@ public class DenonConnector {
             StringWriter sw = new StringWriter();
             jaxbMarshaller.marshal(request, sw);
 
-            String result = doHttpRequest("POST", uri, sw.toString());
+            String result = HttpUtil.executeUrl("POST", uri, IOUtils.toInputStream(sw.toString()), CONTENT_TYPE_XML,
+                    REQUEST_TIMEOUT_MS);
 
             if (StringUtils.isNotBlank(result)) {
                 JAXBContext jcResponse = JAXBContext.newInstance(response);
@@ -596,32 +595,6 @@ public class DenonConnector {
             }
         } catch (JAXBException e) {
             logger.debug("Encoding error in post", e);
-        }
-
-        return null;
-    }
-
-    private String doHttpRequest(String method, String uri, String request) {
-        try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(uri).openConnection();
-            connection.setRequestMethod(method);
-            connection.setConnectTimeout(REQUEST_TIMEOUT_MS);
-            connection.setReadTimeout(REQUEST_TIMEOUT_MS);
-            connection.addRequestProperty("Content-Type", CONTENT_TYPE_XML);
-
-            if (request != null) {
-                connection.setDoOutput(true);
-                connection.getOutputStream().write(request.getBytes());
-            }
-
-            InputStream is = connection.getInputStream();
-            String ret = IOUtils.toString(is);
-
-            connection.disconnect();
-
-            return ret;
-        } catch (IOException e) {
-            logger.debug("HTTP communication error", e);
         }
 
         return null;

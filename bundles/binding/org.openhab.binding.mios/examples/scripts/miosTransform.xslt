@@ -104,7 +104,6 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@service = 'urn:upnp-org:serviceId:HVAC_UserOperatingMode1'"     >HVAC_UserOperatingMode1</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSetpoint1_Cool'"   >TemperatureSetpoint1_Cool</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSetpoint1_Heat'"   >TemperatureSetpoint1_Heat</xsl:when>
-<xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSetpoint1'"        >TemperatureSetpoint1</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:AVTransport'"                 >AVTransport</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:RenderingControl'"            >RenderingControl</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:DeviceProperties'"            >DeviceProperties</xsl:when>
@@ -183,10 +182,6 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSensor1'        and @variable = 'CurrentTemperature'"  >Number</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSetpoint1_Cool' and @variable = 'CurrentSetpoint'"     >Number</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSetpoint1_Heat' and @variable = 'CurrentSetpoint'"     >Number</xsl:when>
-<xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSetpoint1'      and @variable = 'CurrentSetpoint'"     >Number</xsl:when>
-<xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSetpoint1'      and @variable = 'SetpointTarget'"      >Number</xsl:when>
-<xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSetpoint1'      and @variable = 'AutoMode'"            >Integer</xsl:when>
-<xsl:when test="@service = 'urn:upnp-org:serviceId:HVAC_UserOperatingMode1'   and @variable = 'AutoMode'"            >Contact</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:RenderingControl'          and @variable = 'Volume'"              >Dimmer</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:RenderingControl'          and @variable = 'Mute'"                >Switch</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:Camera1'            and @variable = 'AutoArchiveSeconds'"  >Integer</xsl:when>
@@ -204,8 +199,6 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:HaDevice1'          and @variable = 'CommFailureTime'"     >DateTime</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:HaDevice1'          and @variable = 'sl_BatteryAlarm'"     >Integer</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:HaDevice1'          and @variable = 'PollingEnabled'"      >Integer</xsl:when>
-<xsl:when test="@service = 'urn:micasaverde-com:serviceId:HaDevice1'          and @variable = 'PollRatings'"         >Number</xsl:when>
-<xsl:when test="@service = 'urn:micasaverde-com:serviceId:HaDevice1'          and @variable = 'WakeupRatings'"       >Number</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:SecuritySensor1'    and @variable = 'LastTrip'"            >DateTime</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:SecuritySensor1'    and @variable = 'LastTripAlert'"       >DateTime</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:SecuritySensor1'    and @variable = 'LastUntrip'"          >DateTime</xsl:when>
@@ -374,7 +367,6 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@variable='Status'          and @service = 'urn:upnp-org:serviceId:SwitchPower1'"             ></xsl:when>
 <xsl:when test="                                @service = 'urn:upnp-org:serviceId:TemperatureSetpoint1_Heat'" >Heat</xsl:when>
 <xsl:when test="                                @service = 'urn:upnp-org:serviceId:TemperatureSetpoint1_Cool'" >Cool</xsl:when>
-<xsl:when test="                                @service = 'urn:upnp-org:serviceId:TemperatureSetpoint1'"      ></xsl:when>
 <xsl:when test="                                @service = 'urn:upnp-org:serviceId:HVAC_FanOperatingMode1'"    >Fan</xsl:when>
 <xsl:when test="                                @service = 'urn:upnp-org:serviceId:HVAC_UserOperatingMode1'"   >User</xsl:when>
 <xsl:otherwise><xsl:value-of select="@id"/></xsl:otherwise>
@@ -440,7 +432,6 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@variable = 'sl_LockChanged'"       > Lock Changed</xsl:when>
 <xsl:when test="@variable = 'sl_BatteryAlarm'"      > Battery Alarm</xsl:when>
 <xsl:when test="@variable = 'sl_UserCode'"          > User Code</xsl:when>
-<xsl:when test="@variable = 'sl_VeryLowBattery'"    > Very Low Battery</xsl:when>
 <xsl:when test="@variable = 'Volume'"               > Volume</xsl:when>
 <xsl:when test="@variable = 'Input'"                > Input</xsl:when>
 <xsl:when test="@variable = 'Channel'"              > Channel</xsl:when>
@@ -599,24 +590,13 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@variable = 'Version'"              > Version</xsl:when>
 <xsl:when test="@variable = 'StartTime'"            > Start Time</xsl:when>
 <xsl:when test="@variable = 'Children'"             > Children</xsl:when>
-<xsl:when test="@variable = 'CommFailureTime'"      > Comms Failure Time</xsl:when>
+<xsl:when test="@variable = 'CommFailureTime'"      > Comm Failure Time</xsl:when>
 <xsl:when test="@variable = 'ConsecutivePollFails'" > Consecutive Poll Fails</xsl:when>
 <xsl:when test="@variable = 'InternalAlerts'"       > Internal Alerts</xsl:when>
 <xsl:when test="@variable = 'UserProfileAssociation'" > User Profile Association</xsl:when>
 <xsl:when test="@variable = 'Message'"              > Message</xsl:when>
 <xsl:when test="@variable = 'HMode'"                > House Mode</xsl:when>
 <xsl:when test="@variable = 'Unit'"                 > Unit</xsl:when>
-<xsl:when test="@variable = 'ReportMode'"           > Report Mode</xsl:when>
-<xsl:when test="@variable = 'AutoMode'"             > Auto Mode</xsl:when>
-<xsl:when test="@variable = 'PollRatings'"          > Poll Ratings</xsl:when>
-<xsl:when test="@variable = 'WakeupRatings'"        > Wakeup Ratings</xsl:when>
-<xsl:when test="@variable = 'AllSetpoints'"         > All Setpoints</xsl:when>
-<xsl:when test="@variable = 'SetpointTarget'"       > Setpoint Target</xsl:when>
-<xsl:when test="@variable = 'SupportedType'"        > Supported Type</xsl:when>
-<xsl:when test="@variable = 'CommFailureAlarm'"     > Comms Failure Alarm</xsl:when>
-<xsl:when test="@variable = 'PinCodes'"             > PIN Codes</xsl:when>
-<xsl:when test="@variable = 'NumSchedules'"         > Number of Schedules</xsl:when>
-<xsl:when test="@variable = 'KeepPinCodes'"         > Keep PIN Codes</xsl:when>
 <xsl:when test="../../@id = '1'"                    ><xsl:value-of select="concat(' ', @variable)"/></xsl:when>
 <xsl:otherwise                                      > FIXME <xsl:value-of select="@variable"/></xsl:otherwise>
 </xsl:choose>
@@ -627,8 +607,6 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSensor1' and @variable = 'CurrentTemperature'"           > [%.1f F]</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSetpoint1_Cool' and @variable = 'CurrentSetpoint'"       > [%.1f F]</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSetpoint1_Heat' and @variable = 'CurrentSetpoint'"       > [%.1f F]</xsl:when>
-<xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSetpoint1' and @variable = 'CurrentSetpoint'"            > [%.1f F]</xsl:when>
-<xsl:when test="@service = 'urn:upnp-org:serviceId:TemperatureSetpoint1' and @variable = 'SetpointTarget'"             > [%.1f F]</xsl:when>
 <xsl:when test="@service = 'urn:upnp-micasaverde-com:serviceId:Weather1' and @variable = 'FeelsLike'"                  > [%.1f F]</xsl:when>
 <xsl:when test="@service = 'urn:upnp-micasaverde-com:serviceId:Weather1' and @variable = 'HeatIndex'"                  > [%.1f F]</xsl:when>
 <xsl:when test="@service = 'urn:upnp-micasaverde-com:serviceId:Weather1' and @variable = 'DewPoint'"                   > [%.1f F]</xsl:when>

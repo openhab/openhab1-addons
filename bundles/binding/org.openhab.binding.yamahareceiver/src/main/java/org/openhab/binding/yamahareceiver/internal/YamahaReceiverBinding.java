@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Yamaha Receiver binding. Handles all commands and polls configured devices to
+ * Yamaha Reciever binding. Handles all commands and polls configured devices to
  * process updates.
  *
  * @author Eric Thill
@@ -235,14 +235,6 @@ public class YamahaReceiverBinding extends AbstractActiveBinding<YamahaReceiverB
     @Override
     protected void internalReceiveUpdate(String itemName, State newState) {
         // ignore
-    }
-
-    protected void addBindingProvider(YamahaReceiverBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(YamahaReceiverBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
     }
 
     @Override

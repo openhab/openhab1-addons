@@ -17,7 +17,3 @@ distribution/openhabhome/etc/rrd4j/*.rrd
 *~
 features/*/src/main/history
 itemDump.txt
-
-# IntelliJ files
-**/.idea
-**/*.iml

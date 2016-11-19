@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -57,9 +57,6 @@ public class AcknowledgeMessage extends Message {
         }
     }
 
-    private static final Pattern SHORT_RESPONSE_PATTERN = Pattern.compile("(\\w{4})");
-    private static final Pattern EXTENDED_RESPONSE_PATTERN = Pattern.compile("(\\w{4})(\\w{16})");
-
     private ExtensionCode code;
     private String extendedMAC = "";
 
@@ -77,6 +74,10 @@ public class AcknowledgeMessage extends Message {
 
     @Override
     protected void parsePayLoad() {
+
+        Pattern SHORT_RESPONSE_PATTERN = Pattern.compile("(\\w{4})");
+        Pattern EXTENDED_RESPONSE_PATTERN = Pattern.compile("(\\w{4})(\\w{16})");
+
         Matcher shortMatcher = SHORT_RESPONSE_PATTERN.matcher(payLoad);
         Matcher extendedMatcher = EXTENDED_RESPONSE_PATTERN.matcher(payLoad);
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -84,7 +84,7 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider>i
 
     /**
      * get the associated binding provider
-     *
+     * 
      * @return
      */
     public static ZibaseGenericBindingProvider getBindingProvider() {
@@ -132,7 +132,7 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider>i
         logger.info("Shutting down zibase connection and/or thread...");
         zibaseListener.shutdown();
         zibase = null;
-        logger.info("Zibase binding deactivated");
+        logger.info("Zibase binding desactivated");
     }
 
     /**
@@ -186,16 +186,8 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider>i
         config.sendCommand(zibase, command, -1);
     }
 
-    protected void addBindingProvider(ZibaseBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(ZibaseBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
-     * {@inheritDoc}
+     * @{inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

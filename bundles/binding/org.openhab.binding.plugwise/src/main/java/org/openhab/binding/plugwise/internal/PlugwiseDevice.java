@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,21 +27,17 @@ public class PlugwiseDevice implements Comparable {
     public enum DeviceType {
         Stick,
         Circle,
-        CirclePlus,
-        Scan,
-        Sense,
-        Stealth,
-        Switch
+        CirclePlus
     };
 
     protected String MAC;
     protected DeviceType type;
-    protected String name;
+    protected String friendlyName;
 
-    public PlugwiseDevice(String mac, DeviceType type, String name) {
+    public PlugwiseDevice(String mac, DeviceType typed, String friendly) {
         MAC = mac;
-        this.type = type;
-        this.name = name;
+        type = typed;
+        friendlyName = friendly;
     }
 
     public String getMAC() {
@@ -52,8 +48,8 @@ public class PlugwiseDevice implements Comparable {
         return type;
     }
 
-    public String getName() {
-        return name;
+    public String getFriendlyName() {
+        return friendlyName;
     }
 
     @Override
@@ -62,10 +58,11 @@ public class PlugwiseDevice implements Comparable {
     }
 
     /**
-     *
+     * 
      * Each Plugwise device needs to know how process the message that are meant for it. Extending classes therefore
-     * have to Override this method and extend it to include new message types that are relevant for that device class
-     *
+     * have to Override this
+     * method and extend it to include new message types that are relevant for that device class
+     * 
      * @param message to process
      * @return
      */
@@ -85,8 +82,8 @@ public class PlugwiseDevice implements Comparable {
      * delegate this posting to another more superior class
      * For example, Circle(+) will pass this on to the Stick, and the Stick will pass it on to the Plugwise Binding
      * Each device class has to override this method to make it specific for that device class
-     *
-     *
+     * 
+     * 
      * @param MAC of the Plugwise device
      * @param type of Plugwise Command
      * @param value to be posted

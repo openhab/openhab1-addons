@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -49,7 +49,6 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
     OutputStream out = null;
     SerialPort serialPort = null;
     Thread readerThread = null;
-    private boolean ignoreReceiveBuffer = false;
 
     public RFXComSerialConnector() {
     }
@@ -173,14 +172,6 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
                     byte[] logData = Arrays.copyOf(tmpData, len);
                     logger.trace("Received data (len={}): {}", len, DatatypeConverter.printHexBinary(logData));
 
-                    if (ignoreReceiveBuffer) {
-                        // any data already in receive buffer will be ignored
-                        ignoreReceiveBuffer = false;
-                        start_found = false;
-                        if (index > 0) {
-                            logger.trace("Ignoring data in receive Buffer : " + index + " bytes");
-                        }
-                    }
                     for (int i = 0; i < len; i++) {
 
                         if (index > dataBufferMaxLen) {
@@ -251,10 +242,5 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 
     public boolean isConnected() {
         return out != null;
-    }
-    
-    @Override
-    public void clearReceiveBuffer() {
-        ignoreReceiveBuffer = true;
     }
 }

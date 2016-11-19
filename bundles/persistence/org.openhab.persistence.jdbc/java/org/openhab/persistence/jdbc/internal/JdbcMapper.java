@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,11 +22,6 @@ import org.openhab.persistence.jdbc.model.ItemsVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author Helmut Lehmeyer
- * @since 1.8.0
- */
 public class JdbcMapper {
     static final Logger logger = LoggerFactory.getLogger(JdbcMapper.class);
 
@@ -48,8 +43,6 @@ public class JdbcMapper {
         long timerStart = System.currentTimeMillis();
         if (openConnection()) {
             if (conf.getDbName() == null) {
-                logger.debug(
-                        "JDBC::pingDB asking db for name as absolutely first db action, after connection is established.");
                 String dbName = conf.getDBDAO().doGetDB();
                 conf.setDbName(dbName);
                 ret = dbName.length() > 0;
@@ -131,7 +124,7 @@ public class JdbcMapper {
     }
 
     public Item storeItemValue(Item item) {
-        logger.debug("JDBC::storeItemValue: item={}", item.toString());
+        logger.debug("JDBC::storeItemValue: Item={}", item.toString());
         String tableName = getTable(item);
         if (tableName == null) {
             logger.error("JDBC::store: Unable to store item '{}'.", item.getName());
@@ -156,7 +149,7 @@ public class JdbcMapper {
             logTime("insertItemValue", timerStart, System.currentTimeMillis());
             return r;
         } else {
-            logger.error("JDBC::getHistItemFilterQuery: TABLE is NULL; cannot get data from non-existent table.");
+            logger.error("JDBC::getHistItemFilterQuery: TABLE is NULL, cannot get Data from not existing Table.");
         }
         return null;
     }
@@ -167,8 +160,8 @@ public class JdbcMapper {
     protected boolean openConnection() {
         logger.debug("JDBC::openConnection isDriverAvailable: {}", conf.isDriverAvailable());
         if (conf.isDriverAvailable() && !conf.isDbConnected()) {
-            logger.info("JDBC::openConnection: Driver is available::Yank setupDataSource");
-            Yank.setupDefaultConnectionPool(conf.getHikariConfiguration());
+            logger.warn("JDBC::openConnection: setupDataSource.");
+            Yank.setupDataSource(conf.getHikariConfiguration());
             conf.setDbConnected(true);
             return true;
         } else if (!conf.isDriverAvailable()) {
@@ -182,11 +175,11 @@ public class JdbcMapper {
     protected void closeConnection() {
         logger.debug("JDBC::closeConnection");
         // Closes all open connection pools
-        Yank.releaseDefaultConnectionPool();
+        Yank.releaseDataSource();
         conf.setDbConnected(false);
     }
 
-    protected boolean checkDBAccessability() {
+    protected boolean checkDBAcessability() {
         // Check if connection is valid
         if (initialized) {
             return true;
@@ -194,13 +187,10 @@ public class JdbcMapper {
         // first
         boolean p = pingDB();
         if (p) {
-            logger.debug("JDBC::checkDBAcessability, first try connection: {}", p);
             return (p && !(conf.getErrReconnectThreshold() > 0 && errCnt <= conf.getErrReconnectThreshold()));
         } else {
             // second
-            p = pingDB();
-            logger.debug("JDBC::checkDBAcessability, second try connection: {}", p);
-            return (p && !(conf.getErrReconnectThreshold() > 0 && errCnt <= conf.getErrReconnectThreshold()));
+            return (pingDB() && !(conf.getErrReconnectThreshold() > 0 && errCnt <= conf.getErrReconnectThreshold()));
         }
     }
 
@@ -237,7 +227,7 @@ public class JdbcMapper {
             return tableName;
         }
 
-        logger.debug("JDBC::getTable: no table found for item '{}' in sqlTables", itemName);
+        logger.debug("JDBC::getTable: no Table found for itemName={} in sqlTables", itemName);
 
         // Create a new entry in items table
         isvo = new ItemsVO();
@@ -245,7 +235,7 @@ public class JdbcMapper {
         isvo = createNewEntryInItemsTable(isvo);
         rowId = isvo.getItemid();
         if (rowId == 0) {
-            logger.error("JDBC::getTable: Creating table for item '{}' failed.", itemName);
+            logger.error("JDBC::getTable: Creating table for item '" + itemName + "' failed.");
         }
         // Create the table name
         logger.debug("JDBC::getTable: getTableName with rowId={} itemName={}", rowId, itemName);
@@ -253,7 +243,7 @@ public class JdbcMapper {
 
         // An error occurred adding the item name into the index list!
         if (tableName == null) {
-            logger.error("JDBC::getTable: tableName was null; could not create a table for item '{}'", itemName);
+            logger.error("JDBC::getTable: tableName was null, could not create a table for item '{}'", itemName);
             return null;
         }
 
@@ -312,11 +302,11 @@ public class JdbcMapper {
 
             if (oldName.startsWith(conf.getTableNamePrefix()) && !oldName.contains("_")) {
                 id = Integer.parseInt(oldName.substring(conf.getTableNamePrefix().length()));
-                logger.warn("JDBC::formatTableNames: found Table with Prefix '{}' Name= {} id= {}",
+                logger.warn("JDBC::formatTableNames: found Table with Prefix '{}' Name= {} id={}",
                         conf.getTableNamePrefix(), oldName, (id));
             } else if (oldName.contains("_")) {
                 id = Integer.parseInt(oldName.substring(oldName.lastIndexOf("_") + 1));
-                logger.warn("JDBC::formatTableNames: found Table Name= {} id= {}", oldName, (id));
+                logger.warn("JDBC::formatTableNames: found Table Name= {} id={}", oldName, (id));
             }
             logger.warn("JDBC::formatTableNames: found Table id= {}", id);
 

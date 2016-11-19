@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Multi Command command class.
- *
+ * 
  * @author Chris Jackson
  * @since 1.6.0
  */
@@ -34,7 +34,7 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 
     /**
      * Creates a new instance of the ZWaveMultiCommandCommandClass class.
-     *
+     * 
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -68,7 +68,7 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
     /**
      * Handle the multi command message. This processes the received frame, processing each
      * command class in turn.
-     *
+     * 
      * @param serialMessage The received message
      * @param offset The starting offset into the payload
      */
@@ -84,7 +84,7 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
             int commandClassCode = serialMessage.getMessagePayloadByte(offset + 1);
             commandClass = CommandClass.getCommandClass(commandClassCode);
             if (commandClass == null) {
-                logger.debug(String.format("NODE %d: Unknown command class 0x%02x", getNode().getNodeId(),
+                logger.error(String.format("NODE %d: Unknown command class 0x%02x", getNode().getNodeId(),
                         commandClassCode));
             } else {
                 logger.debug("NODE {}: Incoming command class {}", getNode().getNodeId(), commandClass.getLabel());
@@ -107,7 +107,7 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
                 }
 
                 if (zwaveCommandClass == null) {
-                    logger.debug("NODE {}: CommandClass %s not implemented.", this.getNode().getNodeId(),
+                    logger.error("NODE {}: CommandClass %s not implemented.", this.getNode().getNodeId(),
                             commandClass.getLabel());
                 } else {
                     logger.debug("NODE {}: Calling handleApplicationCommandRequest.", this.getNode().getNodeId());

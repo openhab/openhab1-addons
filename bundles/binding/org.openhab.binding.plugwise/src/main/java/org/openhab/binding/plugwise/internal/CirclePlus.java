@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,19 +8,29 @@
  */
 package org.openhab.binding.plugwise.internal;
 
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
+
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.openhab.binding.plugwise.PlugwiseCommandType;
 import org.openhab.binding.plugwise.protocol.AcknowledgeMessage;
-import org.openhab.binding.plugwise.protocol.ClockSetRequestMessage;
 import org.openhab.binding.plugwise.protocol.Message;
 import org.openhab.binding.plugwise.protocol.RealTimeClockGetRequestMessage;
 import org.openhab.binding.plugwise.protocol.RealTimeClockGetResponseMessage;
 import org.openhab.binding.plugwise.protocol.RoleCallRequestMessage;
 import org.openhab.binding.plugwise.protocol.RoleCallResponseMessage;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.CronTrigger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,30 +52,42 @@ public class CirclePlus extends Circle {
 
     private static final Logger logger = LoggerFactory.getLogger(CirclePlus.class);
 
-    public static final String CIRCLE_PLUS_JOB_DATA_KEY = "CirclePlus";
-
     protected DateTime realtimeClock;
 
-    public CirclePlus(String mac, Stick stick, String friendly) {
-        super(mac, stick, friendly);
+    public CirclePlus(String mac, Stick stick) {
+        super(mac, stick, "circleplus");
         type = DeviceType.CirclePlus;
-    }
 
-    public boolean setClock() {
-        return setClock(DateTime.now());
-    }
+        // set up the Quartz job to set the clock every 24h
 
-    public boolean setClock(DateTime stamp) {
-        ClockSetRequestMessage message = new ClockSetRequestMessage(MAC, stamp);
-        stick.sendMessage(message);
-        return true;
+        Scheduler sched = null;
+        try {
+            sched = StdSchedulerFactory.getDefaultScheduler();
+        } catch (SchedulerException e) {
+            logger.error("Error getting a reference to the Quarz Scheduler");
+        }
+
+        JobDataMap map = new JobDataMap();
+        map.put("CirclePlus", this);
+
+        JobDetail job = newJob(SetClockJob.class).withIdentity(MAC + "-SetCirclePlusClock", "Plugwise")
+                .usingJobData(map).build();
+
+        CronTrigger trigger = newTrigger().withIdentity(MAC + "-SetCirclePlusClock", "Plugwise").startNow()
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?")).build();
+
+        try {
+            sched.scheduleJob(job, trigger);
+        } catch (SchedulerException e) {
+            logger.error("Error scheduling a Quartz Job");
+        }
     }
 
     /**
      * Role calling is basically asking the Circle+ to return all the devices known to it. Up to 64 devices
      * are supported in a PW network, and role calling is done by sequentially sendng RoleCallMessages for all
      * possible IDs in the network (ID = number from 1 to 63)
-     *
+     * 
      * @param id of the device to rolecall
      */
     public void roleCall(int id) {
@@ -97,32 +119,28 @@ public class CirclePlus extends Circle {
                     if (((RoleCallResponseMessage) message).getNodeID() < 63
                             && !((RoleCallResponseMessage) message).getNodeMAC().equals("FFFFFFFFFFFFFFFF")) {
                         // add e new node
-                        PlugwiseDevice device = stick.getDeviceByMAC(((RoleCallResponseMessage) message).getNodeMAC());
-
-                        if (device == null) {
-                            // currently it is always assumed the device is a Circle, it would be better to
-                            // detect the actual device type by sending an InformationRequestMessage to the MAC
-                            // and use the device type in the InformationResponseMessage for dynamically adding
-                            // devices
-                            device = new Circle(((RoleCallResponseMessage) message).getNodeMAC(), stick,
+                        Circle newCircle1 = (Circle) stick
+                                .getDeviceByMAC(((RoleCallResponseMessage) message).getNodeMAC());
+                        if (newCircle1 == null) {
+                            newCircle1 = new Circle(((RoleCallResponseMessage) message).getNodeMAC(), stick,
                                     ((RoleCallResponseMessage) message).getNodeMAC());
-                            stick.plugwiseDeviceCache.add(device);
-                            logger.debug("Added a Circle with MAC {} to the cache", device.getMAC());
+                            stick.plugwiseDeviceCache.add(newCircle1);
+                            logger.debug("Added a Circle with MAC {} to the cache", newCircle1.getMAC());
                         }
-
-                        if (device instanceof Circle) {
-                            ((Circle) device).updateInformation();
-                            ((Circle) device).calibrate();
-                        }
-
+                        newCircle1.updateInformation();
+                        newCircle1.calibrate();
                         // check if there is any other on the network
                         roleCall(((RoleCallResponseMessage) message).getNodeID() + 1);
                     }
                     return true;
 
                 case REALTIMECLOCK_GET_RESPONSE:
+
                     realtimeClock = ((RealTimeClockGetResponseMessage) message).getTime();
-                    postUpdate(MAC, PlugwiseCommandType.REALTIMECLOCK, realtimeClock);
+
+                    DateTimeFormatter rc = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
+                    postUpdate(MAC, PlugwiseCommandType.REALTIMECLOCK, rc.print(realtimeClock));
+
                     return true;
 
                 case ACKNOWLEDGEMENT:
@@ -153,7 +171,7 @@ public class CirclePlus extends Circle {
 
             // get the reference to the Stick
             JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-            CirclePlus circlePlus = (CirclePlus) dataMap.get(CIRCLE_PLUS_JOB_DATA_KEY);
+            CirclePlus circlePlus = (CirclePlus) dataMap.get("CirclePlus");
             circlePlus.setClock();
         }
     }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -554,9 +554,9 @@ public class CommunicationService {
             throw new StiebelHeatPumpException("heat pump communication could not be established !");
         }
         if (response != DataParser.ESCAPE) {
-            logger.warn("heat pump is communicating, but did not receive Escape message in initial handshake!");
+            logger.warn("heat pump is communicating, but did not received Escape message in inital handshake!");
             throw new StiebelHeatPumpException(
-                    "heat pump is communicating, but did not receive Escape message in initial handshake!");
+                    "heat pump is communicating, but did not received Escape message in inital handshake!");
         }
     }
 

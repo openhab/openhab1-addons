@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.openhab.core.persistence.FilterCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,10 +126,10 @@ public class StringUtilsExt {
 
         URI dbURI = null;
         try {
-            dbURI = new URI(stringAfterSubstr(url, ":", 1).replaceFirst(" ", ""));
+            dbURI = new URI(stringAfterSubstr(url, ":", 1));
             if (dbURI.getScheme() != null) {
                 props.put("scheme", dbURI.getScheme());
-                dbURI = new URI(stringAfterSubstr(url, ":", 2).replaceFirst(" ", ""));
+                dbURI = new URI(stringAfterSubstr(url, ":", 2));
             }
         } catch (URISyntaxException e) {
             logger.error("parseJdbcURL: URI '{}' is not well formated URISyntaxException: {}", url, e);
@@ -260,33 +259,6 @@ public class StringUtilsExt {
             }
         }
         return arr;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString()
-     */
-    public static String filterToString(FilterCriteria filter) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("FilterCriteria [itemName=");
-        builder.append(filter.getItemName());
-        builder.append(", beginDate=");
-        builder.append(filter.getBeginDate());
-        builder.append(", endDate=");
-        builder.append(filter.getEndDate());
-        builder.append(", pageNumber=");
-        builder.append(filter.getPageNumber());
-        builder.append(", pageSize=");
-        builder.append(filter.getPageSize());
-        builder.append(", operator=");
-        builder.append(filter.getOperator());
-        builder.append(", ordering=");
-        builder.append(filter.getOrdering());
-        builder.append(", state=");
-        builder.append(filter.getState());
-        builder.append("]");
-        return builder.toString();
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -147,12 +147,12 @@ public class PrimareBinding extends AbstractBinding<PrimareBindingProvider>
     /**
      * Find the first matching {@link PrimareBindingProvider} according to
      * <code>itemName</code> and <code>command</code>.
-     *
+     * 
      * @param itemName
      *            the item for which to find a provider
      * @param command
      *            the openHAB command for which to find a provider
-     *
+     * 
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -182,16 +182,8 @@ public class PrimareBinding extends AbstractBinding<PrimareBindingProvider>
         return firstMatchingProvider;
     }
 
-    protected void addBindingProvider(PrimareBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(PrimareBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
-     * {@inheritDoc}
+     * @{inheritDoc
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -336,9 +328,9 @@ public class PrimareBinding extends AbstractBinding<PrimareBindingProvider>
     /**
      * Initialize item value. Method sends a query to receiver if init query is
      * configured to binding item configuration
-     *
+     * 
      * @param itemType
-     *
+     * 
      */
     private void initializeItem(String itemName) {
 

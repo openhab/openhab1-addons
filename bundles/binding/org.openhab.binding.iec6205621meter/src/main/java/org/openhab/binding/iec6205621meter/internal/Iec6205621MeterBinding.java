@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.iec6205621meter.Iec6205621MeterBindingProvider;
@@ -48,9 +47,9 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
     private static final Logger logger = LoggerFactory.getLogger(Iec6205621MeterBinding.class);
 
     // regEx to validate a meter config
-    // <code>'^(.*?)\\.(serialPort|initMessage|baudRateChangeDelay|echoHandling)$'</code>
+    // <code>'^(.*?)\\.(serialPort|baudRateChangeDelay|echoHandling)$'</code>
     private final Pattern METER_CONFIG_PATTERN = Pattern
-            .compile("^(.*?)\\.(serialPort|initMessage|baudRateChangeDelay|echoHandling)$");
+            .compile("^(.*?)\\.(serialPort|baudRateChangeDelay|echoHandling)$");
 
     private static final long DEFAULT_REFRESH_INTERVAL = 60000;
 
@@ -125,7 +124,7 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
                         if (obis != null && dataSets.containsKey(obis)) {
                             DataSet dataSet = dataSets.get(obis);
                             if (logger.isDebugEnabled()) {
-                                logger.debug("Updating item " + itemName + " with OBIS code " + obis + " and value "
+                                logger.debug("Updateing item " + itemName + " with OBIS code " + obis + " and value "
                                         + dataSet.getValue());
                             }
                             Class<? extends Item> itemType = provider.getItemType(itemName);
@@ -166,16 +165,8 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
         logger.debug("internalReceiveCommand() is called!");
     }
 
-    protected void addBindingProvider(Iec6205621MeterBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(Iec6205621MeterBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
-     * {@inheritDoc}
+     * @{inheritDoc
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -192,10 +183,6 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
             String value = (String) config.get(name + ".serialPort");
             String serialPort = value != null ? value : MeterConfig.DEFAULT_SERIAL_PORT;
 
-            value = (String) config.get(name + ".initMessage");
-            byte[] initMessage = value != null ? DatatypeConverter.parseHexBinary(value)
-                    : null;
-
             value = (String) config.get(name + ".baudRateChangeDelay");
             int baudRateChangeDelay = value != null ? Integer.valueOf(value)
                     : MeterConfig.DEFAULT_BAUD_RATE_CHANGE_DELAY;
@@ -204,7 +191,7 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
             boolean echoHandling = value != null ? Boolean.valueOf(value) : MeterConfig.DEFAULT_ECHO_HANDLING;
 
             Meter meterConfig = createIec6205621MeterConfig(name,
-                    new MeterConfig(serialPort, initMessage, baudRateChangeDelay, echoHandling));
+                    new MeterConfig(serialPort, baudRateChangeDelay, echoHandling));
 
             if (meterDeviceConfigurtions.put(meterConfig.getName(), meterConfig) != null) {
                 logger.info("Recreated reader {} with  {}!", meterConfig.getName(), meterConfig.getConfig());
@@ -226,7 +213,7 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
 
     /**
      * Analyze configuration to get meter names
-     *
+     * 
      * @return set of String of meter names
      */
     private Set<String> getNames(Dictionary<String, ?> config) {

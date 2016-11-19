@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -161,7 +161,7 @@ public class ZibaseListener extends Thread {
             } catch (UnknownHostException ex) {
                 logger.error("Given Zibase host not reachable : " + ex);
             } catch (IOException ex) {
-                logger.error("IO eror reading Zibase socket : " + ex);
+                logger.error("IO eror reading Zibase soket : " + ex);
             }
 
         } else {

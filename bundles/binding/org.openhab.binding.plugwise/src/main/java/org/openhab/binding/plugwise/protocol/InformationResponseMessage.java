@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,12 +8,10 @@
  */
 package org.openhab.binding.plugwise.protocol;
 
-import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.openhab.binding.plugwise.internal.PlugwiseDevice.DeviceType;
 
 /**
  * Circle Information response message
@@ -23,9 +21,6 @@ import org.openhab.binding.plugwise.internal.PlugwiseDevice.DeviceType;
  */
 public class InformationResponseMessage extends Message {
 
-    private static final Pattern RESPONSE_PATTERN = Pattern
-            .compile("(\\w{16})(\\w{2})(\\w{2})(\\w{4})(\\w{8})(\\w{2})(\\w{2})(\\w{12})(\\w{8})(\\w{2})");
-
     private int year;
     private int month;
     private int minutes;
@@ -34,9 +29,8 @@ public class InformationResponseMessage extends Message {
     private int hertz;
     private String hardwareVersion;
     private int firmwareVersion;
-    private DeviceType deviceType;
-
-    private Calendar dateTimeReceived = Calendar.getInstance();
+    @SuppressWarnings("unused")
+    private int unknown;
 
     public InformationResponseMessage(int sequenceNumber, String payLoad) {
         super(sequenceNumber, payLoad);
@@ -75,21 +69,16 @@ public class InformationResponseMessage extends Message {
         return firmwareVersion;
     }
 
-    public DeviceType getDeviceType() {
-        return deviceType;
-    }
-
     @Override
     protected String payLoadToHexString() {
         return payLoad;
     }
 
-    public Calendar getDateTimeReceived() {
-        return dateTimeReceived;
-    }
-
     @Override
     protected void parsePayLoad() {
+        Pattern RESPONSE_PATTERN = Pattern
+                .compile("(\\w{16})(\\w{2})(\\w{2})(\\w{4})(\\w{8})(\\w{2})(\\w{2})(\\w{12})(\\w{8})(\\w{2})");
+
         Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
         if (matcher.matches()) {
             MAC = matcher.group(1);
@@ -102,30 +91,9 @@ public class InformationResponseMessage extends Message {
             hardwareVersion = StringUtils.left(matcher.group(8), 4) + "-" + StringUtils.mid(matcher.group(8), 4, 4)
                     + "-" + StringUtils.right(matcher.group(8), 4);
             firmwareVersion = Integer.parseInt(matcher.group(9), 16);
-            deviceType = intToDeviceType(Integer.parseInt(matcher.group(10), 16));
+            unknown = Integer.parseInt(matcher.group(10), 16);
         } else {
             logger.debug("Plugwise protocol RoleCallResponseMessage error: {} does not match", payLoad);
-        }
-    }
-
-    private DeviceType intToDeviceType(int i) {
-        switch (i) {
-            case 0:
-                return DeviceType.Stick;
-            case 1:
-                return DeviceType.CirclePlus;
-            case 2:
-                return DeviceType.Circle;
-            case 3:
-                return DeviceType.Switch;
-            case 5:
-                return DeviceType.Sense;
-            case 6:
-                return DeviceType.Scan;
-            case 9:
-                return DeviceType.Stealth;
-            default:
-                return null;
         }
     }
 

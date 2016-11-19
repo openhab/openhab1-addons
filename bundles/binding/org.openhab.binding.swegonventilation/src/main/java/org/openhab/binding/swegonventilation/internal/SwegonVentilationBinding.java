@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -84,16 +84,8 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
         this.eventPublisher = null;
     }
 
-    protected void addBindingProvider(SwegonVentilationBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(SwegonVentilationBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
-     * {@inheritDoc}
+     * @{inheritDoc
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -134,10 +126,10 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
 
     /**
      * Convert device value to OpenHAB state.
-     *
+     * 
      * @param itemType
      * @param value
-     *
+     * 
      * @return a {@link State}
      */
     private State convertDeviceValueToOpenHabState(Class<? extends Item> itemType, Integer value) {
@@ -160,10 +152,10 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
 
     /**
      * The MessageListener runs as a separate thread.
-     *
+     * 
      * Thread listening message from Swegon ventilation system and send updates
      * to openHAB bus.
-     *
+     * 
      */
     private class MessageListener extends Thread {
 
@@ -255,7 +247,7 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
             try {
                 connector.disconnect();
             } catch (SwegonVentilationException e) {
-                logger.error("Error occured when disconnecting from Swegon ventilation system", e);
+                logger.error("Error occured when disconnecting form Swegon ventilation system", e);
             }
 
         }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -65,7 +65,7 @@ public class AuthorizeResponse extends AbstractAuthResponse {
     }
 
     /**
-     * @return the number of minutes until the PIN expires. Ensure you inform the user how much time they have.
+     * @return the number of seconds until the PIN expires. Ensure you inform the user how much time they have.
      */
     @JsonProperty("expires_in")
     public Integer getExpiresIn() {

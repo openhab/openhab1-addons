@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,13 +18,9 @@ import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
-import org.openhab.core.types.UnDefType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +29,9 @@ import be.devlaminck.openwebnet.OpenWebNet;
 import be.devlaminck.openwebnet.ProtocolRead;
 
 /**
- * This class connects to the openweb gateway of bticino (MH200(N)). It opens a
- * monitor session to retrieve the events and creates, for every command
- * received, a command on the bus.
+ * This class connects to the openweb gateway of bticino (MH200(N)) It opens a
+ * monitor session to retrieve the events And creates (for every) command
+ * received a command on the bus
  *
  * @author Tom De Vlaminck
  * @serial 1.0
@@ -129,7 +125,7 @@ public class BticinoDevice implements IBticinoEventListener {
     public void receiveCommand(String itemName, Command command, BticinoBindingConfig itemBindingConfig) {
         try {
             synchronized (m_lock) {
-                // A command is received from the openHab system;
+                // An command is received from the openHab system
                 // analyse it and execute it
                 logger.debug("Gateway [" + m_gateway_id + "], Command '{}' received for item {}",
                         (Object[]) new String[] { command.toString(), itemName });
@@ -142,32 +138,10 @@ public class BticinoDevice implements IBticinoEventListener {
                 switch (l_who) {
                     // Lights
                     case 1: {
-                        if (command instanceof IncreaseDecreaseType ) {
-                            if( IncreaseDecreaseType.INCREASE.equals(command) ) {
-                                logger.debug("Light received INCREASE command.");
-                                l_pr.addProperty("what", "30");
-                            }
-                            else {
-                                logger.debug("Light received DECREASE command.");
-                                l_pr.addProperty("what", "31");
-                            }
-                        }
-                        else if (command instanceof PercentType) {
-                            PercentType pType = (PercentType)command;
-                            //take percentage and divide by 10, round 1 (ie 0 to 10 is the result, nothing else)
-                            int percentValue = (int)(Math.floor(pType.intValue()/10F));
-                            logger.debug("Set light value to {}", percentValue);
-                            l_pr.addProperty("what", String.valueOf(percentValue));
-                        }
-                        else if (command instanceof OnOffType) {
-                            if (OnOffType.ON.equals(command)) {
-                                l_pr.addProperty("what", "1");
-                            } else {
-                                l_pr.addProperty("what", "0");
-                            }
-                        }
-                        else {
-                            logger.warn("Received unknown command type for lighting: '{}'", command.getClass().getName());
+                        if (OnOffType.ON.equals(command)) {
+                            l_pr.addProperty("what", "1");
+                        } else {
+                            l_pr.addProperty("what", "0");
                         }
                         break;
                     }

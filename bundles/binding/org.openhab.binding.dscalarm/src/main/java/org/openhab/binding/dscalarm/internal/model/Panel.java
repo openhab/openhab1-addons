@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -36,7 +36,7 @@ public class Panel extends DSCAlarmDevice {
 
     /**
      * Constructor
-     *
+     * 
      * @param panelId
      */
     public Panel(int panelId) {
@@ -69,7 +69,8 @@ public class Panel extends DSCAlarmDevice {
                         publisher.postUpdate(item.getName(), new StringType(str));
                         break;
                     case PANEL_SYSTEM_ERROR:
-                        str = String.format("%03d", panelProperties.getSystemErrorCode()) + ": " + panelProperties.getSystemErrorDescription();
+                        str = String.format("%03d", panelProperties.getSystemErrorCode()) + ": "
+                                + panelProperties.getSystemErrorDescription();
                         publisher.postUpdate(item.getName(), new StringType(str));
                         break;
                     case PANEL_TIME:
@@ -208,7 +209,8 @@ public class Panel extends DSCAlarmDevice {
                                 systemErrorCode = Integer.parseInt(apiMessage.getAPIData());
                                 panelProperties.setSystemErrorCode(systemErrorCode);
                                 panelProperties.setSystemErrorDescription(apiMessage.getError());
-                                str = String.format("%03d", panelProperties.getSystemErrorCode()) + ": " + panelProperties.getSystemErrorDescription();
+                                str = String.format("%03d", panelProperties.getSystemErrorCode()) + ": "
+                                        + panelProperties.getSystemErrorDescription();
                                 publisher.postUpdate(item.getName(), new StringType(str));
                             }
                             break;
@@ -266,10 +268,6 @@ public class Panel extends DSCAlarmDevice {
                         break;
                     case PANEL_COMMAND:
                         panelProperties.setSystemCommand(state);
-                        break;
-                    case PANEL_SYSTEM_ERROR:
-                        panelProperties.setSystemErrorCode(state);
-                        panelProperties.setSystemErrorDescription(description);
                         break;
                     case PANEL_TROUBLE_MESSAGE:
                         panelProperties.setTroubleMessage(description);

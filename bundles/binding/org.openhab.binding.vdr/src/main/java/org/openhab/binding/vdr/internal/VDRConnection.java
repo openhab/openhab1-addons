@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -61,7 +61,7 @@ public class VDRConnection {
             logger.debug("Try to send VDR command: {}", cmd.getCommand());
 
             res = connection.send(cmd);
-            logger.debug("Received Message from VDR: {}", res.getMessage());
+            logger.debug("Recived Message from VDR: {}", res.getMessage());
         } catch (Exception e) {
             logger.error("Could not connect to VDR on {}: {}", mIp + ":" + mPort, e);
         } finally {

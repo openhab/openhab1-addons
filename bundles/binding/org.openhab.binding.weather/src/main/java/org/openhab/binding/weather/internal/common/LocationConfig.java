@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,14 +19,12 @@ import org.openhab.binding.weather.internal.model.ProviderName;
  * @since 1.6.0
  */
 public class LocationConfig {
-    private static final int DEFAULT_UPDATE_INTERVAL = 240;
-
     private ProviderName providerName;
     private String language = "en";
     private Double latitude;
     private Double longitude;
     private String woeid;
-    private Integer updateInterval = DEFAULT_UPDATE_INTERVAL;
+    private Integer updateInterval;
     private String locationId;
     private String name;
 
@@ -147,15 +145,12 @@ public class LocationConfig {
      */
     public boolean isValid() {
         boolean valid = providerName != null && language != null && updateInterval != null && locationId != null;
-        if (!valid) {
-            return false;
-        }
-
         if (providerName == ProviderName.YAHOO) {
-            return woeid != null;
+            valid = valid && woeid != null;
         } else {
-            return latitude != null && longitude != null;
+            valid = valid && latitude != null && longitude != null;
         }
+        return valid;
     }
 
     /**

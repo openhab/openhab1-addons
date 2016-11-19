@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -53,7 +53,7 @@ public class ZWaveConverterHandler {
     /**
      * Constructor. Creates a new instance of the @ link ZWaveConverterHandler}
      * class.
-     *
+     * 
      * @param controller
      *            the {@link ZWaveController} to use to send messages.
      * @param eventPublisher
@@ -82,15 +82,10 @@ public class ZWaveConverterHandler {
         converters.put(CommandClass.METER, new ZWaveMeterConverter(controller, eventPublisher));
         converters.put(CommandClass.BASIC, new ZWaveBasicConverter(controller, eventPublisher));
         converters.put(CommandClass.SCENE_ACTIVATION, new ZWaveSceneConverter(controller, eventPublisher));
-        converters.put(CommandClass.CENTRAL_SCENE, new ZWaveCentralSceneConverter(controller, eventPublisher));
         converters.put(CommandClass.FIBARO_FGRM_222, new FibaroFGRM222Converter(controller, eventPublisher));
         converters.put(CommandClass.ALARM, new ZWaveAlarmConverter(controller, eventPublisher));
         converters.put(CommandClass.CONFIGURATION, new ZWaveConfigurationConverter(controller, eventPublisher));
         converters.put(CommandClass.INDICATOR, new ZWaveIndicatorConverter(controller, eventPublisher));
-        converters.put(CommandClass.WAKE_UP, new ZWaveWakeUpConverter(controller, eventPublisher));
-        converters.put(CommandClass.DOOR_LOCK, new ZWaveDoorLockConverter(controller, eventPublisher));
-        converters.put(CommandClass.BARRIER_OPERATOR, new ZWaveBarrierOperatorConverter(controller, eventPublisher));
-        converters.put(CommandClass.CLOCK, new ZWaveClockConverter(controller, eventPublisher));
 
         infoConverter = new ZWaveInfoConverter(controller, eventPublisher);
 
@@ -99,7 +94,7 @@ public class ZWaveConverterHandler {
                 .put(SwitchItem.class,
                         new CommandClass[] { CommandClass.SWITCH_BINARY, CommandClass.SWITCH_MULTILEVEL,
                                 CommandClass.METER, CommandClass.BASIC, CommandClass.SENSOR_BINARY,
-                                CommandClass.SENSOR_ALARM, CommandClass.DOOR_LOCK });
+                                CommandClass.SENSOR_ALARM });
         preferredCommandClasses
                 .put(DimmerItem.class,
                         new CommandClass[] { CommandClass.SWITCH_MULTILEVEL, CommandClass.SWITCH_BINARY,
@@ -115,14 +110,14 @@ public class ZWaveConverterHandler {
                         CommandClass.BATTERY, CommandClass.BASIC, CommandClass.SENSOR_BINARY, CommandClass.SENSOR_ALARM,
                         CommandClass.SWITCH_BINARY, CommandClass.THERMOSTAT_SETPOINT, CommandClass.THERMOSTAT_MODE,
                         CommandClass.THERMOSTAT_FAN_MODE, CommandClass.THERMOSTAT_OPERATING_STATE,
-                        CommandClass.THERMOSTAT_FAN_STATE, CommandClass.WAKE_UP });
+                        CommandClass.THERMOSTAT_FAN_STATE });
         preferredCommandClasses.put(ContactItem.class, new CommandClass[] { CommandClass.SENSOR_BINARY,
                 CommandClass.SENSOR_ALARM, CommandClass.SWITCH_BINARY, CommandClass.BASIC });
     }
 
     /**
      * Returns a converter to convert between the Z-Wave API and the binding.
-     *
+     * 
      * @param commandClass
      *            the {@link CommandClass} to create a converter for.
      * @return a {@link ZWaveCommandClassConverter} or null if a converter is
@@ -135,7 +130,7 @@ public class ZWaveConverterHandler {
     /**
      * Returns the command class that provides the best suitable converter to
      * convert between the Z-Wave API and the binding.
-     *
+     * 
      * @param item
      *            the {@link item} to resolve a converter for.
      * @param node
@@ -171,7 +166,7 @@ public class ZWaveConverterHandler {
     /**
      * Execute refresh method. This method is called every time a binding item
      * is refreshed and the corresponding node should be sent a message.
-     *
+     * 
      * @param provider
      *            the {@link ZWaveBindingProvider} that provides the item
      * @param itemName
@@ -273,7 +268,7 @@ public class ZWaveConverterHandler {
 
     /**
      * Get the refresh interval for an item binding
-     *
+     * 
      * @param provider
      *            the {@link ZWaveBindingProvider} that provides the item
      * @param itemName
@@ -343,7 +338,7 @@ public class ZWaveConverterHandler {
      * Handles an incoming {@link ZWaveCommandClassValueEvent}. Implement this
      * message in derived classes to convert the value and post an update on the
      * openHAB bus.
-     *
+     * 
      * @param provider
      *            the {@link ZWaveBindingProvider} that provides the item
      * @param itemName
@@ -386,7 +381,7 @@ public class ZWaveConverterHandler {
     /**
      * Receives a command from openHAB and translates it to an operation on the
      * Z-Wave network.
-     *
+     * 
      * @param provider
      *            the {@link ZWaveBindingProvider} that provides the item
      * @param itemName

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.openhab.binding.insteonplm.internal.driver.hub.HubIOStream;
+import org.openhab.binding.insteonplm.internal.driver.hub.OldHubIOStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public abstract class IOStream {
 
     /**
      * read data from iostream
-     *
+     * 
      * @param b byte array (output)
      * @param offset offset for placement into byte array
      * @param readSize size to read
@@ -59,7 +60,7 @@ public abstract class IOStream {
 
     /**
      * Write data to iostream
-     *
+     * 
      * @param b byte array to write
      */
     public void write(byte[] b) {
@@ -80,7 +81,7 @@ public abstract class IOStream {
 
     /**
      * Opens the IOStream
-     *
+     * 
      * @return true if open was successful, false if not
      */
     public abstract boolean open();
@@ -92,7 +93,7 @@ public abstract class IOStream {
 
     /**
      * reconnects the stream
-     *
+     * 
      * @return true if reconnect succeeded
      */
     private synchronized boolean reconnect() {
@@ -102,15 +103,13 @@ public abstract class IOStream {
 
     /**
      * Creates an IOStream from an allowed config string:
-     *
+     * 
      * /dev/ttyXYZ (serial port like e.g. usb: /dev/ttyUSB0 or alias /dev/insteon)
-     *
+     * 
      * /hub2/user:password@myinsteonhub.mydomain.com:25105,poll_time=1000 (insteon hub2 (2014))
-     *
+     * 
      * /hub/myinsteonhub.mydomain.com:9761
-     *
-     * /tcp/serialportserver.mydomain.com:port (serial port exposed via tcp, eg. ser2net)
-     *
+     * 
      * @param config
      * @return reference to IOStream
      */
@@ -118,8 +117,8 @@ public abstract class IOStream {
     public static IOStream s_create(String config) {
         if (config.startsWith("/hub2/")) {
             return makeHub2014Stream(config);
-        } else if (config.startsWith("/hub/") || config.startsWith("/tcp/")) {
-            return makeTCPStream(config);
+        } else if (config.startsWith("/hub/")) {
+            return makeOldHubStream(config);
         } else {
             return new SerialIOStream(config);
         }
@@ -154,12 +153,12 @@ public abstract class IOStream {
         return new HubIOStream(hp.host, hp.port, pollTime, user, pass);
     }
 
-    private static TcpIOStream makeTCPStream(String config) {
+    private static OldHubIOStream makeOldHubStream(String config) {
         config = config.substring(5); // Get rid of the /hub/ part
         String[] parts = config.split(","); // split off options at the end, if any
         String[] hostPort = parts[0].split(":");
         HostPort hp = new HostPort(hostPort, 9761);
-        return new TcpIOStream(hp.host, hp.port);
+        return new OldHubIOStream(hp.host, hp.port);
     }
 
     private static class HostPort {

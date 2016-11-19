@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -64,7 +64,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
         this.calDavLoader.addListener(this);
     }
 
-    public void unsetCalDavLoader(CalDavLoader calDavLoader) {
+    public void unsetCalDavLoader() {
         this.calDavLoader.removeListener(this);
         this.calDavLoader = null;
     }
@@ -79,14 +79,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
         if (this.calDavLoader != null) {
             this.calDavLoader.removeListener(this);
         }
-    }
-
-    protected void addBindingProvider(CalDavBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(CalDavBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -132,7 +124,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
     @Override
     public void allBindingsChanged(BindingProvider provider) {
         this.updateItemsForEvent();
-        super.allBindingsChanged(provider);
     }
 
     @Override
@@ -144,7 +135,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
         if (config == null) {
             return;
         }
-        final List<CalDavEvent> events = this.calDavLoader.getEvents(getQueryForConfig(config));
+        final List<CalDavEvent> events = this.calDavLoader
+                .getEvents(new CalDavQuery(this.calendars, DateTime.now(), Sort.ASCENDING));
         this.updateItem(itemName, config, events);
     }
 
@@ -219,22 +211,16 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
 
         for (String item : bindingProvider.getItemNames()) {
             CalDavConfig config = bindingProvider.getConfig(item);
-            List<CalDavEvent> events = eventCache.get(config.getUniqueEventListKey());
+            List<CalDavEvent> events = eventCache.get(config.getCalendar().hashCode());
             if (events == null) {
-                CalDavQuery query = getQueryForConfig(config);
-                events = this.calDavLoader.getEvents(query);
-                eventCache.put(config.getUniqueEventListKey(), events);
+                events = this.calDavLoader
+                        .getEvents(new CalDavQuery(config.getCalendar(), DateTime.now(), Sort.ASCENDING));
+                eventCache.put(config.getCalendar().hashCode(), events);
             }
             this.updateItem(item, config, events);
         }
     }
 
-    private CalDavQuery getQueryForConfig(CalDavConfig config) {
-        CalDavQuery query = new CalDavQuery(config.getCalendar(), DateTime.now(), Sort.ASCENDING);
-        query.setFilterName(config.getFilterName());
-        query.setFilterCategory(config.getFilterCategory());
-        return query;
-    }
     private synchronized void updateItem(String itemName, CalDavConfig config, List<CalDavEvent> events) {
         if (config.getType() == Type.PRESENCE) {
             List<CalDavEvent> subList = getActiveEvents(events);
@@ -294,7 +280,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
 
             logger.debug("sending command {} for item {}", command, itemName);
             eventPublisher.postUpdate(itemName, command);
-            logger.trace("command {} successfully sent", command);
+            logger.trace("command {} successfuly send", command);
         }
     }
 

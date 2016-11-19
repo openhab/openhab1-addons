@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,10 +8,10 @@
  */
 package org.openhab.persistence.jdbc.db;
 
-import org.knowm.yank.Yank;
-import org.openhab.persistence.jdbc.utils.DbMetaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.knowm.yank.Yank;
 
 /**
  * Extended Database Configuration class. Class represents
@@ -43,6 +43,7 @@ public class JdbcMariadbDAO extends JdbcBaseDAO {
      */
     private void initSqlTypes() {
         logger.debug("JDBC::initSqlTypes: Initialize the type array");
+        // sqlTypes.put("STRINGITEM", "VARCHAR(65500)");//jdbc max 21845
     }
 
     /**
@@ -64,18 +65,6 @@ public class JdbcMariadbDAO extends JdbcBaseDAO {
         // databaseProps.setProperty("dataSourceClassName", "org.mariadb.jdbc.MySQLDataSource");
         databaseProps.setProperty("maximumPoolSize", "3");
         databaseProps.setProperty("minimumIdle", "2");
-    }
-
-    @Override
-    public void initAfterFirstDbConnection() {
-        logger.debug("JDBC::initAfterFirstDbConnection: Initializing step, after db is connected.");
-        dbMeta = new DbMetaData();
-        // Initialize sqlTypes, depending on DB version for example
-        if (dbMeta.isDbVersionGreater(5, 1)) {
-            sqlTypes.put("DATETIMEITEM", "TIMESTAMP(3)");
-            sqlTypes.put("tablePrimaryKey", "TIMESTAMP(3)");
-            sqlTypes.put("tablePrimaryValue", "NOW(3)");
-        }
     }
 
     /**************

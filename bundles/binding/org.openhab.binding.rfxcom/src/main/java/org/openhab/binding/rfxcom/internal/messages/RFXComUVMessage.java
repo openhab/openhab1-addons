@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -126,7 +126,7 @@ public class RFXComUVMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[10];
+        byte[] data = new byte[9];
 
         data[0] = 0x09;
         data[1] = RFXComBaseMessage.PacketType.UV.toByte();

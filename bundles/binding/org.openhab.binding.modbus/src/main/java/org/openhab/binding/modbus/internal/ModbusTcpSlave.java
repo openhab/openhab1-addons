@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,12 +8,13 @@
  */
 package org.openhab.binding.modbus.internal;
 
-import org.apache.commons.pool2.KeyedObjectPool;
-import org.openhab.binding.modbus.internal.pooling.ModbusSlaveEndpoint;
-import org.openhab.binding.modbus.internal.pooling.ModbusTCPSlaveEndpoint;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.wimpi.modbus.io.ModbusTCPTransaction;
-import net.wimpi.modbus.net.ModbusSlaveConnection;
 import net.wimpi.modbus.net.TCPMasterConnection;
 
 /**
@@ -26,10 +27,13 @@ import net.wimpi.modbus.net.TCPMasterConnection;
  */
 public class ModbusTcpSlave extends ModbusIPSlave {
 
-    public ModbusTcpSlave(String slave, KeyedObjectPool<ModbusSlaveEndpoint, ModbusSlaveConnection> connectionPool) {
-        super(slave, connectionPool);
+    private static final Logger logger = LoggerFactory.getLogger(ModbusTcpSlave.class);
+
+    private TCPMasterConnection connection = null;
+
+    public ModbusTcpSlave(String slave) {
+        super(slave);
         transaction = new ModbusTCPTransaction();
-        ((ModbusTCPTransaction) transaction).setReconnecting(false);
     }
 
     /**
@@ -41,22 +45,44 @@ public class ModbusTcpSlave extends ModbusIPSlave {
      */
 
     @Override
-    protected ModbusSlaveConnection getConnection(ModbusSlaveEndpoint endpoint) {
-        ModbusSlaveConnection connection = super.getConnection(endpoint);
-        if (connection == null) {
-            return null;
+    public boolean isConnected() {
+        return connection != null;
+    }
+
+    /**
+     * Establishes connection to the device
+     */
+    @Override
+    public boolean connect() {
+        try {
+            if (connection == null) {
+                connection = new TCPMasterConnection(InetAddress.getByName(getHost()));
+            }
+        } catch (UnknownHostException e) {
+            logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
+            resetConnection();
+            return false;
         }
-        if (!(connection instanceof TCPMasterConnection)) {
-            // should not happen
-            throw new IllegalStateException("Should not happen: wrong connection type for slave " + name);
+        if (!connection.isConnected()) {
+            try {
+                connection.setPort(getPort());
+                connection.connect();
+                ((ModbusTCPTransaction) transaction).setConnection(connection);
+                ((ModbusTCPTransaction) transaction).setReconnecting(false);
+            } catch (Exception e) {
+                logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
+                return false;
+            }
         }
-        ((ModbusTCPTransaction) transaction).setConnection((TCPMasterConnection) connection);
-        return connection;
+        return true;
     }
 
     @Override
-    protected void updateEndpoint() {
-        endpoint = new ModbusTCPSlaveEndpoint(getHost(), getPort());
+    public void resetConnection() {
+        if (connection != null) {
+            connection.close();
+        }
+        connection = null;
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -60,6 +60,11 @@ public class NetatmoWeatherBinding {
     private NetatmoPressureUnit pressureUnit = NetatmoPressureUnit.DEFAULT_PRESSURE_UNIT;
     private NetatmoUnitSystem unitSystem = NetatmoUnitSystem.DEFAULT_UNIT_SYSTEM;
 
+    private GetStationsDataRequest stationsDataRequest;
+    private GetStationsDataResponse stationsDataResponse;
+
+    private boolean bOAuthCredentialsFirstExecution = true;
+
     /**
      * Execute the weather binding from Netatmo Binding Class
      *
@@ -72,10 +77,8 @@ public class NetatmoWeatherBinding {
         logger.debug("Querying Netatmo Weather API");
 
         try {
-            GetStationsDataResponse stationsDataResponse = processGetStationsData(
-                    oauthCredentials, providers, eventPublisher);
-            if (stationsDataResponse == null) {
-                return;
+            if (bOAuthCredentialsFirstExecution) {
+                processGetStationsData(oauthCredentials, providers, eventPublisher);
             }
 
             DeviceMeasureValueMap deviceMeasureValueMap = processMeasurements(oauthCredentials, providers,
@@ -177,19 +180,13 @@ public class NetatmoWeatherBinding {
                                 }
                             }
                                 break;
-                            case BATTERYPERCENT:
-                            case BATTERYSTATUS:
                             case BATTERYVP:
                             case RFSTATUS:
                                 for (Device device : stationsDataResponse.getDevices()) {
                                     for (Module module : device.getModules()) {
                                         if (module.getId().equals(moduleId)) {
                                             switch (measureType) {
-                                                case BATTERYPERCENT:
                                                 case BATTERYVP:
-                                                    state = new DecimalType(module.getBatteryPercentage());
-                                                    break;
-                                                case BATTERYSTATUS:
                                                     state = new DecimalType(module.getBatteryLevel());
                                                     break;
                                                 case RFSTATUS:
@@ -316,13 +313,13 @@ public class NetatmoWeatherBinding {
         return deviceMeasureValueMap;
     }
 
-    private GetStationsDataResponse processGetStationsData(OAuthCredentials oauthCredentials, Collection<NetatmoBindingProvider> providers,
+    private void processGetStationsData(OAuthCredentials oauthCredentials, Collection<NetatmoBindingProvider> providers,
             EventPublisher eventPublisher) {
 
-        GetStationsDataRequest stationsDataRequest = new GetStationsDataRequest(oauthCredentials.getAccessToken());
+        stationsDataRequest = new GetStationsDataRequest(oauthCredentials.getAccessToken());
         logger.debug("Request: {}", stationsDataRequest);
 
-        GetStationsDataResponse stationsDataResponse = stationsDataRequest.execute();
+        stationsDataResponse = stationsDataRequest.execute();
         logger.debug("Response: {}", stationsDataResponse);
 
         if (stationsDataResponse.isError()) {
@@ -341,12 +338,11 @@ public class NetatmoWeatherBinding {
                 throw new NetatmoException(error.getMessage());
             }
 
-            return null; // abort processing
+            return; // abort processing
         } else {
             processGetStationsDataResponse(stationsDataResponse, providers);
+            bOAuthCredentialsFirstExecution = false;
         }
-
-        return stationsDataResponse;
     }
 
     /**

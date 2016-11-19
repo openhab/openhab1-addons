@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -178,7 +178,8 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider>imple
                     } else {
                         sendColor(command, bridgeId, bulb);
                     }
-                } else if (command instanceof PercentType) {
+                }
+                if (command instanceof PercentType) {
                     sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.brightness);
                 }
             }
@@ -218,7 +219,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider>imple
                         command.toString(), repeatCount);
                 if (command.compareTo(oldPercent) > 0) {
                     for (int i = 0; i < repeatCount; i++) {
-                        Thread.sleep(100);
+                        Thread.sleep(50);
                         if (BindingType.brightness.equals(type)) {
                             sendIncrease(bulb, rgbwSteps, bridgeId);
                         } else if (BindingType.colorTemperature.equals(type)) {
@@ -227,7 +228,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider>imple
                     }
                 } else if (command.compareTo(oldPercent) < 0) {
                     for (int i = 0; i < repeatCount; i++) {
-                        Thread.sleep(100);
+                        Thread.sleep(50);
                         if (BindingType.brightness.equals(type)) {
                             sendDecrease(bulb, rgbwSteps, bridgeId);
                         } else if (BindingType.colorTemperature.equals(type)) {
@@ -715,7 +716,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider>imple
             for (int i = 0; i < 10; i++) {
                 sendDecrease(bulb, 27, bridgeId);
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                 }
             }
@@ -738,7 +739,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider>imple
             }
             if (bulb > 5) {
                 sendOn(bulb, bridgeId);
-                Thread.sleep(100);
+                Thread.sleep(50);
                 String messageBytes = "40:" + Integer.toHexString(milightColorNo) + ":55";
                 sendMessage(messageBytes, bridgeId);
             }
@@ -800,7 +801,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider>imple
 
     /**
      * Lookup of the configuration of the named item.
-     *
+     * 
      * @param itemName
      *            The name of the item.
      * @return The configuration, null otherwise.
@@ -812,14 +813,6 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider>imple
             }
         }
         return null;
-    }
-
-    protected void addBindingProvider(MilightBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(MilightBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
     }
 
     /**

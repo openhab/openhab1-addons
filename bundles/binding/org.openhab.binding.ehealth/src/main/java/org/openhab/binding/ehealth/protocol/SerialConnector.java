@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -70,7 +70,7 @@ public class SerialConnector implements SerialPortEventListener {
     }
 
     public void connect() throws EHealthException {
-        logger.debug("Going to open Serial connection on port '{}'", portName);
+        logger.debug("Goint to open Serial connection on port '{}'", portName);
 
         // parse ports and if the default port is found, initialized the reader
         Enumeration<?> portList = CommPortIdentifier.getPortIdentifiers();

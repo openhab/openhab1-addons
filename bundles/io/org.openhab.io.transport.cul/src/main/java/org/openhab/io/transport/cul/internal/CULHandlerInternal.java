@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,15 +10,15 @@ package org.openhab.io.transport.cul.internal;
 
 import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULDeviceException;
-import org.openhab.io.transport.cul.CULHandler;
 
 /**
- * Internal interface for the CULManager. CULHandler should always implement this.
+ * Internal interface for the CULManager. CULHandler should always implement the
+ * external and internal interface.
  *
  * @author Till Klocke
  * @since 1.4.0
  */
-public interface CULHandlerInternal<T extends CULConfig> extends CULHandler {
+public interface CULHandlerInternal {
 
     public void open() throws CULDeviceException;
 
@@ -27,7 +27,5 @@ public interface CULHandlerInternal<T extends CULConfig> extends CULHandler {
     public boolean hasListeners();
 
     public void sendWithoutCheck(String message) throws CULCommunicationException;
-
-    public T getConfig();
 
 }

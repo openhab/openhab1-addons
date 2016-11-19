@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * This class is responsible for parsing the binding configuration.
  *
  * @author Jordens Christophe
- * @since 1.8.0
+ * @since 1.8.0-SNAPSHOT
  */
 /**
  * @author Christophe
@@ -68,7 +68,7 @@ public class MyStromEcoPowerGenericBindingProvider extends AbstractGenericBindin
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.openhab.binding.mystromecopower.MyStromEcoPowerBindingProvider#
      * getMystromFriendlyName(java.lang.String)
      */
@@ -107,7 +107,7 @@ public class MyStromEcoPowerGenericBindingProvider extends AbstractGenericBindin
 
     /**
      * This class is responsible to transport configuration data.
-     *
+     * 
      * @author Jordens Christophe
      * @since 1.7.0-SNAPSHOT
      */

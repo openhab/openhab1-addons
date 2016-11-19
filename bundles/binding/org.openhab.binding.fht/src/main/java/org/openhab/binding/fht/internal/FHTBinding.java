@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -28,10 +30,10 @@ import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.io.transport.cul.CULCommunicationException;
+import org.openhab.io.transport.cul.CULDeviceException;
 import org.openhab.io.transport.cul.CULHandler;
-import org.openhab.io.transport.cul.CULLifecycleListener;
-import org.openhab.io.transport.cul.CULLifecycleManager;
 import org.openhab.io.transport.cul.CULListener;
+import org.openhab.io.transport.cul.CULManager;
 import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -66,6 +68,20 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
     private final static SimpleDateFormat configDateFormat = new SimpleDateFormat("mm:HH:dd:MM:yy");
 
     /**
+     * Config key for the device address. i.e. serial:/dev/ttyACM0
+     */
+    private final static String KEY_DEVICE = "device";
+
+    /**
+     * Config key for the device baud rate. i.e. baudrate:38400
+     */
+    private final static String KEY_BAUD_RATE = "baudrate";
+    /**
+     * Config key for the device parity. i.e. parity:0
+     */
+    private final static String KEY_PARITY = "parity";
+
+    /**
      * Our housecode we need to simulate a central device.
      */
     private final static String KEY_HOUSECODE = "housecode";
@@ -86,13 +102,16 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
      */
     private final static String KEY_REPORTS_CRON = "reports.cron";
 
+    private String deviceName;
+    private Map<String, Object> properties = new HashMap<String, Object>();
+
     private String housecode;
     private boolean doTimeUpdate = false;
     private String timeUpdatecronExpression;
     private String reportsCronExpression;
     private boolean requestReports;
 
-    private final CULLifecycleManager culHandlerLifecycle;
+    private CULHandler cul;
 
     private JobKey updateTimeJobKey;
     private JobKey requestReportJobKey;
@@ -107,41 +126,53 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
     private HashMap<String, Integer> valueCache = new HashMap<String, Integer>();
 
     public FHTBinding() {
-        culHandlerLifecycle = new CULLifecycleManager(CULMode.SLOW_RF, new CULLifecycleListener() {
-
-            @Override
-            public void open(CULHandler cul) throws CULCommunicationException {
-                cul.registerListener(FHTBinding.this);
-                cul.send("T01" + housecode);
-            }
-
-            @Override
-            public void close(CULHandler cul) {
-                cul.unregisterListener(FHTBinding.this);
-
-            }
-
-        });
     }
 
     @Override
     public void activate() {
-        culHandlerLifecycle.open();
+        bindCULHandler();
     }
 
     @Override
     public void deactivate() {
-        culHandlerLifecycle.close();
+        if (cul != null) {
+            CULManager.close(cul);
+        }
         unscheduleJob(requestReportJobKey);
         unscheduleJob(updateTimeJobKey);
     }
 
+    private void bindCULHandler() {
+        if (!StringUtils.isEmpty(deviceName)) {
+            try {
+                cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF, properties);
+                cul.registerListener(this);
+                cul.send("T01" + housecode);
+            } catch (CULDeviceException e) {
+                logger.error("Can't open CUL", e);
+            } catch (CULCommunicationException e) {
+                logger.error("Can't set our own housecode", e);
+            }
+        }
+    }
+
     private boolean checkCULDevice() {
-        if (!culHandlerLifecycle.isCulReady()) {
+        if (cul == null) {
             logger.error("CUL device is not accessible");
             return false;
         }
         return true;
+    }
+
+    private void setNewDeviceName(String newDeviceName) {
+        if (!StringUtils.isEmpty(newDeviceName)) {
+            if (cul != null) {
+                cul.unregisterListener(this);
+                CULManager.close(cul);
+            }
+            deviceName = newDeviceName;
+            bindCULHandler();
+        }
     }
 
     /**
@@ -178,7 +209,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
             FHTDesiredTemperatureCommand waitingCommand = entry.getValue();
             String commandString = "T" + waitingCommand.getAddress() + waitingCommand.getCommand();
             try {
-                culHandlerLifecycle.getCul().send(commandString);
+                cul.send(commandString);
                 temperatureCommandQueue.remove(entry.getKey());
             } catch (CULCommunicationException e) {
                 logger.error("Can't send desired temperature via CUL", e);
@@ -205,11 +236,9 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
         if (config != null) {
             if (Datapoint.DESIRED_TEMP == config.getDatapoint() && command instanceof DecimalType) {
                 setDesiredTemperature(config, (DecimalType) command);
-            } else if (Datapoint.VALVE == config.getDatapoint() && command instanceof DecimalType) {
-                setValvePosition(config, (DecimalType) command);
             } else {
                 logger.error(
-                        "You can only manipulate the desired temperature or valve position via commands, all other data points are read only");
+                        "You can only manipulate the desired temperature via commands, all other data points are read only");
             }
         }
     }
@@ -228,34 +257,11 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
         }
     }
 
-    private void setValvePosition(FHTBindingConfig config, DecimalType command) {
-        double valvePosition = command.doubleValue();
-        if ((valvePosition >= 0.0) && (valvePosition <= 100.0)) {
-            int temp = (int) (valvePosition * 2.55);
-
-            FHTDesiredTemperatureCommand commandItem = new FHTDesiredTemperatureCommand(config.getFullAddress(), "26"
-                            + ((Integer.toHexString(temp).length() == 1)?"0":"") + Integer.toHexString(temp));
-            logger.debug("Queuing new desired valve position");
-            temperatureCommandQueue.put(config.getFullAddress(), commandItem);
-        } else {
-            logger.error("The desired valve position is outside of the valid range (0.0 - 100.0%)");
-        }
-    }
-
-    protected void addBindingProvider(FHTBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(FHTBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
-     * {@inheritDoc}
+     * @{inheritDoc
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        boolean properlyConfigured = false;
         if (config != null) {
 
             // to override the default refresh interval one has to add a
@@ -294,11 +300,22 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
                 unscheduleJob(requestReportJobKey);
             }
 
-            culHandlerLifecycle.config(config);
+            // At last the device, after we received all other config values
+            String deviceName = parseMandatoryValue(KEY_DEVICE, config);
 
-            properlyConfigured = true;
+            String baudRateString = parseMandatoryValue(KEY_BAUD_RATE, config);
+            if (StringUtils.isNotBlank(baudRateString)) {
+                properties.put(KEY_BAUD_RATE, baudRateString);
+            }
+
+            String parityString = parseMandatoryValue(KEY_PARITY, config);
+            if (StringUtils.isNotBlank(parityString)) {
+                properties.put(KEY_PARITY, parityString);
+            }
+
+            setNewDeviceName(deviceName);
+            setProperlyConfigured(true);
         }
-        setProperlyConfigured(properlyConfigured);
     }
 
     private String parseMandatoryValue(String key, Dictionary<String, ?> config) throws ConfigurationException {
@@ -368,7 +385,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
 
                 }
             } else {
-                logger.warn("Received unknown FHT command: ", command);
+                logger.warn("Received unkown FHT command: ", command);
             }
         } else if (data.length() == 11) {
             // is FHT8b frame
@@ -466,7 +483,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
             DecimalType state = new DecimalType(valve);
             eventPublisher.postUpdate(config.getItem().getName(), state);
         } else {
-            logger.debug("Received valve opening of unknown actuator with address " + fullAddress);
+            logger.debug("Received valve opening of unkown actuator with address " + fullAddress);
         }
     }
 
@@ -478,7 +495,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
             DecimalType state = new DecimalType(temperature);
             eventPublisher.postUpdate(config.getItem().getName(), state);
         } else {
-            logger.debug("Received new measured temp for unknown device with address " + deviceAddress);
+            logger.debug("Received new measured temp for unkown device with address " + deviceAddress);
         }
     }
 
@@ -564,7 +581,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
         sendBuffer.append(register); // register to write
         sendBuffer.append(value);
         try {
-            culHandlerLifecycle.getCul().send(sendBuffer.toString());
+            cul.send(sendBuffer.toString());
         } catch (CULCommunicationException e) {
             logger.error("Error while writing register " + register + " on device " + device);
         }
@@ -573,7 +590,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
     /**
      * It possible to chain up to 8 commands together to send to the CUL. Lists
      * with more than 8 commands will be discarded silently.
-     *
+     * 
      * @param deviceAddress
      * @param commands
      */
@@ -594,7 +611,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
             sendBuffer.append(command.value);
         }
         try {
-            culHandlerLifecycle.getCul().send(sendBuffer.toString());
+            cul.send(sendBuffer.toString());
         } catch (CULCommunicationException e) {
             logger.error("Error while writing multiple write register commands to the CUL", e);
         }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,7 +10,6 @@ package org.openhab.binding.nest.internal.messages;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
@@ -126,17 +125,6 @@ public class DataModel extends AbstractMessagePart {
             @Override
             public Object convert(Class type, Object value) {
                 if (value instanceof DecimalType) {
-                    return ((DecimalType) value).toBigDecimal();
-                } else {
-                    return null;
-                }
-            }
-        }, BigDecimal.class);
-        convertUtils.register(new Converter() {
-            @SuppressWarnings("rawtypes")
-            @Override
-            public Object convert(Class type, Object value) {
-                if (value instanceof DecimalType) {
                     return ((DecimalType) value).intValue();
                 } else {
                     return null;
@@ -207,7 +195,7 @@ public class DataModel extends AbstractMessagePart {
 
         /**
          * Return the thermostats map, mapped by name.
-         *
+         * 
          * @return the thermostats_by_name;
          */
         @JsonIgnore
@@ -336,7 +324,7 @@ public class DataModel extends AbstractMessagePart {
 
     /**
      * Return a JavaBean property by name.
-     *
+     * 
      * @param name
      *            the named property to return
      * @return the named property's value
@@ -357,7 +345,7 @@ public class DataModel extends AbstractMessagePart {
     /**
      * Set the specified property value, performing type conversions as required to conform to the type of the
      * destination property.
-     *
+     * 
      * @param name
      *            property name (can be nested/indexed/mapped/combo)
      * @param value
@@ -391,7 +379,7 @@ public class DataModel extends AbstractMessagePart {
 
     /**
      * Convenience method so property specs don't have to include "devices." in each one.
-     *
+     * 
      * @return name-based map of thermostats
      */
     @JsonIgnore
@@ -401,7 +389,7 @@ public class DataModel extends AbstractMessagePart {
 
     /**
      * Convenience method so property specs don't have to include "devices." in each one.
-     *
+     * 
      * @return name-based map of smoke_co_alarms
      */
     @JsonIgnore
@@ -411,7 +399,7 @@ public class DataModel extends AbstractMessagePart {
 
     /**
      * Convenience method so property specs don't have to include "devices." in each one.
-     *
+     * 
      * @return name-based map of cameras
      */
     @JsonIgnore
@@ -487,7 +475,7 @@ public class DataModel extends AbstractMessagePart {
      * This method returns a new data model containing only the affected Structure, Thermostat, SmokeCOAlarm or Camera,
      * and only the property of the bean that was changed. This new DataModel object can be sent to the Nest API in
      * order to perform an update via HTTP PUT.
-     *
+     * 
      * @param property
      *            the property to change
      * @param newState
@@ -574,7 +562,7 @@ public class DataModel extends AbstractMessagePart {
 
         /**
          * Lastly, set the property into the update data model
-         *
+         * 
          * TODO: cannot update a binding string of the form "=[structures(Name).thermostats(Name).X]" or
          * "=[structures(Name).smoke_co_alarms(Name).X]" because the name-based map of structures is not present in the
          * updateDataModel

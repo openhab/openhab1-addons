@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -88,7 +88,7 @@ public class ZibaseBindingConfigEmitter extends ZibaseBindingConfig {
      */
     @Override
     public void sendCommand(Zibase zibase, Command command, int dim) {
-        logger.error("sendCommand : not implemented for Config receiver");
+        logger.error("sendCommand : not implemeted for Config receiver");
     }
 
     /**

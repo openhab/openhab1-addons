@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2016 by the respective copyright holders.
+    Copyright (c) 2010-2016, openHAB.org and others.
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -16,8 +16,4 @@
       <provide interface="org.openhab.core.persistence.QueryablePersistenceService"/>
    </service>
    <reference bind="setItemRegistry" cardinality="0..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="dynamic" unbind="unsetItemRegistry"/>
-   <property name="service.config.description.uri" type="String" value="persistence:jdbc"/>
-   <property name="service.config.label" type="String" value="JDBC Persistence"/>
-   <property name="service.config.category" type="String" value="persistence"/>
 </scr:component>
-

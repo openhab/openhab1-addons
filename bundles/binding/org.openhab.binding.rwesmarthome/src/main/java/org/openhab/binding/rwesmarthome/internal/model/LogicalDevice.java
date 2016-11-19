@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -64,12 +64,6 @@ public class LogicalDevice {
     public static final String Type_GenericActuator_Email = "GenericActuator_Email";
     public static final String Type_GenericActuator_SMS = "GenericActuator_SMS";
     public static final String Type_GenericActuator_SunriseSunset = "GenericActuator_SunriseSunset";
-
-    public static final String Type_TwoWayMeterEnergyConsumptionSensor = "TwoWayMeterEnergyConsumptionSensor";
-    public static final String Type_TwoWayMeterEnergyFeedSensor = "TwoWayMeterEnergyFeedSensor";
-    public static final String Type_TwoWayMeterPowerConsumptionSensor = "TwoWayMeterPowerConsumptionSensor";
-    public static final String Type_PowerConsumptionSensor = "PowerConsumptionSensor";
-    public static final String Type_EnergyConsumptionSensor = "EnergyConsumptionSensor";
 
     /**
      * Constructor.

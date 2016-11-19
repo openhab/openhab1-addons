@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -117,13 +117,6 @@ public class KNXConnection implements ManagedService {
      * <code>10000</code>
      */
     private static int sMaxRefreshQueueEntries = 10000;
-
-    /**
-     * Determines whether Network Address Translation (NAT) will be used for IP connections.
-     *
-     * Default value is <code>false</code>.
-     */
-    private static boolean sUseNAT = false;
 
     /** listeners for connection/re-connection events */
     private static Set<KNXConnectionListener> sConnectionListeners = new HashSet<KNXConnectionListener>();
@@ -289,7 +282,7 @@ public class KNXConnection implements ManagedService {
             }
         }
 
-        return new KNXNetworkLinkIP(ipConnectionType, localEndPoint, new InetSocketAddress(ip, port), sUseNAT,
+        return new KNXNetworkLinkIP(ipConnectionType, localEndPoint, new InetSocketAddress(ip, port), false,
                 new TPSettings(new IndividualAddress(sLocalSourceAddr), true));
     }
 
@@ -440,13 +433,10 @@ public class KNXConnection implements ManagedService {
                 }
             }
 
-            String shouldUseNAT = (String) config.get("useNAT");
-            sUseNAT = StringUtils.isNotBlank(shouldUseNAT) && shouldUseNAT.equalsIgnoreCase("true");
-
             if (sPC == null) {
                 sLogger.debug("Not connected yet. Trying to connect.");
                 if (!connect()) {
-                    sLogger.warn("Initial connection to KNX bus failed!");
+                    sLogger.warn("Inital connection to KNX bus failed!");
                     if (sAutoReconnectPeriod > 0) {
                         sLogger.info("KNX link will be retried in {} seconds", sAutoReconnectPeriod);
                         final Timer timer = new Timer();

@@ -16,14 +16,12 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>org.openhab.persistence.caldav</module>    
+    <module>org.openhab.persistence.caldav</module>
     <module>org.openhab.persistence.db4o</module>
     <module>org.openhab.persistence.db4o.test</module>
-    <module>org.openhab.persistence.dynamodb</module>
-    <module>org.openhab.persistence.dynamodb.test</module>
     <module>org.openhab.persistence.logging</module>
     <module>org.openhab.persistence.sense</module>
-    <module>org.openhab.persistence.rrd4j</module>
+    <!--module>org.openhab.persistence.rrd4j</module-->
     <module>org.openhab.persistence.exec</module>
     <module>org.openhab.persistence.exec.test</module>
     <module>org.openhab.persistence.mysql</module>

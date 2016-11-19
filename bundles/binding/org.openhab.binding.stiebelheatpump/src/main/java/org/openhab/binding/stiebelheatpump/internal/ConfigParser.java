@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,10 +10,9 @@ package org.openhab.binding.stiebelheatpump.internal;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -42,7 +41,7 @@ public class ConfigParser {
 
     /**
      * This method saves List of Request objects into xml file
-     *
+     * 
      * @param requests
      *            object to be saved
      * @param xmlFileLocation
@@ -53,7 +52,7 @@ public class ConfigParser {
         JAXBContext context;
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(xmlFileLocation), "UTF-8"));
+            writer = new BufferedWriter(new FileWriter(xmlFileLocation));
         } catch (IOException e) {
             throw new StiebelHeatPumpException(e.toString());
         }
@@ -87,7 +86,7 @@ public class ConfigParser {
 
     /**
      * This method loads a List of Request objects from xml file
-     *
+     * 
      * @param importFile
      *            file object to load the object from
      * @return List of Requests
@@ -101,7 +100,7 @@ public class ConfigParser {
             Unmarshaller um = context.createUnmarshaller();
             requests = (Requests) um.unmarshal(importFile);
         } catch (JAXBException e) {
-            throw new StiebelHeatPumpException(e.toString(), e);
+            new StiebelHeatPumpException(e.toString());
         }
 
         return requests.getRequests();
@@ -109,7 +108,7 @@ public class ConfigParser {
 
     /**
      * This method loads a List of Request objects from xml file
-     *
+     * 
      * @param fileName
      *            file object to load the object from
      * @return List of Requests

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,6 +48,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
     private Map<String, Socket> socketCache = new HashMap<String, Socket>();
     private Map<String, DataOutputStream> outputStreamCache = new HashMap<String, DataOutputStream>();
     private Map<String, BufferedReader> bufferedReaderCache = new HashMap<String, BufferedReader>();
+    private Map<String, ReentrantLock> volumeLocks = new HashMap<String, ReentrantLock>();
     private static Pattern volumePattern = Pattern.compile(".*Vol=(-?\\d{1,2}).*");
 
     private static final Logger logger = LoggerFactory.getLogger(SonanceBinding.class);
@@ -104,7 +107,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
     }
 
     /*
-     * {@inheritDoc}
+     * @see org.openhab.core.binding.AbstractActiveBinding#getRefreshInterval()
      */
     @Override
     protected long getRefreshInterval() {
@@ -112,7 +115,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
     }
 
     /*
-     * {@inheritDoc}
+     * @see org.openhab.core.binding.AbstractActiveBinding#getName()
      */
     @Override
     protected String getName() {
@@ -120,7 +123,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
     }
 
     /*
-     * {@inheritDoc}
+     * @see org.openhab.core.binding.AbstractActiveBinding#execute()
      */
     @Override
     protected void execute() {
@@ -182,16 +185,10 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
         }
     }
 
-    protected void addBindingProvider(SonanceBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(SonanceBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /*
-     * {@inheritDoc}
+     * @see
+     * org.openhab.core.binding.AbstractActiveBinding#bindingChanged(org.openhab
+     * .core.binding.BindingProvider, java.lang.String)
      */
     @Override
     public void bindingChanged(BindingProvider provider, String itemName) {
@@ -212,11 +209,13 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
     }
 
     /*
-     * {@inheritDoc}
+     * @see
+     * org.openhab.core.binding.AbstractBinding#internalReceiveCommand(java.
+     * lang.String, org.openhab.core.types.Command)
      */
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
-        logger.debug("Command received ({}, {})", itemName, command);
+        logger.info("Command received ({}, {})", itemName, command);
 
         SonanceBindingProvider provider = findFirstMatchingBindingProvider(itemName);
         String group = provider.getGroup(itemName);
@@ -284,11 +283,13 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
     }
 
     /*
-     * {@inheritDoc}
+     * @see
+     * org.openhab.core.binding.AbstractBinding#internalReceiveUpdate(java.lang
+     * .String, org.openhab.core.types.State)
      */
     @Override
     protected void internalReceiveUpdate(String itemName, State newState) {
-        logger.debug("Update received ({},{})", itemName, newState);
+        logger.info("Update received ({},{})", itemName, newState);
 
         SonanceBindingProvider provider = findFirstMatchingBindingProvider(itemName);
         String group = provider.getGroup(itemName);
@@ -329,8 +330,8 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
                 } else {
                     logger.error("I don't know what to do with this new state \"{}\"", newState);
                 }
-                s.close();
             }
+            s.close();
         } catch (IOException e) {
             logger.error("IO Exception when received internal command. Message: {}", e.getMessage());
         } finally {
@@ -469,23 +470,68 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
             BufferedReader i, String endpoint) throws IOException {
         char[] cbuf = new char[50]; // Response is always 50 characters
 
-        String question = String.format("%s%s%s", SonanceConsts.DIRECT_VOLUME_QUERY,
-                Integer.toHexString(183 + targetVolume), group);
-        logger.trace("Sending this to amplifier: {}", question);
+        // Now lock this part, so we don't end up with two functions going up
+        // and now all the time
+        String lockKey = endpoint + ":" + group;
+        if (!volumeLocks.containsKey(lockKey)) {
+            volumeLocks.put(lockKey, new ReentrantLock()); // We can keep this
+                                                           // once when we
+                                                           // finished with it,
+                                                           // speed before
+                                                           // memory usage
+        }
 
-        outToServer.write(hexStringToByteArray(question));
-        i.read(cbuf, 0, 50);
+        try {
+            volumeLocks.get(lockKey).tryLock(2, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.debug("Lock waiting time (2s) expired for lockKey {}.", lockKey);
+            return;
+        }
 
-        String result = new String(cbuf);
-        logger.trace("Received this as response : {}", result);
-        Matcher m = volumePattern.matcher(result);
+        try {
+            outToServer.write(hexStringToByteArray(SonanceConsts.VOLUME_QUERY + group));
+            i.read(cbuf, 0, 50);
 
-        if (m.find()) {
-            double currentVolume = Integer.parseInt(m.group(1));
-            eventPublisher.postUpdate(itemName, new DecimalType(currentVolume));
-            logger.debug("Updating {} with new volume {}", itemName, currentVolume);
-        } else {
-            logger.error("Error sending volume command, received this: {}", new String(cbuf));
+            Matcher m = volumePattern.matcher(new String(cbuf));
+
+            if (m.find()) {
+                double currentVolume = Integer.parseInt(m.group(1));
+                eventPublisher.postUpdate(itemName, new DecimalType(currentVolume));
+                logger.debug("Updating {} with new volume {}", itemName, currentVolume);
+                int step = 0; // We should be able to reach every volume in less
+                              // 29 steps
+                while (currentVolume != targetVolume && step++ <= 28) {
+                    logger.debug("Current volume: {}, target volume: {}, step: {}, lock: {})", currentVolume,
+                            targetVolume, step, lockKey);
+                    if (currentVolume + 3 <= targetVolume) {
+                        outToServer.write(hexStringToByteArray(SonanceConsts.VOLUME_UP_3 + group));
+                        logger.debug("Sending volume up 3 command {}", SonanceConsts.VOLUME_UP_3);
+                    }
+                    if (currentVolume - 3 >= targetVolume) {
+                        outToServer.write(hexStringToByteArray(SonanceConsts.VOLUME_DOWN_3 + group));
+                        logger.debug("Sending volume down 3 command {}", SonanceConsts.VOLUME_DOWN_3);
+                    } else if (currentVolume < targetVolume) {
+                        outToServer.write(hexStringToByteArray(SonanceConsts.VOLUME_UP + group));
+                        logger.debug("Sending volume up command {}", SonanceConsts.VOLUME_UP);
+                    } else {
+                        outToServer.write(hexStringToByteArray(SonanceConsts.VOLUME_DOWN + group));
+                        logger.debug("Sending volume down command {}", SonanceConsts.VOLUME_DOWN);
+                    }
+                    i.read(cbuf, 0, 50);
+                    m = volumePattern.matcher(new String(cbuf));
+                    if (m.find()) {
+                        currentVolume = Integer.parseInt(m.group(1));
+                        logger.info("Setting volume, current volume: {}", currentVolume);
+                        eventPublisher.postUpdate(itemName, new DecimalType(currentVolume));
+                    } else {
+                        logger.error("Error sending volume command, received this: {}", new String(cbuf));
+                    }
+                }
+            } else {
+                logger.error("Error sending volume command, received this: {}", new String(cbuf));
+            }
+        } finally {
+            volumeLocks.get(lockKey).unlock();
         }
     }
 
@@ -522,4 +568,5 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
         }
         return data;
     }
+
 }

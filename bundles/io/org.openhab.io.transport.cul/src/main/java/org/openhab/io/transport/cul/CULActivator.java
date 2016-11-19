@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,11 +8,8 @@
  */
 package org.openhab.io.transport.cul;
 
-import org.openhab.io.transport.cul.internal.CULManager;
-import org.openhab.io.transport.cul.internal.network.CULNetworkConfigFactory;
-import org.openhab.io.transport.cul.internal.network.CULNetworkHandlerImpl;
-import org.openhab.io.transport.cul.internal.serial.CULSerialConfigFactory;
-import org.openhab.io.transport.cul.internal.serial.CULSerialHandlerImpl;
+import org.openhab.io.transport.cul.internal.CULNetworkHandlerImpl;
+import org.openhab.io.transport.cul.internal.CULSerialHandlerImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -36,20 +33,20 @@ public class CULActivator implements BundleActivator {
     public void start(BundleContext bc) throws Exception {
         context = bc;
         logger.debug("CUL transport has been started.");
-        CULManager manager = CULManager.getInstance();
-        manager.registerHandlerClass("serial", CULSerialHandlerImpl.class, new CULSerialConfigFactory());
-        manager.registerHandlerClass("network", CULNetworkHandlerImpl.class, new CULNetworkConfigFactory());
+        CULManager.registerHandlerClass("serial", CULSerialHandlerImpl.class);
+        CULManager.registerHandlerClass("network", CULNetworkHandlerImpl.class);
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
         context = null;
         logger.debug("CUL transport has been stopped.");
+
     }
 
     /**
      * Returns the bundle context of this bundle
-     *
+     * 
      * @return the bundle context
      */
     public static BundleContext getContext() {

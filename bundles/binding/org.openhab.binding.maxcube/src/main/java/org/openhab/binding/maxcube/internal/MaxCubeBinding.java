@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -282,7 +282,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
                     logger.info("Unsupported MAX!Cube message detected. Ignoring and continue with next Line.");
                     this.messageProcessor.reset();
                 } catch (MessageIsWaitingException ex) {
-                    logger.info("There was an unhandled message waiting. Ignoring and continue with next Line.");
+                    logger.info("There was and unhandled message waiting. Ignoring and continue with next Line.");
                     this.messageProcessor.reset();
                 } catch (Exception e) {
                     logger.info("Failed to process message received by MAX! protocol.");
@@ -497,7 +497,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
     /**
      * Processes the S message and updates Duty Cycle & Free Memory Slots
-     *
+     * 
      * @param S_Message message
      */
     private void sMessageProcessing(S_Message message) {
@@ -539,14 +539,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
             }
         }
         return null;
-    }
-
-    protected void addBindingProvider(MaxCubeBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(MaxCubeBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -591,7 +583,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
     /**
      * Discovers the MAX!CUbe LAN Gateway IP address.
-     *
+     * 
      * @return the cube IP if available, a blank string otherwise.
      * @throws ConfigurationException
      */

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -104,14 +104,6 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         }
     }
 
-    protected void addBindingProvider(HomematicBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(HomematicBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -145,7 +137,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
     /**
      * Schedules a job with a short delay to populate changed items to openHAB
      * after startup or an item reload.
-     *
+     * 
      * @see BindingChangedDelayedExecutor
      */
     private void informCommunicator(HomematicBindingProvider hmProvider, String itemName) {

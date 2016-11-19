@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -173,16 +173,8 @@ public class OpenSprinklerBinding extends AbstractActiveBinding<OpenSprinklerBin
         logger.debug("Provided command " + command + " is not of type 'OnOffType' or 'OpenClosedType'");
     }
 
-    protected void addBindingProvider(OpenSprinklerBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(OpenSprinklerBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
-     * {@inheritDoc}
+     * @{inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -238,10 +230,10 @@ public class OpenSprinklerBinding extends AbstractActiveBinding<OpenSprinklerBin
     /**
      * Find the first matching {@link OpenSprinklerBindingProvider} according to
      * <code>itemName</code> and <code>command</code>.
-     *
+     * 
      * @param itemName
      * @param command
-     *
+     * 
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -262,9 +254,9 @@ public class OpenSprinklerBinding extends AbstractActiveBinding<OpenSprinklerBin
     /**
      * Find the first matching provider name according to
      * <code>commandValue</code>.
-     *
+     * 
      * @param commandValue
-     *
+     * 
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -289,9 +281,9 @@ public class OpenSprinklerBinding extends AbstractActiveBinding<OpenSprinklerBin
     /**
      * Find the first matching provider name according to
      * <code>stationValue</code>.
-     *
+     * 
      * @param stationValue
-     *
+     * 
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */

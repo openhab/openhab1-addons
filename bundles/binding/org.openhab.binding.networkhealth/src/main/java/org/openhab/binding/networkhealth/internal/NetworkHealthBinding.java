@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -90,15 +90,10 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
                 try {
                     success = Ping.checkVitality(hostname, port, timeout);
 
-                    if(success) {
-                        logger.debug("established connection [host '{}' port '{}' timeout '{}']",
+                    logger.debug("established connection [host '{}' port '{}' timeout '{}']",
                             new Object[] { hostname, port, timeout });
-                    } else {
-                        logger.debug("couldn't establish connection [host '{}' port '{}' timeout '{}']",
-                            new Object[] { hostname, port, timeout });
-                    }
                 } catch (SocketTimeoutException se) {
-                    logger.debug("timed out while connecting [host '{}' port '{}' timeout '{}']",
+                    logger.debug("timed out while connecting to host '{}' port '{}' timeout '{}'",
                             new Object[] { hostname, port, timeout });
                 } catch (IOException ioe) {
                     logger.debug("couldn't establish network connection [host '{}' port '{}' timeout '{}']",

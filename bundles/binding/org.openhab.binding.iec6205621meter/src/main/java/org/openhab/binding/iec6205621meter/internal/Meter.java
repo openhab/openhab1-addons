@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -66,20 +66,20 @@ public class Meter {
         // the frequently executed code (polling) goes here ...
         Map<String, DataSet> dataSetMap = new HashMap<String, DataSet>();
 
-        Connection connection = new Connection(config.getSerialPort(), config.getInitMessage(), config.getEchoHandling(),
+        Connection connection = new Connection(config.getSerialPort(), config.getEchoHandling(),
                 config.getBaudRateChangeDelay());
-		try {
-			try {
-				connection.open();
-			} catch (IOException e) {
+        try {
+            try {
+                connection.open();
+            } catch (IOException e) {
                 logger.error("Failed to open serial port {}: {}", config.getSerialPort(), e.getMessage());
-				return dataSetMap;
-			}
-			
-			List<DataSet> dataSets = null;
-			try {
-				dataSets = connection.read();
-				for (DataSet dataSet : dataSets) {
+                return dataSetMap;
+            }
+
+            List<DataSet> dataSets = null;
+            try {
+                dataSets = connection.read();
+                for (DataSet dataSet : dataSets) {
                     logger.debug("DataSet: {};{};{}", dataSet.getId(), dataSet.getValue(), dataSet.getUnit());
                     dataSetMap.put(dataSet.getId(), dataSet);
                 }

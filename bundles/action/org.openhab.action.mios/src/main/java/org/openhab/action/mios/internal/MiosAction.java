@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  */
 package org.openhab.action.mios.internal;
 
-import java.lang.reflect.Method;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.openhab.binding.mios.MiosActionProvider;
+import org.openhab.core.items.Item;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
 import org.slf4j.Logger;
@@ -36,21 +36,10 @@ public class MiosAction {
      */
     @ActionDoc(text = "Sends an Action invocation to a Device at a MiOS Unit, without parameters.")
     public static boolean sendMiosAction(
-            @ParamDoc(name = "item", text = "The Item used to determine the MiOS Unit Address information for sending the Action call.") Object item,
+            @ParamDoc(name = "item", text = "The Item used to determine the MiOS Unit Address information for sending the Action call.") Item item,
             @ParamDoc(name = "action", text = "The Action string to be remotely invoked on the MiOS Unit.") String actionName) {
 
-        return sendMiosActionInternal(item, actionName, null);
-    }
-
-    /**
-     * Sends an Action invocation to a Device at a MiOS Unit, without parameters.
-     */
-    @ActionDoc(text = "Sends an Action invocation to a Device at a MiOS Unit, without parameters.")
-    public static boolean sendMiosAction(
-            @ParamDoc(name = "item", text = "The Item used to determine the MiOS Unit Address information for sending the Action call.") String itemName,
-            @ParamDoc(name = "action", text = "The Action string to be remotely invoked on the MiOS Unit.") String actionName) {
-
-        return sendMiosActionInternal(itemName, actionName, null);
+        return sendMiosActionInternal(item.getName(), actionName, null);
     }
 
     /**
@@ -58,23 +47,11 @@ public class MiosAction {
      */
     @ActionDoc(text = "Sends an Action invocation to a Device at a MiOS Unit, with parameters.")
     public static boolean sendMiosAction(
-            @ParamDoc(name = "item", text = "The Item used to determine the MiOS Unit Address information for sending the Action call.") Object item,
+            @ParamDoc(name = "item", text = "The Item used to determine the MiOS Unit Address information for sending the Action call.") Item item,
             @ParamDoc(name = "actionName", text = "The Action string to be remotely invoked on the MiOS Unit.") String actionName,
             @ParamDoc(name = "params", text = "The list of Action Parameters.") List<Pair> params) {
 
-        return sendMiosActionInternal(item, actionName, params);
-    }
-
-    /**
-     * Sends an Action invocation to a Device at a MiOS Unit, with parameters.
-     */
-    @ActionDoc(text = "Sends an Action invocation to a Device at a MiOS Unit, with parameters.")
-    public static boolean sendMiosAction(
-            @ParamDoc(name = "item", text = "The Item used to determine the MiOS Unit Address information for sending the Action call.") String itemName,
-            @ParamDoc(name = "actionName", text = "The Action string to be remotely invoked on the MiOS Unit.") String actionName,
-            @ParamDoc(name = "params", text = "The list of Action Parameters.") List<Pair> params) {
-
-        return sendMiosActionInternal(itemName, actionName, params);
+        return sendMiosActionInternal(item.getName(), actionName, params);
     }
 
     /**
@@ -82,19 +59,9 @@ public class MiosAction {
      */
     @ActionDoc(text = "Sends a Scene invocation to a MiOS Unit.")
     public static boolean sendMiosScene(
-            @ParamDoc(name = "item", text = "The Item used to determine the MiOS Unit Address information for sending the Action call.") Object item) {
+            @ParamDoc(name = "item", text = "The Item used to determine the MiOS Unit Address information for sending the Action call.") Item item) {
 
-        return sendMiosSceneInternal(item);
-    }
-
-    /**
-     * Sends a Scene invocation to a MiOS Unit.
-     */
-    @ActionDoc(text = "Sends a Scene invocation to a MiOS Unit.")
-    public static boolean sendMiosScene(
-            @ParamDoc(name = "item", text = "The Item used to determine the MiOS Unit Address information for sending the Action call.") String itemName) {
-
-        return sendMiosSceneInternal(itemName);
+        return sendMiosSceneInternal(item.getName());
     }
 
     private static MiosActionProvider getActionProviderInternal(String itemName) throws Exception {
@@ -111,21 +78,6 @@ public class MiosAction {
         }
 
         return actionProvider;
-    }
-
-    private static String getName(Object item) throws Exception {
-        Method method = item.getClass().getMethod("getName");
-        return (String) method.invoke(item);
-    }
-
-    private static boolean sendMiosActionInternal(Object item, String actionName, List<Pair> params) {
-        try {
-            // Both OH 1 and ESH have a "getName" method.
-            return sendMiosActionInternal(getName(item), actionName, params);
-        } catch (Exception e) {
-            logger.error("An unexpected error occurred using sendMiosAction: {}", e);
-            return false;
-        }
     }
 
     private static boolean sendMiosActionInternal(String itemName, String actionName, List<Pair> params) {
@@ -151,16 +103,6 @@ public class MiosAction {
             return actionProvider.invokeMiosAction(itemName, actionName, paramList);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
-            return false;
-        }
-    }
-
-    private static boolean sendMiosSceneInternal(Object item) {
-        try {
-            // Both OH 1 and ESH have a "getName" method.
-            return sendMiosSceneInternal(getName(item));
-        } catch (Exception e) {
-            logger.error("An unexpected error occurred using sendMiosScene: {}", e);
             return false;
         }
     }

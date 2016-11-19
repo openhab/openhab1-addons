@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -365,7 +365,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
                 ZWaveSwitchAllCommandClass switchAllCommandClass = (ZWaveSwitchAllCommandClass) node
                         .getCommandClass(ZWaveCommandClass.CommandClass.SWITCH_ALL);
-                if (node.getCommandClass(CommandClass.SWITCH_ALL) != null) {
+                if ((ZWaveConfigurationCommandClass) node.getCommandClass(CommandClass.SWITCH_ALL) != null) {
                     record = new OpenHABConfigurationRecord(domain, "SwitchAll", "Switch All", false);
                     record.type = OpenHABConfigurationRecord.TYPE.LIST;
                     record.addValue("0", "Exclude from All On and All Off groups");
@@ -378,19 +378,19 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
                 // Add links to configuration if the node supports the various command classes
                 // Get the configuration command class for this node if it's supported
-                if (node.getCommandClass(CommandClass.CONFIGURATION) != null) {
+                if ((ZWaveConfigurationCommandClass) node.getCommandClass(CommandClass.CONFIGURATION) != null) {
                     record = new OpenHABConfigurationRecord(domain + "parameters/", "Configuration Parameters");
                     record.addAction("Refresh", "Refresh");
                     records.add(record);
                 }
 
-                if (node.getCommandClass(CommandClass.ASSOCIATION) != null) {
+                if ((ZWaveConfigurationCommandClass) node.getCommandClass(CommandClass.ASSOCIATION) != null) {
                     record = new OpenHABConfigurationRecord(domain + "associations/", "Association Groups");
                     record.addAction("Refresh", "Refresh");
                     records.add(record);
                 }
 
-                if (node.getCommandClass(CommandClass.WAKE_UP) != null) {
+                if ((ZWaveConfigurationCommandClass) node.getCommandClass(CommandClass.WAKE_UP) != null) {
                     record = new OpenHABConfigurationRecord(domain + "wakeup/", "Wakeup Period");
                     record.addAction("Refresh", "Refresh");
                     records.add(record);

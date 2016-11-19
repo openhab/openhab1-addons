@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -190,7 +190,6 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
         dptTypeMap.put(DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL.getID(), DecimalType.class);
         dptTypeMap.put(DPTXlator4ByteFloat.DPT_FREQUENCY.getID(), DecimalType.class);
         dptTypeMap.put(DPTXlator4ByteFloat.DPT_POWER.getID(), DecimalType.class);
-        dptTypeMap.put(DPTXlator4ByteFloat.DPT_PRESSURE.getID(), DecimalType.class);
 
         // Datapoint Types "String", Main number 16
         dptTypeMap.put(DPTXlatorString.DPT_STRING_8859_1.getID(), StringType.class);
@@ -327,7 +326,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
             }
             int subNumber = getSubNumber(id);
             if (subNumber == -1) {
-                logger.debug("toType: couldn't identify sub number in dptID: {}.", id);
+                logger.debug("toType: couldn't identify su number in dptID: {}.", id);
                 return null;
             }
             /*
@@ -359,13 +358,9 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
                 case 3:
                     DPTXlator3BitControlled translator3BitControlled = (DPTXlator3BitControlled) translator;
                     if (translator3BitControlled.getStepCode() == 0) {
-                        /*
-                         * there is no STOP for a IncreaseDecreaseType, so we are just using an INCREASE.
-                         * It is up to the binding to recognize that a start/stop-dimming is in progress and
-                         * stop the dimming accordingly.
-                         */
-                        logger.debug("toType: KNX DPT_Control_Dimming: break received.");
-                        return IncreaseDecreaseType.INCREASE;
+                        // Not supported: break
+                        logger.debug("toType: KNX DPT_Control_Dimming: break ignored.");
+                        return null;
                     }
                     switch (subNumber) {
                         case 7:
@@ -492,13 +487,13 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
                 return new HSBType(color);
             }
         } catch (KNXFormatException kfe) {
-            logger.info("Translator couldn't parse data for datapoint type '{}' (KNXFormatException).",
+            logger.info("Translator couldn't parse data for datapoint type ‘{}‘ (KNXFormatException).",
                     datapoint.getDPT());
         } catch (KNXIllegalArgumentException kiae) {
-            logger.info("Translator couldn't parse data for datapoint type '{}' (KNXIllegalArgumentException).",
+            logger.info("Translator couldn't parse data for datapoint type ‘{}‘ (KNXIllegalArgumentException).",
                     datapoint.getDPT());
         } catch (KNXException e) {
-            logger.warn("Failed creating a translator for datapoint type '{}'.", datapoint.getDPT(), e);
+            logger.warn("Failed creating a translator for datapoint type ‘{}‘.", datapoint.getDPT(), e);
         }
 
         return null;

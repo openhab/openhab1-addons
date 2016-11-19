@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -221,16 +221,8 @@ public class Enigma2Binding extends AbstractActiveBinding<Enigma2BindingProvider
         }
     }
 
-    protected void addBindingProvider(Enigma2BindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(Enigma2BindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
-     * {@inheritDoc}
+     * @{inheritDoc
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

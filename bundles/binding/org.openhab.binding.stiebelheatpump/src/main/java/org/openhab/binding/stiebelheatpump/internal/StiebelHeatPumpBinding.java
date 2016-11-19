@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -198,16 +198,8 @@ public class StiebelHeatPumpBinding extends AbstractActiveBinding<StiebelHeatPum
 
     }
 
-    protected void addBindingProvider(StiebelHeatPumpBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(StiebelHeatPumpBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
-     * {@inheritDoc}
+     * @{inheritDoc
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -261,7 +253,7 @@ public class StiebelHeatPumpBinding extends AbstractActiveBinding<StiebelHeatPum
                 if (host != null) {
                     logger.info("Created heatpump configuration with tcp {}:{}, version:{} ", host, port, version);
                 } else {
-                    logger.info("Created heatpump configuration with serialport:{}, baudrate:{}, version:{} ",
+                    logger.info("Created heatpump configuration with  serialport:{}, baudrate:{}, version:{} ",
                             serialPort, baudRate, version);
                 }
                 setProperlyConfigured(isInitialized);
@@ -278,7 +270,7 @@ public class StiebelHeatPumpBinding extends AbstractActiveBinding<StiebelHeatPum
      * the configuration file and loads all defined record definitions of sensor
      * data, status information , actual time settings and setting parameter
      * values.
-     *
+     * 
      * @return true if heat pump information could be successfully read
      */
     public boolean getInitialHeatPumpSettings() {
@@ -294,7 +286,7 @@ public class StiebelHeatPumpBinding extends AbstractActiveBinding<StiebelHeatPum
                         return false;
                     }
                 } catch (InterruptedException e) {
-                    logger.error("could not access Heat pump for version {}", version);
+                    logger.error("could not access Heat pump for has version {}", version);
                 }
             }
 
@@ -341,7 +333,7 @@ public class StiebelHeatPumpBinding extends AbstractActiveBinding<StiebelHeatPum
      * This method sets the time in the heat pump.
      * I case of the time the time is initially verified and set to
      * actual time.
-     *
+     * 
      * @return true if heat pump time could be successfully set
      */
     public boolean setTime() {
@@ -379,7 +371,7 @@ public class StiebelHeatPumpBinding extends AbstractActiveBinding<StiebelHeatPum
 
     /**
      * This method publishes all values on the event bus
-     *
+     * 
      * @param heatPumpData
      *            as map of provider parameter and value
      */

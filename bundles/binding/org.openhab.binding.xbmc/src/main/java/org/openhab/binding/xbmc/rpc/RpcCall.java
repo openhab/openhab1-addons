@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,7 +35,7 @@ import com.ning.http.client.Response;
  *
  * XBMC JSON RPC API: http://wiki.xbmc.org/?title=JSON-RPC_API
  *
- * @author tlan, Ben Jones, Plebs
+ * @author tlan, Ben Jones
  * @since 1.5.0
  */
 public abstract class RpcCall {
@@ -131,14 +131,11 @@ public abstract class RpcCall {
         try {
             // we fire this request off asynchronously and let the completeHandler
             // process any response as necessary (can be null)
-            String resultWrite = writeJson(request);
-            logger.debug("Write JSON: {}", resultWrite);
-            ListenableFuture<Response> future = client.preparePost(uri).setBody(resultWrite)
+            ListenableFuture<Response> future = client.preparePost(uri).setBody(writeJson(request))
                     .setHeader("content-type", "application/json").setHeader("accept", "application/json")
                     .execute(new AsyncCompletionHandler<Response>() {
                         @Override
                         public Response onCompleted(Response response) throws Exception {
-                            logger.debug("Read JSON: {}", response.getResponseBody());
                             Map<String, Object> json = readJson(response.getResponseBody());
 
                             // if we get an error then throw an exception to stop the

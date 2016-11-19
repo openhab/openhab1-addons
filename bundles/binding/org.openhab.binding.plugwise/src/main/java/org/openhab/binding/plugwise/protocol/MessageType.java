@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -40,11 +40,7 @@ public enum MessageType {
     CLOCK_GET_REQUEST(62),
     CLOCK_GET_RESPONSE(63),
     POWER_BUFFER_REQUEST(72),
-    POWER_BUFFER_RESPONSE(73),
-    ANNOUNCE_AWAKE_REQUEST(79),
-    BROADCAST_GROUP_SWITCH_RESPONSE(86),
-    MODULE_JOINED_NETWORK_REQUEST(97),
-    SENSE_REPORT_REQUEST(261);
+    POWER_BUFFER_RESPONSE(73);
 
     private int identifier;
 

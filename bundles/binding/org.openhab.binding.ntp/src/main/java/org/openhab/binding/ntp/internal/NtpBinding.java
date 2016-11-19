@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -102,7 +102,7 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider>impleme
     /**
      * Queries the given timeserver <code>hostname</code> and returns the time
      * in milliseconds.
-     *
+     * 
      * @param hostname the timeserver to query
      * @return the time in milliseconds or the current time of the system if an
      *         error occurs.
@@ -125,14 +125,6 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider>impleme
         }
 
         return System.currentTimeMillis();
-    }
-
-    protected void addBindingProvider(NtpBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(NtpBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
     }
 
     /**

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,8 +7,6 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.io.caldav.internal;
-
-import java.nio.charset.Charset;
 
 /**
  * Configuration class for binding configuration settings.
@@ -26,7 +24,6 @@ public class CalDavConfig {
     private int historicLoadMinutes = 0;
     private boolean disableCertificateVerification;
     private boolean lastModifiedFileTimeStampValid = true;
-    private String charset = Charset.defaultCharset().name();
 
     public CalDavConfig() {
     }
@@ -113,23 +110,12 @@ public class CalDavConfig {
         this.lastModifiedFileTimeStampValid = lastModifiedFileTimeStampValid;
     }
 
-    public String getCharset() {
-        return charset;
-    }
-
-    public void setCharset(String charset) {
-        this.charset = charset;
-    }
-
     @Override
     public String toString() {
-        return "CalDavConfig [key=" + key + ", username=" + username
-                + ", password=" + password + ", url=" + url
-                + ", reloadMinutes=" + reloadMinutes + ", preloadMinutes="
-                + preloadMinutes + ", disableCertificateVerification="
-                + disableCertificateVerification
-                + ", lastModifiedFileTimeStampValid="
-                + lastModifiedFileTimeStampValid + "]";
+        return "CalDavConfig [key=" + key + ", username=" + username + ", password=" + password + ", url=" + url
+                + ", reloadMinutes=" + reloadMinutes + ", preloadMinutes=" + preloadMinutes
+                + ", disableCertificateVerification=" + disableCertificateVerification
+                + ", lastModifiedFileTimeStampValid=" + lastModifiedFileTimeStampValid + "]";
     }
 
 }

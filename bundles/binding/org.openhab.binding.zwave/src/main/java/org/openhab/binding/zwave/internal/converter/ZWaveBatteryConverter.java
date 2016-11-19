@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * ZWaveBatteryConverter class. Converter for communication with the
  * {@link ZWaveBatteryCommandClass}. Implements polling of the battery
  * status and receiving of battery events.
- *
+ * 
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */
@@ -41,7 +41,7 @@ public class ZWaveBatteryConverter extends ZWaveCommandClassConverter<ZWaveBatte
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveBatteryConverter} class.
-     *
+     * 
      * @param controller the {@link ZWaveController} to use for sending messages.
      * @param eventPublisher the {@link EventPublisher} to use to publish events.
      */

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -122,7 +122,7 @@ public class LightwaveRFSenderThread implements Runnable, LightwaveRFMessageList
                 if (!unlatched) {
                     Integer sendCount = retryCountMap.get(commandToSend.getMessageId());
                     if (sendCount.intValue() >= MAX_RETRY_ATTEMPS) {
-                        logger.error("Unable to send message {} after {} attempts giving up",
+                        logger.error("Unable to send message {} after {} attemps giving up",
                                 commandToSend.getLightwaveRfCommandString(), MAX_RETRY_ATTEMPS);
                         return;
                     }

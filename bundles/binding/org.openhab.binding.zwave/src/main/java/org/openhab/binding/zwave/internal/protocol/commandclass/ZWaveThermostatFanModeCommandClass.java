@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,7 +32,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Thermostat FanMode command class.
- *
+ * 
  * @author Dan Cunningham
  * @since 1.6.0
  */
@@ -60,7 +60,7 @@ public class ZWaveThermostatFanModeCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveThermostatFanModeCommandClass class.
-     *
+     * 
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -123,7 +123,7 @@ public class ZWaveThermostatFanModeCommandClass extends ZWaveCommandClass
                             logger.debug("NODE {}: Added Fan Mode type {} ({})", this.getNode().getNodeId(),
                                     fanModeTypeToAdd.getLabel(), index);
                         } else {
-                            logger.warn("NODE {}: Unknown fan mode type {}", this.getNode().getNodeId(), index);
+                            logger.warn("NODE {}: Uknown fan mode type {}", this.getNode().getNodeId(), index);
                         }
                     }
                 }
@@ -142,7 +142,7 @@ public class ZWaveThermostatFanModeCommandClass extends ZWaveCommandClass
 
     /**
      * Processes a THERMOSTAT_FAN_MODE_REPORT message.
-     *
+     * 
      * @param serialMessage the incoming message to process.
      * @param offset the offset position from which to start message processing.
      * @param endpoint the endpoint or instance number this message is meant for.
@@ -229,7 +229,7 @@ public class ZWaveThermostatFanModeCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the THERMOSTAT_FAN_MODE_SUPPORTED_GET command
-     *
+     * 
      * @return the serial message, or null if the supported command is not supported.
      */
     public SerialMessage getSupportedMessage() {
@@ -276,7 +276,7 @@ public class ZWaveThermostatFanModeCommandClass extends ZWaveCommandClass
     /**
      * Z-Wave FanModeType enumeration. The fanMode type indicates the type
      * of fanMode that is reported.
-     *
+     * 
      * @author Dan Cunningham
      * @since 1.6.0
      */
@@ -314,7 +314,7 @@ public class ZWaveThermostatFanModeCommandClass extends ZWaveCommandClass
         /**
          * Lookup function based on the fan mode type code.
          * Returns null if the code does not exist.
-         *
+         * 
          * @param i the code to lookup
          * @return enumeration value of the fan mode type.
          */

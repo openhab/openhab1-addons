@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -84,7 +84,7 @@ public abstract class Device {
         String rfAddress = Utils.toHex(raw[0] & 0xFF, raw[1] & 0xFF, raw[2] & 0xFF);
 
         // Based on the RF address and the corresponding configuration,
-        // create the device based on the type specified in its configuration
+        // create the device based on the type specified in it's configuration
 
         Device device = Device.create(rfAddress, configurations);
         if (device == null) {

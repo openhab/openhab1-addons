@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,7 +26,6 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
@@ -104,7 +103,7 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.COMMAND, RFXComValueSelector.MOOD,
-            RFXComValueSelector.DIMMING_LEVEL, RFXComValueSelector.CONTACT, RFXComValueSelector.SHUTTER);
+            RFXComValueSelector.DIMMING_LEVEL, RFXComValueSelector.CONTACT);
 
     public SubType subType = SubType.LIGHTWAVERF;
     public int sensorId = 0;
@@ -250,36 +249,14 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
                 throw new RFXComException("Can't convert " + valueSelector + " to NumberItem");
             }
 
-        } else if (valueSelector.getItemClass() == RollershutterItem.class) {
-
-            if (valueSelector == RFXComValueSelector.COMMAND || valueSelector == RFXComValueSelector.SHUTTER) {
-
-                switch (command) {
-                    case CLOSE_RELAY:
-                        state = OpenClosedType.CLOSED;
-                        break;
-
-                    case OPEN_RELAY:
-                        state = OpenClosedType.OPEN;
-                        break;
-
-                    default:
-                        break;
-                }
-			} else if (valueSelector == RFXComValueSelector.DIMMING_LEVEL) {
-                state = RFXComLighting5Message.getPercentTypeFromDimLevel(dimmingLevel);
-
-            } else {
-                throw new NumberFormatException("Can't convert " + valueSelector + " to RollershutterItem");
-            }
-
-        } else if (valueSelector.getItemClass() == DimmerItem.class) {
+        } else if (valueSelector.getItemClass() == DimmerItem.class
+                || valueSelector.getItemClass() == RollershutterItem.class) {
 
             if (valueSelector == RFXComValueSelector.DIMMING_LEVEL) {
                 state = RFXComLighting5Message.getPercentTypeFromDimLevel(dimmingLevel);
 
             } else {
-                throw new RFXComException("Can't convert " + valueSelector + " to DimmerItem");
+                throw new RFXComException("Can't convert " + valueSelector + " to DimmerItem/RollershutterItem");
             }
 
         } else if (valueSelector.getItemClass() == SwitchItem.class) {
@@ -289,12 +266,10 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
                 switch (command) {
                     case OFF:
                     case GROUP_OFF:
-                    case CLOSE_RELAY:
                         state = OnOffType.OFF;
                         break;
 
                     case ON:
-                    case OPEN_RELAY:
                         state = OnOffType.ON;
                         break;
 
@@ -315,12 +290,10 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
                 switch (command) {
                     case OFF:
                     case GROUP_OFF:
-                    case CLOSE_RELAY:
                         state = OpenClosedType.CLOSED;
                         break;
 
                     case ON:
-                    case OPEN_RELAY:
                         state = OpenClosedType.OPEN;
                         break;
 
@@ -359,16 +332,6 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
         unitcode = Byte.parseByte(ids[1]);
 
         switch (valueSelector) {
-            case SHUTTER:
-                if (type instanceof OpenClosedType) {
-                    command = (type == OpenClosedType.CLOSED ? Commands.CLOSE_RELAY : Commands.OPEN_RELAY);
-                } else if (type instanceof StopMoveType) {
-                    command = Commands.STOP_RELAY;
-                } else {
-                    throw new NumberFormatException("Can't convert " + type + " to Command");
-                }
-                break;
-                    
             case COMMAND:
                 if (type instanceof OnOffType) {
                     command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -158,7 +158,7 @@ public class OneWireConnection {
             if (cvOwConnection == null) {
                 logger.debug("Not connected to owserver yet. Trying to connect...");
                 if (!connect()) {
-                    logger.warn("Initial connection to owserver failed!");
+                    logger.warn("Inital connection to owserver failed!");
                 } else {
                     logger.debug("Success: connected to owserver.");
                 }
@@ -189,7 +189,7 @@ public class OneWireConnection {
         String[] pvDevicePropertyPathParts = pvDevicePropertyPath.trim().split("/");
 
         String lvDevicePath = pvDevicePropertyPathParts[0];
-        logger.debug("check if device exists '{}': ", new Object[] { lvDevicePath });
+        logger.debug("check if device exisits '{}': ", new Object[] { lvDevicePath });
 
         return OneWireConnection.getConnection().exists(lvDevicePath);
     }

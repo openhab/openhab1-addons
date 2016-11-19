@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -430,9 +430,7 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
                 Collection<String> items = provider.getItemNames();
 
                 for (CallEntry call : appels) {
-                    Calendar callEndTime = call.getTimeStamp();
-                    callEndTime.add(Calendar.SECOND, (int) (call.getDuration()));
-                    if ((call.getDuration() > 0) && callEndTime.after(lastPhoneCheck)) {
+                    if (call.getTimeStamp().after(lastPhoneCheck)) {
                         for (String itemName : items) {
                             FreeboxBindingConfig bindingConfig = provider.getConfig(itemName);
                             if (bindingConfig.commandParam == null
@@ -456,9 +454,9 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
                                 }
                             }
                         }
-                        lastPhoneCheck = callEndTime;
                     }
                 }
+                lastPhoneCheck.setTimeInMillis(System.currentTimeMillis());
             }
         } catch (FreeboxException e) {
             logger.info("CallEntries: " + e.getMessage());
@@ -668,7 +666,7 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
     /**
      * Handles connection to the Freebox, including validation of the Apptoken
      * if none is provided in 'openhab.cfg'
-     *
+     * 
      * @throws FreeboxException
      */
     private void authorize() throws FreeboxException {
@@ -731,20 +729,16 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
     }
 
     /**
-     * A comparator of phone calls by ascending end date and time
+     * A comparator of phone calls by ascending date and time
      */
     private class PhoneCallComparator implements Comparator<CallEntry> {
 
         @Override
         public int compare(CallEntry call1, CallEntry call2) {
             int result = 0;
-            Calendar callEndTime1 = call1.getTimeStamp();
-            callEndTime1.add(Calendar.SECOND, (int) (call1.getDuration()));
-            Calendar callEndTime2 = call2.getTimeStamp();
-            callEndTime2.add(Calendar.SECOND, (int) (call2.getDuration()));
-            if (callEndTime1.before(callEndTime2)) {
+            if (call1.getTimeStamp().before(call2.getTimeStamp())) {
                 result = -1;
-            } else if (callEndTime1.after(callEndTime2)) {
+            } else if (call1.getTimeStamp().after(call2.getTimeStamp())) {
                 result = 1;
             }
             return result;

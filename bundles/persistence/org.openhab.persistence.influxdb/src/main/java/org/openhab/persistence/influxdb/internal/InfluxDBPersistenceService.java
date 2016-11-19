@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -77,7 +77,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     private static final String DEFAULT_URL = "http://127.0.0.1:8086";
     private static final String DEFAULT_DB = "openhab";
     private static final String DEFAULT_USER = "openhab";
-    private static final String DEFAULT_RETENTION_POLICY = "autogen";
     private static final String DIGITAL_VALUE_OFF = "0";
     private static final String DIGITAL_VALUE_ON = "1";
     private static final String VALUE_COLUMN_NAME = "value";
@@ -90,7 +89,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     private String url;
     private String user;
     private String password;
-    private String retentionPolicy;
     private boolean isProperlyConfigured;
     private boolean connected;
 
@@ -130,11 +128,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
             dbName = DEFAULT_DB;
             logger.debug("using default db name {}", DEFAULT_DB);
         }
-        retentionPolicy = (String) config.get("retentionPolicy");
-        if (isBlank(retentionPolicy)) {
-            retentionPolicy = DEFAULT_RETENTION_POLICY;
-            logger.debug("using default retentionPolicy {}", DEFAULT_RETENTION_POLICY);
-        }
+
         isProperlyConfigured = true;
 
         connect();
@@ -246,7 +240,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
         Point point = Point.measurement(name).field(VALUE_COLUMN_NAME, value).time(System.currentTimeMillis(), timeUnit)
                 .build();
         try {
-            influxDB.write(dbName, retentionPolicy, point);
+            influxDB.write(dbName, "default", point);
         } catch (RuntimeException e) {
             logger.error("storing failed with exception for item: {}", name);
             handleDatabaseException(e);
@@ -283,7 +277,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
         query.append("select ");
         query.append(VALUE_COLUMN_NAME);
         query.append(" ");
-        query.append("from " + retentionPolicy + ".");
+        query.append("from ");
 
         if (filter.getItemName() != null) {
             query.append(filter.getItemName());
@@ -413,7 +407,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     /**
      * This method returns an integer if possible if not a double is returned. This is an optimization
      * for influxdb because integers have less overhead.
-     *
+     * 
      * @param value the BigDecimal to be converted
      * @return A double if possible else a double is returned.
      */
@@ -431,7 +425,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
 
     /**
      * Converts {@link State} to objects fitting into influxdb values.
-     *
+     * 
      * @param state to be converted
      * @return integer or double value for DecimalType, 0 or 1 for OnOffType and OpenClosedType,
      *         integer for DateTimeType, String for all others
@@ -465,7 +459,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
 
     /**
      * Converts {@link State} to a String suitable for influxdb queries.
-     *
+     * 
      * @param state to be converted
      * @return {@link String} equivalent of the {@link State}
      */
@@ -492,7 +486,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     /**
      * Converts a value to a {@link State} which is suitable for the given {@link Item}. This is
      * needed for querying a {@link HistoricState}.
-     *
+     * 
      * @param value to be converted to a {@link State}
      * @param itemName name of the {@link Item} to get the {@link State} for
      * @return the state of the item represented by the itemName parameter, else the string value of
@@ -545,7 +539,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     /**
      * Maps a string value which expresses a {@link BigDecimal.ZERO } to DIGITAL_VALUE_OFF, all others
      * to DIGITAL_VALUE_ON
-     *
+     * 
      * @param value to be mapped
      * @return
      */

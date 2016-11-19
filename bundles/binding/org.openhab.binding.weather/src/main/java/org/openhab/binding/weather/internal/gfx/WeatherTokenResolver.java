@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -73,7 +73,7 @@ public class WeatherTokenResolver implements TokenResolver {
                 throw new RuntimeException("Invalid weather token: " + tokenName);
             }
         } catch (Exception ex) {
-            logger.warn(ex.getMessage());
+            logger.error(ex.getMessage(), ex);
             return null;
         }
     }
@@ -174,7 +174,7 @@ public class WeatherTokenResolver implements TokenResolver {
 
     /**
      * Helper class with the parts of a token.
-     *
+     * 
      * @author Gerhard Riegler
      * @since 1.6.0
      */

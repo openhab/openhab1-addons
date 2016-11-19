@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -64,7 +64,7 @@ public class PanStampBinding extends AbstractBinding<PanStampBindingProvider> {
     private TcpServer debugServer;
 
     /**
-     * {@inheritDoc}
+     * @{inheritDoc
      */
     public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
         logger.debug("activate()");
@@ -75,16 +75,8 @@ public class PanStampBinding extends AbstractBinding<PanStampBindingProvider> {
         }
     }
 
-    protected void addBindingProvider(PanStampBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(PanStampBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
-     * {@inheritDoc}
+     * @{inheritDoc
      */
     public void modified(final Map<String, Object> configuration) {
         logger.debug("modified()");
@@ -322,10 +314,10 @@ public class PanStampBinding extends AbstractBinding<PanStampBindingProvider> {
                 network.setDeviceLibrary(new CompoundDeviceLibrary(new FileLibrary(xmlDir), new ClassLoaderLibrary()));
                 logger.info("Configured XML directory to {}", cfg.xmlDir);
             } else {
-                logger.error("devices.xml in XML directory {} cannot be read", cfg.xmlDir);
+                logger.error("devices.xml in XML directory {} can not be read", cfg.xmlDir);
             }
         } else {
-            logger.error("XML directory {} cannot be read", cfg.xmlDir);
+            logger.error("XML directory {} can not be read", cfg.xmlDir);
         }
     }
 
@@ -398,7 +390,7 @@ public class PanStampBinding extends AbstractBinding<PanStampBindingProvider> {
 
     /**
      * Return all available binding configs for the given item name
-     *
+     * 
      * @param itemName
      *            The item name for which configs are requested.
      * @return The configs found.
@@ -416,7 +408,7 @@ public class PanStampBinding extends AbstractBinding<PanStampBindingProvider> {
 
     /**
      * Return all available binding configs for the given endpoint
-     *
+     * 
      * @param ep
      *            The endpoint for which configs are requested.
      * @return The configs found.
@@ -438,8 +430,8 @@ public class PanStampBinding extends AbstractBinding<PanStampBindingProvider> {
     }
 
     /**
-     * Update all items associated with an endpoint with its new value
-     *
+     * Update all items associated with an endpoint with it's new value
+     * 
      * @param ep
      *            The endpoint for which a new value is available
      * @param val

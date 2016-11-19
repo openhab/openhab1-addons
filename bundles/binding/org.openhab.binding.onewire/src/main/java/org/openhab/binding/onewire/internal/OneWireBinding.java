@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -78,17 +78,9 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
         ivOneWireReaderScheduler.stop();
     }
 
-    protected void addBindingProvider(OneWireBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(OneWireBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
      */
     @Override
@@ -133,7 +125,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see
      * org.openhab.core.binding.AbstractBinding#allBindingsChanged(org.openhab
      * .core.binding.BindingProvider)
@@ -145,7 +137,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
     /**
      * schedule All Bindings to get updated
-     *
+     * 
      * @param pvProvider
      */
     private void scheduleAllBindings(BindingProvider pvProvider) {
@@ -175,13 +167,13 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
                             if (lvAutoRefreshTimeInSecs > 0) {
                                 if (!ivOneWireReaderScheduler.scheduleUpdate(lvItemName, lvAutoRefreshTimeInSecs)) {
-                                    logger.warn("Couldn't add to OneWireUpdate scheduler",
+                                    logger.warn("Clouldn't add to OneWireUpdate scheduler",
                                             lvDevicePropertyBindingConfig);
                                 }
                             }
                         }
                     } else {
-                        logger.debug("Didn't schedule item {} because it is not a DevicePropertyBinding.", lvItemName);
+                        logger.debug("Didn't schedule item {} because it is not an DevicePropertyBinding.", lvItemName);
                     }
                 }
             }
@@ -190,7 +182,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see
      * org.openhab.core.binding.AbstractBinding#bindingChanged(org.openhab.core
      * .binding.BindingProvider, java.lang.String)
@@ -220,10 +212,10 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
                 if (lvAutoRefreshTimeInSecs > 0) {
                     if (!ivOneWireReaderScheduler.scheduleUpdate(pvItemName, lvAutoRefreshTimeInSecs)) {
-                        logger.warn("Couldn't add to OneWireUpdate scheduler", lvDeviceBindingConfig);
+                        logger.warn("Clouldn't add to OneWireUpdate scheduler", lvDeviceBindingConfig);
                     }
                 } else {
-                    logger.debug("Didn't add to OneWireUpdate scheduler, because refresh is <= 0: "
+                    logger.debug("Didnt't add to OneWireUpdate scheduler, because refresh is <= 0: "
                             + lvDeviceBindingConfig.toString());
                 }
             }
@@ -232,7 +224,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.openhab.binding.onewire.internal.listener.
      * InterfaceOneWireDevicePropertyWantsUpdateListener#
      * devicePropertyWantsUpdate(org.openhab.binding.onewire.internal.listener.
@@ -248,7 +240,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
     }
 
     /**
-     *
+     * 
      * @param pvItemName
      * @return the corresponding AbstractOneWireDevicePropertyBindingConfig to
      *         the given <code>pvItemName</code>
@@ -261,7 +253,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
     }
 
     /**
-     *
+     * 
      * @param pvItemName
      * @return the corresponding Item to the given <code>pvItemName</code>
      */
@@ -274,7 +266,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
     /**
      * Update an item with value from 1-wire device property
-     *
+     * 
      * @param pvItemName
      */
     public void updateItemFromOneWire(String pvItemName) {
@@ -323,7 +315,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
                 ivCacheItemStates.put(pvItem.getName(), lvNewState);
                 eventPublisher.postUpdate(pvItem.getName(), lvNewState);
             } else {
-                logger.debug("didn't post update to eventPublisher, because state did not change for item "
+                logger.debug("didn't post update to eventPublisher, because state did not changed for item "
                         + pvItem.getName());
             }
         }

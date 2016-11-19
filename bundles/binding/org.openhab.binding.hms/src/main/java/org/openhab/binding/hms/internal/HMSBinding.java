@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,16 +10,18 @@ package org.openhab.binding.hms.internal;
 
 import java.util.Dictionary;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.hms.HMSBindingProvider;
 import org.openhab.binding.hms.internal.HMSGenericBindingProvider.HMSBindingConfig;
-import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.io.transport.cul.CULLifecycleListenerListenerRegisterer;
-import org.openhab.io.transport.cul.CULLifecycleManager;
+import org.openhab.io.transport.cul.CULDeviceException;
+import org.openhab.io.transport.cul.CULHandler;
 import org.openhab.io.transport.cul.CULListener;
+import org.openhab.io.transport.cul.CULManager;
 import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -32,26 +34,46 @@ import org.slf4j.LoggerFactory;
  * @author Thomas Urmann
  * @since 1.7.0
  */
-public class HMSBinding extends AbstractBinding<HMSBindingProvider>implements ManagedService, CULListener {
+public class HMSBinding extends AbstractActiveBinding<HMSBindingProvider>implements ManagedService, CULListener {
 
     private static final Logger logger = LoggerFactory.getLogger(HMSBinding.class);
 
-    private final CULLifecycleManager culHandlerLifecycle;
+    /**
+     * the refresh interval which is used to poll values from the HMS server
+     * (optional, defaults to 60000ms)
+     */
+    private long refreshInterval = 60000;
 
-    public HMSBinding() {
-        culHandlerLifecycle = new CULLifecycleManager(CULMode.SLOW_RF,
-                new CULLifecycleListenerListenerRegisterer(this));
+    private final static String KEY_DEVICE_NAME = "device";
+
+    private String deviceName;
+
+    private CULHandler cul;
+
+    private void setNewDeviceName(String deviceName) {
+        if (cul != null) {
+            CULManager.close(cul);
+        }
+        this.deviceName = deviceName;
+        getCULHandler();
     }
 
-    @Override
-    public void activate() {
-        culHandlerLifecycle.open();
+    private void getCULHandler() {
+        try {
+            logger.debug("Opening CUL device on " + deviceName);
+            cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF);
+            cul.registerListener(this);
+        } catch (CULDeviceException e) {
+            logger.error("Can't open cul device", e);
+            cul = null;
+        }
     }
 
     @Override
     public void deactivate() {
         logger.debug("Deactivating HMS binding");
-        culHandlerLifecycle.close();
+        cul.unregisterListener(this);
+        CULManager.close(cul);
     }
 
     @Override
@@ -64,7 +86,7 @@ public class HMSBinding extends AbstractBinding<HMSBindingProvider>implements Ma
 
     /**
      * Code <s1><s0><t1><t0><f0><t2><f2><f1>
-     *
+     * 
      * similar perl code is:
      * $v[0] = int(substr($val, 5, 1) . substr($val, 2, 2))/10;
      * $v[0] = -$v[0] if($status1 & 8);
@@ -128,6 +150,21 @@ public class HMSBinding extends AbstractBinding<HMSBindingProvider>implements Ma
     }
 
     @Override
+    protected long getRefreshInterval() {
+        return refreshInterval;
+    }
+
+    @Override
+    protected String getName() {
+        return "HMS Refresh Service";
+    }
+
+    @Override
+    protected void execute() {
+        // has to be overridden since base class method is abstract
+    }
+
+    @Override
     protected void internalReceiveCommand(String itemName, Command command) {
         // the code being executed when a command was sent on the openHAB
         // event bus goes here. This method is only called if one of the
@@ -143,17 +180,29 @@ public class HMSBinding extends AbstractBinding<HMSBindingProvider>implements Ma
         logger.debug("internalReceiveCommand() is called!");
     }
 
-    protected void addBindingProvider(HMSBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(HMSBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        culHandlerLifecycle.config(config);
+        if (config != null) {
+
+            // to override the default refresh interval one has to add a
+            // parameter to openhab.cfg like
+            // <bindingName>:refresh=<intervalInMs>
+            String refreshIntervalString = (String) config.get("refresh");
+            if (StringUtils.isNotBlank(refreshIntervalString)) {
+                refreshInterval = Long.parseLong(refreshIntervalString);
+            }
+
+            String deviceName = (String) config.get(KEY_DEVICE_NAME);
+            if (StringUtils.isEmpty(deviceName)) {
+                logger.error("No device name configured");
+                setProperlyConfigured(false);
+                throw new ConfigurationException(KEY_DEVICE_NAME, "The device name can't be empty");
+            } else {
+                setNewDeviceName(deviceName);
+            }
+
+            setProperlyConfigured(true);
+        }
     }
 
     @Override

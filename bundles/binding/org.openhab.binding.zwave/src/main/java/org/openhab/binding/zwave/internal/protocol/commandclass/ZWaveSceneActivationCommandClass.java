@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles scene activation messages
- *
+ * 
  * @author Chris Jackson
  * @since 1.4.0
  */
@@ -36,7 +36,7 @@ public class ZWaveSceneActivationCommandClass extends ZWaveCommandClass {
 
     /**
      * Creates a new instance of the ZWaveSceneActivationCommandClass class.
-     *
+     * 
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -74,7 +74,7 @@ public class ZWaveSceneActivationCommandClass extends ZWaveCommandClass {
 
     /**
      * Processes a SCENEACTIVATION_SET message.
-     *
+     * 
      * @param serialMessage the incoming message to process.
      * @param offset the offset position from which to start message processing.
      * @param endpoint the endpoint or instance number this message is meant for.

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -830,7 +830,7 @@ public class MDualRelayImpl extends MinimalEObjectImpl.Container implements MDua
                 logger.debug("setSwitchState on");
                 getMbrick().getTinkerforgeDevice().setSelectedState(relayNum, true);
             } else {
-                logger.error("{} unknown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+                logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
             }
             setSwitchState(state);
         } catch (TimeoutException e) {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -250,29 +250,6 @@ public final class PckGenerator {
             b1 |= (value >> 8) & 0x0f; // xxxx1111
             int b2 = value & 0xff;
             return String.format("X2%03d%03d%03d", 30, b1, b2);
-        }
-        // Setting variables and thresholds absolute not implemented in LCN firmware yet
-        throw new IllegalArgumentException();
-    }
-
-    /**
-     * Generates a command that send variable status updates.
-     * PCHK provides this variables by itself on selected segments
-     * is only possible with group 4
-     * 
-     * @param var the target variable to set
-     * @param value the absolute value to set
-     * @return the PCK command (without address header) as text
-     * @throws IllegalArgumentException
-     */
-    public static String updateStatusVar(LcnDefs.Var var, int value) throws IllegalArgumentException {
-        int id = LcnDefs.Var.toVarId(var);
-        if (id != -1) {
-            // define variable to set, offset 0x01000000
-            int x2cmd = id | 0x40;
-            int b1 = (value >> 8) & 0xff;
-            int b2 = value & 0xff;
-            return String.format("X2%03d%03d%03d", x2cmd, b1, b2);
         }
         // Setting variables and thresholds absolute not implemented in LCN firmware yet
         throw new IllegalArgumentException();

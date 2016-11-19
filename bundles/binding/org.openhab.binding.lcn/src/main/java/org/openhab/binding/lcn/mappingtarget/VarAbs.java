@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -161,16 +161,10 @@ public class VarAbs extends TargetWithLcnAddr {
                 }
                 if (LcnDefs.Var.toVarId(this.var) != -1) {
                     // Absolute commands for variables are not supported.
-                    if (this.addr.getId() == 4 && this.addr.isGroup()) {
-                        // group 4 are status messages
-                        conn.queue(this.addr, !this.addr.isGroup(),
-                                PckGenerator.updateStatusVar(this.var, value.toNative()));
-                    } else {
-                        // We fake the missing command by using reset and relative commands.
-                        conn.queue(this.addr, !this.addr.isGroup(), PckGenerator.varReset(this.var, is2013));
-                        conn.queue(this.addr, !this.addr.isGroup(),
-                                PckGenerator.varRel(this.var, LcnDefs.RelVarRef.CURRENT, value.toNative(), is2013));
-                    }
+                    // We fake the missing command by using reset and relative commands.
+                    conn.queue(this.addr, !this.addr.isGroup(), PckGenerator.varReset(this.var, is2013));
+                    conn.queue(this.addr, !this.addr.isGroup(),
+                            PckGenerator.varRel(this.var, LcnDefs.RelVarRef.CURRENT, value.toNative(), is2013));
                 } else {
                     conn.queue(this.addr, !this.addr.isGroup(), PckGenerator.varAbs(this.var, value.toNative()));
                 }

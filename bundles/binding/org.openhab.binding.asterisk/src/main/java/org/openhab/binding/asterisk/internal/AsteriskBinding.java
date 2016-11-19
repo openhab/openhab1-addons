@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -64,14 +64,6 @@ public class AsteriskBinding extends AbstractBinding<AsteriskBindingProvider>imp
         disconnect();
     }
 
-    protected void addBindingProvider(AsteriskBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(AsteriskBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -99,7 +91,7 @@ public class AsteriskBinding extends AbstractBinding<AsteriskBindingProvider>imp
      * given <code>username</code> and <code>password</code>. Note: The Asterisk
      * ManagerInterface on your Asterisk PBX is deactivated by default. Please
      * refer to the documentation how to activate the ManagerInterface (AMI).
-     *
+     * 
      * @param host the where to find the Asterisk PBX
      * @param username username to login to Asterisk ManagerInterface
      * @param password password to login to Asterisk ManagerInterface
@@ -167,7 +159,7 @@ public class AsteriskBinding extends AbstractBinding<AsteriskBindingProvider>imp
         /**
          * Dispatches the given <code>managerEvent</code> to the specialized
          * handler methods.
-         *
+         * 
          * @param itemName the corresponding item
          * @param itemType the Type of the corresponding item
          * @param managerEvent the {@link ManagerEvent} to dispatch
@@ -204,7 +196,7 @@ public class AsteriskBinding extends AbstractBinding<AsteriskBindingProvider>imp
          * there is no active call left we send an OFF-State (resp. empty
          * {@link CallType} and ON-State (one of the remaining active calls)
          * in all other cases.
-         *
+         * 
          * @param itemName
          * @param itemType
          * @param event

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -112,7 +112,7 @@ public class RFXComChimeMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[8];
+        byte[] data = new byte[7];
 
         data[0] = 0x07;
         data[1] = RFXComBaseMessage.PacketType.CHIME.toByte();
@@ -179,23 +179,8 @@ public class RFXComChimeMessage extends RFXComBaseMessage {
     public void convertFromState(RFXComValueSelector valueSelector, String id, Object subType, Type type,
             byte seqNumber) throws RFXComException {
 
-        this.subType = ((SubType) subType);
-        seqNbr = seqNumber;
-        String[] ids = id.split("\\.");
-        sensorId = Integer.parseInt(ids[0]);
+        throw new RFXComException("Not supported");
 
-        switch (valueSelector) {
-            case CHIME_SOUND:
-                if (type instanceof DecimalType) {
-                    chimeSound = (int) ((DecimalType) type).intValue();
-                } else {
-                    throw new RFXComException("Can't convert " + type + " to chime sound");
-                }
-                break;
-
-            default:
-                throw new RFXComException("Can't convert " + type + " to " + valueSelector);
-        }
     }
 
     @Override

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -275,7 +275,7 @@ public class MaxCulMsgHandler implements CULListener {
                     logger.debug("Retransmitting packet " + qi.msg.msgCount + " attempt " + qi.retryCount);
                     sendMessage(qi.msg, qi);
                 } else {
-                    logger.error("Transmission of packet {} failed 3 times, message was: {} to address {} => {}",  qi.msg.msgCount, qi.msg.msgType, qi.msg.dstAddrStr, qi.msg.rawMsg);
+                    logger.error("Transmission of packet " + qi.msg.msgCount + " failed 3 times");
                 }
             }
         }

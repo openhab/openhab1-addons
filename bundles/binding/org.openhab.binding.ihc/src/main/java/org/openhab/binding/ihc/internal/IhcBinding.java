@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -145,7 +145,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
     /**
      * Initialize IHC client and open connection to IHC / ELKO LS controller.
-     *
+     * 
      */
     public void connect() throws IhcExecption {
 
@@ -170,7 +170,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
     /**
      * Disconnect connection to IHC / ELKO LS controller.
-     *
+     * 
      */
     public void disconnect() {
         if (ihc != null) {
@@ -272,14 +272,6 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
     }
 
-    protected void addBindingProvider(IhcBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(IhcBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -291,7 +283,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
     /**
      * {@inheritDoc}
-     *
+     * 
      */
     @Override
     public void bindingChanged(BindingProvider provider, String itemName) {
@@ -501,9 +493,9 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
     /**
      * Find the first matching {@link IhcBindingProvider} according to
      * <code>itemName</code> and <code>command</code>.
-     *
+     * 
      * @param itemName
-     *
+     * 
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -525,7 +517,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
      */
     private void enableResourceValueNotifications() throws IhcExecption {
 
-        logger.debug("Subscribe resource runtime value notifications");
+        logger.debug("Subscripe resource runtime value notifications");
 
         if (ihc != null) {
 

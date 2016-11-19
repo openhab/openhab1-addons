@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
@@ -21,7 +22,9 @@ import java.util.concurrent.Executors;
 
 import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULDeviceException;
+import org.openhab.io.transport.cul.CULHandler;
 import org.openhab.io.transport.cul.CULListener;
+import org.openhab.io.transport.cul.CULMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,16 +35,16 @@ import org.slf4j.LoggerFactory;
  * @author Till Klocke
  * @since 1.4.0
  */
-public abstract class AbstractCULHandler<T extends CULConfig> implements CULHandlerInternal<T> {
+public abstract class AbstractCULHandler implements CULHandler, CULHandlerInternal {
 
     private final static Logger log = LoggerFactory.getLogger(AbstractCULHandler.class);
 
     /**
      * Thread which sends all queued commands to the CUL.
-     *
+     * 
      * @author Till Klocke
      * @since 1.4.0
-     *
+     * 
      */
     private class SendThread extends Thread {
 
@@ -73,10 +76,10 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     /**
      * Wrapper class wraps a CULListener and a received Strings and gets
      * executed by a executor in its own thread.
-     *
+     * 
      * @author Till Klocke
      * @since 1.4.0
-     *
+     * 
      */
     private static class NotifyDataReceivedRunner implements Runnable {
 
@@ -102,7 +105,8 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     protected Executor receiveExecutor = Executors.newCachedThreadPool();
     protected SendThread sendThread = new SendThread();
 
-    protected T config;
+    protected String deviceName;
+    protected CULMode mode;
 
     protected List<CULListener> listeners = new ArrayList<CULListener>();
 
@@ -111,9 +115,18 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     protected BufferedReader br;
     protected BufferedWriter bw;
 
-    protected AbstractCULHandler(T config) {
-        this.config = config;
+    protected AbstractCULHandler(String deviceName, CULMode mode) {
+        this.mode = mode;
+        this.deviceName = deviceName;
     }
+
+    @Override
+    public CULMode getCULMode() {
+        return mode;
+    }
+
+    @Override
+    public abstract boolean arePropertiesEqual(Map<String, ?> properties);
 
     @Override
     public void registerListener(CULListener listener) {
@@ -148,7 +161,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
 
     /**
      * initialize the CUL hardware and open the connection
-     *
+     * 
      * @throws CULDeviceException
      */
     protected abstract void openHardware() throws CULDeviceException;
@@ -172,7 +185,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
 
     /**
      * Checks if the message would alter the RF mode of this device.
-     *
+     * 
      * @param message
      *            The message to check
      * @return true if the message doesn't alter the RF mode, false if it does.
@@ -189,7 +202,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
 
     /**
      * Notifies each CULListener about the received data in its own thread.
-     *
+     * 
      * @param data
      */
     protected void notifyDataReceived(String data) {
@@ -211,7 +224,6 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
      *             if
      */
     protected void processNextLine() throws CULCommunicationException {
-        String deviceName = config.getDeviceAddress();
         try {
             String data = br.readLine();
             if (data == null) {
@@ -266,7 +278,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     /**
      * get the remaining send time on channel as seen at the last send/receive
      * event.
-     *
+     * 
      * @return remaining send time in 10ms units
      */
     @Override
@@ -290,12 +302,11 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
 
     /**
      * Write a message to the CUL.
-     *
+     * 
      * @param message
      * @throws CULCommunicationException
      */
     private void writeMessage(String message) throws CULCommunicationException {
-        String deviceName = config.getDeviceAddress();
         log.debug("Sending raw message to CUL " + deviceName + ":  '" + message + "'");
         if (bw == null) {
             log.error("Can't write message, BufferedWriter is NULL");
@@ -310,10 +321,6 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
 
             requestCreditReport();
         }
-    }
 
-    @Override
-    public T getConfig() {
-        return config;
     }
 }

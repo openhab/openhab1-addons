@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,8 +19,6 @@ import java.util.regex.Pattern;
  */
 public class RoleCallResponseMessage extends Message {
 
-    private static final Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{16})(\\w{2})");
-
     private String nodeMAC;
     private int nodeID;
 
@@ -36,6 +34,8 @@ public class RoleCallResponseMessage extends Message {
 
     @Override
     protected void parsePayLoad() {
+        Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{16})(\\w{2})");
+
         Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
         if (matcher.matches()) {
             MAC = matcher.group(1);

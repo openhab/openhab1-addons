@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.9.0
  */
 
-public class VDRBinding extends AbstractBinding<VDRBindingProvider> implements ManagedService {
+public class VDRBinding extends AbstractBinding<VDRBindingProvider>implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(VDRBinding.class);
 
@@ -134,9 +134,9 @@ public class VDRBinding extends AbstractBinding<VDRBindingProvider> implements M
     /**
      * Find the first matching {@link VDRBindingProvider} according to
      * <code>itemName</code>
-     *
+     * 
      * @param itemName
-     *
+     * 
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -156,10 +156,10 @@ public class VDRBinding extends AbstractBinding<VDRBindingProvider> implements M
     /**
      * Find the first matching {@link VDRBindingProvider} according to
      * <code>itemName</code> and <code>command</code>.
-     *
+     * 
      * @param itemName
      * @param command
-     *
+     * 
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -174,14 +174,6 @@ public class VDRBinding extends AbstractBinding<VDRBindingProvider> implements M
             }
         }
         return firstMatchingProvider;
-    }
-
-    protected void addBindingProvider(VDRBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(VDRBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
     }
 
     @Override
@@ -236,7 +228,7 @@ public class VDRBinding extends AbstractBinding<VDRBindingProvider> implements M
     /**
      * Internal data structure which carries the connection details of one VDR
      * (there could be several)
-     *
+     * 
      * @author Wolfgang Willinghoefer
      */
     static class VDRConfig {

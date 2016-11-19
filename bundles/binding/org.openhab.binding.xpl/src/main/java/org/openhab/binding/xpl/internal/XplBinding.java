@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,10 +20,8 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.io.transport.xpl.XplTransportService;
@@ -51,14 +49,6 @@ public class XplBinding extends AbstractBinding<XplBindingProvider>implements xP
     @Override
     public void unsetEventPublisher(EventPublisher eventPublisher) {
         this.eventPublisher = null;
-    }
-
-    protected void addBindingProvider(XplBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(XplBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -106,16 +96,6 @@ public class XplBinding extends AbstractBinding<XplBindingProvider>implements xP
                                 ((SwitchItem) item).setState(status);
                             }
                         }
-                    } else if (item instanceof ContactItem) {
-                        OpenClosedType status = (current.equalsIgnoreCase("on") || current.equalsIgnoreCase("true") ||
-                            current.equalsIgnoreCase("1") || current.equalsIgnoreCase("open") || 
-                            current.equalsIgnoreCase("high")) ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-                        synchronized (item) {
-                            if (!item.getState().equals(status)) {
-                                eventPublisher.postUpdate(itemName, status);
-                                ((ContactItem) item).setState(status);
-                            }
-                        }                       
                     } else if (item instanceof NumberItem) {
                         DecimalType value = new DecimalType(current);
                         synchronized (item) {
@@ -124,7 +104,8 @@ public class XplBinding extends AbstractBinding<XplBindingProvider>implements xP
                                 ((NumberItem) item).setState(value);
                             }
                         }
-                    } else if (item instanceof StringItem) {
+                    }
+                    if (item instanceof StringItem) {
                         StringType value = new StringType(current);
                         synchronized (item) {
                             if (!item.getState().equals(value)) {
@@ -141,7 +122,7 @@ public class XplBinding extends AbstractBinding<XplBindingProvider>implements xP
 
     /**
      * Setter for Declarative Services. Adds the XplTransportService instance.
-     *
+     * 
      * @param xplTransportService
      *            Service.
      */
@@ -152,7 +133,7 @@ public class XplBinding extends AbstractBinding<XplBindingProvider>implements xP
 
     /**
      * Unsetter for Declarative Services.
-     *
+     * 
      * @param xplTransportService
      *            Service to remove.
      */

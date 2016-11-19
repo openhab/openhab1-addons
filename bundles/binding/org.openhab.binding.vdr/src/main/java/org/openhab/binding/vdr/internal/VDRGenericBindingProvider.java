@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -103,15 +103,11 @@ public class VDRGenericBindingProvider extends AbstractGenericBindingProvider im
     @Override
     public String getBindingItemName(String vdrId, VDRCommandType vdrCommand) {
         String itemName = null;
-        logger.debug("Searching for a binding config that matches the id '{}' and command '{}'", vdrId, vdrCommand);
         for (BindingConfig config : this.bindingConfigs.values()) {
             VDRBindingConfig vdrConfig = (VDRBindingConfig) config;
             if (vdrConfig.vDRId.equals(vdrId) && vdrConfig.command.equals(vdrCommand.getVDRCommand())) {
                 itemName = vdrConfig.item.getName();
-                logger.debug("Match found: '{}'", itemName);
                 break;
-            } else {
-                logger.debug("Not a match: '{}':'{}'", vdrConfig.vDRId, vdrConfig.command);
             }
         }
 

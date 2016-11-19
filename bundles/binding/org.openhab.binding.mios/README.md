@@ -84,9 +84,9 @@ You can also declare multiple MiOS Units, as illustrated in this example.
 
 Internally, the MiOS Binding uses the openHAB _Transformation Service_.  The MiOS Binding supplies a number of pre-configured MAP Transformation for the common use-cases.
 
-For the MiOS Binding configuration, each MAP Transformation file is named `mios*.map`.  These need to be copied from the source-code repository:
+From a configuration standpoint, these transformations need to be copied from the source-code repository:
 
- * [/features/openhab-addons-external/src/main/resources/transform](/features/openhab-addons-external/src/main/resources/transform)
+    bundles/binding/org.openhab.binding.mios/examples/transform/mios*.map
     
 and placed into your openHAB installation under the directory:
 

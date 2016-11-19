@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -141,28 +141,17 @@ public class MpdGenericBindingProvider extends AbstractGenericBindingProvider im
         Set<String> itemNames = new HashSet<String>();
         for (String itemName : bindingConfigs.keySet()) {
             MpdBindingConfig mpdConfig = (MpdBindingConfig) bindingConfigs.get(itemName);
-            String key;
-            switch (playerCommand) {
-                case VOLUME:
-                    key = "PERCENT";
-                    break;
-                case TRACKINFO:
-                    key = "TITLE";
-                    break;
-                case TRACKARTIST:
-                    key = "ARTIST";
-                    break;
-                case PLAYSONGID:
-                    key = "NUMBER";
-                default:
-                    key = playerCommand.type.toString();
-                    break;
-            }
-            if (mpdConfig.containsKey(key)) {
+            if (mpdConfig.containsKey("PERCENT") && PlayerCommandTypeMapping.VOLUME.equals(playerCommand)) {
+                itemNames.add(itemName);
+            } else if (mpdConfig.containsKey("TITLE") && PlayerCommandTypeMapping.TRACKINFO.equals(playerCommand)) {
+                itemNames.add(itemName);
+            } else if (mpdConfig.containsKey("ARTIST") && PlayerCommandTypeMapping.TRACKARTIST.equals(playerCommand)) {
+                itemNames.add(itemName);
+            } else if (mpdConfig.containsKey(playerCommand.type.toString())) {
                 // we check to make sure the binding config contains
                 // playerId:playerCommand otherwise we get extra items
-                String actual = mpdConfig.get(key);
-                String expected = playerId + ":" + playerCommand.getPlayerCommand();
+                String actual = mpdConfig.get(playerCommand.type.toString());
+                String expected = playerId + ":" + playerCommand.toString().toLowerCase();
                 if (StringUtils.equals(actual, expected)) {
                     itemNames.add(itemName);
                 }
@@ -203,7 +192,7 @@ public class MpdGenericBindingProvider extends AbstractGenericBindingProvider im
      * config strings and use it to answer the requests to the MPD binding
      * provider.
      */
-    static class MpdBindingConfig extends HashMap<String, String> implements BindingConfig {
+    static class MpdBindingConfig extends HashMap<String, String>implements BindingConfig {
 
         /** generated serialVersion UID */
         private static final long serialVersionUID = 6164971643530954095L;

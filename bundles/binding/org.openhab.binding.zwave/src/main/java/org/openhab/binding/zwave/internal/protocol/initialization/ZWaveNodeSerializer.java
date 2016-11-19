@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -87,7 +87,7 @@ public class ZWaveNodeSerializer {
 
     /**
      * Serializes an XML tree of a {@link ZWaveNode}
-     *
+     * 
      * @param node
      *            the node to serialize
      */
@@ -125,7 +125,7 @@ public class ZWaveNodeSerializer {
 
     /**
      * Deserializes an XML tree of a {@link ZWaveNode}
-     *
+     * 
      * @param nodeId
      *            the number of the node to deserialize
      * @return returns the Node or null in case Serialization failed.
@@ -161,7 +161,7 @@ public class ZWaveNodeSerializer {
 
     /**
      * Deletes the persistence store for the specified node.
-     *
+     * 
      * @param nodeId The node ID to remove
      * @return true if the file was deleted
      */

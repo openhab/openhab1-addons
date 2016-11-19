@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,7 +22,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 /**
  * Handles the Hail command class. Some devices handle state changes by
  * 'hailing' the controller and asking it to request the device values
- *
+ * 
  * @author Ben Jones
  * @since 1.4.0
  */
@@ -36,7 +36,7 @@ public class ZWaveHailCommandClass extends ZWaveCommandClass {
 
     /**
      * Creates a new instance of the ZWaveHailCommandClass class.
-     *
+     * 
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to

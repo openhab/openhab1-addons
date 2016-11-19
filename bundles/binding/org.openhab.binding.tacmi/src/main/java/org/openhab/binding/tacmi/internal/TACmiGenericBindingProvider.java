@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
  * </ul>
  *
  * @author Timo Wendt
- * @author Wolfgang Klimt
  * @since 1.8.0
  */
 public class TACmiGenericBindingProvider extends AbstractGenericBindingProvider implements TACmiBindingProvider {
@@ -71,23 +70,28 @@ public class TACmiGenericBindingProvider extends AbstractGenericBindingProvider 
     public void processBindingConfiguration(String context, Item item, String bindingConfig)
             throws BindingConfigParseException {
         super.processBindingConfiguration(context, item, bindingConfig);
-        TACmiBindingConfig config;
+        TACmiBindingConfig config = new TACmiBindingConfig();
+
         logger.debug("Processing binding configuration: '{}'", bindingConfig);
 
         final String[] configParts = bindingConfig.split("#");
         switch (configParts.length) {
             case 3:
-                config = new TACmiBindingConfig(Integer.parseInt(configParts[0]), configParts[1],
-                        Integer.parseInt(configParts[2]), null, bindingConfig);
+                config.canNode = configParts[0];
+                config.portType = configParts[1];
+                config.portNumber = Integer.parseInt(configParts[2]);
                 break;
             case 4:
-                config = new TACmiBindingConfig(Integer.parseInt(configParts[0]), configParts[1],
-                        Integer.parseInt(configParts[2]), TACmiMeasureType.fromString(configParts[3]), bindingConfig);
+                config.canNode = configParts[0];
+                config.portType = configParts[1];
+                config.portNumber = Integer.parseInt(configParts[2]);
+                config.measureType = TACmiMeasureType.fromString(configParts[3]);
                 break;
             default:
                 throw new BindingConfigParseException(
                         "A TACmi binding configuration must consist of three or four parts - please verify your *.items file");
         }
+        config.configurationString = bindingConfig;
 
         logger.debug("Adding Binding configuration: {}", config);
 
@@ -96,35 +100,21 @@ public class TACmiGenericBindingProvider extends AbstractGenericBindingProvider 
 
     /**
      * This is a helper class holding binding specific configuration details
-     *
+     * 
      * @author Timo Wendt
      * @since 1.7.0
      */
     class TACmiBindingConfig implements BindingConfig {
-        int canNode;
+        String canNode;
         String portType;
         int portNumber;
         TACmiMeasureType measureType;
         String configurationString;
 
-        public TACmiBindingConfig(int canNode, String portType, int portNumber, TACmiMeasureType measureType,
-                String configurationString) {
-            this.canNode = canNode;
-            this.portType = portType;
-            this.portNumber = portNumber;
-            if (measureType == null) {
-                this.measureType = TACmiMeasureType.NONE;
-            } else {
-                this.measureType = measureType;
-            }
-
-            this.configurationString = configurationString;
-        }
-
         @Override
         public String toString() {
-            return "TACmiBindingConfig [canNode=" + this.canNode + ", portType=" + this.portType + ", portNumber="
-                    + this.portNumber + ", measure=" + this.measureType.getTypeValue() + "]";
+            return "NetatmoBindingConfig [canNode=" + this.canNode + ", portType=" + this.portType + ", portNumber="
+                    + this.portNumber + ", measure=" + this.measureType.getMeasure() + "]";
         }
     }
 
@@ -143,7 +133,7 @@ public class TACmiGenericBindingProvider extends AbstractGenericBindingProvider 
     @Override
     public int getCanNode(String itemName) {
         final TACmiBindingConfig config = (TACmiBindingConfig) this.bindingConfigs.get(itemName);
-        return config != null ? config.canNode : 0;
+        return config != null ? Integer.parseInt(config.canNode) : null;
     }
 
     /**
@@ -161,7 +151,7 @@ public class TACmiGenericBindingProvider extends AbstractGenericBindingProvider 
     @Override
     public int getPortNumber(String itemName) {
         final TACmiBindingConfig config = (TACmiBindingConfig) this.bindingConfigs.get(itemName);
-        return config != null ? config.portNumber : 0;
+        return config != null ? config.portNumber : null;
     }
 
     /**

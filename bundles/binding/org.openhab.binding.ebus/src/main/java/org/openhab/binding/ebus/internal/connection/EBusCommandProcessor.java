@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -127,8 +127,8 @@ public class EBusCommandProcessor implements BindingChangeListener {
                 futureMap.remove(itemName).cancel(true);
             }
 
-            if(scheduler == null) {
-                scheduler = Executors.newScheduledThreadPool(2, new WorkerThreadFactory("ebus-scheduler"));
+            if (scheduler == null) {
+                scheduler = Executors.newScheduledThreadPool(2);
             }
 
             logger.debug("Add polling item {} with refresh rate {} to scheduler ...", itemName, refreshRate);
@@ -177,7 +177,7 @@ public class EBusCommandProcessor implements BindingChangeListener {
             }
 
             if (dst == null) {
-                logger.error("Unable to send command, destination address is missing. Set \"dst\" in item.cfg ...");
+                logger.error("Unable to send command, destination adress is missing. Set \"dst\" in item.cfg ...");
                 return null;
             }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -53,7 +53,7 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider>imple
     static interface IInternalAnelBinding {
         /**
          * Get all item names that are registered for the given command type.
-         *
+         * 
          * @param device
          *            The device name for which items should be searched.
          * @param cmd
@@ -65,7 +65,7 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider>imple
 
         /**
          * Connectors should use this to send updates to the event bus.
-         *
+         * 
          * @param itemName
          *            The item name (from
          *            {@link #getItemNamesForCommandType(AnelCommandType)})
@@ -224,14 +224,6 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider>imple
         } else {
             logger.warn("Cannot switch '" + cmd.name() + "', supported switches: F1 - F8, IO1 - IO8");
         }
-    }
-
-    protected void addBindingProvider(AnelBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(AnelBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
     }
 
     /**

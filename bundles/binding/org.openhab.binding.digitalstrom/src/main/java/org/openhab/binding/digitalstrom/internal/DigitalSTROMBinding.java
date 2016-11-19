@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -368,16 +368,8 @@ public class DigitalSTROMBinding extends AbstractActiveBinding<DigitalSTROMBindi
         eventPublisher.postUpdate(itemName, newState);
     }
 
-    protected void addBindingProvider(DigitalSTROMBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(DigitalSTROMBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
-     * {@inheritDoc}
+     * @{inheritDoc
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -989,11 +981,11 @@ public class DigitalSTROMBinding extends AbstractActiveBinding<DigitalSTROMBindi
      * only works on openhabEvent! please copy "openhab/openhab.js" to your dSS
      * server (/usr/share/dss/add-ons/) and "openhab.xml" to
      * /usr/share/dss/data/subscriptions.d/ than you need to restart your dSS
-     *
+     * 
      * If you don't, you will not get detailed infos about, what exactly
      * happened (for example: which device was turned on by a browser or handy
      * app )
-     *
+     * 
      * @param eventItem
      */
     private void handleOpenhabEvent(EventItem eventItem) {
@@ -1513,10 +1505,10 @@ public class DigitalSTROMBinding extends AbstractActiveBinding<DigitalSTROMBindi
     /**
      * In order to avoid many sensor readings in a time, this thread starts the
      * jobs, after the old one is finished
-     *
+     * 
      * @author Alexander Betker
      * @since 1.3.0
-     *
+     * 
      */
     private class SensorJobExecutor extends Thread {
 
@@ -1557,10 +1549,10 @@ public class DigitalSTROMBinding extends AbstractActiveBinding<DigitalSTROMBindi
     /**
      * If someone turns a device or a zone etc. on, we will get a notification
      * to update the state of the item
-     *
+     * 
      * @author Alexander Betker
      * @since 1.3.0
-     *
+     * 
      */
     private class DigitalSTROMEventListener extends Thread {
 

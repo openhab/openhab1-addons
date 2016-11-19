@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -67,7 +67,7 @@ public class Auxiliary extends OmnilinkDevice {
             default:
                 return;
         }
-        logger.debug("updating item {} for type {} to {}", item.getName(), config.getObjectType(), setting);
+        logger.debug("updating item {} for type {} to  {}", item.getName(), config.getObjectType(), setting);
         if (item instanceof NumberItem) {
             publisher.postUpdate(item.getName(), new DecimalType(setting));
         }

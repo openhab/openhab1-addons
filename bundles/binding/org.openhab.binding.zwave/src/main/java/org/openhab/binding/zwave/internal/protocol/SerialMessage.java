@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveSecurityCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +43,6 @@ public class SerialMessage {
 
     private static final Logger logger = LoggerFactory.getLogger(SerialMessage.class);
     private final static AtomicLong sequence = new AtomicLong();
-    public static final int TRANSMIT_OPTIONS_NOT_SET = 0;
 
     private long sequenceNumber;
     private byte[] messagePayload;
@@ -54,9 +52,9 @@ public class SerialMessage {
     private SerialMessagePriority priority;
     private SerialMessageClass expectedReply;
 
-    protected int messageNode = 255;
+    private int messageNode = 255;
 
-    private int transmitOptions = TRANSMIT_OPTIONS_NOT_SET;
+    private int transmitOptions = 0;
     private int callbackId = 0;
 
     private boolean transactionCanceled = false;
@@ -86,7 +84,7 @@ public class SerialMessage {
      * to indicate that a transaction is complete. The priority indicates the
      * priority to send the message with. Higher priority messages are taken from
      * the send queue earlier than lower priority messages.
-     *
+     * 
      * @param messageClass the message class to use
      * @param messageType the message type to use
      * @param expectedReply the expected Reply for this messaage
@@ -103,7 +101,7 @@ public class SerialMessage {
      * to indicate that a transaction is complete. The priority indicates the
      * priority to send the message with. Higher priority messages are taken from
      * the send queue earlier than lower priority messages.
-     *
+     * 
      * @param nodeId the node the message is destined for
      * @param messageClass the message class to use
      * @param messageType the message type to use
@@ -126,7 +124,7 @@ public class SerialMessage {
     /**
      * Constructor. Creates a new instance of the SerialMessage class from a
      * specified buffer.
-     *
+     * 
      * @param buffer the buffer to create the SerialMessage from.
      */
     public SerialMessage(byte[] buffer) {
@@ -136,7 +134,7 @@ public class SerialMessage {
     /**
      * Constructor. Creates a new instance of the SerialMessage class from a
      * specified buffer, and subsequently sets the node ID.
-     *
+     * 
      * @param nodeId the node the message is destined for
      * @param buffer the buffer to create the SerialMessage from.
      */
@@ -164,7 +162,7 @@ public class SerialMessage {
 
     /**
      * Converts a byte array to a hexadecimal string representation
-     *
+     * 
      * @param bb the byte array to convert
      * @return string the string representation
      */
@@ -177,18 +175,8 @@ public class SerialMessage {
     }
 
     /**
-     * Converts a byte to a hexadecimal string representation
-     *
-     * @param bb the byte to convert
-     * @return string the string representation
-     */
-    public static String b2hex(byte b) {
-        return String.format("%02X ", b);
-    }
-
-    /**
      * Calculates a checksum for the specified buffer.
-     *
+     * 
      * @param buffer the buffer to calculate.
      * @return the checksum value.
      */
@@ -208,14 +196,14 @@ public class SerialMessage {
      */
     @Override
     public String toString() {
-        return String.format("Message: class = %s (0x%02X), type = %s (0x%02X), payload = %s, callbackid = %s",
+        return String.format("Message: class = %s (0x%02X), type = %s (0x%02X), payload = %s",
                 new Object[] { messageClass, messageClass.key, messageType, messageType.ordinal(),
-                        SerialMessage.bb2hex(this.getMessagePayload()), getCallbackId() });
+                        SerialMessage.bb2hex(this.getMessagePayload()) });
     };
 
     /**
      * Gets the SerialMessage as a byte array.
-     *
+     * 
      * @return the message
      */
     public byte[] getMessageBuffer() {
@@ -264,7 +252,7 @@ public class SerialMessage {
      * - the message type is equal
      * - the expected reply is equal
      * - the payload is equal
-     *
+     * 
      * @param obj the object to compare this message with.
      */
     @Override
@@ -296,7 +284,7 @@ public class SerialMessage {
 
     /**
      * Gets the message type (Request / Response).
-     *
+     * 
      * @return the message type
      */
     public SerialMessageType getMessageType() {
@@ -305,7 +293,7 @@ public class SerialMessage {
 
     /**
      * Gets the message class. This is the function it represents.
-     *
+     * 
      * @return
      */
     public SerialMessageClass getMessageClass() {
@@ -314,7 +302,7 @@ public class SerialMessage {
 
     /**
      * Returns the Node Id for / from this message.
-     *
+     * 
      * @return the messageNode
      */
     public int getMessageNode() {
@@ -323,7 +311,7 @@ public class SerialMessage {
 
     /**
      * Gets the message payload.
-     *
+     * 
      * @return the message payload
      */
     public byte[] getMessagePayload() {
@@ -333,7 +321,7 @@ public class SerialMessage {
     /**
      * Gets a byte of the message payload at the specified index.
      * The byte is returned as an integer between 0x00 (0) and 0xFF (255).
-     *
+     * 
      * @param index the index of the byte to return.
      * @return an integer between 0x00 (0) and 0xFF (255).
      */
@@ -343,7 +331,7 @@ public class SerialMessage {
 
     /**
      * Sets the message payload.
-     *
+     * 
      * @param messagePayload
      */
     public void setMessagePayload(byte[] messagePayload) {
@@ -352,7 +340,7 @@ public class SerialMessage {
 
     /**
      * Gets the transmit options for this SendData Request.
-     *
+     * 
      * @return the transmitOptions
      */
     public int getTransmitOptions() {
@@ -361,7 +349,7 @@ public class SerialMessage {
 
     /**
      * Sets the transmit options for this SendData Request.
-     *
+     * 
      * @param transmitOptions the transmitOptions to set
      */
     public void setTransmitOptions(int transmitOptions) {
@@ -370,7 +358,7 @@ public class SerialMessage {
 
     /**
      * Gets the callback ID for this SendData Request.
-     *
+     * 
      * @return the callbackId
      */
     public int getCallbackId() {
@@ -379,7 +367,7 @@ public class SerialMessage {
 
     /**
      * Sets the callback ID for this SendData Request
-     *
+     * 
      * @param callbackId the callbackId to set
      */
     public void setCallbackId(int callbackId) {
@@ -388,7 +376,7 @@ public class SerialMessage {
 
     /**
      * Gets the expected reply for this message.
-     *
+     * 
      * @return the expectedReply
      */
     public SerialMessageClass getExpectedReply() {
@@ -397,7 +385,7 @@ public class SerialMessage {
 
     /**
      * Returns the priority of this Serial message.
-     *
+     * 
      * @return the priority
      */
     public SerialMessagePriority getPriority() {
@@ -406,7 +394,7 @@ public class SerialMessage {
 
     /**
      * Sets the priority of this Serial message.
-     *
+     * 
      * @param p the new priority
      */
     public void setPriority(SerialMessagePriority p) {
@@ -422,7 +410,7 @@ public class SerialMessage {
 
     /**
      * Indicates that the transaction for the incoming message is canceled by a command class
-     *
+     * 
      * @return the transactionCanceled
      */
     public boolean isTransactionCanceled() {
@@ -446,7 +434,7 @@ public class SerialMessage {
 
     /**
      * Returns true is there is an ack pending from the controller
-     *
+     * 
      * @return true if still waiting on the ack
      */
     public boolean isAckPending() {
@@ -467,18 +455,9 @@ public class SerialMessage {
     }
 
     /**
-     * Identifies if transmit options have been set yet for this SendData Req
-     *
-     * @return true if they were set
-     */
-    public boolean areTransmitOptionsSet() {
-        return transmitOptions != TRANSMIT_OPTIONS_NOT_SET;
-    }
-
-    /**
      * Serial message type enumeration. Indicates whether the message
      * is a request or a response.
-     *
+     * 
      * @author Jan-Willem Spuij
      * @since 1.3.0
      */
@@ -508,7 +487,7 @@ public class SerialMessage {
      * Normally these are GET commands, but the system overrides the
      * priority to the lowest so they don't cause any impact on the
      * system.
-     *
+     * 
      * @author Jan-Willem Spuij
      * @author Chris Jackson
      * @since 1.3.0
@@ -525,7 +504,7 @@ public class SerialMessage {
     /**
      * Serial message class enumeration. Enumerates the different messages
      * that can be exchanged with the controller.
-     *
+     * 
      * @author Jan-Willem Spuij
      * @since 1.3.0
      */
@@ -628,7 +607,7 @@ public class SerialMessage {
 
         /**
          * Lookup function based on the generic device class code.
-         *
+         * 
          * @param i the code to lookup
          * @return enumeration value of the generic device class.
          */
@@ -641,7 +620,7 @@ public class SerialMessage {
 
         /**
          * Returns the enumeration key.
-         *
+         * 
          * @return the key
          */
         public int getKey() {
@@ -650,7 +629,7 @@ public class SerialMessage {
 
         /**
          * Returns the enumeration label.
-         *
+         * 
          * @return the label
          */
         public String getLabel() {
@@ -661,7 +640,7 @@ public class SerialMessage {
     /**
      * Comparator Class. Compares two serial messages with each other based on
      * node status (awake / sleep), priority and sequence number.
-     *
+     * 
      * @author Jan-Willem Spuij
      * @since 1.3.0
      */
@@ -671,7 +650,7 @@ public class SerialMessage {
 
         /**
          * Constructor. Creates a new instance of the SerialMessageComparator class.
-         *
+         * 
          * @param controller the {@link ZWaveController to use}
          */
         public SerialMessageComparator(ZWaveController controller) {
@@ -681,20 +660,12 @@ public class SerialMessage {
         /**
          * Compares a serial message to another serial message.
          * Used by the priority queue to order messages.
-         *
+         * 
          * @param arg0 the first serial message to compare the other to.
          * @param arg1 the other serial message to compare the first one to.
          */
         @Override
         public int compare(SerialMessage arg0, SerialMessage arg1) {
-            // ZWaveSecurityCommandClass.SECURITY_NONCE_REPORT trumps all
-            final boolean arg0NonceReport = ZWaveSecurityCommandClass.isSecurityNonceReportMessage(arg0);
-            final boolean arg1NonceReport = ZWaveSecurityCommandClass.isSecurityNonceReportMessage(arg1);
-            if (arg0NonceReport && !arg1NonceReport) {
-                return -1;
-            } else if (arg1NonceReport && !arg0NonceReport) {
-                return 1;
-            } // they both are or both aren't, continue to logic below
 
             boolean arg0Awake = false;
             boolean arg0Listening = true;

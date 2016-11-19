@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -73,16 +73,8 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
         }
     }
 
-    protected void addBindingProvider(OpenEnergyMonitorBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(OpenEnergyMonitorBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
     /**
-     * {@inheritDoc}
+     * @{inheritDoc
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -151,10 +143,10 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
 
     /**
      * The MessageListener runs as a separate thread.
-     *
+     * 
      * Thread listening message from Open Energy Monitoring devices and send
      * updates to openHAB bus.
-     *
+     * 
      */
     private class MessageListener extends Thread {
 
@@ -288,7 +280,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
 
     /**
      * Transform received data by Transformation service.
-     *
+     * 
      */
     protected org.openhab.core.types.State transformData(String transformationType, String transformationFunction,
             org.openhab.core.types.State data) {

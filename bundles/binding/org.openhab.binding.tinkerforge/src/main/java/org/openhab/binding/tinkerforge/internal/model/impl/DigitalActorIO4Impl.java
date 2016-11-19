@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -763,7 +763,7 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
             } else if (digitalState == HighLowValue.LOW) {
                 bricklet.setSelectedValues((short) mask, (short) 0);
             } else {
-                logger.error("{} unknown digitalState {}", LoggerConstants.TFMODELUPDATE, digitalState);
+                logger.error("{} unkown digitalState {}", LoggerConstants.TFMODELUPDATE, digitalState);
             }
             setDigitalState(digitalState);
         } catch (TimeoutException e) {
