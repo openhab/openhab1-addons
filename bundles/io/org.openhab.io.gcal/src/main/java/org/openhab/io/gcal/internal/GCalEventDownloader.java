@@ -12,7 +12,7 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 
-import java.net.URL;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
@@ -21,12 +21,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.meta.When;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.LongRange;
 import org.openhab.core.service.AbstractActiveService;
+import org.openhab.io.gcal.auth.GCalGoogleOAuth;
 import org.openhab.io.gcal.internal.util.ExecuteCommandJob;
 import org.openhab.io.gcal.internal.util.TimeRangeCalendar;
 import org.osgi.service.cm.ConfigurationException;
@@ -41,13 +45,17 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gdata.client.calendar.CalendarQuery;
-import com.google.gdata.client.calendar.CalendarService;
-import com.google.gdata.data.DateTime;
-import com.google.gdata.data.calendar.CalendarEventEntry;
-import com.google.gdata.data.calendar.CalendarEventFeed;
-import com.google.gdata.data.extensions.When;
-import com.google.gdata.util.AuthenticationException;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.CalendarListEntry;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
+import com.google.api.services.calendar.model.Events;
 
 /**
  * Service which downloads Calendar events, parses their content and creates
@@ -62,9 +70,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
     private static final Logger logger = LoggerFactory.getLogger(GCalEventDownloader.class);
 
-    private static String username = "";
-    private static String password = "";
-    private static String url = "";
+    private static String calendar_name = "primary";
     private static String filter = "";
 
     /** holds the current refresh interval, default to 900000ms (15 minutes) */
@@ -86,6 +92,13 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
      */
     private static final Pattern EXTRACT_MODIFIEDBY_CONTENT = Pattern.compile("(.*?)modified by\\s*?\\{(.*?)\\}.*",
             Pattern.DOTALL);
+
+    public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+
+    /**
+     * Define a global instance of the JSON factory.
+     */
+    public static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
     @Override
     protected long getRefreshInterval() {
@@ -112,9 +125,9 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
      */
     @Override
     protected void execute() {
-        CalendarEventFeed myFeed = downloadEventFeed(username, password, url, refreshInterval);
+        Events myFeed = downloadEventFeed();
         if (myFeed != null) {
-            List<CalendarEventEntry> entries = myFeed.getEntries();
+            List<Event> entries = myFeed.getItems();
 
             if (entries.size() > 0) {
                 logger.debug("found {} calendar events to process", entries.size());
@@ -135,69 +148,62 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
     }
 
     /**
-     * Connects to Google-Calendar Service and returns the specified Calender-Feed
-     * <code>url</code>, <code>username</code> and <code>password</code> are taken
-     * from the corresponding config parameter in <code>openhab.cfg</code>.
-     * 
-     * @param url the {@link URL} of the full Google Calendar-Feed
-     * @param username could contain username or be left blank/<code>null</code>
-     * @param password could contain password or be left blank/<code>null</code>
-     * 
-     * @return the corresponding Calendar-Feed or <code>null</code> if an error
+     * Connects to Google-Calendar Service and returns the specified Events
+     *
+     * @return the corresponding Events or <code>null</code> if an error
      *         occurs. <i>Note:</i> We do only return events if their startTime lies between
      *         <code>now</code> and <code>now + 2 * refreshInterval</code> to reduce
      *         the amount of events to process.
      */
-    public static CalendarEventFeed downloadEventFeed(String username, String password, String url,
-            int refreshInterval) {
+    private static Events downloadEventFeed() {
         // TODO: teichsta: there could be more than one calender url in openHAB.cfg
         // for now we accept this limitation of downloading just one feed ...
 
-        if (StringUtils.isBlank(url)) {
-            logger.warn("Login aborted no url");
+        if (StringUtils.isBlank(calendar_name)) {
+            logger.warn("Login aborted no calendar name defined");
+            return null;
+        }
+        // authorization
+
+        CalendarListEntry calendarID = GCalGoogleOAuth.getCalendarId(calendar_name);
+
+        if (calendarID == null) {
             return null;
         }
 
-        if (StringUtils.isBlank(username) && StringUtils.isBlank(password)) {
-            logger.info("gcal without username and password (make sure url is accessable without those)");
-        } else if (!StringUtils.isBlank(username) && !StringUtils.isBlank(password)) {
-            logger.info("gcal with username and password");
-        } else {
-            logger.warn("Login aborted none of the 2 cased are fulfilled 1)url, username, password 2) url ");
-            return null;
-        }
+        DateTime start = new DateTime(new Date(), TimeZone.getTimeZone(calendarID.getTimeZone()));
+        DateTime end = new DateTime(new Date(start.getValue() + (2 * refreshInterval)),
+                TimeZone.getTimeZone(calendarID.getTimeZone()));
+        logger.debug("Downloading calendar feed for time interval: {} to  {} ", start, end);
 
+        Events feed = null;
         try {
-            URL feedUrl = new URL(url);
+            Credential credential = GCalGoogleOAuth.getCredential(false);
 
-            CalendarService myService = new CalendarService("openHAB");
-            if (!StringUtils.isBlank(username) && !StringUtils.isBlank(password)) {
-                myService.setUserCredentials(username, password);
-            }
-
-            CalendarQuery myQuery = new CalendarQuery(feedUrl);
-            DateTime start = DateTime.now();
-            DateTime end = new DateTime(DateTime.now().getValue() + (2 * refreshInterval));
-
-            myQuery.setMinimumStartTime(start);
-            myQuery.setMaximumStartTime(end);
+            // set up global Calendar instance
+            Calendar client = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+                    .setApplicationName("openHAB").build();
+            Calendar.Events.List l = client.events().list(calendarID.getId()).setSingleEvents(true).setTimeMin(start)
+                    .setTimeMax(end);
 
             // add the fulltext filter if it has been configured
             if (StringUtils.isNotBlank(filter)) {
-                myQuery.setFullTextQuery(filter);
+                l = l.setQ(filter);
             }
+            feed = l.execute();
+        } catch (IOException e1) {
+            logger.error("Event fetch failed: {}", e1.getMessage());
+        }
 
-            logger.debug("Downloading calendar feed for time interval: {} to  {} ", start, end);
-            CalendarEventFeed feed = myService.getFeed(myQuery, CalendarEventFeed.class);
+        try {
+
             if (feed != null) {
-                checkIfFullCalendarFeed(feed.getEntries());
+                checkIfFullCalendarFeed(feed.getItems());
             }
 
             return feed;
-        } catch (AuthenticationException ae) {
-            logger.error("authentication failed: {}", ae.getMessage());
         } catch (Exception e) {
-            logger.error("downloading CalenerEventFeed throws exception: {}", e.getMessage());
+            logger.error("downloading CalendarEventFeed throws exception: {}", e.getMessage());
         }
 
         return null;
@@ -207,13 +213,13 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
      * Checks the first {@link CalendarEventEntry} of <code>entries</code> for
      * completeness. If this first event is incomplete all other events will be
      * incomplete as well.
-     * 
-     * @param entries the set to check
+     *
+     * @param list the set to check
      */
-    private static void checkIfFullCalendarFeed(List<CalendarEventEntry> entries) {
-        if (entries != null && !entries.isEmpty()) {
-            CalendarEventEntry referenceEvent = entries.get(0);
-            if (referenceEvent.getIcalUID() == null || referenceEvent.getTimes().isEmpty()) {
+    private static void checkIfFullCalendarFeed(List<Event> list) {
+        if (list != null && !list.isEmpty()) {
+            Event referenceEvent = list.get(0);
+            if (referenceEvent.getICalUID() == null || referenceEvent.getStart().toString().isEmpty()) {
                 logger.warn("calender entries are incomplete - please make sure to use the full calendar feed");
             }
 
@@ -222,7 +228,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
     /**
      * Delete all {@link Job}s of the group <code>GCAL_SCHEDULER_GROUP</code>
-     * 
+     *
      * @throws SchedulerException if there is an internal Scheduler error.
      */
     private void cleanJobs() throws SchedulerException {
@@ -245,33 +251,31 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
      * <li>find events with content</li>
      * <li>add a Job with the corresponding Triggers for each event</li>
      * </ul>
-     * 
+     *
      * @param entries the GCalendar events to create quart jobs for.
      * @throws SchedulerException if there is an internal Scheduler error.
      */
-    private void processEntries(List<CalendarEventEntry> entries) throws SchedulerException {
+    private void processEntries(List<Event> entries) throws SchedulerException {
         Map<String, TimeRangeCalendar> calendarCache = new HashMap<String, TimeRangeCalendar>();
 
         // find all events with empty content - these events are taken to modify
         // the scheduler
-        for (CalendarEventEntry event : entries) {
-            String eventContent = event.getPlainTextContent();
-            String eventTitle = event.getTitle().getPlainText();
+        for (Event event : entries) {
+            String eventContent = event.getDescription();
+            String eventTitle = event.getSummary();
 
             if (StringUtils.isBlank(eventContent)) {
                 logger.debug(
-                        "found event '{}' with no content, add this event to the excluded "
-                                + "TimeRangesCalendar - this event could be referenced by the modifiedBy clause",
+                        "found event '{}' with no content, add this event to the excluded TimeRangesCalendar - this event could be referenced by the modifiedBy clause",
                         eventTitle);
 
                 if (!calendarCache.containsKey(eventTitle)) {
                     calendarCache.put(eventTitle, new TimeRangeCalendar());
                 }
                 TimeRangeCalendar timeRangeCalendar = calendarCache.get(eventTitle);
-                for (When when : event.getTimes()) {
-                    timeRangeCalendar
-                            .addTimeRange(new LongRange(when.getStartTime().getValue(), when.getEndTime().getValue()));
-                }
+                timeRangeCalendar.addTimeRange(new LongRange(event.getStart().getDateTime().getValue(),
+                        event.getEnd().getDateTime().getValue()));
+
             }
         }
 
@@ -282,9 +286,9 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
         }
 
         // now we process all events with content
-        for (CalendarEventEntry event : entries) {
-            String eventContent = event.getPlainTextContent();
-            String eventTitle = event.getTitle().getPlainText();
+        for (Event event : entries) {
+            String eventContent = event.getDescription();
+            String eventTitle = event.getSummary();
 
             if (StringUtils.isNotBlank(eventContent)) {
                 CalendarEventContent cec = parseEventContent(eventContent);
@@ -298,7 +302,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
                 boolean triggersCreated = createTriggerAndSchedule(startJob, event, modifiedByEvent, true);
 
                 if (triggersCreated) {
-                    logger.info("created new startJob '{}' with details '{}'", eventTitle,
+                    logger.debug("created new startJob '{}' with details '{}'", eventTitle,
                             createJobInfo(event, startJob));
                 }
 
@@ -308,7 +312,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
                     triggersCreated = createTriggerAndSchedule(endJob, event, modifiedByEvent, false);
 
                     if (triggersCreated) {
-                        logger.info("created new endJob '{}' with details '{}'", eventTitle,
+                        logger.debug("created new endJob '{}' with details '{}'", eventTitle,
                                 createJobInfo(event, endJob));
                     }
                 }
@@ -327,7 +331,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
      * If the RegExp <code>EXTRACT_STARTEND_CONTENT</code> doen't match the
      * complete content is taken as set of Start-Commands.
      * </p>
-     * 
+     *
      * @param content the set of Start- and End-Commands
      * @return the parsed event content
      */
@@ -350,8 +354,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
         } else {
             eventContent.startCommands = StringUtils.trimToEmpty(commandContent);
             logger.debug(
-                    "given event content doesn't match regular expression to "
-                            + "extract start-, end commands - using whole content as startCommand ({})",
+                    "given event content doesn't match regular expression to extract start-, end commands - using whole content as startCommand ({})",
                     commandContent);
         }
 
@@ -362,20 +365,20 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
      * Creates a new quartz-job with jobData <code>content</code> in the scheduler
      * group <code>GCAL_SCHEDULER_GROUP</code> if <code>content</code> is not
      * blank.
-     * 
+     *
      * @param content the set of commands to be executed by the
      *            {@link ExecuteCommandJob} later on
      * @param event
      * @param isStartEvent indicator to identify whether this trigger will be
      *            triggering a start or an end command.
-     * 
+     *
      * @return the {@link JobDetail}-object to be used at further processing
      */
-    protected JobDetail createJob(String content, CalendarEventEntry event, boolean isStartEvent) {
-        String jobIdentity = event.getIcalUID() + (isStartEvent ? "_start" : "_end");
+    protected JobDetail createJob(String content, Event event, boolean isStartEvent) {
+        String jobIdentity = event.getICalUID() + (isStartEvent ? "_start" : "_end");
 
         if (StringUtils.isBlank(content)) {
-            logger.debug("content of job '" + jobIdentity + "' is empty -> no task will be created!");
+            logger.debug("content of job '{}' is empty -> no task will be created!", jobIdentity);
             return null;
         }
 
@@ -390,7 +393,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
      * object of <code>event</code> a new trigger is created. That is the case
      * in recurring events where gcal creates one event (with one unique IcalUID)
      * and a set of {@link When}-object for each occurrence.
-     * 
+     *
      * @param job the {@link Job} to create triggers for
      * @param event the {@link CalendarEventEntry} to read the {@link When}-objects
      *            from
@@ -398,10 +401,10 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
      *            schedule of the new Trigger
      * @param isStartEvent indicator to identify whether this trigger will be
      *            triggering a start or an end command.
-     * 
+     *
      * @throws SchedulerException if there is an internal Scheduler error.
      */
-    protected boolean createTriggerAndSchedule(JobDetail job, CalendarEventEntry event, String modifiedByEvent,
+    protected boolean createTriggerAndSchedule(JobDetail job, Event event, String modifiedByEvent,
             boolean isStartEvent) {
         boolean triggersCreated = false;
 
@@ -410,52 +413,50 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
             return false;
         }
 
-        String jobIdentity = event.getIcalUID() + (isStartEvent ? "_start" : "_end");
+        String jobIdentity = event.getICalUID() + (isStartEvent ? "_start" : "_end");
 
-        List<When> times = event.getTimes();
-        for (When time : times) {
-            DateTime date = isStartEvent ? time.getStartTime() : time.getEndTime();
-            long dateValue = date.getValue();
+        EventDateTime date = isStartEvent ? event.getStart() : event.getEnd();
+        long dateValue = date.getDateTime().getValue();
 
-            /*
-             * TODO: TEE: do only create a new trigger when the start/endtime
-             * lies in the future. This exclusion is necessary because the SimpleTrigger
-             * triggers a job even if the startTime lies in the past. If somebody
-             * knows the way to let quartz ignore such triggers this exclusion
-             * can be omitted.
-             */
-            if (dateValue >= DateTime.now().getValue()) {
+        /*
+         * TODO: TEE: do only create a new trigger when the start/endtime
+         * lies in the future. This exclusion is necessary because the SimpleTrigger
+         * triggers a job even if the startTime lies in the past. If somebody
+         * knows the way to let quartz ignore such triggers this exclusion
+         * can be omitted.
+         */
+        if (dateValue >= (new Date()).getTime()) {
 
-                Trigger trigger;
+            Trigger trigger;
 
-                if (StringUtils.isBlank(modifiedByEvent)) {
-                    trigger = newTrigger().forJob(job)
-                            .withIdentity(jobIdentity + "_" + dateValue + "_trigger", GCAL_SCHEDULER_GROUP)
-                            .startAt(new Date(dateValue)).build();
-                } else {
-                    trigger = newTrigger().forJob(job)
-                            .withIdentity(jobIdentity + "_" + dateValue + "_trigger", GCAL_SCHEDULER_GROUP)
-                            .startAt(new Date(dateValue)).modifiedByCalendar(modifiedByEvent).build();
-                }
+            if (StringUtils.isBlank(modifiedByEvent)) {
+                trigger = newTrigger().forJob(job)
+                        .withIdentity(jobIdentity + "_" + dateValue + "_trigger", GCAL_SCHEDULER_GROUP)
+                        .startAt(new Date(dateValue)).build();
+            } else {
+                trigger = newTrigger().forJob(job)
+                        .withIdentity(jobIdentity + "_" + dateValue + "_trigger", GCAL_SCHEDULER_GROUP)
+                        .startAt(new Date(dateValue)).modifiedByCalendar(modifiedByEvent).build();
+            }
 
-                try {
-                    scheduler.scheduleJob(job, trigger);
-                    triggersCreated = true;
-                } catch (SchedulerException se) {
-                    logger.warn("scheduling Trigger '" + trigger + "' throws an exception.", se);
-                }
+            try {
+                scheduler.scheduleJob(job, trigger);
+                triggersCreated = true;
+            } catch (SchedulerException se) {
+                logger.warn("scheduling Trigger '{}' throws an exception: {}", trigger, se);
             }
         }
+        // }
         return triggersCreated;
     }
 
     /**
      * Creates a detailed description of a <code>job</code> for logging purpose.
-     * 
+     *
      * @param job the job to create a detailed description for
      * @return a detailed description of the new <code>job</code>
      */
-    private String createJobInfo(CalendarEventEntry event, JobDetail job) {
+    private String createJobInfo(Event event, JobDetail job) {
         if (job == null) {
             return "SchedulerJob [null]";
         }
@@ -489,14 +490,14 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
         } catch (SchedulerException e) {
         }
 
-        sb.append("], content=").append(event.getPlainTextContent());
+        sb.append("], content=").append(event.getDescription());
 
         return sb.toString();
     }
 
     /**
      * Holds the parsed content of a GCal event
-     * 
+     *
      * @author Thomas.Eichstaedt-Engelen
      */
     class CalendarEventContent {
@@ -509,17 +510,34 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
         if (config != null) {
 
-            String usernameString = (String) config.get("username");
-            username = usernameString;
+            String usernameString = (String) config.get("client_id");
+            if (!StringUtils.isBlank(usernameString)) {
+                GCalGoogleOAuth.setClientId(usernameString);
+            } else {
+                logger.error(
+                        "gcal:client_id must be configured in openhab.cfg. Refer to wiki how to create client_id/client_secret pair");
+                throw new ConfigurationException("client_id",
+                        "gcal:client_id must be configured in openhab.cfg. Refer to wiki how to create client_id/client_secret");
+            }
 
-            String passwordString = (String) config.get("password");
-            password = passwordString;
+            String passwordString = (String) config.get("client_secret");
+            if (!StringUtils.isBlank(passwordString)) {
+                GCalGoogleOAuth.setClientSecret(passwordString);
+            } else {
+                logger.error(
+                        "gcal:client_secret must be configured in openhab.cfg. Refer to wiki how to create client_id/client_secret pair");
+                throw new ConfigurationException("client_secret",
+                        "gcal:client_secret must be configured in openhab.cfg. Refer to wiki how to create client_id/client_secret pair");
+            }
 
-            String urlString = (String) config.get("url");
-            url = urlString;
-            if (StringUtils.isBlank(url)) {
-                throw new ConfigurationException("gcal:url",
-                        "url must not be blank - please configure an aproppriate url in openhab.cfg");
+            String urlString = (String) config.get("calendar_name");
+            if (!StringUtils.isBlank(urlString)) {
+                calendar_name = urlString;
+            } else {
+                logger.error(
+                        "gcal:calendar_name must be configured in openhab.cfg. Calendar name or word \"primary\"  MUST be specified");
+                throw new ConfigurationException("calendar_name",
+                        "gcal:calendar_name must be configured in openhab.cfg. Calendar name or word \"primary\"  MUST be specified");
             }
 
             filter = (String) config.get("filter");
@@ -527,6 +545,12 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
             String refreshString = (String) config.get("refresh");
             if (StringUtils.isNotBlank(refreshString)) {
                 refreshInterval = Integer.parseInt(refreshString);
+            }
+
+            if (GCalGoogleOAuth.getCredential(true) == null) {
+                logger.error("Cannnot obtain credential based on provided client_id/client_secret");
+                throw new ConfigurationException("Credential error",
+                        "Cannnot obtain credential based on provided client_id/client_secret");
             }
 
             setProperlyConfigured(true);
