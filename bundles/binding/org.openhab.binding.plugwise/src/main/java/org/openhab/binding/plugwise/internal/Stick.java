@@ -75,17 +75,17 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
     private static final Logger logger = LoggerFactory.getLogger(Stick.class);
 
     /** Plugwise protocol header code (hex) */
-    private final static String PROTOCOL_HEADER = "\u0005\u0005\u0003\u0003";
+    private static final String PROTOCOL_HEADER = "\u0005\u0005\u0003\u0003";
 
     /** Carriage return */
-    private final static char CR = '\r';
+    private static final char CR = '\r';
     /** Line feed */
-    private final static char LF = '\n';
+    private static final char LF = '\n';
     /** Plugwise protocol trailer code (hex) */
-    private final static String PROTOCOL_TRAILER = new String(new char[] { CR, LF });
+    private static final String PROTOCOL_TRAILER = new String(new char[] { CR, LF });
 
     /** Matches Plugwise responses into the following groups: protocolHeader command sequence payload CRC */
-    private final static Pattern RESPONSE_PATTERN = Pattern.compile("(.{4})(\\w{4})(\\w{4})(\\w*?)(\\w{4})");
+    private static final Pattern RESPONSE_PATTERN = Pattern.compile("(.{4})(\\w{4})(\\w{4})(\\w*?)(\\w{4})");
 
     // Serial communication fields
     private String port;
