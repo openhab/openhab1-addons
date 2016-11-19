@@ -74,7 +74,7 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public void setChannelValue(int channel, int value) {
+    public void setChannelValue(DmxSimpleChannel channel, int value) {
         logger.trace("Setting channel {} to {}", channel, value);
         transmitter.getChannel(channel).setValue(value);
     }
@@ -83,7 +83,7 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public int getChannelValue(int channel) {
+    public int getChannelValue(DmxSimpleChannel channel) {
 
         int value = transmitter.getChannel(channel).getValue();
         logger.trace("Getting channel {} value: {}", channel, value);
@@ -94,7 +94,7 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public void disableChannel(int channel) {
+    public void disableChannel(DmxSimpleChannel channel) {
         logger.trace("Disabling channel {}", channel);
         transmitter.getChannel(channel).switchOff();
     }
@@ -103,8 +103,9 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public void enableChannel(int channel) {
+    public void enableChannel(DmxSimpleChannel channel) {
         logger.trace("Enabling channel {}", channel);
+        System.out.println("DmxController trying to enable channel " + channel.toString());
         transmitter.getChannel(channel).switchOn();
     }
 
@@ -114,7 +115,7 @@ public class DmxController implements DmxService, ManagedService {
     @Override
     public void registerStatusListener(DmxStatusUpdateListener listener) {
         logger.trace("Registering listener for channel {}", listener.getChannel());
-        transmitter.getUniverse().addStatusListener(listener);
+        transmitter.getUniverse(listener.getChannel().getUniverseId()).addStatusListener(listener);
     }
 
     /**
@@ -123,14 +124,14 @@ public class DmxController implements DmxService, ManagedService {
     @Override
     public void unregisterStatusListener(DmxStatusUpdateListener listener) {
         logger.trace("Unregistering listener for channel {}", listener.getChannel());
-        transmitter.getUniverse().removeStatusListener(listener);
+        transmitter.getUniverse(listener.getChannel().getUniverseId()).removeStatusListener(listener);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void fadeChannel(int channel, int fadeTime, int targetValue, int holdTime, boolean immediate) {
+    public void fadeChannel(DmxSimpleChannel channel, int fadeTime, int targetValue, int holdTime, boolean immediate) {
 
         FadeAction fade = new FadeAction(fadeTime, targetValue, holdTime);
         if (immediate) {
@@ -146,16 +147,18 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public void fadeChannels(int startChannel, int fadeTime, int[] targetValues, int holdTime, boolean immediate) {
+    public void fadeChannels(DmxSimpleChannel startChannel, int fadeTime, int[] targetValues, int holdTime,
+            boolean immediate) {
         logger.trace("Fading channels {} to {}", startChannel, targetValues);
-        int channelId = startChannel;
+        DmxSimpleChannel channel = startChannel;
         for (int v : targetValues) {
             FadeAction fade = new FadeAction(fadeTime, v, holdTime);
             if (immediate) {
-                transmitter.getChannel(channelId++).setChannelAction(fade);
+                transmitter.getChannel(channel).setChannelAction(fade);
             } else {
-                transmitter.getChannel(channelId++).addChannelAction(fade);
+                transmitter.getChannel(channel).addChannelAction(fade);
             }
+            channel.setChannelId(channel.getChannelId() + 1);
         }
     }
 
@@ -163,7 +166,7 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public void switchToNextAction(int channel) {
+    public void switchToNextAction(DmxSimpleChannel channel) {
         logger.trace("Switching fade for channel {}", channel);
         transmitter.getChannel(channel).switchToNextAction();
     }
@@ -172,10 +175,12 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public void switchToNextAction(int startChannel, int numberOfChannels) {
+    public void switchToNextAction(DmxSimpleChannel startChannel, int numberOfChannels) {
         logger.trace("Switching fades for channel {} x{}", startChannel, numberOfChannels);
+        DmxSimpleChannel channel = startChannel;
         for (int i = 0; i < numberOfChannels; i++) {
-            transmitter.getChannel(startChannel + i).switchToNextAction();
+            transmitter.getChannel(channel).switchToNextAction();
+            channel.setChannelId(channel.getChannelId() + 1);
         }
     }
 
@@ -183,7 +188,7 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public void mirrorChannel(int sourceChannel, int mirrorChannel, int duration) {
+    public void mirrorChannel(DmxSimpleChannel sourceChannel, DmxSimpleChannel mirrorChannel, int duration) {
 
         logger.trace("Mirroring channel {} onto {}", sourceChannel, mirrorChannel);
         transmitter.getChannel(mirrorChannel)
@@ -194,7 +199,7 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public void increaseChannel(int channelId, int increment) {
+    public void increaseChannel(DmxSimpleChannel channelId, int increment) {
         logger.trace("Increasing channel {}", channelId);
         transmitter.getChannel(channelId).increaseChannel(increment);
     }
@@ -203,7 +208,7 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public void decreaseChannel(int channelId, int decrement) {
+    public void decreaseChannel(DmxSimpleChannel channelId, int decrement) {
         logger.trace("Decreasing channel {}", channelId);
         transmitter.getChannel(channelId).decreaseChannel(decrement);
     }
@@ -231,7 +236,7 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public void setChannelValue(int channelId, PercentType outputlevel) {
+    public void setChannelValue(DmxSimpleChannel channelId, PercentType outputlevel) {
         transmitter.getChannel(channelId).setValue(outputlevel);
 
     }
@@ -240,7 +245,7 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public boolean hasChannelActions(int channelId) {
+    public boolean hasChannelActions(DmxSimpleChannel channelId) {
         return transmitter.getChannel(channelId).hasRunningActions();
     }
 
@@ -304,7 +309,7 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public void suspendChannel(int channel) {
+    public void suspendChannel(DmxSimpleChannel channel) {
         transmitter.getChannel(channel).suspend();
     }
 
@@ -312,7 +317,7 @@ public class DmxController implements DmxService, ManagedService {
      * {@inheritDoc}
      */
     @Override
-    public void addChannelResume(int channel) {
+    public void addChannelResume(DmxSimpleChannel channel) {
         transmitter.getChannel(channel).addResumeAction();
     }
 

@@ -29,7 +29,7 @@ public final class DmxTransmitter extends TimerTask {
 
     private static Logger logger = LoggerFactory.getLogger(DmxTransmitter.class);
 
-    private DmxUniverse universe = new DmxUniverse();
+    private DmxMultiverse multiverse = new DmxMultiverse();
 
     private DmxService service;
 
@@ -56,12 +56,14 @@ public final class DmxTransmitter extends TimerTask {
 
         running = true;
         try {
-            byte[] b = universe.calculateBuffer();
-            if (universe.getBufferChanged()) {
-                DmxConnection conn = service.getConnection();
-                if (conn != null) {
-                    conn.sendDmx(b);
-                    universe.notifyStatusListeners();
+            for (DmxUniverse universe : multiverse.getUniverses().values()) {
+                byte[] b = universe.calculateBuffer();
+                if (universe.getBufferChanged()) {
+                    DmxConnection conn = service.getConnection();
+                    if (conn != null) {
+                        conn.sendDmx(universe.getUniverseId(), b);
+                        universe.notifyStatusListeners();
+                    }
                 }
             }
         } catch (Exception e) {
@@ -80,7 +82,7 @@ public final class DmxTransmitter extends TimerTask {
 
     /**
      * Suspend/resume transmittting.
-     * 
+     *
      * @param suspend
      *            true to suspend
      */
@@ -90,19 +92,27 @@ public final class DmxTransmitter extends TimerTask {
 
     /**
      * Get the DMX channel in the current universe.
-     * 
+     *
      * @param channel
      *            number
      * @return DMX channel
      */
-    public DmxChannel getChannel(int channel) {
-        return universe.getChannel(channel);
+    public DmxChannel getChannel(DmxSimpleChannel channel) {
+        return multiverse.getChannel(channel);
     }
 
     /**
      * @return DMX universe
      */
-    public DmxUniverse getUniverse() {
-        return universe;
+    public DmxUniverse getUniverse(int universeId) {
+        return multiverse.getUniverse(universeId);
     }
+
+    /**
+     * @return DMX multiverse
+     */
+    public DmxMultiverse getMultiverse() {
+        return multiverse;
+    }
+
 }

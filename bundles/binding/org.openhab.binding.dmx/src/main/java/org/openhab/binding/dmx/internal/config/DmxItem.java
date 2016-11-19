@@ -19,6 +19,7 @@ import org.openhab.binding.dmx.DmxStatusUpdateListener;
 import org.openhab.binding.dmx.internal.cmd.DmxCommand;
 import org.openhab.binding.dmx.internal.cmd.DmxFadeCommand;
 import org.openhab.binding.dmx.internal.cmd.DmxSuspendingFadeCommand;
+import org.openhab.binding.dmx.internal.core.DmxSimpleChannel;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -46,8 +47,8 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
     /** Minimum status update delay in ms */
     public static int MIN_UPDATE_DELAY = 100;
 
-    /** DMX channel numbers (512 max) */
-    protected int[] channels;
+    /** DMX channel numbers */
+    protected DmxSimpleChannel[] channels;
 
     /** Minimum number of ms between status updates */
     protected int updateDelay;
@@ -69,7 +70,7 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 
     /**
      * Create new item based on the provided configuration string.
-     * 
+     *
      * @param itemName
      *            name for the item
      * @param configString
@@ -133,7 +134,7 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 
     /**
      * Extract channel id information from channel configuration string.
-     * 
+     *
      * @param channelString
      *            string to parse
      * @throws BindingConfigParseException
@@ -156,18 +157,18 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
             String[] tmp = values[0].split(",");
             if (tmp.length == 1) {
                 int footprint = getFootPrint();
-                channels = new int[footprint];
-                int start = parseChannelNumber(tmp[0]);
+                channels = new DmxSimpleChannel[footprint];
+                DmxSimpleChannel start = new DmxSimpleChannel(tmp[0]);
                 for (int i = 0; i < footprint; i++) {
-                    channels[i] = start + i;
+                    channels[i] = new DmxSimpleChannel(start.getUniverseId(), start.getChannelId() + i);
                 }
             } else {
-                channels = new int[tmp.length];
+                channels = new DmxSimpleChannel[tmp.length];
                 for (int i = 0; i < tmp.length; i++) {
-                    channels[i] = parseChannelNumber(tmp[i]);
-                    if (channels[i] < 1 || channels[i] > 512) {
+                    channels[i] = new DmxSimpleChannel(tmp[i]);
+                    // if (channels[i] < 1 || channels[i] > 512) {
 
-                    }
+                    // }
 
                 }
             }
@@ -175,12 +176,15 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
         } else {
             // channel width specified
             String[] tmp = values[0].split("/");
-            int startChannel = parseChannelNumber(tmp[0]);
+            DmxSimpleChannel start = new DmxSimpleChannel(tmp[0]);
+
             int channelWidth = Integer.parseInt(tmp[1]);
-            channels = new int[channelWidth];
+
+            channels = new DmxSimpleChannel[channelWidth];
             for (int i = 0; i < channelWidth; i++) {
-                channels[i] = startChannel + i;
+                channels[i] = new DmxSimpleChannel(start.getUniverseId(), start.getChannelId() + i);
             }
+
         }
 
         // parse update delay
@@ -194,23 +198,9 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
         logger.debug("Linked item {} to channels {}", name, channels);
     }
 
-    private int parseChannelNumber(String input) throws BindingConfigParseException {
-        try {
-            int channel = Integer.parseInt(input);
-            if (channel < 1 || channel > 512) {
-                throw new BindingConfigParseException(
-                        "DMX channel configuration : " + input + " is not a valid dmx channel (1-512)");
-            }
-            return channel;
-        } catch (NumberFormatException e) {
-            throw new BindingConfigParseException(
-                    "DMX channel configuration : " + input + " is not a valid dmx channel (1-512)");
-        }
-    }
-
     /**
      * Try to execute the provided openHAB command.
-     * 
+     *
      * @param service
      *            DMXservice.
      * @param command
@@ -220,14 +210,14 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 
     /**
      * Check if the current item wants to be notified of state changes.
-     * 
+     *
      * @return true if status updates are needed.
      */
     public abstract boolean isStatusListener();
 
     /**
      * Check if an openHAB command has been overridden by a DMX command.
-     * 
+     *
      * @param cmd
      *            to check
      * @return true if there is a DMX command available instead.
@@ -239,7 +229,7 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
     /**
      * Publish the new state to the event bus, if it was changed since the last
      * known value.
-     * 
+     *
      * @param state
      *            new state.
      */
@@ -261,14 +251,14 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
      * {@inheritDoc}
      */
     @Override
-    public int getChannel() {
+    public DmxSimpleChannel getChannel() {
         return channels[0];
     }
 
     /**
      * @return all DMX channels bound to this item
      */
-    public int[] getChannels() {
+    public DmxSimpleChannel[] getChannels() {
         return channels;
     }
 
@@ -305,11 +295,11 @@ public abstract class DmxItem implements BindingConfig, DmxStatusUpdateListener 
 
     /**
      * Get the channel for the specified index.
-     * 
+     *
      * @param index
      * @return channel number
      */
-    public int getChannel(int index) {
+    public DmxSimpleChannel getChannel(int index) {
         return channels[index];
     }
 

@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.openhab.binding.dmx.DmxService;
 import org.openhab.binding.dmx.internal.config.DmxItem;
+import org.openhab.binding.dmx.internal.core.DmxSimpleChannel;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
@@ -47,7 +48,7 @@ public class DmxFadeCommand implements DmxCommand {
 
     /**
      * Create new fade command from a configuration string.
-     * 
+     *
      * @param item
      *            to which the command applies.
      * @param cmd
@@ -74,7 +75,7 @@ public class DmxFadeCommand implements DmxCommand {
         for (Fade f : fades) {
             // first fade should reset any running fades
             int j = 0;
-            for (int channel : item.getChannels()) {
+            for (DmxSimpleChannel channel : item.getChannels()) {
                 service.fadeChannel(channel, f.getTime(), f.targetValues[j++], f.getHoldTime(), i == 0);
                 if (j == f.targetValues.length) {
                     j = 0;
@@ -97,14 +98,14 @@ public class DmxFadeCommand implements DmxCommand {
 
         /**
          * Create new fade from configuration string.
-         * 
+         *
          * The configuration string should be in the format
          * <fadeTime>:<value>-<value>-<value>:<holdTime>
-         * 
+         *
          * The number of values should be lower or equal than the number of
          * channels on the item. If lower, the values are repeated to fill all
          * the item channels.
-         * 
+         *
          * @param cmd
          *            configuration string.
          * @throws BindingConfigParseException

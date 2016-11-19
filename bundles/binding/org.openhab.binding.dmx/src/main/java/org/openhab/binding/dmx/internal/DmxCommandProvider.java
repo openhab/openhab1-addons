@@ -12,6 +12,7 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.openhab.binding.dmx.DmxConnection;
 import org.openhab.binding.dmx.DmxService;
+import org.openhab.binding.dmx.internal.core.DmxSimpleChannel;
 
 /**
  * Command provider. Provides some basic DMX testing commands to the osgi
@@ -42,10 +43,10 @@ public class DmxCommandProvider implements CommandProvider {
 
     /**
      * DMX command implementation.
-     * 
+     *
      * @param intp
      *            commandinterpreter
-     * 
+     *
      * @return null
      */
     public Object _dmx(CommandInterpreter intp) {
@@ -73,15 +74,15 @@ public class DmxCommandProvider implements CommandProvider {
 
             if (cmd.equals("mirror")) {
                 String[] channels = intp.nextArgument().split(",");
-                int sourceChannel = Integer.parseInt(channels[0]);
+                DmxSimpleChannel sourceChannel = new DmxSimpleChannel(channels[0]);
                 for (int i = 1; i < channels.length; i++) {
-                    service.mirrorChannel(sourceChannel, Integer.parseInt(channels[i]), -1);
+                    service.mirrorChannel(sourceChannel, new DmxSimpleChannel(channels[i]), -1);
                 }
 
                 return null;
             }
 
-            int channelId = Integer.parseInt(intp.nextArgument());
+            DmxSimpleChannel channelId = new DmxSimpleChannel(intp.nextArgument());
 
             if (cmd.equals("set")) {
                 int value = Integer.parseInt(intp.nextArgument());

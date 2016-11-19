@@ -19,6 +19,7 @@ import org.openhab.binding.dmx.DmxService;
 import org.openhab.binding.dmx.internal.cmd.DmxCommand;
 import org.openhab.binding.dmx.internal.cmd.DmxFadeCommand;
 import org.openhab.binding.dmx.internal.cmd.DmxSuspendingFadeCommand;
+import org.openhab.binding.dmx.internal.core.DmxSimpleChannel;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -29,6 +30,11 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 1.2.0
  */
 public class DmxSwitchItemTest {
+
+    DmxSimpleChannel ch1 = new DmxSimpleChannel(1);
+    DmxSimpleChannel ch3 = new DmxSimpleChannel(3);
+    DmxSimpleChannel ch4 = new DmxSimpleChannel(4);
+    DmxSimpleChannel ch7 = new DmxSimpleChannel(7);
 
     protected DmxItem getItemInstance(String configString) throws BindingConfigParseException {
         return new DmxSwitchItem("testSwitchItem", configString, null);
@@ -43,7 +49,7 @@ public class DmxSwitchItemTest {
 
         // test valid configurations
         DmxItem item = getItemInstance("CHANNEL[7:1000]");
-        assertEquals(7, item.getChannel());
+        assertEquals(7, item.getChannel().getChannelId());
         assertEquals(1000, item.getUpdateDelay());
         if (item instanceof DmxColorItem) {
             assertEquals(3, item.getChannels().length);
@@ -52,7 +58,7 @@ public class DmxSwitchItemTest {
         }
 
         item = getItemInstance("CHANNEL[1]");
-        assertEquals(1, item.getChannel());
+        assertEquals(1, item.getChannel().getChannelId());
         assertEquals(0, item.getUpdateDelay());
         if (item instanceof DmxColorItem) {
             assertEquals(3, item.getChannels().length);
@@ -61,12 +67,6 @@ public class DmxSwitchItemTest {
         }
 
         // test invalid configurations
-        try {
-            item = getItemInstance("CHANNEL[71000]");
-            fail("Missing exception");
-        } catch (BindingConfigParseException e) {
-            e.printStackTrace();
-        }
         try {
             item = getItemInstance("CHANNEL[A1-00]");
             fail("Missing exception");
@@ -86,22 +86,21 @@ public class DmxSwitchItemTest {
 
         // test valid configurations
         DmxItem item = getItemInstance("CHANNEL[1,2,3,4,5,6:500]");
-        assertTrue(arraysAreEqual(new int[] { 1, 2, 3, 4, 5, 6 }, item.getChannels()));
+        for (int i = 0; i < 6; i++) {
+            assertEquals(item.getChannel(i).getChannelId(), i + 1);
+        }
+
         assertEquals(500, item.getUpdateDelay());
         assertEquals(6, item.getChannels().length);
 
         item = getItemInstance("CHANNEL[1,2,3,4,5]");
-        assertTrue(arraysAreEqual(new int[] { 1, 2, 3, 4, 5 }, item.getChannels()));
+        for (int i = 0; i < 5; i++) {
+            assertEquals(item.getChannel(i).getChannelId(), i + 1);
+        }
         assertEquals(0, item.getUpdateDelay());
         assertEquals(5, item.getChannels().length);
 
         // test invalid configurations
-        try {
-            item = getItemInstance("CHANNEL[71000,2]");
-            fail("Missing exception");
-        } catch (BindingConfigParseException e) {
-            e.printStackTrace();
-        }
         try {
             item = getItemInstance("CHANNEL[A1,00:1]");
             fail("Missing exception");
@@ -122,12 +121,16 @@ public class DmxSwitchItemTest {
 
         // test valid configurations
         DmxItem item = getItemInstance("CHANNEL[4/3:250]");
-        assertTrue(arraysAreEqual(new int[] { 4, 5, 6 }, item.getChannels()));
+        for (int i = 0; i < 3; i++) {
+            assertEquals(item.getChannel(i).getChannelId(), i + 4);
+        }
         assertEquals(250, item.getUpdateDelay());
         assertEquals(3, item.getChannels().length);
 
         item = getItemInstance("CHANNEL[4/6:125]");
-        assertTrue(arraysAreEqual(new int[] { 4, 5, 6, 7, 8, 9 }, item.getChannels()));
+        for (int i = 0; i < 6; i++) {
+            assertEquals(item.getChannel(i).getChannelId(), i + 4);
+        }
         assertEquals(125, item.getUpdateDelay());
         assertEquals(6, item.getChannels().length);
 
@@ -182,8 +185,8 @@ public class DmxSwitchItemTest {
 
         item.processCommand(service, OnOffType.OFF);
 
-        Mockito.verify(service).disableChannel(3);
-        Mockito.verify(service).disableChannel(4);
+        Mockito.verify(service).disableChannel(item.getChannel(0));
+        Mockito.verify(service).disableChannel(item.getChannel(1));
     }
 
     @Test
@@ -194,8 +197,8 @@ public class DmxSwitchItemTest {
 
         item.processCommand(service, OnOffType.ON);
 
-        Mockito.verify(service).enableChannel(3);
-        Mockito.verify(service).enableChannel(4);
+        Mockito.verify(service).enableChannel(item.getChannel(0));
+        Mockito.verify(service).enableChannel(item.getChannel(1));
 
     }
 
@@ -205,16 +208,16 @@ public class DmxSwitchItemTest {
         DmxItem item = getValidInstance();
         DmxService service = Mockito.mock(DmxService.class);
 
-        Mockito.when(service.getChannelValue(3)).thenReturn(0);
-        Mockito.when(service.getChannelValue(4)).thenReturn(0);
+        Mockito.when(service.getChannelValue(item.getChannel(0))).thenReturn(0);
+        Mockito.when(service.getChannelValue(item.getChannel(1))).thenReturn(0);
 
         item.processCommand(service, OnOffType.ON);
 
-        Mockito.verify(service).enableChannel(3);
-        Mockito.verify(service).enableChannel(4);
+        Mockito.verify(service).enableChannel(item.getChannel(0));
+        Mockito.verify(service).enableChannel(item.getChannel(1));
 
-        Mockito.verify(service).setChannelValue(3, 255);
-        Mockito.verify(service).setChannelValue(4, 255);
+        Mockito.verify(service).setChannelValue(item.getChannel(0), 255);
+        Mockito.verify(service).setChannelValue(item.getChannel(1), 255);
 
     }
 

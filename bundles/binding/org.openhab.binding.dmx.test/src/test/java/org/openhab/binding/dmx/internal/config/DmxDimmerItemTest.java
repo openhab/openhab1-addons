@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openhab.binding.dmx.DmxService;
 import org.openhab.binding.dmx.internal.core.DmxChannel;
+import org.openhab.binding.dmx.internal.core.DmxSimpleChannel;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -23,6 +24,9 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 1.2.0
  */
 public class DmxDimmerItemTest extends DmxSwitchItemTest {
+
+    DmxSimpleChannel ch3 = new DmxSimpleChannel(3);
+    DmxSimpleChannel ch4 = new DmxSimpleChannel(4);
 
     @Override
     protected DmxItem getItemInstance(String configString) throws BindingConfigParseException {
@@ -40,13 +44,13 @@ public class DmxDimmerItemTest extends DmxSwitchItemTest {
         DmxItem item = getValidInstance();
         DmxService service = Mockito.mock(DmxService.class);
 
-        Mockito.when(service.getChannelValue(3)).thenReturn(95);
-        Mockito.when(service.getChannelValue(4)).thenReturn(3);
+        Mockito.when(service.getChannelValue(ch3)).thenReturn(95);
+        Mockito.when(service.getChannelValue(ch4)).thenReturn(3);
 
         item.processCommand(service, IncreaseDecreaseType.DECREASE);
 
-        Mockito.verify(service).decreaseChannel(3, DmxDimmerItem.DIMMER_STEP_SIZE);
-        Mockito.verify(service).decreaseChannel(4, DmxDimmerItem.DIMMER_STEP_SIZE);
+        Mockito.verify(service).decreaseChannel(item.getChannel(0), DmxDimmerItem.DIMMER_STEP_SIZE);
+        Mockito.verify(service).decreaseChannel(item.getChannel(1), DmxDimmerItem.DIMMER_STEP_SIZE);
 
     }
 
@@ -56,15 +60,15 @@ public class DmxDimmerItemTest extends DmxSwitchItemTest {
         DmxItem item = getValidInstance();
         DmxService service = Mockito.mock(DmxService.class);
 
-        Mockito.when(service.getChannelValue(3)).thenReturn(95);
-        Mockito.when(service.getChannelValue(4)).thenReturn(3);
+        Mockito.when(service.getChannelValue(ch3)).thenReturn(95);
+        Mockito.when(service.getChannelValue(ch4)).thenReturn(3);
 
         item.processCommand(service, IncreaseDecreaseType.INCREASE);
 
-        Mockito.verify(service).enableChannel(3);
-        Mockito.verify(service).increaseChannel(3, DmxDimmerItem.DIMMER_STEP_SIZE);
-        Mockito.verify(service).enableChannel(4);
-        Mockito.verify(service).increaseChannel(4, DmxDimmerItem.DIMMER_STEP_SIZE);
+        Mockito.verify(service).enableChannel(item.getChannel(0));
+        Mockito.verify(service).increaseChannel(item.getChannel(0), DmxDimmerItem.DIMMER_STEP_SIZE);
+        Mockito.verify(service).enableChannel(item.getChannel(1));
+        Mockito.verify(service).increaseChannel(item.getChannel(1), DmxDimmerItem.DIMMER_STEP_SIZE);
 
     }
 
@@ -74,14 +78,14 @@ public class DmxDimmerItemTest extends DmxSwitchItemTest {
         DmxItem item = getValidInstance();
         DmxService service = Mockito.mock(DmxService.class);
 
-        Mockito.when(service.getChannelValue(3)).thenReturn(0);
-        Mockito.when(service.getChannelValue(4)).thenReturn(155);
+        Mockito.when(service.getChannelValue(ch3)).thenReturn(0);
+        Mockito.when(service.getChannelValue(ch4)).thenReturn(155);
 
         item.processCommand(service, new PercentType(0));
-        Mockito.verify(service).setChannelValue(3, DmxChannel.DMX_MAX_VALUE);
-        Mockito.verify(service).setChannelValue(3, PercentType.ZERO);
-        Mockito.verify(service).setChannelValue(4, DmxChannel.DMX_MAX_VALUE);
-        Mockito.verify(service).setChannelValue(4, PercentType.ZERO);
+        Mockito.verify(service).setChannelValue(item.getChannel(0), DmxChannel.DMX_MAX_VALUE);
+        Mockito.verify(service).setChannelValue(item.getChannel(0), PercentType.ZERO);
+        Mockito.verify(service).setChannelValue(item.getChannel(1), DmxChannel.DMX_MAX_VALUE);
+        Mockito.verify(service).setChannelValue(item.getChannel(1), PercentType.ZERO);
     }
 
 }

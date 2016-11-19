@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.dmx;
 
+import org.openhab.binding.dmx.internal.core.DmxSimpleChannel;
+
 /**
  * DMX Status update listener. Objects which implement this interface can
  * register them for receiving updates when a DMX channel value changes.
@@ -20,7 +22,7 @@ public interface DmxStatusUpdateListener {
     /**
      * @return channel for which to receive updates
      */
-    public int getChannel();
+    public DmxSimpleChannel getChannel();
 
     /**
      * @return number of channels to receive updates for
@@ -34,7 +36,7 @@ public interface DmxStatusUpdateListener {
 
     /**
      * Callback for processing status updates.
-     * 
+     *
      * @param channelValues
      *            updated values.
      */

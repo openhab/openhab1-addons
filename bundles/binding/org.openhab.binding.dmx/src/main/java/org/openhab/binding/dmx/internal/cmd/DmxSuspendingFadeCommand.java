@@ -10,6 +10,7 @@ package org.openhab.binding.dmx.internal.cmd;
 
 import org.openhab.binding.dmx.DmxService;
 import org.openhab.binding.dmx.internal.config.DmxItem;
+import org.openhab.binding.dmx.internal.core.DmxSimpleChannel;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
@@ -24,7 +25,7 @@ public class DmxSuspendingFadeCommand extends DmxFadeCommand {
 
     /**
      * Create new suspending fade command from a configuration string.
-     * 
+     *
      * @param item
      *            to which the command applies.
      * @param cmd
@@ -41,11 +42,11 @@ public class DmxSuspendingFadeCommand extends DmxFadeCommand {
      */
     @Override
     public void execute(DmxService service) {
-        for (int c : item.getChannels()) {
+        for (DmxSimpleChannel c : item.getChannels()) {
             service.suspendChannel(c);
         }
         super.execute(service);
-        for (int c : item.getChannels()) {
+        for (DmxSimpleChannel c : item.getChannels()) {
             service.addChannelResume(c);
         }
     }

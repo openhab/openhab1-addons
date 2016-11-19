@@ -48,7 +48,7 @@ public class ArtnetConnection implements DmxConnection {
      * the information from openhab.cfg setting for example:
      * dmx:connection,dmx:connection=192.168.2.151,192.168.2.201 will send the
      * DMX data to the both artnet receivers listed {@inheritDoc}
-     * 
+     *
      * @see org.openhab.binding.dmx.DmxConnection#open(java.lang.String)
      */
     @Override
@@ -93,35 +93,39 @@ public class ArtnetConnection implements DmxConnection {
      * This function gets called each time DMX data to be submitted it iterates
      * through the list of receivers, and sends out the data to them. when no
      * receiver was specified, the data is broadcasted
-     * 
+     *
      * {@inheritDoc}
-     * 
+     *
      * @see org.openhab.binding.dmx.DmxConnection#sendDmx(byte[])
      */
     @Override
-    public void sendDmx(byte[] buffer) throws Exception {
+    public void sendDmx(int universeId, byte[] buffer) throws Exception {
 
-        if (!isConnectionClosed) {
+        if (universeId != 1) {
+            logger.error("Multi-universe support is not implemented for ArtNet");
+        } else {
+            if (!isConnectionClosed) {
 
-            ArtDmxPacket dmx = new ArtDmxPacket();
+                ArtDmxPacket dmx = new ArtDmxPacket();
 
-            // Default to universe 0. May need to be changed later to support
-            // multiple universes.
-            dmx.setUniverse(0, 0);
-            dmx.setSequenceID(sequenceID % 255);
-            dmx.setDMX(buffer, buffer.length);
+                // Default to universe 0. May need to be changed later to support
+                // multiple universes.
+                dmx.setUniverse(0, 0);
+                dmx.setSequenceID(sequenceID % 255);
+                dmx.setDMX(buffer, buffer.length);
 
-            if (!receiverNodes.isEmpty()) {
+                if (!receiverNodes.isEmpty()) {
 
-                for (ArtNetNode receiver : receiverNodes) {
-                    logger.trace("Sending " + buffer.length + " Bytes to " + receiver.getIPAddress().toString());
-                    artnet.unicastPacket(dmx, receiver);
+                    for (ArtNetNode receiver : receiverNodes) {
+                        logger.trace("Sending " + buffer.length + " Bytes to " + receiver.getIPAddress().toString());
+                        artnet.unicastPacket(dmx, receiver);
+                    }
+
+                } else {
+                    artnet.broadcastPacket(dmx);
                 }
-
-            } else {
-                artnet.broadcastPacket(dmx);
+                sequenceID++;
             }
-            sequenceID++;
         }
     }
 }

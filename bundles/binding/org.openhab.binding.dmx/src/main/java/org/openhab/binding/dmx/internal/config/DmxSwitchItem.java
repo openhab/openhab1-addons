@@ -12,6 +12,7 @@ import org.openhab.binding.dmx.DmxBindingProvider;
 import org.openhab.binding.dmx.DmxService;
 import org.openhab.binding.dmx.internal.cmd.DmxCommand;
 import org.openhab.binding.dmx.internal.core.DmxChannel;
+import org.openhab.binding.dmx.internal.core.DmxSimpleChannel;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -26,7 +27,7 @@ public class DmxSwitchItem extends DmxItem {
 
     /**
      * Create new switch item using a given configuration string.
-     * 
+     *
      * @param itemName
      *            name of the item
      * @param configString
@@ -52,7 +53,7 @@ public class DmxSwitchItem extends DmxItem {
 
             if (OnOffType.ON.equals(command)) {
                 boolean hasValue = false;
-                for (int channelId : channels) {
+                for (DmxSimpleChannel channelId : channels) {
                     service.enableChannel(channelId);
                     if (service.getChannelValue(channelId) > 0) {
                         hasValue = true;
@@ -60,12 +61,12 @@ public class DmxSwitchItem extends DmxItem {
                 }
                 if (!hasValue) {
                     // switch to max value if there is no light..
-                    for (int channelId : channels) {
+                    for (DmxSimpleChannel channelId : channels) {
                         service.setChannelValue(channelId, DmxChannel.DMX_MAX_VALUE);
                     }
                 }
             } else {
-                for (int channelId : channels) {
+                for (DmxSimpleChannel channelId : channels) {
                     service.disableChannel(channelId);
                 }
             }
