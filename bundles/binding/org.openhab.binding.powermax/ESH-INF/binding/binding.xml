@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="powermax" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+	<name>Visonic PowerMax Binding</name>
+	<description>The Visonic PowerMax binding interfaces with Visonic PowerMax and PowerMaster alarm panel series.</description>
+	<author>Laurent Garnier</author>
+
+	<config-description>
+		<parameter name="serialPort" type="text" required="false">
+			<label>Serial port</label>
+			<description>The serial port to use for connecting to the serial interface of the PowerMax alarm system e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux.</description>
+		</parameter>
+		<parameter name="ip" type="text" required="false">
+			<context>network_address</context>
+			<label>IP address</label>
+			<description>The IP address to use for connecting to the Ethernet interface of the PowerMax alarm system.</description>
+		</parameter>
+		<parameter name="tcpPort" type="integer" min="0" required="false">
+			<label>TCP port</label>
+			<description>The TCP port to use for connecting to the Ethernet interface of the PowerMax alarm system.</description>
+		</parameter>
+		<parameter name="motionOffDelay" type="integer" min="1" unit="min" required="false">
+			<label>Motion reset delay</label>
+			<description>The delay in minutes to reset a motion detection.</description>
+			<default>3</default>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="allowArming" type="boolean" required="false">
+			<label>Allow arming</label>
+			<description>Enable or disable arming the PowerMax alarm system from openHAB.</description>
+			<default>false</default>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="allowDisarming" type="boolean" required="false">
+			<label>Allow disarming</label>
+			<description>Enable or disable disarming the PowerMax alarm system from openHAB.</description>
+			<default>false</default>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="pinCode" type="text" required="false">
+            <context>password</context>
+			<label>PIN code</label>
+			<description>The PIN code to use for arming/disarming the PowerMax alarm system from openHAB. Not required except when Powerlink mode cannot be used.</description>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="forceStandardMode" type="boolean" required="false">
+			<label>Force standard mode</label>
+			<description>Force the standard mode rather than trying using the Powerlink mode.</description>
+			<default>false</default>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="panelType" type="text" required="false">
+			<label>Panel type</label>
+			<description>Define the panel type. Only required when forcing the standard mode.</description>
+			<limitToOptions>true</limitToOptions>
+			<options>
+				<option value="PowerMax">PowerMax</option>
+				<option value="PowerMax+">PowerMax+</option>
+				<option value="PowerMaxPro">PowerMax Pro</option>
+				<option value="PowerMaxComplete">PowerMax Complete</option>
+				<option value="PowerMaxProPart">PowerMax Pro Part</option>
+				<option value="PowerMaxCompletePart">PowerMax Complete Part</option>
+				<option value="PowerMaxExpress">PowerMax Express</option>
+				<option value="PowerMaster10">PowerMaster 10</option>
+				<option value="PowerMaster30">PowerMaster 30</option>
+			</options>
+            <default>PowerMaxPro</default>
+            <advanced>true</advanced>
+		</parameter>
+		<parameter name="autoSyncTime" type="boolean" required="false">
+			<label>Sync time</label>
+			<description>Automatic sync time at openHAB startup.</description>
+			<default>false</default>
+			<advanced>true</advanced>
+		</parameter>
+	</config-description>
+</binding:binding>

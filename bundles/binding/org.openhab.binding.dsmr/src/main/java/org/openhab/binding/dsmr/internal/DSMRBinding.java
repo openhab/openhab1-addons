@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -67,10 +67,10 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>imple
 
     /*
      * the refresh interval which is used to poll values from the DSMR server
-     * 
+     *
      * Since we the device only updates every 10 seconds we let openHAB
      * introduce a pause before execute is called again.
-     * 
+     *
      * We use here half the update interval time so we have some time to read
      * the serial port (refreshInterval starts after previous executes ends)
      */
@@ -168,6 +168,14 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>imple
                 }
             }
         }
+    }
+
+    protected void addBindingProvider(DSMRBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(DSMRBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -64,6 +64,14 @@ public class RWESmarthomeBinding extends AbstractActiveBinding<RWESmarthomeBindi
 
         communicator.start();
         setProperlyConfigured(true);
+    }
+
+    protected void addBindingProvider(RWESmarthomeBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(RWESmarthomeBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -170,9 +178,14 @@ public class RWESmarthomeBinding extends AbstractActiveBinding<RWESmarthomeBindi
      */
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
-        logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
-        communicator.sendCommand(itemName, command);
-        context.getIgnoreEventList().put(itemName + command.toString(), System.currentTimeMillis());
-        logger.debug("Added event (item='{}', command='{}') to the ignore event list", itemName, command.toString());
+        if (communicator.isRunning()) {
+            logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
+            communicator.sendCommand(itemName, command);
+            context.getIgnoreEventList().put(itemName + command.toString(), System.currentTimeMillis());
+            logger.debug("Added event (item='{}', command='{}') to the ignore event list", itemName,
+                    command.toString());
+        } else {
+            logger.info("Command '{}' for item '{}' not executed: communicator not running.", command, itemName);
+        }
     }
 }

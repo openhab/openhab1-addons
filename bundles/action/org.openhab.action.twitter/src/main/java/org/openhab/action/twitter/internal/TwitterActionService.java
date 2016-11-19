@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -85,7 +85,7 @@ public class TwitterActionService implements ActionService, ManagedService {
 
     /**
      * Creates and returns a Twitter4J Twitter client.
-     * 
+     *
      * @return a new instance of a Twitter4J Twitter client.
      */
     private static twitter4j.Twitter createClient() {
@@ -117,6 +117,9 @@ public class TwitterActionService implements ActionService, ManagedService {
             String accessTokenSecret = loadToken(getTokenFile(), "accesstokensecret");
 
             if (StringUtils.isEmpty(accessToken) || StringUtils.isEmpty(accessTokenSecret)) {
+
+                File pinFile = new File("twitter.pin");
+
                 RequestToken requestToken = Twitter.client.getOAuthRequestToken();
 
                 // no access token/secret specified so display the authorisation URL in the log
@@ -125,7 +128,8 @@ public class TwitterActionService implements ActionService, ManagedService {
                 logger.info("# Twitter-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
                 logger.info("# 1. Open URL '{}'", requestToken.getAuthorizationURL());
                 logger.info("# 2. Grant openHAB access to your Twitter account");
-                logger.info("# 3. Create an empty file 'twitter.pin' in your openHAB home directory");
+                logger.info("# 3. Create an empty file 'twitter.pin' in your openHAB home directory at "
+                        + pinFile.getAbsolutePath());
                 logger.info("# 4. Add the line 'pin=<authpin>' to the twitter.pin file");
                 logger.info("# 5. openHAB will automatically detect the file and complete the authentication process");
                 logger.info("# NOTE: You will only have 5 mins before openHAB gives up waiting for the pin!!!");
@@ -145,7 +149,6 @@ public class TwitterActionService implements ActionService, ManagedService {
                         // ignore
                     }
 
-                    File pinFile = new File("twitter.pin");
                     authPin = loadToken(pinFile, "pin");
 
                     // if we already waited for more than five minutes then stop

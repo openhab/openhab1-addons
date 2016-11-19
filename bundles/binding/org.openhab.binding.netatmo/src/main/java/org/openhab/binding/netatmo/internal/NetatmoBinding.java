@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -88,12 +88,6 @@ public class NetatmoBinding extends AbstractActiveBinding<NetatmoBindingProvider
         logger.debug("Querying Netatmo API");
         for (String userid : credentialsCache.keySet()) {
 
-            OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
-            if (oauthCredentials.noAccessToken()) {
-                // initial run after a restart, so get an access token first
-                oauthCredentials.refreshAccessToken();
-            }
-
             // Check if weather and/or camera items are configured
             boolean bWeather = false;
             boolean bCamera = false;
@@ -110,6 +104,14 @@ public class NetatmoBinding extends AbstractActiveBinding<NetatmoBindingProvider
                         break;
                     }
                 }
+            }
+
+            OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
+            oauthCredentials.setWeather(bWeather);
+            oauthCredentials.setCamera(bCamera);
+            if (oauthCredentials.noAccessToken()) {
+                // initial run after a restart, so get an access token first
+                oauthCredentials.refreshAccessToken();
             }
 
             // Start the execution of the weather station and/or camera binding
@@ -138,6 +140,14 @@ public class NetatmoBinding extends AbstractActiveBinding<NetatmoBindingProvider
         } else {
             return credentialsCache.get(DEFAULT_USER_ID);
         }
+    }
+
+    protected void addBindingProvider(NetatmoBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(NetatmoBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**

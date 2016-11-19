@@ -151,7 +151,7 @@ public class RemoteSession {
         logger.debug("Received ID: " + text1);
         char[] result = readCharArray(reader); // Read result sequence
         if (Arrays.equals(result, ALLOWED_BYTES)) {
-            logger.debug("Registration successfull");
+            logger.debug("Registration successful");
             return ALLOWED;
         } else if (Arrays.equals(result, DENIED_BYTES)) {
             logger.warn("Registration denied");

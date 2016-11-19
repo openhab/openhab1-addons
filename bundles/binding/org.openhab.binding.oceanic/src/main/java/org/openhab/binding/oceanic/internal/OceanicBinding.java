@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -140,6 +140,14 @@ public class OceanicBinding extends AbstractActiveBinding<OceanicBindingProvider
         }
     }
 
+    protected void addBindingProvider(OceanicBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(OceanicBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @SuppressWarnings("rawtypes")
     public void updated(Dictionary config) throws ConfigurationException {
         setProperlyConfigured(true);
@@ -220,7 +228,7 @@ public class OceanicBinding extends AbstractActiveBinding<OceanicBindingProvider
                                 }
                             }
                         } catch (SchedulerException e1) {
-                            logger.error("An exception occurred while quering the Quartz Scheduler ({})",
+                            logger.error("An exception occurred while querying the Quartz Scheduler ({})",
                                     e1.getMessage());
                         }
 
@@ -267,7 +275,7 @@ public class OceanicBinding extends AbstractActiveBinding<OceanicBindingProvider
                                 }
                             }
                         } catch (SchedulerException e1) {
-                            logger.error("An exception occurred while quering the Quartz Scheduler ({})",
+                            logger.error("An exception occurred while querying the Quartz Scheduler ({})",
                                     e1.getMessage());
                         }
                     }
@@ -372,7 +380,7 @@ public class OceanicBinding extends AbstractActiveBinding<OceanicBindingProvider
 
         /**
          * Initialize this device and open the serial port
-         * 
+         *
          * @throws InitializationException if port can not be opened
          */
         @SuppressWarnings("rawtypes")
@@ -470,7 +478,7 @@ public class OceanicBinding extends AbstractActiveBinding<OceanicBindingProvider
 
         /**
          * Sends a string to the serial port of this device
-         * 
+         *
          * @param msg the string to send
          */
         public void writeString(String msg) {
@@ -560,7 +568,7 @@ public class OceanicBinding extends AbstractActiveBinding<OceanicBindingProvider
                                 try {
                                     value = createStateForType(valueSelector, response);
                                 } catch (BindingConfigParseException e) {
-                                    logger.error("An exception occured while converting {} to a valide state : {}",
+                                    logger.error("An exception occured while converting {} to a valid state : {}",
                                             response, e.getMessage());
                                     return;
                                 }

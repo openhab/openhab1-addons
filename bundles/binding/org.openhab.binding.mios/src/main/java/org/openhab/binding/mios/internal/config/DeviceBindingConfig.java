@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -76,7 +76,7 @@ import org.osgi.framework.BundleContext;
  * <p>
  *
  * In addition to binding against a Device's Variables, you can bind to the set of Device Attributes it exposes.
- * Specifically it's <code>id</code> and <code>status</code>:
+ * Specifically its <code>id</code> and <code>status</code>:
  * <p>
  * <ul>
  * <li>
@@ -443,7 +443,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 
             // If we don't have a transform, look for a special one called
             // "_default".
-            if (result == null || "".equals(result)) {
+            if (result == null || "".equals(result) || key.equals(result)) {
                 result = ts.transform(getCommandTransformParam(), DEFAULT_COMMAND_TRANSFORM);
             }
         } else {

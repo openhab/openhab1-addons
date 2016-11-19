@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -60,8 +60,16 @@ public class TivoBinding extends AbstractBinding<TivoBindingProvider>implements 
         }
     }
 
+    protected void addBindingProvider(TivoBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(TivoBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -75,10 +83,10 @@ public class TivoBinding extends AbstractBinding<TivoBindingProvider>implements 
     /**
      * Find the first matching {@link TivoBindingProvider} according to
      * <code>itemName</code> and <code>command</code>.
-     * 
+     *
      * @param itemName
      * @param command
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */

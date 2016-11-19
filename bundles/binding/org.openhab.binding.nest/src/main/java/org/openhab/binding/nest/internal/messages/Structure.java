@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,7 +31,7 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
 
     /**
      * Describes the Structure state; see the Away Guide for more information.
-     * 
+     *
      * @see <a href="https://developer.nest.com/documentation/cloud/structure-guide">Structure state</a>
      * @see <a href="https://developer.nest.com/documentation/cloud/away-guide">Away Guide</a>
      * @see <a href="https://developer.nest.com/documentation/cloud/api-overview#away">API Overview</a>
@@ -39,7 +39,7 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
     public static enum AwayState {
         HOME("home"),
         AWAY("away"),
-        AUTO_AWAY("auto-away"),
+        AUTO_AWAY("auto-away"), // deprecated by Oct 2016 API update
         UNKNOWN("unknown");
 
         private final String state;
@@ -287,7 +287,7 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
     }
 
     /**
-     * This method creates maps to device objects, using the list of device IDs that were unmarshalled from JSON.
+     * This method creates maps to device objects, using the list of device IDs that were deserialized from JSON.
      */
     @Override
     public void sync(DataModel dataModel) {
@@ -295,27 +295,33 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
         this.thermostats_by_name = new HashMap<String, Thermostat>();
         if (this.thermostat_id_list != null) {
             for (String id : this.thermostat_id_list) {
-                Thermostat th = dataModel.getDevices().getThermostats_by_id().get(id);
-                if (th != null) {
-                    this.thermostats_by_name.put(th.getName(), th);
+                if (dataModel.getDevices() != null && dataModel.getDevices().getThermostats_by_id() != null) {
+                    Thermostat th = dataModel.getDevices().getThermostats_by_id().get(id);
+                    if (th != null) {
+                        this.thermostats_by_name.put(th.getName(), th);
+                    }
                 }
             }
         }
         this.smoke_co_alarms_by_name = new HashMap<String, SmokeCOAlarm>();
         if (this.smoke_co_alarm_id_list != null) {
             for (String id : this.smoke_co_alarm_id_list) {
-                SmokeCOAlarm sm = dataModel.getDevices().getSmoke_co_alarms_by_id().get(id);
-                if (sm != null) {
-                    this.smoke_co_alarms_by_name.put(sm.getName(), sm);
+                if (dataModel.getDevices() != null && dataModel.getDevices().getSmoke_co_alarms_by_id() != null) {
+                    SmokeCOAlarm sm = dataModel.getDevices().getSmoke_co_alarms_by_id().get(id);
+                    if (sm != null) {
+                        this.smoke_co_alarms_by_name.put(sm.getName(), sm);
+                    }
                 }
             }
         }
         this.cameras_by_name = new HashMap<String, Camera>();
         if (this.camera_id_list != null) {
             for (String id : this.camera_id_list) {
-                Camera cam = dataModel.getDevices().getCameras_by_id().get(id);
-                if (cam != null) {
-                    this.cameras_by_name.put(cam.getName(), cam);
+                if (dataModel.getDevices() != null && dataModel.getDevices().getCameras_by_id() != null) {
+                    Camera cam = dataModel.getDevices().getCameras_by_id().get(id);
+                    if (cam != null) {
+                        this.cameras_by_name.put(cam.getName(), cam);
+                    }
                 }
             }
         }

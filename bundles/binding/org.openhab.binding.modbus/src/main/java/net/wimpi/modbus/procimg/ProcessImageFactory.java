@@ -18,7 +18,7 @@ package net.wimpi.modbus.procimg;
 
 /**
  * Interface defining the factory methods for
- * the process image and it's elements.
+ * the process image and its elements.
  *
  * @author Dieter Wimberger
  * @version @version@ (@date@)

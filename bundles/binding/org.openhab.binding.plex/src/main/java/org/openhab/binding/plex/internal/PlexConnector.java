@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -45,6 +45,7 @@ import org.openhab.binding.plex.internal.communication.Device;
 import org.openhab.binding.plex.internal.communication.MediaContainer;
 import org.openhab.binding.plex.internal.communication.Player;
 import org.openhab.binding.plex.internal.communication.Server;
+import org.openhab.binding.plex.internal.communication.Track;
 import org.openhab.binding.plex.internal.communication.Update;
 import org.openhab.binding.plex.internal.communication.User;
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -218,6 +219,8 @@ public class PlexConnector extends Thread {
             cmd = getVolumeCommand(config, command);
         } else if (property.equals(PlexProperty.PROGRESS.getName())) {
             cmd = getProgressCommand(config, command);
+        } else if (property.equals(PlexProperty.PLAYPAUSE.getName())) {
+            cmd = getPlayPauseCommand(config);
         } else {
             cmd = config.getProperty();
         }
@@ -308,6 +311,19 @@ public class PlexConnector extends Thread {
         return url;
     }
 
+    private String getPlayPauseCommand(PlexBindingConfig config) {
+        String command = PlexProperty.PAUSE.getName();
+
+        PlexSession session = getSessionByMachineId(config.getMachineIdentifier());
+        if (session != null) {
+            if (PlexPlayerState.Paused.equals(session.getState())) {
+                command = PlexProperty.PLAY.getName();
+            }
+        }
+
+        return command;
+    }
+
     private WebSocketUpgradeHandler createWebSocketHandler() {
         WebSocketUpgradeHandler.Builder builder = new WebSocketUpgradeHandler.Builder();
         builder.addWebSocketListener(new PlexWebSocketListener());
@@ -359,7 +375,30 @@ public class PlexConnector extends Thread {
         if (isNumeric(item.getDuration())) {
             session.setDuration(Integer.valueOf(item.getDuration()));
         }
+        session.setCover(getCover(item));
         session.setKey(item.getKey());
+    }
+
+    private String getCover(AbstractSessionItem item) {
+        String cover = null;
+
+        // Only use grandparentThumb if it's present in the session item
+        // and if the session item is not a music track
+        if (!isBlank(item.getGrandparentThumb()) && !item.getClass().equals(Track.class)) {
+            cover = item.getGrandparentThumb();
+        } else if (!isBlank(item.getThumb())) {
+            cover = item.getThumb();
+        }
+
+        if (!isBlank(cover)) {
+            cover = String.format("%s%s", connection.getUri().toString(), cover);
+
+            if (connection.hasToken()) {
+                cover = cover + "?X-Plex-Token=" + connection.getToken();
+            }
+        }
+
+        return cover;
     }
 
     private Server getHost(String machineIdentifier) {
@@ -655,7 +694,7 @@ public class PlexConnector extends Thread {
         headers.put("X-Plex-Platform", Arrays.asList("Java"));
         headers.put("X-Plex-Platform-Version", Arrays.asList(SystemUtils.JAVA_VERSION));
 
-        if (!isBlank(connection.getToken())) {
+        if (connection.hasToken()) {
             headers.put("X-Plex-Token", Arrays.asList(connection.getToken()));
         }
 

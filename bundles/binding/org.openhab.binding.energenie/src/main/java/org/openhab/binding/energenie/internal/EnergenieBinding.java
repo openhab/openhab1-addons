@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -198,7 +198,7 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
             logger.trace("send command ON to socket {} at host {}", pmsSocketId, pmsIp);
 
         } catch (Exception e) {
-            logger.error("failed so send command ON to socket {} at ip {}", pmsIp, pmsSocketId);
+            logger.error("failed to send command ON to socket {} at ip {}", pmsIp, pmsSocketId);
         }
 
     }
@@ -214,7 +214,7 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
             logger.trace("sending 'POST' request to URL : {}", url);
             logger.trace("send command OFF to socket {} at host {}", pmsSocketId, pmsIp);
         } catch (Exception e) {
-            logger.error("failed so send command OFF to socket {} at ip {}", pmsIp, pmsSocketId);
+            logger.error("failed to send command OFF to socket {} at ip {}", pmsIp, pmsSocketId);
         }
     }
 
@@ -336,7 +336,7 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 
     /**
      * Lookup of the configuration of the named item.
-     * 
+     *
      * @param itemName
      *            The name of the item.
      * @return The configuration, null otherwise.
@@ -350,8 +350,16 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
         return null;
     }
 
+    protected void addBindingProvider(EnergenieBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(EnergenieBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

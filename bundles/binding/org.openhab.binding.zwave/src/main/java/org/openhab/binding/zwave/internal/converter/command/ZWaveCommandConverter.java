@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,7 +16,7 @@ import org.openhab.core.types.Command;
 /**
  * Abstract base class for converting item commands to
  * Z-Wave command class commands.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  * @param <OPENHAB_TYPE> the command to convert
@@ -26,7 +26,7 @@ public abstract class ZWaveCommandConverter<OPENHAB_TYPE extends Command, ZWAVE_
 
     /**
      * Returns the type of the openHAB {@link Command} that this {@link ZWaveCommandConverter} converts to.
-     * 
+     *
      * @return the supported {@link Command}
      */
     @SuppressWarnings("unchecked")
@@ -37,7 +37,7 @@ public abstract class ZWaveCommandConverter<OPENHAB_TYPE extends Command, ZWAVE_
 
     /**
      * Converts a an OpenHab command to a Z-Wave value.
-     * 
+     *
      * @param command the {@link Command} to convert.
      * @param item the item to convert the command for.
      * @return the Z-Wave value to convert to.
@@ -46,7 +46,7 @@ public abstract class ZWaveCommandConverter<OPENHAB_TYPE extends Command, ZWAVE_
 
     /**
      * Converts a an OpenHab command to a Z-Wave value.
-     * 
+     *
      * @param command the {@link Command} to convert.
      * @param item the item to convert the command for.
      * @return the Z-Wave value to convert to.

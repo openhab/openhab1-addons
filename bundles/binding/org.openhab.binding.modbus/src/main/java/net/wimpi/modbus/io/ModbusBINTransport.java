@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,12 +59,8 @@ public class ModbusBINTransport extends ModbusSerialTransport {
 
     @Override
     public void close() throws IOException {
-        if (m_InputStream != null) {
-            m_InputStream.close();
-        }
-        if (m_OutputStream != null) {
-            m_OutputStream.close();
-        }
+        IOUtils.closeQuietly(m_InputStream);
+        IOUtils.closeQuietly(m_OutputStream);
         super.close();
     }// close
 
@@ -159,12 +156,12 @@ public class ModbusBINTransport extends ModbusSerialTransport {
         boolean done = false;
         ModbusResponse response = null;
         int in = -1;
-
+        setReceiveThreshold(1);
         try {
             do {
                 // 1. Skip to FRAME_START
                 while ((in = m_InputStream.read()) != FRAME_START) {
-                    ;
+                    // FIXME: handle EOF, similar to ASCIITransport
                 }
                 // 2. Read to FRAME_END
                 synchronized (m_InBuffer) {
@@ -206,6 +203,8 @@ public class ModbusBINTransport extends ModbusSerialTransport {
             final String errMsg = "failed to read";
             logger.debug("{}: {}", errMsg, ex.getMessage());
             throw new ModbusIOException("I/O exception - " + errMsg);
+        } finally {
+            m_CommPort.disableReceiveThreshold();
         }
     }// readResponse
 

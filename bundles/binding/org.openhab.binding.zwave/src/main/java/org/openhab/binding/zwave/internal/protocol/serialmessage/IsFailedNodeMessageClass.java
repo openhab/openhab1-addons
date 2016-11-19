@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class processes a serial message from the zwave controller.
  * It queries the controller to see if the node is on its 'failed nodes' list.
- * 
+ *
  * @author Wez Hunter
  * @since 1.6.0
  */

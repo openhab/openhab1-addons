@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,6 +30,8 @@ public enum NetatmoMeasureType {
     LATITUDE("Latitude", NetatmoScale.MAX),
     LONGITUDE("Longitude", NetatmoScale.MAX),
     RFSTATUS("RfStatus", NetatmoScale.MAX),
+    BATTERYPERCENT("BatteryPercent", NetatmoScale.MAX),
+    BATTERYSTATUS("BatteryStatus", NetatmoScale.MAX),
     BATTERYVP("BatteryVp", NetatmoScale.MAX),
     TIMESTAMP("TimeStamp", NetatmoScale.MAX),
     MODULENAME("ModuleName", NetatmoScale.MAX),

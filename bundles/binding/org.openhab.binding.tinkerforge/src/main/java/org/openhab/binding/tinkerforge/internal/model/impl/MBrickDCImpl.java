@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -1702,7 +1702,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         } else if (state == OnOffValue.ON) {
             setSpeed(Tools.getShortOpt(ConfigOptsSwitchSpeed.SPEED.toString(), opts), null, null, null);
         } else {
-            logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+            logger.error("{} unknown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
         }
     }
 

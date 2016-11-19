@@ -94,8 +94,16 @@ public class PanasonicTVBinding extends AbstractBinding<PanasonicTVBindingProvid
 
     }
 
+    protected void addBindingProvider(PanasonicTVBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(PanasonicTVBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -122,7 +130,7 @@ public class PanasonicTVBinding extends AbstractBinding<PanasonicTVBindingProvid
 
     /**
      * This methods sends the command to the TV
-     * 
+     *
      * @return HTTP response code from the TV (should be 200)
      */
     private int sendCommand(PanasonicTVBindingConfig config) {

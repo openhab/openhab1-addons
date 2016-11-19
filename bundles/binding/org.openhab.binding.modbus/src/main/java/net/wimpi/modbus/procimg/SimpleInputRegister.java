@@ -29,7 +29,7 @@ public class SimpleInputRegister extends SynchronizedAbstractRegister implements
 
     /**
      * Constructs a new <tt>SimpleInputRegister</tt> instance.
-     * It's state will be invalid.
+     * Its state will be invalid.
      */
     public SimpleInputRegister() {
     }// constructor

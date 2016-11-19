@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZW6302</Model>
+    <Label lang="en">Portable Smart Motion Sensor</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x30</id>             <!-- SENSOR_BINARY -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>6</Index>
+            <Label lang="en">Enable &amp; Disable the PIR Sensor</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enable (Default)</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>13</Index>
+            <Label lang="en">Motion Sensor</Label>
+            <Type>list</Type>
+            <Default>3</Default>
+            <Minimum>1</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Low Sensitivity</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Medium Sensitivity</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">High Sensitivity</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>18</Index>
+            <Label lang="en">PIR Timeout Duration</Label>
+            <Type>list</Type>
+            <Default>60</Default>
+            <Minimum>1</Minimum>
+            <Maximum>60</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">1 min to 60 min</Label>
+            </Item>
+            <Item>
+                <Value>255</Value>
+                <Label lang="en">5 seconds</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>20</Index>
+            <Label lang="en">Basic Set, Notification and Basic Report</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Motion Sensor will send out Notification</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Motion Sensor will send out Basic Set</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Motion Sensor will sendout Basic Report</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>28</Index>
+            <Label lang="en">Enable &amp; Disable the LED indication when PIR is triggered</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enable</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">ZW6302</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>

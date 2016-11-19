@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class processes a serial message from the zwave controller
- * 
+ *
  * @author Chris Jackson
  * @since 1.5.0
  */
@@ -118,7 +118,7 @@ public class IdentifyNodeMessageClass extends ZWaveCommandProcessor {
         // If restored the node from configuration file then
         // the classes will already exist and this will be ignored
 
-        // Add mandatory command classes as specified by it's generic device class.
+        // Add mandatory command classes as specified by its generic device class.
         for (CommandClass commandClass : generic.getMandatoryCommandClasses()) {
             ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node,
                     zController);
@@ -127,7 +127,7 @@ public class IdentifyNodeMessageClass extends ZWaveCommandProcessor {
             }
         }
 
-        // Add mandatory command classes as specified by it's specific device class.
+        // Add mandatory command classes as specified by its specific device class.
         for (CommandClass commandClass : specific.getMandatoryCommandClasses()) {
             ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node,
                     zController);

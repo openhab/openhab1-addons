@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -96,6 +96,11 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
     }
 
     @Override
+    public void deactivate() {
+        disconnect();
+    }
+
+    @Override
     public void execute() {
         // The framework calls this function once the binding has been configured,
         // so we use it as a hook to start the binding.
@@ -111,7 +116,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
     /**
      * Parses and stores the tcp configuration string of the binding configuration.
      * Expected form is tcp:hostname:port
-     * 
+     *
      * @param parts config string, split on ':'
      * @throws ConfigurationException
      */
@@ -131,7 +136,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
     /**
      * Parses and stores the serial configuration string of the binding configuration.
      * Expected form is serial@portspeed:devicename, where @portspeed is optional.
-     * 
+     *
      * @param parts config string, split on ':'
      * @throws ConfigurationException
      */
@@ -312,6 +317,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
                 m_port.disableReceiveFraming();
                 m_port.disableReceiveThreshold();
                 m_reader = new BufferedReader(new InputStreamReader(m_port.getInputStream()));
+                m_writer = new BufferedWriter(new OutputStreamWriter(m_port.getOutputStream()));
                 logger.info("connected to serial port: {}", m_serialDeviceName);
                 startMsgReader();
             } else {
@@ -422,9 +428,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
                 }
             } catch (IOException e) {
                 logger.error("I/O error while reading from stream: {}", e.getMessage());
-                // mark connections as down so they get reestablished
-                m_socket = null;
-                m_port = null;
+                disconnect();
             }
             logger.debug("msg reader thread exited");
         }
@@ -499,6 +503,14 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
         return l;
     }
 
+    protected void addBindingProvider(AlarmDecoderBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(AlarmDecoderBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     public void bindingChanged(BindingProvider provider, String itemName) {
         super.bindingChanged(provider, itemName);
@@ -549,7 +561,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 
     /**
      * The relay and expander messages have identical format
-     * 
+     *
      * @param mt message type of incoming message
      * @param msg string containing incoming message
      * @throws MessageParseException
@@ -610,7 +622,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 
     /**
      * Updates item on the openhab bus
-     * 
+     *
      * @param bc binding config
      * @param state new state of item
      */
@@ -631,7 +643,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 
     /**
      * Finds all items that refer to a given message type, address, and feature
-     * 
+     *
      * @param mt message type (or null for all messages)
      * @param addr address to match (or all addresses if null)
      * @param feature feature to match (or all features if null)
@@ -647,7 +659,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 
     /**
      * Find binding configurations for a given item
-     * 
+     *
      * @param itemName name of item to look for
      * @return array with binding configurations
      */
@@ -662,7 +674,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 
     /**
      * Extract message type from message
-     * 
+     *
      * @param s message string
      * @return message type
      */

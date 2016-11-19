@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -159,10 +159,10 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
 
     /**
      * Convert OpenHAB commmand to onkyo receiver command.
-     * 
+     *
      * @param command
      * @param cmdTemplate
-     * 
+     *
      * @return
      */
     private String convertOpenHabCommandToDeviceCommand(Command command, String cmdTemplate) {
@@ -187,9 +187,9 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
     /**
      * Find the first matching {@link OnkyoBindingProvider} according to
      * <code>itemName</code>.
-     * 
+     *
      * @param itemName
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -218,8 +218,16 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
         return firstMatchingProvider;
     }
 
+    protected void addBindingProvider(OnkyoBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(OnkyoBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -307,7 +315,7 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
 
     /**
      * Find receiver from device caache by ip address.
-     * 
+     *
      * @param ip
      * @return
      */
@@ -339,12 +347,17 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
 
                     for (String cmd : values.keySet()) {
                         String[] commandParts = values.get(cmd).split(":");
+                        String deviceId = commandParts[0];
                         String deviceCmd = commandParts[1];
+
+                        if (!deviceConfig.deviceId.equals(deviceId)) {
+                            continue;
+                        }
 
                         boolean match = false;
                         if (deviceCmd.startsWith(ADVANCED_COMMAND_KEY)) {
-                            // skip advanced command key and compare 3 first character
-                            if (data.startsWith(deviceCmd.substring(1, 4))) {
+                            // skip advanced command key and compare remaining characters
+                            if (data.startsWith(deviceCmd.substring(1))) {
                                 match = true;
                             }
                         } else {
@@ -355,9 +368,8 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
                                 if (data.startsWith(eiscpCmd.substring(0, 3))) {
                                     match = true;
                                 }
-
                             } catch (Exception e) {
-                                logger.error("Unregonized command '" + deviceCmd + "'", e);
+                                logger.error("Unrecognized command '" + deviceCmd + "'", e);
                             }
                         }
 
@@ -372,13 +384,12 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
             }
         }
     }
-
     /**
      * Convert receiver value to OpenHAB state.
-     * 
+     *
      * @param itemType
      * @param data
-     * 
+     *
      * @return
      */
     private State convertDeviceValueToOpenHabState(Class<? extends Item> itemType, String data) {
@@ -417,9 +428,9 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
 
     /**
      * Initialize item value. Method send query to receiver if init query is configured to binding item configuration
-     * 
+     *
      * @param itemType
-     * 
+     *
      */
     private void initializeItem(String itemName) {
         for (OnkyoBindingProvider provider : providers) {

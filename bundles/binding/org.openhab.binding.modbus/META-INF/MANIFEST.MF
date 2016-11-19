@@ -6,8 +6,11 @@ Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.binding.modbus.internal.ModbusActivator
 Bundle-Vendor: openHAB.org
 Import-Package: org.apache.commons.collections,
+ org.apache.commons.collections.iterators,
+ org.apache.commons.collections.keyvalue,
  org.apache.commons.io,
  org.apache.commons.lang,
+ org.apache.commons.lang.builder,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -29,6 +32,7 @@ Import-Package: org.apache.commons.collections,
  org.slf4j
 Export-Package: org.openhab.binding.modbus
 Service-Component: OSGI-INF/*.xml
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/commons-pool2-2.4.2.jar
 Require-Bundle: org.openhab.io.transport.serial;bundle-version="1.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

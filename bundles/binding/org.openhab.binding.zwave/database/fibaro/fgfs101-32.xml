@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>FGFS101</Model>
+    <Label lang="en">Flood Sensor</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x22</id>             <!-- APPLICATION_STATUS -->
+        </Class>
+        <Class>
+            <id>0x30</id>             <!-- SENSOR_BINARY -->
+        </Class>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x56</id>             <!-- CRC_16_ENCAP -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x8E</id>             <!-- MULTI_INSTANCE_ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x98</id>             <!-- SECURITY -->
+        </Class>
+        <Class>
+            <id>0x9C</id>             <!-- SENSOR_ALARM -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Alarm cancellation delay</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3600</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Select alarm type (visual/acoustic)</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Acoustic and visual alarms inactive</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Acoustic alarm inactive, visual alarm active</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Acoustic alarm active, visual alarm inactive</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Acoustic and visual alarms active</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>7</Index>
+            <Label lang="en">Requested dimming level to 2nd assoc. group</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>9</Index>
+            <Label lang="en">Device off and alarm cancellations</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Alarm (flooding) cancellation inactive</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Alarm (flooding) cancellation active</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>10</Index>
+            <Label lang="en">Temperature measurement interval</Label>
+            <Type>short</Type>
+            <Default>300</Default>
+            <Minimum>1</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>12</Index>
+            <Label lang="en">Temperature measurement hysteresis</Label>
+            <Type>short</Type>
+            <Default>50</Default>
+            <Minimum>1</Minimum>
+            <Maximum>1000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>50</Index>
+            <Label lang="en">Low temperature alarm threshold</Label>
+            <Type>short</Type>
+            <Default>1500</Default>
+            <Minimum>-10000</Minimum>
+            <Maximum>10000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>51</Index>
+            <Label lang="en">High temperature alarm threshold</Label>
+            <Type>short</Type>
+            <Default>3500</Default>
+            <Minimum>-10000</Minimum>
+            <Maximum>10000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>61</Index>
+            <Label lang="en">Low temperature alarm indicator colour</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>0</Minimum>
+            <Maximum>16777215</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>62</Index>
+            <Label lang="en">High temperature alarm indicator colour</Label>
+            <Type>short</Type>
+            <Default>16711680</Default>
+            <Minimum>0</Minimum>
+            <Maximum>16777215</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>63</Index>
+            <Label lang="en">Visual temperature indicator</Label>
+            <Type>list</Type>
+            <Default>2</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Visual indicator does not indicate the temperature</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Indicator at every temperature measurement and wake up</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Visual indicator indicates the temperature continuously</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>73</Index>
+            <Label lang="en">Temperature measurement compensation</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>-10000</Minimum>
+            <Maximum>10000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>74</Index>
+            <Label lang="en">Alarm frame for movement/tamper</Label>
+            <Type>list</Type>
+            <Default>2</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Tamper alarm inactive</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Button tamper alarm active</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Movement tamper alarm active</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Button and movement tampers alarm active</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>75</Index>
+            <Label lang="en">Alarms signalization duration</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>76</Index>
+            <Label lang="en">Alarm signalization reactivation period</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>77</Index>
+            <Label lang="en">Flood sensor functionality turned off</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Default flood sensor operation (flood detection, reactions)</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Built-in flood sensor TURNED OFF</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>78</Index>
+            <Label lang="en">Associations in Z-Wave network security mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>0</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">None of the groups are sent as secure</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">2nd group ”Control” sent as secure</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">3rd group ”Alarm” sent as secure</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">4th group "Tamper” sent as secure</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Flood Control</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Flood Alarm</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>4</Index>
+            <Label lang="en">Tamper Alarm</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

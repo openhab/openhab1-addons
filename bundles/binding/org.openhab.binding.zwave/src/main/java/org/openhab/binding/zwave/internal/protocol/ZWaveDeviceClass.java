@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * Z-Wave device class. A Z-Wave device class groups devices with the same
  * functionality together in a class.
  * TODO: Complete all device classes.
- * 
+ *
  * @author Jan-Willem Spuij
  * @author Chris Jackson
  * @since 1.3.0
@@ -37,7 +37,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Constructor. Creates a new instance of the Z-Wave device class.
-     * 
+     *
      * @param basicDeviceClass the basic device class of this node.
      * @param genericDeviceClass the generic device class of this node.
      * @param specificDeviceClass the specific device class of this node.
@@ -52,7 +52,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Returns the basic device class of the node.
-     * 
+     *
      * @return the basicDeviceClass
      */
     public Basic getBasicDeviceClass() {
@@ -61,7 +61,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Set the basic device class of the node.
-     * 
+     *
      * @param basicDeviceClass the basicDeviceClass to set
      */
     public void setBasicDeviceClass(Basic basicDeviceClass) {
@@ -70,7 +70,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Get the generic device class of the node.
-     * 
+     *
      * @return the genericDeviceClass
      */
     public Generic getGenericDeviceClass() {
@@ -79,7 +79,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Set the generic device class of the node.
-     * 
+     *
      * @param genericDeviceClass the genericDeviceClass to set
      */
     public void setGenericDeviceClass(Generic genericDeviceClass) {
@@ -88,7 +88,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Get the specific device class of the node.
-     * 
+     *
      * @return the specificDeviceClass
      */
     public Specific getSpecificDeviceClass() {
@@ -97,7 +97,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Set the specific device class of the node.
-     * 
+     *
      * @param specificDeviceClass the specificDeviceClass to set
      * @exception IllegalArgumentException thrown when the specific device class does not match
      *                the generic device class.
@@ -157,7 +157,7 @@ public class ZWaveDeviceClass {
     /**
      * Z-Wave basic Device Class enumeration. The Basic Device Class provides
      * the device with a role in the Z-Wave network.
-     * 
+     *
      * @author Brian Crosby
      * @author Jan-Willem Spuij
      * @since 1.3.0
@@ -193,7 +193,7 @@ public class ZWaveDeviceClass {
         /**
          * Lookup function based on the basic device class code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the basic device class.
          */
@@ -226,7 +226,7 @@ public class ZWaveDeviceClass {
      * can have Command Classes that are mandatory or recommended for all devices
      * that belong to this device class. Generic device class do not relate directly
      * to Basic Device Classes. E.G. a BINARY_SWITCH can be a ROUTING_SLAVE or a SLAVE.
-     * 
+     *
      * @author Brian Crosby
      * @author Jan-Willem Spuij
      * @author Chris Jackson
@@ -284,7 +284,7 @@ public class ZWaveDeviceClass {
         /**
          * Lookup function based on the generic device class code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the generic device class.
          */
@@ -312,7 +312,7 @@ public class ZWaveDeviceClass {
 
         /**
          * Get the mandatory command classes for this device class.
-         * 
+         *
          * @return the mandatory command classes.
          */
         public CommandClass[] getMandatoryCommandClasses() {
@@ -367,7 +367,7 @@ public class ZWaveDeviceClass {
      * mandatory commands from the Generic Device Class. In addition to
      * these commands, more mandatory or recommended Command Classes can
      * be specified for a Specific Device Class.
-     * 
+     *
      * @author Brian Crosby
      * @author Jan-Willem Spuij
      * @author Chris Jackson
@@ -378,10 +378,15 @@ public class ZWaveDeviceClass {
         PORTABLE_REMOTE_CONTROLLER(1, Generic.REMOTE_CONTROLLER, "Portable Remote Controller"),
         PORTABLE_SCENE_CONTROLLER(2, Generic.REMOTE_CONTROLLER, "Portable Scene Controller"),
         PORTABLE_INSTALLER_TOOL(3, Generic.REMOTE_CONTROLLER, "Portable Installer Tool"),
+        AV_REMOTE_CONTROLLER(4, Generic.REMOTE_CONTROLLER, "AV Remote Controller"),
+        SIMPLE_REMOTE_CONTROLLER(6, Generic.REMOTE_CONTROLLER, "Simple Remote Controller"),
 
         PC_CONTROLLER(1, Generic.STATIC_CONTROLLER, "PC Controller"),
         SCENE_CONTROLLER(2, Generic.STATIC_CONTROLLER, "Scene Controller"),
         INSTALLER_TOOL(3, Generic.STATIC_CONTROLLER, "Static Installer Tool"),
+        SET_TOP_BOX_CONTROLLER(4, Generic.STATIC_CONTROLLER, "Set-Top Box Controller"),
+        SUB_SYSTEM_CONTROLLER(4, Generic.STATIC_CONTROLLER, "Sub-System Controller"),
+        TV_CONTROLLER(6, Generic.STATIC_CONTROLLER, "TV Controller"),
 
         SATELLITE_RECEIVER(4, Generic.AV_CONTROL_POINT, "Satellite Receiver"),
         SATELLITE_RECEIVER_V2(17, Generic.AV_CONTROL_POINT, "Satellite Receiver V2"),
@@ -405,6 +410,7 @@ public class ZWaveDeviceClass {
         SCENE_SWITCH_BINARY_DISCONTINUED(2, Generic.BINARY_SWITCH, "Binary Scene Switch (Discontinued)"),
         SCENE_SWITCH_BINARY(3, Generic.BINARY_SWITCH, "Binary Scene Switch"),
         SIREN_SWITCH_BINARY(5, Generic.BINARY_SWITCH, "Siren Switch"),
+        VALVE_SWITCH_BINARY(6, Generic.BINARY_SWITCH, "Valve Switch"),
 
         POWER_SWITCH_MULTILEVEL(1, Generic.MULTILEVEL_SWITCH, "Multilevel Power Switch"),
         SCENE_SWITCH_MULTILEVEL_DISCONTINUED(2, Generic.MULTILEVEL_SWITCH, "Multilevel Scene Switch (Discontinued)"),
@@ -486,7 +492,7 @@ public class ZWaveDeviceClass {
         /**
          * Lookup function based on the generic device class and the specific device class code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param genericDeviceClass the generic device class
          * @param i the specific device class code
          * @return the Specific enumeration
@@ -524,7 +530,7 @@ public class ZWaveDeviceClass {
 
         /**
          * Get the mandatory command classes for this device class.
-         * 
+         *
          * @return the mandatory command classes.
          */
         public CommandClass[] getMandatoryCommandClasses() {
@@ -604,7 +610,9 @@ public class ZWaveDeviceClass {
                 case SMOKE_SENSOR_ZENSOR:
                     return new CommandClass[] { CommandClass.SENSOR_ALARM, CommandClass.MANUFACTURER_SPECIFIC,
                             CommandClass.BATTERY, CommandClass.VERSION };
-
+                case SECURE_KEYPAD_DOOR_LOCK:
+                    return new CommandClass[] { CommandClass.SECURITY, CommandClass.MANUFACTURER_SPECIFIC,
+                            CommandClass.DOOR_LOCK, CommandClass.USER_CODE, CommandClass.VERSION };
                 default:
                     return new CommandClass[0];
             }

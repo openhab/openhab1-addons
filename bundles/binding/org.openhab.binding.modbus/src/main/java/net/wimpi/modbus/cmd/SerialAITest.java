@@ -76,12 +76,13 @@ public class SerialAITest {
             // 3. Setup serial parameters
             SerialParameters params = new SerialParameters();
             params.setPortName(portname);
-            params.setBaudRate(9600);
+            params.setBaudRate(115200);
             params.setDatabits(8);
             params.setParity("None");
             params.setStopbits(1);
             params.setEncoding("ascii");
             params.setEcho(false);
+            params.setReceiveTimeoutMillis(500);
             if (Modbus.debug) {
                 System.out.println("Encoding [" + params.getEncoding() + "]");
             }
