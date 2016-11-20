@@ -70,29 +70,29 @@ public final class DmxTransmitter extends TimerTask {
         try {
             long now = System.currentTimeMillis();
             byte[] b = universe.calculateBuffer();
-            if (universe.getBufferChanged() || (repeatMode == REPEAT_MODE_ALWAYS)) {
-                logger.trace("DMX Buffer changed or repeat mode always");
-                DmxConnection conn = service.getConnection();
-                if (conn != null) {
+            DmxConnection conn = service.getConnection();
+            if (conn != null) {
+                if (universe.getBufferChanged()) {
+                    logger.trace("DMX Buffer changed, also sending status updates");
                     conn.sendDmx(b);
                     universe.notifyStatusListeners();
-                }
-                lastTransmit = now;
-                packetRepeatCount = 0;
-            } else if ((repeatMode == REPEAT_MODE_REDUCED)
-                    && ((packetRepeatCount < REPEAT_COUNT) || ((now - lastTransmit) > REPEAT_INTERVAL))) {
-                logger.trace("DMX Buffer needs refresh, sending");
-                DmxConnection conn = service.getConnection();
-                if (conn != null) {
+                    lastTransmit = now;
+                    packetRepeatCount = 0;
+                } else if (repeatMode == REPEAT_MODE_ALWAYS) {
+                    logger.trace("repeat mode always, sending DMX only");
                     conn.sendDmx(b);
-                    universe.notifyStatusListeners();
+                    lastTransmit = now;
+                } else if ((repeatMode == REPEAT_MODE_REDUCED)
+                        && ((packetRepeatCount < REPEAT_COUNT) || ((now - lastTransmit) > REPEAT_INTERVAL))) {
+                    logger.trace("output needs refresh, sending DMX only");
+                    conn.sendDmx(b);
+                    if (packetRepeatCount < REPEAT_COUNT) {
+                        packetRepeatCount++;
+                    }
+                    lastTransmit = now;
+                } else {
+                    logger.trace("DMX output suppressed");
                 }
-                if (packetRepeatCount < REPEAT_COUNT) {
-                    packetRepeatCount++;
-                }
-                lastTransmit = now;
-            } else {
-                logger.trace("DMX output suppressed");
             }
         } catch (Exception e) {
             logger.error("Error sending dmx values.", e);
