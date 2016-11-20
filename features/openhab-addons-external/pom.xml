@@ -53,6 +53,7 @@
                                 <artifact><file>src/main/resources/conf/gpio.cfg</file><type>cfg</type><classifier>gpio</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/heatmiser.cfg</file><type>cfg</type><classifier>heatmiser</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/homematic.cfg</file><type>cfg</type><classifier>homematic</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/horizon.cfg</file><type>cfg</type><classifier>horizon</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/http.cfg</file><type>cfg</type><classifier>http</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ihc.cfg</file><type>cfg</type><classifier>ihc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/influxdb.cfg</file><type>cfg</type><classifier>influxdb</classifier></artifact>

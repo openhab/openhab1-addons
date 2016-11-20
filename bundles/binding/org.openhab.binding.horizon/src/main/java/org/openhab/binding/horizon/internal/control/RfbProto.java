@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package nl.kuijp.horizoncontrol;
+package org.openhab.binding.horizon.internal.control;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -15,9 +15,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 /**
- * 
+ *
  * This class holds the RfbProto data for writing to to the vnc port of the horizonbox
- *  
+ *
  * @author Jurgen Kuijpers
  * @since 1.9.0
  */
@@ -25,8 +25,7 @@ class RfbProto {
 
     private final static int secTypeNone = 1;
     private final static String versionMsg_3_8 = "RFB 003.008\n";
-    private final static int VncAuthOK = 0, VncAuthFailed = 1,
-            VncAuthTooMany = 2;
+    private final static int VncAuthOK = 0, VncAuthFailed = 1, VncAuthTooMany = 2;
     private final static int keyboardEvent = 4;
 
     private OutputStream os;
@@ -39,32 +38,32 @@ class RfbProto {
         initConnection(host, port);
     }
 
-	/**
-	 * Writes a key down event given key value: key
-	 */
+    /**
+     * Writes a key down event given key value: key
+     */
     public void writeKeyDown(int key) {
         writeKeyEvent(key, true);
     }
 
-	/**
-	 * Writes a key up event given key value: key
-	 */
+    /**
+     * Writes a key up event given key value: key
+     */
     public void writeKeyUp(int key) {
         writeKeyEvent(key, false);
     }
 
-	/**
-	 * Writes the buffer and flushes the stream
-	 */
+    /**
+     * Writes the buffer and flushes the stream
+     */
     public void writeBuffer() throws IOException {
         os.write(eventBuf, 0, eventBufLen);
         eventBufLen = 0;
         os.flush();
     }
 
-	/**
-	 * Closes the socket connection to the box
-	 */
+    /**
+     * Closes the socket connection to the box
+     */
     public synchronized void close() {
         try {
             sock.close();
@@ -75,8 +74,7 @@ class RfbProto {
 
     private void initConnection(String host, int port) throws Exception {
         sock = new Socket(host, port);
-        is = new DataInputStream(new BufferedInputStream(sock.getInputStream(),
-                16384));
+        is = new DataInputStream(new BufferedInputStream(sock.getInputStream(), 16384));
         os = sock.getOutputStream();
         readVersionMsg();
         writeVersionMsg();
@@ -128,11 +126,9 @@ class RfbProto {
                 readConnFailedReason();
                 throw new Exception("No Authentication" + ": failed");
             case VncAuthTooMany:
-                throw new Exception("No authentication"
-                        + ": failed, too many tries");
+                throw new Exception("No authentication" + ": failed, too many tries");
             default:
-                throw new Exception("No authentication" + ": unknown result "
-                        + securityResult);
+                throw new Exception("No authentication" + ": unknown result " + securityResult);
         }
     }
 

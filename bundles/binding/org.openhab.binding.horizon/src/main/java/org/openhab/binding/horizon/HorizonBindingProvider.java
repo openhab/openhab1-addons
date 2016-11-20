@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,9 +16,9 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface HorizonBindingProvider extends BindingProvider {
 
-	/**
-	 * This method returns the corresponding horizon keycommand for the given itemCommand and itemName
-	 */
-	String getHorizonCommand(String itemName, String command);
+    /**
+     * This method returns the corresponding horizon keycommand for the given itemCommand and itemName
+     */
+    String getHorizonCommand(String itemName, String command);
 
 }
