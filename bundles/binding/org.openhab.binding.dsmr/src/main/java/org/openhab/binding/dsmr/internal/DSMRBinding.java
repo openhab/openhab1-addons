@@ -52,13 +52,16 @@ import org.slf4j.LoggerFactory;
 public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider> implements ManagedService {
 
     /** Update interval as specified by DSMR */
-    public static final int DSMR_UPDATE_INTERVAL = 10000;
+    public static final int DSMR_UPDATE_INTERVAL = 1000;
 
     /* Logger */
     private static final Logger logger = LoggerFactory.getLogger(DSMRBinding.class);
 
     /* Serial port (configurable via openhab.cfg) */
     private String port = "";
+
+    /* Fixed serial port speed settings (configurable via openhab.cfg) */
+    private DSMRPortSettings fixedPortSettings = null;
 
     /* Meter - channel mapping (configurable via openhab.cfg) */
     private final List<DSMRMeter> dsmrMeters = new ArrayList<DSMRMeter>();
@@ -144,7 +147,7 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider> impl
             logger.debug("Creating DSMR Port:" + port);
 
             dsmrPort = new DSMRPort(port, new P1TelegramParser(new OBISMsgFactory(dsmrMeters)),
-                    DSMR_UPDATE_INTERVAL / 2, DSMR_UPDATE_INTERVAL * 2);
+                    DSMR_UPDATE_INTERVAL / 2, DSMR_UPDATE_INTERVAL * 2, fixedPortSettings);
         }
 
         // Read the DSMRPort
@@ -193,6 +196,15 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider> impl
                 port = portString;
             } else {
                 logger.warn("dsmr:port setting is empty");
+            }
+
+            // Read port settings
+            String portSettingsString = (String) config.get("portsettings");
+            logger.debug("dsmr:portsettings=" + portSettingsString);
+            if (StringUtils.isNotBlank(portSettingsString)) {
+                fixedPortSettings = DSMRPortSettings.getPortSettingsFromString(portSettingsString);
+            } else {
+                logger.info("dsmr:portsettings setting is empty. Ignored");
             }
 
             /*
