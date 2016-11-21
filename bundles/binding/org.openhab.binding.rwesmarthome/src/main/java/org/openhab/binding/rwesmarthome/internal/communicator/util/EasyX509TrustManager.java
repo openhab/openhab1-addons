@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,15 +20,15 @@ import javax.net.ssl.X509TrustManager;
 
 /**
  * The X509 trust manager.
- * 
+ *
  * @author olamy
  * @version $Id: EasyX509TrustManager.java,v 1.1 2013-09-20 23:21:19 michael Exp $
  * @since 1.2.3
  */
 public class EasyX509TrustManager implements X509TrustManager {
- 
+
     private X509TrustManager standardTrustManager = null;
- 
+
     /**
      * Constructor for EasyX509TrustManager.
      */
@@ -42,17 +42,19 @@ public class EasyX509TrustManager implements X509TrustManager {
         }
         this.standardTrustManager = (X509TrustManager) trustmanagers[0];
     }
- 
+
     /**
      * @see javax.net.ssl.X509TrustManager#checkClientTrusted(X509Certificate[],String authType)
      */
+    @Override
     public void checkClientTrusted(X509Certificate[] certificates, String authType) throws CertificateException {
         standardTrustManager.checkClientTrusted(certificates, authType);
     }
- 
+
     /**
      * @see javax.net.ssl.X509TrustManager#checkServerTrusted(X509Certificate[],String authType)
      */
+    @Override
     public void checkServerTrusted(X509Certificate[] certificates, String authType) throws CertificateException {
         if ((certificates != null) && (certificates.length == 1)) {
             certificates[0].checkValidity();
@@ -60,12 +62,13 @@ public class EasyX509TrustManager implements X509TrustManager {
             standardTrustManager.checkServerTrusted(certificates, authType);
         }
     }
- 
+
     /**
      * @see javax.net.ssl.X509TrustManager#getAcceptedIssuers()
      */
+    @Override
     public X509Certificate[] getAcceptedIssuers() {
         return this.standardTrustManager.getAcceptedIssuers();
     }
- 
+
 }

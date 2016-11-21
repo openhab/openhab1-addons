@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,22 +16,22 @@ import org.openhab.binding.denon.internal.communication.adapters.StringAdapter;
 
 /**
  * Contains a string value
- * 
+ *
  * @author Jeroen Idserda
  * @since 1.7.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StringType {
-	
-	@XmlJavaTypeAdapter(value=StringAdapter.class)
-	private String value;
 
-	public String getValue() {
-		return value;
-	}
+    @XmlJavaTypeAdapter(value = StringAdapter.class)
+    private String value;
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,18 +13,18 @@ import java.util.EventObject;
 
 /**
  * Interface for receiving status updates from Primare
- * 
+ *
  * @author Pauli Anttila, Veli-Pekka Juslin
  * @since 1.7.0
  */
 public interface PrimareEventListener extends EventListener {
 
-	/**
-	 * Receive status update from Primare device
-	 * 
-	 * @param data
-	 *            Received data.
-	 */
-	void statusUpdateReceived(EventObject event, String deviceId, byte[] data);
-	
+    /**
+     * Receive status update from Primare device
+     * 
+     * @param data
+     *            Received data.
+     */
+    void statusUpdateReceived(EventObject event, String deviceId, byte[] data);
+
 }

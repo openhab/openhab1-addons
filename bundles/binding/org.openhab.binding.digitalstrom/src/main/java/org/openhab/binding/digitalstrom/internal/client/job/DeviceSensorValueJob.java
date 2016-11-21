@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,56 +22,60 @@ import org.slf4j.LoggerFactory;
  */
 public class DeviceSensorValueJob implements SensorJob {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(DeviceSensorValueJob.class);
-	private Device device = null;
-	private SensorIndexEnum sensorIndex = null;
-	
-	public DeviceSensorValueJob(Device device, SensorIndexEnum index) {
-		this.device = device;
-		this.sensorIndex = index;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.openhab.binding.digitalSTROM2.internal.client.job.SensorJob#execute(org.openhab.binding.digitalSTROM2.internal.client.DigitalSTROMAPI, java.lang.String)
-	 */
-	@Override
-	public void execute(DigitalSTROMAPI digitalSTROM, String token) {
-		int sensorValue = digitalSTROM.getDeviceSensorValue(token, this.device.getDSID(), null, this.sensorIndex);
-		logger.info(this.device.getName() + " DeviceSensorValue : "+ this.sensorIndex +" " + this.sensorIndex.ordinal() + " " + this.sensorIndex.getIndex() + " " + sensorValue +", DSID: "+this.device.getDSID().getValue());
+    private static final Logger logger = LoggerFactory.getLogger(DeviceSensorValueJob.class);
+    private Device device = null;
+    private SensorIndexEnum sensorIndex = null;
 
-		switch (this.sensorIndex) {
-	
-		case TEMPERATURE_INDOORS:
-			this.device.setTemperatureSensorValue(sensorValue);
-			break;
-		case RELATIVE_HUMIDITY_INDOORS:
-			this.device.setHumiditySensorValue(sensorValue);
-			break;
-		case TEMPERATURE_OUTDOORS:
-			this.device.setTemperatureSensorValue(sensorValue);
-			break;
-		case RELATIVE_HUMIDITY_OUTDOORS:
-			this.device.setTemperatureSensorValue(sensorValue);
-			break;
+    public DeviceSensorValueJob(Device device, SensorIndexEnum index) {
+        this.device = device;
+        this.sensorIndex = index;
+    }
 
-			default:
-				break;
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.openhab.binding.digitalSTROM2.internal.client.job.SensorJob#execute(org.openhab.binding.digitalSTROM2.
+     * internal.client.DigitalSTROMAPI, java.lang.String)
+     */
+    @Override
+    public void execute(DigitalSTROMAPI digitalSTROM, String token) {
+        int sensorValue = digitalSTROM.getDeviceSensorValue(token, this.device.getDSID(), null, this.sensorIndex);
+        logger.info(this.device.getName() + " DeviceSensorValue : " + this.sensorIndex + " "
+                + this.sensorIndex.ordinal() + " " + this.sensorIndex.getIndex() + " " + sensorValue + ", DSID: "
+                + this.device.getDSID().getValue());
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof DeviceSensorValueJob) {
-			DeviceSensorValueJob other = (DeviceSensorValueJob) obj;
-			String device = this.device.getDSID().getValue()+this.sensorIndex.getIndex();
-			return device.equals(other.device.getDSID().getValue()+other.sensorIndex.getIndex());
-		}
-		return false;
-	}
+        switch (this.sensorIndex) {
 
-	@Override
-	public DSID getDsid() {
-		return device.getDSID();
-	}
+            case TEMPERATURE_INDOORS:
+                this.device.setTemperatureSensorValue(sensorValue);
+                break;
+            case RELATIVE_HUMIDITY_INDOORS:
+                this.device.setHumiditySensorValue(sensorValue);
+                break;
+            case TEMPERATURE_OUTDOORS:
+                this.device.setTemperatureSensorValue(sensorValue);
+                break;
+            case RELATIVE_HUMIDITY_OUTDOORS:
+                this.device.setTemperatureSensorValue(sensorValue);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof DeviceSensorValueJob) {
+            DeviceSensorValueJob other = (DeviceSensorValueJob) obj;
+            String device = this.device.getDSID().getValue() + this.sensorIndex.getIndex();
+            return device.equals(other.device.getDSID().getValue() + other.sensorIndex.getIndex());
+        }
+        return false;
+    }
+
+    @Override
+    public DSID getDsid() {
+        return device.getDSID();
+    }
 }

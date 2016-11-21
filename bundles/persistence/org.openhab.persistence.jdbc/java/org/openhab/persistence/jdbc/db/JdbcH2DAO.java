@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,19 +8,18 @@
  */
 package org.openhab.persistence.jdbc.db;
 
+import org.knowm.yank.Yank;
 import org.openhab.core.items.Item;
 import org.openhab.persistence.jdbc.model.ItemVO;
 import org.openhab.persistence.jdbc.utils.StringUtilsExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.knowm.yank.Yank;
-
 /**
  * Extended Database Configuration class. Class represents
  * the extended database-specific configuration. Overrides and supplements the
  * default settings from JdbcBaseDAO. Enter only the differences to JdbcBaseDAO here.
- * 
+ *
  * @author Helmut Lehmeyer
  * @since 1.8.0
  */
@@ -42,7 +41,7 @@ public class JdbcH2DAO extends JdbcBaseDAO {
         SQL_IF_TABLE_EXISTS = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='#searchTable#'";
         // SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( NOW(), CAST( ? as #dbType#) )";
         // http://stackoverflow.com/questions/19768051/h2-sql-database-insert-if-the-record-does-not-exist
-        SQL_INSERT_ITEM_VALUE = "MERGE INTO #tableName# (TIME, VALUE) VALUES( NOW(), CAST( ? as #dbType#) )";
+        SQL_INSERT_ITEM_VALUE = "MERGE INTO #tableName# (TIME, VALUE) VALUES( #tablePrimaryValue#, CAST( ? as #dbType#) )";
     }
 
     /**
@@ -72,8 +71,9 @@ public class JdbcH2DAO extends JdbcBaseDAO {
     @Override
     public void doStoreItemValue(Item item, ItemVO vo) {
         vo = storeItemValueProvider(item, vo);
-        String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE, new String[] { "#tableName#", "#dbType#" },
-                new String[] { vo.getTableName(), vo.getDbType() });
+        String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE,
+                new String[] { "#tableName#", "#dbType#", "#tablePrimaryValue#" },
+                new String[] { vo.getTableName(), vo.getDbType(), sqlTypes.get("tablePrimaryValue") });
         Object[] params = new Object[] { vo.getValue() };
         logger.debug("JDBC::doStoreItemValue sql={} value='{}'", sql, vo.getValue());
         Yank.execute(sql, params);

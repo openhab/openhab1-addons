@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.persistence.jdbc.utils;
 
 import java.net.URI;
@@ -5,6 +13,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import org.openhab.core.persistence.FilterCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +27,7 @@ public class StringUtilsExt {
 
     /**
      * Replaces multiple found words with the given Array contents
-     * 
+     *
      * @param str - String for replacement
      * @param separate - A String or Array to be replaced
      * @param separators - Array will be merged to str
@@ -88,8 +97,9 @@ public class StringUtilsExt {
         }
 
         // replace all \
-        if (url.contains("\\"))
+        if (url.contains("\\")) {
             url = url.replaceAll("\\\\", "/");
+        }
 
         // replace first ; with ?
         if (url.contains(";")) {
@@ -117,10 +127,10 @@ public class StringUtilsExt {
 
         URI dbURI = null;
         try {
-            dbURI = new URI(stringAfterSubstr(url, ":", 1));
+            dbURI = new URI(stringAfterSubstr(url, ":", 1).replaceFirst(" ", ""));
             if (dbURI.getScheme() != null) {
                 props.put("scheme", dbURI.getScheme());
-                dbURI = new URI(stringAfterSubstr(url, ":", 2));
+                dbURI = new URI(stringAfterSubstr(url, ":", 2).replaceFirst(" ", ""));
             }
         } catch (URISyntaxException e) {
             logger.error("parseJdbcURL: URI '{}' is not well formated URISyntaxException: {}", url, e);
@@ -148,16 +158,20 @@ public class StringUtilsExt {
                     path = stringBeforeSubstr(gp, st) + st;
                 }
             }
-            if (dbURI.getScheme() != null && dbURI.getScheme().length() == 1)
+            if (dbURI.getScheme() != null && dbURI.getScheme().length() == 1) {
                 path = dbURI.getScheme() + ":" + path;
+            }
             props.put("serverPath", path);
         }
-        if (dbURI.getPath() != null)
+        if (dbURI.getPath() != null) {
             props.put("databaseName", stringAfterLastSubstr(dbURI.getPath(), "/"));
-        if (dbURI.getPort() != -1)
+        }
+        if (dbURI.getPort() != -1) {
             props.put("portNumber", dbURI.getPort() + "");
-        if (dbURI.getHost() != null)
+        }
+        if (dbURI.getHost() != null) {
             props.put("serverName", dbURI.getHost());
+        }
 
         return props;
     }
@@ -246,6 +260,33 @@ public class StringUtilsExt {
             }
         }
         return arr;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    public static String filterToString(FilterCriteria filter) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("FilterCriteria [itemName=");
+        builder.append(filter.getItemName());
+        builder.append(", beginDate=");
+        builder.append(filter.getBeginDate());
+        builder.append(", endDate=");
+        builder.append(filter.getEndDate());
+        builder.append(", pageNumber=");
+        builder.append(filter.getPageNumber());
+        builder.append(", pageSize=");
+        builder.append(filter.getPageSize());
+        builder.append(", operator=");
+        builder.append(filter.getOperator());
+        builder.append(", ordering=");
+        builder.append(filter.getOrdering());
+        builder.append(", state=");
+        builder.append(filter.getState());
+        builder.append("]");
+        return builder.toString();
     }
 
 }

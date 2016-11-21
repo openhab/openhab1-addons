@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,100 +24,101 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
 
-
 /**
  * This is a {@link PersistenceService} implementation, which logs item states through
  * a logback file appender.
- * 
+ *
  * @author Kai Kreuzer
  * @since 1.0.0
  */
 public class LoggingPersistenceService implements PersistenceService {
 
-	private static final Logger logger = LoggerFactory.getLogger(LoggingPersistenceService.class);
-	
-	private static final String LOG_FOLDER = "logs";
-	private static final String LOG_FILEEXT = ".log";
-	
-	private static final String DEFAULT_PATTERN ="%date{ISO8601} - %-25logger: %msg%n";
+    private static final Logger logger = LoggerFactory.getLogger(LoggingPersistenceService.class);
 
-	private String pattern = null;
-	private boolean initialized = false;
-	
-	private Map<String,FileAppender<ILoggingEvent>> appenders = new HashMap<String,FileAppender<ILoggingEvent>>();
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
-		pattern = (String) config.get("pattern");
-		if (StringUtils.isBlank(pattern)) {
-			pattern = DEFAULT_PATTERN;
-		}
-		initialized = true;
-	}
-	
-	public void deactivate(final int reason) {
-		for(FileAppender<ILoggingEvent> appender : appenders.values()) {
-			appender.stop();
-		}
-		appenders.clear();
-	}
+    private static final String LOG_FOLDER = "logs";
+    private static final String LOG_FILEEXT = ".log";
 
-	/**
-	 * @{inheritDoc}
-	 */
-	public String getName() {
-		return "logging";
-	}
+    private static final String DEFAULT_PATTERN = "%date{ISO8601} - %-25logger: %msg%n";
 
-	/**
-	 * @{inheritDoc}
-	 */
-	public void store(Item item) {
-		// use the item name as the log file name
-		store(item, item.getName());
-	}
+    private String pattern = null;
+    private boolean initialized = false;
 
-	/**
-	 * @{inheritDoc}
-	 */
-	public void store(Item item, String alias) {
-		if (initialized) {
-			FileAppender<ILoggingEvent> appender = appenders.get(alias);
-			if (appender==null) {
-				synchronized(appenders) {
-					// do a second check in case one exists by now
-					if (!appenders.containsKey(alias)) {
-						appender = createNewAppender(alias);
-						appenders.put(alias, appender);
-					}
-				}
-			}
-			
-			ItemLoggingEvent event = new ItemLoggingEvent(item);
-			appender.doAppend(event);
-			logger.debug("Logged item '{}' to file '{}.log'", new String[] { item.getName(), alias });
-		}
-	}
+    private Map<String, FileAppender<ILoggingEvent>> appenders = new HashMap<String, FileAppender<ILoggingEvent>>();
 
-	protected FileAppender<ILoggingEvent> createNewAppender(String alias) {
-		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-		
-		PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-		encoder.setContext(context);
-		encoder.setPattern(pattern);
-		encoder.start();
+    /**
+     * @{inheritDoc}
+     */
+    public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+        pattern = (String) config.get("pattern");
+        if (StringUtils.isBlank(pattern)) {
+            pattern = DEFAULT_PATTERN;
+        }
+        initialized = true;
+    }
 
-		FileAppender<ILoggingEvent> appender = new FileAppender<ILoggingEvent>();
-		appender.setAppend(true);
-		appender.setFile(LOG_FOLDER + File.separator + alias + LOG_FILEEXT);
-		appender.setEncoder(encoder);
-		appender.setContext(context);
-		appender.start();
-		
-		return appender;
-	}
-	
-		
+    public void deactivate(final int reason) {
+        for (FileAppender<ILoggingEvent> appender : appenders.values()) {
+            appender.stop();
+        }
+        appenders.clear();
+    }
+
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public String getName() {
+        return "logging";
+    }
+
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void store(Item item) {
+        // use the item name as the log file name
+        store(item, item.getName());
+    }
+
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void store(Item item, String alias) {
+        if (initialized) {
+            FileAppender<ILoggingEvent> appender = appenders.get(alias);
+            if (appender == null) {
+                synchronized (appenders) {
+                    // do a second check in case one exists by now
+                    if (!appenders.containsKey(alias)) {
+                        appender = createNewAppender(alias);
+                        appenders.put(alias, appender);
+                    }
+                }
+            }
+
+            ItemLoggingEvent event = new ItemLoggingEvent(item);
+            appender.doAppend(event);
+            logger.debug("Logged item '{}' to file '{}.log'", new String[] { item.getName(), alias });
+        }
+    }
+
+    protected FileAppender<ILoggingEvent> createNewAppender(String alias) {
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+        PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+        encoder.setContext(context);
+        encoder.setPattern(pattern);
+        encoder.start();
+
+        FileAppender<ILoggingEvent> appender = new FileAppender<ILoggingEvent>();
+        appender.setAppend(true);
+        appender.setFile(LOG_FOLDER + File.separator + alias + LOG_FILEEXT);
+        appender.setEncoder(encoder);
+        appender.setContext(context);
+        appender.start();
+
+        return appender;
+    }
+
 }

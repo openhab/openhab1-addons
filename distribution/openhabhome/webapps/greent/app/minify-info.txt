@@ -1,1 +1,0 @@
-JS minify and compress via http://shrinksafe.dojotoolkit.org/

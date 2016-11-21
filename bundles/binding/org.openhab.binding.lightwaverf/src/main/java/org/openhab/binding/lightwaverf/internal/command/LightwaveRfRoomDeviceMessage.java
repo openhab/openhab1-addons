@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,8 +14,8 @@ package org.openhab.binding.lightwaverf.internal.command;
  */
 public interface LightwaveRfRoomDeviceMessage extends LightwaveRFCommand {
 
-	public String getRoomId();
+    public String getRoomId();
 
-	public String getDeviceId();
+    public String getDeviceId();
 
 }

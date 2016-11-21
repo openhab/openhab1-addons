@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,25 +59,25 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This is the implementation of the SQL {@link PersistenceService}.
- * 
+ *
  * Data is persisted with the following conversions -:
- * 
- * Item-Type    Data-Type          MySQL-Type 
- * =========    =========          ========== 
- * ColorItem         HSBType       CHAR(25)
- * ContactItem       OnOffType     CHAR(6)
- * DateTimeItem      DateTimeType  DATETIME
- * DimmerItem        PercentType   TINYINT
- * NumberItem        DecimalType   DOUBLE
- * RollershutterItem PercentType   TINYINT
- * StringItem        StringType    VARCHAR(20000)
- * SwitchItem        OnOffType     CHAR(3)
- * 
+ *
+ * Item-Type Data-Type MySQL-Type
+ * ========= ========= ==========
+ * ColorItem HSBType CHAR(25)
+ * ContactItem OnOffType CHAR(6)
+ * DateTimeItem DateTimeType DATETIME
+ * DimmerItem PercentType TINYINT
+ * NumberItem DecimalType DOUBLE
+ * RollershutterItem PercentType TINYINT
+ * StringItem StringType VARCHAR(20000)
+ * SwitchItem OnOffType CHAR(3)
+ *
  * In the store method, type conversion is performed where the default type for
  * an item is not as above For example, DimmerType can return OnOffType, so to
  * keep the best resolution, we store as a number in SQL and convert to
  * DecimalType before persisting to MySQL.
- * 
+ *
  * @author Henrik Sjöstrand
  * @author Thomas.Eichstaedt-Engelen
  * @author Chris Jackson
@@ -85,593 +86,645 @@ import org.slf4j.LoggerFactory;
  */
 public class MysqlPersistenceService implements QueryablePersistenceService {
 
-	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.([0-9.a-zA-Z]+)$");
+    private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.([0-9.a-zA-Z]+)$");
 
-	private static final Logger logger = LoggerFactory.getLogger(MysqlPersistenceService.class);
+    private static final Logger logger = LoggerFactory.getLogger(MysqlPersistenceService.class);
 
-	private String driverClass = "com.mysql.jdbc.Driver";
-	private String url;
-	private String user;
-	private String password;
+    private String driverClass = "com.mysql.jdbc.Driver";
+    private String url;
+    private String user;
+    private String password;
 
-	private boolean initialized = false;
-	protected ItemRegistry itemRegistry;
-	
-	// Error counter - used to reconnect to database on error
-	private int errCnt;
-	private int errReconnectThreshold = 0;
-	
-	private int waitTimeout = -1;
+    private boolean initialized = false;
+    protected ItemRegistry itemRegistry;
 
-	private Connection connection = null;
+    // Error counter - used to reconnect to database on error
+    private int errCnt;
+    private int errReconnectThreshold = 0;
 
-	private Map<String, String> sqlTables = new HashMap<String, String>();
-	private Map<String, String> sqlTypes = new HashMap<String, String>();
+    private int waitTimeout = -1;
+    
+    // Time used for persisting items, False: MySQL Server time (default), True: openHAB Server time
+    private boolean localtime = false;
 
-	/**
-	 * Initialise the type array
-	 * If other Types like DOUBLE or INT needed for serialisation it can be set in openhab.cfg
-	 */
-	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
-		sqlTypes.put("CALLITEM", 		"VARCHAR(200)");
-		sqlTypes.put("COLORITEM", 		"VARCHAR(70)");
-		sqlTypes.put("CONTACTITEM", 	"VARCHAR(6)");
-		sqlTypes.put("DATETIMEITEM", 	"DATETIME");
-		sqlTypes.put("DIMMERITEM", 		"TINYINT");
-		sqlTypes.put("LOCATIONITEM", 	"VARCHAR(30)");
-		sqlTypes.put("NUMBERITEM", 		"DOUBLE");
-		sqlTypes.put("ROLLERSHUTTERITEM","TINYINT");
-		sqlTypes.put("STRINGITEM", 		"VARCHAR(20000)");
-		sqlTypes.put("SWITCHITEM", 		"CHAR(3)");
-		
-		Iterator<String> keys = config.keySet().iterator();
-		while (keys.hasNext()) {
-			String key = (String) keys.next();
+    private Connection connection = null;
 
-			Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
+    private Map<String, String> sqlTables = new HashMap<String, String>();
+    private Map<String, String> sqlTypes = new HashMap<String, String>();
 
-			if (!matcher.matches()) {
-				continue;
-			}
+    /**
+     * Initialise the type array
+     * If other Types like DOUBLE or INT needed for serialisation it can be set in openhab.cfg
+     */
+    public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+        sqlTypes.put("CALLITEM", "VARCHAR(200)");
+        sqlTypes.put("COLORITEM", "VARCHAR(70)");
+        sqlTypes.put("CONTACTITEM", "VARCHAR(6)");
+        sqlTypes.put("DATETIMEITEM", "DATETIME");
+        sqlTypes.put("DIMMERITEM", "TINYINT");
+        sqlTypes.put("LOCATIONITEM", "VARCHAR(30)");
+        sqlTypes.put("NUMBERITEM", "DOUBLE");
+        sqlTypes.put("ROLLERSHUTTERITEM", "TINYINT");
+        sqlTypes.put("STRINGITEM", "VARCHAR(20000)");
+        sqlTypes.put("SWITCHITEM", "CHAR(3)");
 
-			matcher.reset();
-			matcher.find();
+        Iterator<String> keys = config.keySet().iterator();
+        while (keys.hasNext()) {
+            String key = keys.next();
 
-			if (!matcher.group(1).equals("sqltype"))
-				continue;
+            Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
 
-			String itemType = matcher.group(2).toUpperCase() + "ITEM";
-			String value = (String) config.get(key);
+            if (!matcher.matches()) {
+                continue;
+            }
 
-			sqlTypes.put(itemType, value);
-		}
+            matcher.reset();
+            matcher.find();
 
-	    disconnectFromDatabase();
+            if (!matcher.group(1).equals("sqltype")) {
+                continue;
+            }
 
-		url = (String) config.get("url");
-		if (StringUtils.isBlank(url)) {
-			logger.warn("The SQL database URL is missing - please configure the sql:url parameter in openhab.cfg");
-			return;
-		}
+            String itemType = matcher.group(2).toUpperCase() + "ITEM";
+            String value = (String) config.get(key);
 
-		user = (String) config.get("user");
-		if (StringUtils.isBlank(user)) {
-			logger.warn("The SQL user is missing - please configure the sql:user parameter in openhab.cfg");
-			return;
-		}
+            sqlTypes.put(itemType, value);
+        }
 
-		password = (String) config.get("password");
-		if (StringUtils.isBlank(password)) {
-			logger.warn("The SQL password is missing. Attempting to connect without password. To specify a password configure the sql:password parameter in openhab.cfg.");
-		}
+        disconnectFromDatabase();
 
-		String tmpString = (String) config.get("reconnectCnt");
-		if (StringUtils.isNotBlank(tmpString)) {
-			errReconnectThreshold = Integer.parseInt(tmpString);
-		}
+        url = (String) config.get("url");
+        if (StringUtils.isBlank(url)) {
+            logger.warn("The SQL database URL is missing - please configure the sql:url parameter in openhab.cfg");
+            return;
+        }
 
-		tmpString = (String) config.get("waitTimeout");
-		if (StringUtils.isNotBlank(tmpString)) {
-			waitTimeout = Integer.parseInt(tmpString);
-		}
+        user = (String) config.get("user");
+        if (StringUtils.isBlank(user)) {
+            logger.warn("The SQL user is missing - please configure the sql:user parameter in openhab.cfg");
+            return;
+        }
 
-		// reconnect to the database in case the configuration has changed.
-		connectToDatabase();
+        password = (String) config.get("password");
+        if (StringUtils.isBlank(password)) {
+            logger.warn(
+                    "The SQL password is missing. Attempting to connect without password. To specify a password configure the sql:password parameter in openhab.cfg.");
+        }
 
-		// connection has been established ... initialization completed!
-		initialized = true;
-		
-		logger.debug("mySQL configuration complete.");
-	}
+        String tmpString = (String) config.get("reconnectCnt");
+        if (StringUtils.isNotBlank(tmpString)) {
+            errReconnectThreshold = Integer.parseInt(tmpString);
+        }
 
-	public void deactivate(final int reason) {
-		logger.debug("mySQL persistence bundle stopping. Disconnecting from database.");
-		disconnectFromDatabase();
-	}
+        tmpString = (String) config.get("waitTimeout");
+        if (StringUtils.isNotBlank(tmpString)) {
+            waitTimeout = Integer.parseInt(tmpString);
+        }
+        
+        tmpString = (String) config.get("localtime");
+        if (StringUtils.isNotBlank(tmpString)) {
+        	localtime = Boolean.parseBoolean(tmpString);
+        }
 
-	public void setItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = itemRegistry;
-	}
+        // reconnect to the database in case the configuration has changed.
+        connectToDatabase();
 
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = null;
-	}
-	
-	
-	/**
-	 * @{inheritDoc
-	 */
-	public String getName() {
-		return "mysql";
-	}
-	
-	/**
-	 * 
-	 * @param i
-	 * @return
-	 */
-	private String getItemType(Item i) {
-		Item item = i;		
-		if(i instanceof GroupItem){
-			item = ((GroupItem) i).getBaseItem();
-			if(item == null){//if GroupItem:<ItemType> is not defined in *.items using StringType
-				logger.debug("mySQL: Cannot detect ItemType for {} because the GroupItems' base type isn't set in *.items File.", i.getName());
-				item = ((GroupItem) i).getMembers().get(0);
-				if(item == null){
-					logger.debug("mySQL: No ItemType found for first Child-Member of GroupItem {}, use ItemType STRINGITEM ({}) as Fallback", i.getName(), sqlTypes.get("STRINGITEM"));
-					return sqlTypes.get("STRINGITEM");
-				}
-			}
-		}
-		String itemType = item.getClass().getSimpleName().toUpperCase();
-		if(sqlTypes.get(itemType) == null){
-			logger.debug("mySQL: No sqlType found for ItemType {}, use ItemType STRINGITEM ({}) as Fallback for {}", itemType, sqlTypes.get("STRINGITEM"), i.getName());
-			return sqlTypes.get("STRINGITEM");
-		}
+        // connection has been established ... initialization completed!
+        initialized = true;
 
-		logger.debug("mySQL: Use ItemType {} ({}) for Item {}", itemType, sqlTypes.get(itemType), itemType, i.getName());
-		return sqlTypes.get(itemType);
-	}
+        logger.debug("mySQL configuration complete.");
+    }
 
-	private String getTable(Item item) {
-		PreparedStatement statement = null;
-		String sqlCmd = null;
-		int rowId = 0;
-		
-		String itemName = item.getName();
-		String tableName = sqlTables.get(itemName);
+    public void deactivate(final int reason) {
+        logger.debug("mySQL persistence bundle stopping. Disconnecting from database.");
+        disconnectFromDatabase();
+    }
 
-		// Table already exists - return the name
-		if (tableName != null)
-			return tableName;
+    public void setItemRegistry(ItemRegistry itemRegistry) {
+        this.itemRegistry = itemRegistry;
+    }
 
-		logger.debug("mySQL: no Table found for itemName={} get:{}", itemName, sqlTables.get(itemName));
-		
-		// Create a new entry in the Items table. This is the translation of
-		// item name to table
-		try {
-			sqlCmd = new String("INSERT INTO Items (ItemName) VALUES (?)");
-			
-			statement = connection.prepareStatement(sqlCmd, PreparedStatement.RETURN_GENERATED_KEYS);
-			statement.setString(1, itemName);
-			statement.executeUpdate();
+    public void unsetItemRegistry(ItemRegistry itemRegistry) {
+        this.itemRegistry = null;
+    }
 
-			ResultSet resultSet = statement.getGeneratedKeys();
-			if (resultSet != null && resultSet.next()) {
-				rowId = resultSet.getInt(1);
-			}
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    public String getName() {
+        return "mysql";
+    }
 
-			if (rowId == 0) {
-				throw new SQLException("mySQL: Creating table for item '{}' failed.", itemName);
-			}
+    /**
+     * 
+     * @param i
+     * @return
+     */
+    private String getItemType(Item i) {
+        Item item = i;
+        if (i instanceof GroupItem) {
+            item = ((GroupItem) i).getBaseItem();
+            if (item == null) {// if GroupItem:<ItemType> is not defined in *.items using StringType
+                logger.debug(
+                        "mySQL: Cannot detect ItemType for {} because the GroupItems' base type isn't set in *.items File.",
+                        i.getName());
+                item = ((GroupItem) i).getMembers().get(0);
+                if (item == null) {
+                    logger.debug(
+                            "mySQL: No ItemType found for first Child-Member of GroupItem {}, use ItemType STRINGITEM ({}) as Fallback",
+                            i.getName(), sqlTypes.get("STRINGITEM"));
+                    return sqlTypes.get("STRINGITEM");
+                }
+            }
+        }
+        String itemType = item.getClass().getSimpleName().toUpperCase();
+        if (sqlTypes.get(itemType) == null) {
+            logger.debug("mySQL: No sqlType found for ItemType {}, use ItemType STRINGITEM ({}) as Fallback for {}",
+                    itemType, sqlTypes.get("STRINGITEM"), i.getName());
+            return sqlTypes.get("STRINGITEM");
+        }
 
-			// Create the table name
-			tableName = new String("Item" + rowId);
-			logger.debug("mySQL: new item {} is Item{}", itemName, rowId);
-		} catch (SQLException e) {
-			errCnt++;
-			logger.error("mySQL: Could not create entry for '{}' in table 'Items' with statement '{}': {}", itemName, sqlCmd, e.getMessage());
-		} finally {
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (SQLException logOrIgnore) {
-				}
-			}
-		}
+        logger.debug("mySQL: Use ItemType {} ({}) for Item {}", itemType, sqlTypes.get(itemType), itemType,
+                i.getName());
+        return sqlTypes.get(itemType);
+    }
 
-		// An error occurred adding the item name into the index list!
-		if (tableName == null) {
-			logger.error("mySQL: tableName was null");
-			return null;
-		}
+    private String getTable(Item item) {
+        PreparedStatement statement = null;
+        String sqlCmd = null;
+        int rowId = 0;
 
-		String mysqlType = getItemType(item);
+        String itemName = item.getName();
+        String tableName = sqlTables.get(itemName);
 
-		// We have a rowId, create the table for the data
-		sqlCmd = new String("CREATE TABLE " + tableName + " (Time DATETIME, Value " + mysqlType + ", PRIMARY KEY(Time));");
-		logger.debug("mySQL: query: {}", sqlCmd);
+        // Table already exists - return the name
+        if (tableName != null) {
+            return tableName;
+        }
 
-		try {
-			statement = connection.prepareStatement(sqlCmd);
-			statement.executeUpdate();
+        logger.debug("mySQL: no Table found for itemName={} get:{}", itemName, sqlTables.get(itemName));
 
-			logger.debug("mySQL: Table created for item '{}' with datatype {} in SQL database.", itemName, mysqlType);
-			sqlTables.put(itemName, tableName);
-		} catch (Exception e) {
-			errCnt++;
-			
-			logger.error("mySQL: Could not create table for item '{}' with statement '{}': {}",itemName ,sqlCmd , e.getMessage());			
-		} finally {
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (Exception hidden) {
-				}
-			}
-		}
+        // Create a new entry in the Items table. This is the translation of
+        // item name to table
+        try {
+            sqlCmd = new String("INSERT INTO Items (ItemName) VALUES (?)");
 
-		// Check if the new entry is in the table list
-		// If it's not in the list, then there was an error and we need to do some tidying up
-		// The item needs to be removed from the index table to avoid duplicates
-		if(sqlTables.get(itemName) == null) {
-			logger.error("mySQL: Item '{}' was not added to the table - removing index", itemName);
-			sqlCmd = new String("DELETE FROM Items WHERE ItemName=?");
-			logger.debug("mySQL: query: {}", sqlCmd);
-	
-			try {
-				statement = connection.prepareStatement(sqlCmd);
-				statement.setString(1, itemName);
-				statement.executeUpdate();	
-			} catch (Exception e) {
-				errCnt++;
-				
-				logger.error("mySQL: Could not remove index for item '{}' with statement '{}': ",itemName ,sqlCmd , e.getMessage());		
-			} finally {
-				if (statement != null) {
-					try {
-						statement.close();
-					} catch (Exception hidden) {
-					}
-				}
-			}
-		}			
-		
-		return tableName;
-	}
+            statement = connection.prepareStatement(sqlCmd, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, itemName);
+            statement.executeUpdate();
 
-	/**
-	 * @{inheritDoc
-	 */
-	public void store(Item item, String alias) {
-		// Don't log undefined/uninitialised data
-		if(item.getState() instanceof UnDefType)
-			return;
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet != null && resultSet.next()) {
+                rowId = resultSet.getInt(1);
+            }
 
-		// If we've not initialised the bundle, then return
-		if (initialized == false)
-			return;
+            if (rowId == 0) {
+                throw new SQLException("mySQL: Creating table for item '{}' failed.", itemName);
+            }
 
-		// Connect to mySQL server if we're not already connected 
-		if (!isConnected())
-			connectToDatabase();
+            // Create the table name
+            tableName = new String("Item" + rowId);
+            logger.debug("mySQL: new item {} is Item{}", itemName, rowId);
+        } catch (SQLException e) {
+            errCnt++;
+            logger.error("mySQL: Could not create entry for '{}' in table 'Items' with statement '{}': {}", itemName,
+                    sqlCmd, e.getMessage());
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException logOrIgnore) {
+                }
+            }
+        }
 
-		// If we still didn't manage to connect, then return!
-		if (!isConnected()) {
-			logger.warn("mySQL: No connection to database. Can not persist item '{}'! "
-					+ "Will retry connecting to database when error count:{} equals errReconnectThreshold:{}",
-					item, errCnt, errReconnectThreshold);
-			return;
-		}
+        // An error occurred adding the item name into the index list!
+        if (tableName == null) {
+            logger.error("mySQL: tableName was null");
+            return null;
+        }
 
-		// Get the table name for this item
-		String tableName = getTable(item);
-		if (tableName == null) {
-			logger.error("Unable to store item '{}'.", item.getName());
-			return;
-		}
+        String mysqlType = getItemType(item);
 
-		// Do some type conversion to ensure we know the data type.
-		// This is necessary for items that have multiple types and may return their
-		// state in a format that's not preferred or compatible with the MySQL type.
-		// eg. DimmerItem can return OnOffType (ON, OFF), or PercentType (0-100).
-		// We need to make sure we cover the best type for serialisation.
-		String value;
-		if (item instanceof ColorItem) {
-			value = item.getStateAs(HSBType.class).toString();			
-		} else if (item instanceof RollershutterItem) {
-			value = item.getStateAs(PercentType.class).toString();			
-		} else {
-			/*
-			!!ATTENTION!!
-			
-			1.
-			DimmerItem.getStateAs(PercentType.class).toString() always returns 0
-			RollershutterItem.getStateAs(PercentType.class).toString() works as expected
-			
-			2.
-			(item instanceof ColorItem) == (item instanceof DimmerItem) = true
-			Therefore for instance tests ColorItem always has to be tested before DimmerItem
-			
-			!!ATTENTION!!
-			*/
-			
-			// All other items should return the best format by default
-			value = item.getState().toString();
-		}
+        // We have a rowId, create the table for the data
+        sqlCmd = new String(
+                "CREATE TABLE " + tableName + " (Time DATETIME, Value " + mysqlType + ", PRIMARY KEY(Time));");
+        logger.debug("mySQL: query: {}", sqlCmd);
 
-		String sqlCmd = null;
-		PreparedStatement statement = null;
-		try {			
-			sqlCmd = new String("INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),?) ON DUPLICATE KEY UPDATE VALUE=?;");
-			statement = connection.prepareStatement(sqlCmd);
-			statement.setString(1, value);
-			statement.setString(2, value);
-			statement.executeUpdate();
+        try {
+            statement = connection.prepareStatement(sqlCmd);
+            statement.executeUpdate();
 
-			logger.debug("mySQL: Stored item '{}' as '{}'[{}] in SQL database at {}.", item.getName(), item.getState()
-					.toString(), value, (new java.util.Date()).toString());
-			logger.debug("mySQL: query: {}", sqlCmd);
+            logger.debug("mySQL: Table created for item '{}' with datatype {} in SQL database.", itemName, mysqlType);
+            sqlTables.put(itemName, tableName);
+        } catch (Exception e) {
+            errCnt++;
 
-			// Success
-			errCnt = 0;
-		} catch (Exception e) {
-			errCnt++;
+            logger.error("mySQL: Could not create table for item '{}' with statement '{}': {}", itemName, sqlCmd,
+                    e.getMessage());
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (Exception hidden) {
+                }
+            }
+        }
 
-			logger.error("mySQL: Could not store item '{}' in database with "
-					+ "statement '{}': {}", item.getName(), sqlCmd, e.getMessage());
-		} finally {
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (Exception hidden) {
-				}
-			}
-		}
-	}
+        // Check if the new entry is in the table list
+        // If it's not in the list, then there was an error and we need to do some tidying up
+        // The item needs to be removed from the index table to avoid duplicates
+        if (sqlTables.get(itemName) == null) {
+            logger.error("mySQL: Item '{}' was not added to the table - removing index", itemName);
+            sqlCmd = new String("DELETE FROM Items WHERE ItemName=?");
+            logger.debug("mySQL: query: {}", sqlCmd);
 
-	/**
-	 * @{inheritDoc
-	 */
-	public void store(Item item) {
-		store(item, null);
-	}
+            try {
+                statement = connection.prepareStatement(sqlCmd);
+                statement.setString(1, itemName);
+                statement.executeUpdate();
+            } catch (Exception e) {
+                errCnt++;
 
-	/**
-	 * Checks if we have a database connection
-	 * 
-	 * @return true if connection has been established, false otherwise
-	 */
-	private boolean isConnected() {
-		//Check if connection is valid
-		try {
-			if (connection!= null && !connection.isValid(5000)) {
-				errCnt++;
-				logger.error("mySQL: Connection is not valid!");
-			}
-		} catch (SQLException e) {
-			errCnt++;
-			
-			logger.error("mySQL: Error while checking connection: {}", e);
-		}
-		
-		// Error check. If we have 'errReconnectThreshold' errors in a row, then
-		// reconnect to the database
-		if (errReconnectThreshold != 0 && errCnt >= errReconnectThreshold) {
-			logger.error("mySQL: Error count exceeded {}. Disconnecting database.", errReconnectThreshold);
-			disconnectFromDatabase();
-		}
-		return connection != null;
-	}
+                logger.error("mySQL: Could not remove index for item '{}' with statement '{}': ", itemName, sqlCmd,
+                        e.getMessage());
+            } finally {
+                if (statement != null) {
+                    try {
+                        statement.close();
+                    } catch (Exception hidden) {
+                    }
+                }
+            }
+        }
 
-	/**
-	 * Connects to the database
-	 */
-	private void connectToDatabase() {
-		try {
-			// Reset the error counter
-			errCnt = 0;
+        return tableName;
+    }
 
-			logger.debug("mySQL: Attempting to connect to database {}", url);
-			Class.forName(driverClass).newInstance();
-			connection = DriverManager.getConnection(url, user, password);
-			logger.debug("mySQL: Connected to database {}", url);
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    public void store(Item item, String alias) {
+        // Don't log undefined/uninitialised data
+        if (item.getState() instanceof UnDefType) {
+            return;
+        }
 
-			Statement st = connection.createStatement();
-			int result = st.executeUpdate("SHOW TABLES LIKE 'Items'");
-			st.close();
-			
-			if(waitTimeout != -1) {
-				logger.debug("mySQL: Setting wait_timeout to {} seconds.", waitTimeout);
-				st = connection.createStatement();
-				st.executeUpdate("SET SESSION wait_timeout="+waitTimeout);
-				st.close();
-			}
-			if (result == 0) {
-				st = connection.createStatement();
-				st.executeUpdate("CREATE TABLE Items (ItemId INT NOT NULL AUTO_INCREMENT,ItemName VARCHAR(200) NOT NULL,PRIMARY KEY (ItemId));",
-						Statement.RETURN_GENERATED_KEYS);
-				st.close();
-			}
+        // If we've not initialised the bundle, then return
+        if (initialized == false) {
+            return;
+        }
 
-			// Retrieve the table array
-			st = connection.createStatement();
+        // Connect to mySQL server if we're not already connected
+        if (!isConnected()) {
+            connectToDatabase();
+        }
 
-			// Turn use of the cursor on.
-			st.setFetchSize(50);
-			ResultSet rs = st.executeQuery("SELECT ItemId, ItemName FROM Items");
-			while (rs.next()) {
-				sqlTables.put(rs.getString(2), "Item" + rs.getInt(1));
-			}
-			rs.close();
-			st.close();
-		} catch (Exception e) {
-			logger.error("mySQL: Failed connecting to the SQL database using: driverClass={}, url={}, user={}, password={}", driverClass, url, user, password, e);
-		}
-	}
+        // If we still didn't manage to connect, then return!
+        if (!isConnected()) {
+            logger.warn(
+                    "mySQL: No connection to database. Can not persist item '{}'! "
+                            + "Will retry connecting to database when error count:{} equals errReconnectThreshold:{}",
+                    item, errCnt, errReconnectThreshold);
+            return;
+        }
 
-	/**
-	 * Disconnects from the database
-	 */
-	private void disconnectFromDatabase() {
-		if (connection != null) {
-			try {
-				connection.close();
-				logger.debug("mySQL: Disconnected from database {}", url);
-			} catch (Exception e) {
-				logger.error("mySQL: Failed disconnecting from the SQL database {}", e);
-			}
-			connection = null;
-		}
-	}
+        // Get the table name for this item
+        String tableName = getTable(item);
+        if (tableName == null) {
+            logger.error("Unable to store item '{}'.", item.getName());
+            return;
+        }
 
-	/**
-	 * Formats the given <code>alias</code> by utilizing {@link Formatter}.
-	 * 
-	 * @param alias
-	 *            the alias String which contains format strings
-	 * @param values
-	 *            the values which will be replaced in the alias String
-	 * 
-	 * @return the formatted value. All format strings are replaced by
-	 *         appropriate values
-	 * @see java.util.Formatter for detailed information on format Strings.
-	 */
-	protected String formatAlias(String alias, Object... values) {
-		return String.format(alias, values);
-	}
+        // Do some type conversion to ensure we know the data type.
+        // This is necessary for items that have multiple types and may return their
+        // state in a format that's not preferred or compatible with the MySQL type.
+        // eg. DimmerItem can return OnOffType (ON, OFF), or PercentType (0-100).
+        // We need to make sure we cover the best type for serialisation.
+        String value;
+        if (item instanceof ColorItem) {
+            value = item.getStateAs(HSBType.class).toString();
+        } else if (item instanceof RollershutterItem) {
+            value = item.getStateAs(PercentType.class).toString();
+        } else {
+            /*
+             * !!ATTENTION!!
+             * 
+             * 1.
+             * DimmerItem.getStateAs(PercentType.class).toString() always returns 0
+             * RollershutterItem.getStateAs(PercentType.class).toString() works as expected
+             * 
+             * 2.
+             * (item instanceof ColorItem) == (item instanceof DimmerItem) = true
+             * Therefore for instance tests ColorItem always has to be tested before DimmerItem
+             * 
+             * !!ATTENTION!!
+             */
 
-	@Override
-	public Iterable<HistoricItem> query(FilterCriteria filter) {
-		if (!initialized) {
-			logger.debug("Query aborted on item {} - mySQL not initialised!", filter.getItemName());
-			return Collections.emptyList();
-		}
+            // All other items should return the best format by default
+            value = item.getState().toString();
+        }
 
-		if (!isConnected())
-			connectToDatabase();
+        // Get current timestamp
+        long timeNow = Calendar.getInstance().getTimeInMillis();
+        Timestamp timestamp = new Timestamp(timeNow);
+        
+        String sqlCmd = null;
+        PreparedStatement statement = null;
+        try {
+            if (localtime) {
+                sqlCmd = new String(
+                        "INSERT INTO " + tableName + " (TIME, VALUE) VALUES(?,?) ON DUPLICATE KEY UPDATE VALUE=?;");
+                statement = connection.prepareStatement(sqlCmd);
+                statement.setTimestamp(1, timestamp);
+                statement.setString(2, value);
+                statement.setString(3, value);
+            }
+            else {
+                sqlCmd = new String(
+                        "INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),?) ON DUPLICATE KEY UPDATE VALUE=?;");
+                statement = connection.prepareStatement(sqlCmd);
+                statement.setString(1, value);
+                statement.setString(2, value);
+            }
 
-		if (!isConnected()) {
-			logger.debug("Query aborted on item {} - mySQL not connected!", filter.getItemName());
-			return Collections.emptyList();
-		}
+            statement.executeUpdate();
 
-		SimpleDateFormat mysqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            logger.debug("mySQL: Stored item '{}' as '{}'[{}] in SQL database at {}.", item.getName(),
+                    item.getState().toString(), value, timestamp.toString());
+            logger.debug("mySQL: query: {}", sqlCmd);
 
-		// Get the item name from the filter
-		// Also get the Item object so we can determine the type
-		Item item = null;
-		String itemName = filter.getItemName();
-		logger.debug("mySQL query: item is {}", itemName);
-		try {
-			if (itemRegistry != null) {
-				item = itemRegistry.getItem(itemName);
-			}
-		} catch (ItemNotFoundException e1) {
-			logger.error("Unable to get item type for {}", itemName);
+            // Success
+            errCnt = 0;
+        } catch (Exception e) {
+            errCnt++;
 
-			// Set type to null - data will be returned as StringType
-			item = null;
-		}
-                   
-        if(item instanceof GroupItem){
+            logger.error("mySQL: Could not store item '{}' in database with " + "statement '{}': {}", item.getName(),
+                    sqlCmd, e.getMessage());
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (Exception hidden) {
+                }
+            }
+        }
+    }
+
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    public void store(Item item) {
+        store(item, null);
+    }
+
+    /**
+     * Checks if we have a database connection
+     * 
+     * @return true if connection has been established, false otherwise
+     */
+    private boolean isConnected() {
+        // Check if connection is valid
+        try {
+            if (connection != null && !connection.isValid(5000)) {
+                errCnt++;
+                logger.error("mySQL: Connection is not valid!");
+            }
+        } catch (SQLException e) {
+            errCnt++;
+
+            logger.error("mySQL: Error while checking connection: {}", e);
+        }
+
+        // Error check. If we have 'errReconnectThreshold' errors in a row, then
+        // reconnect to the database
+        if (errReconnectThreshold != 0 && errCnt >= errReconnectThreshold) {
+            logger.error("mySQL: Error count exceeded {}. Disconnecting database.", errReconnectThreshold);
+            disconnectFromDatabase();
+        }
+        return connection != null;
+    }
+
+    /**
+     * Connects to the database
+     */
+    private void connectToDatabase() {
+        try {
+            // Reset the error counter
+            errCnt = 0;
+
+            logger.debug("mySQL: Attempting to connect to database {}", url);
+            Class.forName(driverClass).newInstance();
+            connection = DriverManager.getConnection(url, user, password);
+            logger.debug("mySQL: Connected to database {}", url);
+
+            Statement st = connection.createStatement();
+            int result = st.executeUpdate("SHOW TABLES LIKE 'Items'");
+            st.close();
+
+            if (waitTimeout != -1) {
+                logger.debug("mySQL: Setting wait_timeout to {} seconds.", waitTimeout);
+                st = connection.createStatement();
+                st.executeUpdate("SET SESSION wait_timeout=" + waitTimeout);
+                st.close();
+            }
+            if (result == 0) {
+                st = connection.createStatement();
+                st.executeUpdate(
+                        "CREATE TABLE Items (ItemId INT NOT NULL AUTO_INCREMENT,ItemName VARCHAR(200) NOT NULL,PRIMARY KEY (ItemId));",
+                        Statement.RETURN_GENERATED_KEYS);
+                st.close();
+            }
+
+            // Retrieve the table array
+            st = connection.createStatement();
+
+            // Turn use of the cursor on.
+            st.setFetchSize(50);
+            ResultSet rs = st.executeQuery("SELECT ItemId, ItemName FROM Items");
+            while (rs.next()) {
+                sqlTables.put(rs.getString(2), "Item" + rs.getInt(1));
+            }
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            logger.error(
+                    "mySQL: Failed connecting to the SQL database using: driverClass={}, url={}, user={}, password={}",
+                    driverClass, url, user, password, e);
+        }
+    }
+
+    /**
+     * Disconnects from the database
+     */
+    private void disconnectFromDatabase() {
+        if (connection != null) {
+            try {
+                connection.close();
+                logger.debug("mySQL: Disconnected from database {}", url);
+            } catch (Exception e) {
+                logger.error("mySQL: Failed disconnecting from the SQL database {}", e);
+            }
+            connection = null;
+        }
+    }
+
+    /**
+     * Formats the given <code>alias</code> by utilizing {@link Formatter}.
+     * 
+     * @param alias
+     *            the alias String which contains format strings
+     * @param values
+     *            the values which will be replaced in the alias String
+     * 
+     * @return the formatted value. All format strings are replaced by
+     *         appropriate values
+     * @see java.util.Formatter for detailed information on format Strings.
+     */
+    protected String formatAlias(String alias, Object... values) {
+        return String.format(alias, values);
+    }
+
+    @Override
+    public Iterable<HistoricItem> query(FilterCriteria filter) {
+        if (!initialized) {
+            logger.debug("Query aborted on item {} - mySQL not initialised!", filter.getItemName());
+            return Collections.emptyList();
+        }
+
+        if (!isConnected()) {
+            connectToDatabase();
+        }
+
+        if (!isConnected()) {
+            logger.debug("Query aborted on item {} - mySQL not connected!", filter.getItemName());
+            return Collections.emptyList();
+        }
+
+        SimpleDateFormat mysqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        // Get the item name from the filter
+        // Also get the Item object so we can determine the type
+        Item item = null;
+        String itemName = filter.getItemName();
+        logger.debug("mySQL query: item is {}", itemName);
+        try {
+            if (itemRegistry != null) {
+                item = itemRegistry.getItem(itemName);
+            }
+        } catch (ItemNotFoundException e1) {
+            logger.error("Unable to get item type for {}", itemName);
+
+            // Set type to null - data will be returned as StringType
+            item = null;
+        }
+
+        if (item instanceof GroupItem) {
             // For Group Items is BaseItem needed to get correct Type of Value.
             item = GroupItem.class.cast(item).getBaseItem();
         }
 
-		String table = sqlTables.get(itemName);
-		if (table == null) {
-			logger.error("mySQL: Unable to find table for query '{}'.", itemName);
-			return Collections.emptyList();
-		}
+        String table = sqlTables.get(itemName);
+        if (table == null) {
+            logger.error("mySQL: Unable to find table for query '{}'.", itemName);
+            return Collections.emptyList();
+        }
 
-		String filterString = new String();
+        String filterString = new String();
 
-		if (filter.getBeginDate() != null) {
-			if (filterString.isEmpty())
-				filterString += " WHERE";
-			else
-				filterString += " AND";
-			filterString += " TIME>'" + mysqlDateFormat.format(filter.getBeginDate()) + "'";
-		}
-		if (filter.getEndDate() != null) {
-			if (filterString.isEmpty())
-				filterString += " WHERE";
-			else
-				filterString += " AND";
-			filterString += " TIME<'" + mysqlDateFormat.format(filter.getEndDate().getTime()) + "'";
-		}
+        if (filter.getBeginDate() != null) {
+            if (filterString.isEmpty()) {
+                filterString += " WHERE";
+            } else {
+                filterString += " AND";
+            }
+            filterString += " TIME>'" + mysqlDateFormat.format(filter.getBeginDate()) + "'";
+        }
+        if (filter.getEndDate() != null) {
+            if (filterString.isEmpty()) {
+                filterString += " WHERE";
+            } else {
+                filterString += " AND";
+            }
+            filterString += " TIME<'" + mysqlDateFormat.format(filter.getEndDate().getTime()) + "'";
+        }
 
-		if (filter.getOrdering() == Ordering.ASCENDING) {
-			filterString += " ORDER BY Time ASC";
-		} else {
-			filterString += " ORDER BY Time DESC";
-		}
+        if (filter.getOrdering() == Ordering.ASCENDING) {
+            filterString += " ORDER BY Time ASC";
+        } else {
+            filterString += " ORDER BY Time DESC";
+        }
 
-		if (filter.getPageSize() != 0x7fffffff)
-			filterString += " LIMIT " + filter.getPageNumber() * filter.getPageSize() + "," + filter.getPageSize();
+        if (filter.getPageSize() != 0x7fffffff) {
+            filterString += " LIMIT " + filter.getPageNumber() * filter.getPageSize() + "," + filter.getPageSize();
+        }
 
-		try {
-			long timerStart = System.currentTimeMillis();
+        try {
+            long timerStart = System.currentTimeMillis();
 
-			// Retrieve the table array
-			Statement st = connection.createStatement();
+            // Retrieve the table array
+            Statement st = connection.createStatement();
 
-			String queryString = new String();
-			queryString = "SELECT Time, Value FROM " + table;
-			if (!filterString.isEmpty())
-				queryString += filterString;
+            String queryString = new String();
+            queryString = "SELECT Time, Value FROM " + table;
+            if (!filterString.isEmpty()) {
+                queryString += filterString;
+            }
 
-			logger.debug("mySQL: query:" + queryString);
+            logger.debug("mySQL: query:" + queryString);
 
-			// Turn use of the cursor on.
-			st.setFetchSize(50);
+            // Turn use of the cursor on.
+            st.setFetchSize(50);
 
-			ResultSet rs = st.executeQuery(queryString);
+            ResultSet rs = st.executeQuery(queryString);
 
-			long count = 0;
-			List<HistoricItem> items = new ArrayList<HistoricItem>();
-			State state;
-			while (rs.next()) {
-				count++;
+            long count = 0;
+            List<HistoricItem> items = new ArrayList<HistoricItem>();
+            State state;
+            while (rs.next()) {
+                count++;
 
-				if (item instanceof NumberItem)
-					state = new DecimalType(rs.getDouble(2));
-				else if (item instanceof ColorItem)
-					state = new HSBType(rs.getString(2));
-				else if (item instanceof DimmerItem)
-					state = new PercentType(rs.getInt(2));
-				else if (item instanceof SwitchItem)
-					state = OnOffType.valueOf(rs.getString(2));
-				else if (item instanceof ContactItem)
-					state = OpenClosedType.valueOf(rs.getString(2));
-				else if (item instanceof RollershutterItem)
-					state = new PercentType(rs.getInt(2));
-				else if (item instanceof DateTimeItem) {
-					Calendar calendar = Calendar.getInstance();
-					calendar.setTimeInMillis(rs.getTimestamp(2).getTime());
-					state = new DateTimeType(calendar);
-				} else	//Call, Location, String
-					state = new StringType(rs.getString(2));
+                if (item instanceof NumberItem) {
+                    state = new DecimalType(rs.getDouble(2));
+                } else if (item instanceof ColorItem) {
+                    state = new HSBType(rs.getString(2));
+                } else if (item instanceof DimmerItem) {
+                    state = new PercentType(rs.getInt(2));
+                } else if (item instanceof SwitchItem) {
+                    state = OnOffType.valueOf(rs.getString(2));
+                } else if (item instanceof ContactItem) {
+                    state = OpenClosedType.valueOf(rs.getString(2));
+                } else if (item instanceof RollershutterItem) {
+                    state = new PercentType(rs.getInt(2));
+                } else if (item instanceof DateTimeItem) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(rs.getTimestamp(2).getTime());
+                    state = new DateTimeType(calendar);
+                } else {
+                    state = new StringType(rs.getString(2));
+                }
 
-				MysqlItem mysqlItem = new MysqlItem(itemName, state, rs.getTimestamp(1));
-				items.add(mysqlItem);
-			}
+                MysqlItem mysqlItem = new MysqlItem(itemName, state, rs.getTimestamp(1));
+                items.add(mysqlItem);
+            }
 
-			rs.close();
-			st.close();
+            rs.close();
+            st.close();
 
-			long timerStop = System.currentTimeMillis();
-			logger.debug("mySQL: query returned {} rows in {}ms", count, timerStop - timerStart);
+            long timerStop = System.currentTimeMillis();
+            logger.debug("mySQL: query returned {} rows in {}ms", count, timerStop - timerStart);
 
-			// Success
-			errCnt = 0;
+            // Success
+            errCnt = 0;
 
-			return items;
-		} catch (SQLException e) {
-			errCnt++;
-			logger.error("mySQL: Error running querying : ", e.getMessage());
-		}
-		return null;
-	}
+            return items;
+        } catch (SQLException e) {
+            errCnt++;
+            logger.error("mySQL: Error running querying : ", e.getMessage());
+        }
+        return null;
+    }
 }

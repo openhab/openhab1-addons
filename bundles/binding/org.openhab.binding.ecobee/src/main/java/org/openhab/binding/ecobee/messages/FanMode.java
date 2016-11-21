@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,37 +13,38 @@ import org.codehaus.jackson.annotate.JsonValue;
 
 /**
  * Possible values for fan mode
- * 
+ *
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Event.shtml">Event</a>
  * @author John Cocula
  * @since 1.7.0
  */
 public enum FanMode {
-	AUTO("auto"), ON("on");
+    AUTO("auto"),
+    ON("on");
 
-	private final String mode;
+    private final String mode;
 
-	private FanMode(final String mode) {
-		this.mode = mode;
-	}
+    private FanMode(final String mode) {
+        this.mode = mode;
+    }
 
-	@JsonValue
-	public String value() {
-		return mode;
-	}
+    @JsonValue
+    public String value() {
+        return mode;
+    }
 
-	@JsonCreator
-	public static FanMode forValue(String v) {
-		for (FanMode fm : FanMode.values()) {
-			if (fm.mode.equals(v)) {
-				return fm;
-			}
-		}
-		throw new IllegalArgumentException("Invalid fan mode: " + v);
-	}
+    @JsonCreator
+    public static FanMode forValue(String v) {
+        for (FanMode fm : FanMode.values()) {
+            if (fm.mode.equals(v)) {
+                return fm;
+            }
+        }
+        throw new IllegalArgumentException("Invalid fan mode: " + v);
+    }
 
-	@Override
-	public String toString() {
-		return this.mode;
-	}
+    @Override
+    public String toString() {
+        return this.mode;
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,36 +16,36 @@ import javax.xml.bind.annotation.XmlValue;
 
 /**
  * Holds text values with a certain id
- * 
+ *
  * @author Jeroen Idserda
  * @since 1.7.0
  */
-@XmlRootElement(name="text")
+@XmlRootElement(name = "text")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Text {
-	
-	@XmlAttribute(name="id")
-	private String id;
-	
-	@XmlValue
-	private String value;
-	
-	public Text() {
-	}
 
-	public String getId() {
-		return id;
-	}
+    @XmlAttribute(name = "id")
+    private String id;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    @XmlValue
+    private String value;
 
-	public String getValue() {
-		return value;
-	}
+    public Text() {
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

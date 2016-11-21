@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,7 +7,6 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.milight.internal;
-
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -33,7 +32,6 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-	
 
 /**
  * This binding is able to do the following tasks with the Milight system:
@@ -43,855 +41,865 @@ import org.slf4j.LoggerFactory;
  * <li>Change the brightness of a bulb without changing the color.</li>
  * <li>Change the RGB values of a bulb.</li>
  * </ul>
- * 
+ *
  * @author Hans-Joerg Merk
  * @author Kai Kreuzer
  * @since 1.3.0
  */
-public class MilightBinding extends AbstractBinding<MilightBindingProvider> implements ManagedService {
+public class MilightBinding extends AbstractBinding<MilightBindingProvider>implements ManagedService {
 
-	private static final Logger logger = LoggerFactory.getLogger(MilightBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(MilightBinding.class);
 
-	/** RegEx to validate a config <code>'^(.*?)\\.(host|port)$'</code> */
-	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port)$");
+    /** RegEx to validate a config <code>'^(.*?)\\.(host|port)$'</code> */
+    private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port)$");
 
-	private final static int DEFAULT_PORT = 50000;
+    private final static int DEFAULT_PORT = 50000;
 
-	protected Map<String, DeviceConfig> deviceConfigs = new HashMap<String, DeviceConfig>();
+    protected Map<String, DeviceConfig> deviceConfigs = new HashMap<String, DeviceConfig>();
 
     protected Map<String, String> bridgeIpConfig = new HashMap<String, String>();
-    
+
     protected Map<String, Integer> bridgePortConfig = new HashMap<String, Integer>();
-    
+
     protected Map<String, PercentType> dimmerState = new HashMap<String, PercentType>();
 
-	public MilightBinding() {
-	}
+    public MilightBinding() {
+    }
 
-	public void activate() {
-	}
-	
-	public void deactivate() {
-	}
+    @Override
+    public void activate() {
+    }
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		super.internalReceiveCommand(itemName, command);
-		
-		MilightBindingConfig deviceConfig = getConfigForItemName(itemName);
-		
-		if (deviceConfig == null) {
-			return;
-		}
+    @Override
+    public void deactivate() {
+    }
 
-		try {
-			int bulb = deviceConfig.getChannelNumber();
-			int rgbwSteps = deviceConfig.getSteps();
-			String bridgeId = deviceConfig.getDeviceId();
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    protected void internalReceiveCommand(String itemName, Command command) {
+        super.internalReceiveCommand(itemName, command);
 
-			if (deviceConfig.getCommandType().equals(BindingType.brightness)) {
-				logger.debug("milight: item is of type brightness");
-				if (OnOffType.ON.equals(command)) {
-					sendOn(bulb, bridgeId);
-				} else if (OnOffType.OFF.equals(command)) {
-					sendOff(bulb, bridgeId);
-				}
-				if (IncreaseDecreaseType.INCREASE.equals(command)) {
-					sendOn(bulb, bridgeId);
-					Thread.sleep(100);
-					PercentType newValue = sendIncrease(bulb, rgbwSteps, bridgeId);
-					eventPublisher.postUpdate(itemName, newValue);
-				} else if (IncreaseDecreaseType.DECREASE.equals(command)) {
-					PercentType newValue = sendDecrease(bulb, rgbwSteps, bridgeId);
-					eventPublisher.postUpdate(itemName, newValue);
-				} else if (command instanceof PercentType) {
-					logger.debug("milight: command is of type PercentType");
-					sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.brightness);
-				}
-			}
-			else if (deviceConfig.getCommandType().equals(BindingType.nightMode)) {
-				logger.debug("milight: item is of type nightMode");
-				if (OnOffType.ON.equals(command)) {
-					sendNightMode(bulb, bridgeId);
-				}
-				if (OnOffType.OFF.equals(command)) {
-					sendOff(bulb, bridgeId);
-				}
-			}
-			else if (deviceConfig.getCommandType().equals(BindingType.whiteMode)) {
-				logger.debug("milight: item is of type whiteMode");
-				if (OnOffType.ON.equals(command)) {
-					sendOn(bulb, bridgeId);
-					Thread.sleep(100);
-					sendWhiteMode(bulb, bridgeId);
-				}
-				if (OnOffType.OFF.equals(command)) {
-					sendOff(bulb, bridgeId);
-				}
-			}
-			else if (deviceConfig.getCommandType().equals(BindingType.colorTemperature)) {
-				logger.debug("milight: item is of type warm/cold white");
-				if (OnOffType.ON.equals(command)) {
-					sendPercent(bulb, rgbwSteps, bridgeId, PercentType.HUNDRED, BindingType.colorTemperature);
-				} else if (OnOffType.OFF.equals(command)) {
-					sendPercent(bulb, rgbwSteps, bridgeId, PercentType.ZERO, BindingType.colorTemperature);
-				} else if (IncreaseDecreaseType.INCREASE.equals(command)) {
-					PercentType newValue = sendWarmer(bulb, bridgeId);
-					eventPublisher.postUpdate(itemName, newValue);
-				} else if (IncreaseDecreaseType.DECREASE.equals(command)) {
-					PercentType newValue = sendCooler(bulb, bridgeId);
-					eventPublisher.postUpdate(itemName, newValue);
-				} else if (command instanceof PercentType) {
-					sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.colorTemperature);
-				}
-			}
-			else if (deviceConfig.getCommandType().equals(BindingType.discoMode)) {
-				logger.debug("milight: item is of type discoMode");
-				if (IncreaseDecreaseType.INCREASE.equals(command)) {
-					sendDiscoModeUp(bulb, bridgeId);
-				} else if (IncreaseDecreaseType.DECREASE.equals(command)) {
-					sendDiscoModeDown(bulb, bridgeId);
-				} else if (command instanceof PercentType) {
-					sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.discoMode);
-				}
-			}
-			else if (deviceConfig.getCommandType().equals(BindingType.discoSpeed)) {
-				logger.debug("milight: item is of type discoSpeed");
-				if (IncreaseDecreaseType.INCREASE.equals(command)) {
-					sendOn(bulb, bridgeId);
-					Thread.sleep(100);
-					sendIncreaseSpeed(bulb, bridgeId);
-				} else if (IncreaseDecreaseType.DECREASE.equals(command)) {
-					sendOn(bulb, bridgeId);
-					Thread.sleep(100);
-					sendDecreaseSpeed(bulb, bridgeId);
-				} else if (command instanceof PercentType) {
-					sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.discoSpeed);
-				}
-			}
-			else if (deviceConfig.getCommandType().equals(BindingType.rgb)) {
-				logger.debug("milight: item is of type rgb");
-				if (command instanceof HSBType) {
-					HSBType hsbCommand = (HSBType) command;
-					DecimalType saturation = hsbCommand.getSaturation();
-					if (saturation.equals(0)) {
-						sendOn(bulb, bridgeId);
-						Thread.sleep(100);
-						sendWhiteMode(bulb, bridgeId);
-					} else {
-						sendColor(command, bridgeId, bulb);
-					}
-				} 
-				if (command instanceof PercentType) {
-					sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.brightness);
-				}
-	        }
-		} catch (Exception e) {
-	            logger.error("milight: Failed to send {} command ", deviceConfig.getCommandType(), e);
-	        }
-	}
+        MilightBindingConfig deviceConfig = getConfigForItemName(itemName);
 
-	private void sendPercent(int bulb, int rgbwSteps, String bridgeId, PercentType command, MilightBindingConfig.BindingType type) {
-		logger.debug("milight: sendPercent");
-		if(BindingType.brightness.equals(type) && command.equals(PercentType.ZERO)) {
-			sendOff(bulb, bridgeId);
-			return;
-		}
-		if(BindingType.brightness.equals(type) && command.equals(PercentType.HUNDRED)) {
-			sendFull(bulb, rgbwSteps, bridgeId);
-			return;
-		}
-		PercentType oldPercent = getCurrentState(bulb, bridgeId, type);
-		
-		//Make sure lights are on and engage current bulb via a preceding ON command:
-		sendOn(bulb, bridgeId);
-		try {
-			// White Bulbs: 10 levels of brightness + Off.
-			if (bulb < 5) {
-				double stepSize = 9.090909090909091;
-				
-				// Assume lowest brightness level (about 9%) if just powered on.
-				if(oldPercent.equals(PercentType.ZERO)) {
-					oldPercent = new PercentType(9);
-				}
-				
-				int repeatCount = Math.abs((int)Math.round(command.intValue()/stepSize) - (int)Math.round(oldPercent.intValue()/stepSize));
-				logger.debug("milight: dim from '{}' with command '{}' via '{}' steps.", oldPercent.toString(), command.toString(), repeatCount );
-				if (command.compareTo(oldPercent) > 0) {
-					for(int i = 0; i < repeatCount; i++) {
-						Thread.sleep(50);
-						if(BindingType.brightness.equals(type)) {
-							sendIncrease(bulb, rgbwSteps, bridgeId);
-						} else if(BindingType.colorTemperature.equals(type)) {
-							sendWarmer(bulb, bridgeId);
-						}
-					}
-				} else if (command.compareTo(oldPercent) < 0) {
-					for(int i = 0; i < repeatCount; i++) {
-						Thread.sleep(50);
-						if(BindingType.brightness.equals(type)) {
-							sendDecrease(bulb, rgbwSteps, bridgeId);
-						} else if(BindingType.colorTemperature.equals(type)) {
-							sendCooler(bulb, bridgeId);
-						}
-					}
-				} 
-			// Old RGB Bulbs: 9 levels of brightness + Off.
-			} else if (bulb == 5) {
-				if (command.compareTo(oldPercent) > 0) {
-					int repeatCount = (command.intValue() - oldPercent.intValue()) / 10;
-					for(int i = 0; i < repeatCount; i++) {
-						Thread.sleep(100);
-						if(BindingType.brightness.equals(type) && bulb < 6) {
-							sendIncrease(bulb, rgbwSteps, bridgeId);
-						} else if(BindingType.colorTemperature.equals(type)) {
-							sendWarmer(bulb, bridgeId);
-						} else if(BindingType.discoSpeed.equals(type)) {
-
-							sendIncreaseSpeed(bulb, bridgeId);
-						} else if(BindingType.discoMode.equals(type)) {
-							sendDiscoModeUp(bulb, bridgeId);
-						}
-					}
-				} else if (command.compareTo(oldPercent) < 0) {
-					int repeatCount = (oldPercent.intValue() - command.intValue()) / 10;
-					for(int i = 0; i < repeatCount; i++) {
-						Thread.sleep(100);
-						if(BindingType.brightness.equals(type) && bulb < 6) {
-							sendDecrease(bulb, rgbwSteps, bridgeId);
-						} else if(BindingType.colorTemperature.equals(type)) {
-							sendCooler(bulb, bridgeId);
-						} else if(BindingType.discoSpeed.equals(type)) {
-							sendDecreaseSpeed(bulb, bridgeId);
-						} else if(BindingType.discoMode.equals(type)) {
-							sendDiscoModeDown(bulb, bridgeId);
-						}
-					}
-				} 
-			// RGBW Bulbs:
-			} else if (bulb > 5) {
-				if (command.intValue() > 0 && command.intValue() < 100 ) {
-					int newCommand = (command.intValue() * (rgbwSteps -2) / 100 + 2);
-					Thread.sleep(100);
-					String messageBytes = "4E:" + Integer.toHexString(newCommand) + ":55";
-			        	logger.debug("milight: send dimming packet '{}' to RGBW bulb channel '{}'", messageBytes, bulb);
-					sendMessage(messageBytes, bridgeId);
-				}
-				else if (command.intValue() > 99) {
-					sendFull(bulb, rgbwSteps, bridgeId);
-				}
-				else if (command.intValue() < 1) {
-					sendOff(bulb, bridgeId);
-				}
-			}
-			// store dimmerValue
-			setCurrentState(bulb, bridgeId, command, type);
-		} catch(InterruptedException e) {
-			logger.debug("Sleeping thread has been interrupted.");
-		}
-	}
-
-	private PercentType getCurrentState(int bulb, String bridgeId, BindingType type) {
-		PercentType percent = dimmerState.get(bridgeId + bulb + type);
-		if(percent == null) {
-			percent = PercentType.ZERO;
-		}
-		return percent;
-	}
-
-	private void setCurrentState(int bulb, String bridgeId, PercentType command, BindingType type) {
-		dimmerState.put(bridgeId + bulb + type, command);
-	}
-
-	private PercentType sendIncrease(int bulb, int rgbwSteps, String bridgeId) {
-		logger.debug("milight: sendIncrease");
-		String messageBytes = null;
-		switch (bulb) {
-		// increase brightness of white bulbs
-		case 0 :
-		case 1 :
-		case 2 :
-		case 3 :
-		case 4 :
-			messageBytes  = "3C:00:55";
-			break;
-		// increase brightness of rgb bulbs
-		case 5 :
-			messageBytes = "23:00:55";
-			break;
-		}
-		int currentPercent = getCurrentState(bulb, bridgeId, BindingType.brightness).intValue();
-		if(currentPercent==0) {
-			try {
-				sendOn(bulb, bridgeId);
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-			}
-		}
-		int newPercent = currentPercent + 10;
-		if(newPercent > 100) {
-			newPercent = 100;
-		}
-		PercentType newValue = new PercentType(newPercent);
-		if (bulb > 5) {
-			int increasePercent = newPercent * (rgbwSteps -2) / 100 + 2;
-			messageBytes = "4E:" + Integer.toHexString(increasePercent) + ":55";
-			logger.debug("Bulb '{}' set to '{}' dimming Steps", bulb, rgbwSteps);
-		} else if (bulb < 5) {
-			newPercent = (int)Math.round((Math.round(getCurrentState(bulb, bridgeId, BindingType.brightness).intValue() / 9.090909090909091) + 1)*9.090909090909091);
-			newValue = new PercentType(newPercent);
-			logger.debug("milight: Bulb '{}' getting increased to '{}'", bulb, newPercent);
-		}
-		sendMessage(messageBytes, bridgeId);
-		setCurrentState(bulb, bridgeId, newValue, BindingType.brightness);
-		return newValue;
-	}
-
-	private PercentType sendDecrease(int bulb, int rgbwSteps, String bridgeId) {
-		logger.debug("milight: sendDecrease");
-		String messageBytes = null;
-		switch (bulb) {
-		// decrease brightness of white bulbs
-		case 0 :
-		case 1 :
-		case 2 :
-		case 3 :
-		case 4 :
-			messageBytes  = "34:00:55";
-			break;
-			// decrease brightness of rgb bulbs
-		case 5 :
-			messageBytes = "24:00:55";
-			break;
-		}
-		int newPercent = getCurrentState(bulb, bridgeId, BindingType.brightness).intValue() - 10;
-		if(newPercent < 0) {
-			newPercent = 0;
-		}
-		PercentType newValue = new PercentType(newPercent);
-		if(newValue.equals(PercentType.ZERO)) {
-			sendOff(bulb, bridgeId);
-		} else {
-			if (bulb > 5) {
-				int decreasePercent = newPercent * (rgbwSteps -2) / 100 +2;
-				messageBytes = "4E:" + Integer.toHexString(decreasePercent) + ":55";
-				logger.debug("Bulb '{}' set to '{}' dimming Steps", bulb, rgbwSteps);
-			} else if (bulb < 5) {
-				newPercent = (int)Math.round((Math.round(getCurrentState(bulb, bridgeId, BindingType.brightness).intValue() / 9.090909090909091) - 1)*9.090909090909091);
-				newValue = new PercentType(newPercent);
-				logger.debug("milight: Bulb '{}' getting decreased to '{}'", bulb, newPercent);
-			}
-			sendMessage(messageBytes, bridgeId);
-		}
-		setCurrentState(bulb, bridgeId, newValue, BindingType.brightness);
-		return newValue;
-	}
-
-	private PercentType sendWarmer(int bulb, String bridgeId) {
-		logger.debug("milight: sendWarmer");
-		int newPercent = getCurrentState(bulb, bridgeId, BindingType.brightness).intValue() + 10;
-		if(newPercent > 100) {
-			newPercent = 100;
-		}
-		PercentType newValue = new PercentType(newPercent);
-		String messageBytes = "3E:00:55";
-		sendMessage(messageBytes, bridgeId);
-		setCurrentState(bulb, bridgeId, newValue, BindingType.brightness);
-		return newValue;
-	}
-
-	private PercentType sendCooler(int bulb, String bridgeId) {
-		logger.debug("milight: sendCooler");
-		int newPercent = getCurrentState(bulb, bridgeId, BindingType.brightness).intValue() - 10;
-		if(newPercent < 0) {
-			newPercent = 0;
-		}
-		PercentType newValue = new PercentType(newPercent);
-		String messageBytes = "3F:00:55";
-		sendMessage(messageBytes, bridgeId);
-		setCurrentState(bulb, bridgeId, newValue, BindingType.brightness);
-		return newValue;
-	}
-
-	private void sendDiscoModeUp(int bulb, String bridgeId) {
-		logger.debug("milight: sendDiscoModeUp");
-		if(bulb < 6) {
-			String messageBytes = "27:00:55";
-			sendMessage(messageBytes, bridgeId);
-		}
-		if(bulb > 5) {
-			String messageBytes = "4D:00:55";
-			sendMessage(messageBytes, bridgeId);
-		}
-	}
-
-	private void sendDiscoModeDown(int bulb, String bridgeId) {
-		logger.debug("milight: sendDiscoModeDown");
-		String messageBytes = "28:00:55";
-		sendMessage(messageBytes, bridgeId);
-	}
-
-	private void sendIncreaseSpeed(int bulb, String bridgeId) {
-		logger.debug("milight: sendIncreaseSpeed");
-		String messageBytes = null;
-		switch (bulb) {
-		case 5 :
-			// message increaseSpeed rgb bulbs
-			messageBytes = "25:00:55";
-			break;
-		case 6 :
-		case 7 :
-		case 8 :
-		case 9 :
-		case 10 :
-			// message increaseSpeed rgb-w bulbs
-			messageBytes = "44:00:55";
-			break;
-		}
-		sendMessage(messageBytes, bridgeId);
-	}
-
-	private void sendDecreaseSpeed(int bulb, String bridgeId) {
-		logger.debug("milight: sendDecreaseSpeed");
-		String messageBytes = null;
-		switch (bulb) {
-		case 5 :
-			// message decreaseSpeed rgb bulbs
-			messageBytes = "26:00:55";
-			break;
-		case 6 :
-		case 7 :
-		case 8 :
-		case 9 :
-		case 10 :
-			// message decreaseSpeed rgb-w bulbs
-			messageBytes = "43:00:55";
-			break;
-		}
-		sendMessage(messageBytes, bridgeId);
-	}
-
-	private void sendNightMode(int bulb, String bridgeId) {
-		logger.debug("milight: sendNightMode");
-		String messageBytes = null;
-		String messageBytes2 = null;
-		switch (bulb) {
-		case 0 :
-			// message nightMode all white bulbs
-			messageBytes = "B9:00:55";
-			break;
-		case 1 :
-			// message nightMode white bulb channel 1
-			messageBytes = "BB:00:55";
-			break;
-		case 2 :
-			// message nightMode white bulb channel 2
-			messageBytes = "B3:00:55";
-			break;
-		case 3 :
-			// message nightMode white bulb channel 3
-			messageBytes = "BA:00:55";
-			break;
-		case 4 :
-			// message nightMode white bulb channel 4
-			messageBytes = "B6:00:55";
-			break;
-		case 6 :
-			// message nightMode all RGBW bulbs
-			messageBytes = "41:00:55";
-			messageBytes2 = "C1:00:55";
-			break;
-		case 7 :
-			// message nightMode RGBW bulb channel 1
-			messageBytes = "46:00:55";
-			messageBytes2 = "C6:00:55";
-			break;
-		case 8 :
-			// message nightMode RGBW bulb channel 2
-			messageBytes = "48:00:55";
-			messageBytes2 = "C8:00:55";
-			break;
-		case 9 :
-			// message nightMode RGBW bulb channel 3
-			messageBytes = "4A:00:55";
-			messageBytes2 = "CA:00:55";
-			break;
-		case 10 :
-			// message nightMode RGBW bulb channel 4
-			messageBytes = "4C:00:55";
-			messageBytes2 = "CC:00:55";
-			break;
-		}
-		sendMessage(messageBytes, bridgeId);
-		
-		//nightMode for RGBW bulbs requires second message 100ms later.
-		if (bulb >= 6 && bulb <= 10) {		
-			try {
-				Thread.sleep(100);
-				sendMessage(messageBytes2, bridgeId);
-			} catch(InterruptedException e) {
-				logger.debug("Sleeping thread has been interrupted.");
-			}
-		}
-
-	}
-
-	private void sendWhiteMode(int bulb, String bridgeId) {
-		logger.debug("milight: sendWhiteMode");
-		String messageBytes = null;
-		switch (bulb) {
-		case 6 :
-			// message whiteMode all RGBW bulbs
-			messageBytes = "C2:00:55";
-			break;
-		case 7 :
-			// message whiteMode RGBW bulb channel 1
-			messageBytes = "C5:00:55";
-			break;
-		case 8 :
-			// message whiteMode RGBW bulb channel 2
-			messageBytes = "C7:00:55";
-			break;
-		case 9 :
-			// message whiteMode RGBW bulb channel 3
-			messageBytes = "C9:00:55";
-			break;
-		case 10 :
-			// message whiteMode RGBW bulb channel 4
-			messageBytes = "CB:00:55";
-			break;
-		}
-		sendMessage(messageBytes, bridgeId);
-	}
-	
-	private void sendFull(int bulb, int rgbwSteps, String bridgeId) {
-		logger.debug("milight: sendFull");
-		String messageBytes = null;
-		switch (bulb) {
-		case 0 :
-			// message fullBright all white bulbs
-			messageBytes = "B5:00:55";
-			break;
-		case 1 :
-			// message fullBright white bulb channel 1
-			messageBytes = "B8:00:55";
-			break;
-		case 2 :
-			// message fullBright white bulb channel 2
-			messageBytes = "BD:00:55";
-			break;
-		case 3 :
-			// message fullBright white bulb channel 3
-			messageBytes = "B7:00:55";
-			break;
-		case 4 :
-			// message fullBright white bulb channel 4
-			messageBytes = "B2:00:55";
-			break;
-		case 6 :
-		case 7 :
-		case 8 :
-		case 9 :
-		case 10 :
-			try {
-				sendOn(bulb, bridgeId);
-				Thread.sleep(100);
-				messageBytes = "4E:" + Integer.toHexString(rgbwSteps) + ":55";
-				logger.debug("Bulb '{}' set to '{}' dimming Steps", bulb, rgbwSteps);
-			} catch(InterruptedException e) {
-				logger.debug("Sleeping thread has been interrupted.");
-			}
-			break;
-		}
-		sendMessage(messageBytes, bridgeId);
-		setCurrentState(bulb, bridgeId, PercentType.HUNDRED, BindingType.brightness);
-	}
-
-	private void sendOn(int bulb, String bridgeId) {
-		logger.debug("milight: sendOn");
-		String messageBytes = null;
-		switch (bulb) {
-		case 0 :
-			// message all white bulbs ON
-			messageBytes = "35:00:55";
-			break;
-		case 1 :
-			// message white bulb channel 1 ON
-			messageBytes = "38:00:55";
-			break;
-		case 2 :
-			// message white bulb channel 2 ON
-			messageBytes = "3D:00:55";
-			break;
-		case 3 :
-			// message white bulb channel 3 ON
-			messageBytes = "37:00:55";
-			break;
-		case 4 :
-			// message white bulb channel 4 ON
-			messageBytes = "32:00:55";
-			break;
-		case 5 :
-			// message rgb bulbs ON
-			messageBytes = "22:00:55";
-			break;
-		case 6 :
-			// message all rgb-w bulbs ON
-			messageBytes = "42:00:55";
-			break;
-		case 7 :
-			// message rgb-w bulbs channel1 ON
-			messageBytes = "45:00:55";
-			break;
-		case 8 :
-			// message rgb-w bulbs channel2 ON
-			messageBytes = "47:00:55";
-			break;
-		case 9 :
-			// message rgb-w bulbs channel3 ON
-			messageBytes = "49:00:55";
-			break;
-		case 10 :
-			// message rgb-w bulbs channel4 ON
-			messageBytes = "4B:00:55";
-			break;
-		}
-		sendMessage(messageBytes, bridgeId);
-	}
-
-	private void sendOff(int bulb, String bridgeId) {
-		logger.debug("milight: sendOff");
-		String messageBytes = null;
-		switch (bulb) {
-		case 0 :
-			// message all white bulbs OFF
-			messageBytes = "39:00:55";
-			break;
-		case 1 :
-			// message white bulb channel 1 OFF
-			messageBytes = "3B:00:55";
-			break;
-		case 2 :
-			// message white bulb channel 2 OFF
-			messageBytes = "33:00:55";
-			break;
-		case 3 :
-			// message white bulb channel 3 OFF
-			messageBytes = "3A:00:55";
-			break;
-		case 4 :
-			// message white bulb channel 4 OFF
-			messageBytes = "36:00:55";
-			break;
-		case 5 :
-			// message rgb bulbs OFF
-			messageBytes = "21:00:55";
-			break;
-		case 6 :
-			// message all rgb-w bulbs OFF
-			messageBytes = "41:00:55";
-			break;
-		case 7 :
-			// message rgb-w bulbs channel1 OFF
-			messageBytes = "46:00:55";
-			break;
-		case 8 :
-			// message rgb-w bulbs channel2 OFF
-			messageBytes = "48:00:55";
-			break;
-		case 9 :
-			// message rgb-w bulbs channel3 OFF
-			messageBytes = "4A:00:55";
-			break;
-		case 10 :
-			// message rgb-w bulbs channel4 OFF
-			messageBytes = "4C:00:55";
-			break;
-			}
-		// Bring white bulb to 10% before powering off.
-		if (bulb < 5) {
-			setCurrentState(bulb, bridgeId, PercentType.HUNDRED, BindingType.brightness);
-			for(int i = 0; i < 10; i++) {
-				sendDecrease(bulb, 27, bridgeId);
-				try { Thread.sleep(50); } catch (InterruptedException e) { }
-			}
-		}
-		sendMessage(messageBytes, bridgeId);
-		setCurrentState(bulb, bridgeId, PercentType.ZERO, BindingType.brightness);
-	}
-	
-	private void sendColor(Command command, String bridgeId, int bulb) {
-		logger.debug("milight: sendColor");
-		HSBType hsbCommand = (HSBType) command;
-		DecimalType hue = hsbCommand.getHue();
-		
-		// we have to map [0,360] to [0,0xFF], where red equals hue=0 and the milight color 0xB0 (=176)
-		Integer milightColorNo = (256 + 176 - (int) (hue.floatValue() / 360.0 * 255.0)) % 256;
-		try {
-			if (bulb == 5) {
-				String messageBytes = "20:" + Integer.toHexString(milightColorNo) + ":55";
-				sendMessage(messageBytes, bridgeId);
-			}
-			if (bulb > 5) {
-				sendOn(bulb, bridgeId);
-				Thread.sleep(50);
-				String messageBytes = "40:" + Integer.toHexString(milightColorNo) + ":55";
-				sendMessage(messageBytes, bridgeId);
-			}
-		} catch(InterruptedException e) {
-		logger.debug("Sleeping thread has been interrupted.");
-		}
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveUpdate() is called!");
-	}
-
-	protected void sendMessage(String messageBytes, String bridgeId) {
-		
-		String bridgeIp = bridgeIpConfig.get(bridgeId);
-		Integer bridgePort = bridgePortConfig.get(bridgeId);
-		
-		if (bridgePort == null) {
-			bridgePort = DEFAULT_PORT;
-		}
-		
-		try {
-			byte[] buffer = getMessageBytes(messageBytes);
-	        
-			InetAddress IPAddress = InetAddress.getByName(bridgeIp);
-	        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, IPAddress, bridgePort);
-	        DatagramSocket datagramSocket = new DatagramSocket();
-	        datagramSocket.send(packet);
-	        datagramSocket.close();
-	        logger.debug("Sent packet '{}' to bridge '{}' ({}:{})", new Object[] { messageBytes, bridgeId, bridgeIp, bridgePort });
+        if (deviceConfig == null) {
+            return;
         }
-        catch (Exception e) {
-            logger.error("Failed to send Message to '{}': ", new Object[] { bridgeIp, e.getMessage()});
-        }
-	}
-	
 
-	private byte[] getMessageBytes(String messageBytes) {
+        try {
+            int bulb = deviceConfig.getChannelNumber();
+            int rgbwSteps = deviceConfig.getSteps();
+            String bridgeId = deviceConfig.getDeviceId();
+
+            if (deviceConfig.getCommandType().equals(BindingType.brightness)) {
+                logger.debug("milight: item is of type brightness");
+                if (OnOffType.ON.equals(command)) {
+                    sendOn(bulb, bridgeId);
+                } else if (OnOffType.OFF.equals(command)) {
+                    sendOff(bulb, bridgeId);
+                }
+                if (IncreaseDecreaseType.INCREASE.equals(command)) {
+                    sendOn(bulb, bridgeId);
+                    Thread.sleep(100);
+                    PercentType newValue = sendIncrease(bulb, rgbwSteps, bridgeId);
+                    eventPublisher.postUpdate(itemName, newValue);
+                } else if (IncreaseDecreaseType.DECREASE.equals(command)) {
+                    PercentType newValue = sendDecrease(bulb, rgbwSteps, bridgeId);
+                    eventPublisher.postUpdate(itemName, newValue);
+                } else if (command instanceof PercentType) {
+                    logger.debug("milight: command is of type PercentType");
+                    sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.brightness);
+                }
+            } else if (deviceConfig.getCommandType().equals(BindingType.nightMode)) {
+                logger.debug("milight: item is of type nightMode");
+                if (OnOffType.ON.equals(command)) {
+                    sendNightMode(bulb, bridgeId);
+                }
+                if (OnOffType.OFF.equals(command)) {
+                    sendOff(bulb, bridgeId);
+                }
+            } else if (deviceConfig.getCommandType().equals(BindingType.whiteMode)) {
+                logger.debug("milight: item is of type whiteMode");
+                if (OnOffType.ON.equals(command)) {
+                    sendOn(bulb, bridgeId);
+                    Thread.sleep(100);
+                    sendWhiteMode(bulb, bridgeId);
+                }
+                if (OnOffType.OFF.equals(command)) {
+                    sendOff(bulb, bridgeId);
+                }
+            } else if (deviceConfig.getCommandType().equals(BindingType.colorTemperature)) {
+                logger.debug("milight: item is of type warm/cold white");
+                if (OnOffType.ON.equals(command)) {
+                    sendPercent(bulb, rgbwSteps, bridgeId, PercentType.HUNDRED, BindingType.colorTemperature);
+                } else if (OnOffType.OFF.equals(command)) {
+                    sendPercent(bulb, rgbwSteps, bridgeId, PercentType.ZERO, BindingType.colorTemperature);
+                } else if (IncreaseDecreaseType.INCREASE.equals(command)) {
+                    PercentType newValue = sendWarmer(bulb, bridgeId);
+                    eventPublisher.postUpdate(itemName, newValue);
+                } else if (IncreaseDecreaseType.DECREASE.equals(command)) {
+                    PercentType newValue = sendCooler(bulb, bridgeId);
+                    eventPublisher.postUpdate(itemName, newValue);
+                } else if (command instanceof PercentType) {
+                    sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.colorTemperature);
+                }
+            } else if (deviceConfig.getCommandType().equals(BindingType.discoMode)) {
+                logger.debug("milight: item is of type discoMode");
+                if (IncreaseDecreaseType.INCREASE.equals(command)) {
+                    sendDiscoModeUp(bulb, bridgeId);
+                } else if (IncreaseDecreaseType.DECREASE.equals(command)) {
+                    sendDiscoModeDown(bulb, bridgeId);
+                } else if (command instanceof PercentType) {
+                    sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.discoMode);
+                }
+            } else if (deviceConfig.getCommandType().equals(BindingType.discoSpeed)) {
+                logger.debug("milight: item is of type discoSpeed");
+                if (IncreaseDecreaseType.INCREASE.equals(command)) {
+                    sendOn(bulb, bridgeId);
+                    Thread.sleep(100);
+                    sendIncreaseSpeed(bulb, bridgeId);
+                } else if (IncreaseDecreaseType.DECREASE.equals(command)) {
+                    sendOn(bulb, bridgeId);
+                    Thread.sleep(100);
+                    sendDecreaseSpeed(bulb, bridgeId);
+                } else if (command instanceof PercentType) {
+                    sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.discoSpeed);
+                }
+            } else if (deviceConfig.getCommandType().equals(BindingType.rgb)) {
+                logger.debug("milight: item is of type rgb");
+                if (command instanceof HSBType) {
+                    HSBType hsbCommand = (HSBType) command;
+                    DecimalType saturation = hsbCommand.getSaturation();
+                    if (saturation.equals(0)) {
+                        sendOn(bulb, bridgeId);
+                        Thread.sleep(100);
+                        sendWhiteMode(bulb, bridgeId);
+                    } else {
+                        sendColor(command, bridgeId, bulb);
+                    }
+                } else if (command instanceof PercentType) {
+                    sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.brightness);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("milight: Failed to send {} command ", deviceConfig.getCommandType(), e);
+        }
+    }
+
+    private void sendPercent(int bulb, int rgbwSteps, String bridgeId, PercentType command,
+            MilightBindingConfig.BindingType type) {
+        logger.debug("milight: sendPercent");
+        if (BindingType.brightness.equals(type) && command.equals(PercentType.ZERO)) {
+            sendOff(bulb, bridgeId);
+            return;
+        }
+        if (BindingType.brightness.equals(type) && command.equals(PercentType.HUNDRED)) {
+            sendFull(bulb, rgbwSteps, bridgeId);
+            return;
+        }
+        PercentType oldPercent = getCurrentState(bulb, bridgeId, type);
+
+        // Make sure lights are on and engage current bulb via a preceding ON command:
+        sendOn(bulb, bridgeId);
+        try {
+            // White Bulbs: 10 levels of brightness + Off.
+            if (bulb < 5) {
+                double stepSize = 9.090909090909091;
+
+                // Assume lowest brightness level (about 9%) if just powered on.
+                if (oldPercent.equals(PercentType.ZERO)) {
+                    oldPercent = new PercentType(9);
+                }
+
+                int repeatCount = Math.abs((int) Math.round(command.intValue() / stepSize)
+                        - (int) Math.round(oldPercent.intValue() / stepSize));
+                logger.debug("milight: dim from '{}' with command '{}' via '{}' steps.", oldPercent.toString(),
+                        command.toString(), repeatCount);
+                if (command.compareTo(oldPercent) > 0) {
+                    for (int i = 0; i < repeatCount; i++) {
+                        Thread.sleep(100);
+                        if (BindingType.brightness.equals(type)) {
+                            sendIncrease(bulb, rgbwSteps, bridgeId);
+                        } else if (BindingType.colorTemperature.equals(type)) {
+                            sendWarmer(bulb, bridgeId);
+                        }
+                    }
+                } else if (command.compareTo(oldPercent) < 0) {
+                    for (int i = 0; i < repeatCount; i++) {
+                        Thread.sleep(100);
+                        if (BindingType.brightness.equals(type)) {
+                            sendDecrease(bulb, rgbwSteps, bridgeId);
+                        } else if (BindingType.colorTemperature.equals(type)) {
+                            sendCooler(bulb, bridgeId);
+                        }
+                    }
+                }
+                // Old RGB Bulbs: 9 levels of brightness + Off.
+            } else if (bulb == 5) {
+                if (command.compareTo(oldPercent) > 0) {
+                    int repeatCount = (command.intValue() - oldPercent.intValue()) / 10;
+                    for (int i = 0; i < repeatCount; i++) {
+                        Thread.sleep(100);
+                        if (BindingType.brightness.equals(type) && bulb < 6) {
+                            sendIncrease(bulb, rgbwSteps, bridgeId);
+                        } else if (BindingType.colorTemperature.equals(type)) {
+                            sendWarmer(bulb, bridgeId);
+                        } else if (BindingType.discoSpeed.equals(type)) {
+
+                            sendIncreaseSpeed(bulb, bridgeId);
+                        } else if (BindingType.discoMode.equals(type)) {
+                            sendDiscoModeUp(bulb, bridgeId);
+                        }
+                    }
+                } else if (command.compareTo(oldPercent) < 0) {
+                    int repeatCount = (oldPercent.intValue() - command.intValue()) / 10;
+                    for (int i = 0; i < repeatCount; i++) {
+                        Thread.sleep(100);
+                        if (BindingType.brightness.equals(type) && bulb < 6) {
+                            sendDecrease(bulb, rgbwSteps, bridgeId);
+                        } else if (BindingType.colorTemperature.equals(type)) {
+                            sendCooler(bulb, bridgeId);
+                        } else if (BindingType.discoSpeed.equals(type)) {
+                            sendDecreaseSpeed(bulb, bridgeId);
+                        } else if (BindingType.discoMode.equals(type)) {
+                            sendDiscoModeDown(bulb, bridgeId);
+                        }
+                    }
+                }
+                // RGBW Bulbs:
+            } else if (bulb > 5) {
+                if (command.intValue() > 0 && command.intValue() < 100) {
+                    int newCommand = (command.intValue() * (rgbwSteps - 2) / 100 + 2);
+                    Thread.sleep(100);
+                    String messageBytes = "4E:" + Integer.toHexString(newCommand) + ":55";
+                    logger.debug("milight: send dimming packet '{}' to RGBW bulb channel '{}'", messageBytes, bulb);
+                    sendMessage(messageBytes, bridgeId);
+                } else if (command.intValue() > 99) {
+                    sendFull(bulb, rgbwSteps, bridgeId);
+                } else if (command.intValue() < 1) {
+                    sendOff(bulb, bridgeId);
+                }
+            }
+            // store dimmerValue
+            setCurrentState(bulb, bridgeId, command, type);
+        } catch (InterruptedException e) {
+            logger.debug("Sleeping thread has been interrupted.");
+        }
+    }
+
+    private PercentType getCurrentState(int bulb, String bridgeId, BindingType type) {
+        PercentType percent = dimmerState.get(bridgeId + bulb + type);
+        if (percent == null) {
+            percent = PercentType.ZERO;
+        }
+        return percent;
+    }
+
+    private void setCurrentState(int bulb, String bridgeId, PercentType command, BindingType type) {
+        dimmerState.put(bridgeId + bulb + type, command);
+    }
+
+    private PercentType sendIncrease(int bulb, int rgbwSteps, String bridgeId) {
+        logger.debug("milight: sendIncrease");
+        String messageBytes = null;
+        switch (bulb) {
+            // increase brightness of white bulbs
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                messageBytes = "3C:00:55";
+                break;
+            // increase brightness of rgb bulbs
+            case 5:
+                messageBytes = "23:00:55";
+                break;
+        }
+        int currentPercent = getCurrentState(bulb, bridgeId, BindingType.brightness).intValue();
+        if (currentPercent == 0) {
+            try {
+                sendOn(bulb, bridgeId);
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+            }
+        }
+        int newPercent = currentPercent + 10;
+        if (newPercent > 100) {
+            newPercent = 100;
+        }
+        PercentType newValue = new PercentType(newPercent);
+        if (bulb > 5) {
+            int increasePercent = newPercent * (rgbwSteps - 2) / 100 + 2;
+            messageBytes = "4E:" + Integer.toHexString(increasePercent) + ":55";
+            logger.debug("Bulb '{}' set to '{}' dimming Steps", bulb, rgbwSteps);
+        } else if (bulb < 5) {
+            newPercent = (int) Math.round(
+                    (Math.round(getCurrentState(bulb, bridgeId, BindingType.brightness).intValue() / 9.090909090909091)
+                            + 1) * 9.090909090909091);
+            newValue = new PercentType(newPercent);
+            logger.debug("milight: Bulb '{}' getting increased to '{}'", bulb, newPercent);
+        }
+        sendMessage(messageBytes, bridgeId);
+        setCurrentState(bulb, bridgeId, newValue, BindingType.brightness);
+        return newValue;
+    }
+
+    private PercentType sendDecrease(int bulb, int rgbwSteps, String bridgeId) {
+        logger.debug("milight: sendDecrease");
+        String messageBytes = null;
+        switch (bulb) {
+            // decrease brightness of white bulbs
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                messageBytes = "34:00:55";
+                break;
+            // decrease brightness of rgb bulbs
+            case 5:
+                messageBytes = "24:00:55";
+                break;
+        }
+        int newPercent = getCurrentState(bulb, bridgeId, BindingType.brightness).intValue() - 10;
+        if (newPercent < 0) {
+            newPercent = 0;
+        }
+        PercentType newValue = new PercentType(newPercent);
+        if (newValue.equals(PercentType.ZERO)) {
+            sendOff(bulb, bridgeId);
+        } else {
+            if (bulb > 5) {
+                int decreasePercent = newPercent * (rgbwSteps - 2) / 100 + 2;
+                messageBytes = "4E:" + Integer.toHexString(decreasePercent) + ":55";
+                logger.debug("Bulb '{}' set to '{}' dimming Steps", bulb, rgbwSteps);
+            } else if (bulb < 5) {
+                newPercent = (int) Math.round((Math.round(
+                        getCurrentState(bulb, bridgeId, BindingType.brightness).intValue() / 9.090909090909091) - 1)
+                        * 9.090909090909091);
+                newValue = new PercentType(newPercent);
+                logger.debug("milight: Bulb '{}' getting decreased to '{}'", bulb, newPercent);
+            }
+            sendMessage(messageBytes, bridgeId);
+        }
+        setCurrentState(bulb, bridgeId, newValue, BindingType.brightness);
+        return newValue;
+    }
+
+    private PercentType sendWarmer(int bulb, String bridgeId) {
+        logger.debug("milight: sendWarmer");
+        int newPercent = getCurrentState(bulb, bridgeId, BindingType.brightness).intValue() + 10;
+        if (newPercent > 100) {
+            newPercent = 100;
+        }
+        PercentType newValue = new PercentType(newPercent);
+        String messageBytes = "3E:00:55";
+        sendMessage(messageBytes, bridgeId);
+        setCurrentState(bulb, bridgeId, newValue, BindingType.brightness);
+        return newValue;
+    }
+
+    private PercentType sendCooler(int bulb, String bridgeId) {
+        logger.debug("milight: sendCooler");
+        int newPercent = getCurrentState(bulb, bridgeId, BindingType.brightness).intValue() - 10;
+        if (newPercent < 0) {
+            newPercent = 0;
+        }
+        PercentType newValue = new PercentType(newPercent);
+        String messageBytes = "3F:00:55";
+        sendMessage(messageBytes, bridgeId);
+        setCurrentState(bulb, bridgeId, newValue, BindingType.brightness);
+        return newValue;
+    }
+
+    private void sendDiscoModeUp(int bulb, String bridgeId) {
+        logger.debug("milight: sendDiscoModeUp");
+        if (bulb < 6) {
+            String messageBytes = "27:00:55";
+            sendMessage(messageBytes, bridgeId);
+        }
+        if (bulb > 5) {
+            String messageBytes = "4D:00:55";
+            sendMessage(messageBytes, bridgeId);
+        }
+    }
+
+    private void sendDiscoModeDown(int bulb, String bridgeId) {
+        logger.debug("milight: sendDiscoModeDown");
+        String messageBytes = "28:00:55";
+        sendMessage(messageBytes, bridgeId);
+    }
+
+    private void sendIncreaseSpeed(int bulb, String bridgeId) {
+        logger.debug("milight: sendIncreaseSpeed");
+        String messageBytes = null;
+        switch (bulb) {
+            case 5:
+                // message increaseSpeed rgb bulbs
+                messageBytes = "25:00:55";
+                break;
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+                // message increaseSpeed rgb-w bulbs
+                messageBytes = "44:00:55";
+                break;
+        }
+        sendMessage(messageBytes, bridgeId);
+    }
+
+    private void sendDecreaseSpeed(int bulb, String bridgeId) {
+        logger.debug("milight: sendDecreaseSpeed");
+        String messageBytes = null;
+        switch (bulb) {
+            case 5:
+                // message decreaseSpeed rgb bulbs
+                messageBytes = "26:00:55";
+                break;
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+                // message decreaseSpeed rgb-w bulbs
+                messageBytes = "43:00:55";
+                break;
+        }
+        sendMessage(messageBytes, bridgeId);
+    }
+
+    private void sendNightMode(int bulb, String bridgeId) {
+        logger.debug("milight: sendNightMode");
+        String messageBytes = null;
+        String messageBytes2 = null;
+        switch (bulb) {
+            case 0:
+                // message nightMode all white bulbs
+                messageBytes = "B9:00:55";
+                break;
+            case 1:
+                // message nightMode white bulb channel 1
+                messageBytes = "BB:00:55";
+                break;
+            case 2:
+                // message nightMode white bulb channel 2
+                messageBytes = "B3:00:55";
+                break;
+            case 3:
+                // message nightMode white bulb channel 3
+                messageBytes = "BA:00:55";
+                break;
+            case 4:
+                // message nightMode white bulb channel 4
+                messageBytes = "B6:00:55";
+                break;
+            case 6:
+                // message nightMode all RGBW bulbs
+                messageBytes = "41:00:55";
+                messageBytes2 = "C1:00:55";
+                break;
+            case 7:
+                // message nightMode RGBW bulb channel 1
+                messageBytes = "46:00:55";
+                messageBytes2 = "C6:00:55";
+                break;
+            case 8:
+                // message nightMode RGBW bulb channel 2
+                messageBytes = "48:00:55";
+                messageBytes2 = "C8:00:55";
+                break;
+            case 9:
+                // message nightMode RGBW bulb channel 3
+                messageBytes = "4A:00:55";
+                messageBytes2 = "CA:00:55";
+                break;
+            case 10:
+                // message nightMode RGBW bulb channel 4
+                messageBytes = "4C:00:55";
+                messageBytes2 = "CC:00:55";
+                break;
+        }
+        sendMessage(messageBytes, bridgeId);
+
+        // nightMode for RGBW bulbs requires second message 100ms later.
+        if (bulb >= 6 && bulb <= 10) {
+            try {
+                Thread.sleep(100);
+                sendMessage(messageBytes2, bridgeId);
+            } catch (InterruptedException e) {
+                logger.debug("Sleeping thread has been interrupted.");
+            }
+        }
+
+    }
+
+    private void sendWhiteMode(int bulb, String bridgeId) {
+        logger.debug("milight: sendWhiteMode");
+        String messageBytes = null;
+        switch (bulb) {
+            case 6:
+                // message whiteMode all RGBW bulbs
+                messageBytes = "C2:00:55";
+                break;
+            case 7:
+                // message whiteMode RGBW bulb channel 1
+                messageBytes = "C5:00:55";
+                break;
+            case 8:
+                // message whiteMode RGBW bulb channel 2
+                messageBytes = "C7:00:55";
+                break;
+            case 9:
+                // message whiteMode RGBW bulb channel 3
+                messageBytes = "C9:00:55";
+                break;
+            case 10:
+                // message whiteMode RGBW bulb channel 4
+                messageBytes = "CB:00:55";
+                break;
+        }
+        sendMessage(messageBytes, bridgeId);
+    }
+
+    private void sendFull(int bulb, int rgbwSteps, String bridgeId) {
+        logger.debug("milight: sendFull");
+        String messageBytes = null;
+        switch (bulb) {
+            case 0:
+                // message fullBright all white bulbs
+                messageBytes = "B5:00:55";
+                break;
+            case 1:
+                // message fullBright white bulb channel 1
+                messageBytes = "B8:00:55";
+                break;
+            case 2:
+                // message fullBright white bulb channel 2
+                messageBytes = "BD:00:55";
+                break;
+            case 3:
+                // message fullBright white bulb channel 3
+                messageBytes = "B7:00:55";
+                break;
+            case 4:
+                // message fullBright white bulb channel 4
+                messageBytes = "B2:00:55";
+                break;
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+                try {
+                    sendOn(bulb, bridgeId);
+                    Thread.sleep(100);
+                    messageBytes = "4E:" + Integer.toHexString(rgbwSteps) + ":55";
+                    logger.debug("Bulb '{}' set to '{}' dimming Steps", bulb, rgbwSteps);
+                } catch (InterruptedException e) {
+                    logger.debug("Sleeping thread has been interrupted.");
+                }
+                break;
+        }
+        sendMessage(messageBytes, bridgeId);
+        setCurrentState(bulb, bridgeId, PercentType.HUNDRED, BindingType.brightness);
+    }
+
+    private void sendOn(int bulb, String bridgeId) {
+        logger.debug("milight: sendOn");
+        String messageBytes = null;
+        switch (bulb) {
+            case 0:
+                // message all white bulbs ON
+                messageBytes = "35:00:55";
+                break;
+            case 1:
+                // message white bulb channel 1 ON
+                messageBytes = "38:00:55";
+                break;
+            case 2:
+                // message white bulb channel 2 ON
+                messageBytes = "3D:00:55";
+                break;
+            case 3:
+                // message white bulb channel 3 ON
+                messageBytes = "37:00:55";
+                break;
+            case 4:
+                // message white bulb channel 4 ON
+                messageBytes = "32:00:55";
+                break;
+            case 5:
+                // message rgb bulbs ON
+                messageBytes = "22:00:55";
+                break;
+            case 6:
+                // message all rgb-w bulbs ON
+                messageBytes = "42:00:55";
+                break;
+            case 7:
+                // message rgb-w bulbs channel1 ON
+                messageBytes = "45:00:55";
+                break;
+            case 8:
+                // message rgb-w bulbs channel2 ON
+                messageBytes = "47:00:55";
+                break;
+            case 9:
+                // message rgb-w bulbs channel3 ON
+                messageBytes = "49:00:55";
+                break;
+            case 10:
+                // message rgb-w bulbs channel4 ON
+                messageBytes = "4B:00:55";
+                break;
+        }
+        sendMessage(messageBytes, bridgeId);
+    }
+
+    private void sendOff(int bulb, String bridgeId) {
+        logger.debug("milight: sendOff");
+        String messageBytes = null;
+        switch (bulb) {
+            case 0:
+                // message all white bulbs OFF
+                messageBytes = "39:00:55";
+                break;
+            case 1:
+                // message white bulb channel 1 OFF
+                messageBytes = "3B:00:55";
+                break;
+            case 2:
+                // message white bulb channel 2 OFF
+                messageBytes = "33:00:55";
+                break;
+            case 3:
+                // message white bulb channel 3 OFF
+                messageBytes = "3A:00:55";
+                break;
+            case 4:
+                // message white bulb channel 4 OFF
+                messageBytes = "36:00:55";
+                break;
+            case 5:
+                // message rgb bulbs OFF
+                messageBytes = "21:00:55";
+                break;
+            case 6:
+                // message all rgb-w bulbs OFF
+                messageBytes = "41:00:55";
+                break;
+            case 7:
+                // message rgb-w bulbs channel1 OFF
+                messageBytes = "46:00:55";
+                break;
+            case 8:
+                // message rgb-w bulbs channel2 OFF
+                messageBytes = "48:00:55";
+                break;
+            case 9:
+                // message rgb-w bulbs channel3 OFF
+                messageBytes = "4A:00:55";
+                break;
+            case 10:
+                // message rgb-w bulbs channel4 OFF
+                messageBytes = "4C:00:55";
+                break;
+        }
+        // Bring white bulb to 10% before powering off.
+        if (bulb < 5) {
+            setCurrentState(bulb, bridgeId, PercentType.HUNDRED, BindingType.brightness);
+            for (int i = 0; i < 10; i++) {
+                sendDecrease(bulb, 27, bridgeId);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+        sendMessage(messageBytes, bridgeId);
+        setCurrentState(bulb, bridgeId, PercentType.ZERO, BindingType.brightness);
+    }
+
+    private void sendColor(Command command, String bridgeId, int bulb) {
+        logger.debug("milight: sendColor");
+        HSBType hsbCommand = (HSBType) command;
+        DecimalType hue = hsbCommand.getHue();
+
+        // we have to map [0,360] to [0,0xFF], where red equals hue=0 and the milight color 0xB0 (=176)
+        Integer milightColorNo = (256 + 176 - (int) (hue.floatValue() / 360.0 * 255.0)) % 256;
+        try {
+            if (bulb == 5) {
+                String messageBytes = "20:" + Integer.toHexString(milightColorNo) + ":55";
+                sendMessage(messageBytes, bridgeId);
+            }
+            if (bulb > 5) {
+                sendOn(bulb, bridgeId);
+                Thread.sleep(100);
+                String messageBytes = "40:" + Integer.toHexString(milightColorNo) + ":55";
+                sendMessage(messageBytes, bridgeId);
+            }
+        } catch (InterruptedException e) {
+            logger.debug("Sleeping thread has been interrupted.");
+        }
+    }
+
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    protected void internalReceiveUpdate(String itemName, State newState) {
+        // the code being executed when a state was sent on the openHAB
+        // event bus goes here. This method is only called if one of the
+        // BindingProviders provide a binding for the given 'itemName'.
+        logger.debug("internalReceiveUpdate() is called!");
+    }
+
+    protected void sendMessage(String messageBytes, String bridgeId) {
+
+        String bridgeIp = bridgeIpConfig.get(bridgeId);
+        Integer bridgePort = bridgePortConfig.get(bridgeId);
+
+        if (bridgePort == null) {
+            bridgePort = DEFAULT_PORT;
+        }
+
+        try {
+            byte[] buffer = getMessageBytes(messageBytes);
+
+            InetAddress IPAddress = InetAddress.getByName(bridgeIp);
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, IPAddress, bridgePort);
+            DatagramSocket datagramSocket = new DatagramSocket();
+            datagramSocket.send(packet);
+            datagramSocket.close();
+            logger.debug("Sent packet '{}' to bridge '{}' ({}:{})",
+                    new Object[] { messageBytes, bridgeId, bridgeIp, bridgePort });
+        } catch (Exception e) {
+            logger.error("Failed to send Message to '{}': ", new Object[] { bridgeIp, e.getMessage() });
+        }
+    }
+
+    private byte[] getMessageBytes(String messageBytes) {
         logger.debug("milight: messageBytes to transform: '{}'", messageBytes);
-		if (messageBytes == null) {
-			logger.error("messageBytes must not be null");
-		}
-    	
+        if (messageBytes == null) {
+            logger.error("messageBytes must not be null");
+        }
+
         byte[] buffer = new byte[3];
         String[] hex = messageBytes.split("(\\:|\\-)");
-        
-    	int hexIndex = 0;
+
+        int hexIndex = 0;
         for (hexIndex = 0; hexIndex < 3; hexIndex++) {
             buffer[hexIndex] = (byte) Integer.parseInt(hex[hexIndex], 16);
         }
         return buffer;
     }
-		
-	/**
-	* Lookup of the configuration of the named item.
-	* 
- 	* @param itemName
- 	*            The name of the item.
- 	* @return The configuration, null otherwise.
- 	*/
-	private MilightBindingConfig getConfigForItemName(String itemName) {
-		for (MilightBindingProvider provider : this.providers) {
-			if (provider.getItemConfig(itemName) != null) {
-				return provider.getItemConfig(itemName);
-			}
-		}
-		return null;
-	}
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		if (config != null) {
-			Enumeration<String> keys = config.keys();
-			while (keys.hasMoreElements()) {
-				String key = (String) keys.nextElement();
+    /**
+     * Lookup of the configuration of the named item.
+     *
+     * @param itemName
+     *            The name of the item.
+     * @return The configuration, null otherwise.
+     */
+    private MilightBindingConfig getConfigForItemName(String itemName) {
+        for (MilightBindingProvider provider : this.providers) {
+            if (provider.getItemConfig(itemName) != null) {
+                return provider.getItemConfig(itemName);
+            }
+        }
+        return null;
+    }
 
-				// the config-key enumeration contains additional keys that we
-				// don't want to process here ...
-				if ("service.pid".equals(key)) {
-					continue;
-				}
+    protected void addBindingProvider(MilightBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
 
-				Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
+    protected void removeBindingProvider(MilightBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
 
-				if (!matcher.matches()) {
-					logger.debug("given config key '" + key
-						+ "' does not follow the expected pattern '<id>.<host|port>'");
-					continue;
-				}
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+        if (config != null) {
+            Enumeration<String> keys = config.keys();
+            while (keys.hasMoreElements()) {
+                String key = keys.nextElement();
 
-				matcher.reset();
-				matcher.find();
+                // the config-key enumeration contains additional keys that we
+                // don't want to process here ...
+                if ("service.pid".equals(key)) {
+                    continue;
+                }
 
-				String deviceId = matcher.group(1);
+                Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
 
-				DeviceConfig deviceConfig = deviceConfigs.get(deviceId);
+                if (!matcher.matches()) {
+                    logger.debug(
+                            "given config key '" + key + "' does not follow the expected pattern '<id>.<host|port>'");
+                    continue;
+                }
 
-				if (deviceConfig == null) {
-					deviceConfig = new DeviceConfig(deviceId);
-					deviceConfigs.put(deviceId, deviceConfig);
-				}
+                matcher.reset();
+                matcher.find();
 
-				String configKey = matcher.group(2);
-				String value = (String) config.get(key);
+                String deviceId = matcher.group(1);
 
-				if ("host".equals(configKey)) {
-					deviceConfig.host = value;
-					bridgeIpConfig.put(deviceId, value);
-				} else if ("port".equals(configKey)) {
-					deviceConfig.port = Integer.valueOf(value);
-					bridgePortConfig.put(deviceId, Integer.valueOf(value));
-				} else {
-					throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
-				}
-			}
-		}
-	}
+                DeviceConfig deviceConfig = deviceConfigs.get(deviceId);
 
-	/**
-	 * Internal data structure which carries the connection details of one
-	 * device (there could be several)
-	 */
-	static class DeviceConfig {
-		
-		String host;
-		int port = DEFAULT_PORT;
-		
-		String deviceId;
+                if (deviceConfig == null) {
+                    deviceConfig = new DeviceConfig(deviceId);
+                    deviceConfigs.put(deviceId, deviceConfig);
+                }
 
-		public DeviceConfig(String deviceId) {
-			this.deviceId = deviceId;
-		}
+                String configKey = matcher.group(2);
+                String value = (String) config.get(key);
 
-		public String getHost(){
-			return host;
-		}
-		
-		public int getPort(){
-			return port;
-		}
-		
-		@Override
-		public String toString() {
-			return "Device [id=" + deviceId + ", host=" + host + ", port=" + port + "]";
-		}
-	}
+                if ("host".equals(configKey)) {
+                    deviceConfig.host = value;
+                    bridgeIpConfig.put(deviceId, value);
+                } else if ("port".equals(configKey)) {
+                    deviceConfig.port = Integer.valueOf(value);
+                    bridgePortConfig.put(deviceId, Integer.valueOf(value));
+                } else {
+                    throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
+                }
+            }
+        }
+    }
+
+    /**
+     * Internal data structure which carries the connection details of one
+     * device (there could be several)
+     */
+    static class DeviceConfig {
+
+        String host;
+        int port = DEFAULT_PORT;
+
+        String deviceId;
+
+        public DeviceConfig(String deviceId) {
+            this.deviceId = deviceId;
+        }
+
+        public String getHost() {
+            return host;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        @Override
+        public String toString() {
+            return "Device [id=" + deviceId + ", host=" + host + ", port=" + port + "]";
+        }
+    }
 }

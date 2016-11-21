@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,7 +20,7 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
 
 /**
  * Queries the Ecobee API for thermostats.
- * 
+ *
  * @author John Cocula
  * @since 1.7.0
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/operations/get-thermostats.shtml">GET
@@ -28,82 +28,82 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
  */
 public class ThermostatRequest extends AbstractRequest {
 
-	private static final String RESOURCE_URL = API_BASE_URL + "1/thermostat";
+    private static final String RESOURCE_URL = API_BASE_URL + "1/thermostat";
 
-	@JsonIgnore
-	private final String accessToken;
+    @JsonIgnore
+    private final String accessToken;
 
-	@JsonProperty("selection")
-	private final Selection selection;
+    @JsonProperty("selection")
+    private final Selection selection;
 
-	@JsonProperty("page")
-	private final Page page;
+    @JsonProperty("page")
+    private final Page page;
 
-	/**
-	 * Creates a request for a selection of Thermostats.
-	 * 
-	 * @param accessToken
-	 * @param selection
-	 * @param page
-	 *            optional, may be <code>null</code>
-	 */
-	public ThermostatRequest(final String accessToken, final Selection selection, final Page page) {
-		assert accessToken != null : "accessToken must not be null!";
-		assert selection != null : "selection must not be null!";
+    /**
+     * Creates a request for a selection of Thermostats.
+     * 
+     * @param accessToken
+     * @param selection
+     * @param page
+     *            optional, may be <code>null</code>
+     */
+    public ThermostatRequest(final String accessToken, final Selection selection, final Page page) {
+        assert accessToken != null : "accessToken must not be null!";
+        assert selection != null : "selection must not be null!";
 
-		this.accessToken = accessToken;
-		this.selection = selection;
-		this.page = page;
-	}
+        this.accessToken = accessToken;
+        this.selection = selection;
+        this.page = page;
+    }
 
-	@Override
-	public ThermostatResponse execute() {
-		final String url = buildQueryString();
-		String json = null;
+    @Override
+    public ThermostatResponse execute() {
+        final String url = buildQueryString();
+        String json = null;
 
-		try {
-			json = executeQuery(url);
+        try {
+            json = executeQuery(url);
 
-			final ThermostatResponse response = JSON.readValue(json, ThermostatResponse.class);
+            final ThermostatResponse response = JSON.readValue(json, ThermostatResponse.class);
 
-			// build internal maps and fix any internal cross references
-			response.sync();
+            // build internal maps and fix any internal cross references
+            response.sync();
 
-			return response;
-		} catch (final Exception e) {
-			throw newException("Could not get thermostats.", e, url, json);
-		}
-	}
+            return response;
+        } catch (final Exception e) {
+            throw newException("Could not get thermostats.", e, url, json);
+        }
+    }
 
-	@Override
-	public String toString() {
-		final ToStringBuilder builder = createToStringBuilder();
-		builder.appendSuper(super.toString());
-		builder.append("accessToken", this.accessToken);
-		builder.append("selection", this.selection);
-		if (this.page != null) {
-			builder.append("page", this.page);
-		}
+    @Override
+    public String toString() {
+        final ToStringBuilder builder = createToStringBuilder();
+        builder.appendSuper(super.toString());
+        builder.append("accessToken", this.accessToken);
+        builder.append("selection", this.selection);
+        if (this.page != null) {
+            builder.append("page", this.page);
+        }
 
-		return builder.toString();
-	}
+        return builder.toString();
+    }
 
-	protected String executeQuery(final String url) {
-		Properties headers = new Properties();
-		headers.putAll(HTTP_HEADERS);
-		headers.put("Authorization", "Bearer " + this.accessToken);
-		return executeUrl(HTTP_GET, url, headers, null, null, HTTP_REQUEST_TIMEOUT);
-	}
+    protected String executeQuery(final String url) {
+        Properties headers = new Properties();
+        headers.putAll(HTTP_HEADERS);
+        headers.put("Authorization", "Bearer " + this.accessToken);
+        return executeUrl(HTTP_GET, url, headers, null, null, HTTP_REQUEST_TIMEOUT);
+    }
 
-	private String buildQueryString() {
-		final StringBuilder urlBuilder = new StringBuilder(RESOURCE_URL);
+    private String buildQueryString() {
+        final StringBuilder urlBuilder = new StringBuilder(RESOURCE_URL);
 
-		try {
-			urlBuilder.append("?json=");
-			urlBuilder.append(JSON.writeValueAsString(this));
-			return URIUtil.encodeQuery(urlBuilder.toString());
-		} catch (final Exception e) {
-			throw new EcobeeException(e);
-		}
-	}
+        try {
+            urlBuilder.append("?json=");
+            urlBuilder.append(JSON.writeValueAsString(this));
+            return URIUtil.encodeQuery(urlBuilder.toString());
+        } catch (final Exception e) {
+            throw new EcobeeException(e);
+        }
+    }
 }

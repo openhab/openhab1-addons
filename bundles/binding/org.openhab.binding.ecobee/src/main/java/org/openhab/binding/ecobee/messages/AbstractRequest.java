@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,46 +18,46 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
 
 /**
  * Base class for all Ecobee API requests.
- * 
+ *
  * @author John Cocula
  * @since 1.7.0
  */
 public abstract class AbstractRequest extends AbstractMessage implements Request {
 
-	protected static final String HTTP_GET = "GET";
+    protected static final String HTTP_GET = "GET";
 
-	protected static final String HTTP_POST = "POST";
+    protected static final String HTTP_POST = "POST";
 
-	protected static final String API_BASE_URL = "https://api.ecobee.com/";
+    protected static final String API_BASE_URL = "https://api.ecobee.com/";
 
-	protected static final Properties HTTP_HEADERS;
+    protected static final Properties HTTP_HEADERS;
 
-	protected static int HTTP_REQUEST_TIMEOUT = 20000;
+    protected static int HTTP_REQUEST_TIMEOUT = 20000;
 
-	protected static final ObjectMapper JSON = new ObjectMapper();
+    protected static final ObjectMapper JSON = new ObjectMapper();
 
-	static {
-		HTTP_HEADERS = new Properties();
-		HTTP_HEADERS.put("Content-Type", "application/json;charset=UTF-8");
-		HTTP_HEADERS.put("User-Agent", "ecobee-openhab-api/1.0");
+    static {
+        HTTP_HEADERS = new Properties();
+        HTTP_HEADERS.put("Content-Type", "application/json;charset=UTF-8");
+        HTTP_HEADERS.put("User-Agent", "ecobee-openhab-api/1.0");
 
-		// do not serialize null values
-		JSON.setSerializationInclusion(Inclusion.NON_NULL);
+        // do not serialize null values
+        JSON.setSerializationInclusion(Inclusion.NON_NULL);
 
-		// *most* dates in the JSON are in this format
-		JSON.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-	}
+        // *most* dates in the JSON are in this format
+        JSON.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+    }
 
-	public static void setHttpRequestTimeout(int timeout) {
-		HTTP_REQUEST_TIMEOUT = timeout;
-	}
+    public static void setHttpRequestTimeout(int timeout) {
+        HTTP_REQUEST_TIMEOUT = timeout;
+    }
 
-	protected final RuntimeException newException(final String message, final Exception cause, final String url,
-			final String json) {
-		if (cause instanceof JsonMappingException) {
-			return new EcobeeException("Could not parse JSON from URL '" + url + "': " + json, cause);
-		}
+    protected final RuntimeException newException(final String message, final Exception cause, final String url,
+            final String json) {
+        if (cause instanceof JsonMappingException) {
+            return new EcobeeException("Could not parse JSON from URL '" + url + "': " + json, cause);
+        }
 
-		return new EcobeeException(message, cause);
-	}
+        return new EcobeeException(message, cause);
+    }
 }

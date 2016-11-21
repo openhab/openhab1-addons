@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,35 +14,37 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
  * The binding configuration for a Daikin controller item.
- *  
+ * 
  * @author Ben Jones
  * @author Jos schering
  * @since 1.5.0
  */
 public class DaikinBindingConfig implements BindingConfig {
-	private String itemName;
-	private String id;
-	private DaikinCommandType commandType;
-	
-	public DaikinBindingConfig(String itemName, String bindingConfig) throws BindingConfigParseException {
-		String[] config = bindingConfig.split(":");
-		if (config.length != 2)
-			throw new BindingConfigParseException("Invalid Daikin binding configuration '" + bindingConfig + "' for item " + itemName + ". Expecting '<id>:<command>'.");
-		
-		this.itemName = itemName;
-		this.id = StringUtils.trim(config[0]);
-		this.commandType = DaikinCommandType.fromString(config[1]);
-	}
+    private String itemName;
+    private String id;
+    private DaikinCommandType commandType;
 
-	public String getItemName() {
-		return itemName;
-	}
+    public DaikinBindingConfig(String itemName, String bindingConfig) throws BindingConfigParseException {
+        String[] config = bindingConfig.split(":");
+        if (config.length != 2) {
+            throw new BindingConfigParseException("Invalid Daikin binding configuration '" + bindingConfig
+                    + "' for item " + itemName + ". Expecting '<id>:<command>'.");
+        }
 
-	public String getId() {
-		return id;
-	}
+        this.itemName = itemName;
+        this.id = StringUtils.trim(config[0]);
+        this.commandType = DaikinCommandType.fromString(config[1]);
+    }
 
-	public DaikinCommandType getCommandType() {
-		return commandType;
-	}
+    public String getItemName() {
+        return itemName;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public DaikinCommandType getCommandType() {
+        return commandType;
+    }
 }

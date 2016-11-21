@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,44 +14,44 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Holds information for the Plex user account   
- * 
+ * Holds information for the Plex user account
+ *
  * @author Jeroen Idserda
  * @since 1.8.0
  */
 @XmlRootElement(name = "user")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class User {
-	
-	private String username;
-	
-	private String email;
-	
-	@XmlElement(name = "authentication-token")
-	private String authenticationToken;
-	
-	public String getUsername() {
-		return username;
-	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    private String username;
 
-	public String getEmail() {
-		return email;
-	}
+    private String email;
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    @XmlElement(name = "authentication-token")
+    private String authenticationToken;
 
-	public String getAuthenticationToken() {
-		return authenticationToken;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setAuthenticationToken(String authenticationToken) {
-		this.authenticationToken = authenticationToken;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAuthenticationToken() {
+        return authenticationToken;
+    }
+
+    public void setAuthenticationToken(String authenticationToken) {
+        this.authenticationToken = authenticationToken;
+    }
 
 }

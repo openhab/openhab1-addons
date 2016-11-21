@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,239 +25,229 @@ import org.openhab.core.types.UnDefType;
 
 /**
  * RFXCOM data class for temperature and humidity message.
- * 
+ *
  * @author Marc SAUVEUR
  * @since 1.4.0
  */
 public class RFXComWindMessage extends RFXComBaseMessage {
 
-	public enum SubType {
-		UNDEF(0),
-		WTGR800(1),
-		WGR800(2),
-		STR918_WGR918_WGR928(3),
-		TFA(4),
-		UPM_WDS500(5),
-		WS2300(6),
-		
-		UNKNOWN(255);
+    public enum SubType {
+        UNDEF(0),
+        WTGR800(1),
+        WGR800(2),
+        STR918_WGR918_WGR928(3),
+        TFA(4),
+        UPM_WDS500(5),
+        WS2300(6),
 
-		private final int subType;
+        UNKNOWN(255);
 
-		SubType(int subType) {
-			this.subType = subType;
-		}
+        private final int subType;
 
-		SubType(byte subType) {
-			this.subType = subType;
-		}
+        SubType(int subType) {
+            this.subType = subType;
+        }
 
-		public byte toByte() {
-			return (byte) subType;
-		}
-	}
+        SubType(byte subType) {
+            this.subType = subType;
+        }
 
-	
-	private final static List<RFXComValueSelector> supportedValueSelectors = Arrays
-			.asList(RFXComValueSelector.RAW_DATA,
-					RFXComValueSelector.SIGNAL_LEVEL,
-					RFXComValueSelector.BATTERY_LEVEL,
-					RFXComValueSelector.WIND_DIRECTION,
-					RFXComValueSelector.WIND_AVSPEED,
-					RFXComValueSelector.WIND_SPEED,
-					RFXComValueSelector.TEMPERATURE,
-					RFXComValueSelector.CHILL_FACTOR
-					);
+        public byte toByte() {
+            return (byte) subType;
+        }
+    }
 
-	public SubType subType = SubType.WTGR800;
-	public int sensorId = 0;
-	public double windDirection = 0;
-	public double windSpeed = 0;
-	public double windAvSpeed = 0; //TFA type only
-	public double temperature = 0; //TFA type only
-	public double chillFactor = 0; //TFA type only
-	public byte signalLevel = 0;
-	public byte batteryLevel = 0;
+    private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
+            RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.WIND_DIRECTION,
+            RFXComValueSelector.WIND_AVSPEED, RFXComValueSelector.WIND_SPEED, RFXComValueSelector.TEMPERATURE,
+            RFXComValueSelector.CHILL_FACTOR);
 
-	public RFXComWindMessage() {
-		packetType = PacketType.WIND;
-	}
+    public SubType subType = SubType.WTGR800;
+    public int sensorId = 0;
+    public double windDirection = 0;
+    public double windSpeed = 0;
+    public double windAvSpeed = 0;
+    public double temperature = 0; // TFA type only
+    public double chillFactor = 0; // TFA type only
+    public byte signalLevel = 0;
+    public byte batteryLevel = 0;
 
-	public RFXComWindMessage(byte[] data) {
-		encodeMessage(data);
-	}
+    public RFXComWindMessage() {
+        packetType = PacketType.WIND;
+    }
 
-	@Override
-	public String toString() {
-		String str = "";
+    public RFXComWindMessage(byte[] data) {
+        encodeMessage(data);
+    }
 
-		str += super.toString();
-		str += "\n - Sub type = " + subType;
-		str += "\n - Id = " + sensorId;
-		str += "\n - Wind direction = " + windDirection;
-		str += "\n - Wind speed = " + windSpeed;
-		if(subType == SubType.TFA) {
-			str += "\n - Average Wind speed = " + windAvSpeed;
-			str += "\n - Temperature = " + temperature;
-			str += "\n - Chill Factor = " + chillFactor;
-		}
-		str += "\n - Signal level = " + signalLevel;
-		str += "\n - Battery level = " + batteryLevel;
+    @Override
+    public String toString() {
+        String str = "";
 
-		return str;
-	}
+        str += super.toString();
+        str += "\n - Sub type = " + subType;
+        str += "\n - Id = " + sensorId;
+        str += "\n - Wind direction = " + windDirection;
+        str += "\n - Wind speed = " + windSpeed;
+        str += "\n - Average Wind speed = " + windAvSpeed;
+        if (subType == SubType.TFA) {
+            str += "\n - Temperature = " + temperature;
+            str += "\n - Chill Factor = " + chillFactor;
+        }
+        str += "\n - Signal level = " + signalLevel;
+        str += "\n - Battery level = " + batteryLevel;
 
-	@Override
-	public void encodeMessage(byte[] data) {
+        return str;
+    }
 
-		super.encodeMessage(data);
+    @Override
+    public void encodeMessage(byte[] data) {
 
-		try {
-			subType = SubType.values()[super.subType];
-		} catch (Exception e) {
-			subType = SubType.UNKNOWN;
-		}
-		sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
+        super.encodeMessage(data);
 
-		windDirection = (short) ((data[6] & 0xFF) << 8 | (data[7] & 0xFF));
-		windSpeed = (short) ((data[10] & 0xFF) << 8 | (data[11] & 0xFF)) * 0.1;
+        try {
+            subType = SubType.values()[super.subType];
+        } catch (Exception e) {
+            subType = SubType.UNKNOWN;
+        }
+        sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 
-		if(subType == SubType.TFA) {
-			windAvSpeed = (short) ((data[8] & 0xFF) << 8 | (data[9] & 0xFF)) * 0.1;
-			temperature = (short) ((data[12] & 0x7F) << 8 | (data[13] & 0xFF)) * 0.1;
-			if ((data[12] & 0x80) != 0)
-				temperature = -temperature;
-			chillFactor = (short) ((data[14] & 0x7F) << 8 | (data[15] & 0xFF)) * 0.1;
-			if ((data[14] & 0x80) != 0)
-				chillFactor = -chillFactor;
-		}
-		else {
-			windAvSpeed = 0;	
-			temperature = 0;	
-			chillFactor = 0;	
-		}
+        windDirection = (short) ((data[6] & 0xFF) << 8 | (data[7] & 0xFF));
+        windAvSpeed = (short) ((data[8] & 0xFF) << 8 | (data[9] & 0xFF)) * 0.1;
+        windSpeed = (short) ((data[10] & 0xFF) << 8 | (data[11] & 0xFF)) * 0.1;
 
-		signalLevel = (byte) ((data[16] & 0xF0) >> 4);
-		batteryLevel = (byte) (data[16] & 0x0F);
-	}
+        if (subType == SubType.TFA) {
+            temperature = (short) ((data[12] & 0x7F) << 8 | (data[13] & 0xFF)) * 0.1;
+            if ((data[12] & 0x80) != 0) {
+                temperature = -temperature;
+            }
+            chillFactor = (short) ((data[14] & 0x7F) << 8 | (data[15] & 0xFF)) * 0.1;
+            if ((data[14] & 0x80) != 0) {
+                chillFactor = -chillFactor;
+            }
+        } else {
+            temperature = 0;
+            chillFactor = 0;
+        }
 
-	@Override
-	public byte[] decodeMessage() {
-		byte[] data = new byte[16];
+        signalLevel = (byte) ((data[16] & 0xF0) >> 4);
+        batteryLevel = (byte) (data[16] & 0x0F);
+    }
 
-		data[0] = 0x10;
-		data[1] = RFXComBaseMessage.PacketType.RAIN.toByte();
-		data[2] = subType.toByte();
-		data[3] = seqNbr;
-		data[4] = (byte) ((sensorId & 0xFF00) >> 8);
-		data[5] = (byte) (sensorId & 0x00FF);
+    @Override
+    public byte[] decodeMessage() {
+        byte[] data = new byte[17];
 
-		short WindD = (short) Math.abs(windDirection);
-		data[6] = (byte) ((WindD >> 8) & 0xFF);
-		data[7] = (byte) (WindD & 0xFF);
-		
-		int WindS = (short) Math.abs(windSpeed) * 10;
-		data[10] = (byte) ((WindS >> 8) & 0xFF);
-		data[11] = (byte) (WindS & 0xFF);
+        data[0] = 0x10;
+        data[1] = RFXComBaseMessage.PacketType.RAIN.toByte();
+        data[2] = subType.toByte();
+        data[3] = seqNbr;
+        data[4] = (byte) ((sensorId & 0xFF00) >> 8);
+        data[5] = (byte) (sensorId & 0x00FF);
 
-		if(subType == SubType.TFA) {
-			int WindAS = (short) Math.abs(windAvSpeed) * 10;
-			data[8] = (byte) ((WindAS >> 8) & 0xFF);
-			data[9] = (byte) (WindAS & 0xFF);
+        short WindD = (short) Math.abs(windDirection);
+        data[6] = (byte) ((WindD >> 8) & 0xFF);
+        data[7] = (byte) (WindD & 0xFF);
 
-			short temp = (short) Math.abs(temperature * 10);
-			data[12] = (byte) ((temp >> 8) & 0xFF);
-			data[13] = (byte) (temp & 0xFF);
-			if (temperature < 0)
-				data[12] |= 0x80;
+        int WindAS = (short) Math.abs(windAvSpeed) * 10;
+        data[8] = (byte) ((WindAS >> 8) & 0xFF);
+        data[9] = (byte) (WindAS & 0xFF);
 
-			short chill = (short) Math.abs(chillFactor * 10);
-			data[14] = (byte) ((chill >> 8) & 0xFF);
-			data[15] = (byte) (chill & 0xFF);
-			if (chillFactor < 0)
-				data[14] |= 0x80;
-		}
+        int WindS = (short) Math.abs(windSpeed) * 10;
+        data[10] = (byte) ((WindS >> 8) & 0xFF);
+        data[11] = (byte) (WindS & 0xFF);
 
-		data[16] = (byte) (((signalLevel & 0x0F) << 4) | (batteryLevel & 0x0F));
+        if (subType == SubType.TFA) {
+            short temp = (short) Math.abs(temperature * 10);
+            data[12] = (byte) ((temp >> 8) & 0xFF);
+            data[13] = (byte) (temp & 0xFF);
+            if (temperature < 0) {
+                data[12] |= 0x80;
+            }
 
-		return data;
-	}
-	
-	@Override
-	public String generateDeviceId() {
-		 return String.valueOf(sensorId);
-	}
+            short chill = (short) Math.abs(chillFactor * 10);
+            data[14] = (byte) ((chill >> 8) & 0xFF);
+            data[15] = (byte) (chill & 0xFF);
+            if (chillFactor < 0) {
+                data[14] |= 0x80;
+            }
+        }
 
-	@Override
-	public State convertToState(RFXComValueSelector valueSelector)
-			throws RFXComException {
-		
-		org.openhab.core.types.State state = UnDefType.UNDEF;
+        data[16] = (byte) (((signalLevel & 0x0F) << 4) | (batteryLevel & 0x0F));
 
-		if (valueSelector.getItemClass() == NumberItem.class) {
+        return data;
+    }
 
-			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
-				state = new DecimalType(signalLevel);
-			} else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
-				state = new DecimalType(batteryLevel);
-			} else if (valueSelector == RFXComValueSelector.WIND_DIRECTION) {
-				state = new DecimalType(windDirection);
-			} else if (valueSelector == RFXComValueSelector.WIND_SPEED) {
-				state = new DecimalType(windSpeed);
-			} else if (valueSelector == RFXComValueSelector.WIND_AVSPEED) {
-				state = new DecimalType(windAvSpeed);
-			} else if (valueSelector == RFXComValueSelector.TEMPERATURE) {
-				state = new DecimalType(temperature);
-			} else if (valueSelector == RFXComValueSelector.CHILL_FACTOR) {
-				state = new DecimalType(chillFactor);
-			} else {
-				throw new RFXComException("Can't convert "
-						+ valueSelector + " to NumberItem");
-			}
+    @Override
+    public String generateDeviceId() {
+        return String.valueOf(sensorId);
+    }
 
-		} else if (valueSelector.getItemClass() == StringItem.class) {
+    @Override
+    public State convertToState(RFXComValueSelector valueSelector) throws RFXComException {
 
-			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+        org.openhab.core.types.State state = UnDefType.UNDEF;
 
-				state = new StringType(
-						DatatypeConverter.printHexBinary(rawMessage));
+        if (valueSelector.getItemClass() == NumberItem.class) {
 
-			
-			} else {
-				throw new RFXComException("Can't convert " + valueSelector + " to StringItem");
-			}
-		} else {
+            if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+                state = new DecimalType(signalLevel);
+            } else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
+                state = new DecimalType(batteryLevel);
+            } else if (valueSelector == RFXComValueSelector.WIND_DIRECTION) {
+                state = new DecimalType(windDirection);
+            } else if (valueSelector == RFXComValueSelector.WIND_SPEED) {
+                state = new DecimalType(windSpeed);
+            } else if (valueSelector == RFXComValueSelector.WIND_AVSPEED) {
+                state = new DecimalType(windAvSpeed);
+            } else if (valueSelector == RFXComValueSelector.TEMPERATURE) {
+                state = new DecimalType(temperature);
+            } else if (valueSelector == RFXComValueSelector.CHILL_FACTOR) {
+                state = new DecimalType(chillFactor);
+            } else {
+                throw new RFXComException("Can't convert " + valueSelector + " to NumberItem");
+            }
 
-			throw new RFXComException("Can't convert " + valueSelector
-					+ " to " + valueSelector.getItemClass());
+        } else if (valueSelector.getItemClass() == StringItem.class) {
 
-		}
+            if (valueSelector == RFXComValueSelector.RAW_DATA) {
 
-		return state;
-	}
+                state = new StringType(DatatypeConverter.printHexBinary(rawMessage));
 
-	@Override
-	public void convertFromState(RFXComValueSelector valueSelector, String id,
-			Object subType, Type type, byte seqNumber) throws RFXComException {
-		
-		throw new RFXComException("Not supported");
-	}
+            } else {
+                throw new RFXComException("Can't convert " + valueSelector + " to StringItem");
+            }
+        } else {
 
-	@Override
-	public Object convertSubType(String subType) throws RFXComException {
-		
-		for (SubType s : SubType.values()) {
-			if (s.toString().equals(subType)) {
-				return s;
-			}
-		}
-		
-		throw new RFXComException("Unknown sub type " + subType);
-	}
-	
-	@Override
-	public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
-		return supportedValueSelectors;
-	}
+            throw new RFXComException("Can't convert " + valueSelector + " to " + valueSelector.getItemClass());
+
+        }
+
+        return state;
+    }
+
+    @Override
+    public void convertFromState(RFXComValueSelector valueSelector, String id, Object subType, Type type,
+            byte seqNumber) throws RFXComException {
+
+        throw new RFXComException("Not supported");
+    }
+
+    @Override
+    public Object convertSubType(String subType) throws RFXComException {
+
+        for (SubType s : SubType.values()) {
+            if (s.toString().equals(subType)) {
+                return s;
+            }
+        }
+
+        throw new RFXComException("Unknown sub type " + subType);
+    }
+
+    @Override
+    public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
+        return supportedValueSelectors;
+    }
 
 }

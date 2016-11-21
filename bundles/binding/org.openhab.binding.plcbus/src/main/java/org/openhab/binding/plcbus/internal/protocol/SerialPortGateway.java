@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,10 +10,10 @@ package org.openhab.binding.plcbus.internal.protocol;
 
 import java.io.OutputStream;
 
-import gnu.io.NRSerialPort;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gnu.io.NRSerialPort;
 
 /**
  * @author Robin Lenz
@@ -21,41 +21,41 @@ import org.slf4j.LoggerFactory;
  */
 public class SerialPortGateway implements ISerialPortGateway {
 
-	private static Logger logger = LoggerFactory.getLogger(SerialPortGateway.class);
-	private NRSerialPort serialPort;
+    private static Logger logger = LoggerFactory.getLogger(SerialPortGateway.class);
+    private NRSerialPort serialPort;
 
-	private SerialPortGateway(String serialPortName) {
-		this.serialPort = new NRSerialPort(serialPortName, 9600);
-		this.serialPort.connect();
-	}
+    private SerialPortGateway(String serialPortName) {
+        this.serialPort = new NRSerialPort(serialPortName, 9600);
+        this.serialPort.connect();
+    }
 
-	public static ISerialPortGateway create(String serialPortName) {
-		return new SerialPortGateway(serialPortName);
-	}
+    public static ISerialPortGateway create(String serialPortName) {
+        return new SerialPortGateway(serialPortName);
+    }
 
-	@Override
-	public void send(TransmitFrame frame,
-			IReceiveFrameContainer receivedFrameContainer) {
-		try {
-			byte[] paket = Convert.toByteArray(frame.getBytes());
+    @Override
+    public void send(TransmitFrame frame, IReceiveFrameContainer receivedFrameContainer) {
+        try {
+            byte[] paket = Convert.toByteArray(frame.getBytes());
 
-			OutputStream out = serialPort.getOutputStream();
+            OutputStream out = serialPort.getOutputStream();
 
-			out.write(paket);
+            out.write(paket);
 
-			try {
-				receivedFrameContainer.process(SerialPortByteProvider.create(serialPort));
-			} catch (Exception e) {
-				logger.error("Error while processing: " + e.getMessage());
-			}
+            try {
+                receivedFrameContainer.process(SerialPortByteProvider.create(serialPort));
+            } catch (Exception e) {
+                logger.error("Error while processing: " + e.getMessage());
+            }
 
-		} catch (Exception e) {
-			logger.info("Error in write methode: " + e.getMessage());
-		}
-	}
+        } catch (Exception e) {
+            logger.info("Error in write method: " + e.getMessage());
+        }
+    }
 
-	public void close() {
-		serialPort.disconnect();
-	}
-	
+    @Override
+    public void close() {
+        serialPort.disconnect();
+    }
+
 }

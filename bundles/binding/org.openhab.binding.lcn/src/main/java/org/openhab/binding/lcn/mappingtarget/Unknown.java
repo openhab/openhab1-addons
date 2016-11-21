@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,62 +20,82 @@ import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
 
 /**
- * Stores unknown input data that could not be parsed into another target type. 
- * 
- * @author Tobias Jüttner
+ * Stores unknown input data that could not be parsed into another target type.
+ *
+ * @author Tobias Jï¿½ttner
  *
  */
 public class Unknown extends Target {
-	
-	/** The original configuration text. */
-	private final String input;
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param input the unchanged configuration text
-	 */
-	Unknown(String input) {
-		this.input = input;
-		logger.error(String.format("Could not parse target: %s", input));
-	}
-	
-	/** {@inheritDoc} */
-	@Override
-	public void send(Connection conn, Item item, Command cmd) { }
-	
-	/** {@inheritDoc} */
-	@Override
-	public void register(Connection conn) { }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean visualizationHandleOutputStatus(ModStatusOutput pchkInput, Command cmd, Item item, EventPublisher eventPublisher) { return false; }
+    /** The original configuration text. */
+    private final String input;
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean visualizationHandleRelaysStatus(ModStatusRelays pchkInput, Command cmd, Item item, EventPublisher eventPublisher) { return false; }
+    /**
+     * Constructor.
+     * 
+     * @param input the unchanged configuration text
+     */
+    Unknown(String input) {
+        this.input = input;
+        logger.error(String.format("Could not parse target: %s", input));
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean visualizationBinSensorsStatus(ModStatusBinSensors pchkInput, Command cmd, Item item, EventPublisher eventPublisher) { return false; }
+    /** {@inheritDoc} */
+    @Override
+    public void send(Connection conn, Item item, Command cmd) {
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean visualizationVarStatus(ModStatusVar pchkInput, Command cmd, Item item, EventPublisher eventPublisher) { return false; }
+    /** {@inheritDoc} */
+    @Override
+    public void register(Connection conn) {
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean visualizationLedsAndLogicOpsStatus(ModStatusLedsAndLogicOps pchkInput, Command cmd, Item item, EventPublisher eventPublisher) { return false; }
+    /** {@inheritDoc} */
+    @Override
+    public boolean visualizationHandleOutputStatus(ModStatusOutput pchkInput, Command cmd, Item item,
+            EventPublisher eventPublisher) {
+        return false;
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean visualizationKeyLocksStatus(ModStatusKeyLocks pchkInput, Command cmd, Item item, EventPublisher eventPublisher) { return false; }
+    /** {@inheritDoc} */
+    @Override
+    public boolean visualizationHandleRelaysStatus(ModStatusRelays pchkInput, Command cmd, Item item,
+            EventPublisher eventPublisher) {
+        return false;
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return this.input;
-	}
-	
+    /** {@inheritDoc} */
+    @Override
+    public boolean visualizationBinSensorsStatus(ModStatusBinSensors pchkInput, Command cmd, Item item,
+            EventPublisher eventPublisher) {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean visualizationVarStatus(ModStatusVar pchkInput, Command cmd, Item item,
+            EventPublisher eventPublisher) {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean visualizationLedsAndLogicOpsStatus(ModStatusLedsAndLogicOps pchkInput, Command cmd, Item item,
+            EventPublisher eventPublisher) {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean visualizationKeyLocksStatus(ModStatusKeyLocks pchkInput, Command cmd, Item item,
+            EventPublisher eventPublisher) {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return this.input;
+    }
+
 }

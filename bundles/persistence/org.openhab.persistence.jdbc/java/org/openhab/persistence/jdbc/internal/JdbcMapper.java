@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.persistence.jdbc.internal;
 
 import java.util.ArrayList;
@@ -14,6 +22,11 @@ import org.openhab.persistence.jdbc.model.ItemsVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ *
+ * @author Helmut Lehmeyer
+ * @since 1.8.0
+ */
 public class JdbcMapper {
     static final Logger logger = LoggerFactory.getLogger(JdbcMapper.class);
 
@@ -35,6 +48,8 @@ public class JdbcMapper {
         long timerStart = System.currentTimeMillis();
         if (openConnection()) {
             if (conf.getDbName() == null) {
+                logger.debug(
+                        "JDBC::pingDB asking db for name as absolutely first db action, after connection is established.");
                 String dbName = conf.getDBDAO().doGetDB();
                 conf.setDbName(dbName);
                 ret = dbName.length() > 0;
@@ -116,7 +131,7 @@ public class JdbcMapper {
     }
 
     public Item storeItemValue(Item item) {
-        logger.debug("JDBC::storeItemValue: Item={}", item.toString());
+        logger.debug("JDBC::storeItemValue: item={}", item.toString());
         String tableName = getTable(item);
         if (tableName == null) {
             logger.error("JDBC::store: Unable to store item '{}'.", item.getName());
@@ -141,7 +156,7 @@ public class JdbcMapper {
             logTime("insertItemValue", timerStart, System.currentTimeMillis());
             return r;
         } else {
-            logger.error("JDBC::getHistItemFilterQuery: TABLE is NULL, cannot get Data from not existing Table.");
+            logger.error("JDBC::getHistItemFilterQuery: TABLE is NULL; cannot get data from non-existent table.");
         }
         return null;
     }
@@ -152,8 +167,8 @@ public class JdbcMapper {
     protected boolean openConnection() {
         logger.debug("JDBC::openConnection isDriverAvailable: {}", conf.isDriverAvailable());
         if (conf.isDriverAvailable() && !conf.isDbConnected()) {
-            logger.warn("JDBC::openConnection: setupDataSource.");
-            Yank.setupDataSource(conf.getHikariConfiguration());
+            logger.info("JDBC::openConnection: Driver is available::Yank setupDataSource");
+            Yank.setupDefaultConnectionPool(conf.getHikariConfiguration());
             conf.setDbConnected(true);
             return true;
         } else if (!conf.isDriverAvailable()) {
@@ -167,21 +182,25 @@ public class JdbcMapper {
     protected void closeConnection() {
         logger.debug("JDBC::closeConnection");
         // Closes all open connection pools
-        Yank.releaseDataSource();
+        Yank.releaseDefaultConnectionPool();
         conf.setDbConnected(false);
     }
 
-    protected boolean checkDBAcessability() {
+    protected boolean checkDBAccessability() {
         // Check if connection is valid
-        if (initialized)
+        if (initialized) {
             return true;
+        }
         // first
         boolean p = pingDB();
         if (p) {
+            logger.debug("JDBC::checkDBAcessability, first try connection: {}", p);
             return (p && !(conf.getErrReconnectThreshold() > 0 && errCnt <= conf.getErrReconnectThreshold()));
         } else {
             // second
-            return (pingDB() && !(conf.getErrReconnectThreshold() > 0 && errCnt <= conf.getErrReconnectThreshold()));
+            p = pingDB();
+            logger.debug("JDBC::checkDBAcessability, second try connection: {}", p);
+            return (p && !(conf.getErrReconnectThreshold() > 0 && errCnt <= conf.getErrReconnectThreshold()));
         }
     }
 
@@ -218,7 +237,7 @@ public class JdbcMapper {
             return tableName;
         }
 
-        logger.debug("JDBC::getTable: no Table found for itemName={} in sqlTables", itemName);
+        logger.debug("JDBC::getTable: no table found for item '{}' in sqlTables", itemName);
 
         // Create a new entry in items table
         isvo = new ItemsVO();
@@ -226,7 +245,7 @@ public class JdbcMapper {
         isvo = createNewEntryInItemsTable(isvo);
         rowId = isvo.getItemid();
         if (rowId == 0) {
-            logger.error("JDBC::getTable: Creating table for item '" + itemName + "' failed.");
+            logger.error("JDBC::getTable: Creating table for item '{}' failed.", itemName);
         }
         // Create the table name
         logger.debug("JDBC::getTable: getTableName with rowId={} itemName={}", rowId, itemName);
@@ -234,7 +253,7 @@ public class JdbcMapper {
 
         // An error occurred adding the item name into the index list!
         if (tableName == null) {
-            logger.error("JDBC::getTable: tableName was null, could not create a table for item '{}'", itemName);
+            logger.error("JDBC::getTable: tableName was null; could not create a table for item '{}'", itemName);
             return null;
         }
 
@@ -264,8 +283,9 @@ public class JdbcMapper {
     private void formatTableNames() {
 
         boolean tmpinit = initialized;
-        if (tmpinit)
+        if (tmpinit) {
             initialized = false;
+        }
 
         List<ItemsVO> al;
         HashMap<Integer, String> tableIds = new HashMap<Integer, String>();
@@ -292,11 +312,11 @@ public class JdbcMapper {
 
             if (oldName.startsWith(conf.getTableNamePrefix()) && !oldName.contains("_")) {
                 id = Integer.parseInt(oldName.substring(conf.getTableNamePrefix().length()));
-                logger.warn("JDBC::formatTableNames: found Table with Prefix '{}' Name= {} id={}",
+                logger.warn("JDBC::formatTableNames: found Table with Prefix '{}' Name= {} id= {}",
                         conf.getTableNamePrefix(), oldName, (id));
             } else if (oldName.contains("_")) {
                 id = Integer.parseInt(oldName.substring(oldName.lastIndexOf("_") + 1));
-                logger.warn("JDBC::formatTableNames: found Table Name= {} id={}", oldName, (id));
+                logger.warn("JDBC::formatTableNames: found Table Name= {} id= {}", oldName, (id));
             }
             logger.warn("JDBC::formatTableNames: found Table id= {}", id);
 
@@ -307,9 +327,10 @@ public class JdbcMapper {
                 if (!oldName.equalsIgnoreCase(newName)) {
                     oldNewTablenames.add(new ItemVO(oldName, newName));
                     logger.warn("JDBC::formatTableNames: Table '{}' will be renamed to '{}'", oldName, newName);
-                } else
+                } else {
                     logger.warn("JDBC::formatTableNames: Table oldName='{}' newName='{}' nothing to rename", oldName,
                             newName);
+                }
             } else {
                 logger.error("JDBC::formatTableNames: Table '{}' could NOT be renamed to '{}'", oldName, newName);
                 break;
@@ -364,8 +385,9 @@ public class JdbcMapper {
             conf.timeAverage50arr.add(timerDiff);
             conf.timeAverage100arr.add(timerDiff);
             conf.timeAverage200arr.add(timerDiff);
-            if (conf.timerCount == 1)
+            if (conf.timerCount == 1) {
                 conf.timer1000 = System.currentTimeMillis();
+            }
             if (conf.timerCount == 1001) {
                 conf.time1000Statements = Math.round(((int) (System.currentTimeMillis() - conf.timer1000)) / 1000);// Seconds
                 conf.timerCount = 0;

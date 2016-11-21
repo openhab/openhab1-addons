@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>FGMS001</Model>
+    <Label lang="en">Motion Sensor</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x56</id>             <!-- CRC_16_ENCAP -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x9C</id>             <!-- SENSOR_ALARM -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x30</id>             <!-- SENSOR_BINARY -->
+        </Class>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x22</id>             <!-- APPLICATION_STATUS -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x8E</id>             <!-- MULTI_INSTANCE_ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x98</id>             <!-- SECURITY -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Motion Sensor's Sensitivity</Label>
+            <Type>short</Type>
+            <Default>15</Default>
+            <Minimum>8</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Motion Sensor's Blind Time (Insensitive)</Label>
+            <Type>list</Type>
+            <Default>15</Default>
+            <Minimum>0</Minimum>
+            <Maximum>15</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en"></Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">PIR Sensor’s “PULSE COUNTER”</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">PIR Sensor’s “WINDOW TIME”</Label>
+            <Type>short</Type>
+            <Default>2</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>6</Index>
+            <Label lang="en">Motion Alarm Cancellation Delay</Label>
+            <Type>short</Type>
+            <Default>30</Default>
+            <Minimum>1</Minimum>
+            <Maximum>32767</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>8</Index>
+            <Label lang="en">PIR Sensor Operating Mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">PIR sensor always active</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">PIR sensor active during the day only</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">PIR sensor active during the night only</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>9</Index>
+            <Label lang="en">NIGHT / DAY</Label>
+            <Type>short</Type>
+            <Default>200</Default>
+            <Minimum>1</Minimum>
+            <Maximum>32767</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>12</Index>
+            <Label lang="en">BASIC COMMAND CLASS FRAMES CONFIGURATION</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">BASIC ON and BASIC OFF</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Only the BASIC ON</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Only the BASIC OFF</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>14</Index>
+            <Label lang="en">BASIC ON command frame value</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>16</Index>
+            <Label lang="en">BASIC OFF command frame value</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>18</Index>
+            <Label lang="en">ASSOCIATIONS IN Z-WAVE NETWORK SECURITY MODE</Label>
+            <Type>short</Type>
+            <Default>15</Default>
+            <Minimum>0</Minimum>
+            <Maximum>15</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>20</Index>
+            <Label lang="en">TAMPER SENSITIVITY</Label>
+            <Type>short</Type>
+            <Default>15</Default>
+            <Minimum>0</Minimum>
+            <Maximum>121</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>22</Index>
+            <Label lang="en">TAMPER ALARM CANCELLATION DELAY</Label>
+            <Type>short</Type>
+            <Default>30</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32767</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>24</Index>
+            <Label lang="en">TAMPER OPERATING MODES</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Only tamper (default)</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Tamper and earthquake detector</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Tamper and orientation in space</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>25</Index>
+            <Label lang="en">TAMPER CANCELLATION REPORTS</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Do not send tamper cancellation report</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Send tamper cancellation report</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>28</Index>
+            <Label lang="en">TAMPER ALARM BROADCAST MODE</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Reported to association groups.</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Reported in broadcast mode to 3rd association group.</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>29</Index>
+            <Label lang="en">TAMPER ALARM BROADCAST MODE</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Reported to association groups.</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Reported in broadcast mode to 5th association group.</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>40</Index>
+            <Label lang="en">ILLUMINATION REPORT THRESHOLD</Label>
+            <Type>short</Type>
+            <Default>200</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32767</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>42</Index>
+            <Label lang="en">ILLUMINATION REPORTS INTERVAL</Label>
+            <Type>short</Type>
+            <Default>3600</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32767</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>60</Index>
+            <Label lang="en">TEMPERATURE REPORT THRESHOLD</Label>
+            <Type>short</Type>
+            <Default>10</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>62</Index>
+            <Label lang="en">INTERVAL OF TEMPERATURE MEASURING</Label>
+            <Type>short</Type>
+            <Default>900</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32767</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>64</Index>
+            <Label lang="en">TEMPERATURE REPORTS INTERVAL</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32767</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>66</Index>
+            <Label lang="en">TEMPERATURE OFFSET</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>80</Index>
+            <Label lang="en">LED SIGNALING MODE</Label>
+            <Type>list</Type>
+            <Default>10</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">LED inactive.</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">LED colour depends on the temperature</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Flashlight mode - LED glows in white for 10 seconds.</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">White.</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Red.</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Green.</Label>
+            </Item>
+            <Item>
+                <Value>6</Value>
+                <Label lang="en">Blue.</Label>
+            </Item>
+            <Item>
+                <Value>7</Value>
+                <Label lang="en">Yellow.</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">Cyan.</Label>
+            </Item>
+            <Item>
+                <Value>9</Value>
+                <Label lang="en">Magenta.</Label>
+            </Item>
+            <Item>
+                <Value>10</Value>
+                <Label lang="en">LED colour depends on the temperature</Label>
+            </Item>
+            <Item>
+                <Value>11</Value>
+                <Label lang="en">Flashlight mode</Label>
+            </Item>
+            <Item>
+                <Value>12</Value>
+                <Label lang="en">White.</Label>
+            </Item>
+            <Item>
+                <Value>13</Value>
+                <Label lang="en">Red.</Label>
+            </Item>
+            <Item>
+                <Value>14</Value>
+                <Label lang="en">Green.</Label>
+            </Item>
+            <Item>
+                <Value>15</Value>
+                <Label lang="en">Blue.</Label>
+            </Item>
+            <Item>
+                <Value>16</Value>
+                <Label lang="en">Yellow.</Label>
+            </Item>
+            <Item>
+                <Value>17</Value>
+                <Label lang="en">Cyan.</Label>
+            </Item>
+            <Item>
+                <Value>18</Value>
+                <Label lang="en">Magenta.</Label>
+            </Item>
+            <Item>
+                <Value>19</Value>
+                <Label lang="en">LED colour depends on the temperature</Label>
+            </Item>
+            <Item>
+                <Value>20</Value>
+                <Label lang="en">White.</Label>
+            </Item>
+            <Item>
+                <Value>21</Value>
+                <Label lang="en">Red.</Label>
+            </Item>
+            <Item>
+                <Value>22</Value>
+                <Label lang="en">Green.</Label>
+            </Item>
+            <Item>
+                <Value>23</Value>
+                <Label lang="en">Blue.</Label>
+            </Item>
+            <Item>
+                <Value>24</Value>
+                <Label lang="en">Yellow.</Label>
+            </Item>
+            <Item>
+                <Value>25</Value>
+                <Label lang="en">Cyan.</Label>
+            </Item>
+            <Item>
+                <Value>26</Value>
+                <Label lang="en">Magenta.</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>81</Index>
+            <Label lang="en">LED BRIGHTNESS</Label>
+            <Type>short</Type>
+            <Default>50</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>82</Index>
+            <Label lang="en">AMBIENT ILLUMINATION LEVEL</Label>
+            <Type>short</Type>
+            <Default>100</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>83</Index>
+            <Label lang="en">AMBIENT ILLUMINATION LEVEL</Label>
+            <Type>short</Type>
+            <Default>1000</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>86</Index>
+            <Label lang="en">BLUE LED ILLUMINATION</Label>
+            <Type>short</Type>
+            <Default>18</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>87</Index>
+            <Label lang="en">RED LED ILLUMINATION</Label>
+            <Type>short</Type>
+            <Default>28</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>89</Index>
+            <Label lang="en">LED INDICATING TAMPER ALARM</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">LED does not indicate tamper alarm.</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">LED indicates tamper alarm.</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Motion</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Tamper</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>4</Index>
+            <Label lang="en">Motion BC</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>5</Index>
+            <Label lang="en">Tamper BC</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

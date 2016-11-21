@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 /**
  * Represents the table naming data.
- * 
+ *
  * @author Helmut Lehmeyer
  * @since 1.8.0
  */
@@ -88,7 +88,7 @@ public class ItemsVO implements Serializable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -96,31 +96,37 @@ public class ItemsVO implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((itemname == null) ? 0 : itemname.hashCode());
-        result = prime * result + (int) (itemid ^ (itemid >>> 32));
+        result = prime * result + (itemid ^ (itemid >>> 32));
         return result;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         ItemsVO other = (ItemsVO) obj;
         if (itemname == null) {
-            if (other.itemname != null)
+            if (other.itemname != null) {
                 return false;
-        } else if (!itemname.equals(other.itemname))
+            }
+        } else if (!itemname.equals(other.itemname)) {
             return false;
-        if (itemid != other.itemid)
+        }
+        if (itemid != other.itemid) {
             return false;
+        }
         return true;
     }
 

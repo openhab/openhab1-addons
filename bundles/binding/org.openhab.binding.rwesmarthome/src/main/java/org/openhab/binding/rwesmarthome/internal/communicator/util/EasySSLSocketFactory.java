@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,7 +27,7 @@ import org.apache.http.params.HttpParams;
 /**
  * This socket factory will create ssl socket that accepts self signed
  * certificate
- * 
+ *
  * @author olamy
  * @version $Id: EasySSLSocketFactory.java 765355 2009-04-15 20:59:07Z evenisse
  *          $
@@ -35,107 +35,114 @@ import org.apache.http.params.HttpParams;
  */
 public class EasySSLSocketFactory implements SocketFactory, LayeredSocketFactory {
 
-	private SSLContext sslcontext = null;
+    private SSLContext sslcontext = null;
 
-	/**
-	 * Creates an SSL context.
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	private static SSLContext createEasySSLContext() throws IOException {
-		try {
-			SSLContext context = SSLContext.getInstance("TLS");
-			context.init(null, new TrustManager[] { new EasyX509TrustManager(null) }, null);
-			return context;
-		} catch (Exception e) {
-			throw new IOException(e.getMessage());
-		}
-	}
+    /**
+     * Creates an SSL context.
+     * 
+     * @return
+     * @throws IOException
+     */
+    private static SSLContext createEasySSLContext() throws IOException {
+        try {
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, new TrustManager[] { new EasyX509TrustManager(null) }, null);
+            return context;
+        } catch (Exception e) {
+            throw new IOException(e.getMessage());
+        }
+    }
 
-	/**
-	 * Returns the SSL context.
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	private SSLContext getSSLContext() throws IOException {
-		if (this.sslcontext == null) {
-			this.sslcontext = createEasySSLContext();
-		}
-		return this.sslcontext;
-	}
+    /**
+     * Returns the SSL context.
+     * 
+     * @return
+     * @throws IOException
+     */
+    private SSLContext getSSLContext() throws IOException {
+        if (this.sslcontext == null) {
+            this.sslcontext = createEasySSLContext();
+        }
+        return this.sslcontext;
+    }
 
-	/**
-	 * @see org.apache.http.conn.scheme.SocketFactory#connectSocket(java.net.Socket,
-	 *      java.lang.String, int, java.net.InetAddress, int,
-	 *      org.apache.http.params.HttpParams)
-	 */
-	public Socket connectSocket(Socket sock, String host, int port,
-			InetAddress localAddress, int localPort, HttpParams params)
-			throws IOException, UnknownHostException, ConnectTimeoutException {
-		int connTimeout = HttpConnectionParams.getConnectionTimeout(params);
-		int soTimeout = HttpConnectionParams.getSoTimeout(params);
-		InetSocketAddress remoteAddress = new InetSocketAddress(host, port);
-		SSLSocket sslsock = (SSLSocket) ((sock != null) ? sock : createSocket());
+    /**
+     * @see org.apache.http.conn.scheme.SocketFactory#connectSocket(java.net.Socket,
+     *      java.lang.String, int, java.net.InetAddress, int,
+     *      org.apache.http.params.HttpParams)
+     */
+    @Override
+    public Socket connectSocket(Socket sock, String host, int port, InetAddress localAddress, int localPort,
+            HttpParams params) throws IOException, UnknownHostException, ConnectTimeoutException {
+        int connTimeout = HttpConnectionParams.getConnectionTimeout(params);
+        int soTimeout = HttpConnectionParams.getSoTimeout(params);
+        InetSocketAddress remoteAddress = new InetSocketAddress(host, port);
+        SSLSocket sslsock = (SSLSocket) ((sock != null) ? sock : createSocket());
 
-		if ((localAddress != null) || (localPort > 0)) {
-			// we need to bind explicitly
-			if (localPort < 0) {
-				localPort = 0; // indicates "any"
-			}
-			InetSocketAddress isa = new InetSocketAddress(localAddress,
-					localPort);
-			sslsock.bind(isa);
-		}
+        if ((localAddress != null) || (localPort > 0)) {
+            // we need to bind explicitly
+            if (localPort < 0) {
+                localPort = 0; // indicates "any"
+            }
+            InetSocketAddress isa = new InetSocketAddress(localAddress, localPort);
+            sslsock.bind(isa);
+        }
 
-		sslsock.connect(remoteAddress, connTimeout);
-		sslsock.setSoTimeout(soTimeout);
-		return sslsock;
+        sslsock.connect(remoteAddress, connTimeout);
+        sslsock.setSoTimeout(soTimeout);
+        return sslsock;
 
-	}
+    }
 
-	/**
-	 * @see org.apache.http.conn.scheme.SocketFactory#createSocket()
-	 */
-	public Socket createSocket() throws IOException {
-		return getSSLContext().getSocketFactory().createSocket();
-	}
+    /**
+     * @see org.apache.http.conn.scheme.SocketFactory#createSocket()
+     */
+    @Override
+    public Socket createSocket() throws IOException {
+        return getSSLContext().getSocketFactory().createSocket();
+    }
 
-	/**
-	 * @see org.apache.http.conn.scheme.SocketFactory#isSecure(java.net.Socket)
-	 */
-	public boolean isSecure(Socket socket) throws IllegalArgumentException {
-		return true;
-	}
+    /**
+     * @see org.apache.http.conn.scheme.SocketFactory#isSecure(java.net.Socket)
+     */
+    @Override
+    public boolean isSecure(Socket socket) throws IllegalArgumentException {
+        return true;
+    }
 
-	/**
-	 * @see org.apache.http.conn.scheme.LayeredSocketFactory#createSocket(java.net.Socket,
-	 *      java.lang.String, int, boolean)
-	 */
-	public Socket createSocket(Socket socket, String host, int port,
-			boolean autoClose) throws IOException, UnknownHostException {
-		return getSSLContext().getSocketFactory().createSocket(socket, host,
-				port, autoClose);
-	}
+    /**
+     * @see org.apache.http.conn.scheme.LayeredSocketFactory#createSocket(java.net.Socket,
+     *      java.lang.String, int, boolean)
+     */
+    @Override
+    public Socket createSocket(Socket socket, String host, int port, boolean autoClose)
+            throws IOException, UnknownHostException {
+        return getSSLContext().getSocketFactory().createSocket(socket, host, port, autoClose);
+    }
 
-	// -------------------------------------------------------------------
-	// javadoc in org.apache.http.conn.scheme.SocketFactory says :
-	// Both Object.equals() and Object.hashCode() must be overridden
-	// for the correct operation of some connection managers
-	// -------------------------------------------------------------------
+    // -------------------------------------------------------------------
+    // javadoc in org.apache.http.conn.scheme.SocketFactory says :
+    // Both Object.equals() and Object.hashCode() must be overridden
+    // for the correct operation of some connection managers
+    // -------------------------------------------------------------------
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	public boolean equals(Object obj) {
-		return ((obj != null) && obj.getClass().equals(EasySSLSocketFactory.class));
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return ((obj != null) && obj.getClass().equals(EasySSLSocketFactory.class));
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	public int hashCode() {
-		return EasySSLSocketFactory.class.hashCode();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return EasySSLSocketFactory.class.hashCode();
+    }
 }

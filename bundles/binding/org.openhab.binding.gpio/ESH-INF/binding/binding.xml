@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="gpio"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>GPIO Binding</name>
+    <description>This is the binding for GPIO.</description>
+    <author>Dancho Penev</author>
+
+    <service-id>org.openhab.gpio</service-id>
+
+    <config-description>
+        <parameter name="sysfs" type="text">
+            <label>sysfs Mount Path</label>
+            <description>Optional directory path where "sysfs" pseudo file system is mounted. When not specified, it will be determined automatically if "procfs" is mounted.</description>
+            <default>/sys</default>
+        </parameter>
+        <parameter name="debounce" type="integer">
+            <label>Debounce Interval</label>
+            <description>Optional time interval in milliseconds when pin interrupts are ignored to prevent bounce effect, mainly on buttons. Global option for all pins, can be overridden per pin in item configuration.</description>
+            <default>0</default>
+        </parameter>
+        <parameter name="force" type="boolean">
+            <label>Forcibly Take Pin</label>
+            <description>Boolean controlling whether already exported pin should be forcibly taken under control of openHAB. Useful after unclean shutdown. May cause serious issue if other software/system is also controlling GPIO and there is a configuration mistake for pin name/number.</description>
+            <default>false</default>
+        </parameter>
+    </config-description>
+
+</binding:binding>

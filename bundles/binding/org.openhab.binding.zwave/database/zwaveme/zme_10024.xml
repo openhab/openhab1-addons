@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZME_00010024</Model>
+	<Label lang="en">Floor Thermostat</Label>
+	<Label lang="ru">Термостат пола</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x40</id></Class>
+		<Class><id>0x43</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x77</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>short</Type>
+			<Default>1800</Default>
+			<Size>2</Size>
+			<Label lang="en">Boost Dry mode duration, sec</Label>
+			<Label lang="ru">Длительность режима быстрой сушки, секунд</Label>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Button mode</Label>
+			<Label lang="ru">Режим кнопки</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Toggle Normal Heating / Off</Label>
+				<Label lang="ru">Переключает нормальный нагрев/выключено(по умолчанию)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Toggle Normal Heating / Energy Save</Label>
+				<Label lang="ru">Переключает нормальный нагрев/экономный режим</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Toggle Boost Dry</Label>
+				<Label lang="ru">Включает/выключает режим быстрой сушки</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Basic mode</Label>
+			<Label lang="ru">Режим Basic</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Toggle Normal Heating / Off</Label>
+				<Label lang="ru">Переключает нормальный нагрев/выключено</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Toggle Normal Heating / Energy Save</Label>
+				<Label lang="ru">Переключает нормальный нагрев / экономный режим</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Toggle Boost Dry</Label>
+				<Label lang="ru">Включает/выключает режим быстрой сушки</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Set Normal Heating set point temperature (in 0.1 C units)</Label>
+				<Label lang="ru">Задаёт температуру для режима нормального обогрева (в единицах 0.1 C)</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Switch on/off relay directly (only if Thermostat Mode is in Off state)</Label>
+				<Label lang="ru">Включает/выключает реле (только при Thermostat Mode в режиме Off)</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>short</Type>
+			<Default>12</Default>
+			<Size>1</Size>
+			<Label lang="en">Temperature control interval</Label>
+			<Label lang="ru">Интервал управления температурой</Label>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>short</Type>
+			<Default>30</Default>
+			<Size>1</Size>
+			<Label lang="en">Maximum allowed temperature deviation in 0.1 C</Label>
+			<Label lang="ru">Максимальная ширина коридора температурой в единицах 0.1 C</Label>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>short</Type>
+			<Default>32</Default>
+			<Size>1</Size>
+			<Label lang="en">Typical click timeout, in 10ms units</Label>
+			<Label lang="ru">Характерное время нажатия, в единицах 10мс</Label>
+			<Help lang="en"><![CDATA[Typical time used to differenciate click from hold]]></Help>
+			<Help lang="ru"><![CDATA[Характерное время для отличия нажатия от удержания]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>short</Type>
+			<Default>32</Default>
+			<Size>1</Size>
+			<Label lang="en">Maximal allowed temperature, degree Celsus</Label>
+			<Label lang="ru">Максимальная допустимая температура, градусы Цельсия</Label>
+			<Help lang="en"><![CDATA[In all modes the thermostat will switch off heating until temperature drops below this limit. For wooden and laminate floor maximal allowed temperature is 27 degree. For tile and concrete floor maximal allowed temperature value is 45 degree.]]></Help>
+			<Help lang="ru"><![CDATA[Во всех режимах работы термостат отключает обогрев до снижения температуры ниже данного предела. Для деревянного пола и ламината максимальная допустимая температура - 27 градусов Цельсия. Для кафельного и бетонного пола максимальная допустимая температура - 45 градусов Цельсия.]]></Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Unsolicited notifications about thermostat mode and setpoint temperature changes</Label>
+		</Group>
+	</Associations>
+</Product>
+

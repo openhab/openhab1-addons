@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,47 +11,47 @@ package org.openhab.binding.digitalstrom.internal.client.constants;
 import java.util.HashMap;
 
 /**
- * @author 	Alexander Betker
+ * @author Alexander Betker
  * @since 1.3.0
- * @version	digitalSTROM-API 1.14.5
+ * @version digitalSTROM-API 1.14.5
  */
 public enum OutputModeEnum {
-	
-	DISABLED	(0),
-	SWITCHED	(16),
-	DIMMED		(22),
-	DIMMED_2	(51),
-	UP_DOWN		(33),
-	SWITCHED_2	(35),
-	SWITCH		(39),
-	WIPE 		(40),
-	POWERSAVE	(41),
-	SLAT		(42);	
-	
-	private final int	mode;
-	
-	static final HashMap<Integer, OutputModeEnum> outputModes = new HashMap<Integer, OutputModeEnum>();
-	
-	static {
-		for (OutputModeEnum out:OutputModeEnum.values()) {
-			outputModes.put(out.getMode(), out);
-		}
-	}
-	
-	public static boolean containsMode(Integer mode) {
-		return outputModes.keySet().contains(mode);
-	}
-	
-	public static OutputModeEnum getMode(Integer mode) {
-		return outputModes.get(mode);
-	}
-	
-	private OutputModeEnum(int outputMode) {
-		this.mode = outputMode;
-	}
-	
-	public int getMode() {
-		return mode;
-	}
+
+    DISABLED(0),
+    SWITCHED(16),
+    DIMMED(22),
+    DIMMED_2(51),
+    UP_DOWN(33),
+    SWITCHED_2(35),
+    SWITCH(39),
+    WIPE(40),
+    POWERSAVE(41),
+    SLAT(42);
+
+    private final int mode;
+
+    static final HashMap<Integer, OutputModeEnum> outputModes = new HashMap<Integer, OutputModeEnum>();
+
+    static {
+        for (OutputModeEnum out : OutputModeEnum.values()) {
+            outputModes.put(out.getMode(), out);
+        }
+    }
+
+    public static boolean containsMode(Integer mode) {
+        return outputModes.keySet().contains(mode);
+    }
+
+    public static OutputModeEnum getMode(Integer mode) {
+        return outputModes.get(mode);
+    }
+
+    private OutputModeEnum(int outputMode) {
+        this.mode = outputMode;
+    }
+
+    public int getMode() {
+        return mode;
+    }
 
 }

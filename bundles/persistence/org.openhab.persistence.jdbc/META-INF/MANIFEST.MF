@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB JDBC SQL Persistence bundle
-Bundle-SymbolicName: org.openhab.persistence.jdbc;singleton:=true
-Bundle-Version: 1.8.0.qualifier
+Bundle-SymbolicName: org.openhab.persistence.jdbc
+Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.mysql.jdbc;resolution:=optional,
@@ -31,9 +31,9 @@ Import-Package: com.mysql.jdbc;resolution:=optional,
  org.sqlite;resolution:=optional,
  org.sqlite.jdbc4;resolution:=optional
 Bundle-ClassPath: .,
- lib/HikariCP-2.4.2.jar,
+ lib/HikariCP-2.4.7.jar,
  lib/commons-dbutils-1.6.jar,
- lib/yank-3.1.0.jar
+ lib/yank-3.2.0.jar
 Service-Component: OSGI-INF/jdbc.xml
 Export-Package: org.openhab.persistence.jdbc.db,
  org.openhab.persistence.jdbc.internal,

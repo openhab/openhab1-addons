@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,7 +15,7 @@ import org.openhab.core.types.State;
 
 /**
  * Represents the data on the part of OpenHab.
- * 
+ *
  * @author Helmut Lehmeyer
  * @since 1.8.0
  */
@@ -31,14 +31,17 @@ public class JdbcItem implements HistoricItem {
         this.timestamp = timestamp;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public State getState() {
         return state;
     }
 
+    @Override
     public Date getTimestamp() {
         return timestamp;
     }

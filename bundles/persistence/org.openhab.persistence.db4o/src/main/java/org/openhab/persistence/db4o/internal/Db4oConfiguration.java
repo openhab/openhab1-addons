@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,59 +16,56 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Configuration class which implements {@link ManagedService} to act as a central
  * handler for configuration issues. It holds the current configuration values
  * and gives access through static member fields.
- * 
+ *
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
  */
 public class Db4oConfiguration {
-	
-	private static final Logger logger = 
-		LoggerFactory.getLogger(Db4oConfiguration.class);
 
-	/** the backup interval as Cron-Expression (optional, defaults to '0 0 1 * * ?' which means every morning at 1 o'clock) */
-	public static String backupInterval = "0 0 1 * * ?";
-	
-	/** the commit interval in seconds (optional, default to '5') */
-	public static int commitInterval = 5;
+    private static final Logger logger = LoggerFactory.getLogger(Db4oConfiguration.class);
 
-	/** the amount of backup files allowed in DB_FOLDER_NAME (optional, defaults to '7') */
-	public static int maxBackups = 7;
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
-		String backupIntervalString = (String) config.get("backupinterval");
-		if (StringUtils.isNotBlank(backupIntervalString)) {
-			backupInterval = backupIntervalString;
-		}
-		
-		String commitIntervalString = (String) config.get("commitinterval");
-		if (StringUtils.isNotBlank(commitIntervalString)) {
-			try {
-				commitInterval = Integer.valueOf(commitIntervalString);
-			}
-			catch (IllegalArgumentException iae) {
-				logger.warn("couldn't parse '{}' to an integer");
-			}
-		}
+    /**
+     * the backup interval as Cron-Expression (optional, defaults to '0 0 1 * * ?' which means every morning at 1
+     * o'clock)
+     */
+    public static String backupInterval = "0 0 1 * * ?";
 
-		String maxBackupsString = (String) config.get("maxbackups");
-		if (StringUtils.isNotBlank(maxBackupsString)) {
-			try {
-				maxBackups = Integer.valueOf(maxBackupsString);
-			}
-			catch (IllegalArgumentException iae) {
-				logger.warn("couldn't parse '{}' to an integer");
-			}
-		}
-	}
-	
-	
+    /** the commit interval in seconds (optional, default to '5') */
+    public static int commitInterval = 5;
+
+    /** the amount of backup files allowed in DB_FOLDER_NAME (optional, defaults to '7') */
+    public static int maxBackups = 7;
+
+    /**
+     * {@inheritDoc}
+     */
+    public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+        String backupIntervalString = (String) config.get("backupinterval");
+        if (StringUtils.isNotBlank(backupIntervalString)) {
+            backupInterval = backupIntervalString;
+        }
+
+        String commitIntervalString = (String) config.get("commitinterval");
+        if (StringUtils.isNotBlank(commitIntervalString)) {
+            try {
+                commitInterval = Integer.valueOf(commitIntervalString);
+            } catch (IllegalArgumentException iae) {
+                logger.warn("couldn't parse '{}' to an integer");
+            }
+        }
+
+        String maxBackupsString = (String) config.get("maxbackups");
+        if (StringUtils.isNotBlank(maxBackupsString)) {
+            try {
+                maxBackups = Integer.valueOf(maxBackupsString);
+            } catch (IllegalArgumentException iae) {
+                logger.warn("couldn't parse '{}' to an integer");
+            }
+        }
+    }
+
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,210 +23,207 @@ import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
 import org.openhab.core.types.UnDefType;
 
-public class RFXComUVMessage  extends RFXComBaseMessage {
+public class RFXComUVMessage extends RFXComBaseMessage {
 
-	/*	UV packet layout (length 9) - UV - UVN128,UVR128,UV138,UVN800,TFA
+    /*
+     * UV packet layout (length 9) - UV - UVN128,UVR128,UV138,UVN800,TFA
+     * 
+     * packetlength = 0
+     * packettype = 1
+     * subtype = 2
+     * seqnbr = 3
+     * id1 = 4
+     * id2 = 5
+     * uv = 6
+     * temperatureh = 7 'bits 6-0
+     * tempsign = 7 'bit 7
+     * temperaturel = 8
+     * battery_level = 9 //bits 3-0
+     * signal_level = 9 //bits 7-4
+     */
 
-        packetlength = 0
-        packettype = 1
-        subtype = 2
-        seqnbr = 3
-        id1 = 4
-        id2 = 5
-        uv = 6
-        temperatureh = 7    'bits 6-0
-        tempsign = 7        'bit 7
-        temperaturel = 8
-        battery_level = 9	//bits 3-0
-        signal_level = 9	//bits 7-4
-	 */
+    public enum SubType {
+        UV1(1), // UVN128,UVR128,UV138
+        UV2(2), // UVN800
+        UV3(3), // TFA
 
-	public enum SubType {
-		UV1(1), // UVN128,UVR128,UV138
-		UV2(2), // UVN800
-		UV3(3), // TFA
+        UNKNOWN(255);
 
-		UNKNOWN(255);
+        private final int subType;
 
-		private final int subType;
+        SubType(int subType) {
+            this.subType = subType;
+        }
 
-		SubType(int subType) {
-			this.subType = subType;
-		}
+        SubType(byte subType) {
+            this.subType = subType;
+        }
 
-		SubType(byte subType) {
-			this.subType = subType;
-		}
+        public byte toByte() {
+            return (byte) subType;
+        }
+    }
 
-		public byte toByte() {
-			return (byte) subType;
-		}
-	}
+    private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
+            RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.UV,
+            RFXComValueSelector.TEMPERATURE);
 
-	private final static List<RFXComValueSelector> supportedValueSelectors = Arrays
-			.asList(RFXComValueSelector.RAW_DATA,
-					RFXComValueSelector.SIGNAL_LEVEL,
-					RFXComValueSelector.BATTERY_LEVEL,
-					RFXComValueSelector.UV,
-					RFXComValueSelector.TEMPERATURE);
+    public SubType subType = SubType.UV1;
+    public int sensorId = 0;
+    public int uv = 0;
+    public double temperature = 0;
+    public byte signalLevel = 0;
+    public byte batteryLevel = 0;
 
-	public SubType subType = SubType.UV1;
-	public int sensorId = 0;
-	public int uv = 0;
-	public double temperature = 0;
-	public byte signalLevel = 0;
-	public byte batteryLevel = 0;
+    public RFXComUVMessage() {
+        packetType = PacketType.UV;
+    }
 
-	public RFXComUVMessage() {
-		packetType = PacketType.UV;
-	}
+    public RFXComUVMessage(byte[] data) {
+        encodeMessage(data);
+    }
 
-	public RFXComUVMessage(byte[] data) {
-		encodeMessage(data);
-	}
+    @Override
+    public String toString() {
+        String str = "";
 
-	@Override
-	public String toString() {
-		String str = "";
+        str += super.toString();
+        str += "\n - Sub type = " + subType;
+        str += "\n - Id = " + sensorId;
+        str += "\n - UV = " + uv;
+        str += "\n - Temperature = " + temperature;
+        str += "\n - Signal level = " + signalLevel;
+        str += "\n - Battery level = " + batteryLevel;
 
-		str += super.toString();
-		str += "\n - Sub type = " + subType;
-		str += "\n - Id = " + sensorId;
-		str += "\n - UV = " + uv;
-		str += "\n - Temperature = " + temperature;
-		str += "\n - Signal level = " + signalLevel;
-		str += "\n - Battery level = " + batteryLevel;
+        return str;
+    }
 
-		return str;
-	}
+    @Override
+    public void encodeMessage(byte[] data) {
 
-	@Override
-	public void encodeMessage(byte[] data) {
+        super.encodeMessage(data);
 
-		super.encodeMessage(data);
+        try {
+            subType = SubType.values()[super.subType];
+        } catch (Exception e) {
+            subType = SubType.UNKNOWN;
+        }
 
-		try {
-			subType = SubType.values()[super.subType];
-		} catch (Exception e) {
-			subType = SubType.UNKNOWN;
-		}
-		
-		sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
-		
-		uv = (data[6] & 0xFF);
-		
-		if(subType == SubType.UV3) {
-			temperature = (short) ((data[7] & 0x7F) << 8 | (data[8] & 0xFF)) * 0.1;
-			if ((data[7] & 0x80) != 0)
-				temperature = -temperature;
-		}
-		
-		signalLevel = (byte) ((data[9] & 0xF0) >> 4);
-		batteryLevel = (byte) (data[9] & 0x0F);
-	}
+        sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 
-	@Override
-	public byte[] decodeMessage() {
-		byte[] data = new byte[9];
+        uv = (data[6] & 0xFF);
 
-		data[0] = 0x09;
-		data[1] = RFXComBaseMessage.PacketType.UV.toByte();
-		data[2] = subType.toByte();
-		data[3] = seqNbr;
-		
-		data[4] = (byte) ((sensorId & 0xFF00) >> 8);
-		data[5] = (byte) (sensorId & 0x00FF);
-		data[6] = (byte) (uv & 0xFF);;
+        if (subType == SubType.UV3) {
+            temperature = (short) ((data[7] & 0x7F) << 8 | (data[8] & 0xFF)) * 0.1;
+            if ((data[7] & 0x80) != 0) {
+                temperature = -temperature;
+            }
+        }
 
-		short temp = (short) Math.abs(temperature * 10);
-		data[7] = (byte) ((temp >> 8) & 0xFF);
-		data[8] = (byte) (temp & 0xFF);
-		if (temperature < 0)
-			data[7] |= 0x80;
+        signalLevel = (byte) ((data[9] & 0xF0) >> 4);
+        batteryLevel = (byte) (data[9] & 0x0F);
+    }
 
-		data[9] = (byte) (((signalLevel & 0x0F) << 4) | (batteryLevel & 0x0F));
+    @Override
+    public byte[] decodeMessage() {
+        byte[] data = new byte[10];
 
-		return data;
-	}
-	
-	@Override
-	public String generateDeviceId() {
-		 return String.valueOf(sensorId);
-	}
+        data[0] = 0x09;
+        data[1] = RFXComBaseMessage.PacketType.UV.toByte();
+        data[2] = subType.toByte();
+        data[3] = seqNbr;
 
-	@Override
-	public State convertToState(RFXComValueSelector valueSelector)
-			throws RFXComException {
-		
-		org.openhab.core.types.State state = UnDefType.UNDEF;
+        data[4] = (byte) ((sensorId & 0xFF00) >> 8);
+        data[5] = (byte) (sensorId & 0x00FF);
+        data[6] = (byte) (uv & 0xFF);
+        ;
 
-		if (valueSelector.getItemClass() == NumberItem.class) {
+        short temp = (short) Math.abs(temperature * 10);
+        data[7] = (byte) ((temp >> 8) & 0xFF);
+        data[8] = (byte) (temp & 0xFF);
+        if (temperature < 0) {
+            data[7] |= 0x80;
+        }
 
-			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+        data[9] = (byte) (((signalLevel & 0x0F) << 4) | (batteryLevel & 0x0F));
 
-				state = new DecimalType(signalLevel);
+        return data;
+    }
 
-			} else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
+    @Override
+    public String generateDeviceId() {
+        return String.valueOf(sensorId);
+    }
 
-				state = new DecimalType(batteryLevel);
+    @Override
+    public State convertToState(RFXComValueSelector valueSelector) throws RFXComException {
 
-			} else if (valueSelector == RFXComValueSelector.UV) {
+        org.openhab.core.types.State state = UnDefType.UNDEF;
 
-				state = new DecimalType(uv);
+        if (valueSelector.getItemClass() == NumberItem.class) {
 
-			} else if (valueSelector == RFXComValueSelector.TEMPERATURE) {
+            if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
 
-				state = new DecimalType(temperature);
+                state = new DecimalType(signalLevel);
 
-			} else {
-				
-				throw new RFXComException("Can't convert " + valueSelector + " to NumberItem");
-				
-			}
+            } else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
 
-		} else if (valueSelector.getItemClass() == StringItem.class) {
+                state = new DecimalType(batteryLevel);
 
-			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+            } else if (valueSelector == RFXComValueSelector.UV) {
 
-				state = new StringType(
-						DatatypeConverter.printHexBinary(rawMessage));
-			} else {
-				throw new RFXComException("Can't convert "
-						+ valueSelector + " to StringItem");
-			}
-		} else {
+                state = new DecimalType(uv);
 
-			throw new RFXComException("Can't convert " + valueSelector
-					+ " to " + valueSelector.getItemClass());
+            } else if (valueSelector == RFXComValueSelector.TEMPERATURE) {
 
-		}
+                state = new DecimalType(temperature);
 
-		return state;
-	}
+            } else {
 
-	@Override
-	public void convertFromState(RFXComValueSelector valueSelector, String id,
-			Object subType, Type type, byte seqNumber) throws RFXComException {
-		
-		throw new RFXComException("Not supported");
-		
-	}
+                throw new RFXComException("Can't convert " + valueSelector + " to NumberItem");
 
-	@Override
-	public Object convertSubType(String subType) throws RFXComException {
-		
-		for (SubType s : SubType.values()) {
-			if (s.toString().equals(subType)) {
-				return s;
-			}
-		}
-		
-		throw new RFXComException("Unknown sub type " + subType);
-	}
-	
-	@Override
-	public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
-		return supportedValueSelectors;
-	}
+            }
+
+        } else if (valueSelector.getItemClass() == StringItem.class) {
+
+            if (valueSelector == RFXComValueSelector.RAW_DATA) {
+
+                state = new StringType(DatatypeConverter.printHexBinary(rawMessage));
+            } else {
+                throw new RFXComException("Can't convert " + valueSelector + " to StringItem");
+            }
+        } else {
+
+            throw new RFXComException("Can't convert " + valueSelector + " to " + valueSelector.getItemClass());
+
+        }
+
+        return state;
+    }
+
+    @Override
+    public void convertFromState(RFXComValueSelector valueSelector, String id, Object subType, Type type,
+            byte seqNumber) throws RFXComException {
+
+        throw new RFXComException("Not supported");
+
+    }
+
+    @Override
+    public Object convertSubType(String subType) throws RFXComException {
+
+        for (SubType s : SubType.values()) {
+            if (s.toString().equals(subType)) {
+                return s;
+            }
+        }
+
+        throw new RFXComException("Unknown sub type " + subType);
+    }
+
+    @Override
+    public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
+        return supportedValueSelectors;
+    }
 
 }

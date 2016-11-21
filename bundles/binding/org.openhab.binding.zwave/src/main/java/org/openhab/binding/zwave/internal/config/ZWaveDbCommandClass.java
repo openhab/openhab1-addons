@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,29 +15,33 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 /**
  * Implements a commandclass for the XML product database
+ *
  * @author Chris Jackson
  * @since 1.4.0
  *
  */
 public class ZWaveDbCommandClass {
-	@XStreamAlias("id")
-	@XStreamConverter(HexToIntegerConverter.class)
-	public Integer Id;
+    @XStreamAlias("id")
+    @XStreamConverter(HexToIntegerConverter.class)
+    public Integer Id;
 
-	// Endpoint number - if we want to set these options for a specific endpoint
-	public Integer endpoint;
+    // Endpoint number - if we want to set these options for a specific endpoint
+    public Integer endpoint;
 
-	// If we want to remove this class, set to true
-	public Boolean remove;
+    // Force the version of this command class
+    public Integer version;
 
-	// IF we want to add this class if it doesn't exist, set to true
-	public Boolean add;
+    // If we want to remove this class, set to true
+    public Boolean remove;
 
-	// Sets whether or not get is supported by ZWaveGetCommandClass
-	public Boolean isGetSupported;
-	
-	// Configuration options for meter class
-	public Boolean meterCanReset;
-	public String meterScale;
-	public String meterType;
+    // IF we want to add this class if it doesn't exist, set to true
+    public Boolean add;
+
+    // Sets whether or not get is supported by ZWaveGetCommandClass
+    public Boolean isGetSupported;
+
+    // Configuration options for meter class
+    public Boolean meterCanReset;
+    public String meterScale;
+    public String meterType;
 }

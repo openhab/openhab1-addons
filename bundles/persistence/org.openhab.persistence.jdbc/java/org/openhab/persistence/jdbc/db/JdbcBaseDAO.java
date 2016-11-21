@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.persistence.jdbc.db;
 
 import java.math.BigDecimal;
@@ -13,6 +21,7 @@ import java.util.Properties;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.knowm.yank.Yank;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ColorItem;
@@ -37,18 +46,26 @@ import org.openhab.core.types.State;
 import org.openhab.persistence.jdbc.model.ItemVO;
 import org.openhab.persistence.jdbc.model.ItemsVO;
 import org.openhab.persistence.jdbc.model.JdbcItem;
+import org.openhab.persistence.jdbc.utils.DbMetaData;
 import org.openhab.persistence.jdbc.utils.StringUtilsExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.knowm.yank.Yank;
-
+/**
+ * Default Database Configuration class.
+ *
+ * @author Helmut Lehmeyer
+ * @since 1.8.0
+ */
 public class JdbcBaseDAO {
     private static final Logger logger = LoggerFactory.getLogger(JdbcBaseDAO.class);
 
     public Properties databaseProps = new Properties();
     protected String urlSuffix = "";
     public Map<String, String> sqlTypes = new HashMap<String, String>();
+
+    // Get Database Meta data
+    protected DbMetaData dbMeta;
 
     protected String SQL_PING_DB;
     protected String SQL_GET_DB;
@@ -70,6 +87,42 @@ public class JdbcBaseDAO {
         initSqlQueries();
     }
 
+    /**
+     * ## Get high precision by fractal seconds, examples ##
+     *
+     * mysql > 5.5 + mariadb > 5.2:
+     * DROP TABLE FractionalSeconds;
+     * CREATE TABLE FractionalSeconds (time TIMESTAMP(3), value TIMESTAMP(3));
+     * INSERT INTO FractionalSeconds (time, value) VALUES( NOW(3), '1999-01-09 20:11:11.126' );
+     * SELECT time FROM FractionalSeconds ORDER BY time DESC LIMIT 1;
+     *
+     * mysql <= 5.5 + mariadb <= 5.2: !!! NO high precision and fractal seconds !!!
+     * DROP TABLE FractionalSeconds;
+     * CREATE TABLE FractionalSeconds (time TIMESTAMP, value TIMESTAMP);
+     * INSERT INTO FractionalSeconds (time, value) VALUES( NOW(), '1999-01-09 20:11:11.126' );
+     * SELECT time FROM FractionalSeconds ORDER BY time DESC LIMIT 1;
+     *
+     * derby:
+     * DROP TABLE FractionalSeconds;
+     * CREATE TABLE FractionalSeconds (time TIMESTAMP, value TIMESTAMP);
+     * INSERT INTO FractionalSeconds (time, value) VALUES( CURRENT_TIMESTAMP, '1999-01-09 20:11:11.126' );
+     * SELECT time, value FROM FractionalSeconds;
+     *
+     * H2 + postgreSQL + hsqldb:
+     * DROP TABLE FractionalSeconds;
+     * CREATE TABLE FractionalSeconds (time TIMESTAMP, value TIMESTAMP);
+     * INSERT INTO FractionalSeconds (time, value) VALUES( NOW(), '1999-01-09 20:11:11.126' );
+     * SELECT time, value FROM FractionalSeconds;
+     *
+     * Sqlite:
+     * DROP TABLE FractionalSeconds;
+     * CREATE TABLE FractionalSeconds (time TIMESTAMP, value TIMESTAMP);
+     * INSERT INTO FractionalSeconds (time, value) VALUES( strftime('%Y-%m-%d %H:%M:%f' , 'now' , 'localtime'),
+     * '1999-01-09 20:11:11.124' );
+     * SELECT time FROM FractionalSeconds ORDER BY time DESC LIMIT 1;
+     *
+     */
+
     private void initSqlQueries() {
         logger.debug("JDBC::initSqlQueries: '{}'", this.getClass().getSimpleName());
         SQL_PING_DB = "SELECT 1";
@@ -90,8 +143,8 @@ public class JdbcBaseDAO {
         SQL_DELETE_ITEMS_ENTRY = "DELETE FROM items WHERE ItemName=#itemname#";
         SQL_GET_ITEMID_TABLE_NAMES = "SELECT itemid, itemname FROM #itemsManageTable#";
         SQL_GET_ITEM_TABLES = "SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE' AND table_schema=#jdbcUriDatabaseName# AND NOT table_name=#itemsManageTable#";
-        SQL_CREATE_ITEM_TABLE = "CREATE TABLE IF NOT EXISTS #tableName# (time TIMESTAMP NOT NULL, value #dbType#, PRIMARY KEY(time))";
-        SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( NOW(), ? ) ON DUPLICATE KEY UPDATE VALUE= ?";
+        SQL_CREATE_ITEM_TABLE = "CREATE TABLE IF NOT EXISTS #tableName# (time #tablePrimaryKey# NOT NULL, value #dbType#, PRIMARY KEY(time))";
+        SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( #tablePrimaryValue#, ? ) ON DUPLICATE KEY UPDATE VALUE= ?";
     }
 
     /**
@@ -102,13 +155,15 @@ public class JdbcBaseDAO {
         sqlTypes.put("CALLITEM", "VARCHAR(200)");
         sqlTypes.put("COLORITEM", "VARCHAR(70)");
         sqlTypes.put("CONTACTITEM", "VARCHAR(6)");
-        sqlTypes.put("DATETIMEITEM", "DATETIME");
+        sqlTypes.put("DATETIMEITEM", "TIMESTAMP");
         sqlTypes.put("DIMMERITEM", "TINYINT");
         sqlTypes.put("LOCATIONITEM", "VARCHAR(30)");
         sqlTypes.put("NUMBERITEM", "DOUBLE");
         sqlTypes.put("ROLLERSHUTTERITEM", "TINYINT");
         sqlTypes.put("STRINGITEM", "VARCHAR(65500)");// jdbc max 21845
         sqlTypes.put("SWITCHITEM", "VARCHAR(6)");
+        sqlTypes.put("tablePrimaryKey", "TIMESTAMP");
+        sqlTypes.put("tablePrimaryValue", "NOW()");
     }
 
     /**
@@ -189,6 +244,12 @@ public class JdbcBaseDAO {
 
     }
 
+    public void initAfterFirstDbConnection() {
+        logger.debug("JDBC::initAfterFirstDbConnection: Initializing step, after db is connected.");
+        // Initialize sqlTypes, depending on DB version for example
+        dbMeta = new DbMetaData();// get DB information
+    }
+
     /**************
      * ITEMS DAOs *
      **************/
@@ -203,7 +264,7 @@ public class JdbcBaseDAO {
     public boolean doIfTableExists(ItemsVO vo) {
         String sql = StringUtilsExt.replaceArrayMerge(SQL_IF_TABLE_EXISTS, new String[] { "#searchTable#" },
                 new String[] { vo.getItemsManageTable() });
-        logger.debug("JDBC::doCreateNewEntryInItemsTable sql={}", sql);
+        logger.debug("JDBC::doIfTableExists sql={}", sql);
         return Yank.queryScalar(sql, String.class, null) != null;
     }
 
@@ -255,15 +316,17 @@ public class JdbcBaseDAO {
     }
 
     public void doCreateItemTable(ItemVO vo) {
-        String sql = StringUtilsExt.replaceArrayMerge(SQL_CREATE_ITEM_TABLE, new String[] { "#tableName#", "#dbType#" },
-                new String[] { vo.getTableName(), vo.getDbType() });
+        String sql = StringUtilsExt.replaceArrayMerge(SQL_CREATE_ITEM_TABLE,
+                new String[] { "#tableName#", "#dbType#", "#tablePrimaryKey#" },
+                new String[] { vo.getTableName(), vo.getDbType(), sqlTypes.get("tablePrimaryKey") });
         Yank.execute(sql, null);
     }
 
     public void doStoreItemValue(Item item, ItemVO vo) {
         vo = storeItemValueProvider(item, vo);
-        String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE, new String[] { "#tableName#" },
-                new String[] { vo.getTableName() });
+        String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE,
+                new String[] { "#tableName#", "#tablePrimaryValue#" },
+                new String[] { vo.getTableName(), sqlTypes.get("tablePrimaryValue") });
         Object[] params = new Object[] { vo.getValue(), vo.getValue() };
         logger.debug("JDBC::doStoreItemValue sql={} value='{}'", sql, vo.getValue());
         Yank.execute(sql, params);

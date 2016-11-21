@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,109 +23,105 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class open a TCP/IP connection to the VDR (SVDRP), sends commands and wait for a response
- * 
+ *
  * @author Wolfgang Willinghoefer
  * @since 0.9.0
  */
 
 public class VDRConnection {
 
-	private static Logger logger = LoggerFactory.getLogger(VDRConnection.class);
-	
-	private String mIp;
-	private int mPort = 6419; // VDR > 1.7.15: 6419 otherwise 2001;
+    private static Logger logger = LoggerFactory.getLogger(VDRConnection.class);
 
-	private static int timeout = 500;
+    private String mIp;
+    private int mPort = 6419; // VDR > 1.7.15: 6419 otherwise 2001;
 
-	public static String charset = "en_US.UTF-8";
+    private static int timeout = 500;
 
-	public VDRConnection(String pIP, int pPort) {
-		mIp = pIP;
-		mPort = pPort;
-	}
+    public static String charset = "en_US.UTF-8";
 
-	/**
-	 * Sends a SVDRP command to VDR and returns a response object, which
-	 * represents the vdr response
-	 * 
-	 * @param cmd
-	 *            The SVDRP command to send
-	 * @return The SVDRP response or null, if the Command couldn't be sent
-	 */
-	public Response send(final Command cmd) {
-		Response res = null;
-		Connection connection=null;
-		try {
-			logger.trace("New connection");
-			connection = new Connection(mIp, mPort, timeout, charset);
-			logger.debug("Try to send VDR command: {}", cmd.getCommand());
+    public VDRConnection(String pIP, int pPort) {
+        mIp = pIP;
+        mPort = pPort;
+    }
 
-			res = connection.send(cmd);
-			logger.debug("Recived Message from VDR: {}", res.getMessage());
-		} catch (Exception e) {
-			logger.error("Could not connect to VDR on {}: {}", mIp + ":" + mPort,
-					e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (IOException e) {
-					logger.error("Could not close connection to VDR on {}: {}", mIp + ":" + mPort,
-							e);
-				}			
-			}
-		}
+    /**
+     * Sends a SVDRP command to VDR and returns a response object, which
+     * represents the vdr response
+     * 
+     * @param cmd
+     *            The SVDRP command to send
+     * @return The SVDRP response or null, if the Command couldn't be sent
+     */
+    public Response send(final Command cmd) {
+        Response res = null;
+        Connection connection = null;
+        try {
+            logger.trace("New connection");
+            connection = new Connection(mIp, mPort, timeout, charset);
+            logger.debug("Try to send VDR command: {}", cmd.getCommand());
 
-		return res;
-	}
+            res = connection.send(cmd);
+            logger.debug("Received Message from VDR: {}", res.getMessage());
+        } catch (Exception e) {
+            logger.error("Could not connect to VDR on {}: {}", mIp + ":" + mPort, e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (IOException e) {
+                    logger.error("Could not close connection to VDR on {}: {}", mIp + ":" + mPort, e);
+                }
+            }
+        }
 
-	/**
-	 * Check if recording is in process
-	 * 
-	 * @return true if recording is in process otherwise false
-	 */
-	public Boolean isRecording() {
-		// get list of timers
-		Response response = send(new LSTT());
-		Boolean ret = Boolean.FALSE;
-		if (response != null && response.getCode()==250 && response.getMessage() != null) {
-			List<VDRTimer> timerList = TimerParser.parse(response.getMessage());
-			if (timerList != null && !timerList.isEmpty()) {
-				// check each timer until found a time which is active and state is recording
-				// do not use vdrTimer.isRecording because we need to add
-				// enough time (e.g. 6 Minutes) because of wakeup time
-				for (VDRTimer vdrTimer : timerList) {
-					// check if timer is active and state is recording
-					if (vdrTimer.isActive()
-							&& vdrTimer.hasState(VDRTimer.RECORDING)) {
-						ret = Boolean.TRUE;
-						break;
-					} else {
-						// check if timer starts before now (+6 minutes for wakeup) and if timer stops after now 
-						boolean recording = false;
-						Calendar startNow = Calendar.getInstance();
-						Calendar endNow = Calendar.getInstance();
-						startNow.add(Calendar.MINUTE, 6);
-						if (startNow.after(vdrTimer.getStartTime())
-								&& endNow.before(vdrTimer.getEndTime())) {
-							recording = vdrTimer.hasState(VDRTimer.ACTIVE);
-						}
-						// if recording is true, check if timer is repeating timer
-						// if repeating timer check if DaySet match
-						if (recording) {
-							if (!vdrTimer.isRepeating()) {
-								ret = Boolean.TRUE;
-								break;
-							} else if (vdrTimer.isDaySet(Calendar.getInstance())) {
-								ret = Boolean.TRUE;
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-		logger.trace("VDR (" + mIp + ") recording state: " + ret);
-		return ret;
-	}
+        return res;
+    }
+
+    /**
+     * Check if recording is in process
+     * 
+     * @return true if recording is in process otherwise false
+     */
+    public Boolean isRecording() {
+        // get list of timers
+        Response response = send(new LSTT());
+        Boolean ret = Boolean.FALSE;
+        if (response != null && response.getCode() == 250 && response.getMessage() != null) {
+            List<VDRTimer> timerList = TimerParser.parse(response.getMessage());
+            if (timerList != null && !timerList.isEmpty()) {
+                // check each timer until found a time which is active and state is recording
+                // do not use vdrTimer.isRecording because we need to add
+                // enough time (e.g. 6 Minutes) because of wakeup time
+                for (VDRTimer vdrTimer : timerList) {
+                    // check if timer is active and state is recording
+                    if (vdrTimer.isActive() && vdrTimer.hasState(VDRTimer.RECORDING)) {
+                        ret = Boolean.TRUE;
+                        break;
+                    } else {
+                        // check if timer starts before now (+6 minutes for wakeup) and if timer stops after now
+                        boolean recording = false;
+                        Calendar startNow = Calendar.getInstance();
+                        Calendar endNow = Calendar.getInstance();
+                        startNow.add(Calendar.MINUTE, 6);
+                        if (startNow.after(vdrTimer.getStartTime()) && endNow.before(vdrTimer.getEndTime())) {
+                            recording = vdrTimer.hasState(VDRTimer.ACTIVE);
+                        }
+                        // if recording is true, check if timer is repeating timer
+                        // if repeating timer check if DaySet match
+                        if (recording) {
+                            if (!vdrTimer.isRepeating()) {
+                                ret = Boolean.TRUE;
+                                break;
+                            } else if (vdrTimer.isDaySet(Calendar.getInstance())) {
+                                ret = Boolean.TRUE;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        logger.trace("VDR (" + mIp + ") recording state: " + ret);
+        return ret;
+    }
 }

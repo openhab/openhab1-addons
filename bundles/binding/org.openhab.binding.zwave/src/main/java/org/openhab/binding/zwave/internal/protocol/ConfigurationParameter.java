@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 /**
  * This class provides a storage class for zwave configuration parameters
  * within the configuration command class. This is then serialized to XML.
+ *
  * @author Chris Jackson
  * @since 1.4.0
  *
@@ -20,94 +21,103 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("configurationParameter")
 public class ConfigurationParameter {
 
-	private final Integer index;
-	private final Integer size;
-	private Integer value;
-	private boolean readOnly;
-	private boolean writeOnly;
-	
-	/***
-	 * Constructor. Creates a new instance of the {@link ConfigurationParameter} class.
-	 * @param index. The parameter index.
-	 * @param value. The parameter value;
-	 * @throws IllegalArgumentException thrown when the index or size arguments are out of range.
-	 */
-	public ConfigurationParameter(Integer index, Integer value, Integer size) throws IllegalArgumentException {
-		
-		if (size < 1 || size > 4) {
-			throw new IllegalArgumentException("illegal parameter size");
-		}
-		
-		if (index < 0 || index > 0xFF) {
-			throw new IllegalArgumentException("illegal parameter index");
-		}
-		
-		this.index = index;
-		this.size = size;
-		this.setValue(value);
-	}
-	
-	/**
-	 * Gets the configuration parameter value
-	 * @return the value
-	 */
-	public Integer getValue() {
-		return value;
-	}
+    private final Integer index;
+    private final Integer size;
+    private Integer value;
+    private boolean readOnly;
+    private boolean writeOnly;
 
-	/**
-	 * Sets the configuration parameter value.
-	 * @param value the value to set
-	 */
-	public void setValue(Integer value) throws IllegalArgumentException {
-		this.value = value;
-	}
+    /***
+     * Constructor. Creates a new instance of the {@link ConfigurationParameter} class.
+     *
+     * @param index. The parameter index.
+     * @param value. The parameter value;
+     * @throws IllegalArgumentException thrown when the index or size arguments are out of range.
+     */
+    public ConfigurationParameter(Integer index, Integer value, Integer size) throws IllegalArgumentException {
 
-	/**
-	 * Returns the parameter index.
-	 * @return the index
-	 */
-	public Integer getIndex() {
-		return index;
-	}
+        if (size < 1 || size > 4) {
+            throw new IllegalArgumentException("illegal parameter size");
+        }
 
-	/**
-	 * Returns the parameter size.
-	 * @return the size
-	 */
-	public Integer getSize() {
-		return size;
-	}
-	
-	/**
-	 * Sets the parameter as a WriteOnly parameter
-	 * @param write true if the parameter should not be read
-	 */
-	public void setWriteOnly(boolean write) {
-		writeOnly = write;
-	}
+        if (index < 0 || index > 0xFF) {
+            throw new IllegalArgumentException("illegal parameter index");
+        }
 
-	/**
-	 * Returns true if this parameter is write only
-	 * @return true if the parameter should not be read back
-	 */
-	public boolean getWriteOnly() {
-		return writeOnly;
-	}
+        this.index = index;
+        this.size = size;
+        this.setValue(value);
+    }
 
-	/**
-	 * Sets the parameter as a ReadOnly parameter
-	 * @param read true if the parameters is readonly
-	 */
-	public void setReadOnly(boolean read) {
-		readOnly = read;
-	}
+    /**
+     * Gets the configuration parameter value
+     *
+     * @return the value
+     */
+    public Integer getValue() {
+        return value;
+    }
 
-	/**
-	 * Returns true if this parameter is read only
-	 * @return true if the parameter should not be written to
-	 */
-	public boolean getReadOnly() {
-		return readOnly;
-	}
+    /**
+     * Sets the configuration parameter value.
+     *
+     * @param value the value to set
+     */
+    public void setValue(Integer value) throws IllegalArgumentException {
+        this.value = value;
+    }
+
+    /**
+     * Returns the parameter index.
+     *
+     * @return the index
+     */
+    public Integer getIndex() {
+        return index;
+    }
+
+    /**
+     * Returns the parameter size.
+     *
+     * @return the size
+     */
+    public Integer getSize() {
+        return size;
+    }
+
+    /**
+     * Sets the parameter as a WriteOnly parameter
+     *
+     * @param write true if the parameter should not be read
+     */
+    public void setWriteOnly(boolean write) {
+        writeOnly = write;
+    }
+
+    /**
+     * Returns true if this parameter is write only
+     *
+     * @return true if the parameter should not be read back
+     */
+    public boolean getWriteOnly() {
+        return writeOnly;
+    }
+
+    /**
+     * Sets the parameter as a ReadOnly parameter
+     *
+     * @param read true if the parameters is readonly
+     */
+    public void setReadOnly(boolean read) {
+        readOnly = read;
+    }
+
+    /**
+     * Returns true if this parameter is read only
+     *
+     * @return true if the parameter should not be written to
+     */
+    public boolean getReadOnly() {
+        return readOnly;
+    }
 }

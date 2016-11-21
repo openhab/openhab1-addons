@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,7 +25,7 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
 
 /**
  * Updates thermostats to the Ecobee API.
- * 
+ *
  * @author John Cocula
  * @since 1.7.0
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/operations/get-thermostats.shtml">GET
@@ -33,95 +33,95 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
  */
 public class UpdateThermostatRequest extends AbstractRequest {
 
-	private static final String RESOURCE_URL = API_BASE_URL + "1/thermostat";
+    private static final String RESOURCE_URL = API_BASE_URL + "1/thermostat";
 
-	@JsonIgnore
-	private final String accessToken;
+    @JsonIgnore
+    private final String accessToken;
 
-	@JsonProperty("selection")
-	private final Selection selection;
+    @JsonProperty("selection")
+    private final Selection selection;
 
-	@JsonProperty("functions")
-	private final List<AbstractFunction> functions;
+    @JsonProperty("functions")
+    private final List<AbstractFunction> functions;
 
-	@JsonProperty("thermostat")
-	private final Thermostat thermostat;
+    @JsonProperty("thermostat")
+    private final Thermostat thermostat;
 
-	/**
-	 * Creates a request for the measurements of a device or module.
-	 * 
-	 * If you don't specify a moduleId you will retrieve the device's measurements. If you do specify a moduleId you
-	 * will retrieve the module's measurements.
-	 * 
-	 * @param accessToken
-	 *            the access token that permits this API call
-	 * @param selection
-	 *            which thermostats will be updated
-	 * @param functions
-	 *            optional, a list of functions to send
-	 * @param thermostat
-	 *            optional, a thermostat that has writeable properties specified
-	 */
-	public UpdateThermostatRequest(final String accessToken, final Selection selection,
-			final List<AbstractFunction> functions, final Thermostat thermostat) {
-		assert accessToken != null : "accessToken must not be null!";
-		assert selection != null : "selection must not be null!";
+    /**
+     * Creates a request for the measurements of a device or module.
+     * 
+     * If you don't specify a moduleId you will retrieve the device's measurements. If you do specify a moduleId you
+     * will retrieve the module's measurements.
+     * 
+     * @param accessToken
+     *            the access token that permits this API call
+     * @param selection
+     *            which thermostats will be updated
+     * @param functions
+     *            optional, a list of functions to send
+     * @param thermostat
+     *            optional, a thermostat that has writeable properties specified
+     */
+    public UpdateThermostatRequest(final String accessToken, final Selection selection,
+            final List<AbstractFunction> functions, final Thermostat thermostat) {
+        assert accessToken != null : "accessToken must not be null!";
+        assert selection != null : "selection must not be null!";
 
-		this.accessToken = accessToken;
-		this.selection = selection;
-		this.functions = functions;
-		this.thermostat = thermostat;
-	}
+        this.accessToken = accessToken;
+        this.selection = selection;
+        this.functions = functions;
+        this.thermostat = thermostat;
+    }
 
-	@Override
-	public ApiResponse execute() {
-		final String url = buildQueryString();
-		String json = null;
+    @Override
+    public ApiResponse execute() {
+        final String url = buildQueryString();
+        String json = null;
 
-		try {
-			json = executeQuery(url);
+        try {
+            json = executeQuery(url);
 
-			final ApiResponse response = JSON.readValue(json, ApiResponse.class);
+            final ApiResponse response = JSON.readValue(json, ApiResponse.class);
 
-			return response;
-		} catch (final Exception e) {
-			throw newException("Could not get thermostats.", e, url, json);
-		}
-	}
+            return response;
+        } catch (final Exception e) {
+            throw newException("Could not get thermostats.", e, url, json);
+        }
+    }
 
-	@Override
-	public String toString() {
-		final ToStringBuilder builder = createToStringBuilder();
-		builder.appendSuper(super.toString());
-		builder.append("accessToken", this.accessToken);
-		builder.append("selection", this.selection);
-		if (this.functions != null) {
-			builder.append("functions", this.functions);
-		}
-		if (this.thermostat != null) {
-			builder.append("thermostat", this.thermostat);
-		}
+    @Override
+    public String toString() {
+        final ToStringBuilder builder = createToStringBuilder();
+        builder.appendSuper(super.toString());
+        builder.append("accessToken", this.accessToken);
+        builder.append("selection", this.selection);
+        if (this.functions != null) {
+            builder.append("functions", this.functions);
+        }
+        if (this.thermostat != null) {
+            builder.append("thermostat", this.thermostat);
+        }
 
-		return builder.toString();
-	}
+        return builder.toString();
+    }
 
-	protected String executeQuery(final String url) throws JsonGenerationException, JsonMappingException, IOException {
-		Properties headers = new Properties();
-		headers.putAll(HTTP_HEADERS);
-		headers.put("Authorization", "Bearer " + this.accessToken);
-		return executeUrl(HTTP_POST, url, headers, new ByteArrayInputStream(JSON.writeValueAsBytes(this)),
-				"application/json", HTTP_REQUEST_TIMEOUT);
-	}
+    protected String executeQuery(final String url) throws JsonGenerationException, JsonMappingException, IOException {
+        Properties headers = new Properties();
+        headers.putAll(HTTP_HEADERS);
+        headers.put("Authorization", "Bearer " + this.accessToken);
+        return executeUrl(HTTP_POST, url, headers, new ByteArrayInputStream(JSON.writeValueAsBytes(this)),
+                "application/json", HTTP_REQUEST_TIMEOUT);
+    }
 
-	private String buildQueryString() {
-		final StringBuilder urlBuilder = new StringBuilder(RESOURCE_URL);
+    private String buildQueryString() {
+        final StringBuilder urlBuilder = new StringBuilder(RESOURCE_URL);
 
-		try {
-			urlBuilder.append("?json=true&token=");
-			urlBuilder.append(this.accessToken);
-			return URIUtil.encodeQuery(urlBuilder.toString());
-		} catch (final Exception e) {
-			throw new EcobeeException(e);
-		}
-	}
+        try {
+            urlBuilder.append("?json=true&token=");
+            urlBuilder.append(this.accessToken);
+            return URIUtil.encodeQuery(urlBuilder.toString());
+        } catch (final Exception e) {
+            throw new EcobeeException(e);
+        }
+    }
 }

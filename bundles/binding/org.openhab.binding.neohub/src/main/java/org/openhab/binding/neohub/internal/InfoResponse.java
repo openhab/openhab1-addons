@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,91 +17,96 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * A wrapper around the JSON response to the INFO command.
- * 
+ *
  * @author Sebastian Prehn
  * @since 1.5.0
  */
 class InfoResponse {
 
-	@JsonProperty("devices")
-	private List<Device> devices;
+    @JsonProperty("devices")
+    private List<Device> devices;
 
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	static class Device {
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class Device {
 
-		@JsonProperty("device")
-		private String deviceName;
-		@JsonProperty("CURRENT_SET_TEMPERATURE")
-		private BigDecimal currentSetTemperature;
-		@JsonProperty("CURRENT_TEMPERATURE")
-		private BigDecimal currentTemperature;
-		@JsonProperty("CURRENT_FLOOR_TEMPERATURE")
-		private BigDecimal currentFloorTemperature;
-		@JsonProperty("AWAY")
-		private Boolean away;
-		@JsonProperty("STANDBY")
-		private Boolean standby;
-		@JsonProperty("HEATING")
-		private Boolean heating;
+        @JsonProperty("device")
+        private String deviceName;
+        @JsonProperty("CURRENT_SET_TEMPERATURE")
+        private BigDecimal currentSetTemperature;
+        @JsonProperty("CURRENT_TEMPERATURE")
+        private BigDecimal currentTemperature;
+        @JsonProperty("CURRENT_FLOOR_TEMPERATURE")
+        private BigDecimal currentFloorTemperature;
+        @JsonProperty("AWAY")
+        private Boolean away;
+        @JsonProperty("STANDBY")
+        private Boolean standby;
+        @JsonProperty("HEATING")
+        private Boolean heating;
+        @JsonProperty("PREHEAT")
+        private Boolean preHeat;
 
-		public BigDecimal getCurrentSetTemperature() {
-			return currentSetTemperature;
-		}
+        public BigDecimal getCurrentSetTemperature() {
+            return currentSetTemperature;
+        }
 
-		public BigDecimal getCurrentTemperature() {
-			return currentTemperature;
-		}
+        public BigDecimal getCurrentTemperature() {
+            return currentTemperature;
+        }
 
-		public BigDecimal getCurrentFloorTemperature() {
-			return currentFloorTemperature;
-		}
+        public BigDecimal getCurrentFloorTemperature() {
+            return currentFloorTemperature;
+        }
 
-		public Boolean isAway() {
-			return away;
-		}
+        public Boolean isAway() {
+            return away;
+        }
 
-		public Boolean isStandby() {
-			return standby;
-		}
+        public Boolean isStandby() {
+            return standby;
+        }
 
-		public Boolean isHeating() {
-			return heating;
-		}
+        public Boolean isHeating() {
+            return heating;
+        }
 
-		public String getDeviceName() {
-			return deviceName;
-		}
-	}
+        public Boolean isPreHeat() {
+            return preHeat;
+        }
 
-	/**
-	 * Create wrapper around the JSON response.
-	 * 
-	 * @param response
-	 *            the JSON response
-	 * @return a wrapper around the JSON response
-	 */
-	static InfoResponse createInfoResponse(String response) {
-		try {
-			return new ObjectMapper().readValue(response, InfoResponse.class);
-		} catch (Exception e) {
-			throw new IllegalStateException("Unable to parse info response.", e);
-		}
-	}
+        public String getDeviceName() {
+            return deviceName;
+        }
+    }
 
-	/**
-	 * Returns the Device section for the given device name.
-	 * 
-	 * @param device
-	 *            the device name
-	 * @return the matching section in the response
-	 */
-	public Device getDevice(String device) {
-		for (Device d : devices) {
-			if (device.equals(d.getDeviceName())) {
-				return d;
-			}
-		}
-		throw new IllegalStateException("No device by the name of " + device
-				+ " was not found in the response.");
-	}
+    /**
+     * Create wrapper around the JSON response.
+     * 
+     * @param response
+     *            the JSON response
+     * @return a wrapper around the JSON response
+     */
+    static InfoResponse createInfoResponse(String response) {
+        try {
+            return new ObjectMapper().readValue(response, InfoResponse.class);
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to parse info response.", e);
+        }
+    }
+
+    /**
+     * Returns the Device section for the given device name.
+     * 
+     * @param device
+     *            the device name
+     * @return the matching section in the response
+     */
+    public Device getDevice(String device) {
+        for (Device d : devices) {
+            if (device.equals(d.getDeviceName())) {
+                return d;
+            }
+        }
+        throw new IllegalStateException("No device by the name of " + device + " was not found in the response.");
+    }
 }

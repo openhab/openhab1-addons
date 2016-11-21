@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.io.caldav.internal;
 
 import java.util.ArrayList;
@@ -7,139 +15,142 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.openhab.io.caldav.CalDavEvent;
 
 public final class EventStorage {
-	private static EventStorage instance;
-	
-	public static EventStorage getInstance() {
-		if (instance == null) {
-			instance = new EventStorage();
-		}
-		return instance;
-	}
-	
-	private EventStorage() { }
-	
-	private ConcurrentHashMap<String, CalendarRuntime> eventCache = new ConcurrentHashMap<String, CalendarRuntime>();
+    private static EventStorage instance;
 
-	public ConcurrentHashMap<String, CalendarRuntime> getEventCache() {
-		return eventCache;
-	}
-	
-	/**
-	 * Containing all events for a specific calendar and the config for the calendar.
-	 * @author Robert
-	 *
-	 */
-	public static class CalendarRuntime {
-		private final ConcurrentHashMap<String, EventContainer> eventMap = new ConcurrentHashMap<String, EventContainer>();
-		
-		private CalDavConfig config;
-		
-		public EventContainer getEventContainerByFilename(String filename) {
-			for (EventContainer eventContainer : eventMap.values()) {
-				if (eventContainer.getFilename().equals(filename)) {
-					return eventContainer;
-				}
-			}
-			return null;
-		}
-		
-		public ConcurrentHashMap<String, EventContainer> getEventMap() {
-			return eventMap;
-		}
+    public static EventStorage getInstance() {
+        if (instance == null) {
+            instance = new EventStorage();
+        }
+        return instance;
+    }
 
-		public CalDavConfig getConfig() {
-			return config;
-		}
+    private EventStorage() {
+    }
 
-		public void setConfig(CalDavConfig config) {
-			this.config = config;
-		}
-	}
-	
-	/**
-	 * A container for a event.
-	 * Each event can have multiple occurrences.
-	 * @author Robert Delbrück
-	 *
-	 */
-	public static class EventContainer {
-		private String calendarId;
-		private String eventId;
-		private org.joda.time.DateTime lastChanged;
-		private String filename;
-		private boolean historicEvent;
-		private org.joda.time.DateTime calculatedUntil;
-		
-		private List<CalDavEvent> eventList = new ArrayList<CalDavEvent>();
-		private final List<String> timerMap = new ArrayList<String>();
-		
-		public EventContainer() {
-			super();
-		}
+    private ConcurrentHashMap<String, CalendarRuntime> eventCache = new ConcurrentHashMap<String, CalendarRuntime>();
 
-		public EventContainer(String calendarId) {
-			super();
-			this.calendarId = calendarId;
-		}
+    public ConcurrentHashMap<String, CalendarRuntime> getEventCache() {
+        return eventCache;
+    }
 
-		public List<CalDavEvent> getEventList() {
-			return eventList;
-		}
+    /**
+     * Containing all events for a specific calendar and the config for the calendar.
+     * 
+     * @author Robert
+     *
+     */
+    public static class CalendarRuntime {
+        private final ConcurrentHashMap<String, EventContainer> eventMap = new ConcurrentHashMap<String, EventContainer>();
 
-		public void setEventList(List<CalDavEvent> eventList) {
-			this.eventList = eventList;
-		}
+        private CalDavConfig config;
 
-		public List<String> getTimerMap() {
-			return timerMap;
-		}
-		
-		public String getEventId() {
-			return eventId;
-		}
+        public EventContainer getEventContainerByFilename(String filename) {
+            for (EventContainer eventContainer : eventMap.values()) {
+                if (eventContainer.getFilename().equals(filename)) {
+                    return eventContainer;
+                }
+            }
+            return null;
+        }
 
-		public void setEventId(String eventId) {
-			this.eventId = eventId;
-		}
+        public ConcurrentHashMap<String, EventContainer> getEventMap() {
+            return eventMap;
+        }
 
-		public String getCalendarId() {
-			return calendarId;
-		}
+        public CalDavConfig getConfig() {
+            return config;
+        }
 
-		public void setCalendarId(String calendarId) {
-			this.calendarId = calendarId;
-		}
+        public void setConfig(CalDavConfig config) {
+            this.config = config;
+        }
+    }
 
-		public org.joda.time.DateTime getLastChanged() {
-			return lastChanged;
-		}
+    /**
+     * A container for a event.
+     * Each event can have multiple occurrences.
+     * 
+     * @author Robert Delbrück
+     *
+     */
+    public static class EventContainer {
+        private String calendarId;
+        private String eventId;
+        private org.joda.time.DateTime lastChanged;
+        private String filename;
+        private boolean historicEvent;
+        private org.joda.time.DateTime calculatedUntil;
 
-		public void setLastChanged(org.joda.time.DateTime lastChanged) {
-			this.lastChanged = lastChanged;
-		}
+        private List<CalDavEvent> eventList = new ArrayList<CalDavEvent>();
+        private final List<String> timerMap = new ArrayList<String>();
 
-		public String getFilename() {
-			return filename;
-		}
+        public EventContainer() {
+            super();
+        }
 
-		public void setFilename(String filename) {
-			this.filename = filename;
-		}
+        public EventContainer(String calendarId) {
+            super();
+            this.calendarId = calendarId;
+        }
 
-		public boolean isHistoricEvent() {
-			return historicEvent;
-		}
+        public List<CalDavEvent> getEventList() {
+            return eventList;
+        }
 
-		public void setHistoricEvent(boolean historicEvent) {
-			this.historicEvent = historicEvent;
-		}
+        public void setEventList(List<CalDavEvent> eventList) {
+            this.eventList = eventList;
+        }
 
-		public org.joda.time.DateTime getCalculatedUntil() {
-			return calculatedUntil;
-		}
+        public List<String> getTimerMap() {
+            return timerMap;
+        }
 
-		public void setCalculatedUntil(org.joda.time.DateTime calculatedUntil) {
-			this.calculatedUntil = calculatedUntil;
-		}
-	}
+        public String getEventId() {
+            return eventId;
+        }
+
+        public void setEventId(String eventId) {
+            this.eventId = eventId;
+        }
+
+        public String getCalendarId() {
+            return calendarId;
+        }
+
+        public void setCalendarId(String calendarId) {
+            this.calendarId = calendarId;
+        }
+
+        public org.joda.time.DateTime getLastChanged() {
+            return lastChanged;
+        }
+
+        public void setLastChanged(org.joda.time.DateTime lastChanged) {
+            this.lastChanged = lastChanged;
+        }
+
+        public String getFilename() {
+            return filename;
+        }
+
+        public void setFilename(String filename) {
+            this.filename = filename;
+        }
+
+        public boolean isHistoricEvent() {
+            return historicEvent;
+        }
+
+        public void setHistoricEvent(boolean historicEvent) {
+            this.historicEvent = historicEvent;
+        }
+
+        public org.joda.time.DateTime getCalculatedUntil() {
+            return calculatedUntil;
+        }
+
+        public void setCalculatedUntil(org.joda.time.DateTime calculatedUntil) {
+            this.calculatedUntil = calculatedUntil;
+        }
+    }
 }
