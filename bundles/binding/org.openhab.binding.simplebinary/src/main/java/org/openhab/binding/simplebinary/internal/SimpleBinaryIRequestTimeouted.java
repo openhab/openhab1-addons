@@ -9,13 +9,11 @@
 package org.openhab.binding.simplebinary.internal;
 
 /**
- * Enumeration of communication type used for configured device
+ * Timeout interface
  *
  * @author Vita Tucek
- * @since 1.8.0
+ * @since 1.9.0
  */
-public enum SimpleBinaryPoolControl {
-    ONCHANGE,
-    ONSCAN,
-    NONE
+public interface SimpleBinaryIRequestTimeouted {
+    void timeoutEvent(SimpleBinaryIPChannelInfo chInfo);
 }

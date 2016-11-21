@@ -14,99 +14,124 @@ import java.util.Queue;
 
 /**
  * Status of communicated device
- * 
+ *
  * @author Vita Tucek
  * @since 1.8.0
  */
 public class SimpleBinaryDeviceState {
 
-	double packetLost = 0.0;
+    double packetLost = 0.0;
 
-	Queue<Calendar> communicationOK = new LinkedList<Calendar>();
-	Queue<Calendar> communicationError = new LinkedList<Calendar>();
+    Queue<Calendar> communicationOK = new LinkedList<Calendar>();
+    Queue<Calendar> communicationError = new LinkedList<Calendar>();
 
-	public enum DeviceStates {
-		UNKNOWN, CONNECTED, NOT_RESPONDING, RESPONSE_ERROR, DATA_ERROR
-	}
+    public enum DeviceStates {
 
-	private DeviceStates state = DeviceStates.UNKNOWN;
-	private DeviceStates prevState = DeviceStates.UNKNOWN;
-	private Calendar changedSince = Calendar.getInstance();
+        /**
+         * Device state is unknown
+         */
+        UNKNOWN,
+        /**
+         * Device is connected and communicate with master
+         */
+        CONNECTED,
+        /**
+         * Device does not respond
+         */
+        NOT_RESPONDING,
+        /**
+         * Device communicates but there is CRC error in communication (for both directions)
+         */
+        RESPONSE_ERROR,
+        /**
+         * Device communicates but there is same problem with data (unknown address, not supported telegram, error
+         * during save data in slave, ...)
+         */
+        DATA_ERROR
+    }
 
-	/**
-	 * Return last device state
-	 * 
-	 * @return
-	 */
-	public DeviceStates getState() {
-		return state;
-	}
+    private DeviceStates state = DeviceStates.UNKNOWN;
+    private DeviceStates prevState = DeviceStates.UNKNOWN;
+    private Calendar changedSince = Calendar.getInstance();
 
-	/**
-	 * Return previous state of device
-	 * 
-	 * @return
-	 */
-	public DeviceStates getPreviousState() {
-		return prevState;
-	}
+    /**
+     * Return last device state
+     *
+     * @return
+     */
+    public DeviceStates getState() {
+        return state;
+    }
 
-	/**
-	 * Return date of last device state change
-	 * 
-	 * @return
-	 */
-	public Calendar getChangeDate() {
-		return changedSince;
-	}
+    /**
+     * Return previous state of device
+     *
+     * @return
+     */
+    public DeviceStates getPreviousState() {
+        return prevState;
+    }
 
-	/**
-	 * Set actual device state
-	 * 
-	 * @param state
-	 */
-	public void setState(DeviceStates state) {
-		// set state only if previous is different
-		if (this.state != state) {
-			this.prevState = this.state;
-			this.state = state;
-			this.changedSince = Calendar.getInstance();
-		}
+    /**
+     * Return date of last device state change
+     *
+     * @return
+     */
+    public Calendar getChangeDate() {
+        return changedSince;
+    }
 
-		if (this.state == DeviceStates.CONNECTED)
-			communicationOK.add(Calendar.getInstance());
-		else
-			communicationError.add(Calendar.getInstance());
+    /**
+     * Set actual device state
+     *
+     * @param state
+     */
+    public void setState(DeviceStates state) {
+        // set state only if previous is different
+        if (this.state != state) {
+            this.prevState = this.state;
+            this.state = state;
+            this.changedSince = Calendar.getInstance();
+        }
 
-		calcPacketLost();
-	}
+        if (this.state == DeviceStates.CONNECTED) {
+            communicationOK.add(Calendar.getInstance());
+        } else {
+            communicationError.add(Calendar.getInstance());
+        }
 
-	/**
-	 * Return packet lost in percentage
-	 * 
-	 * @return
-	 */
-	public double getPacketLost() {
-		calcPacketLost();
+        calcPacketLost();
+    }
 
-		return packetLost;
-	}
+    /**
+     * Return packet lost in percentage
+     *
+     * @return
+     */
+    public double getPacketLost() {
+        calcPacketLost();
 
-	/**
-	 * Calculate packet lost for specific time in past
-	 */
-	private void calcPacketLost() {
-		Calendar limitTime = Calendar.getInstance();
-		limitTime.add(Calendar.MINUTE, -5);
+        return packetLost;
+    }
 
-		while (communicationOK.size() > 0 && communicationOK.element().before(limitTime))
-			communicationOK.remove();
-		while (communicationError.size() > 0 && communicationError.element().before(limitTime))
-			communicationError.remove();
+    /**
+     * Calculate packet lost for specific time in past
+     */
+    private void calcPacketLost() {
+        Calendar limitTime = Calendar.getInstance();
+        limitTime.add(Calendar.MINUTE, -5);
 
-		if (communicationOK.size() == 0 && communicationError.size() == 0)
-			packetLost = 0;
-		else
-			packetLost = 100 * communicationError.size() / (communicationOK.size() + communicationError.size());
-	}
+        while (communicationOK.size() > 0 && communicationOK.element().before(limitTime)) {
+            communicationOK.remove();
+        }
+        while (communicationError.size() > 0 && communicationError.element().before(limitTime)) {
+            communicationError.remove();
+        }
+
+        if (communicationOK.size() == 0 && communicationError.size() == 0) {
+            packetLost = 0;
+        } else {
+            packetLost = 100 * communicationError.size() / (communicationOK.size() + communicationError.size());
+        }
+    }
 }

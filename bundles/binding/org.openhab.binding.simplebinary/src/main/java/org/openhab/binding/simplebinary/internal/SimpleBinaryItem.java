@@ -73,6 +73,8 @@ public class SimpleBinaryItem extends SimpleBinaryItemData {
 		if(itemConfig == null)
 			return null;
 		
+		logger.trace("Item {}, address={}, deviceID={}, messageID=0x{}, datalenght={}", this.name, this.itemAddress, this.deviceId, Integer.toHexString(this.messageId & 0xFF), this.itemData.length );
+		
 		if(itemConfig.itemType.isAssignableFrom(NumberItem.class))
 		{
 			if(itemConfig.getDataType() == SimpleBinaryTypes.FLOAT)
@@ -97,13 +99,13 @@ public class SimpleBinaryItem extends SimpleBinaryItemData {
 				}
 			}
 			else
-			{		
+			{					
 				if(itemData.length == 1)
 					return new DecimalType((int)itemData[0]);
-				else if(itemData.length == 2)
-					return new DecimalType((int)(itemData[0] | (itemData[1] << 8)));
+				else if(itemData.length == 2)		
+					return new DecimalType((int)((itemData[0] & 0xFF | ((itemData[1] & 0xFF) << 8))));
 				else if(itemData.length == 4)
-					return new DecimalType((int)(itemData[0] | (itemData[1] << 8) | (itemData[2] << 16) | (itemData[3] << 24)));
+					return new DecimalType((int)((itemData[0] & 0xFF | ((itemData[1] & 0xFF) << 8) | ((itemData[2] & 0xFF) << 16) | ((itemData[3] & 0xFF) << 24))));
 				else
 					throw new Exception("getState(): cannot convert to item " + name + " to " + itemConfig.getDataType() + ". Wrong data length.");				
 			}
