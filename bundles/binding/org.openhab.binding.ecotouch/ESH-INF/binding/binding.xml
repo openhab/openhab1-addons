@@ -7,6 +7,7 @@
     <name>Waterkotte EcoTouch Binding</name>
     <description>This is the binding for the Waterkotte EcoTouch heatpump.</description>
     <author>Sebastian Held</author>
+    <service-id>org.openhab.ecotouch</service-id>
 
     <config-description>
         <parameter name="refresh" type="integer">
