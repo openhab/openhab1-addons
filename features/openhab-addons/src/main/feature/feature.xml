@@ -187,6 +187,13 @@
     <configfile finalname="${openhab.conf}/services/ecobee.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecobee</configfile>
   </feature>
 
+  <feature name="openhab-binding-ecotouch" description="Waterkotte Ecotouch Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.ecotouch/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/ecotouch.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecotouch</configfile>
+  </feature>
+
   <feature name="openhab-binding-energenie" description="Energenie Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
