@@ -20,6 +20,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import net.whistlingfish.harmony.HarmonyClient;
 import net.whistlingfish.harmony.HarmonyHubListener;
+import net.whistlingfish.harmony.protocol.LoginToken;
 
 /**
  * Handles connection and event handling for all Harmony Hub devices.
@@ -46,6 +50,10 @@ public class HarmonyHubGateway implements ManagedService {
      */
     private Map<String, HarmonyHubInstance> hubs = new HashMap<String, HarmonyHubInstance>();
 
+    private Map<String, ScheduledFuture> reconnectJobs = new HashMap<String, ScheduledFuture>();
+
+    ScheduledExecutorService reconnectService = Executors.newSingleThreadScheduledExecutor();
+
     /**
      * our internal mapping of hub listeners
      */
@@ -55,7 +63,13 @@ public class HarmonyHubGateway implements ManagedService {
     /**
      * Matching pattern for config params (qualifier.host|username|password)
      */
-    private static final Pattern CONFIG_PATTERN = Pattern.compile("((.*)\\.)?(host|username|password)");
+    private static final Pattern CONFIG_PATTERN = Pattern.compile("((.*)\\.)?(host|username|password|discoveryName)");
+
+    /**
+     * Discover timeout
+     */
+
+    private static final int DISCO_TIME = 30;
 
     /**
      * are we configured correctly?
@@ -84,7 +98,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Are we configured correctly
-     * 
+     *
      * @return our configuration state
      */
     public boolean isProperlyConfigured() {
@@ -94,7 +108,7 @@ public class HarmonyHubGateway implements ManagedService {
     /**
      * internal method to set our config state, we notify listeners of our
      * state change
-     * 
+     *
      * @param isConfigured
      */
     private synchronized void setProperlyConfigured(boolean isConfigured) {
@@ -106,7 +120,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Add listener who want to know our configured state
-     * 
+     *
      * @param listener
      */
     public synchronized void addHarmonyHubGatewayListener(HarmonyHubGatewayListener listener) {
@@ -118,7 +132,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Remove listener who no longer want to know our configured state
-     * 
+     *
      * @param listener
      */
     public synchronized void removeHarmonyHubGatewayListener(HarmonyHubGatewayListener listener) {
@@ -160,7 +174,9 @@ public class HarmonyHubGateway implements ManagedService {
                     hostConfig.setHost(value);
                 } else if (configKey.equals("username")) {
                     hostConfig.setUsername(value);
-                } else {
+                } else if (configKey.equals("discoveryName")) {
+                    hostConfig.setDiscoveryName(value);
+                } else if (configKey.equals("password")) {
                     hostConfig.setPassword(value);
                 }
             }
@@ -174,26 +190,75 @@ public class HarmonyHubGateway implements ManagedService {
                 public void run() {
                     for (Entry<String, HostConfig> entry : hostConfigs.entrySet()) {
                         final String qualifier = entry.getKey();
-                        HostConfig hostConfig = entry.getValue();
-                        if (!hostConfig.isValid()) {
-                            continue;
-                        }
-                        connectClient(qualifier, hostConfig);
+                        final HostConfig hostConfig = entry.getValue();
+                        connect(qualifier, hostConfig);
                     }
-                    setProperlyConfigured(true);
                 }
             }).start();
         }
     }
 
+    private void connect(final String qualifier, final HostConfig hostConfig) {
+        if (hostConfig.useDiscovery()) {
+            setProperlyConfigured(true);
+            final HarmonyHubDiscovery disco = new HarmonyHubDiscovery(DISCO_TIME);
+            disco.addListener(new HarmonyHubDiscoveryListener() {
+
+                @Override
+                public void hubDiscoveryFinished() {
+                    logger.warn("Could not find a HarmonyHub with the discovery name {}",
+                            hostConfig.getDiscoveryName());
+                    scheduleConnect(qualifier, hostConfig);
+                }
+
+                @Override
+                public void hubDiscovered(HarmonyHubDiscoveryResult result) {
+                    logger.debug("Found HarmonyHub with discoveryName {} looking for {}", result.getFriendlyName(),
+                            hostConfig.getDiscoveryName());
+                    if (result.getFriendlyName().toLowerCase().equals(hostConfig.getDiscoveryName().toLowerCase())) {
+                        disco.removeListener(this);
+                        connectClient(qualifier, result.getHost(), result.getAccountId(), result.getSessionID());
+                    }
+
+                }
+            });
+            disco.startDiscovery();
+        } else if (hostConfig.useCredentials()) {
+            setProperlyConfigured(true);
+            connectClient(qualifier, hostConfig);
+        } else {
+            logger.error("Config must have either a discoveryName or host/username/password");
+        }
+    }
+
+    private void scheduleConnect(final String qualifier, final HostConfig hostConfig) {
+        synchronized (reconnectJobs) {
+            if (reconnectJobs.containsKey(qualifier)) {
+                ScheduledFuture<?> job = reconnectJobs.remove(qualifier);
+                job.cancel(true);
+            }
+            reconnectJobs.put(qualifier, reconnectService.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    connect(qualifier, hostConfig);
+                }
+            }, 30, TimeUnit.SECONDS));
+        }
+    }
+
     /**
      * Connects a client and adds to our map
-     * 
+     *
      * @param qualifier
      * @param hostConfig
      */
-    private void connectClient(String qualifier, HostConfig hostConfig) {
+    private synchronized void connectClient(String qualifier, HostConfig hostConfig) {
         try {
+            if (hubs.containsKey(qualifier)) {
+                HarmonyHubInstance instance = hubs.get(qualifier);
+                instance.client.disconnect();
+                hubs.remove(qualifier);
+            }
             HarmonyClient harmonyClient = HarmonyClient.getInstance();
             logger.debug("Connecting {} to {} with user {}", qualifier, hostConfig.getHost(), hostConfig.getUsername());
             harmonyClient.connect(hostConfig.getHost(), hostConfig.getUsername(), hostConfig.getPassword());
@@ -207,13 +272,39 @@ public class HarmonyHubGateway implements ManagedService {
         }
     }
 
+    /**
+     * Connects a client and adds to our map
+     *
+     * @param qualifier
+     * @param hostConfig
+     */
+    private synchronized void connectClient(String qualifier, String host, String accountId, String sessionId) {
+        try {
+            if (hubs.containsKey(qualifier)) {
+                HarmonyHubInstance instance = hubs.get(qualifier);
+                instance.client.disconnect();
+                hubs.remove(qualifier);
+            }
+            HarmonyClient harmonyClient = HarmonyClient.getInstance();
+            logger.debug("Connecting {} to {} using discovery tokens", qualifier, host);
+            harmonyClient.connect(host, new LoginToken(accountId, sessionId));
+            hubs.put(qualifier, new HarmonyHubInstance(harmonyClient));
+            logger.debug("Devices for qualifier {}\n{}", qualifier, harmonyClient.getDeviceLabels().toString());
+            logger.debug("Activity for qualifier {}\n{}", qualifier, harmonyClient.getConfig().getActivities());
+            logger.debug("Config for qualifier {}\n{}", qualifier, harmonyClient.getConfig().toJson());
+        } catch (Exception e) {
+            logger.error(format(//
+                    "Failed creating harmony hub connection to %s", host), e);
+        }
+    }
+
     protected interface ClientRunnable {
         void run(HarmonyClient client);
     }
 
     /**
      * Look up a client by its qualifier and have it run our runnable
-     * 
+     *
      * @param qualifier
      * @param runnable
      */
@@ -228,7 +319,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Simulates pressing a button on a harmony remote
-     * 
+     *
      * @param deviceId
      * @param button
      */
@@ -238,7 +329,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Simulates pressing a button on a harmony remote
-     * 
+     *
      * @param qualifier
      * @param deviceId
      * @param button
@@ -259,7 +350,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Simulates pressing a button on a harmony remote
-     * 
+     *
      * @param device
      * @param button
      */
@@ -269,7 +360,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Simulates pressing a button on a harmony remote
-     * 
+     *
      * @param qualifier
      * @param device
      * @param button
@@ -295,7 +386,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Starts a Harmony Hub activity
-     * 
+     *
      * @param activityId
      */
     public void startActivity(final int activityId) {
@@ -304,7 +395,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Starts a Harmony Hub activity
-     * 
+     *
      * @param qualifier
      * @param activityId
      */
@@ -324,7 +415,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Starts a Harmony Hub activity
-     * 
+     *
      * @param activity
      */
     public void startActivity(final String activity) {
@@ -333,7 +424,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Starts a Harmony Hub activity
-     * 
+     *
      * @param qualifier
      * @param activity
      */
@@ -357,7 +448,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Adds a {@link HarmonyHubListener} to a {@link HarmonyClient}
-     * 
+     *
      * @param listener
      */
     public void addListener(final HarmonyHubListener listener) {
@@ -366,7 +457,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Adds a {@link HarmonyHubListener} to a {@link HarmonyClient}
-     * 
+     *
      * @param qualifier
      * @param listener
      */
@@ -381,7 +472,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Removes a {@link HarmonyHubListener} from a {@link HarmonyClient}
-     * 
+     *
      * @param listener
      */
     public void removeListener(final HarmonyHubListener listener) {
@@ -390,7 +481,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * Removes a {@link HarmonyHubListener} from a {@link HarmonyClient}
-     * 
+     *
      * @param qualifier
      * @param listener
      */
@@ -405,7 +496,7 @@ public class HarmonyHubGateway implements ManagedService {
 
     /**
      * If no qualifier is given we will use the default {@link NOQUALIFIER}
-     * 
+     *
      * @param qualifier
      * @return original qualifier or {@link NOQUALIFIER}
      */
@@ -417,7 +508,7 @@ public class HarmonyHubGateway implements ManagedService {
      * HarmonyHubInstance holds a {@link HarmonyClient} and a {@link ExecutorService} together
      * so that commands to one hub do not block commands to another or stop the main OH
      * processing thread.
-     * 
+     *
      * @author Dan Cunningham
      *
      */
@@ -430,7 +521,7 @@ public class HarmonyHubGateway implements ManagedService {
 
         /**
          * Creates a new HarmonyHubInstance from a given client
-         * 
+         *
          * @param client
          */
         public HarmonyHubInstance(HarmonyClient client) {
@@ -440,7 +531,7 @@ public class HarmonyHubGateway implements ManagedService {
 
         /**
          * Returns the HarmonyClient assocaited with this instance
-         * 
+         *
          * @return
          */
         public HarmonyClient getClient() {
@@ -450,7 +541,7 @@ public class HarmonyHubGateway implements ManagedService {
         /**
          * Executes the {@link ClientRunnable} in this hubs {@link ExecutorService} and with
          * the associated {@link HarmonyClient}
-         * 
+         *
          * @param clientRunable
          */
         public void execute(final ClientRunnable clientRunable) {
