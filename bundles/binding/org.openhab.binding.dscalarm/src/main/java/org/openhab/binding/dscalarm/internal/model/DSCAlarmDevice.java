@@ -49,5 +49,4 @@ public abstract class DSCAlarmDevice {
      * @param config
      * @param publisher
      */
-    // public abstract void updateProperties(Item item, DSCAlarmBindingConfig config, int state, String description);
 }

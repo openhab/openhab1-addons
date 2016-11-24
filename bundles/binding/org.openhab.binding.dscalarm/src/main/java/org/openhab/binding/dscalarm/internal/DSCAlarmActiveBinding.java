@@ -256,7 +256,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
                                     }
 
                                     itemName = getItemName(DSCAlarmItemType.PANEL_COMMAND, 0, 0);
-                                    if (itemName != "") {
+                                    if (StringUtils.isNotEmpty(itemName)) {
                                         updateItem(itemName, -1, "");
                                     }
                                     break;
@@ -307,12 +307,10 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
                                 case ZONE_BYPASS_MODE:
                                     if (command.toString().equals("0")) {
                                         String data = String.valueOf(partitionId) + "*1" + String.format("%02d", zoneId) + "#";
-                                        if (api.sendCommand(APICode.KeySequence, data)) {
-                                        }
+                                        api.sendCommand(APICode.KeySequence, data);
                                     } else if (command.toString().equals("1")) {
                                         String data = String.valueOf(partitionId) + "*1" + String.format("%02d", zoneId) + "#";
-                                        if (api.sendCommand(APICode.KeySequence, data)) {
-                                        }
+                                        api.sendCommand(APICode.KeySequence, data);
                                     }
                                     break;
 
@@ -784,7 +782,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
         String itemName;
 
         itemName = getItemName(DSCAlarmItemType.PANEL_SYSTEM_ERROR, 0, 0);
-        if (itemName != "") {
+        if (StringUtils.isNotEmpty(itemName)) {
             updateItem(itemName, state, description);
         }
     }
@@ -823,7 +821,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 
         itemName = getItemName(DSCAlarmItemType.PANEL_TIME_STAMP, 0, 0);
 
-        if (itemName != "") {
+        if (StringUtils.isNotEmpty(itemName)) {
             DSCAlarmBindingConfig config = getItemConfig(itemName);
 
             if (config != null) {
@@ -913,7 +911,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 
             itemName = getItemName(dscAlarmItemTypes[i], 0, 0);
 
-            if (itemName != "") {
+            if (StringUtils.isNotEmpty(itemName)) {
                 updateItem(itemName, bits[i] != 0 ? 1 : 0, "");
             }
         }
@@ -929,7 +927,6 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
         DSCAlarmEvent dscAlarmEvent = (DSCAlarmEvent) event;
         APIMessage apiMessage = dscAlarmEvent.getAPIMessage();
 
-        // DSCAlarmItemType dscAlarmItemType = null;
         APICode apiCode = APICode.getAPICodeValue(apiMessage.getAPICode());
         String apiData = apiMessage.getAPIData();
 
@@ -1210,7 +1207,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 
                     }
 
-                    if (!itemName.isEmpty()) {
+                    if (StringUtils.isNotEmpty(itemName)) {
                         item = prov.getItem(itemName);
                         dscAlarmItemUpdate.updateDeviceItem(item, config, eventPublisher, dscAlarmEvent, 0, "");
                         pollTimeStart = 0;
