@@ -194,8 +194,7 @@ public class Tr064Comm {
                 // if input is mac address, replace "-" with ":" as fbox wants
                 if (itemMap.getItemCommand().equals("maconline")) {
                     dataInValue = dataInValue.replaceAll("-", ":");
-                }
-                if (itemMap.getItemCommand().equals("powerplug")) {
+                } else if (itemMap.getItemCommand().equals("powerplug")) {
                     dataInValue = dataInValue.replaceAll("-", " ");
                 }
                 beDataNode.addTextNode(dataInValue); // add data which should be requested from fbox for this service
