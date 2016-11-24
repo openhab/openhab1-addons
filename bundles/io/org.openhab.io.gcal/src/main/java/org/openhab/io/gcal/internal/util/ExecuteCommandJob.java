@@ -26,7 +26,6 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
-import org.openhab.io.console.Console;
 import org.openhab.io.console.ConsoleInterpreter;
 import org.openhab.io.gcal.internal.GCalActivator;
 import org.quartz.Job;
@@ -112,17 +111,6 @@ public class ExecuteCommandJob implements Job {
                     logger.warn("Executing command failed. Item {} not found", args[1]);
                 }
 
-                /*
-                 * AP to BE REMOVED
-                 * logger.debug("About to execute CommandJob with arguments {}", Arrays.asList(args));
-                 * try {
-                 * ConsoleInterpreter.handleRequest(args, new LogConsole());
-                 * } catch (Exception e) {
-                 * throw new JobExecutionException(
-                 * "Executing command '" + command + "' throws an Exception. Job will be refired immediately.",
-                 * e, true);
-                 * }
-                 */
             }
         }
 
@@ -213,32 +201,6 @@ public class ExecuteCommandJob implements Job {
         }
 
         return tokens.toArray(new String[0]);
-    }
-
-    /**
-     * Simple implementation of the {@link Console} interface. It's output is
-     * send to the logger (INFO-Level).
-     *
-     * @author Thomas.Eichstaedt-Engelen
-     * @since 0.7.0
-     */
-    private static class LogConsole implements Console {
-
-        @Override
-        public void print(String s) {
-            logger.info(s);
-        }
-
-        @Override
-        public void println(String s) {
-            logger.info(s);
-        }
-
-        @Override
-        public void printUsage(String s) {
-            logger.info(s);
-        }
-
     }
 
 }
