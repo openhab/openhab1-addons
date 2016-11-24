@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,10 +27,6 @@ import org.slf4j.LoggerFactory;
  * @author Vita Tucek
  * @since 1.9.0
  */
-/**
- * @author tucek
- *
- */
 public class SimpleBinaryIPChannelInfo {
     private static final Logger logger = LoggerFactory.getLogger(SimpleBinaryIPChannelInfo.class);
 
@@ -54,12 +50,6 @@ public class SimpleBinaryIPChannelInfo {
     protected AtomicBoolean waitingForAnswer = new AtomicBoolean(false);
 
     private SimpleBinaryIRequestTimeouted requestTimeouted;
-    // = new SimpleBinaryIRequestTimeouted() {
-    // @Override
-    // public void timeoutEvent(SimpleBinaryIPChannelInfo chInfo) {
-    //
-    // }
-    // };
 
     /**
      * Constructor to add new channel after connect
@@ -117,6 +107,7 @@ public class SimpleBinaryIPChannelInfo {
         try {
             a = channel.getRemoteAddress();
         } catch (IOException e) {
+            logger.error("retrieveAddress channel exception: {}", e.getMessage());
         }
 
         if (a != null && (a instanceof InetSocketAddress)) {
@@ -213,7 +204,6 @@ public class SimpleBinaryIPChannelInfo {
         clearWaitingForAnswer();
 
         channel = null;
-        // address = null;
         buffer = null;
         writeBuffer = null;
         requestTimeouted = null;
@@ -225,7 +215,6 @@ public class SimpleBinaryIPChannelInfo {
     }
 
     public void setWriteBuffer(ByteBuffer buffer) {
-        writeBuffer = null;
         writeBuffer = buffer;
     }
 
@@ -311,7 +300,7 @@ public class SimpleBinaryIPChannelInfo {
      * Assign device id for communication
      *
      * @param devId
-     * @return True if successfully assigned false if other device use this id or configured is differn
+     * @return True if successfully assigned false if other device use this id or configured is different
      */
     public boolean assignDeviceId(int devId) {
         receivedDeviceID = devId;

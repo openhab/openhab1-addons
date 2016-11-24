@@ -191,7 +191,8 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                                         try {
                                             chInfo.getChannel().close();
                                         } catch (IOException e) {
-                                            e.printStackTrace();
+                                            logger.error("Device {}/{} channel close exception: {}",
+                                                    chInfo.getDeviceId(), chInfo.getIp(), e.getMessage());
                                         } finally {
                                             chInfo.closed();
                                             logger.warn("Device {}/{} was disconnected", chInfo.getDeviceId(),
@@ -217,7 +218,7 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                                             int r = verifyDataOnly(inBuffer);
 
                                             if (logger.isDebugEnabled()) {
-                                                logger.debug("Verify incomming data result: {}", r);
+                                                logger.debug("Verify incoming data result: {}", r);
                                             }
 
                                             if (r >= 0) {
@@ -319,7 +320,7 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
         }
 
         if (logger.isInfoEnabled()) {
-            logger.info("{} - channel listen for incomming connections", this.toString());
+            logger.info("{} - channel listen for incoming connections", this.toString());
         }
 
         portState.setState(PortStates.LISTENING);
@@ -336,9 +337,6 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
     @Override
     public void close() {
         if (listener != null) {
-            // IOUtils.closeQuietly(inputStream);
-            // IOUtils.closeQuietly(outputStream);
-
             try {
                 listener.close();
             } catch (IOException e) {
@@ -395,10 +393,6 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
 
             chInfo.setWriteBuffer(buffer);
 
-            // if (logger.isDebugEnabled()) {
-            // logger.debug("ID={},channel={}", data.getDeviceId(), chInfo.getChannel().toString());
-            // }
-
             // write into device
             chInfo.getChannel().write(buffer, chInfo, new CompletionHandler<Integer, SimpleBinaryIPChannelInfo>() {
                 @Override
@@ -412,7 +406,8 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                         try {
                             chInfo.getChannel().close();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            logger.error("Device {}/{} channel close exception: {}", chInfo.getDeviceId(),
+                                    chInfo.getIp(), e.getMessage());
                         } finally {
                             chInfo.closed();
                             logger.warn("Device {}/{} was disconnected", chInfo.getDeviceId(), chInfo.getIp());
@@ -435,7 +430,8 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                     try {
                         chInfo.getChannel().close();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error("Device {}/{} channel close exception: {}", chInfo.getDeviceId(), chInfo.getIp(),
+                                e.getMessage());
                     } finally {
                         chInfo.closed();
                         logger.warn("Device {}/{} was disconnected", chInfo.getDeviceId(), chInfo.getIp());
@@ -479,116 +475,4 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
             channels.addConfiguredChannel(Integer.parseInt(deviceID), ipAddress, isIpLocked);
         }
     }
-
-    // public void processChannel(final AsynchronousSocketChannel channel) throws Exception {
-    //
-    // final String address = channel.getRemoteAddress().toString();
-    //
-    // logger.debug("New Channel:{}", address);
-    //
-    // final ByteBuffer buffer = ByteBuffer.allocateDirect(256);
-    // Object params[] = null;
-    //
-    // channel.read(buffer, params, new CompletionHandler<Integer, Object[]>() {
-    //
-    // @Override
-    // public void completed(Integer nBytes, Object[] attachment) {
-    //
-    // channel.read(buffer, attachment, this);
-    // }
-    //
-    // @Override
-    // public void failed(Throwable exc, Object[] attachment) {
-    // // exc.printStackTrace();
-    // // try {
-    // // ((AsynchronousSocketChannel) attachment[Constants.CHANNEL_POS]).close();
-    // // } catch (IOException e) {
-    // // // NOPE
-    // // }
-    // }
-    // });
-
-    // final String sessionId = generateSessionId();
-    // final ByteBuffer buffer = ByteBuffer.allocateDirect(512);
-    // final ByteBuffer writeBuffers[] = FileLoader.cloneData();
-    // final long fileLength = FileLoader.getFileLength();
-    // final CompletionHandler<Integer, Object[]> readHandler = new ReadCompletionHandler();
-    // final CompletionHandler<Long, Object[]> writeHandler = new WriteCompletionHandler();
-    //
-    // // Put params in the Map
-    //
-    // final Object array[] = new Object[10];
-    // array[Constants.CHANNEL_POS] = channel;
-    // array[Constants.READ_BUFFER_POS] = buffer;
-    // array[Constants.WRITE_BUFFERS_POS] = writeBuffers;
-    // array[Constants.FILE_LENGTH_POS] = fileLength;
-    // array[Constants.SESSION_ID_POS] = sessionId;
-    // array[Constants.READ_HANDLER_POS] = readHandler;
-    // array[Constants.WRITE_HANDLER_POS] = writeHandler;
-    //
-    // // Perform an asynchronous read operation
-    // channel.read(buffer, array, new CompletionHandler<Integer, Object[]>() {
-    //
-    // @Override
-    // public void completed(Integer nBytes, Object[] attachment) {
-    // if (nBytes < 0) {
-    // failed(new ClosedChannelException(), attachment);
-    // return;
-    // }
-    // if (nBytes > 0) {
-    // ByteBuffer buff = (ByteBuffer) array[Constants.READ_BUFFER_POS];
-    // buff.flip();
-    // byte bytes[] = new byte[nBytes];
-    // buff.get(bytes).clear();
-    // String response = "jSessionId: " + attachment[Constants.SESSION_ID_POS] + Constants.CRLF;
-    // // write initialization response to client
-    // buff.put(response.getBytes()).flip();
-    // AsynchronousSocketChannel ch = (AsynchronousSocketChannel) attachment[Constants.CHANNEL_POS];
-    // ch.write(buff, attachment, new CompletionHandler<Integer, Object[]>() {
-    //
-    // @Override
-    // public void completed(Integer nBytes, Object[] attachment) {
-    // // System.out.println("Number of bytes written to client -> " + nBytes);
-    // if (nBytes < 0) {
-    // failed(new ClosedChannelException(), attachment);
-    // } else if (nBytes > 0) {
-    // AsynchronousSocketChannel channel = (AsynchronousSocketChannel) attachment[Constants.CHANNEL_POS];
-    // ByteBuffer bb = (ByteBuffer) attachment[Constants.READ_BUFFER_POS];
-    // if (bb.hasRemaining()) {
-    // channel.write(bb, attachment, this);
-    // } else {
-    // @SuppressWarnings("unchecked")
-    // CompletionHandler<Integer, Object[]> readHandler = (CompletionHandler<Integer, Object[]>)
-    // attachment[Constants.READ_HANDLER_POS];
-    // // System.out.println("End of Session Initialization, Waiting for client requests");
-    // channel.read(bb, attachment, readHandler);
-    // }
-    // }
-    // }
-    //
-    // @Override
-    // public void failed(Throwable exc, Object[] attachment) {
-    // exc.printStackTrace();
-    // try {
-    // ((AsynchronousSocketChannel) attachment[Constants.CHANNEL_POS]).close();
-    // } catch (IOException e) {
-    // // NOPE
-    // }
-    // }
-    // });
-    // }
-    // }
-    //
-    // @Override
-    // public void failed(Throwable exc, Object[] attachment) {
-    // // exc.printStackTrace();
-    // try {
-    // ((AsynchronousSocketChannel) attachment[Constants.CHANNEL_POS]).close();
-    // } catch (IOException e) {
-    // // NOPE
-    // }
-    // }
-    // });
-
-    // }
 }

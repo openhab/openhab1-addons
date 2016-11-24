@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -37,7 +37,7 @@ import gnu.io.UnsupportedCommOperationException;
  * Serial device class
  *
  * @author Vita Tucek
- * @since 1.8.0
+ * @since 1.9.0
  */
 public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements SerialPortEventListener {
 
@@ -193,7 +193,6 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                 serialPort.setSerialPortParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
                         SerialPort.PARITY_NONE);
                 serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-                // serialPort.setRTS(false);
             } catch (UnsupportedCommOperationException e) {
                 logger.error("Port {} exception: {}", this.deviceID, e.getMessage());
 
@@ -278,8 +277,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+
                 }
             }
         }
@@ -369,7 +367,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                     // comply minimum sending time. Added because on ubuntu14.04 event OUTPUT_BUFFER_EMPTY is called
                     // periodically even before some data are send.
                     if (System.currentTimeMillis() > sentTimeTicks) {
-                        serialPort.setRTS(invertedRTS ? true : false);
+                        serialPort.setRTS(invertedRTS);
 
                         if (logger.isDebugEnabled()) {
                             logger.debug("Port {} - RTS reset", this.deviceID);
@@ -463,8 +461,6 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
 
         receiveTime = System.currentTimeMillis();
 
-        // logger.debug("Port {} - Received incoming data length {} bytes. Thread={}", port, bytes,
-        // Thread.currentThread().getId());
         if (logger.isDebugEnabled()) {
             logger.debug("Port {} - received: {}", deviceID, SimpleBinaryProtocol.arrayToString(readBuffer, bytes));
         }
@@ -527,7 +523,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                     timeoutTask = null;
                     dataTimeouted();
                     setWaitingForAnswer(false);
-                    // TODO: should i call it????
+                    // new command will be sent if there is any
                     processCommandQueue();
                 }
             };

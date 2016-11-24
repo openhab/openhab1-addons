@@ -62,18 +62,6 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
     /** Lock for process commands to prevent run it twice **/
     protected final Lock lock = new ReentrantLock();
 
-    // public enum ProcessDataResult {
-    // OK,
-    // DATA_NOT_COMPLETED,
-    // PROCESSING_ERROR,
-    // INVALID_CRC,
-    // BAD_CONFIG,
-    // NO_VALID_ADDRESS,
-    // NO_VALID_ADDRESS_REWIND,
-    // UNKNOWN_MESSAGE,
-    // UNKNOWN_MESSAGE_REWIND
-    // }
-
     public class ProcessDataResult {
         public static final int DATA_NOT_COMPLETED = -1;
         public static final int PROCESSING_ERROR = -2;
@@ -457,10 +445,6 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
                         otherData.add(data);
                         // commandQueue.offer(data);
                     }
-                    //
-                    // if (firstdata.equals(data)) {
-                    // break;
-                    // }
 
                 } while (!commandQueue.isEmpty());
 
@@ -522,13 +506,13 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
      */
     protected boolean sendDataOut(SimpleBinaryItemData data) {
 
-        logger.warn("{} - Generic device cant send data", this.toString());
+        logger.warn("{} - Generic device can't send data", this.toString());
 
         return false;
     }
 
     /**
-     * Resend last sended data
+     * Resend last sent data
      *
      * @throws InterruptedException
      */
@@ -576,69 +560,70 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
     @Override
     public void checkNewData() {
 
-        if (isConnected()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("{} - checkNewData() in mode {} is called", toString(), poolControl);
-            }
-
-            if (poolControl == SimpleBinaryPoolControl.ONSCAN) {
-                for (Map.Entry<String, SimpleBinaryBindingConfig> item : itemsConfig.entrySet()) {
-                    if (item.getValue().device.equals(this.deviceName)) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("{} - checkNewData() item={} direction={} ", toString(),
-                                    item.getValue().item.getName(), item.getValue().direction);
-                        }
-                        // input direction only
-                        if (item.getValue().direction < 2) {
-                            try {
-                                this.sendReadData(item.getValue());
-                            } catch (InterruptedException e) {
-                                logger.error("{} - checkNewData() error: {} ", toString(), e.getMessage());
-                            }
-                        }
-                    }
-                }
-            } else if (poolControl == SimpleBinaryPoolControl.ONCHANGE) {
-                // create devices map with device address and state
-                Map<Integer, DeviceStates> deviceItems = new HashMap<Integer, DeviceStates>();
-                // fill new created map - every device has one record
-                for (Map.Entry<String, SimpleBinaryBindingConfig> item : itemsConfig.entrySet()) {
-                    if (item.getValue().device.equals(this.deviceName)) {
-                        if (!deviceItems.containsKey(item.getValue().busAddress)) {
-                            // for device retrieve his state
-                            deviceItems.put(item.getValue().busAddress,
-                                    this.devicesStates.getDeviceState(item.getValue().busAddress));
-                        }
-                    }
-                }
-
-                // take every device and create for him command depend on his state
-                for (Map.Entry<Integer, DeviceStates> device : deviceItems.entrySet()) {
-                    boolean forceAllValues = device.getValue() == DeviceStates.UNKNOWN
-                            || device.getValue() == DeviceStates.NOT_RESPONDING
-                            || device.getValue() == DeviceStates.RESPONSE_ERROR;
-
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("{} - checkNewData() device={} force={}", toString(), device.getKey(),
-                                forceAllValues);
-                    }
-
-                    try {
-                        if (forceAllValues) {
-                            this.offerNewDataCheckPriority(device.getKey(), forceAllValues);
-                        } else {
-                            this.offerNewDataCheck(device.getKey(), forceAllValues);
-                        }
-                    } catch (InterruptedException e) {
-                        logger.error("{} - checkNewData() error: {} ", toString(), e.getMessage());
-                    }
-                }
-
-                deviceItems = null;
-            }
-
-            processCommandQueue();
+        if (!isConnected()) {
+            return;
         }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("{} - checkNewData() in mode {} is called", toString(), poolControl);
+        }
+
+        if (poolControl == SimpleBinaryPoolControl.ONSCAN) {
+            for (Map.Entry<String, SimpleBinaryBindingConfig> item : itemsConfig.entrySet()) {
+                if (item.getValue().device.equals(this.deviceName)) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("{} - checkNewData() item={} direction={} ", toString(),
+                                item.getValue().item.getName(), item.getValue().direction);
+                    }
+                    // input direction only
+                    if (item.getValue().direction < 2) {
+                        try {
+                            this.sendReadData(item.getValue());
+                        } catch (InterruptedException e) {
+                            logger.error("{} - checkNewData() error: {} ", toString(), e.getMessage());
+                        }
+                    }
+                }
+            }
+        } else if (poolControl == SimpleBinaryPoolControl.ONCHANGE) {
+            // create devices map with device address and state
+            Map<Integer, DeviceStates> deviceItems = new HashMap<Integer, DeviceStates>();
+            // fill new created map - every device has one record
+            for (Map.Entry<String, SimpleBinaryBindingConfig> item : itemsConfig.entrySet()) {
+                if (item.getValue().device.equals(this.deviceName)) {
+                    if (!deviceItems.containsKey(item.getValue().busAddress)) {
+                        // for device retrieve his state
+                        deviceItems.put(item.getValue().busAddress,
+                                this.devicesStates.getDeviceState(item.getValue().busAddress));
+                    }
+                }
+            }
+
+            // take every device and create for him command depend on his state
+            for (Map.Entry<Integer, DeviceStates> device : deviceItems.entrySet()) {
+                boolean forceAllValues = device.getValue() == DeviceStates.UNKNOWN
+                        || device.getValue() == DeviceStates.NOT_RESPONDING
+                        || device.getValue() == DeviceStates.RESPONSE_ERROR;
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug("{} - checkNewData() device={} force={}", toString(), device.getKey(), forceAllValues);
+                }
+
+                try {
+                    if (forceAllValues) {
+                        this.offerNewDataCheckPriority(device.getKey(), forceAllValues);
+                    } else {
+                        this.offerNewDataCheck(device.getKey(), forceAllValues);
+                    }
+                } catch (InterruptedException e) {
+                    logger.error("{} - checkNewData() error: {} ", toString(), e.getMessage());
+                }
+            }
+
+            deviceItems = null;
+        }
+
+        processCommandQueue();
     }
 
     protected int getDeviceID(SimpleBinaryByteBuffer inBuffer) {
@@ -652,12 +637,12 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
             return receivedID;
 
         } catch (ModeChangeException ex) {
-
+            logger.error("{} - Bad operation: {}", this.toString(), ex.getMessage());
         } finally {
             try {
                 inBuffer.compact();
-            } catch (ModeChangeException e) {
-
+            } catch (ModeChangeException ex) {
+                logger.error("{} - Bad operation: {}", this.toString(), ex.getMessage());
             }
         }
 
@@ -695,8 +680,8 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
                 if (logger.isDebugEnabled()) {
                     logger.debug("{} - Verify data OK, lenght={} bytes", toString(), inBuffer.position());
                 }
-            } catch (ModeChangeException e) {
-
+            } catch (ModeChangeException ex) {
+                logger.error("{} - Bad operation: {}", this.toString(), ex.getMessage());
             }
         }
         return -1;
@@ -753,7 +738,7 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             ex.printStackTrace(pw);
-            logger.warn("Underflow stacktrace: " + sw.toString());
+            logger.warn("Underflow stacktrace: {}", sw.toString());
 
             logger.warn("Buffer mode {}, remaining={} bytes, limit={} bytes", inBuffer.getMode().toString(),
                     inBuffer.remaining(), inBuffer.limit());
@@ -839,9 +824,6 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
 
         } catch (ModeChangeException ex) {
             logger.error("{} - Bad operation: {}", this.toString(), ex.getMessage());
-
-            // print details
-            // printCommunicationInfo();
 
             inBuffer.initialize();
 
@@ -943,8 +925,10 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
             } else if (itemData.getMessageType() == SimpleBinaryMessageType.UNKNOWN_DATA) {
                 logger.warn("{} - Device {} report unknown data", toString(), itemData.getDeviceId());
                 // last data out
-                // logger.debug("{} - Last sent data: {}", toString(),
-                // SimpleBinaryProtocol.arrayToString(lastSentData.getData(), lastSentData.getData().length));
+                if (logger.isDebugEnabled() && lastSentData != null) {
+                    logger.debug("{} - Last sent data: {}", toString(),
+                            SimpleBinaryProtocol.arrayToString(lastSentData.getData(), lastSentData.getData().length));
+                }
                 // set state
                 devicesStates.setDeviceState(this.deviceName, itemData.getDeviceId(), DeviceStates.DATA_ERROR);
             } else if (itemData.getMessageType() == SimpleBinaryMessageType.UNKNOWN_ADDRESS) {
@@ -952,8 +936,10 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
                         (lastSentData != null && lastSentData.getItemAddress() >= 0) ? lastSentData.getItemAddress()
                                 : "???");
                 // last data out
-                // logger.debug("{} - Last sent data: {}", toString(),
-                // SimpleBinaryProtocol.arrayToString(lastSentData.getData(), lastSentData.getData().length));
+                if (logger.isDebugEnabled() && lastSentData != null) {
+                    logger.debug("{} - Last sent data: {}", toString(),
+                            SimpleBinaryProtocol.arrayToString(lastSentData.getData(), lastSentData.getData().length));
+                }
                 // set state
                 devicesStates.setDeviceState(this.deviceName, itemData.getDeviceId(), DeviceStates.DATA_ERROR);
             } else if (itemData.getMessageType() == SimpleBinaryMessageType.SAVING_ERROR) {
@@ -961,18 +947,19 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
                         (lastSentData != null && lastSentData.getItemAddress() >= 0) ? lastSentData.getItemAddress()
                                 : "???");
                 // last data out
-                // logger.debug("{} - Last sent data: {}", toString(),
-                // SimpleBinaryProtocol.arrayToString(lastSentData.getData(), lastSentData.getData().length));
+                if (logger.isDebugEnabled() && lastSentData != null) {
+                    logger.debug("{} - Last sent data: {}", toString(),
+                            SimpleBinaryProtocol.arrayToString(lastSentData.getData(), lastSentData.getData().length));
+                }
                 // set state
                 devicesStates.setDeviceState(this.deviceName, itemData.getDeviceId(), DeviceStates.DATA_ERROR);
             } else if (itemData.getMessageType() == SimpleBinaryMessageType.HI) {
-                if (logger.isDebugEnabled()) {
+                if (logger.isDebugEnabled() && lastSentData != null) {
                     logger.debug("{} - Device {} says Hi", toString(), itemData.getDeviceId());
                 }
             } else {
-                logger.warn(
-                        "{} - Device {} - Unsupported message type received: " + itemData.getMessageType().toString(),
-                        toString(), itemData.getDeviceId());
+                logger.warn("{} - Device {} - Unsupported message type received: {}", toString(),
+                        itemData.getDeviceId(), itemData.getMessageType().toString());
 
                 // set state
                 devicesStates.setDeviceState(this.deviceName, itemData.getDeviceId(), DeviceStates.DATA_ERROR);

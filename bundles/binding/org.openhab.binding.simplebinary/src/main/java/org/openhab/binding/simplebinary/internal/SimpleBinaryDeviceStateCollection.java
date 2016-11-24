@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * Device status collection
  *
  * @author Vita Tucek
- * @since 1.8.0
+ * @since 1.9.0
  */
 public class SimpleBinaryDeviceStateCollection extends HashMap<Integer, SimpleBinaryDeviceState> {
     private static final long serialVersionUID = -6637691081696263746L;
@@ -35,7 +35,7 @@ public class SimpleBinaryDeviceStateCollection extends HashMap<Integer, SimpleBi
 
     /**
      * Device collection constructor
-     * 
+     *
      * @param deviceName
      *            Port
      * @param deviceItemsConfigs
@@ -61,7 +61,7 @@ public class SimpleBinaryDeviceStateCollection extends HashMap<Integer, SimpleBi
 
     /**
      * Set state to device specified by address connected to given port
-     * 
+     *
      * @param deviceName
      *            Port
      * @param deviceAddress
@@ -116,7 +116,7 @@ public class SimpleBinaryDeviceStateCollection extends HashMap<Integer, SimpleBi
 
     /**
      * Set state to all devices connected to specified port
-     * 
+     *
      * @param deviceName
      *            Serial port name
      * @param state
@@ -145,7 +145,7 @@ public class SimpleBinaryDeviceStateCollection extends HashMap<Integer, SimpleBi
      * @param deviceAddress
      *            Device address
      * @return Device state
-     * 
+     *
      * @since 1.9.0
      */
     public SimpleBinaryDeviceState.DeviceStates getDeviceState(Integer deviceAddress) {

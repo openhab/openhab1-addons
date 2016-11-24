@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for parsing the binding configuration.
  *
  * @author Vita Tucek
- * @since 1.8.0
+ * @since 1.9.0
  */
 public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingProvider
         implements SimpleBinaryBindingProvider {
@@ -40,7 +40,7 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
      * This is a helper class holding binding specific configuration details
      *
      * @author vita
-     * @since 1.8.0
+     * @since 1.9.0
      */
     class SimpleBinaryBindingConfig implements BindingConfig {
         // put member fields here which holds the parsed values
@@ -49,7 +49,7 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
         Class<? extends Item> itemType;
 
         /**
-         * Contains slave address
+         * Contains configured device name
          *
          */
         public String device;
@@ -95,7 +95,7 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
             if (datatype.equals("float")) {
                 return SimpleBinaryTypes.FLOAT;
             }
-            if (datatype.equals("hsv")) {
+            if (datatype.equals("hsb")) {
                 return SimpleBinaryTypes.HSB;
             }
             if (datatype.equals("rgb")) {
@@ -111,7 +111,7 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("getDataType() - unresolved type: " + datatype);
+                logger.debug("getDataType() - unresolved type: {}", datatype);
             }
             return SimpleBinaryTypes.UNKNOWN;
         }
@@ -127,12 +127,12 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
      * This is a helper class holding binding info configuration details
      *
      * @author vita
-     * @since 1.8.0
+     * @since 1.9.0
      */
     class SimpleBinaryInfoBindingConfig implements BindingConfig {
 
         /**
-         *
+         * openHAB item instance
          */
         public Item item;
         /**
@@ -193,7 +193,7 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
 
         if (logger.isDebugEnabled()) {
             logger.debug("processBindingConfiguration() method is called!");
-            logger.debug("Item:" + item + "/Config:" + bindingConfig);
+            logger.debug("Item:{}/Config:{}", item, bindingConfig);
         }
 
         super.processBindingConfiguration(context, item, bindingConfig);
@@ -209,9 +209,6 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
         // address/ID - number
         // type - byte or word or dword or array[length] or rgb or rgbw or hsb
         // direction - "I" or "O" or "IO"
-        //
-        // Matcher matcher =
-        // Pattern.compile("^(port\\d*):(\\d+):(\\d+):([a-z0-9\\[\\]]+):(I|O|IO)$").matcher(bindingConfig);
         Matcher matcher = Pattern.compile("^(port\\d*|tcpserver):(\\d+):(\\d+)((:[a-zA-Z0-9_]*)*)$")
                 .matcher(bindingConfig);
 
@@ -389,14 +386,5 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
         // all types welcome
 
-        // if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
-        // throw new BindingConfigParseException("item '" + item.getName()
-        // + "' is of type '" + item.getClass().getSimpleName()
-        // +
-        // "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
-        // }
-
-        // logger.debug("validateItemType() method is called!");
-        // logger.debug("Item:" + item + "/Config:" + bindingConfig);
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * Class of protocol
  *
  * @author Vita Tucek
- * @since 1.8.0
+ * @since 1.9.0
  */
 public class SimpleBinaryProtocol {
 
@@ -252,7 +252,6 @@ public class SimpleBinaryProtocol {
                     DecimalType cmd = (DecimalType) command;
                     data[4] = (byte) (cmd.intValue() & 0xFF);
                     data[5] = (byte) ((cmd.intValue() >> 8) & 0xFF);
-                    // data[5] = (byte) ((cmd.intValue()>>8) & 0xFF);
                 } else if (command instanceof StopMoveType) {
                     StopMoveType cmd = (StopMoveType) command;
 
@@ -678,6 +677,8 @@ public class SimpleBinaryProtocol {
 
                     throw new UnknownMessageException(String.format("Unknown message ID: 0x%02X", msgId));
             }
+        } catch (Exception ex) {
+            throw ex;
         } finally {
             if (letDataInBuffer) {
                 data.rewind();
@@ -757,12 +758,8 @@ public class SimpleBinaryProtocol {
         byte result = (byte) (crc >> 8);
 
         if (logger.isTraceEnabled()) {
-            logger.trace("Counting CRC8 of: " + arrayToString(data, length));
-
-            // if(SimpleBinaryBinding.JavaVersion >= 1.8)
-            // logger.trace("CRC8 result: 0x" + Integer.toHexString(Byte.toUnsignedInt(result)).toUpperCase());
-            // else
-            logger.trace("CRC8 result: 0x" + Integer.toHexString(result & 0xFF).toUpperCase());
+            logger.trace("Counting CRC8 of: {}", arrayToString(data, length));
+            logger.trace("CRC8 result: 0x{}", Integer.toHexString(result & 0xFF).toUpperCase());
         }
 
         return result;
