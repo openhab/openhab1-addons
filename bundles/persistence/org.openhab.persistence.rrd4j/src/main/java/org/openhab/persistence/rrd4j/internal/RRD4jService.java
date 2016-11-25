@@ -235,7 +235,7 @@ public class RRD4jService implements QueryablePersistenceService {
 		long ts = result.getFirstTimestamp();
 		long step = result.getRowCount() > 1 ? result.getStep() : 0;
 		for (double value : result.getValues(DATASOURCE_STATE)) {
-		    if (!Double.isNaN(value)) {
+		    if (!Double.isNaN(value) && (ts>=start) && (ts<=end)) {
 			RRD4jItem rrd4jItem = new RRD4jItem(itemName, mapToState(value, itemName), new Date(ts * 1000));
 			items.add(rrd4jItem);
 		    }
