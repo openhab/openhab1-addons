@@ -35,7 +35,8 @@ public class DmxController implements DmxService, ManagedService {
     private static Logger logger = LoggerFactory.getLogger(DmxController.class);
 
     private static int TRANSMIT_FREQUENCY_MS = 35;
-    private DmxRepeatMode repeatMode = DmxTransmitter.DmxRepeatMode.ALWAYS; // default is send every update
+    private DmxTransmitter.DmxRepeatMode repeatMode = DmxTransmitter.DmxRepeatMode.ALWAYS; // default is send every
+                                                                                           // update
 
     /** Thread in which the DMX transmitter is running **/
     private Timer transmitterTimer;
@@ -301,14 +302,14 @@ public class DmxController implements DmxService, ManagedService {
             // refresh timeout (i.e. interval between transmits if nothing changed)
             String configuredRepeatMode = ((String) config.get("repeatMode"));
             if (StringUtils.isNotBlank(configuredRepeatMode)) {
-                repeatMode = DmxTransmitter.DmxRepeatMode(configuredRepeatMode);
-                if (repeatMode==null) {
+                repeatMode = DmxTransmitter.DmxRepeatMode.fromString(configuredRepeatMode);
+                if (repeatMode == null) {
                     repeatMode = DmxTransmitter.DmxRepeatMode.ALWAYS;
                     logger.error("repeatMode {} not recognized, set to {}", configuredRepeatMode, repeatMode);
                 } else {
                     logger.debug("repeatMode set to {}", repeatMode.toString());
                 }
-                
+
                 if (transmitter != null) {
                     transmitter.setRepeatMode(repeatMode);
                 }

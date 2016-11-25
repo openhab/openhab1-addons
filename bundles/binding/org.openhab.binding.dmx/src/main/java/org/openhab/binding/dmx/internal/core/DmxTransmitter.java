@@ -32,32 +32,33 @@ public final class DmxTransmitter extends TimerTask {
     private static final int REPEAT_COUNT = 3;
 
     public enum DmxRepeatMode {
-        ALWAYS('always'),
-        NEVER('never'),
-        REDUCED('reduced')
-        
+        ALWAYS("always"),
+        NEVER("never"),
+        REDUCED("reduced");
+
         private String repeatMode;
 
         DmxRepeatMode(String repeatMode) {
-          this.repeatMode = repeatMode;
+            this.repeatMode = repeatMode;
         }
-        
+
+        @Override
         public String toString() {
             return this.repeatMode;
         }
-        
+
         public static DmxRepeatMode fromString(String repeatMode) {
             if (repeatMode != null) {
-              for (DmxRepeatMode mode : DmxRepeatMode.values()) {
-                if (repeatMode.equalsIgnoreCase(mode.repeatMode)) {
-                  return mode;
+                for (DmxRepeatMode mode : DmxRepeatMode.values()) {
+                    if (repeatMode.equalsIgnoreCase(mode.repeatMode)) {
+                        return mode;
+                    }
                 }
-              }
             }
             return null;
-          }
+        }
     }
-    
+
     private static Logger logger = LoggerFactory.getLogger(DmxTransmitter.class);
 
     private DmxUniverse universe = new DmxUniverse();
