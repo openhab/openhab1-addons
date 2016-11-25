@@ -35,7 +35,7 @@ public class DmxController implements DmxService, ManagedService {
     private static Logger logger = LoggerFactory.getLogger(DmxController.class);
 
     private static int TRANSMIT_FREQUENCY_MS = 35;
-    private int repeatMode = DmxTransmitter.REPEAT_MODE_ALWAYS; // default is send every update
+    private DmxRepeatMode repeatMode = DmxTransmitter.DmxRepeatMode.ALWAYS; // default is send every update
 
     /** Thread in which the DMX transmitter is running **/
     private Timer transmitterTimer;
@@ -299,21 +299,16 @@ public class DmxController implements DmxService, ManagedService {
                 logger.debug("Setting connection from config: {}", connectionString);
             }
             // refresh timeout (i.e. interval between transmits if nothing changed)
-            String configuredRepeatMode = ((String) config.get("repeatMode")).toLowerCase();
+            String configuredRepeatMode = ((String) config.get("repeatMode"));
             if (StringUtils.isNotBlank(configuredRepeatMode)) {
-                if (configuredRepeatMode.matches("always")) {
-                    repeatMode = DmxTransmitter.REPEAT_MODE_ALWAYS;
-                    logger.debug("repeatMode set to always");
-                } else if (configuredRepeatMode.matches("never")) {
-                    repeatMode = DmxTransmitter.REPEAT_MODE_NEVER;
-                    logger.debug("repeatMode set to never");
-                } else if (configuredRepeatMode.matches("reduced")) {
-                    repeatMode = DmxTransmitter.REPEAT_MODE_REDUCED;
-                    logger.debug("repeatMode set to reduced");
+                repeatMode = DmxTransmitter.DmxRepeatMode(configuredRepeatMode);
+                if (repeatMode==null) {
+                    repeatMode = DmxTransmitter.DmxRepeatMode.ALWAYS;
+                    logger.error("repeatMode {} not recognized, set to {}", configuredRepeatMode, repeatMode);
                 } else {
-                    repeatMode = DmxTransmitter.REPEAT_MODE_ALWAYS;
-                    logger.warn("repeatMode not recognized, set to default 'always'");
+                    logger.debug("repeatMode set to {}", repeatMode.toString());
                 }
+                
                 if (transmitter != null) {
                     transmitter.setRepeatMode(repeatMode);
                 }

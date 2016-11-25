@@ -31,10 +31,33 @@ public final class DmxTransmitter extends TimerTask {
     private static final int REPEAT_INTERVAL = 750;
     private static final int REPEAT_COUNT = 3;
 
-    public static final int REPEAT_MODE_ALWAYS = 0;
-    public static final int REPEAT_MODE_NEVER = 1;
-    public static final int REPEAT_MODE_REDUCED = 2;
+    public enum DmxRepeatMode {
+        ALWAYS('always'),
+        NEVER('never'),
+        REDUCED('reduced')
+        
+        private String repeatMode;
 
+        DmxRepeatMode(String repeatMode) {
+          this.repeatMode = repeatMode;
+        }
+        
+        public String toString() {
+            return this.repeatMode;
+        }
+        
+        public static DmxRepeatMode fromString(String repeatMode) {
+            if (repeatMode != null) {
+              for (DmxRepeatMode mode : DmxRepeatMode.values()) {
+                if (repeatMode.equalsIgnoreCase(mode.repeatMode)) {
+                  return mode;
+                }
+              }
+            }
+            return null;
+          }
+    }
+    
     private static Logger logger = LoggerFactory.getLogger(DmxTransmitter.class);
 
     private DmxUniverse universe = new DmxUniverse();
@@ -42,7 +65,7 @@ public final class DmxTransmitter extends TimerTask {
     private DmxService service;
 
     private boolean running;
-    private int repeatMode = 0;
+    private DmxRepeatMode repeatMode = DmxRepeatMode.ALWAYS;
 
     private boolean suspended;
 
@@ -78,11 +101,11 @@ public final class DmxTransmitter extends TimerTask {
                     universe.notifyStatusListeners();
                     lastTransmit = now;
                     packetRepeatCount = 0;
-                } else if (repeatMode == REPEAT_MODE_ALWAYS) {
+                } else if (repeatMode == DmxRepeatMode.ALWAYS) {
                     logger.trace("repeat mode always, sending DMX only");
                     conn.sendDmx(b);
                     lastTransmit = now;
-                } else if ((repeatMode == REPEAT_MODE_REDUCED)
+                } else if ((repeatMode == DmxRepeatMode.REDUCED)
                         && ((packetRepeatCount < REPEAT_COUNT) || ((now - lastTransmit) > REPEAT_INTERVAL))) {
                     logger.trace("output needs refresh, sending DMX only");
                     conn.sendDmx(b);
@@ -124,7 +147,7 @@ public final class DmxTransmitter extends TimerTask {
      * @param refreshInterval
      *            interval in ms (if output did not change)
      */
-    public void setRepeatMode(int repeatMode) {
+    public void setRepeatMode(DmxRepeatMode repeatMode) {
         this.repeatMode = repeatMode;
     }
 
