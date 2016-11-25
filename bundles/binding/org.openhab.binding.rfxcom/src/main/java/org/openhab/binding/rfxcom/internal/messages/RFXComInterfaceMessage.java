@@ -41,17 +41,25 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType subType : SubType.values()) {
+                if (subType.subType == input) {
+                    return subType;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     public enum Commands {
         RESET(0), // Reset the receiver/transceiver. No answer is transmitted!
-        NOT_USED1(1), // Not used
         GET_STATUS(2), // Get Status, return firmware versions and configuration of the interface
         SET_MODE(3), // Set mode msg1-msg5, return firmware versions and configuration of the interface
         ENABLE_ALL(4), // Enable all receiving modes of the receiver/transceiver
         ENABLE_UNDECODED_PACKETS(5), // Enable reporting of undecoded packets
         SAVE_RECEIVING_MODES(6), // Save receiving modes of the receiver/transceiver in non-volatile memory
-        NOT_USED7(7), // Not used
         T1(8), // For internal use by RFXCOM
         T2(9), // For internal use by RFXCOM
 
@@ -70,13 +78,23 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) command;
         }
+
+        public static Commands fromByte(int input) {
+            for (Commands command : Commands.values()) {
+                if (command.command == input) {
+                    return command;
+                }
+            }
+
+            return Commands.UNKNOWN;
+        }
     }
 
     public enum TransceiverType {
         _310MHZ(80),
         _315MHZ(81),
-        _443_92MHZ_RECEIVER_ONLY(82),
-        _443_92MHZ_TRANSCEIVER(83),
+        _433_92MHZ_RECEIVER_ONLY(82),
+        _433_92MHZ_TRANSCEIVER(83),
         _868_00MHZ(85),
         _868_00MHZ_FSK(86),
         _868_30MHZ(87),
@@ -100,11 +118,21 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) type;
         }
+
+        public static TransceiverType fromByte(int input) {
+            for (TransceiverType type : TransceiverType.values()) {
+                if (type.type == input) {
+                    return type;
+                }
+            }
+
+            return TransceiverType.UNKNOWN;
+        }
     }
 
-    public SubType subType = SubType.INTERFACE_RESPONSE;
+    public SubType subType = SubType.UNKNOWN;
     public Commands command = Commands.UNKNOWN;
-    public TransceiverType transceiverType = TransceiverType._443_92MHZ_TRANSCEIVER;
+    public TransceiverType transceiverType = TransceiverType.UNKNOWN;
     public byte firmwareVersion = 0;
 
     public boolean enableUndecodedPackets = false; // 0x80 - Undecoded packets
@@ -134,13 +162,12 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
     public boolean enableARCPackets = false; // 0x02 - ARC (433.92)
     public boolean enableX10Packets = false; // 0x01 - X10 (310/433.92)
 
-    public boolean enableHomeConfortPackets = false; // 0x02 - HomeConfort (433.92) 
-    public boolean enableKeeLoqPackets = false; // 0x01 - KeeLoq (433.92) 
+    public boolean enableHomeConfortPackets = false; // 0x02 - HomeConfort (433.92)
+    public boolean enableKeeLoqPackets = false; // 0x01 - KeeLoq (433.92)
 
     public byte hardwareVersion1 = 0;
     public byte hardwareVersion2 = 0;
     public byte outputPower = 0;
-
 
     public RFXComInterfaceMessage() {
 
@@ -194,8 +221,8 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
 
     /**
      * The new and old firmwares have different message formats
-     * The firmware version is different for each hardware, 
-     *  and the hardware version are in different position depending of message format
+     * The firmware version is different for each hardware,
+     * and the hardware version are in different position depending of message format
      * Actually we dont know how to detect correctly for all hardwares
      *
      * Apparently we can consider this versions are using new format
@@ -205,8 +232,8 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
      *
      */
     private boolean isNewFormat() {
-        final short fv = (short)(firmwareVersion & 0xff);
-        return  (fv >= 95 && fv <= 100) || (fv >= 195 && fv <= 200) || (fv >= 251);
+        final short fv = (short) (firmwareVersion & 0xff);
+        return (fv >= 95 && fv <= 100) || (fv >= 195 && fv <= 200) || (fv >= 251);
     }
 
     @Override
@@ -214,25 +241,9 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-        try {
-            command = Commands.values()[data[4]];
-        } catch (Exception e) {
-            command = Commands.UNKNOWN;
-        }
-
-        transceiverType = TransceiverType.UNKNOWN;
-
-        for (TransceiverType type : TransceiverType.values()) {
-            if (type.toByte() == data[5]) {
-                transceiverType = type;
-                break;
-            }
-        }
+        subType = SubType.fromByte(super.subType);
+        command = Commands.fromByte(data[4]);
+        transceiverType = TransceiverType.fromByte(data[5]);
 
         firmwareVersion = data[6];
 
@@ -269,7 +280,7 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
 
             hardwareVersion1 = data[11];
             hardwareVersion2 = data[12];
-        
+
             outputPower = data[13];
         } else {
             hardwareVersion1 = data[10];
@@ -283,7 +294,7 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
 
         byte[] data = new byte[14];
 
-        data[0] = (byte)(data.length-1);
+        data[0] = (byte) (data.length - 1);
         data[1] = RFXComBaseMessage.PacketType.INTERFACE_MESSAGE.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;

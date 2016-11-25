@@ -15,9 +15,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.openhab.binding.rfxcom.RFXComValueSelector;
 import org.openhab.binding.rfxcom.internal.RFXComException;
-import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
-import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -55,7 +53,7 @@ public class RFXComUndecodedRFMessage extends RFXComBaseMessage {
         RTS(0x14),
         SELECT_PLUS(0x15),
         HOME_CONFORT(0x16),
-        
+
         UNKNOWN(255);
 
         private final int subType;
@@ -71,12 +69,20 @@ public class RFXComUndecodedRFMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
-    private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(
-        RFXComValueSelector.RAW_DATA,
-        RFXComValueSelector.DATA
-    );
+    private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
+            RFXComValueSelector.DATA);
 
     public SubType subType = SubType.UNKNOWN;
     private byte[] rawData = new byte[0];
@@ -100,19 +106,13 @@ public class RFXComUndecodedRFMessage extends RFXComBaseMessage {
 
         return str;
     }
-    
 
     @Override
     public void encodeMessage(byte[] data) {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
+        subType = SubType.fromByte(super.subType);
         rawData = Arrays.copyOfRange(rawMessage, 4, rawMessage.length);
     }
 
@@ -121,13 +121,13 @@ public class RFXComUndecodedRFMessage extends RFXComBaseMessage {
         final int rawLen = Math.min(rawData.length, 33);
         byte[] data = new byte[4 + rawLen];
 
-        data[0] = (byte)(data.length-1);
+        data[0] = (byte) (data.length - 1);
         data[1] = RFXComBaseMessage.PacketType.UNDECODED_RF_MESSAGE.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
 
         for (int i = 0; i < rawLen; i++) {
-            data[i+4] = rawData[i];
+            data[i + 4] = rawData[i];
         }
         return data;
     }

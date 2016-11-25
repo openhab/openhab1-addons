@@ -57,6 +57,7 @@ public class RFXComLighting4Message extends RFXComBaseMessage {
 
     public enum SubType {
         PT2262(0),
+
         UNKNOWN(255);
 
         private final int subType;
@@ -71,6 +72,16 @@ public class RFXComLighting4Message extends RFXComBaseMessage {
 
         public byte toByte() {
             return (byte) subType;
+        }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
         }
     }
 
@@ -100,15 +111,25 @@ public class RFXComLighting4Message extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) command;
         }
+
+        public static Commands fromByte(int input) {
+            for (Commands c : Commands.values()) {
+                if (c.command == input) {
+                    return c;
+                }
+            }
+
+            return Commands.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.COMMAND);
 
-    public SubType subType = SubType.PT2262;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public int commandId = 0;
-    public Commands command = Commands.OFF_0;
+    public Commands command = Commands.UNKNOWN;
     public int pulse = 0;
     public byte signalLevel = 0;
 
@@ -138,26 +159,13 @@ public class RFXComLighting4Message extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 12 | (data[5] & 0xFF) << 4 | (data[6] & 0xFF) >> 4;
-
         commandId = (data[6] & 0x0F); // 4 OFF - 1 ON
+        command = Commands.fromByte(commandId);
 
-        command = Commands.UNKNOWN;
-        for (Commands loCmd : Commands.values()) {
-            if (loCmd.toByte() == commandId) {
-                command = loCmd;
-                break;
-            }
-        }
+        pulse = (data[7] & 0xFF) << 8 | (data[8] & 0xFF);
 
-        pulse = (data[7] & 0xFF) << 8 | (data[8] & 0xFF) << 0;
-		
         signalLevel = (byte) ((data[9] & 0xF0) >> 4);
     }
 
@@ -178,7 +186,7 @@ public class RFXComLighting4Message extends RFXComBaseMessage {
 
         // PULSE
         data[7] = (byte) ((pulse >> 8) & 0xFF);
-        data[8] = (byte) ((pulse >> 0) & 0xFF);
+        data[8] = (byte) (pulse & 0xFF);
 
         // SIGNAL
         data[9] = (byte) ((signalLevel & 0x0F) << 4);
@@ -209,9 +217,9 @@ public class RFXComLighting4Message extends RFXComBaseMessage {
 
             if (valueSelector == RFXComValueSelector.COMMAND) {
                 switch (command) {
-	                case OFF_0:
-	                case OFF_2:
-	                case OFF_4:
+                    case OFF_0:
+                    case OFF_2:
+                    case OFF_4:
                         state = OnOffType.OFF;
                         break;
 
@@ -238,9 +246,9 @@ public class RFXComLighting4Message extends RFXComBaseMessage {
             if (valueSelector == RFXComValueSelector.CONTACT) {
 
                 switch (command) {
-	                case OFF_0:
-	                case OFF_2:
-	                case OFF_4:
+                    case OFF_0:
+                    case OFF_2:
+                    case OFF_4:
                         state = OpenClosedType.CLOSED;
                         break;
 
@@ -265,10 +273,10 @@ public class RFXComLighting4Message extends RFXComBaseMessage {
                 state = new StringType(DatatypeConverter.printHexBinary(rawMessage));
             } else {
                 throw new RFXComException("Can't convert " + valueSelector + " to StringItem");
-        }
+            }
         } else {
 
-        throw new RFXComException("Can't convert " + valueSelector + " to " + valueSelector.getItemClass());
+            throw new RFXComException("Can't convert " + valueSelector + " to " + valueSelector.getItemClass());
         }
 
         return state;

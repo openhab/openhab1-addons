@@ -32,13 +32,13 @@ import org.openhab.core.types.UnDefType;
 public class RFXComWindMessage extends RFXComBaseMessage {
 
     public enum SubType {
-        UNDEF(0),
         WTGR800(1),
         WGR800(2),
         STR918_WGR918_WGR928(3),
         TFA(4),
         UPM_WDS500(5),
         WS2300(6),
+        WS4500_ET_AL(7),
 
         UNKNOWN(255);
 
@@ -55,6 +55,16 @@ public class RFXComWindMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
@@ -62,7 +72,7 @@ public class RFXComWindMessage extends RFXComBaseMessage {
             RFXComValueSelector.WIND_AVSPEED, RFXComValueSelector.WIND_SPEED, RFXComValueSelector.TEMPERATURE,
             RFXComValueSelector.CHILL_FACTOR);
 
-    public SubType subType = SubType.WTGR800;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public double windDirection = 0;
     public double windSpeed = 0;
@@ -105,11 +115,7 @@ public class RFXComWindMessage extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 
         windDirection = (short) ((data[6] & 0xFF) << 8 | (data[7] & 0xFF));
@@ -139,7 +145,7 @@ public class RFXComWindMessage extends RFXComBaseMessage {
         byte[] data = new byte[17];
 
         data[0] = 0x10;
-        data[1] = RFXComBaseMessage.PacketType.RAIN.toByte();
+        data[1] = PacketType.WIND.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
         data[4] = (byte) ((sensorId & 0xFF00) >> 8);

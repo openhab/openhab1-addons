@@ -26,8 +26,8 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -64,6 +64,16 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     public enum Commands {
@@ -84,6 +94,9 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
         STOP_RELAY(14),
         OPEN_RELAY(15),
         SET_LEVEL(16),
+        COLOUR_PALETTE(17),
+        COLOUR_TONE(18),
+        COLOUR_CYCLE(19),
 
         UNKNOWN(255);
 
@@ -100,16 +113,26 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) command;
         }
+
+        public static Commands fromByte(int input) {
+            for (Commands c : Commands.values()) {
+                if (c.command == input) {
+                    return c;
+                }
+            }
+
+            return Commands.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.COMMAND, RFXComValueSelector.MOOD,
             RFXComValueSelector.DIMMING_LEVEL, RFXComValueSelector.CONTACT, RFXComValueSelector.SHUTTER);
 
-    public SubType subType = SubType.LIGHTWAVERF;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public byte unitcode = 0;
-    public Commands command = Commands.OFF;
+    public Commands command = Commands.UNKNOWN;
     public byte dimmingLevel = 0;
     public byte signalLevel = 0;
 
@@ -141,21 +164,10 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
-        sensorId = (data[4] & 0xFF) << 16 | (data[5] & 0xFF) << 8 | (data[6] & 0xFF) << 0;
+        subType = SubType.fromByte(super.subType);
+        sensorId = (data[4] & 0xFF) << 16 | (data[5] & 0xFF) << 8 | (data[6] & 0xFF);
         unitcode = data[7];
-
-        try {
-            command = Commands.values()[data[8]];
-        } catch (Exception e) {
-            command = Commands.UNKNOWN;
-        }
-
+        command = Commands.fromByte(data[8]);
         dimmingLevel = data[9];
         signalLevel = (byte) ((data[10] & 0xF0) >> 4);
     }
@@ -188,7 +200,7 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 
     /**
      * Convert a 0-31 scale value to a percent type.
-     * 
+     *
      * @param pt
      *            percent type to convert
      * @return converted value 0-31
@@ -200,7 +212,7 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 
     /**
      * Convert a 0-31 scale value to a percent type.
-     * 
+     *
      * @param pt
      *            percent type to convert
      * @return converted value 0-31
@@ -266,7 +278,7 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
                     default:
                         break;
                 }
-			} else if (valueSelector == RFXComValueSelector.DIMMING_LEVEL) {
+            } else if (valueSelector == RFXComValueSelector.DIMMING_LEVEL) {
                 state = RFXComLighting5Message.getPercentTypeFromDimLevel(dimmingLevel);
 
             } else {
@@ -368,7 +380,7 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
                     throw new NumberFormatException("Can't convert " + type + " to Command");
                 }
                 break;
-                    
+
             case COMMAND:
                 if (type instanceof OnOffType) {
                     command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);

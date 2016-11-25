@@ -52,9 +52,9 @@
     <module>org.openhab.binding.dmx.lib485</module>
     <module>org.openhab.binding.dmx.artnet</module>
     <module>org.openhab.binding.dmx.test</module>
-	<module>org.openhab.binding.dsmr</module>
+	  <module>org.openhab.binding.dsmr</module>
     <module>org.openhab.binding.rfxcom</module>
-    <!--module>org.openhab.binding.rfxcom.test</module-->
+    <module>org.openhab.binding.rfxcom.test</module>
     <module>org.openhab.binding.samsungac</module>
     <module>org.openhab.binding.samsungac.test</module>
     <module>org.openhab.binding.samsungtv</module>

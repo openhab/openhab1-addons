@@ -42,18 +42,18 @@ public class RFXComLighting3Message extends RFXComBaseMessage {
 
     /*
      * Lighting3 packet layout (length 10)
-
-	 * packetlength = 0
-	 * packettype = 1
-	 * subtype = 2
-	 * seqnbr = 3
-	 * system = 4
-	 * channel8_1 = 5
-	 * channel10_9 = 6
-	 * cmnd = 7
-	 * filler = 8  'bits 3-0
-	 * rssi = 8    'bits 7-4
-	*/
+     *
+     * packetlength = 0
+     * packettype = 1
+     * subtype = 2
+     * seqnbr = 3
+     * system = 4
+     * channel8_1 = 5
+     * channel10_9 = 6
+     * cmnd = 7
+     * filler = 8 'bits 3-0
+     * rssi = 8 'bits 7-4
+     */
     public enum SubType {
         KOPPLA(0),
 
@@ -72,24 +72,34 @@ public class RFXComLighting3Message extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     public enum Commands {
-		BRIGHT(0),
-		DIM(8),
-		ON(16),
-		LEVEL1(17),
-		LEVEL2(18),
-		LEVEL3(19),
-		LEVEL4(20),
-		LEVEL5(21),
-		LEVEL6(22),
-		LEVEL7(23),
-		LEVEL8(24),
-		LEVEL9(25),
-		OFF(26),
-		PROGRAM(27),
-		
+        BRIGHT(0),
+        DIM(8),
+        ON(16),
+        LEVEL1(17),
+        LEVEL2(18),
+        LEVEL3(19),
+        LEVEL4(20),
+        LEVEL5(21),
+        LEVEL6(22),
+        LEVEL7(23),
+        LEVEL8(24),
+        LEVEL9(25),
+        OFF(26),
+        PROGRAM(27),
+
         UNKNOWN(255);
 
         private final int command;
@@ -105,14 +115,23 @@ public class RFXComLighting3Message extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) command;
         }
+
+        public static Commands fromByte(int input) {
+            for (Commands c : Commands.values()) {
+                if (c.command == input) {
+                    return c;
+                }
+            }
+
+            return Commands.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.COMMAND, RFXComValueSelector.DIMMING_LEVEL);
 
-    public SubType subType = SubType.KOPPLA;
-    public Commands command = Commands.OFF;
-    public int commandId = 0;
+    public SubType subType = SubType.UNKNOWN;
+    public Commands command = Commands.UNKNOWN;
     public byte dimmingLevel = 0;
     public byte signalLevel = 0;
 
@@ -142,23 +161,9 @@ public class RFXComLighting3Message extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
+        subType = SubType.fromByte(super.subType);
         dimmingLevel = data[6];
-
-        commandId = data[7];
-
-        command = Commands.UNKNOWN;
-        for (Commands loCmd : Commands.values()) {
-            if (loCmd.toByte() == commandId) {
-                command = loCmd;
-                break;
-            }
-        }		
+        command = Commands.fromByte(data[7]);
         signalLevel = (byte) ((data[11] & 0xF0) >> 4);
     }
 
@@ -167,12 +172,12 @@ public class RFXComLighting3Message extends RFXComBaseMessage {
 
         byte[] data = new byte[9];
 
-        data[0] = (byte)(data.length-1);
+        data[0] = (byte) (data.length - 1);
         data[1] = RFXComBaseMessage.PacketType.LIGHTING3.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
-        data[4] = 0; //system (unused ?)
-        data[5] = 0; //channel8_1 (unused ?)
+        data[4] = 0; // system (unused ?)
+        data[5] = 0; // channel8_1 (unused ?)
         data[6] = dimmingLevel;
         data[7] = command.toByte();
         data[8] = (byte) ((signalLevel & 0x0F) << 4);
@@ -187,7 +192,7 @@ public class RFXComLighting3Message extends RFXComBaseMessage {
 
     /**
      * Convert a 0-15 scale value to a percent type.
-     * 
+     *
      * @param pt
      *            percent type to convert
      * @return converted value 0-15
@@ -199,7 +204,7 @@ public class RFXComLighting3Message extends RFXComBaseMessage {
 
     /**
      * Convert a 0-15 scale value to a percent type.
-     * 
+     *
      * @param pt
      *            percent type to convert
      * @return converted value 0-15
@@ -273,9 +278,9 @@ public class RFXComLighting3Message extends RFXComBaseMessage {
                         break;
 
                     case ON:
-					case BRIGHT:
-					case DIM:
-                       state = OpenClosedType.OPEN;
+                    case BRIGHT:
+                    case DIM:
+                        state = OpenClosedType.OPEN;
                         break;
 
                     default:
@@ -317,16 +322,8 @@ public class RFXComLighting3Message extends RFXComBaseMessage {
                 if (type instanceof OnOffType) {
                     command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);
                     dimmingLevel = 0;
-                }
-                else if (type instanceof DecimalType) {
-                    commandId = (int) ((DecimalType) type).intValue();
-                    command = Commands.UNKNOWN;
-                    for (Commands loCmd : Commands.values()) {
-                        if (loCmd.toByte() == commandId) {
-                            command = loCmd;
-                            break;
-                        }
-                    }		                    
+                } else if (type instanceof DecimalType) {
+                    command = Commands.fromByte(((DecimalType) type).intValue());
                     dimmingLevel = 0;
                 } else {
                     throw new RFXComException("Can't convert " + type + " to Command");
