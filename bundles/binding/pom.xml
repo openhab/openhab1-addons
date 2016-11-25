@@ -186,6 +186,7 @@
     <module>org.openhab.binding.gc100ir</module>
     <module>org.openhab.binding.powermax</module>
     <module>org.openhab.binding.upb</module>
-    <module>org.openhab.binding.simplebinary</module>    
+    <module>org.openhab.binding.simplebinary</module>  
+    <module>org.openhab.binding.simatic</module>  
   </modules>
 </project>

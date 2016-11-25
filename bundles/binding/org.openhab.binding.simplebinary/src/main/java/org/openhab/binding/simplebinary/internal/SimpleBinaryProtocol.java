@@ -113,7 +113,7 @@ public class SimpleBinaryProtocol {
         byte[] data;
 
         if (logger.isDebugEnabled()) {
-            logger.debug("compileDataFrame(): item:" + itemName + "|datatype:" + config.getDataType());
+            logger.debug("compileDataFrame(): item:{}|datatype:{}",itemName, config.getDataType());
         }
 
         switch (config.getDataType()) {

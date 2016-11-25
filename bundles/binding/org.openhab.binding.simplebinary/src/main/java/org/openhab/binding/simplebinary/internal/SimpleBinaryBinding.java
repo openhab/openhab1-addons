@@ -99,7 +99,6 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
         }
 
         devices.clear();
-        // items.clear();
 
         Pattern rgxUARTKey = Pattern.compile("^port\\d*$");
         Pattern rgxUARTValue = Pattern.compile("^(\\S+:\\d+)(;((onscan)|(onchange)))?(;((forceRTS)|(forceRTSInv)))?$");
@@ -112,7 +111,7 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
         logger.debug("Looking for device configuration...");
 
         for (Map.Entry<String, Object> item : configuration.entrySet()) {
-            // logger.debug("key:" + item.getKey() + "/value:" + item.getValue());
+            logger.trace("key:{}/value:{}", item.getKey(), item.getValue());
 
             // port
             if (rgxUARTKey.matcher(item.getKey()).matches()) {

@@ -382,9 +382,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                             break;
                         }
                     }
-
-                    // logger.debug("Port {} - Received data - buffer length {} bytes", port, inBuffer.position());
-
+                    
                     // check data
                     if (itemsConfig != null) {
                         // check minimum length
