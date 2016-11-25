@@ -3476,6 +3476,10 @@
         <Product>
             <Reference>
                 <Type>5452</Type>
+                <Id>5431</Id>
+            </Reference>
+            <Reference>
+                <Type>5452</Type>
                 <Id>5433</Id>
             </Reference>
             <Reference>
