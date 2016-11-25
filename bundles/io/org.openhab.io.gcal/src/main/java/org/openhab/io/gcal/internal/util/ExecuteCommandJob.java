@@ -69,12 +69,12 @@ public class ExecuteCommandJob implements Job {
             try {
                 Item item = registry.getItem("PresenceSimulation");
                 if (item.getState() != OnOffType.ON) {
-                    logger.info(
+                    logger.debug(
                             "Presence Simulation job detected, but PresenceSimulation is not in ON state. Job is not executed");
                     return;
                 }
             } catch (ItemNotFoundException e) {
-                logger.error(
+                logger.warn(
                         "Presence Simulation job detected, but PresenceSimulation item does not exists. Check configuration");
                 return;
             }
@@ -94,7 +94,7 @@ public class ExecuteCommandJob implements Job {
                                 publisher.sendCommand(item.getName(), cmd);
                                 logger.debug("Command {} has been sent", Arrays.asList(args));
                             } else {
-                                logger.warn("Command {} is not valid for item {}", args[2], args[1]);
+                                logger.warn("Command '{}' is not valid. Command not sent.", Arrays.asList(args));
                             }
                         }
                     } else if (args[0].equals("update")) {
@@ -103,6 +103,8 @@ public class ExecuteCommandJob implements Job {
                             State state = TypeParser.parseState(item.getAcceptedDataTypes(), args[2]);
                             publisher.postUpdate(item.getName(), state);
                             logger.debug("Published update {}", Arrays.asList(args));
+                        } else {
+                            logger.warn("Command '{}' is not valid. Update not sent.", Arrays.asList(args));
                         }
                     } else {
                         logger.warn("Command {} not supported", args[0]);
