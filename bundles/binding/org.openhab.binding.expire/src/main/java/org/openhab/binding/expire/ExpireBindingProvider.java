@@ -9,6 +9,7 @@
 package org.openhab.binding.expire;
 
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.types.State;
 
 /**
  * @author Michael Wyraz
@@ -20,4 +21,5 @@ public interface ExpireBindingProvider extends BindingProvider
 
     public long getExpiresAfterMs(String itemName);
 
+    public State getExpiredState(String itemName);
 }

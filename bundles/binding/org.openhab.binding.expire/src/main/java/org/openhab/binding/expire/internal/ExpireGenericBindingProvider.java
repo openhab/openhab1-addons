@@ -15,6 +15,9 @@ import java.util.regex.Pattern;
 import org.openhab.binding.expire.ExpireBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.types.State;
+import org.openhab.core.types.TypeParser;
+import org.openhab.core.types.UnDefType;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -54,9 +57,17 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
         super.processBindingConfiguration(context, item, bindingConfig);
         ExpireBindingConfig config = new ExpireBindingConfig();
 
-        Duration expiresAfter = parseDuration(bindingConfig);
+        String[] durationAndState = bindingConfig.split(",", 2);
+
+        Duration expiresAfter = parseDuration(durationAndState[0].trim());
         config.expiresAfterMs = expiresAfter.toMillis();
         config.expiresAfterAsText = formatDuration(expiresAfter);
+
+        if (durationAndState.length > 1)
+        {
+            // use 2nd parameter as state. defaults to UNDEF
+            config.expiredState = TypeParser.parseState(item.getAcceptedDataTypes(), durationAndState[1].trim());
+        }
 
         addBindingConfig(item, config);
     }
@@ -94,13 +105,24 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
     @Override
     public long getExpiresAfterMs(String itemName)
     {
-        return ((ExpireBindingConfig) bindingConfigs.get(itemName)).expiresAfterMs;
+        return getItemConfig(itemName).expiresAfterMs;
     }
 
     @Override
     public String getExpiresAfterAsText(String itemName)
     {
-        return ((ExpireBindingConfig) bindingConfigs.get(itemName)).expiresAfterAsText;
+        return getItemConfig(itemName).expiresAfterAsText;
+    }
+
+    @Override
+    public State getExpiredState(String itemName)
+    {
+        return getItemConfig(itemName).expiredState;
+    }
+
+    private ExpireBindingConfig getItemConfig(String itemName)
+    {
+        return (ExpireBindingConfig) bindingConfigs.get(itemName);
     }
 
     /**
@@ -120,6 +142,11 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
          * duration in ms
          */
         protected long expiresAfterMs;
+
+        /**
+         * state to set if item is expired. Defaults to UNDEF
+         */
+        protected State expiredState = UnDefType.UNDEF;
     }
 
 }
