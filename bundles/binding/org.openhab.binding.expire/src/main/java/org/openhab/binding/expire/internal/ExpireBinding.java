@@ -25,8 +25,7 @@ import org.slf4j.LoggerFactory;
  * @author Michael Wyraz
  * @since 1.9.0
  */
-public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
-{
+public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> {
 
     private static final Logger logger = LoggerFactory.getLogger(ExpireBinding.class);
 
@@ -43,8 +42,7 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
      */
     private final long refreshInterval = 1000;
 
-    public ExpireBinding()
-    {
+    public ExpireBinding() {
     }
 
     /**
@@ -53,8 +51,7 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
      * @param bundleContext BundleContext of the Bundle that defines this component
      * @param configuration Configuration properties for this component obtained from the ConfigAdmin service
      */
-    public void activate(final BundleContext bundleContext, final Map<String, Object> configuration)
-    {
+    public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
         this.bundleContext = bundleContext;
 
         setProperlyConfigured(true);
@@ -65,8 +62,7 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
      *
      * @param configuration Updated configuration properties
      */
-    public void modified(final Map<String, Object> configuration)
-    {
+    public void modified(final Map<String, Object> configuration) {
         // update the internal configuration accordingly
     }
 
@@ -85,8 +81,7 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
      *            <li>6 – The bundle was stopped
      *            </ul>
      */
-    public void deactivate(final int reason)
-    {
+    public void deactivate(final int reason) {
         this.bundleContext = null;
         // deallocate resources here that are no longer needed and
         // should be reset when activating this binding again
@@ -96,8 +91,7 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
      * {@inheritDoc}
      */
     @Override
-    protected long getRefreshInterval()
-    {
+    protected long getRefreshInterval() {
         return refreshInterval;
     }
 
@@ -105,13 +99,11 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
      * {@inheritDoc}
      */
     @Override
-    protected String getName()
-    {
+    protected String getName() {
         return "Expire Refresh Service";
     }
 
-    protected static class ExpireConfig
-    {
+    protected static class ExpireConfig {
         protected long expireAfterMs;
 
         protected long nextExpireTs;
@@ -123,18 +115,15 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
      * {@inheritDoc}
      */
     @Override
-    protected void execute()
-    {
-        for (ExpireBindingProvider provider : providers)
-        {
-            for (String itemName : provider.getItemNames())
-            {
+    protected void execute() {
+        for (ExpireBindingProvider provider : providers) {
+            for (String itemName : provider.getItemNames()) {
                 Long nextExpireTs = nextExpireTsMap.get(itemName);
-                if (nextExpireTs == null || nextExpireTs <= System.currentTimeMillis())
-                {
+                if (nextExpireTs == null || nextExpireTs <= System.currentTimeMillis()) {
                     // value expired
                     State newState = provider.getExpiredState(itemName);
-                    logger.info("Item {} was not updated for {} - setting state to {}", itemName, provider.getExpiresAfterAsText(itemName), newState);
+                    logger.info("Item {} was not updated for {} - setting state to {}", itemName,
+                            provider.getExpiresAfterAsText(itemName), newState);
                     eventPublisher.postUpdate(itemName, newState); // set to undefined
                     nextExpireTsMap.put(itemName, Long.MAX_VALUE); // disable expire trigger until next update
                 }
@@ -147,15 +136,11 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
      * {@inheritDoc}
      */
     @Override
-    protected void internalReceiveUpdate(String itemName, State newState)
-    {
-        for (ExpireBindingProvider provider : providers)
-        {
-            if (provider.providesBindingFor(itemName))
-            {
+    protected void internalReceiveUpdate(String itemName, State newState) {
+        for (ExpireBindingProvider provider : providers) {
+            if (provider.providesBindingFor(itemName)) {
                 State expiredState = provider.getExpiredState(itemName);
-                if (!expiredState.equals(newState))
-                {
+                if (!expiredState.equals(newState)) {
                     long expireAfterMs = provider.getExpiresAfterMs(itemName);
                     nextExpireTsMap.put(itemName, System.currentTimeMillis() + expireAfterMs);
                 }

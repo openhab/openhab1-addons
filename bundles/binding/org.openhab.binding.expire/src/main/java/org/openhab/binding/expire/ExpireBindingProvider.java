@@ -15,8 +15,7 @@ import org.openhab.core.types.State;
  * @author Michael Wyraz
  * @since 1.9.0
  */
-public interface ExpireBindingProvider extends BindingProvider
-{
+public interface ExpireBindingProvider extends BindingProvider {
     public String getExpiresAfterAsText(String itemName);
 
     public long getExpiresAfterMs(String itemName);
