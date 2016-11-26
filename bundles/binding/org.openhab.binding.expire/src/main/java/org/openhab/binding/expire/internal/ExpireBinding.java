@@ -14,7 +14,6 @@ import java.util.Map;
 import org.openhab.binding.expire.ExpireBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.types.State;
-import org.openhab.core.types.UnDefType;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,16 +149,17 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
     @Override
     protected void internalReceiveUpdate(String itemName, State newState)
     {
-        if (newState != UnDefType.UNDEF)
+        for (ExpireBindingProvider provider : providers)
         {
-            for (ExpireBindingProvider provider : providers)
+            if (provider.providesBindingFor(itemName))
             {
-                if (provider.providesBindingFor(itemName))
+                State expiredState = provider.getExpiredState(itemName);
+                if (!expiredState.equals(newState))
                 {
                     long expireAfterMs = provider.getExpiresAfterMs(itemName);
                     nextExpireTsMap.put(itemName, System.currentTimeMillis() + expireAfterMs);
-                    break;
                 }
+                break;
             }
         }
     }
