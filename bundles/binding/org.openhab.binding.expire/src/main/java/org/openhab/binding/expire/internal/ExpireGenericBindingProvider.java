@@ -40,7 +40,7 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
     }
 
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException

@@ -94,7 +94,7 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
     }
 
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     protected long getRefreshInterval()
@@ -103,7 +103,7 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
     }
 
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     protected String getName()
@@ -121,7 +121,7 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
     protected static Map<String, Long> nextExpireTsMap = new HashMap<>();
 
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     protected void execute()
@@ -145,7 +145,7 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
     }
 
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     protected void internalReceiveUpdate(String itemName, State newState)
