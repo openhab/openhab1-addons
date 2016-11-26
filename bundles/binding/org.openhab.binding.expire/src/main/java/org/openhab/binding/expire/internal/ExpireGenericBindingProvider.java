@@ -62,7 +62,12 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
 
         if (durationAndState.length > 1) {
             // use 2nd parameter as state. defaults to UNDEF
-            config.expiredState = TypeParser.parseState(item.getAcceptedDataTypes(), durationAndState[1].trim());
+            String stateAsString = durationAndState[1].trim();
+            config.expiredState = TypeParser.parseState(item.getAcceptedDataTypes(), stateAsString);
+            if (config.expiredState == null) {
+                throw new BindingConfigParseException("The string '" + stateAsString
+                        + "' does not represent a valid state for item " + item.getName());
+            }
         }
 
         addBindingConfig(item, config);
