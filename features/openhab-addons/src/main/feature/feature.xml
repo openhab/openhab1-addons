@@ -223,18 +223,12 @@
     <configfile finalname="${openhab.conf}/services/epsonprojector.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/epsonprojector</configfile>
   </feature>
 
-  <feature name="openhab-binding-exec" description="Exec Binding" version="${project.version}">
+  <feature name="openhab-binding-fatekplc" description="Fatek PLC Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.exec/${project.version}</bundle>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.fatekplc/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/fatekplc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/fatekplc</configfile>
   </feature>
-
-    <feature name="openhab-binding-fatekplc" description="Fatek PLC Binding" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.fatekplc/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/fatekplc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/fatekplc</configfile>
-    </feature>
 
   <feature name="openhab-binding-freeswitch" description="Freeswitch Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
