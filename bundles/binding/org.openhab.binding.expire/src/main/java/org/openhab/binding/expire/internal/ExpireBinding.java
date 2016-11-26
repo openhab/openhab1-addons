@@ -39,10 +39,10 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
     private BundleContext bundleContext;
 
     /**
-     * the refresh interval which is used to poll values from the Expire
-     * server (optional, defaults to 60000ms)
+     * The refresh interval is used to check if any of the bound items is expired.
+     * One second should be fine for all use cases, so it's final and cannot be configured.
      */
-    private long refreshInterval = 1000;
+    private final long refreshInterval = 1000;
 
     public ExpireBinding()
     {
