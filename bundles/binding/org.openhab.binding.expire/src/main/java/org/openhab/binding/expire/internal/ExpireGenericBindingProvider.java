@@ -54,14 +54,26 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
         super.processBindingConfiguration(context, item, bindingConfig);
         ExpireBindingConfig config = new ExpireBindingConfig();
 
-        config.expiresAfterMs = parseDuration(bindingConfig);
+        Duration expiresAfter = parseDuration(bindingConfig);
+        config.expiresAfterMs = expiresAfter.toMillis();
+        config.expiresAfterAsText = formatDuration(expiresAfter);
 
         addBindingConfig(item, config);
     }
 
     protected static Pattern durationPattern = Pattern.compile("(\\d+[hH])?\\s*(\\d+[mM])?\\s*(\\d+[sS])?");
 
-    protected static long parseDuration(String duration) throws BindingConfigParseException
+    protected static String formatDuration(Duration duration)
+    {
+        if (duration == null)
+        {
+            return null;
+        }
+        // PT27H46M40S -> 27h 46m 40s
+        return duration.toString().replaceFirst("^PT", "").replaceAll("([HMS])", "$1 ").toLowerCase();
+    }
+
+    protected static Duration parseDuration(String duration) throws BindingConfigParseException
     {
         Matcher m = durationPattern.matcher(duration);
         if (!m.matches() || (m.group(1) == null && m.group(2) == null) && m.group(3) == null)
@@ -76,13 +88,19 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
                 sb.append(m.group(i));
             }
         }
-        return Duration.parse(sb).toMillis();
+        return Duration.parse(sb);
     }
 
     @Override
     public long getExpiresAfterMs(String itemName)
     {
         return ((ExpireBindingConfig) bindingConfigs.get(itemName)).expiresAfterMs;
+    }
+
+    @Override
+    public String getExpiresAfterAsText(String itemName)
+    {
+        return ((ExpireBindingConfig) bindingConfigs.get(itemName)).expiresAfterAsText;
     }
 
     /**
@@ -93,6 +111,14 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
      */
     class ExpireBindingConfig implements BindingConfig
     {
+        /**
+         * Human readable textual representation if duration (e.g. "13h 42m 12s")
+         */
+        protected String expiresAfterAsText;
+
+        /**
+         * duration in ms
+         */
         protected long expiresAfterMs;
     }
 

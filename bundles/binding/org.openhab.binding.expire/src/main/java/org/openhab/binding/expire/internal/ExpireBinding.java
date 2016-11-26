@@ -134,7 +134,7 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider>
                 if (nextExpireTs == null || nextExpireTs <= System.currentTimeMillis())
                 {
                     // value expired
-                    logger.info("Item {} was not updated for {} - setting state to undefined", itemName, "5s");
+                    logger.info("Item {} was not updated for {} - setting state to undefined", itemName, provider.getExpiresAfterAsText(itemName));
                     eventPublisher.postUpdate(itemName, UnDefType.UNDEF); // set to undefined
                     nextExpireTsMap.put(itemName, Long.MAX_VALUE); // disable expire trigger until next update
                 }

@@ -16,6 +16,8 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface ExpireBindingProvider extends BindingProvider
 {
+    public String getExpiresAfterAsText(String itemName);
+
     public long getExpiresAfterMs(String itemName);
 
 }
