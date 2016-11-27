@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * 
  * @author Scott Hanson
- * @since 1.8.0
+ * @since 1.9.0
  */
 public class MyqDeviceData {
 	static final Logger logger = LoggerFactory.getLogger(MyqDeviceData.class);

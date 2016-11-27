@@ -114,7 +114,7 @@ public class MyqData {
 	 */
 	public MyqDeviceData getMyqData() throws InvalidLoginException,
 			IOException {
-		logger.trace("Retreiveing door data");
+		logger.trace("Retrieving door data");
 		String url = String.format(
 				"%s/api/v4/userdevicedetails/get?appId=%s&SecurityToken=%s",
 				websiteUrl, enc(appId), enc(getSecurityToken()));

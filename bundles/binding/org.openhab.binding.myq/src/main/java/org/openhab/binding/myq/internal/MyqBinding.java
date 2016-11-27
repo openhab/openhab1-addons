@@ -225,7 +225,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 								} else {
 									for (Class<? extends State> type : deviceConfig.acceptedDataTypes) {
 										if (OpenClosedType.class == type) {
-											if (garageopener.getStatus() == GarageDoorStatus.CLOSED) {
+											if (garageopener.getStatus().isClosed()) {
 												newState = OpenClosedType.CLOSED;
 												break;
 											} else {
@@ -233,15 +233,15 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 												break;
 											}
 										} else if (UpDownType.class == type) {
-											if (garageopener.getStatus() == GarageDoorStatus.CLOSED) {
+											if (garageopener.getStatus().isClosed()) {
 												newState = UpDownType.DOWN;
 												break;
-											} else if (garageopener.getStatus() == GarageDoorStatus.OPEN) {
+											} else if (garageopener.getStatus().isOpen()) {
 												newState = UpDownType.UP;
 												break;
 											}
 										} else if (OnOffType.class == type) {
-											if (garageopener.getStatus() == GarageDoorStatus.CLOSED) {
+											if (garageopener.getStatus().isClosed()) {
 												newState = OnOffType.OFF;
 												break;
 											} else {
@@ -249,19 +249,14 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 												break;
 											}
 										} else if (PercentType.class == type) {
-											switch (garageopener.getStatus()) {
-											case OPEN:
-												newState = PercentType.ZERO;
-												break;
-											case CLOSED:
+											if (garageopener.getStatus().isClosed()) {
 												newState = PercentType.HUNDRED;
 												break;
-											case CLOSING:
-											case OPENING:
-											case PARTIAL:
-												newState = new PercentType(50);
+											} else if (garageopener.getStatus().isOpen()) {
+												newState = PercentType.ZERO;
 												break;
-											default:
+											} else if (garageopener.getStatus().inMotion()) {
+												newState = new PercentType(50);
 												break;
 											}
 										} else if (StringType.class == type) {

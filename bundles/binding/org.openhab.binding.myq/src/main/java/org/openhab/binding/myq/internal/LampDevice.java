@@ -51,7 +51,7 @@ public class LampDevice extends MyqDevice {
 	}
 
 	/**
-	 * Internal Method to convert API valie to ON/OFF state
+	 * Internal Method to convert API value to ON/OFF state
 	 */
 	private OnOffType getLampState(int value) {
 		if (value == 1) {

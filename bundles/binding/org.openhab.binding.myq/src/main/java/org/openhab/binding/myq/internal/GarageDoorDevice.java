@@ -54,8 +54,8 @@ class GarageDoorDevice extends MyqDevice {
 
 	public enum GarageDoorStatus {
 		OPEN("Open", 1), CLOSED("Closed", 2), PARTIAL("Partially Open/Closed",
-				3), OPENING("Opening", 4), CLOSING("Closing", 5), UNKNOWN(
-				"Unknown", -1);
+				3), OPENING("Opening", 4), CLOSING("Closing", 5), MOVING(
+				"Moving", 8), OPEN2("Open", 9),UNKNOWN("Unknown", -1);
 
 		/**
 		 * The label used to display status to a user
@@ -97,6 +97,24 @@ class GarageDoorDevice extends MyqDevice {
 		public boolean isClosedOrClosing() {
 			return (this == CLOSED || this == CLOSING);
 		}
+		
+		/**
+		 * Is the door in a closed state
+		 * 
+		 * @return is closed
+		 */
+		public boolean isClosed() {
+			return (this == CLOSED);
+		}
+		
+		/**
+		 * Is the door in a open or partial open state
+		 * 
+		 * @return is open or partial open
+		 */
+		public boolean isOpen() {
+			return (this == OPEN || this == OPEN2 || this == PARTIAL);
+		}
 
 		/**
 		 * Is the door in motion
@@ -104,7 +122,7 @@ class GarageDoorDevice extends MyqDevice {
 		 * @return door in motion
 		 */
 		public boolean inMotion() {
-			return (this == OPENING || this == CLOSING);
+			return (this == OPENING || this == CLOSING || this == MOVING);
 		}
 
 		/**
