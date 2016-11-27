@@ -144,7 +144,10 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
         for (ExpireBindingProvider provider : providers) {
             if (provider.providesBindingFor(itemName)) {
                 State expiredState = provider.getExpiredState(itemName);
-                if (!expiredState.equals(newState)) {
+                if (expiredState.equals(newState)) {
+                    // State equals to expired state -> no further action needed
+                    nextExpireTsMap.put(itemName, Long.MAX_VALUE); // disable expire trigger until next update
+                } else {
                     long expireAfterMs = provider.getExpiresAfterMs(itemName);
                     nextExpireTsMap.put(itemName, System.currentTimeMillis() + expireAfterMs);
                 }
