@@ -55,7 +55,7 @@ class GarageDoorDevice extends MyqDevice {
 	public enum GarageDoorStatus {
 		OPEN("Open", 1), CLOSED("Closed", 2), PARTIAL("Partially Open/Closed",
 				3), OPENING("Opening", 4), CLOSING("Closing", 5), MOVING(
-				"Moving", 8), OPEN2("Open", 9),UNKNOWN("Unknown", -1);
+				"Moving", 8), OPEN2("Open", 9), UNKNOWN("Unknown", -1);
 
 		/**
 		 * The label used to display status to a user
