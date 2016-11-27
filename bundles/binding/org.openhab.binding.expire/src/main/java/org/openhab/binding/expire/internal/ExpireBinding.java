@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This binding monitors state changes and sets the state to "Undefined" if not state change occurs within
- * the configured time
+ * This binding monitors state changes and sets the state to "Undefined" (or any other configured expired state)
+ * if not state change occurs within the configured time
  *
  * @author Michael Wyraz
  * @since 1.9.0
@@ -119,7 +119,11 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
         for (ExpireBindingProvider provider : providers) {
             for (String itemName : provider.getItemNames()) {
                 Long nextExpireTs = nextExpireTsMap.get(itemName);
-                if (nextExpireTs == null || nextExpireTs <= System.currentTimeMillis()) {
+                if (nextExpireTs == null) {
+                    // set initial expireTs
+                    long expireAfterMs = provider.getExpiresAfterMs(itemName);
+                    nextExpireTsMap.put(itemName, System.currentTimeMillis() + expireAfterMs);
+                } else if (nextExpireTs <= System.currentTimeMillis()) {
                     // value expired
                     State newState = provider.getExpiredState(itemName);
                     logger.info("Item {} was not updated for {} - setting state to {}", itemName,
