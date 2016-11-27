@@ -292,7 +292,7 @@ public class GaradgetBinding extends AbstractActiveBinding<GaradgetBindingProvid
     /**
      * Call a function in the Particle REST API using the property in the binding config. The argument to the Particle
      * device function is the String version of the command, with a special case for calling the setState function so
-     * sending ON, OFF, UP, DOWN and STOP commands are translated as "open", "close" or "stop". Upon successfully
+     * sending ON, OFF, UP, DOWN and STOP commands are translated as "open", "close" or "stopped". Upon successfully
      * calling the Particle device function, the state of the item is updated to the return value from the function
      * call.
      *
@@ -326,7 +326,7 @@ public class GaradgetBinding extends AbstractActiveBinding<GaradgetBindingProvid
                         || command.equals(PercentType.HUNDRED)) {
                     command = new StringType("close");
                 } else if (command.equals(StopMoveType.STOP) || command instanceof PercentType) {
-                    command = new StringType("stop");
+                    command = new StringType("stopped");
                 }
             }
 
