@@ -17,7 +17,8 @@ import org.openhab.io.caldav.internal.CalDavConfig;
 /**
  * Containing all events for a specific calendar and the config for the calendar.
  *
- * @author Robert
+ * @author Robert Delbrück
+ * @since 1.9.0
  *
  */
 public class CalendarRuntime {
@@ -27,21 +28,11 @@ public class CalendarRuntime {
 
     public CalendarFile getCalendarFileByFilename(String filename) {
         return calendarFileMap.get(filename);
-        // for (CalendarFile calendarFile : calendarFileMap.values()) {
-        // if (calendarFile.getFilename().equals(filename)) {
-        // return calendarFile;
-        // }
-        // }
-        // return null;
     }
 
     public List<CalendarFile> getCalendarFiles() {
         return new ArrayList<>(this.calendarFileMap.values());
     }
-
-    // public ConcurrentHashMap<String, EventContainer> getEventMap() {
-    // return calendarFileMap;
-    // }
 
     public CalDavConfig getConfig() {
         return config;

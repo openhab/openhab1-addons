@@ -17,7 +17,8 @@ import org.joda.time.DateTime;
 /**
  * Represents an ICS file, which can contain multiple events.
  *
- * @author Robert
+ * @author Robert Delbrück
+ * @since 1.9.0
  *
  */
 public class CalendarFile {

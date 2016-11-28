@@ -67,25 +67,10 @@ public class EventReloaderJob implements Job {
     private static Map<String, Boolean> cachedEventsLoaded = new ConcurrentHashMap<String, Boolean>();
 
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    public void execute(final JobExecutionContext context) throws JobExecutionException {
 
         final String config = context.getJobDetail().getJobDataMap().getString(KEY_CONFIG);
         CalendarRuntime eventRuntime = EventStorage.getInstance().getEventCache().get(config);
-
-        // if (config.equals("openhab_tasks")) {
-        // String calendarTmp = Util
-        // .createCalendar(new CalDavEvent("test-aaaaaaaaa", "aaaaaaaaaaa", "calendar",
-        // org.joda.time.DateTime.now(), org.joda.time.DateTime.now().plusHours(1)), DateTimeZone.UTC)
-        // .toString();
-        // try {
-        // OAuthUtil.removeEvent(eventRuntime.getConfig().getKey(), eventRuntime.getConfig().getUsername(),
-        // eventRuntime.getConfig().getPassword(), eventRuntime.getConfig().getUrl() + "/test-aaaaaaaaa",
-        // calendarTmp);
-        // } catch (URISyntaxException e1) {
-        // // TODO Auto-generated catch block
-        // e1.printStackTrace();
-        // }
-        // }
 
         // reload cached events (if necessary)
         if (!cachedEventsLoaded.containsKey(config)) {
@@ -104,7 +89,6 @@ public class EventReloaderJob implements Job {
                         try {
                             fis = new FileInputStream(icsFile);
                             String calendar = IOUtils.toString(fis);
-                            fis.close();
                             loadEvents(calendarFile, calendar, eventRuntime.getConfig(), new ArrayList<String>());
                         } catch (IOException e) {
                             log.error("cannot load events for file: " + icsFile, e);
@@ -151,16 +135,16 @@ public class EventReloaderJob implements Job {
 
             // printAllEvents();
         } catch (SardineException e) {
-            log.error("error while loading calendar entries: " + e.getMessage() + " (" + e.getStatusCode() + " - "
-                    + e.getResponsePhrase() + ")", e);
+            log.error(String.format("error while loading calendar entries: %s (%s - %s)", e.getMessage(),
+                    e.getStatusCode(), e.getResponsePhrase()), e);
             throw new JobExecutionException("error while loading calendar entries", e, false);
         } catch (Exception e) {
-            log.error("error while loading calendar entries: " + e.getMessage(), e);
+            log.error(String.format("error while loading calendar entries: %s", e.getMessage()), e);
             throw new JobExecutionException("error while loading calendar entries", e, false);
         }
     }
 
-    private void loadEventsOauth(CalendarRuntime calendarRuntime, List<String> oldEventIds) {
+    private void loadEventsOauth(final CalendarRuntime calendarRuntime, final List<String> oldEventIds) {
         CalDavConfig config = calendarRuntime.getConfig();
 
         try {
@@ -188,7 +172,7 @@ public class EventReloaderJob implements Job {
         }
     }
 
-    private void removeOldIdsForFilename(List<String> oldEventIds, String filename) {
+    private void removeOldIdsForFilename(final List<String> oldEventIds, final String filename) {
         for (String oldId : new ArrayList<>(oldEventIds)) {
             if (oldId.startsWith(filename + OLD_EVENT_SPLIT_CHAR)) {
                 oldEventIds.remove(oldId);
@@ -196,7 +180,7 @@ public class EventReloaderJob implements Job {
         }
     }
 
-    private synchronized void removeDeletedEvents(String calendarKey, List<String> oldMap) {
+    private synchronized void removeDeletedEvents(final String calendarKey, final List<String> oldMap) {
         final CalendarRuntime eventRuntime = EventStorage.getInstance().getEventCache().get(calendarKey);
 
         for (String filenameEventId : oldMap) {
@@ -260,7 +244,7 @@ public class EventReloaderJob implements Job {
      * @throws IOException
      * @throws ParserException
      */
-    public synchronized void loadEvents(final CalendarRuntime calendarRuntime, List<String> oldEventIds)
+    public synchronized void loadEvents(final CalendarRuntime calendarRuntime, final List<String> oldEventIds)
             throws IOException, ParserException {
         CalDavConfig config = calendarRuntime.getConfig();
 
@@ -292,39 +276,11 @@ public class EventReloaderJob implements Job {
                     if (config.isLastModifiedFileTimeStampValid()) {
                         // timestamp of last change is always correct
                         if (lastResourceChange.isAfter(calendarFile.getLastResourceChange())) {
-                            // calendarFile has been updated, check if some timers or single (from repeating events)
-                            // have to be created
-
-                            // if (calendarFile.getCalculatedUntil() != null && calendarFile.getCalculatedUntil()
-                            // .isAfter(org.joda.time.DateTime.now().plusMinutes(config.getReloadMinutes()))) {
-                            // // the event is calculated as long as the next reload
-                            // // interval can handle this
-                            // log.trace("skipping resource {}, not changed (calculated until: {})",
-                            // resource.getName(), calendarFile.getCalculatedUntil());
-                            // removeOldIdsForFilename(oldEventIds, filename);
-                            // continue;
-                            // }
-                            //
-                            // if (calendarFile.containsJustHistoricEvents()) {
-                            // // no more upcoming events, do nothing
-                            // log.trace("skipping resource {}, not changed (historic)", resource.getName());
-                            // removeOldIdsForFilename(oldEventIds, filename);
-                            // continue;
-                            // }
-
                             // file has been updated
                             log.debug("loading resource: {}", resource);
                             String calendarStr = IOUtils.toString(sardine.get(url.toString().replaceAll(" ", "%20")),
                                     config.getCharset());
                             this.loadEvents(calendarFile, calendarStr, config, oldEventIds);
-
-                            // File icsFile = Util.getCacheFile(config.getKey(), filename);
-                            // if (icsFile != null && icsFile.exists()) {
-                            // FileInputStream fis = new FileInputStream(icsFile);
-                            // this.loadEvents(filename, lastResourceChange, fis, config, oldEventIds, false);
-                            // fis.close();
-                            // continue;
-                            // }
                         } else {
                             // no change
                             removeOldIdsForFilename(oldEventIds, filename);
@@ -360,8 +316,8 @@ public class EventReloaderJob implements Job {
         }
     }
 
-    private void loadEvents(CalendarFile calendarFile, String calendarStr, CalDavConfig config,
-            List<String> oldEventIds) throws IOException, ParserException {
+    private void loadEvents(final CalendarFile calendarFile, final String calendarStr, final CalDavConfig config,
+            final List<String> oldEventIds) throws IOException, ParserException {
         Calendar calendar = Util.getCalendarObj(calendarStr);
 
         Util.storeToDisk(config.getKey(), calendarFile.getFilename(), calendar);
@@ -429,7 +385,7 @@ public class EventReloaderJob implements Job {
         }
     }
 
-    private boolean isHistoric(VEvent vEvent, PeriodList periods) {
+    private boolean isHistoric(final VEvent vEvent, final PeriodList periods) {
         // no more upcoming events
         if (periods.size() > 0) {
             if (vEvent
@@ -442,8 +398,8 @@ public class EventReloaderJob implements Job {
         return false;
     }
 
-    private CalDavEvent createEvent(String filename, final CalDavConfig config, VEvent vEvent,
-            org.joda.time.DateTime lastModifedVEvent, final String eventName, Period p) {
+    private CalDavEvent createEvent(final String filename, final CalDavConfig config, final VEvent vEvent,
+            final org.joda.time.DateTime lastModifedVEvent, final String eventName, final Period p) {
         org.joda.time.DateTime start = getDateTime("start", p.getStart(), p.getRangeStart());
         org.joda.time.DateTime end = getDateTime("end", p.getEnd(), p.getRangeEnd());
 
@@ -467,7 +423,7 @@ public class EventReloaderJob implements Job {
      * @param vEvent
      * @return
      */
-    private List<String> readCategory(VEvent vEvent) {
+    private List<String> readCategory(final VEvent vEvent) {
         Property propertyCategory = vEvent.getProperty(Property.CATEGORIES);
         if (propertyCategory != null) {
             String categories = propertyCategory.getValue();
@@ -480,7 +436,7 @@ public class EventReloaderJob implements Job {
         return new ArrayList<String>();
     }
 
-    private org.joda.time.DateTime getDateTime(String dateType, DateTime date, Date rangeDate) {
+    private org.joda.time.DateTime getDateTime(final String dateType, final DateTime date, final Date rangeDate) {
         org.joda.time.DateTime start;
         if (date.getTimeZone() == null) {
             if (date.isUtc()) {

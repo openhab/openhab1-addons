@@ -25,6 +25,13 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utility to handle all OAuth specific stuff.
+ *
+ * @author Robert Delbrück
+ * @since 1.9.0
+ *
+ */
 public class OAuthUtil {
     private static final Logger logger = LoggerFactory.getLogger(OAuthUtil.class);
 

@@ -8,7 +8,16 @@
  */
 package org.openhab.io.caldav.internal.exception;
 
+/**
+ * Exception, which will be thrown in any OAuth error.
+ *
+ * @author Robert Delbrück
+ * @since 1.9.0
+ *
+ */
 public class OAuthException extends Exception {
+    private static final long serialVersionUID = 1L;
+
     private int statusCode;
 
     public OAuthException(int statusCode) {

@@ -17,6 +17,13 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Contains runtime data for oauth.
+ *
+ * @author Robert Delbrück
+ * @since 1.9.0
+ *
+ */
 public class RuntimeData {
     private static final Logger logger = LoggerFactory.getLogger(RuntimeData.class);
     private static String filename = CalDavLoaderImpl.CACHE_PATH + "/runtime.properties";

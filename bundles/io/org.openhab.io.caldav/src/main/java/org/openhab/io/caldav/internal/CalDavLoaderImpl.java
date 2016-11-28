@@ -352,7 +352,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
         }
     }
 
-    private synchronized void createJob(String calendarId, CalendarFile calendarFile,
+    private synchronized void createJob(final String calendarId, final CalendarFile calendarFile,
             final EventContainer eventContainer, final CalDavEvent event, final int index) throws SchedulerException {
         final String triggerStart = JOB_NAME_EVENT_START + "-" + event.getShortName() + "-" + index;
 
