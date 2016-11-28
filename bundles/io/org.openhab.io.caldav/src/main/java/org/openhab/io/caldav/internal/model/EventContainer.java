@@ -19,6 +19,7 @@ import org.openhab.io.caldav.CalDavEvent;
  * Each event can have multiple occurrences.
  *
  * @author Robert Delbrück
+ * @since 1.9.0
  *
  */
 public class EventContainer {
