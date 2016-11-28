@@ -11,7 +11,7 @@ package org.openhab.io.caldav.internal.exception;
 /**
  * Exception, which will be thrown in any OAuth error.
  *
- * @author Robert DelbrÃ¼ck
+ * @author Robert Delbrück
  * @since 1.9.0
  *
  */

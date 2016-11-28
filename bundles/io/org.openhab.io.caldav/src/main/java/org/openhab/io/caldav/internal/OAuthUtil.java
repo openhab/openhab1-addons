@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Utility to handle all OAuth specific stuff.
  *
- * @author Robert DelbrÃ¼ck
+ * @author Robert Delbrück
  * @since 1.9.0
  *
  */

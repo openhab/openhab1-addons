@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Contains runtime data for oauth.
  *
- * @author Robert DelbrÃ¼ck
+ * @author Robert Delbrück
  * @since 1.9.0
  *
  */

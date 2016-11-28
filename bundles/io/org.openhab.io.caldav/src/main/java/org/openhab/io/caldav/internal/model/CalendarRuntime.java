@@ -17,7 +17,7 @@ import org.openhab.io.caldav.internal.CalDavConfig;
 /**
  * Containing all events for a specific calendar and the config for the calendar.
  *
- * @author Robert DelbrÃ¼ck
+ * @author Robert Delbrück
  * @since 1.9.0
  *
  */

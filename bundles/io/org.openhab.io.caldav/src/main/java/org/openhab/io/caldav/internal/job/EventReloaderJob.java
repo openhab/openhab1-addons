@@ -59,6 +59,13 @@ import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 
+/**
+ * Reloads events from the server.
+ *
+ * @author Robert Delbrück
+ * @since 1.9.0
+ *
+ */
 public class EventReloaderJob implements Job {
     private static final String OLD_EVENT_SPLIT_CHAR = "///";
     public static final String KEY_CONFIG = "config";
