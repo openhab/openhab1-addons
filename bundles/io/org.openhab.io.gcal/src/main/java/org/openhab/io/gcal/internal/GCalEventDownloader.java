@@ -291,7 +291,8 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
             String eventTitle = event.getSummary();
 
             if (StringUtils.isNotBlank(eventContent)) {
-                CalendarEventContent cec = parseEventContent(eventContent);
+                CalendarEventContent cec = parseEventContent(eventContent,
+                        eventTitle.startsWith("[PresenceSimulation]"));
 
                 String modifiedByEvent = null;
                 if (calendarCache.containsKey(cec.modifiedByEvent)) {
@@ -335,7 +336,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
      * @param content the set of Start- and End-Commands
      * @return the parsed event content
      */
-    protected CalendarEventContent parseEventContent(String content) {
+    protected CalendarEventContent parseEventContent(String content, boolean presenceSimulation) {
         CalendarEventContent eventContent = new CalendarEventContent();
         String commandContent;
 
@@ -352,7 +353,11 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
             eventContent.startCommands = StringUtils.trimToEmpty(startEndMatcher.group(1));
             eventContent.endCommands = StringUtils.trimToEmpty(startEndMatcher.group(2));
         } else {
-            eventContent.startCommands = StringUtils.trimToEmpty(commandContent);
+            if (presenceSimulation) {
+                eventContent.startCommands = StringUtils.trimToEmpty("[PresenceSimulation]" + "\n" + commandContent);
+            } else {
+                eventContent.startCommands = StringUtils.trimToEmpty(commandContent);
+            }
             logger.debug(
                     "given event content doesn't match regular expression to extract start-, end commands - using whole content as startCommand ({})",
                     commandContent);
