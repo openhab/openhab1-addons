@@ -189,5 +189,6 @@
     <module>org.openhab.binding.mcp23017</module>
     <module>org.openhab.binding.mcp3424</module>
     <module>org.openhab.binding.plclogo</module>
+    <module>org.openhab.binding.hideki</module>
   </modules>
 </project>
