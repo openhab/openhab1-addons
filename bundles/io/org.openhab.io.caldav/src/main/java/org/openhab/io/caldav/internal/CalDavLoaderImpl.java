@@ -27,9 +27,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.util.CompatibilityHints;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.joda.time.DateTimeZone;
 import org.openhab.core.service.AbstractActiveService;
@@ -61,6 +58,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.sardine.Sardine;
+
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.util.CompatibilityHints;
 
 /**
  * Loads all events from the configured calDAV servers. This is done with an
@@ -120,7 +120,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
     }
 
     private void removeAllJobs() throws SchedulerException {
-        if(scheduler!=null) {
+        if (scheduler != null) {
             scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_RELOADER))));
             scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_START))));
             scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_END))));
@@ -186,15 +186,11 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                 } else if (paramKey.equals(PROP_PRELOAD_TIME)) {
                     calDavConfig.setPreloadMinutes(Integer.parseInt(value));
                 } else if (paramKey.equals(PROP_HISTORIC_LOAD_TIME)) {
-                    calDavConfig
-                            .setHistoricLoadMinutes(Integer.parseInt(value));
+                    calDavConfig.setHistoricLoadMinutes(Integer.parseInt(value));
                 } else if (paramKey.equals(PROP_LAST_MODIFIED_TIMESTAMP_VALID)) {
-                    calDavConfig
-                            .setLastModifiedFileTimeStampValid(BooleanUtils.toBoolean(value));
-                } else if (paramKey
-                        .equals(PROP_DISABLE_CERTIFICATE_VERIFICATION)) {
-                    calDavConfig.setDisableCertificateVerification(BooleanUtils
-                            .toBoolean(value));
+                    calDavConfig.setLastModifiedFileTimeStampValid(BooleanUtils.toBoolean(value));
+                } else if (paramKey.equals(PROP_DISABLE_CERTIFICATE_VERIFICATION)) {
+                    calDavConfig.setDisableCertificateVerification(BooleanUtils.toBoolean(value));
                 } else if (paramKey.equals(PROP_CHARSET)) {
                     try {
                         Charset.forName(value);
@@ -323,7 +319,54 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                     }
                 }
             } else {
-                // event is already in map and not updated, ignoring
+                // event is already in map and not updated (eventContainerold and eventContainer have the same
+                // "lastchanged" date) : we need to reschedule possible new events from recurrent events
+                log.debug(
+                        "event is already in map and not updated, we NEED to update eventlist and schedule new events jobs");
+                ArrayList<CalDavEvent> eventsToAdd = new ArrayList<>();
+                for (CalDavEvent event : eventContainer.getEventList()) {
+                    boolean eventAlreadyKnown = false;
+                    for (CalDavEvent oldevent : eventContainerOld.getEventList()) {
+                        if (event.equals(oldevent)) {
+                            eventAlreadyKnown = true;
+                            log.trace("events match");
+                        } else {
+                            log.trace("eventsarenotequal : {} - {} - {} - {} - {}", event.getId(), event.getName(),
+                                    event.getStart(), event.getEnd(), event.getLastChanged());
+                            log.trace("eventsarenotequal : {} - {} - {} - {} - {}", oldevent.getId(),
+                                    oldevent.getName(), oldevent.getStart(), oldevent.getEnd(),
+                                    oldevent.getLastChanged());
+                        }
+                    }
+                    if (!eventAlreadyKnown) {
+                        eventsToAdd.add(event);
+                    }
+                }
+                // add only new events
+                for (CalDavEvent event : eventsToAdd) {
+                    if (event.getEnd().isAfterNow()) {
+                        eventContainerOld.getEventList().add(event);
+                        for (EventNotifier notifier : eventListenerList) {
+                            log.trace("notify listener... {}", notifier);
+                            try {
+                                notifier.eventLoaded(event);
+                            } catch (Exception e) {
+                                log.error("error while invoking listener", e);
+                            }
+                        }
+                        if (createTimer) {
+                            try {
+                                log.trace("creating job for event {} ", event.getShortName());
+                                createJob(eventContainerOld, event, eventContainerOld.getEventList().size() - 1);
+                                // -1 because we already added the event to eventContainerOld
+                            } catch (SchedulerException e) {
+                                log.error("cannot create jobs for event '{}': ", event.getShortName(), e.getMessage());
+                            }
+                        }
+                    }
+                }
+                // update eventcontainer's calculateduntil
+                eventContainerOld.setCalculatedUntil(eventContainer.getCalculatedUntil());
             }
         } else {
             // event is new
@@ -515,13 +558,17 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                             }
                         }
                         if (query.getFilterCategory() != null) {
+                            log.trace("processing filter category");
                             if (calDavEvent.getCategoryList() == null) {
+                                log.trace("not found event category for event {}", calDavEvent.getId());
                                 continue;
                             } else {
                                 if (!calDavEvent.getCategoryList().containsAll(query.getFilterCategory())) {
                                     continue;
                                 }
                             }
+                        } else {
+                            log.trace("not found any filter category");
                         }
                         eventList.add(calDavEvent);
                     }
