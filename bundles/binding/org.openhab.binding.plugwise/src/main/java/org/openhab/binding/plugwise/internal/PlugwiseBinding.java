@@ -156,7 +156,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                 PlugwiseDevice device = createPlugwiseDevice(deviceType, MAC, deviceName);
 
                 if (device != null) {
-                    stick.plugwiseDeviceCache.add(device);
+                    stick.addDevice(device);
                 }
             }
 
@@ -479,7 +479,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                             if (!cp.getMAC().equals(element.getId())) {
                                 // a circleplus has been added/detected and it is not what is in the binding config
                                 PlugwiseDevice device = new Circle(element.getId(), stick, element.getId());
-                                stick.plugwiseDeviceCache.add(device);
+                                stick.addDevice(device);
                                 logger.debug("Plugwise added Circle with MAC address: {}", element.getId());
                             }
                         } else {

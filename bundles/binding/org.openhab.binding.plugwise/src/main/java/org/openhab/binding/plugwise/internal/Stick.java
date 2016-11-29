@@ -15,8 +15,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -111,7 +109,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
 
     // Stick fields
     private boolean initialised = false;
-    protected List<PlugwiseDevice> plugwiseDeviceCache = Collections.synchronizedList(new ArrayList<PlugwiseDevice>());
+    private final PlugwiseDeviceCache plugwiseDeviceCache = new PlugwiseDeviceCache();
     private PlugwiseBinding binding;
     /** default interval for sending messages on the ZigBee network */
     private int interval = 50;
@@ -135,44 +133,24 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
         }
     }
 
-    protected PlugwiseDevice getDevice(String id) {
-        PlugwiseDevice someDevice = getDeviceByMAC(id);
-        if (someDevice == null) {
-            return getDeviceByName(id);
-        } else {
-            return someDevice;
-        }
+    protected void addDevice(PlugwiseDevice device) {
+        plugwiseDeviceCache.add(device);
     }
 
-    protected PlugwiseDevice getDeviceByMAC(String MAC) {
-        for (PlugwiseDevice device : plugwiseDeviceCache) {
-            if (MAC.equals(device.getMAC())) {
-                return device;
-            }
-        }
-        return null;
+    protected PlugwiseDevice getDevice(String id) {
+        return plugwiseDeviceCache.get(id);
+    }
+
+    protected PlugwiseDevice getDeviceByMAC(String mac) {
+        return plugwiseDeviceCache.getByMAC(mac);
     }
 
     protected PlugwiseDevice getDeviceByName(String name) {
-        for (PlugwiseDevice device : plugwiseDeviceCache) {
-            if (name.equals(device.getName())) {
-                return device;
-            }
-        }
-        return null;
+        return plugwiseDeviceCache.getByName(name);
     }
 
-    @SuppressWarnings("unchecked")
     protected <T> List<T> getDevicesByClass(Class<T> deviceClass) {
-
-        List<T> result = new ArrayList<T>();
-        for (PlugwiseDevice device : plugwiseDeviceCache) {
-            if (deviceClass.isAssignableFrom(device.getClass())) {
-                result.add((T) device);
-            }
-        }
-
-        return result;
+        return plugwiseDeviceCache.getByClass(deviceClass);
     }
 
     public String getPort() {
@@ -200,9 +178,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
     private void initialize() throws PlugwiseInitializationException {
 
         // Flush the deviceCache
-        if (this.plugwiseDeviceCache != null) {
-            plugwiseDeviceCache = Collections.synchronizedList(new ArrayList<PlugwiseDevice>());
-        }
+        plugwiseDeviceCache.clear();
 
         // parse ports and if the default port is found, initialized the reader
         Enumeration portList = CommPortIdentifier.getPortIdentifiers();
