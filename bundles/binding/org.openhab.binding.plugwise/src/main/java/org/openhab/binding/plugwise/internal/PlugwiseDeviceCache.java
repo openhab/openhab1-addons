@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Caches all {@link PlugwiseDevice} instances and allows for querying them by mac, name and device class.
  *
  * @author Wouter Born
+ * @since 1.9.0
  */
 public class PlugwiseDeviceCache {
 
