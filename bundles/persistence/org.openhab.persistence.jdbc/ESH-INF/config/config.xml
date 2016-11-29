@@ -48,14 +48,14 @@
             jdbc:sqlite:./testSqlite.db]]></description>
         </parameter>
 
-        <parameter name="user" type="text" required="true">
+        <parameter name="user" type="text" required="false">
             <label>Database User</label>
-            <description><![CDATA[Defines required database user.]]></description>
+            <description><![CDATA[Defines optional database user.]]></description>
         </parameter>
         
-        <parameter name="password" type="text" required="true">
+        <parameter name="password" type="text" required="false">
             <label>Database Password</label>
-            <description><![CDATA[Defines required database password.]]></description>
+            <description><![CDATA[Defines optional database password.]]></description>
         </parameter>
         
         <!--    

@@ -709,6 +709,15 @@
             <Label lang="en">In-Wall Smart Fan Control</Label>
             <ConfigFile>ge/zw4002.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>4953</Type>
+                <Id>3133</Id>
+            </Reference>
+            <Model>ZW6302</Model>
+            <Label lang="en">Portable Smart Motion Sensor</Label>
+            <ConfigFile>ge/zw6302.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0064</Id>
@@ -1004,10 +1013,14 @@
         </Product>
         <Product>
             <Reference>
-                <Type>102</Type>
-                <Id>78</Id>
+                <Type>0102</Type>
+                <Id>0078</Id>
             </Reference>
-            <Model>ZW120-a</Model>
+            <Reference>
+                <Type>0002</Type>
+                <Id>0078</Id>
+            </Reference>
+            <Model>ZW120</Model>
             <Label lang="en">Door/Window sensor Gen5</Label>
             <Label lang="de">Tür-Fenster-Sensor Gen5</Label>
             <ConfigFile>aeon/zw120.xml</ConfigFile>
@@ -1051,7 +1064,7 @@
                 <Type>0202</Type>
                 <Id>0064</Id>
             </Reference>
-            <Model>ZW100-A</Model>
+            <Model>ZW100</Model>
             <Label lang="en">MultiSensor 6</Label>
             <ConfigFile VersionMax="1.6">aeon/zw100-a.xml</ConfigFile>
             <ConfigFile VersionMin="1.7">aeon/zw100-17.xml</ConfigFile>
@@ -2513,6 +2526,10 @@
                 <Type>0001</Type>
                 <Id>0006</Id>
             </Reference>
+            <Reference>
+                <Type>0001</Type>
+                <Id>0015</Id>
+            </Reference>
             <Model>PAN08</Model>
             <Label lang="en">Relay Insert for Blind Control</Label>
             <ConfigFile>philio/pan08.xml</ConfigFile>
@@ -3463,6 +3480,10 @@
         <Product>
             <Reference>
                 <Type>5452</Type>
+                <Id>5431</Id>
+            </Reference>
+            <Reference>
+                <Type>5452</Type>
                 <Id>5433</Id>
             </Reference>
             <Reference>
@@ -3617,6 +3638,10 @@
         <Id>020e</Id>
         <Name>Domitech</Name>
         <Product>
+			<Reference>
+				<Type>4c42</Type>
+				<Id>3134</Id>
+			</Reference>
             <Reference>
                 <Type>4c42</Type>
                 <Id>3135</Id>

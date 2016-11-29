@@ -12,6 +12,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.binding.gpio.gpiobinding">
    <implementation class="org.openhab.binding.gpio.internal.GPIOBinding"/>
    <property name="event.topics" type="String" value="openhab/*"/>
+   <property name="service.pid" type="String" value="org.openhab.gpio"/>
    <service>
       <provide interface="org.osgi.service.event.EventHandler"/>
    </service>

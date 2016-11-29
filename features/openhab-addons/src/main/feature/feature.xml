@@ -187,6 +187,13 @@
     <configfile finalname="${openhab.conf}/services/ecobee.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecobee</configfile>
   </feature>
 
+  <feature name="openhab-binding-ecotouch" description="Waterkotte Ecotouch Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.ecotouch/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/ecotouch.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecotouch</configfile>
+  </feature>
+
   <feature name="openhab-binding-energenie" description="Energenie Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -216,10 +223,11 @@
     <configfile finalname="${openhab.conf}/services/epsonprojector.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/epsonprojector</configfile>
   </feature>
 
-  <feature name="openhab-binding-exec" description="Exec Binding" version="${project.version}">
+  <feature name="openhab-binding-fatekplc" description="Fatek PLC Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.exec/${project.version}</bundle>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.fatekplc/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/fatekplc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/fatekplc</configfile>
   </feature>
 
   <feature name="openhab-binding-freeswitch" description="Freeswitch Binding" version="${project.version}">
@@ -305,6 +313,13 @@
     <feature>openhab-binding-tcp</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.irtrans/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/irtrans.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/irtrans</configfile>
+  </feature>
+  
+  <feature name="openhab-binding-jointspace" description="jointSPACE Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.jointspace/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/jointspace.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jointspace</configfile>
   </feature>
 
   <feature name="openhab-binding-knx" description="KNX Binding" version="${project.version}">
@@ -575,6 +590,14 @@
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.tinkerforge/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/tinkerforge.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/tinkerforge</configfile>
+  </feature>
+
+  <feature name="openhab-binding-upb" description="Universal Powerline Bus Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.upb/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/upb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/upb</configfile>
   </feature>
 
   <feature name="openhab-binding-weather" description="Weather Binding" version="${project.version}">
