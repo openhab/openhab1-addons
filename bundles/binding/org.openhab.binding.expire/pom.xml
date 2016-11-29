@@ -11,7 +11,7 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.expire</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.expire</bundle.namespace>
-		<deb.name>openhab-addon-binding-Expire</deb.name>
+		<deb.name>openhab-addon-binding-expire</deb.name>
 		<deb.description>${project.name}</deb.description>
 	</properties>
 
