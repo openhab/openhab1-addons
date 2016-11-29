@@ -36,6 +36,7 @@ import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
+import com.pi4j.wiringpi.GpioUtil;
 
 /**
  * Implement this class if you are going create an actively polling service like
@@ -48,7 +49,7 @@ public class MCP3424Binding extends AbstractActiveBinding<MCP3424BindingProvider
 
 	private static final Logger logger = LoggerFactory.getLogger(MCP3424Binding.class);
 	
-	private final GpioController gpio = GpioFactory.getInstance();
+	private final GpioController gpio;
 
 	private Map<String, GpioPin> gpioPins = new HashMap<String, GpioPin>();
 
@@ -74,6 +75,10 @@ public class MCP3424Binding extends AbstractActiveBinding<MCP3424BindingProvider
     private int pollingInterval = 50;
 
 	public MCP3424Binding() {
+		// ask for non privileged access (run without root)
+		GpioUtil.enableNonPrivilegedAccess();
+		// now create a controller
+		gpio = GpioFactory.getInstance();
 	}
 
 	/**
