@@ -167,7 +167,7 @@ public class RFXComLighting3Message extends RFXComBaseMessage {
 
         byte[] data = new byte[9];
 
-        data[0] = 0x09;
+        data[0] = (byte)(data.length-1);
         data[1] = RFXComBaseMessage.PacketType.LIGHTING3.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;

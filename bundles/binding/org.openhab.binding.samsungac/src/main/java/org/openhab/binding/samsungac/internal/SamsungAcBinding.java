@@ -28,14 +28,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * Binding listening OpenHAB bus and send commands to Samsung Air Conditioner
  * devices when command is received.
  *
  * @author Stein Tore Tøsse
+ * @author John Cocula added optional port parameter
  * @since 1.6.0
  */
-public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProvider>implements ManagedService {
+public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProvider> implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(SamsungAcBinding.class);
 
@@ -141,7 +141,6 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
                 }
             } catch (Exception e) {
                 logger.warn("Could not send value: '{}' to property:'{}', try {}/5", value, property, i);
-                e.printStackTrace();
             } finally {
                 i++;
             }
@@ -224,6 +223,13 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
 
             if ("host".equals(parts[1])) {
                 host.setIpAddress(value);
+            }
+            if ("port".equals(parts[1])) {
+                try {
+                    host.setPort(Integer.parseInt(value));
+                } catch (NumberFormatException nfe) {
+                    throw new ConfigurationException("port", "Invalid port number specified '" + value + "'", nfe);
+                }
             }
             if ("mac".equals(parts[1])) {
                 host.setMacAddress(value);

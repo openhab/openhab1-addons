@@ -144,10 +144,10 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
         logger.debug("store called for {}", alias);
 
         State state = item.getState();
-        if (item instanceof DimmerItem || item instanceof RollershutterItem) {
-            state = item.getStateAs(PercentType.class);
-        } else if (item instanceof ColorItem) {
+        if (item instanceof ColorItem) {
             state = item.getStateAs(HSBType.class);
+        } else if (item instanceof DimmerItem || item instanceof RollershutterItem) {
+            state = item.getStateAs(PercentType.class);
         }
         MapDBItem mItem = new MapDBItem();
         mItem.setName(alias);
@@ -215,7 +215,7 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
     /**
      * A quartz scheduler job to commit the mapdb transaction frequently. There
      * can be only one instance of a specific job type running at the same time.
-     * 
+     *
      * @author Jens Viebig
      * @since 1.7.0
      */
