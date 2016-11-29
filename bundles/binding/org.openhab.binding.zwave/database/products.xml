@@ -2325,6 +2325,15 @@
         <Name>Danfoss</Name>
         <Product>
             <Reference>
+                <Type>0115</Type>
+                <Id>A010</Id>
+            </Reference>
+            <Model>010101</Model>
+            <Label lang="en">Popp Wireless Thermostatic Valve TRV</Label>
+            <ConfigFile>danfoss/010101.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0005</Type>
                 <Id>0175</Id>
             </Reference>
