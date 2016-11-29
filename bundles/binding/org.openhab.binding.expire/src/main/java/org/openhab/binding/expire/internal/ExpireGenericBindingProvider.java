@@ -9,18 +9,12 @@
 package org.openhab.binding.expire.internal;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.binding.expire.ExpireBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.types.DateTimeType;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.openhab.core.types.UnDefType;
@@ -69,8 +63,7 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
         if (durationAndState.length > 1) {
             // use 2nd parameter as state. defaults to UNDEF
             String stateAsString = durationAndState[1].trim();
-            config.expiredState = TypeParser.parseState(getStatesInOptimalOrderForParsing(item.getAcceptedDataTypes()),
-                    stateAsString);
+            config.expiredState = TypeParser.parseState(item.getAcceptedDataTypes(), stateAsString);
             if (config.expiredState == null) {
                 throw new BindingConfigParseException("The string '" + stateAsString
                         + "' does not represent a valid state for item " + item.getName());
@@ -78,39 +71,6 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
         }
 
         addBindingConfig(item, config);
-    }
-
-    private static final List<Class<? extends State>> OPTIMAL_STATE_ORDER = new ArrayList<>();
-    static {
-        OPTIMAL_STATE_ORDER.add(UnDefType.class);
-        OPTIMAL_STATE_ORDER.add(OnOffType.class);
-        OPTIMAL_STATE_ORDER.add(DecimalType.class);
-        OPTIMAL_STATE_ORDER.add(DateTimeType.class);
-        OPTIMAL_STATE_ORDER.add(StringType.class);
-    }
-
-    /**
-     * Reorders the list of states so that most specific states are at higher position as more generic states.
-     * Example: OnOffState would be before StringState because StringState would accept "ON" or "OFF" but OnOffState is
-     * more specific.
-     *
-     * @param states
-     * @return
-     */
-    protected static List<Class<? extends State>> getStatesInOptimalOrderForParsing(
-            List<Class<? extends State>> states) {
-        List<Class<? extends State>> orderedStates = new ArrayList<>();
-
-        // Add states in optimal Order to the list
-        for (Class<? extends State> state : OPTIMAL_STATE_ORDER) {
-            if (states.remove(state)) {
-                orderedStates.add(state);
-            }
-        }
-        // Add remaining states to the list
-        orderedStates.addAll(states);
-
-        return orderedStates;
     }
 
     protected static Pattern durationPattern = Pattern.compile("(\\d+[hH])?\\s*(\\d+[mM])?\\s*(\\d+[sS])?");
