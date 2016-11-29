@@ -13,6 +13,8 @@
 		<bundle.namespace>org.openhab.binding.expire</bundle.namespace>
 		<deb.name>openhab-addon-binding-expire</deb.name>
 		<deb.description>${project.name}</deb.description>
+		<maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
