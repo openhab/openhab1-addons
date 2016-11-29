@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @author Sebastian Held <sebastian.held@gmx.de>
  * @since 1.5.0
  */
-public class EcoTouchBinding extends AbstractActiveBinding<EcoTouchBindingProvider>implements ManagedService {
+public class EcoTouchBinding extends AbstractActiveBinding<EcoTouchBindingProvider> implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(EcoTouchBinding.class);
 
@@ -104,9 +104,8 @@ public class EcoTouchBinding extends AbstractActiveBinding<EcoTouchBindingProvid
             // inside connector.getValues(tags))
             for (String tag : tags) {
                 try {
-                    int rawvalue = connector.getValue(tag); // raw value from
-                                                            // heat pump (needs
-                                                            // interpretation)
+                    // raw value from heat pump (needs interpretation)
+                    int rawvalue = connector.getValue(tag);
                     rawvalues.put(tag, rawvalue);
                 } catch (Exception e) {
                     // the connector already logged the exception cause

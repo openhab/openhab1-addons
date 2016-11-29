@@ -8,6 +8,8 @@
     <description>The DSMR Binding obtains data from a Dutch smart meter ("Slimme meter" in Dutch) via the P1-port.</description>
     <author>Marcel Volaart</author>
 
+    <service-id>org.openhab.dsmr</service-id>
+
     <config-description>
         <parameter name="port" type="text" required="true">
             <label>Serial port</label>

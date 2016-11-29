@@ -75,20 +75,25 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
     private static final Logger logger = LoggerFactory.getLogger(Stick.class);
 
     /** Plugwise protocol header code (hex) */
-    private final static String PROTOCOL_HEADER = "\u0005\u0005\u0003\u0003";
+    private static final String PROTOCOL_HEADER = "\u0005\u0005\u0003\u0003";
 
+    /** Carriage return */
+    private static final char CR = '\r';
+    /** Line feed */
+    private static final char LF = '\n';
     /** Plugwise protocol trailer code (hex) */
-    private final static String PROTOCOL_TRAILER = "\r\n";
+    private static final String PROTOCOL_TRAILER = new String(new char[] { CR, LF });
 
     /** Matches Plugwise responses into the following groups: protocolHeader command sequence payload CRC */
-    private final static Pattern RESPONSE_PATTERN = Pattern.compile("(.{4})(\\w{4})(\\w{4})(\\w*?)(\\w{4})");
+    private static final Pattern RESPONSE_PATTERN = Pattern.compile("(.{4})(\\w{4})(\\w{4})(\\w*?)(\\w{4})");
 
     // Serial communication fields
     private String port;
     private CommPortIdentifier portId;
     private SerialPort serialPort;
     private WritableByteChannel outputChannel;
-    private ByteBuffer readBuffer;
+    private ByteBuffer readBuffer = ByteBuffer.allocate(maxBufferSize);
+    private int previousByte = -1;
 
     // Queue fields
     private static int maxBufferSize = 1024;
@@ -306,34 +311,23 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                 break;
             case SerialPortEvent.DATA_AVAILABLE:
                 // we get here if data has been received
-                boolean newlineFound = false;
-                if (readBuffer == null) {
-                    readBuffer = ByteBuffer.allocate(maxBufferSize);
-                }
                 try {
                     // read data from serial device
                     while (serialPort.getInputStream().available() > 0) {
-                        int aByte = serialPort.getInputStream().read();
-                        if ((aByte) == 13) {
-                            readBuffer.put((byte) aByte);
-                            int cr = serialPort.getInputStream().read();
-                            readBuffer.put((byte) cr);
-                            newlineFound = true;
-                            break;
-                        }
+                        int currentByte = serialPort.getInputStream().read();
                         // Plugwise sends ASCII data, but for some unknown reason we sometimes get data with unsigned
-                        // byte value >127
-                        // which in itself is very strange. We filter these out for the time being
-                        if (aByte < 128) {
-                            readBuffer.put((byte) aByte);
+                        // byte value >127 which in itself is very strange. We filter these out for the time being
+                        if (currentByte < 128) {
+                            readBuffer.put((byte) currentByte);
+                            if (previousByte == CR && currentByte == LF) {
+                                readBuffer.flip();
+                                parseAndQueue(readBuffer);
+                                readBuffer.clear();
+                                previousByte = -1;
+                            } else {
+                                previousByte = currentByte;
+                            }
                         }
-                    }
-
-                    // process data
-                    if (readBuffer.position() != 0 && newlineFound == true) {
-                        readBuffer.flip();
-                        parseAndQueue(readBuffer);
-                        readBuffer = null;
                     }
                 } catch (IOException e) {
                     logger.debug("Error receiving data on serial port {}: {}", port, e.getMessage());
@@ -434,7 +428,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                 }
             } else {
                 if (!response.contains("APSRequestNodeInfo")) {
-                    logger.error("Plugwise protocol message error: {} ", response);
+                    logger.error("Plugwise protocol message error: {}", response);
                 }
             }
         }
@@ -680,27 +674,28 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                 message.increaseAttempts();
 
                 String messageHexString = message.toHexString();
-                String packedString = PROTOCOL_HEADER + messageHexString + PROTOCOL_TRAILER;
-                ByteBuffer bytebuffer = ByteBuffer.allocate(packedString.length());
-                bytebuffer.put(packedString.getBytes());
+                String packetString = PROTOCOL_HEADER + messageHexString + PROTOCOL_TRAILER;
+                ByteBuffer bytebuffer = ByteBuffer.allocate(packetString.length());
+                bytebuffer.put(packetString.getBytes());
                 bytebuffer.rewind();
 
                 try {
                     logger.debug("Sending: {} as {}", message, messageHexString);
                     stick.outputChannel.write(bytebuffer);
                 } catch (IOException e) {
-                    logger.error("Error writing '{}' to serial port {}: {}", packedString, stick.port, e.getMessage());
+                    logger.error("Error writing '{}' to serial port {}: {}", packetString, stick.port, e.getMessage());
                     return;
                 }
 
-                // Wait for the acknowledgement message
-
-                AcknowledgeMessage ack = stick.acknowledgedQueue.take();
+                // Poll the acknowledgement message for at most 1 second, normally it is received within 75ms
+                AcknowledgeMessage ack = stick.acknowledgedQueue.poll(1, TimeUnit.SECONDS);
                 logger.debug("Removing from acknowledgedQueue: {}", ack);
 
-                if (!ack.isSuccess()) {
+                if (ack == null) {
+                    logger.error("Error sending: No ACK received after 1 second: {}", packetString);
+                } else if (!ack.isSuccess()) {
                     if (ack.isError()) {
-                        logger.error("Error sending: Negative ACK: {}", packedString);
+                        logger.error("Error sending: Negative ACK: {}", packetString);
                     }
                 } else {
                     // update the sent message with the new sequence number

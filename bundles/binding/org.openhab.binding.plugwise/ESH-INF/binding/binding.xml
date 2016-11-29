@@ -7,6 +7,8 @@
     <name>Plugwise Binding</name>
     <description>Monitor and control Plugwise ZigBee devices using the Stick. Supported devices are the Circle, Circle+, Scan, Sense, Stealth and Switch.</description>
 
+    <service-id>org.openhab.plugwise</service-id>
+
     <config-description>
         <parameter name="stick.port" type="text" required="true">
             <label>Stick serial port</label>

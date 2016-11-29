@@ -40,7 +40,7 @@
 
         <Parameter>
             <Index>6</Index>
-            <Label lang="en">Enable & Disable the PIR Sensor</Label>
+            <Label lang="en">Enable &amp; Disable the PIR Sensor</Label>
             <Type>list</Type>
             <Default>1</Default>
             <Minimum>0</Minimum>
@@ -120,7 +120,7 @@
 
         <Parameter>
             <Index>28</Index>
-            <Label lang="en">Enable & Disable the LED indication when PIR is triggered</Label>
+            <Label lang="en">Enable &amp; Disable the LED indication when PIR is triggered</Label>
             <Type>list</Type>
             <Default>1</Default>
             <Minimum>0</Minimum>
