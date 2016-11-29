@@ -103,12 +103,6 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
         return "Expire Refresh Service";
     }
 
-    protected static class ExpireConfig {
-        protected long expireAfterMs;
-
-        protected long nextExpireTs;
-    }
-
     protected static Map<String, Long> nextExpireTsMap = new HashMap<>();
 
     /**
