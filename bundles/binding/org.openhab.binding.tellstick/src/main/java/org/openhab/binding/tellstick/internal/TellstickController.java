@@ -61,7 +61,7 @@ public class TellstickController implements Runnable {
                 try {
                     handleSendEvent(sendEvent.getConfig(), sendEvent.getDev(), sendEvent.getCommand());
                 } catch (TellstickException e) {
-                    logger.error("Failed to send msg to " + sendEvent.getConfig(), e);
+                    logger.error("Failed to send msg to {}, error: {}", sendEvent.getConfig(), e);
                 }
 
             } catch (InterruptedException ie) {
@@ -77,7 +77,7 @@ public class TellstickController implements Runnable {
         long resendInterval = config.getResendInterval();
         for (int i = 0; i < resend; i++) {
             checkLastAndWait(resendInterval);
-            logger.info("Send " + command + " to " + dev + " time=" + i + " conf " + config);
+            logger.info("Send {} to {} time={} conf: {}", command, dev, i, config);
             switch (config.getValueSelector()) {
 
                 case COMMAND:
@@ -159,7 +159,7 @@ public class TellstickController implements Runnable {
 
     private void checkLastAndWait(long resendInterval) {
         while ((System.currentTimeMillis() - lastSend) < resendInterval) {
-            logger.info("Wait for " + resendInterval + " millisec");
+            logger.info("Wait for {} millisec", resendInterval);
             try {
                 Thread.sleep(resendInterval);
             } catch (InterruptedException e) {
