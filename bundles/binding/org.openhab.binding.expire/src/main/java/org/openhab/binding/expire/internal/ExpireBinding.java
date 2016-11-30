@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.openhab.binding.expire.ExpireBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -140,12 +141,7 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void internalReceiveUpdate(final String itemName, final State newState) {
-        logger.trace("Received update {} for item {}", newState, itemName);
+    private void updateExpireTrigger(String itemName, State newState) {
         for (ExpireBindingProvider provider : providers) {
             if (provider.providesBindingFor(itemName)) {
                 State expiredState = provider.getExpiredState(itemName);
@@ -157,11 +153,31 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
                     // New state is not the expired state, so add the trigger to the map
                     long expiresAfterMs = provider.getExpiresAfterMs(itemName);
                     nextExpireTsMap.put(itemName, System.currentTimeMillis() + expiresAfterMs);
-                    logger.debug("Started expire trigger for item {} in {} ms", itemName, expiresAfterMs);
+                    logger.debug("Item {} will expire (to {}) in {} ms", itemName, provider.getExpiredState(itemName),
+                            expiresAfterMs);
                 }
                 break;
             }
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void internalReceiveCommand(final String itemName, final Command newCommand) {
+        logger.trace("Received command {} for item {}", newCommand, itemName);
+        if (newCommand instanceof State) {
+            updateExpireTrigger(itemName, (State) newCommand);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void internalReceiveUpdate(final String itemName, final State newState) {
+        logger.trace("Received update {} for item {}", newState, itemName);
+        updateExpireTrigger(itemName, newState);
+    }
 }
