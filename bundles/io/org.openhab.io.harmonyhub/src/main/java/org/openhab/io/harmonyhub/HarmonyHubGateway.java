@@ -201,7 +201,7 @@ public class HarmonyHubGateway implements ManagedService {
     private void connect(final String qualifier, final HostConfig hostConfig) {
         if (hostConfig.useDiscovery()) {
             setProperlyConfigured(true);
-            final HarmonyHubDiscovery disco = new HarmonyHubDiscovery(DISCO_TIME);
+            final HarmonyHubDiscovery disco = new HarmonyHubDiscovery(DISCO_TIME, hostConfig.getHost());
             disco.addListener(new HarmonyHubDiscoveryListener() {
 
                 @Override
