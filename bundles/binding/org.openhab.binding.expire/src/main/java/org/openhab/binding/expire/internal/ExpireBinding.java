@@ -8,8 +8,8 @@
  */
 package org.openhab.binding.expire.internal;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.openhab.binding.expire.ExpireBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -40,9 +40,17 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
      * The refresh interval is used to check if any of the bound items is expired.
      * One second should be fine for all use cases, so it's final and cannot be configured.
      */
-    private final long refreshInterval = 1000;
+    private static final long refreshInterval = 1000;
 
     public ExpireBinding() {
+    }
+
+    protected void addBindingProvider(ExpireBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(ExpireBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -53,7 +61,6 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
      */
     public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
         this.bundleContext = bundleContext;
-
         setProperlyConfigured(true);
     }
 
@@ -103,29 +110,32 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
         return "Expire Refresh Service";
     }
 
-    protected static Map<String, Long> nextExpireTsMap = new HashMap<>();
+    private Map<String, Long> nextExpireTsMap = new ConcurrentHashMap<String, Long>();
+
+    private boolean isReadyToExpire(String itemName) {
+        Long nextExpireTs = nextExpireTsMap.get(itemName);
+        return (nextExpireTs != null) && (nextExpireTs <= System.currentTimeMillis());
+    }
+
+    private void expire(String itemName, ExpireBindingProvider provider) {
+        nextExpireTsMap.remove(itemName); // disable expire trigger until next update
+        State expiredState = provider.getExpiredState(itemName);
+        logger.debug("Item {} was not updated for {} - updating state to {}", itemName,
+                provider.getExpiresAfterAsText(itemName), expiredState);
+        eventPublisher.postUpdate(itemName, expiredState); // set to specified state or UnDefType.UNDEF
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     protected void execute() {
+        logger.trace("Executing...");
         for (ExpireBindingProvider provider : providers) {
             for (String itemName : provider.getItemNames()) {
-                Long nextExpireTs = nextExpireTsMap.get(itemName);
-                if (nextExpireTs == null) {
-                    // set initial expireTs
-                    long expireAfterMs = provider.getExpiresAfterMs(itemName);
-                    nextExpireTsMap.put(itemName, System.currentTimeMillis() + expireAfterMs);
-                } else if (nextExpireTs <= System.currentTimeMillis()) {
-                    // value expired
-                    State newState = provider.getExpiredState(itemName);
-                    logger.debug("Item {} was not updated for {} - setting state to {}", itemName,
-                            provider.getExpiresAfterAsText(itemName), newState);
-                    eventPublisher.postUpdate(itemName, newState); // set to undefined
-                    nextExpireTsMap.put(itemName, Long.MAX_VALUE); // disable expire trigger until next update
+                if (isReadyToExpire(itemName)) {
+                    expire(itemName, provider);
                 }
-
             }
         }
     }
@@ -134,16 +144,20 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
      * {@inheritDoc}
      */
     @Override
-    protected void internalReceiveUpdate(String itemName, State newState) {
+    protected void internalReceiveUpdate(final String itemName, final State newState) {
+        logger.trace("Received update {} for item {}", newState, itemName);
         for (ExpireBindingProvider provider : providers) {
             if (provider.providesBindingFor(itemName)) {
                 State expiredState = provider.getExpiredState(itemName);
                 if (expiredState.equals(newState)) {
                     // State equals to expired state -> no further action needed
-                    nextExpireTsMap.put(itemName, Long.MAX_VALUE); // disable expire trigger until next update
+                    nextExpireTsMap.remove(itemName); // disable expire trigger until next update
+                    logger.debug("Item {} entered expired state; stopping any future expiration.", itemName);
                 } else {
-                    long expireAfterMs = provider.getExpiresAfterMs(itemName);
-                    nextExpireTsMap.put(itemName, System.currentTimeMillis() + expireAfterMs);
+                    // New state is not the expired state, so add the trigger to the map
+                    long expiresAfterMs = provider.getExpiresAfterMs(itemName);
+                    nextExpireTsMap.put(itemName, System.currentTimeMillis() + expiresAfterMs);
+                    logger.debug("Started expire trigger for item {} in {} ms", itemName, expiresAfterMs);
                 }
                 break;
             }

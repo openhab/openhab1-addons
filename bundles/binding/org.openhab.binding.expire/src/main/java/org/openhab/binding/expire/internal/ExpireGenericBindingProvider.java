@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.expire.internal;
 
-import java.time.Duration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +19,8 @@ import org.openhab.core.types.TypeParser;
 import org.openhab.core.types.UnDefType;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
@@ -28,6 +29,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 1.9.0
  */
 public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider implements ExpireBindingProvider {
+
+    private static final Logger logger = LoggerFactory.getLogger(ExpireGenericBindingProvider.class);
 
     /**
      * {@inheritDoc}
@@ -51,14 +54,14 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
     @Override
     public void processBindingConfiguration(String context, Item item, String bindingConfig)
             throws BindingConfigParseException {
+
         super.processBindingConfiguration(context, item, bindingConfig);
-        ExpireBindingConfig config = new ExpireBindingConfig();
 
         String[] durationAndState = bindingConfig.split(",", 2);
 
-        Duration expiresAfter = parseDuration(durationAndState[0].trim());
-        config.expiresAfterMs = expiresAfter.toMillis();
-        config.expiresAfterAsText = formatDuration(expiresAfter);
+        ExpireBindingConfig config = new ExpireBindingConfig();
+        config.expiresAfterAsText = durationAndState[0].trim();
+        config.expiresAfterMs = parseDuration(durationAndState[0].trim());
 
         if (durationAndState.length > 1) {
             // use 2nd parameter as state. defaults to UNDEF
@@ -70,32 +73,33 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
             }
         }
 
+        logger.debug("Processed binding config for item {}, text='{}', ms={}, state='{}'", item.getName(),
+                config.expiresAfterAsText, config.expiresAfterMs, config.expiredState);
+
         addBindingConfig(item, config);
     }
 
-    protected static Pattern durationPattern = Pattern.compile("(\\d+[hH])?\\s*(\\d+[mM])?\\s*(\\d+[sS])?");
+    protected static Pattern durationPattern = Pattern.compile("(?:([0-9]+)H)?\\s*(?:([0-9]+)M)?\\s*(?:([0-9]+)S)?",
+            Pattern.CASE_INSENSITIVE);
 
-    protected static String formatDuration(Duration duration) {
-        if (duration == null) {
-            return null;
-        }
-        // PT27H46M40S -> 27h 46m 40s
-        return duration.toString().replaceFirst("^PT", "").replaceAll("([HMS])", "$1 ").toLowerCase();
-    }
-
-    protected static Duration parseDuration(String duration) throws BindingConfigParseException {
+    protected static long parseDuration(String duration) throws BindingConfigParseException {
         Matcher m = durationPattern.matcher(duration);
-        if (!m.matches() || (m.group(1) == null && m.group(2) == null) && m.group(3) == null) {
+        if (!m.matches() || (m.group(1) == null && m.group(2) == null && m.group(3) == null)) {
             throw new BindingConfigParseException(
                     "Invalid duration: " + duration + ". Expected something like: '1h 15m 30s'");
         }
-        StringBuilder sb = new StringBuilder("PT");
-        for (int i = 1; i <= 3; i++) {
-            if (m.group(i) != null) {
-                sb.append(m.group(i));
-            }
+
+        long ms = 0;
+        if (m.group(1) != null) {
+            ms += Long.parseLong(m.group(1)) * 60 * 60 * 1000;
         }
-        return Duration.parse(sb);
+        if (m.group(2) != null) {
+            ms += Long.parseLong(m.group(2)) * 60 * 1000;
+        }
+        if (m.group(3) != null) {
+            ms += Long.parseLong(m.group(3)) * 1000;
+        }
+        return ms;
     }
 
     @Override
@@ -123,9 +127,9 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
      * @author Michael Wyraz
      * @since 1.9.0
      */
-    class ExpireBindingConfig implements BindingConfig {
+    private static class ExpireBindingConfig implements BindingConfig {
         /**
-         * Human readable textual representation if duration (e.g. "13h 42m 12s")
+         * Human readable textual representation of duration (e.g. "13h 42m 12s")
          */
         protected String expiresAfterAsText;
 
@@ -139,5 +143,4 @@ public class ExpireGenericBindingProvider extends AbstractGenericBindingProvider
          */
         protected State expiredState = UnDefType.UNDEF;
     }
-
 }
