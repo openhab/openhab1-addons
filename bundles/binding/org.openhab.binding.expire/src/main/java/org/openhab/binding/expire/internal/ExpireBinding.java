@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
  * if not state change occurs within the configured time
  *
  * @author Michael Wyraz
+ * @author John Cocula - minor refactoring
  * @since 1.9.0
  */
 public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> {
@@ -42,6 +43,11 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
      * One second should be fine for all use cases, so it's final and cannot be configured.
      */
     private static final long refreshInterval = 1000;
+
+    /**
+     * Mapping of item names to future timestamps (in milliseconds) to expire them.
+     */
+    private Map<String, Long> itemExpireMap = new ConcurrentHashMap<String, Long>();
 
     public ExpireBinding() {
     }
@@ -93,6 +99,7 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
         this.bundleContext = null;
         // deallocate resources here that are no longer needed and
         // should be reset when activating this binding again
+        itemExpireMap.clear();
     }
 
     /**
@@ -111,19 +118,26 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
         return "Expire Refresh Service";
     }
 
-    private Map<String, Long> nextExpireTsMap = new ConcurrentHashMap<String, Long>();
-
     private boolean isReadyToExpire(String itemName) {
-        Long nextExpireTs = nextExpireTsMap.get(itemName);
+        Long nextExpireTs = itemExpireMap.get(itemName);
         return (nextExpireTs != null) && (nextExpireTs <= System.currentTimeMillis());
     }
 
     private void expire(String itemName, ExpireBindingProvider provider) {
-        nextExpireTsMap.remove(itemName); // disable expire trigger until next update
-        State expiredState = provider.getExpiredState(itemName);
-        logger.debug("Item {} was not updated for {} - updating state to {}", itemName,
-                provider.getExpiresAfterAsText(itemName), expiredState);
-        eventPublisher.postUpdate(itemName, expiredState); // set to specified state or UnDefType.UNDEF
+        itemExpireMap.remove(itemName); // disable expire trigger until next update or command
+
+        Command expireCommand = provider.getExpireCommand(itemName);
+        State expireState = provider.getExpireState(itemName);
+
+        if (expireCommand != null) {
+            logger.debug("Item {} received no command or update for {} - posting command '{}'", itemName,
+                    provider.getDurationString(itemName), expireCommand);
+            eventPublisher.postCommand(itemName, expireCommand);
+        } else if (expireState != null) {
+            logger.debug("Item {} received no command or update for {} - posting state '{}'", itemName,
+                    provider.getDurationString(itemName), expireState);
+            eventPublisher.postUpdate(itemName, expireState);
+        }
     }
 
     /**
@@ -141,20 +155,27 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
         }
     }
 
-    private void updateExpireTrigger(String itemName, State newState) {
+    private void updateExpireTrigger(String itemName, State newState, Command newCommand) {
         for (ExpireBindingProvider provider : providers) {
             if (provider.providesBindingFor(itemName)) {
-                State expiredState = provider.getExpiredState(itemName);
-                if (expiredState.equals(newState)) {
-                    // State equals to expired state -> no further action needed
-                    nextExpireTsMap.remove(itemName); // disable expire trigger until next update
-                    logger.debug("Item {} entered expired state; stopping any future expiration.", itemName);
+
+                Command expireCommand = provider.getExpireCommand(itemName);
+                State expireState = provider.getExpireState(itemName);
+
+                if ((expireCommand != null && expireCommand.equals(newCommand))
+                        || (expireState != null && expireState.equals(newState))) {
+                    // new Command is expired command or new State is expired state -> no further action needed
+                    itemExpireMap.remove(itemName); // disable expire trigger until next update or command
+                    logger.debug("Item {} {} '{}'; stopping any future expiration.", itemName,
+                            expireCommand == null ? "entered expired state" : "received expired command",
+                            expireCommand == null ? expireState : expireCommand);
                 } else {
                     // New state is not the expired state, so add the trigger to the map
-                    long expiresAfterMs = provider.getExpiresAfterMs(itemName);
-                    nextExpireTsMap.put(itemName, System.currentTimeMillis() + expiresAfterMs);
-                    logger.debug("Item {} will expire (to {}) in {} ms", itemName, provider.getExpiredState(itemName),
-                            expiresAfterMs);
+                    long duration = provider.getDuration(itemName);
+                    itemExpireMap.put(itemName, System.currentTimeMillis() + duration);
+                    logger.debug("Item {} will expire (with '{}' {}) in {} ms", itemName,
+                            expireCommand == null ? expireState : expireCommand,
+                            expireCommand == null ? "state" : "command", duration);
                 }
                 break;
             }
@@ -166,10 +187,8 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
      */
     @Override
     protected void internalReceiveCommand(final String itemName, final Command newCommand) {
-        logger.trace("Received command {} for item {}", newCommand, itemName);
-        if (newCommand instanceof State) {
-            updateExpireTrigger(itemName, (State) newCommand);
-        }
+        logger.trace("Received command '{}' for item {}", newCommand, itemName);
+        updateExpireTrigger(itemName, null, newCommand);
     }
 
     /**
@@ -177,7 +196,7 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
      */
     @Override
     protected void internalReceiveUpdate(final String itemName, final State newState) {
-        logger.trace("Received update {} for item {}", newState, itemName);
-        updateExpireTrigger(itemName, newState);
+        logger.trace("Received update '{}' for item {}", newState, itemName);
+        updateExpireTrigger(itemName, newState, null);
     }
 }
