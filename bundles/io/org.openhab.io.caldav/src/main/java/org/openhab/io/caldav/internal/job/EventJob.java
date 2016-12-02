@@ -12,8 +12,9 @@ import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.EventNotifier;
 import org.openhab.io.caldav.internal.CalDavLoaderImpl;
 import org.openhab.io.caldav.internal.EventStorage;
-import org.openhab.io.caldav.internal.EventStorage.CalendarRuntime;
-import org.openhab.io.caldav.internal.EventStorage.EventContainer;
+import org.openhab.io.caldav.internal.model.CalendarFile;
+import org.openhab.io.caldav.internal.model.CalendarRuntime;
+import org.openhab.io.caldav.internal.model.EventContainer;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -24,6 +25,7 @@ public class EventJob implements Job {
     private static final Logger log = LoggerFactory.getLogger(EventJob.class);
 
     public static final String KEY_CONFIG = "config";
+    public static final String KEY_FILENAME = "filename";
     public static final String KEY_EVENT = "event";
     public static final String KEY_REC_INDEX = "rec-index";
     public static final String KEY_EVENT_TRIGGER = "event-trigger";
@@ -33,6 +35,7 @@ public class EventJob implements Job {
         try {
             final String config = context.getJobDetail().getJobDataMap().getString(KEY_CONFIG);
             final String eventId = context.getJobDetail().getJobDataMap().getString(KEY_EVENT);
+            final String filename = context.getJobDetail().getJobDataMap().getString(KEY_FILENAME);
             final int recIndex = context.getJobDetail().getJobDataMap().getInt(KEY_REC_INDEX);
             final EventTrigger eventTrigger = EventTrigger
                     .valueOf(context.getJobDetail().getJobDataMap().getString(KEY_EVENT_TRIGGER));
@@ -41,7 +44,11 @@ public class EventJob implements Job {
             if (calendarRuntime == null) {
                 throw new JobExecutionException("cannot get runtime for config: " + config, false);
             }
-            EventContainer eventContainer = calendarRuntime.getEventMap().get(eventId);
+            CalendarFile calendarFile = calendarRuntime.getCalendarFileByFilename(filename);
+            if (calendarFile == null) {
+                throw new JobExecutionException("cannot get calendar file for filename: " + filename, false);
+            }
+            EventContainer eventContainer = calendarFile.getEventContainerForId(eventId);
             if (eventContainer == null) {
                 throw new JobExecutionException(
                         "cannot get event-container for config: " + config + " and eventId: " + eventId, false);
@@ -69,7 +76,10 @@ public class EventJob implements Job {
 
             if (eventTrigger == EventTrigger.END) {
                 // if event is ended, remove it from the map
-                calendarRuntime.getEventMap().remove(eventContainer.getEventId());
+                calendarFile.removeEvent(eventContainer.getEventId());
+                if (calendarFile.isEmpty()) {
+                    calendarRuntime.removeCalendarFile(filename);
+                }
             }
         } catch (Exception e) {
             log.error("error executing event job", e);

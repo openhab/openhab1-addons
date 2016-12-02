@@ -8,9 +8,13 @@
  */
 package org.openhab.io.caldav.internal;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -28,10 +32,14 @@ import org.openhab.io.caldav.CalDavEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;
 import com.github.sardine.impl.SardineImpl;
 
+import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
+import net.fortuna.ical4j.data.ParserException;
+import net.fortuna.ical4j.data.UnfoldingReader;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
@@ -117,9 +125,11 @@ public final class Util {
             if (config.getUrl().startsWith(HTTP_URL_PREFIX)) {
                 log.error("do not use '{}' if no ssl is used", CalDavLoaderImpl.PROP_DISABLE_CERTIFICATE_VERIFICATION);
             }
-            log.trace("connecting to caldav '{}' with disabled certificate verification (url={}, username={}, password={})", 
+            log.trace(
+                    "connecting to caldav '{}' with disabled certificate verification (url={}, username={}, password={})",
                     config.getKey(), config.getUrl(), config.getUsername(), config.getPassword());
-            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setHostnameVerifier(new AllowAllHostnameVerifier());
+            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create()
+                    .setHostnameVerifier(new AllowAllHostnameVerifier());
             try {
                 httpClientBuilder.setSslcontext(new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
                     @Override
@@ -141,8 +151,8 @@ public final class Util {
                 return new SardineImpl(httpClientBuilder, config.getUsername(), config.getPassword());
             }
         } else {
-            log.trace("connecting to caldav '{}' (url={}, username={}, password={})", 
-                    config.getKey(), config.getUrl(), config.getUsername(), config.getPassword());
+            log.trace("connecting to caldav '{}' (url={}, username={}, password={})", config.getKey(), config.getUrl(),
+                    config.getUsername(), config.getPassword());
             if (StringUtils.isEmpty(config.getUsername()) && StringUtils.isEmpty(config.getPassword())) {
                 log.trace("connecting without credentials for '{}'", config.getKey());
                 return new SardineImpl();
@@ -150,5 +160,25 @@ public final class Util {
                 return new SardineImpl(config.getUsername(), config.getPassword());
             }
         }
+    }
+
+    public static URL createURL(String rootUrl, DavResource resource) throws MalformedURLException {
+        // prepare resource url
+        URL url = new URL(rootUrl);
+        String resourcePath = resource.getPath();
+        String escapedResource = resource.getName().replaceAll("/", "%2F");
+        resourcePath = resourcePath.replace(resource.getName(), escapedResource);
+        url = new URL(url.getProtocol(), url.getHost(), url.getPort(), resourcePath);
+        return url;
+    }
+
+    public static Calendar getCalendarObj(String calendarStr) throws IOException, ParserException {
+        CalendarBuilder builder = new CalendarBuilder();
+        BufferedReader in = new BufferedReader(new StringReader(calendarStr), 50);
+
+        final UnfoldingReader uin = new UnfoldingReader(in, 50, true);
+        Calendar calendar = builder.build(uin);
+        uin.close();
+        return calendar;
     }
 }

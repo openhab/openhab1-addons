@@ -12,6 +12,7 @@ Bundle-Description: This is the CalDav enhancement of the open Home Aut
 Import-Package: com.google.common.collect,
  org.apache.commons.codec,
  org.apache.commons.codec.binary,
+ org.apache.commons.codec.digest,
  org.apache.commons.codec.net,
  org.apache.commons.io,
  org.apache.commons.lang,
@@ -47,7 +48,8 @@ Bundle-ClassPath: .,
  lib/commons-lang3-3.3.2.jar,
  lib/httpclient-4.3.5.jar,
  lib/httpcore-4.3.2.jar,
- lib/ical4j-2.0-beta1.jar,
- lib/sardine-5.6.jar
+ lib/sardine-5.6.jar,
+ lib/json-20160212.jar,
+ lib/ical4j-2.0.0-bugfix-serviceloader-osgi-20160428.120906-1.jar
 Export-Package: org.openhab.io.caldav
 Bundle-ActivationPolicy: lazy

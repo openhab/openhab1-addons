@@ -2,7 +2,8 @@
 <classpath>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
-	<classpathentry exported="true" kind="lib" path="lib/ical4j-2.0-beta1.jar" sourcepath="C:/Users/Robert/.m2/repository/org/mnode/ical4j/ical4j/2.0-beta1/ical4j-2.0-beta1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ical4j-2.0.0-bugfix-serviceloader-osgi-20160428.120906-1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/json-20160212.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/sardine-5.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-lang3-3.3.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/httpclient-4.3.5.jar"/>

@@ -8,21 +8,21 @@
  */
 package org.openhab.io.caldav.internal.job;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
@@ -31,9 +31,11 @@ import org.openhab.io.caldav.EventNotifier;
 import org.openhab.io.caldav.internal.CalDavConfig;
 import org.openhab.io.caldav.internal.CalDavLoaderImpl;
 import org.openhab.io.caldav.internal.EventStorage;
-import org.openhab.io.caldav.internal.EventStorage.CalendarRuntime;
-import org.openhab.io.caldav.internal.EventStorage.EventContainer;
+import org.openhab.io.caldav.internal.OAuthUtil;
 import org.openhab.io.caldav.internal.Util;
+import org.openhab.io.caldav.internal.model.CalendarFile;
+import org.openhab.io.caldav.internal.model.CalendarRuntime;
+import org.openhab.io.caldav.internal.model.EventContainer;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -46,9 +48,7 @@ import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;
 import com.github.sardine.impl.SardineException;
 
-import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
-import net.fortuna.ical4j.data.UnfoldingReader;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
@@ -56,18 +56,25 @@ import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.PeriodList;
 import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 
+/**
+ * Reloads events from the server.
+ *
+ * @author Robert Delbrück
+ * @since 1.9.0
+ *
+ */
 public class EventReloaderJob implements Job {
+    private static final String OLD_EVENT_SPLIT_CHAR = "///";
     public static final String KEY_CONFIG = "config";
     private static final Logger log = LoggerFactory.getLogger(EventReloaderJob.class);
 
     private static Map<String, Boolean> cachedEventsLoaded = new ConcurrentHashMap<String, Boolean>();
 
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    public void execute(final JobExecutionContext context) throws JobExecutionException {
 
         final String config = context.getJobDetail().getJobDataMap().getString(KEY_CONFIG);
         CalendarRuntime eventRuntime = EventStorage.getInstance().getEventCache().get(config);
@@ -83,15 +90,21 @@ public class EventReloaderJob implements Job {
                     final Collection<File> icsFiles = FileUtils.listFiles(fileCalendarKeys, new String[] { "ics" },
                             false);
                     for (File icsFile : icsFiles) {
+                        CalendarFile calendarFile = new CalendarFile(Util.getFilename(icsFile.getAbsolutePath()));
+                        eventRuntime.addCalendarFile(calendarFile);
+                        FileInputStream fis = null;
                         try {
-                            FileInputStream fis = new FileInputStream(icsFile);
-                            loadEvents(Util.getFilename(icsFile.getAbsolutePath()),
-                                    new org.joda.time.DateTime(icsFile.lastModified()), fis, eventRuntime.getConfig(),
-                                    new ArrayList<String>(), true);
+                            fis = new FileInputStream(icsFile);
+                            String calendar = IOUtils.toString(fis);
+                            loadEvents(calendarFile, calendar, eventRuntime.getConfig(), new ArrayList<String>());
                         } catch (IOException e) {
                             log.error("cannot load events for file: " + icsFile, e);
                         } catch (ParserException e) {
                             log.error("cannot load events for file: " + icsFile, e);
+                        } finally {
+                            if (fis != null) {
+                                fis.close();
+                            }
                         }
                     }
                     break;
@@ -106,10 +119,16 @@ public class EventReloaderJob implements Job {
         try {
             log.debug("loading events for config: " + config);
             List<String> oldEventIds = new ArrayList<String>();
-            for (EventContainer eventContainer : eventRuntime.getEventMap().values()) {
-                oldEventIds.add(eventContainer.getFilename());
+            for (CalendarFile calendarFile : eventRuntime.getCalendarFiles()) {
+                for (EventContainer eventContainer : calendarFile.getEventContainerList()) {
+                    oldEventIds.add(calendarFile.getFilename() + OLD_EVENT_SPLIT_CHAR + eventContainer.getEventId());
+                }
             }
-            loadEvents(eventRuntime, oldEventIds);
+            if (eventRuntime.getConfig().isOauth()) {
+                loadEventsOauth(eventRuntime, oldEventIds);
+            } else {
+                loadEvents(eventRuntime, oldEventIds);
+            }
             // stop all events in oldMap
             removeDeletedEvents(config, oldEventIds);
 
@@ -123,22 +142,66 @@ public class EventReloaderJob implements Job {
 
             // printAllEvents();
         } catch (SardineException e) {
-            log.error("error while loading calendar entries: {} ({} - {} )", e.getMessage(), e.getStatusCode(),
-                    e.getResponsePhrase(), e);
+            log.error(String.format("error while loading calendar entries: %s (%s - %s)", e.getMessage(),
+                    e.getStatusCode(), e.getResponsePhrase()), e);
             throw new JobExecutionException("error while loading calendar entries", e, false);
         } catch (Exception e) {
-            log.error("error while loading calendar entries: {}", e.getMessage(), e);
+            log.error(String.format("error while loading calendar entries: %s", e.getMessage()), e);
             throw new JobExecutionException("error while loading calendar entries", e, false);
         }
     }
 
-    private synchronized void removeDeletedEvents(String calendarKey, List<String> oldMap) {
+    private void loadEventsOauth(final CalendarRuntime calendarRuntime, final List<String> oldEventIds) {
+        CalDavConfig config = calendarRuntime.getConfig();
+
+        try {
+            String calendar = OAuthUtil.getCalendars(config.getKey(), config.getUsername(), config.getPassword(),
+                    config.getUrl());
+
+            String newUid = DigestUtils.shaHex(calendar);
+            String filename = "oauth";
+            CalendarFile calendarFile = calendarRuntime.getCalendarFileByFilename(filename);
+            if (calendarFile != null) {
+                // if (calendarFile.toBeRead(newUid)) {
+                // the same calendar as before, nothing changed
+                this.loadEvents(calendarFile, calendar, config, oldEventIds);
+                // } else {
+                // this.removeOldIdsForFilename(oldEventIds, filename);
+                // }
+            } else {
+                calendarFile = new CalendarFile(filename);
+                calendarRuntime.addCalendarFile(calendarFile);
+                this.loadEvents(calendarFile, calendar, config, oldEventIds);
+            }
+            calendarFile.setLastGenUID(newUid);
+        } catch (Exception e) {
+            log.error("error loading calendar entries", e);
+        }
+    }
+
+    private void removeOldIdsForFilename(final List<String> oldEventIds, final String filename) {
+        for (String oldId : new ArrayList<>(oldEventIds)) {
+            if (oldId.startsWith(filename + OLD_EVENT_SPLIT_CHAR)) {
+                oldEventIds.remove(oldId);
+            }
+        }
+    }
+
+    private synchronized void removeDeletedEvents(final String calendarKey, final List<String> oldMap) {
         final CalendarRuntime eventRuntime = EventStorage.getInstance().getEventCache().get(calendarKey);
 
-        for (String filename : oldMap) {
-            EventContainer eventContainer = eventRuntime.getEventContainerByFilename(filename);
+        for (String filenameEventId : oldMap) {
+            String[] split = filenameEventId.split(OLD_EVENT_SPLIT_CHAR);
+            String filename = split[0];
+            String eventId = split[1];
+            CalendarFile calendarFile = eventRuntime.getCalendarFileByFilename(filename);
+            if (calendarFile == null) {
+                log.error("cannot find calendar file for filename: {}", filename);
+                continue;
+            }
+            EventContainer eventContainer = calendarFile.getEventContainerForId(eventId);
             if (eventContainer == null) {
-                log.error("cannot find event container for filename: {}", filename);
+                log.error("cannot find event container for event id: {}", eventId);
                 continue;
             }
 
@@ -171,24 +234,19 @@ public class EventReloaderJob implements Job {
                 }
             }
 
-            ConcurrentHashMap<String, EventContainer> eventContainerMap = eventRuntime.getEventMap();
-            if (eventContainer != null) {
-                this.removeFromDisk(eventContainer);
-
-                log.debug("remove deleted event: {}", eventContainer.getEventId());
-                eventContainerMap.remove(eventContainer.getEventId());
+            calendarFile.removeEvent(eventId);
+            if (calendarFile.isEmpty()) {
+                Util.getCacheFile(eventRuntime.getConfig().getKey(), filename).delete();
+                eventRuntime.removeCalendarFile(filename);
             }
         }
-    }
-
-    private void removeFromDisk(EventContainer eventContainer) {
-        Util.getCacheFile(eventContainer.getCalendarId(), eventContainer.getFilename()).delete();
     }
 
     /**
      * all events which are available must be removed from the oldEventIds list
      *
      * @param calendarRuntime
+     * @param oldEventIds
      * @param oldEventIds
      * @throws IOException
      * @throws ParserException
@@ -209,57 +267,54 @@ public class EventReloaderJob implements Job {
                     continue;
                 }
 
-                oldEventIds.remove(filename);
+                URL url = Util.createURL(config.getUrl(), resource);
 
                 // must not be loaded
-                EventContainer eventContainer = calendarRuntime.getEventContainerByFilename(filename);
-                final org.joda.time.DateTime lastResourceChangeFS = new org.joda.time.DateTime(resource.getModified());
+                CalendarFile calendarFile = calendarRuntime.getCalendarFileByFilename(filename);
+                final org.joda.time.DateTime lastResourceChange = new org.joda.time.DateTime(resource.getModified());
 
-                log.trace("eventContainer found: {}", eventContainer != null);
-                log.trace("last resource modification: {}", lastResourceChangeFS);
-                log.trace("last change of already loaded event: {}",
-                        eventContainer != null ? eventContainer.getLastChanged() : null);
-                if (config.isLastModifiedFileTimeStampValid()) {
-                    if (eventContainer != null && !lastResourceChangeFS.isAfter(eventContainer.getLastChanged())) {
-                        // check if some timers or single (from repeating events) have
-                        // to be created
-                        if (eventContainer.getCalculatedUntil() != null && eventContainer.getCalculatedUntil()
-                                .isAfter(org.joda.time.DateTime.now().plusMinutes(config.getReloadMinutes()))) {
-                            // the event is calculated as long as the next reload
-                            // interval can handle this
-                            log.trace("skipping resource {}, not changed (calculated until: {})", resource.getName(),
-                                    eventContainer.getCalculatedUntil());
-                            continue;
-                        }
+                log.trace("calendarFile found: {}", calendarFile != null);
+                log.trace("last resource modification: {}", lastResourceChange);
 
-                        if (eventContainer.isHistoricEvent()) {
-                            // no more upcoming events, do nothing
-                            log.trace("skipping resource {}, not changed (historic)", resource.getName());
-                            continue;
-                        }
+                if (calendarFile != null) {
+                    // calendarFile does already exist, update it
+                    log.trace("last change of already loaded event: {}", calendarFile.getLastResourceChange());
 
-                        File icsFile = Util.getCacheFile(config.getKey(), filename);
-                        if (icsFile != null && icsFile.exists()) {
-                            FileInputStream fis = new FileInputStream(icsFile);
-                            this.loadEvents(filename, lastResourceChangeFS, fis, config, oldEventIds, false);
-                            fis.close();
-                            continue;
+                    if (config.isLastModifiedFileTimeStampValid()) {
+                        // timestamp of last change is always correct
+                        if (lastResourceChange.isAfter(calendarFile.getLastResourceChange())) {
+                            // file has been updated
+                            log.debug("loading resource: {}", resource);
+                            String calendarStr = IOUtils.toString(sardine.get(url.toString().replaceAll(" ", "%20")),
+                                    config.getCharset());
+                            this.loadEvents(calendarFile, calendarStr, config, oldEventIds);
+                        } else {
+                            // no change
+                            removeOldIdsForFilename(oldEventIds, filename);
                         }
+                    } else {
+                        // last update timestamp is not always valid
+                        String calendarStr = IOUtils.toString(sardine.get(url.toString().replaceAll(" ", "%20")),
+                                config.getCharset());
+                        String digest = DigestUtils.shaHex(calendarStr);
+                        if (calendarFile.toBeRead(digest)) {
+                            log.debug("loading resource: {}", resource);
+                            this.loadEvents(calendarFile, calendarStr, config, oldEventIds);
+                        }
+                        calendarFile.setLastGenUID(digest);
                     }
+                } else {
+                    // file is completely new
+                    log.debug("loading resource: {}", resource);
+                    String calendarStr = IOUtils.toString(sardine.get(url.toString().replaceAll(" ", "%20")),
+                            config.getCharset());
+                    calendarFile = new CalendarFile(filename);
+                    calendarRuntime.addCalendarFile(calendarFile);
+                    this.loadEvents(calendarFile, calendarStr, config, oldEventIds);
                 }
 
-                log.debug("loading resource: {}", resource);
+                calendarFile.setLastResourceChange(lastResourceChange);
 
-                // prepare resource url
-                URL url = new URL(config.getUrl());
-                String resourcePath = resource.getPath();
-                String escapedResource = resource.getName().replaceAll("/", "%2F");
-                resourcePath = resourcePath.replace(resource.getName(), escapedResource);
-                url = new URL(url.getProtocol(), url.getHost(), url.getPort(), resourcePath);
-
-                InputStream inputStream = sardine.get(url.toString().replaceAll(" ", "%20"));
-
-                this.loadEvents(filename, lastResourceChangeFS, inputStream, config, oldEventIds, false);
             } catch (ParserException e) {
                 log.error("error parsing ics file: " + filename, e);
             } catch (SardineException e) {
@@ -268,117 +323,105 @@ public class EventReloaderJob implements Job {
         }
     }
 
-    public void loadEvents(String filename, org.joda.time.DateTime lastResourceChangeFS, final InputStream inputStream,
-            final CalDavConfig config, final List<String> oldEventIds, boolean readFromFile)
-            throws IOException, ParserException {
-        CalendarBuilder builder = new CalendarBuilder();
-        InputStreamReader is = new InputStreamReader(inputStream, config.getCharset());
-        BufferedReader in = new BufferedReader(is, 50);
+    private void loadEvents(final CalendarFile calendarFile, final String calendarStr, final CalDavConfig config,
+            final List<String> oldEventIds) throws IOException, ParserException {
+        Calendar calendar = Util.getCalendarObj(calendarStr);
 
-        final UnfoldingReader uin = new UnfoldingReader(in, 50, true);
-        Calendar calendar = builder.build(uin);
-        uin.close();
-        // log.trace("calendar: {}", calendar);
-
-        EventContainer eventContainer = new EventContainer(config.getKey());
-        eventContainer.setFilename(filename);
-        eventContainer.setLastChanged(lastResourceChangeFS);
+        Util.storeToDisk(config.getKey(), calendarFile.getFilename(), calendar);
 
         org.joda.time.DateTime loadFrom = org.joda.time.DateTime.now().minusMinutes(config.getHistoricLoadMinutes());
         org.joda.time.DateTime loadTo = org.joda.time.DateTime.now().plusMinutes(config.getPreloadMinutes());
+        calendarFile.setCalculatedUntil(loadTo);
 
         final ComponentList<CalendarComponent> vEventComponents = calendar.getComponents(Component.VEVENT);
-        if (vEventComponents.size() == 0) {
-            // no events inside
-            if (!readFromFile) {
-                Util.storeToDisk(config.getKey(), filename, calendar);
-            }
-            return;
-        }
-        org.joda.time.DateTime lastModifedVEventOverAll = null;
         for (CalendarComponent comp : vEventComponents) {
             VEvent vEvent = (VEvent) comp;
-            log.trace("loading event: " + vEvent.getUid().getValue() + ":" + vEvent.getSummary().getValue());
-            // fallback, because 'LastModified' in VEvent is optional
-            org.joda.time.DateTime lastModifedVEvent = lastResourceChangeFS;
+            String eventId = vEvent.getUid().getValue();
+            String eventName = "";
+            if (vEvent.getSummary() != null) {
+                eventName = vEvent.getSummary().getValue();
+            }
+            log.trace("loading event: " + eventId + ":" + eventName);
+
+            // 'LastModified' in VEvent is optional
+            org.joda.time.DateTime eventLastModified = null;
             if (vEvent.getLastModified() != null) {
-                lastModifedVEvent = new org.joda.time.DateTime(vEvent.getLastModified().getDateTime());
+                eventLastModified = new org.joda.time.DateTime(vEvent.getLastModified().getDateTime());
             }
 
-            if (!config.isLastModifiedFileTimeStampValid()) {
-                if (lastModifedVEventOverAll == null || lastModifedVEvent.isAfter(lastModifedVEventOverAll)) {
-                    lastModifedVEventOverAll = lastModifedVEvent;
-                }
-                if (eventContainer != null && !lastModifedVEvent.isBefore(eventContainer.getLastChanged())) {
-                    // check if some timers or single (from repeating events) have
-                    // to be created
-                    if (eventContainer.getCalculatedUntil() != null && vEventComponents.size() == 1
-                            && eventContainer.getCalculatedUntil()
-                                    .isAfter(org.joda.time.DateTime.now().plusMinutes(config.getReloadMinutes()))) {
-                        // the event is calculated as long as the next reload
-                        // interval can handle this
-                        log.trace("skipping resource processing {}, not changed", filename);
-                        continue;
-                    }
+            oldEventIds.remove(calendarFile.getFilename() + OLD_EVENT_SPLIT_CHAR + eventId);
 
-                    if (eventContainer.isHistoricEvent()) {
-                        // no more upcoming events, do nothing
-                        log.trace("skipping resource processing {}, not changed", filename);
-                        continue;
-                    }
-                }
+            EventContainer eventContainer = calendarFile.getEventContainerForId(eventId);
+
+            if (eventContainer != null && eventLastModified != null
+                    && eventLastModified.isAfter(eventContainer.getLastChanged())) {
+                // event has been loaded before and last modification is newer
+
+            } else if (eventContainer == null) {
+                // event is new
+
+            } else if (eventContainer != null && eventLastModified == null) {
+                // event has been loaded before, but the last modification date is not set
+
+            } else {
+                log.trace("skipping resource processing {}, not changed", eventId);
+                continue;
             }
+
+            // create always a new event if it modified
+            eventContainer = new EventContainer(eventId, eventLastModified, loadTo);
 
             Period period = new Period(new DateTime(loadFrom.toDate()), new DateTime(loadTo.toDate()));
             PeriodList periods = vEvent.calculateRecurrenceSet(period);
             periods = periods.normalise();
 
-            String eventId = vEvent.getUid().getValue();
-            final String eventName = vEvent.getSummary().getValue();
-
-            // no more upcoming events
-            if (periods.size() > 0) {
-                if (vEvent.getConsumedTime(new net.fortuna.ical4j.model.Date(),
-                        new net.fortuna.ical4j.model.Date(org.joda.time.DateTime.now().plusYears(10).getMillis()))
-                        .size() == 0) {
-                    log.trace("event will never be occur (historic): {}", eventName);
-                    eventContainer.setHistoricEvent(true);
-                }
+            if (isHistoric(vEvent, periods)) {
+                log.trace("event will never be occur (historic): {}", eventName);
+                eventContainer.setHistoricEvent(true);
             }
 
-            // expecting this is for every vEvent inside a calendar equals
-            eventContainer.setEventId(eventId);
-
-            eventContainer.setCalculatedUntil(loadTo);
+            eventContainer.setLastChanged(eventLastModified);
 
             for (Period p : periods) {
-                org.joda.time.DateTime start = getDateTime("start", p.getStart(), p.getRangeStart());
-                org.joda.time.DateTime end = getDateTime("end", p.getEnd(), p.getRangeEnd());
-
-                CalDavEvent event = new CalDavEvent(eventName, vEvent.getUid().getValue(), config.getKey(), start, end);
-                event.setLastChanged(lastModifedVEvent);
-                if (vEvent.getLocation() != null) {
-                    event.setLocation(vEvent.getLocation().getValue());
-                }
-                if (vEvent.getDescription() != null) {
-                    event.setContent(vEvent.getDescription().getValue());
-                }
-                event.getCategoryList().addAll(readCategory(vEvent));
-                event.setFilename(filename);
-                log.trace("adding event: " + event.getShortName());
+                CalDavEvent event = createEvent(calendarFile.getFilename(), config, vEvent, eventLastModified,
+                        eventName, p);
                 eventContainer.getEventList().add(event);
+            }
 
+            CalDavLoaderImpl.instance.addEventToMap(config.getKey(), calendarFile, eventContainer, true);
+        }
+    }
+
+    private boolean isHistoric(final VEvent vEvent, final PeriodList periods) {
+        // no more upcoming events
+        if (periods.size() > 0) {
+            if (vEvent
+                    .getConsumedTime(new net.fortuna.ical4j.model.Date(),
+                            new net.fortuna.ical4j.model.Date(org.joda.time.DateTime.now().plusYears(10).getMillis()))
+                    .size() == 0) {
+                return true;
             }
         }
-        if (lastModifedVEventOverAll != null && !config.isLastModifiedFileTimeStampValid()) {
-            eventContainer.setLastChanged(lastModifedVEventOverAll);
+        return false;
+    }
+
+    private CalDavEvent createEvent(final String filename, final CalDavConfig config, final VEvent vEvent,
+            final org.joda.time.DateTime lastModifedVEvent, final String eventName, final Period p) {
+        org.joda.time.DateTime start = getDateTime("start", p.getStart(), p.getRangeStart());
+        org.joda.time.DateTime end = getDateTime("end", p.getEnd(), p.getRangeEnd());
+
+        CalDavEvent event = new CalDavEvent(eventName, vEvent.getUid().getValue(), config.getKey(), start, end);
+        event.setLastChanged(lastModifedVEvent);
+        if (vEvent.getLocation() != null) {
+            event.setLocation(vEvent.getLocation().getValue());
         }
-        // if (!eventContainer.getEventList().isEmpty()) {
-        CalDavLoaderImpl.instance.addEventToMap(eventContainer, true);
-        if (!readFromFile) {
-            Util.storeToDisk(config.getKey(), filename, calendar);
+        if (vEvent.getDescription() != null) {
+            event.setContent(vEvent.getDescription().getValue());
         }
-        // }
+        event.getCategoryList().addAll(readCategory(vEvent));
+        event.setFilename(filename);
+        log.trace("adding event: " + event.getShortName());
+        return event;
     }
 
     /**
@@ -387,28 +430,20 @@ public class EventReloaderJob implements Job {
      * @param vEvent
      * @return
      */
-    private List<String> readCategory(VEvent vEvent) {
-        PropertyList propertyCategoryList = vEvent.getProperties(Property.CATEGORIES);
-        ArrayList<String> splittedCategoriesToReturn = new ArrayList<String>();
-        if (propertyCategoryList != null) {
-            for (int categoriesLineNum = 0; categoriesLineNum < propertyCategoryList.size(); categoriesLineNum++) {
-                Property propertyCategory = propertyCategoryList.get(categoriesLineNum);
-                String categories = propertyCategory.getValue();
-                if (categories != null) {
-                    String[] categoriesSplit = StringUtils.split(categories, ",");
-                    for (String category : categoriesSplit) {
-                        if (!splittedCategoriesToReturn.contains(category)) {
-                            splittedCategoriesToReturn.add(category);
-                        }
-                    }
-                }
+    private List<String> readCategory(final VEvent vEvent) {
+        Property propertyCategory = vEvent.getProperty(Property.CATEGORIES);
+        if (propertyCategory != null) {
+            String categories = propertyCategory.getValue();
+            if (categories != null) {
+                String[] categoriesSplit = StringUtils.split(categories, ",");
+                return Arrays.asList(categoriesSplit);
             }
-        }
 
-        return splittedCategoriesToReturn;
+        }
+        return new ArrayList<String>();
     }
 
-    private org.joda.time.DateTime getDateTime(String dateType, DateTime date, Date rangeDate) {
+    private org.joda.time.DateTime getDateTime(final String dateType, final DateTime date, final Date rangeDate) {
         org.joda.time.DateTime start;
         if (date.getTimeZone() == null) {
             if (date.isUtc()) {
