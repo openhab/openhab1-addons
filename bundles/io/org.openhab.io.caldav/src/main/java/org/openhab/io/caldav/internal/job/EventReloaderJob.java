@@ -123,12 +123,12 @@ public class EventReloaderJob implements Job {
                         eventContainer.getLastChanged(), eventContainer.isHistoricEvent());
 
                 if (log.isDebugEnabled()) {
-                    eventContainer.getEventList().forEach(elem -> {
-                        log.debug("old eventlist contient l'evenement : {} -- deb : {} -- fin : {} -- latschang {}",
+                    for (int i = 0; i < eventContainer.getEventList().size(); i++) {
+                        CalDavEvent elem = eventContainer.getEventList().get(i);
+                        log.debug("old eventlist contient l'evenement : {} -- deb : {} -- fin : {} -- lastchang {}",
                                 elem.getName(), elem.getStart(), elem.getEnd(), elem.getLastChanged());
-                    });
+                    }
                 }
-
             }
 
             loadEvents(eventRuntime, oldEventIds);
