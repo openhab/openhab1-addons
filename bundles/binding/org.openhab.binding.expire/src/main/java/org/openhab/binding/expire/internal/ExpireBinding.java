@@ -155,7 +155,12 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
         }
     }
 
-    private void updateExpireTrigger(String itemName, State newState, Command newCommand) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void internalReceiveCommand(final String itemName, final Command newCommand) {
+        logger.trace("Received command '{}' for item {}", newCommand, itemName);
         for (ExpireBindingProvider provider : providers) {
             if (provider.providesBindingFor(itemName)) {
 
@@ -163,14 +168,13 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
                 State expireState = provider.getExpireState(itemName);
 
                 if ((expireCommand != null && expireCommand.equals(newCommand))
-                        || (expireState != null && expireState.equals(newState))) {
-                    // new Command is expired command or new State is expired state -> no further action needed
-                    itemExpireMap.remove(itemName); // disable expire trigger until next update or command
-                    logger.debug("Item {} {} '{}'; stopping any future expiration.", itemName,
-                            expireCommand == null ? "entered expired state" : "received expired command",
-                            expireCommand == null ? expireState : expireCommand);
+                        || (expireState != null && expireState.equals(newCommand))) {
+                    // New command is expired command or state -> no further action needed
+                    itemExpireMap.remove(itemName); // remove expire trigger until next update or command
+                    logger.debug("Item {} received command '{}'; stopping any future expiration.", itemName,
+                            newCommand);
                 } else {
-                    // New state is not the expired state, so add the trigger to the map
+                    // New command is not the expired command or state, so add the trigger to the map
                     long duration = provider.getDuration(itemName);
                     itemExpireMap.put(itemName, System.currentTimeMillis() + duration);
                     logger.debug("Item {} will expire (with '{}' {}) in {} ms", itemName,
@@ -186,17 +190,29 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
      * {@inheritDoc}
      */
     @Override
-    protected void internalReceiveCommand(final String itemName, final Command newCommand) {
-        logger.trace("Received command '{}' for item {}", newCommand, itemName);
-        updateExpireTrigger(itemName, null, newCommand);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     protected void internalReceiveUpdate(final String itemName, final State newState) {
         logger.trace("Received update '{}' for item {}", newState, itemName);
-        updateExpireTrigger(itemName, newState, null);
+        for (ExpireBindingProvider provider : providers) {
+            if (provider.providesBindingFor(itemName)) {
+
+                Command expireCommand = provider.getExpireCommand(itemName);
+                State expireState = provider.getExpireState(itemName);
+
+                if ((expireCommand != null && expireCommand.equals(newState))
+                        || (expireState != null && expireState.equals(newState))) {
+                    // New state is expired command or state -> no further action needed
+                    itemExpireMap.remove(itemName); // remove expire trigger until next update or command
+                    logger.debug("Item {} received update '{}'; stopping any future expiration.", itemName, newState);
+                } else {
+                    // New state is not the expired command or state, so add the trigger to the map
+                    long duration = provider.getDuration(itemName);
+                    itemExpireMap.put(itemName, System.currentTimeMillis() + duration);
+                    logger.debug("Item {} will expire (with '{}' {}) in {} ms", itemName,
+                            expireCommand == null ? expireState : expireCommand,
+                            expireCommand == null ? "state" : "command", duration);
+                }
+                break;
+            }
+        }
     }
 }
