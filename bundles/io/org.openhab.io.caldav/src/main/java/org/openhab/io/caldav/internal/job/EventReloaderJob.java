@@ -60,7 +60,6 @@ import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.PeriodList;
 import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 
@@ -116,16 +115,18 @@ public class EventReloaderJob implements Job {
             log.debug("loading events for config: " + config);
             List<String> oldEventIds = new ArrayList<String>();
             for (EventContainer eventContainer : eventRuntime.getEventMap().values()) {
-                oldEventIds.add(eventContainer.getFilename()); // id ou filename ??? sale non ?
+                oldEventIds.add(eventContainer.getFilename());
                 log.debug(
                         "old eventcontainer -- id : {} -- filename : {} -- calcuntil : {} -- lastchanged : {} -- ishistoric : {}",
                         eventContainer.getEventId(), eventContainer.getFilename(), eventContainer.getCalculatedUntil(),
                         eventContainer.getLastChanged(), eventContainer.isHistoricEvent());
 
-                eventContainer.getEventList().forEach(elem -> {
-                    log.debug("old eventlist contient l'evenement : {} -- deb : {} -- fin : {} -- latschang {}",
-                            elem.getName(), elem.getStart(), elem.getEnd(), elem.getLastChanged());
-                });
+                if (log.isDebugEnabled()) {
+                    eventContainer.getEventList().forEach(elem -> {
+                        log.debug("old eventlist contient l'evenement : {} -- deb : {} -- fin : {} -- latschang {}",
+                                elem.getName(), elem.getStart(), elem.getEnd(), elem.getLastChanged());
+                    });
+                }
 
             }
 
@@ -143,7 +144,7 @@ public class EventReloaderJob implements Job {
 
             // printAllEvents();
 
-            // afficher tous les jobs schédulés :
+            // print All scheduled jobs :
             log.debug("jobs scheduled : ");
             Scheduler scheduler = CalDavLoaderImpl.instance.getScheduler();
             for (String groupName : CalDavLoaderImpl.instance.getScheduler().getJobGroupNames()) {
@@ -152,39 +153,29 @@ public class EventReloaderJob implements Job {
 
                     String jobName = jobKey.getName();
                     String jobGroup = jobKey.getGroup();
-                    // JobDataMap jobDataMap = scheduler.getJobDetail(jobKey).getJobDataMap();
 
                     // get job's trigger
                     List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
                     Date nextFireTime = triggers.get(0).getNextFireTime();
 
-                    log.debug("[job] : {} - [groupName] : {} - {}", jobName, jobGroup, nextFireTime
-                    // ,jobDataMap.getString("event")
-                    );
+                    log.debug("[job] : {} - [groupName] : {} - {}", jobName, jobGroup, nextFireTime);
 
                 }
 
             }
 
         } catch (SardineException e) {
-            log.error(
-                    "error while loading calendar entries: " + e.getMessage() + " (" + e.getStatusCode() + " - " + e.getResponsePhrase() + ")",
-                    e);
-            throw new JobExecutionException(
-                    "error while loading calendar entries", e, false);
+            log.error("error while loading calendar entries: " + e.getMessage() + " (" + e.getStatusCode() + " - "
+                    + e.getResponsePhrase() + ")", e);
+            throw new JobExecutionException("error while loading calendar entries", e, false);
         } catch (Exception e) {
-            log.error(
-                    "error while loading calendar entries: " + e.getMessage(),
-                    e);
-            throw new JobExecutionException(
-                    "error while loading calendar entries", e, false);
+            log.error("error while loading calendar entries: " + e.getMessage(), e);
+            throw new JobExecutionException("error while loading calendar entries", e, false);
         }
     }
 
-    private synchronized void removeDeletedEvents(String calendarKey,
-            List<String> oldMap) {
-        final CalendarRuntime eventRuntime = EventStorage.getInstance()
-                .getEventCache().get(calendarKey);
+    private synchronized void removeDeletedEvents(String calendarKey, List<String> oldMap) {
+        final CalendarRuntime eventRuntime = EventStorage.getInstance().getEventCache().get(calendarKey);
 
         for (String filename : oldMap) {
             EventContainer eventContainer = eventRuntime.getEventContainerByFilename(filename);
@@ -238,7 +229,7 @@ public class EventReloaderJob implements Job {
 
     /**
      * all events which are available must be removed from the oldEventIds list
-     * 
+     *
      * @param calendarRuntime
      * @param oldEventIds
      * @throws IOException
@@ -272,16 +263,13 @@ public class EventReloaderJob implements Job {
                 oldEventIds.removeAll(Arrays.asList(filename));
 
                 // must not be loaded
-                EventContainer eventContainer = calendarRuntime
-                        .getEventContainerByFilename(filename);
-                final org.joda.time.DateTime lastResourceChangeFS = new org.joda.time.DateTime(
-                        resource.getModified());
-    
+                EventContainer eventContainer = calendarRuntime.getEventContainerByFilename(filename);
+                final org.joda.time.DateTime lastResourceChangeFS = new org.joda.time.DateTime(resource.getModified());
+
                 log.trace("eventContainer found: {}", eventContainer != null);
                 log.trace("last resource modification: {}", lastResourceChangeFS);
                 log.trace("last change of already loaded event: {}",
-                        eventContainer != null ? eventContainer.getLastChanged()
-                                : null);
+                        eventContainer != null ? eventContainer.getLastChanged() : null);
                 if (config.isLastModifiedFileTimeStampValid()) {
                     if (eventContainer != null && !lastResourceChangeFS.isAfter(eventContainer.getLastChanged())) {
                         // check if some timers or single (from repeating events) have
@@ -290,8 +278,8 @@ public class EventReloaderJob implements Job {
                                 .isAfter(org.joda.time.DateTime.now().plusMinutes(config.getReloadMinutes()))) {
                             // the event is calculated as long as the next reload
                             // interval can handle this
-                            log.trace("skipping resource {}, not changed (calculated until: {})",
-                                    resource.getName(), eventContainer.getCalculatedUntil());
+                            log.trace("skipping resource {}, not changed (calculated until: {})", resource.getName(),
+                                    eventContainer.getCalculatedUntil());
                             continue;
                         }
 
@@ -464,7 +452,7 @@ public class EventReloaderJob implements Job {
                 String[] categoriesSplit = StringUtils.split(categories, ",");
                 return Arrays.asList(categoriesSplit);
             }
-            
+
         }
         return new ArrayList<String>();
     }
