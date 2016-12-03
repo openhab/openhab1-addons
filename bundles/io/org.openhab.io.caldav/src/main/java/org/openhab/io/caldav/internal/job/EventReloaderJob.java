@@ -256,13 +256,12 @@ public class EventReloaderJob implements Job {
                     continue;
                 }
 
-                // oldEventIds.remove(filename); //BUGGY lazy "remove" ??(first occurence) :
                 // an ics file can contain multiple events
                 // ==> multiple eventcontainers could have the same filename (and different eventid),
                 // ==>we must not have one of them remaining in oldEventIds var (bad chosen name, cause it's a list of
                 // oldEventContainers's filename, so with doubles possible)
                 // or the remaining jobs with this filename will get unscheduled on the "removeDeletedEvents(config,
-                // oldEventIds)" call (line 134)
+                // oldEventIds)" call (line 136)
                 oldEventIds.removeAll(Arrays.asList(filename));
 
                 // must not be loaded
