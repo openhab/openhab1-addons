@@ -558,17 +558,13 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                             }
                         }
                         if (query.getFilterCategory() != null) {
-                            log.trace("processing filter category");
                             if (calDavEvent.getCategoryList() == null) {
-                                log.trace("not found event category for event {}", calDavEvent.getId());
                                 continue;
                             } else {
                                 if (!calDavEvent.getCategoryList().containsAll(query.getFilterCategory())) {
                                     continue;
                                 }
                             }
-                        } else {
-                            log.trace("not found any filter category");
                         }
                         eventList.add(calDavEvent);
                     }
