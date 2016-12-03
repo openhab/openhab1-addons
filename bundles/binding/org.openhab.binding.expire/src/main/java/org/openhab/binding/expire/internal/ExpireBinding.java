@@ -146,10 +146,15 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
     @Override
     protected void execute() {
         logger.trace("Executing...");
-        for (ExpireBindingProvider provider : providers) {
-            for (String itemName : provider.getItemNames()) {
-                if (isReadyToExpire(itemName)) {
-                    expire(itemName, provider);
+
+        // only bother to iterate if there is any possible work to do
+        if (!itemExpireMap.isEmpty()) {
+
+            for (ExpireBindingProvider provider : providers) {
+                for (String itemName : provider.getItemNames()) {
+                    if (isReadyToExpire(itemName)) {
+                        expire(itemName, provider);
+                    }
                 }
             }
         }
