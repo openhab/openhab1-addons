@@ -50,6 +50,7 @@
                                 <artifact><file>src/main/resources/conf/fatekplc.cfg</file><type>cfg</type><classifier>fatekplc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/freeswitch.cfg</file><type>cfg</type><classifier>freeswitch</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/fritzbox.cfg</file><type>cfg</type><classifier>fritzbox</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/fritzboxtr064.cfg</file><type>cfg</type><classifier>fritzboxtr064</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/garadget.cfg</file><type>cfg</type><classifier>garadget</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/gc100ir.cfg</file><type>cfg</type><classifier>gc100ir</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/gpio.cfg</file><type>cfg</type><classifier>gpio</classifier></artifact>

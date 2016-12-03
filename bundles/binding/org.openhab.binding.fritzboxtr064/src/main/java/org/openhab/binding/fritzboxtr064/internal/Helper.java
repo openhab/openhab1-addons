@@ -34,7 +34,7 @@ import org.w3c.dom.ls.LSSerializer;
  * @since 1.8.0
  */
 public class Helper {
-    private static final Logger logger = LoggerFactory.getLogger(FritzboxTr064Binding.class);
+    private static final Logger logger = LoggerFactory.getLogger(Helper.class);
 
     /***
      * Helper method which converts XML Document into pretty formatted string

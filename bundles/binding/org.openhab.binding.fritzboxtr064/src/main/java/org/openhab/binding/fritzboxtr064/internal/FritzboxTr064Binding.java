@@ -40,13 +40,6 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
 
     private static final Logger logger = LoggerFactory.getLogger(FritzboxTr064Binding.class);
 
-    /**
-     * The BundleContext. This is only valid when the bundle is ACTIVE. It is set in the activate()
-     * method and must not be accessed anymore once the deactivate() method was called or before activate()
-     * was called.
-     */
-    private BundleContext bundleContext;
-
     // URL to connect to fbox. Provided in main cfg file
     private String _url;
 
@@ -80,7 +73,6 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
      * @param configuration Configuration properties for this component obtained from the ConfigAdmin service
      */
     public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
-        this.bundleContext = bundleContext;
         logger.debug("FritzBox TR064 Binding activated!");
 
         // to override the default refresh interval one has to add a
