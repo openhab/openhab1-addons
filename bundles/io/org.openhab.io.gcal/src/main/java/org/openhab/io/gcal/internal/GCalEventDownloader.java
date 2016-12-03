@@ -292,7 +292,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
             if (StringUtils.isNotBlank(eventContent)) {
                 CalendarEventContent cec = parseEventContent(eventContent,
-                        eventTitle.startsWith("[PresenceSimulation]"));
+                        (eventTitle != null) && eventTitle.startsWith("[PresenceSimulation]"));
 
                 String modifiedByEvent = null;
                 if (calendarCache.containsKey(cec.modifiedByEvent)) {
