@@ -9,10 +9,8 @@
 package org.openhab.binding.caldav_personal.internal;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.openhab.core.binding.BindingConfig;
 
 /**
@@ -101,7 +99,7 @@ public class CalDavConfig implements BindingConfig {
     @Override
     public String toString() {
         return "CalDavPresenceConfig [calendar=" + calendar + ", type=" + type + ", eventNr=" + eventNr + ", value="
-                + value + ", filterName=" + filterName + "]";
+                + value + ", filterName=" + filterName + ", categoriesFiltersAny=" + categoriesFiltersAny + "]";
     }
 
     @Override
@@ -114,6 +112,7 @@ public class CalDavConfig implements BindingConfig {
         result = prime * result + ((filterName == null) ? 0 : filterName.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         result = prime * result + ((value == null) ? 0 : value.hashCode());
+        result = prime * result + Boolean.hashCode(categoriesFiltersAny);
         return result;
     }
 
@@ -159,6 +158,9 @@ public class CalDavConfig implements BindingConfig {
         if (value != other.value) {
             return false;
         }
+        if (categoriesFiltersAny != other.categoriesFiltersAny) {
+            return false;
+        }
         return true;
     }
 
@@ -168,6 +170,7 @@ public class CalDavConfig implements BindingConfig {
         result = prime * result + ((calendar == null) ? 0 : calendar.hashCode());
         result = prime * result + ((filterCategory == null) ? 0 : filterCategory.hashCode());
         result = prime * result + ((filterName == null) ? 0 : filterName.hashCode());
+        result = prime * result + Boolean.hashCode(categoriesFiltersAny);
         return result;
     }
 
