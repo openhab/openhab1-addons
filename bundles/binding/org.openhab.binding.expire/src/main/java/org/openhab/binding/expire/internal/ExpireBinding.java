@@ -32,13 +32,6 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
     private static final Logger logger = LoggerFactory.getLogger(ExpireBinding.class);
 
     /**
-     * The BundleContext. This is only valid when the bundle is ACTIVE. It is set in the activate()
-     * method and must not be accessed anymore once the deactivate() method was called or before activate()
-     * was called.
-     */
-    private BundleContext bundleContext;
-
-    /**
      * The refresh interval is used to check if any of the bound items is expired.
      * One second should be fine for all use cases, so it's final and cannot be configured.
      */
@@ -67,7 +60,6 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
      * @param configuration Configuration properties for this component obtained from the ConfigAdmin service
      */
     public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
-        this.bundleContext = bundleContext;
         setProperlyConfigured(true);
     }
 
@@ -96,7 +88,6 @@ public class ExpireBinding extends AbstractActiveBinding<ExpireBindingProvider> 
      *            </ul>
      */
     public void deactivate(final int reason) {
-        this.bundleContext = null;
         // deallocate resources here that are no longer needed and
         // should be reset when activating this binding again
         itemExpireMap.clear();
