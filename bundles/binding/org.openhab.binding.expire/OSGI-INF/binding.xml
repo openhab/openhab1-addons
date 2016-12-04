@@ -9,7 +9,7 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" modified="modified" deactivate="deactivate" name="org.openhab.binding.expire.binding" immediate="true" configuration-pid="org.openhab.expire" configuration-policy="optional">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.binding.expire.binding" configuration-pid="org.openhab.expire" configuration-policy="optional">
 	<implementation class="org.openhab.binding.expire.internal.ExpireBinding" />
 
 	<service>

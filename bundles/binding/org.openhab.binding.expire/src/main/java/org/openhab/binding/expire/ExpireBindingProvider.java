@@ -9,6 +9,7 @@
 package org.openhab.binding.expire;
 
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
 /**
@@ -16,9 +17,11 @@ import org.openhab.core.types.State;
  * @since 1.9.0
  */
 public interface ExpireBindingProvider extends BindingProvider {
-    public String getExpiresAfterAsText(String itemName);
+    public String getDurationString(String itemName);
 
-    public long getExpiresAfterMs(String itemName);
+    public long getDuration(String itemName);
 
-    public State getExpiredState(String itemName);
+    public State getExpireState(String itemName);
+
+    public Command getExpireCommand(String itemName);
 }

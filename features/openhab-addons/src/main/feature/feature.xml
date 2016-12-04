@@ -223,6 +223,12 @@
     <configfile finalname="${openhab.conf}/services/epsonprojector.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/epsonprojector</configfile>
   </feature>
 
+  <feature name="openhab-binding-expire" description="Expire Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.expire/${project.version}</bundle>
+  </feature>
+
   <feature name="openhab-binding-fatekplc" description="Fatek PLC Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
