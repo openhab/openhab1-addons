@@ -44,8 +44,6 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NumberType;
-	
 
 /**
  * Implement this class if you are going create an actively polling service
@@ -155,37 +153,45 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 			for (PLCLogoBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()){
 					PLCLogoBindingConfig logoBindingConfig = (PLCLogoBindingConfig) provider.getBindingConfig(itemName);
-					if (logoBindingConfig.getcontrollerName().equals(controllerName)){
+					if (logoBindingConfig.getcontrollerName().equals(controllerName))
+					{
 						// it is for our currently selected controller
-						int memvalue = Buffer[logoBindingConfig.getRealMemloc()];
-						if ((logoBindingConfig.getMemloc().contains("AI"))||(logoBindingConfig.getMemloc().contains("VW"))||(logoBindingConfig.getMemloc().contains("AM"))||(logoBindingConfig.getMemloc().contains("AQ"))){
+						PLCLogoMemoryConfig rd = logoBindingConfig.getRD();
+						int memvalue = Buffer[rd.getAddress()];
+						String loc = rd.getLocation();
+						Item itype = logoBindingConfig.getItemType();
+
+						if (loc.contains("AI") || loc.contains("VW") || loc.contains("AM") || loc.contains("AQ"))
+						{
 							// It is a 16 bit read (note: not all are in the docs as supported - yet)
-							int mem2value = (int) Buffer[logoBindingConfig.getRealMemloc()+1] &0xff;
+							int mem2value = (int) Buffer[rd.getAddress() + 1] &0xff;
 							memvalue = memvalue*256+mem2value;
 						}
+
 						// logger.debug("Memory is " + memvalue + " at " + logoBindingConfig.getMemloc() );
 						// if a bitwise operation then need to perform mask
-						if ((logoBindingConfig.getItemType() instanceof SwitchItem)|| (logoBindingConfig.getItemType() instanceof ContactItem)) {
+						if ((itype instanceof SwitchItem) || (itype instanceof ContactItem)) {
 							// bitmask created from bit number
-							int bitmask = (0x0001 << logoBindingConfig.getBit()); // this works for 8 bits only as int is signed
+							int bitmask = (0x0001 << rd.getBit()); // this works for 8 bits only as int is signed
 							resultant = memvalue & bitmask & 0xff;
 						}
 						else{
 							resultant = memvalue;
 						}
-						if (resultant != (logoBindingConfig.getLastvalue())){
-							if ((logoBindingConfig.getMemloc().contains("AI"))||(logoBindingConfig.getMemloc().contains("AM"))||(logoBindingConfig.getMemloc().contains("AQ"))){
+						if (resultant != (logoBindingConfig.getLastValue())){
+							if (loc.contains("AI") || loc.contains("AM") || loc.contains("AQ"))
+							{
 								// check for change being larger than delta
-								if (Math.abs(logoBindingConfig.getLastvalue()-resultant ) < logoBindingConfig.getAnalogDelta()){
+								if (Math.abs(logoBindingConfig.getLastValue() - resultant ) < logoBindingConfig.getAnalogDelta()){
 //									logger.debug("Analog value not larger than delta");
 									return;	
 								}
 							}
-							logger.debug("Value changed at " + logoBindingConfig.getitemName() + " to " + resultant);
+							logger.debug("Value changed at " + logoBindingConfig.getItemName() + " to " + resultant);
 							Item itemType = provider.getItemType(itemName);
 							State state = createState(itemType, resultant);
 							eventPublisher.postUpdate(itemName, state);
-							logoBindingConfig.setLastvalue(resultant);
+							logoBindingConfig.setLastValue(resultant);
 
 						}
 					}
@@ -198,21 +204,37 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 	/**
 	 * @{inheritDoc}
 	 */
+	protected void reconnectOnError(S7Client LogoS7Client)
+	{
+		LogoS7Client.Disconnect();
+		LogoS7Client.Connect();
+		if (LogoS7Client.Connected)
+			logger.warn("Reconnect successful");
+	}
+
+	/**
+	 * @{inheritDoc}
+	 */
 	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
+	protected void internalReceiveCommand(String itemName, Command command)
+	{
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
 		// Note itemname is the item name not the controller name/instance!
 		//
 		logger.debug("internalReceiveCommand() is called!");
-		for (PLCLogoBindingProvider provider : providers) {
+		for (PLCLogoBindingProvider provider : providers)
+		{
 			if (!provider.providesBindingFor(itemName))
 				continue;
 			
 			PLCLogoBindingConfig bindingConfig = provider.getBindingConfig(itemName);
-			if ((bindingConfig.getRealMemloc() >849 && bindingConfig.getRealMemloc() < 942 )){
-				logger.warn("Invalid write requested at memory location "+ bindingConfig.getRealMemloc() + " check config");
+			PLCLogoMemoryConfig wr = bindingConfig.getWR();
+			int addr = wr.getAddress();
+			if (addr > 849 && addr < 942)
+			{
+				logger.warn("Invalid write requested at memory location " + addr + " check config");
 				continue;	
 			}
 				
@@ -225,80 +247,64 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 		 * 
 		 */
 			S7Client LogoS7Client = controller.getS7Client();
-			if (bindingConfig.getItemType() instanceof NumberItem){
+			Item item = bindingConfig.getItemType();
+			if (item instanceof NumberItem) {
 				byte[] valueToStore = new byte[2];
-				if  (command instanceof DecimalType){
-					if (bindingConfig.getMemloc().substring(0, 2).equalsIgnoreCase("VB")){
-					// Number and a byte
-					valueToStore[0] =	(byte) (Integer.parseInt(command.toString()) & 0xff);
-					//Get value from command
-					int Result = LogoS7Client.WriteArea(S7.S7AreaDB, 1, bindingConfig.getRealMemloc(), 1, valueToStore);
-			    	if (Result != 0){
-		    			logger.warn("Failed to write to memory - may attempt reconnect but write failed at  " + bindingConfig.getRealMemloc());
-		    				// try and reconnect
-		    				LogoS7Client.Disconnect();
-		    				LogoS7Client.Connect();
-		    				if (LogoS7Client.Connected)
-		    					logger.warn("Reconnect successful");
-	    			
-		    			return;
-		    	}
-					} else if (bindingConfig.getMemloc().substring(0, 2).equalsIgnoreCase("VW")){
-						// Number and a word
-						valueToStore[1] =	(byte) (Integer.parseInt(command.toString()) & 0xff);
-						valueToStore[0] =	(byte) ((Integer.parseInt(command.toString()) / 256) & 0xff);
+				if  (command instanceof DecimalType) {
+					if (wr.getLocation().substring(0, 2).equalsIgnoreCase("VB")){
+						// Number and a byte
+						valueToStore[0] =	(byte) (Integer.parseInt(command.toString()) & 0xff);
 						//Get value from command
-						int Result = LogoS7Client.WriteArea(S7.S7AreaDB, 1, bindingConfig.getRealMemloc(), 2, valueToStore);
-				    	if (Result != 0){
-			    			logger.warn("Failed to write to memory - may attempt reconnect but write failed at  " + bindingConfig.getRealMemloc());
-			    				// try and reconnect
-			    				LogoS7Client.Disconnect();
-			    				LogoS7Client.Connect();
-			    				if (LogoS7Client.Connected)
-			    					logger.warn("Reconnect successful");
-		    			
-			    			return;
-			    	}
-	
+						int Result = LogoS7Client.WriteArea(S7.S7AreaDB, 1, addr, 1, valueToStore);
+						if (Result != 0) {
+							logger.warn("Failed to write to memory - may attempt reconnect but write failed at  " + addr);
+							reconnectOnError(LogoS7Client);
+							return;
+						}
+					} else 
+					if (wr.getLocation().substring(0, 2).equalsIgnoreCase("VW")) {
+						// Number and a word
+						short num = (short)Integer.parseInt(command.toString());
+						valueToStore[1] =	(byte) (num & 0xff);
+						valueToStore[0] =	(byte) (num >> 8);
+						//Get value from command
+						int Result = LogoS7Client.WriteArea(S7.S7AreaDB, 1, addr, 2, valueToStore);
+						if (Result != 0) {
+							logger.warn("Failed to write to memory - may attempt reconnect but write failed at  " + addr);
+							reconnectOnError(LogoS7Client);
+							return;
+						}
 					}
 				}
-			} else if (((bindingConfig.getItemType() instanceof SwitchItem)|| (bindingConfig.getItemType() instanceof ContactItem))&& (command instanceof OnOffType)){
+			} 
+			else if ((item instanceof SwitchItem || item instanceof ContactItem) && (command instanceof OnOffType))
+			{
 				byte[] outBuffer = new byte[1];
-				byte bitmask = (byte)(0x01 << bindingConfig.getBit());
-				int cmdaction = ((command == OnOffType.ON) ? 0x01 : 0x00 );
-				int Result = LogoS7Client.ReadArea(S7.S7AreaDB, 1, bindingConfig.getRealMemloc(), 1, outBuffer);
-		    	if (Result != 0){
-	    			logger.warn("Failed to read memory - may attempt reconnect but read for a write failed at  " + bindingConfig.getRealMemloc());
-	    				// try and reconnect
-	    				LogoS7Client.Disconnect();
-	    				LogoS7Client.Connect();
-	    				if (LogoS7Client.Connected)
-	    					logger.warn("Reconnect successful");
-    			
-	    			return;
-	    	}
-				if (command == OnOffType.ON){
-					outBuffer[0] = (byte) (outBuffer[0]| bitmask);
+				byte bitmask = (byte)(0x01 << wr.getBit());
+				int Result = LogoS7Client.ReadArea(S7.S7AreaDB, 1, addr, 1, outBuffer);
+				if (Result != 0)
+				{
+					logger.warn("Failed to read memory - may attempt reconnect but read for a write failed at  " + addr);
+					reconnectOnError(LogoS7Client);
+					return;
+				}
+				if (command == OnOffType.ON) {
+					outBuffer[0] = (byte) (outBuffer[0] | bitmask);
 					logger.debug("plclogo - Sending on");
-				} else if (command == OnOffType.OFF){
-					outBuffer[0] = (byte) (outBuffer[0]& ~bitmask);
+				}
+				else if (command == OnOffType.OFF)
+				{
+					outBuffer[0] = (byte) (outBuffer[0] & ~bitmask);
 					logger.debug("plclogo - Sending off");
 				}
-				Result = LogoS7Client.WriteArea(S7.S7AreaDB, 1, bindingConfig.getRealMemloc(), 1, outBuffer);
-		    	if (Result != 0){
-	    			logger.warn("Failed to write to memory - may attempt reconnect but write failed at  " + bindingConfig.getRealMemloc());
-	    				// try and reconnect
-	    				LogoS7Client.Disconnect();
-	    				LogoS7Client.Connect();
-	    				if (LogoS7Client.Connected)
-	    					logger.warn("Reconnect successful");
-    			
-	    			return;
-	    	}
-			
+				Result = LogoS7Client.WriteArea(S7.S7AreaDB, 1, addr, 1, outBuffer);
+				if (Result != 0)
+				{
+					logger.warn("Failed to write to memory - may attempt reconnect but write failed at  " + addr);
+					reconnectOnError(LogoS7Client);
+					return;
+				}
 			}
-		
-			
 		}
 
 	}
@@ -318,8 +324,8 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 	 * @{inheritDoc}
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		InetAddress LogoIP;
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException
+	{
 		Boolean configured = false;
 		if (config != null) {
 			String refreshIntervalString = (String) config.get("refresh");
@@ -353,36 +359,37 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 				matcher.find();
 				String controllerName = matcher.group(1);
 				PLCLogoConfig deviceConfig = controllers.get(controllerName);
-				logger.info("Config for "+ controllerName );
 
 				if (deviceConfig == null) {
 					deviceConfig = new PLCLogoConfig(controllerName);
 					controllers.put(controllerName, deviceConfig);
+					logger.info("Config for "+ controllerName );
 				}
 				if (matcher.group(2).equals("host")){
 					// matcher.find();
 					String IP = config.get(key).toString();
 					deviceConfig.setIP(IP);
-					logger.info("Config for "+ IP );
+					logger.info("Host of " + controllerName + ":" + IP );
 					configured=true;
 				}
 				if (matcher.group(2).equals("remoteTSAP")){
 					// matcher.find();
 					String remoteTSAP = config.get(key).toString();
-					logger.info("Config for " + remoteTSAP );
+					logger.info("Remote TSAP for " + controllerName + ":" + remoteTSAP );
 
 					deviceConfig.setremoteTSAP(Integer.decode(remoteTSAP));
 				}
 				if (matcher.group(2).equals("localTSAP")){
 					// matcher.find();
 					String localTSAP = config.get(key).toString();
-					logger.info("Config for "+ localTSAP );
+					logger.info("Local TSAP for " + controllerName + ":" + localTSAP );
 
 					deviceConfig.setlocalTSAP(Integer.decode(localTSAP));
 				}
 			} //while
 		Iterator<Entry<String, PLCLogoConfig>> entries = controllers.entrySet().iterator();
-		while (entries.hasNext()){
+		while (entries.hasNext())
+		{
 			Entry<String, PLCLogoConfig> thisEntry = entries.next();
 			String controllerName = (String) thisEntry.getKey();
 			PLCLogoConfig logoConfig = (PLCLogoConfig) thisEntry.getValue();
@@ -395,10 +402,12 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 			logger.info("About to connect to "+ controllerName );
 
 			int connectPDU = LogoS7Client.Connect();
-			if ((connectPDU == 0) && LogoS7Client.Connected ){
+			if ((connectPDU == 0) && LogoS7Client.Connected )
+			{
 				logger.info("Connected to PLC LOGO! device "+ controllerName );
 			}
-			else {
+			else
+			{
 				logger.info("Could not connect to PLC LOGO! device "+ controllerName );
 				throw new ConfigurationException("Could not connect to PLC device ",controllerName +" " + logoConfig.getlogoIP().toString() );
 			}
@@ -413,14 +422,18 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 		}
 
 	}
-	
-	
+
+
 	private State createState(Item itemType, Object value) {
+		DecimalType num = null;
+		if (value instanceof Number)
+			num = new DecimalType(value.toString());
+		
 		if (itemType instanceof StringType) {
 			return new StringType((String) value);
 		} else if (itemType instanceof NumberItem) {
-			if (value instanceof Number) {
-				return new DecimalType(value.toString());
+			if (num != null) {
+				return num;
 			} else if (value instanceof String) {
 				String stringValue = ((String) value).replaceAll("[^\\d|.]", "");
 				return new DecimalType(stringValue);
@@ -428,11 +441,16 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 				return null;
 			}
 		} else if (itemType instanceof SwitchItem) {
-			return  ((int)value > 0) ? OnOffType.ON : OnOffType.OFF;
-		} else if (itemType instanceof ContactItem)
-			return  ((int)value > 0) ? OpenClosedType.CLOSED: OpenClosedType.OPEN;
-	
-		else {
+			if (num != null)
+				return  (num.intValue() > 0) ? OnOffType.ON : OnOffType.OFF;
+			else
+				return null;
+		} else if (itemType instanceof ContactItem) {
+			if (num != null)
+				return  (num.intValue() > 0) ? OpenClosedType.CLOSED: OpenClosedType.OPEN;
+			else 
+				return null;
+		} else {
 			return null;
 		}
 	}

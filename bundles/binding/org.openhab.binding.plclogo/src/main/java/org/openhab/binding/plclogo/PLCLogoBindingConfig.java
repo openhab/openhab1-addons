@@ -2,78 +2,113 @@ package org.openhab.binding.plclogo;
 
 
 
-import org.openhab.binding.plclogo.internal.PLCLogoMemMap;
+import org.openhab.binding.plclogo.internal.PLCLogoBinding;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.binding.plclogo.internal.PLCLogoMemoryConfig;
+import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class PLCLogoBindingConfig implements BindingConfig {
 	private final String itemName;
 	private final String controllerName;
-	private final String memloc;
-	private final int bit;
-	private final boolean invert;
-	private final int analogDelta;
-	private int realmemloc;
+	private final PLCLogoMemoryConfig rdMem;
+	private final PLCLogoMemoryConfig wrMem;
+	private boolean invert;
+	private int analogDelta;
 	private int lastvalue;
 	private Item itemType;
 
-	
-	public PLCLogoBindingConfig(String itemName, Item itemType, String controllerName, String memory, String bit,  boolean invert, int analogDelta){
-	
-	if (bit.equals("")){ bit = "-1";}
-	this.itemName = itemName;
-	this.itemType = itemType;
-	this.controllerName = controllerName;
-	this.memloc = memory;
-	this.analogDelta = analogDelta;
-	PLCLogoMemMap logoBitMemory = new PLCLogoMemMap();
-	int[] bitMemory = logoBitMemory.convertToReal(memloc);
-	this.realmemloc = bitMemory[1];
-	if (bitMemory[0] != -1)
-		this.bit = bitMemory[0];
-	else
-		this.bit = Integer.parseInt(bit);
-	this.invert = invert;
-	this.lastvalue = 0;
+	private static final Logger logger =
+			LoggerFactory.getLogger(PLCLogoBinding.class);
 
 
+	public PLCLogoBindingConfig(String itemName, Item itemType, String configString) 
+			throws BindingConfigParseException 
+	{
+		this.itemName = itemName;
+		this.itemType = itemType;
+
+		// the config string has the format
+		//
+		//  instancename:memloc.bit [activelow:yes|no]
+		//
+		String shouldBe = "should be controllername:memloc[.bit] [activelow:yes|no]";
+		String[] segments = configString.split(" ");
+		if (segments.length > 2)
+			throw new BindingConfigParseException("invalid item format: " + configString + ", " + shouldBe);
+		String[] dev = segments[0].split(":");
+		if (dev.length < 2) 
+			throw new BindingConfigParseException("invalid item name/memory format: " + configString + ", " + shouldBe);
 		
+		controllerName = dev[0];
+		rdMem = new PLCLogoMemoryConfig(dev[1]);
+		if (dev.length == 3)
+			wrMem = new PLCLogoMemoryConfig(dev[2]);
+		else
+			wrMem = rdMem;
+
+		// check for invert or analogdelta
+		if (segments.length == 2) {
+			logger.debug("Addtional binding config " + segments[1]);
+			String[] parts = segments[1].split("=");
+			if (parts.length != 2)
+				throw new BindingConfigParseException("invalid second parameter: " + configString + ", " + shouldBe);
+
+			if (parts[0].equalsIgnoreCase("activelow")) {
+				invert = parts[1].equalsIgnoreCase("yes");
+			}
+			if (parts[0].equalsIgnoreCase("analogdelta")) {
+				analogDelta = Integer.parseInt(parts[1]);
+				logger.debug("Setting analogDelta " + analogDelta);
+			}
+		}
+		
+		this.lastvalue = 0;
 	}
-	public void setLastvalue(int lastvalue){
-		
-		this.lastvalue = lastvalue;
-	}
-	public String getitemName (){
-		
+
+	public String getItemName()
+	{
 		return itemName;
 	}
-	public String getcontrollerName (){
-		
+
+	public String getcontrollerName()
+	{
 		return controllerName;
 	}
-	public String getMemloc (){
-		
-		return this.memloc;
+
+	public PLCLogoMemoryConfig getRD()
+	{
+		return rdMem;
 	}
-	public int getRealMemloc (){
-		return this.realmemloc;
+
+	public PLCLogoMemoryConfig getWR()
+	{
+		return wrMem;
 	}
-	public int getBit (){
-		
-		return this.bit;
-	}
-	
-	public int getAnalogDelta(){
+
+	public int getAnalogDelta()
+	{
 		return this.analogDelta;
 	}
-	public boolean getInvert (){
-		
+
+	public boolean getInvert()
+	{
 		return this.invert;
 	}
-	public int getLastvalue (){
+
+	public int getLastValue()
+	{
 		return this.lastvalue;
 	}
+
+	public void setLastValue(int lastvalue)
+	{
+		this.lastvalue = lastvalue;
+	}
+
 	public Item getItemType(){
 		return this.itemType;
 	}

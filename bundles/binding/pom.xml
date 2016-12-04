@@ -131,11 +131,6 @@
     <module>org.openhab.binding.energenie</module>
     <module>org.openhab.binding.maxcul</module>
     <module>org.openhab.binding.wemo</module>
-    <module>org.openhab.binding.plclogo</module>
-  </modules>
-
-</project>
-=======
     <module>org.openhab.binding.weather</module>
     <module>org.openhab.binding.ekey</module>
     <module>org.openhab.binding.alarmdecoder</module>
@@ -192,6 +187,6 @@
     <module>org.openhab.binding.gc100ir</module>
     <module>org.openhab.binding.powermax</module>
     <module>org.openhab.binding.upb</module>
+    <module>org.openhab.binding.plclogo</module>
   </modules>
 </project>
-
