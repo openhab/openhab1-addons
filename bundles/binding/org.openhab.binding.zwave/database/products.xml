@@ -2244,6 +2244,15 @@
         <Name>Wenzhou TKB Control System</Name>
         <Product>
             <Reference>
+                <Type>0004</Type>
+                <Id>0002</Id>
+            </Reference>
+            <Model>TZ69</Model>
+            <Label lang="en">Smart meter switch</Label>
+            <ConfigFile>tkb/tz69.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0808</Type>
                 <Id>0808</Id>
             </Reference>
