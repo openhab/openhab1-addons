@@ -61,63 +61,12 @@ public class PLCLogoGenericBindingProvider extends AbstractGenericBindingProvide
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		boolean invert;
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException 
+	{
 		super.processBindingConfiguration(context, item, bindingConfig);
-		String[] parts = parseConfigString(bindingConfig);
 	
-		PLCLogoBindingConfig config = new PLCLogoBindingConfig(item.getName(), item, parts[0], parts[1], parts[2], parts[3].equalsIgnoreCase("YES")? true: false, Integer.parseInt(parts[4]));
-		
+		PLCLogoBindingConfig config = new PLCLogoBindingConfig(item.getName(), item, bindingConfig);
 		addBindingConfig(item, config);		
-	}
-	
-	private String[] parseConfigString(String bindingConfig) throws BindingConfigParseException {
-		// the config string has the format
-		//
-		//  instancename:memloc.bit [activelow:yes|no]
-		//
-		String shouldBe = "should be controllername:memloc[.bit] [activelow:yes|no]";
-		String controller, memory, bit ="" , invert = "NO";
-		int deltaValue = 0;
-		String[] segments = bindingConfig.split(" ");
-		if (segments.length > 2)
-			throw new BindingConfigParseException("invalid item format: " + bindingConfig + ", " + shouldBe);
-		String[] dev = segments[0].split(":");
-		if (dev.length == 2){
-			controller = dev[0];
-			String[] membit = dev[1].split("\\.");
-			memory = membit[0];
-			if (membit.length == 2){
-				bit = (membit[1]);
-				if (Integer.parseInt(bit) > 7){
-					throw new BindingConfigParseException("bit cannot be greater than 7: " + bindingConfig + ", " + shouldBe);
-				}
-			}
-		} else {
-			throw new BindingConfigParseException("invalid item name/memory format: " + bindingConfig + ", " + shouldBe);
-		}
-		
-		// check for invert or analogdelta
-		if (segments.length == 2){
-			logger.debug("Addtional binding config " + segments[1]);
-			String[] inversion = segments[1].split("=");
-			if ((inversion.length != 2)){
-				throw new BindingConfigParseException("invalid second parameter: " + bindingConfig + ", " + shouldBe);
-			}
-			if ((inversion[0].compareToIgnoreCase("activelow") == 0)){
-				if (inversion[1].compareToIgnoreCase("yes") == 0){
-				invert = "YES";
-				}
-			}
-			if (inversion[0].compareToIgnoreCase("analogdelta") == 0){
-				deltaValue = Integer.parseInt(inversion[1]);
-				logger.debug("Setting analogDelta " + deltaValue);
-			}
-		}
-				
-		String [] retval = {controller, memory, bit, invert, Integer.toString(deltaValue)};
-		
-		return retval;
 	}
 
 	@Override

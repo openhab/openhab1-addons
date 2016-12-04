@@ -5,8 +5,10 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.6.0-SNAPSHOT</version>
+		<version>1.8.0</version>
 	</parent>
+
+	<name>openHAB PlcLogo Binding</name>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.plclogo</bundle.symbolicName>
@@ -19,10 +21,16 @@
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.plclogo</artifactId>
 
-	<name>openHAB PlcLogo Binding</name>
-
 	<packaging>eclipse-plugin</packaging>
 
+	<dependencies>
+		<dependency>
+			<groupId>activesoap</groupId>
+			<artifactId>jaxb-xalan</artifactId>
+			<version>1.5</version>
+		</dependency>
+	</dependencies>
+	
 	<build>
 		<plugins>
 			<plugin>
