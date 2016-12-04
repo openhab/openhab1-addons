@@ -162,7 +162,7 @@ public class DSMRPortSettings {
                     parity = SerialPort.PARITY_NONE;
                     break;
                 default:
-                    logger.error("Invalid parity (" + parityChar + "), ignoring fixed port settings.");
+                    logger.error("Invalid parity ({}), ignoring fixed port settings.", parityChar);
 
                     return null;
             }
@@ -175,7 +175,7 @@ public class DSMRPortSettings {
             } else if (stopbitsString.equals("2")) {
                 stopbits = SerialPort.STOPBITS_2;
             } else {
-                logger.error("Invalid stop bits(" + stopbitsString + "), ignoring fixed port settings.");
+                logger.error("Invalid stop bits({}), ignoring fixed port settings.", stopbitsString);
 
                 return null;
             }

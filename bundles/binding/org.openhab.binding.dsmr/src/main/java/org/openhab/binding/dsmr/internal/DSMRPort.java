@@ -210,8 +210,7 @@ public class DSMRPort {
                 if (bytesRead > 0) {
                     receivedMessages.addAll(p1Parser.parseData(buffer, 0, bytesRead));
                 } else {
-                    logger.debug(
-                            "Expected bytes " + bytesAvailable + " to read, but " + bytesRead + " bytes were read");
+                    logger.debug("Expected bytes {} to read, but {} bytes were read", bytesAvailable, bytesRead);
                 }
                 bytesAvailable = bis.available();
             }
@@ -294,10 +293,10 @@ public class DSMRPort {
             } else {
                 portSettings = DSMRPortSettings.HIGH_SPEED_SETTINGS;
             }
-            logger.debug("Switched port settings to:" + portSettings);
+            logger.debug("Switched port settings to: {}", portSettings);
         } else {
             portSettings = fixedPortSettings;
-            logger.info("Fixed port settings configured (autodetect DISABLED):" + portSettings);
+            logger.info("Fixed port settings configured (autodetect DISABLED): {}", portSettings);
         }
     }
 
@@ -314,11 +313,11 @@ public class DSMRPort {
 
         boolean portExists = false;
 
-        logger.debug("Searching autodetected ports for:" + portName);
+        logger.debug("Searching autodetected ports for: {}", portName);
         while (portEnum.hasMoreElements()) {
             CommPortIdentifier portIdentifier = portEnum.nextElement();
             if (portIdentifier.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                logger.debug("Found serial port:" + portIdentifier.getName());
+                logger.debug("Found serial port: {}", portIdentifier.getName());
                 if (portIdentifier.getName().equals(portName)) {
                     portExists = true;
                 }
@@ -328,11 +327,11 @@ public class DSMRPort {
             Properties properties = System.getProperties();
             String currentPorts = properties.getProperty("gnu.io.rxtx.SerialPorts", "");
             if (currentPorts.indexOf(portName) >= 0) {
-                logger.debug(portName + " is listed in system property gnu.io.rxtx.SerialPorts");
+                logger.debug("{} is listed in system property gnu.io.rxtx.SerialPorts", portName);
 
                 portExists = true;
             } else {
-                logger.debug(portName + " is not listed in system property gnu.io.rxtx.SerialPorts");
+                logger.debug("{} is not listed in system property gnu.io.rxtx.SerialPorts", portName);
             }
         }
         return portExists;
@@ -348,9 +347,9 @@ public class DSMRPort {
         Properties properties = System.getProperties();
         String currentPorts = properties.getProperty("gnu.io.rxtx.SerialPorts", "");
         if (currentPorts.indexOf(portName) >= 0) {
-            logger.warn(portName + " is already listed in system property gnu.io.rxtx.SerialPorts");
+            logger.warn("{} is already listed in system property gnu.io.rxtx.SerialPorts", portName);
         } else {
-            logger.info("Adding port " + portName + " to system property gnu.io.rxtx.SerialPorts");
+            logger.info("Adding port {} to system property gnu.io.rxtx.SerialPorts", portName);
             if (currentPorts.length() == 0) {
                 properties.setProperty("gnu.io.rxtx.SerialPorts", portName);
             } else {
@@ -400,7 +399,7 @@ public class DSMRPort {
                 serialPort.enableReceiveTimeout(readTimeoutMSec);
 
                 // Configure Serial Port based on specified port speed
-                logger.debug("Configure serial port parameters:" + portSettings);
+                logger.debug("Configure serial port parameters: {}", portSettings);
 
                 if (portSettings != null) {
                     serialPort.setSerialPortParams(portSettings.getBaudrate(), portSettings.getDataBits(),
@@ -412,21 +411,22 @@ public class DSMRPort {
                         serialPort.setRTS(true);
                     }
                 } else {
-                    logger.error("Invalid port parameters, closing port:" + portSettings);
+                    logger.error("Invalid port parameters, closing port:{}", portSettings);
 
                     return false;
                 }
             } catch (NoSuchPortException nspe) {
-                logger.error("Could not open port: " + portName, nspe);
+                logger.error("Could not open port: {}", portName, nspe);
 
                 return false;
             } catch (PortInUseException piue) {
-                logger.error("Port already in use: " + portName, piue);
+                logger.error("Port already in use: {}", portName, piue);
 
                 return false;
             } catch (UnsupportedCommOperationException ucoe) {
-                logger.error("Port does not support requested port settings "
-                        + "(invalid portsettings in openhab.cfg?): " + portName, ucoe);
+                logger.error(
+                        "Port does not support requested port settings " + "(invalid dsmr:portsettings parameter?): {}",
+                        portName, ucoe);
 
                 return false;
             }
