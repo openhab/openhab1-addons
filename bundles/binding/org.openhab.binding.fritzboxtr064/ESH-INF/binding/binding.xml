@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="fritzboxtr064"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>FritzboxTR064 Binding</name>
+    <description>A binding for communicating with a Fritzbox using SOAP requests (TR064 protocol).</description>
+    <author>Boris Bock</author>
+    
+    <service-id>org.openhab.fritzboxtr064</service-id>
+
+    <config-description>
+        <parameter name="url" type="text" required="true">
+            <label>URL</label>
+            <description>Either use http://ip-address:49000 or https://ip-address:49443 (https is preferred!)</description>
+            <default>https://fritz.box:49443</default>
+        </parameter>    
+        <parameter name="refresh" type="integer">
+            <label>Refresh interval</label>
+            <description>Data refresh interval in milliseconds.</description>
+            <default>60000</default>
+        </parameter>
+        <parameter name="user" type="text" required="false">
+            <label>User Name</label>
+            <description>Only use this value if you configured a user in fbox webui/config! It is recommended to to switch to authentication by username in fritzbox config and add a separate config user for this binding.</description>
+            <default>dslf-config</default>
+        </parameter>
+        <parameter name="pass" type="text" required="true">
+            <context>password</context>
+            <label>Password</label>
+        </parameter>
+    </config-description>
+</binding:binding>
