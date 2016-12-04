@@ -48,33 +48,33 @@ import org.slf4j.LoggerFactory;
 /**
  * Implement this class if you are going create an actively polling service
  * like querying a Website/Device.
- * 
+ *
  * @author g8kmh
  * @since 1.5.0
  */
 public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider> implements ManagedService {
 
-	private static final Logger logger = 
+	private static final Logger logger =
 		LoggerFactory.getLogger(PLCLogoBinding.class);
 	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(.*?)$");
 
 
-	/** 
+	/**
 	 * the refresh interval which is used to poll values from the PlcLogo
 	 * server (optional, defaults to 500ms)
 	 */
 	private long refreshInterval = 5000;
-	
+
 	private static Map<String,PLCLogoConfig> controllers = new HashMap<String, PLCLogoConfig>();
 
 	public PLCLogoBinding(){
 		logger.info("PLCLogoBinding constuctor");
 	}
-		
-	
+
+
 	public void activate() {
 	}
-	
+
 	public void deactivate() {
 		for (PLCLogoBindingProvider provider : providers) {
 			provider.removeBindingChangeListener(this);
@@ -88,14 +88,14 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 			S7Client LogoS7Client = logoConfig.getS7Client();
 			if (LogoS7Client != null){
 				LogoS7Client.Disconnect();
-			
+
 		    	}
 		}
 		controllers.clear();
 	}
-	
 
-	
+
+
 	/**
 	 * @{inheritDoc}
 	 */
@@ -111,7 +111,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 	protected String getName() {
 		return "PLCLogo Polling Service";
 	}
-	
+
 	/**
 	 * @{inheritDoc}
 	 */
@@ -124,7 +124,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 		if (!bindingsExist()) {
 			logger.debug("There is no existing plclogo binding configuration => refresh cycle aborted!");
 			return;
-		}		
+		}
 		Iterator<Entry<String, PLCLogoConfig>> entries = controllers.entrySet().iterator();
 		while (entries.hasNext()){
 			Entry<String, PLCLogoConfig> thisEntry =  entries.next();
@@ -142,11 +142,11 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 		    				LogoS7Client.Connect();
 		    				if (LogoS7Client.Connected)
 		    					logger.warn("Reconnect successful");
- 			
+
 		    			return;
 		    	}
-		    	// logger.debug("Got it ");
-			// Now have the LOGO! memory (note: not suitable for S7) - more efficient than multiple reads (test shows <14mS to read all)
+
+		    // Now have the LOGO! memory (note: not suitable for S7) - more efficient than multiple reads (test shows <14mS to read all)
 			// iterate through bindings to see what has changed - this approach assumes a small number (< 100)of bindings
 		    // otherwise might see what has changed in memory and map to binding
 			}
@@ -178,13 +178,12 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 						else{
 							resultant = memvalue;
 						}
-						if (resultant != (logoBindingConfig.getLastValue())){
+						if (!logoBindingConfig.isSet() || resultant != (logoBindingConfig.getLastValue())){
 							if (loc.contains("AI") || loc.contains("AM") || loc.contains("AQ"))
 							{
 								// check for change being larger than delta
 								if (Math.abs(logoBindingConfig.getLastValue() - resultant ) < logoBindingConfig.getAnalogDelta()){
-//									logger.debug("Analog value not larger than delta");
-									return;	
+									continue;
 								}
 							}
 							logger.debug("Value changed at " + logoBindingConfig.getItemName() + " to " + resultant);
@@ -196,7 +195,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 						}
 					}
 				}
-				
+
 			}
 		}
 	}
@@ -219,7 +218,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 	protected void internalReceiveCommand(String itemName, Command command)
 	{
 		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
+		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		// Note itemname is the item name not the controller name/instance!
 		//
@@ -228,23 +227,23 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 		{
 			if (!provider.providesBindingFor(itemName))
 				continue;
-			
+
 			PLCLogoBindingConfig bindingConfig = provider.getBindingConfig(itemName);
 			PLCLogoMemoryConfig wr = bindingConfig.getWR();
 			int addr = wr.getAddress();
 			if (addr > 849 && addr < 942)
 			{
 				logger.warn("Invalid write requested at memory location " + addr + " check config");
-				continue;	
+				continue;
 			}
-				
+
 			if (!controllers.containsKey(bindingConfig.getcontrollerName()))
 				continue;
-			
+
 			PLCLogoConfig controller = controllers.get(bindingConfig.getcontrollerName());
 		/**************************
 		 * Send command to the LOGO! controller memory
-		 * 
+		 *
 		 */
 			S7Client LogoS7Client = controller.getS7Client();
 			Item item = bindingConfig.getItemType();
@@ -261,7 +260,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 							reconnectOnError(LogoS7Client);
 							return;
 						}
-					} else 
+					} else
 					if (wr.getLocation().substring(0, 2).equalsIgnoreCase("VW")) {
 						// Number and a word
 						short num = (short)Integer.parseInt(command.toString());
@@ -276,7 +275,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 						}
 					}
 				}
-			} 
+			}
 			else if ((item instanceof SwitchItem || item instanceof ContactItem) && (command instanceof OnOffType))
 			{
 				byte[] outBuffer = new byte[1];
@@ -308,18 +307,18 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 		}
 
 	}
-	
+
 	/**
 	 * @{inheritDoc}
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
 		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
+		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveUpdate() is called!");
 	}
-		
+
 	/**
 	 * @{inheritDoc}
 	 */
@@ -338,7 +337,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 			if ( controllers == null ) {
 				controllers = new HashMap<String, PLCLogoConfig>();
 			}
-			
+
 			while (keys.hasMoreElements()) {
 				String key = (String) keys.nextElement();
 
@@ -347,7 +346,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 				if ("service.pid".equals(key)) {
 					continue;
 				}
-			
+
 
 				Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
 
@@ -413,7 +412,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 			}
 			logoConfig.setS7Client(LogoS7Client);
 		}
-				
+
 		setProperlyConfigured(configured);		}
 		else
 		{
@@ -428,7 +427,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 		DecimalType num = null;
 		if (value instanceof Number)
 			num = new DecimalType(value.toString());
-		
+
 		if (itemType instanceof StringType) {
 			return new StringType((String) value);
 		} else if (itemType instanceof NumberItem) {
@@ -448,19 +447,19 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 		} else if (itemType instanceof ContactItem) {
 			if (num != null)
 				return  (num.intValue() > 0) ? OpenClosedType.CLOSED: OpenClosedType.OPEN;
-			else 
+			else
 				return null;
 		} else {
 			return null;
 		}
 	}
 
-	
+
 	private class PLCLogoConfig {
 		/**
 		 * Class which represents a LOGO! online controller/PLC connection params
 		 * and current instance - there may be multiple PLC's
-		 *  
+		 *
 		 * @author g8kmh
 		 * @since 1.5.0
 		 */
@@ -470,7 +469,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 		private int localTSAP = 0x0300;
 		private int remoteTSAP = 0x0200;
 		private S7Client LogoS7Client;
-		
+
 		public PLCLogoConfig (String instancename){
 			this.instancename = instancename;
 		}
