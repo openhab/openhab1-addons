@@ -310,6 +310,14 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
                 send(client, cmdString);
                 Thread.sleep(1000L); // response not needed - may be interesting
                                      // for reading status
+
+                // There is a ddwrt problem on restarting of virtual networks. So we have to restart the lan service.
+                if (type.startsWith("wlanguest") && !interface_guest.isEmpty() && command == OnOffType.ON) {
+                    cmdString = "stopservice lan && startservice lan";
+                    send(client, cmdString);
+                    Thread.sleep(25000L); // response not needed but time for restarting
+                }
+
                 logger.trace("TelnetCommandThread ok send");
                 client.disconnect();
 
