@@ -20,13 +20,14 @@ public class PLCLogoBindingConfig implements BindingConfig {
 	private int analogDelta;
 	private int lastvalue;
 	private Item itemType;
+	private boolean isset;
 
 	private static final Logger logger =
 			LoggerFactory.getLogger(PLCLogoBinding.class);
 
 
-	public PLCLogoBindingConfig(String itemName, Item itemType, String configString) 
-			throws BindingConfigParseException 
+	public PLCLogoBindingConfig(String itemName, Item itemType, String configString)
+			throws BindingConfigParseException
 	{
 		this.itemName = itemName;
 		this.itemType = itemType;
@@ -40,9 +41,9 @@ public class PLCLogoBindingConfig implements BindingConfig {
 		if (segments.length > 2)
 			throw new BindingConfigParseException("invalid item format: " + configString + ", " + shouldBe);
 		String[] dev = segments[0].split(":");
-		if (dev.length < 2) 
+		if (dev.length < 2)
 			throw new BindingConfigParseException("invalid item name/memory format: " + configString + ", " + shouldBe);
-		
+
 		controllerName = dev[0];
 		rdMem = new PLCLogoMemoryConfig(dev[1]);
 		if (dev.length == 3)
@@ -65,8 +66,9 @@ public class PLCLogoBindingConfig implements BindingConfig {
 				logger.debug("Setting analogDelta " + analogDelta);
 			}
 		}
-		
+
 		this.lastvalue = 0;
+		this.isset = false;
 	}
 
 	public String getItemName()
@@ -106,7 +108,13 @@ public class PLCLogoBindingConfig implements BindingConfig {
 
 	public void setLastValue(int lastvalue)
 	{
+		this.isset = true;
 		this.lastvalue = lastvalue;
+	}
+
+	public boolean isSet()
+	{
+		return this.isset;
 	}
 
 	public Item getItemType(){
