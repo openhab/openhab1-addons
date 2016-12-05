@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author Robert Delbrück
  * @since 1.8.0
  */
-public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implements ManagedService, EventNotifier {
+public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>implements ManagedService, EventNotifier {
 
     private static final String PARAM_HOME_IDENTIFIERS = "homeIdentifiers";
     private static final String PARAM_USED_CALENDARS = "usedCalendars";
@@ -292,6 +292,10 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
                     String startEnd2 = DF.print(event.getStart()) + " - " + DF.print(event.getEnd());
                     String name = event.getName();
                     command = new StringType(name + " @ " + startEnd2);
+                    break;
+                case CALENDAR:
+                    command = new StringType(event.getCalendarId());
+                    break;
             }
 
             logger.debug("sending command {} for item {}", command, itemName);

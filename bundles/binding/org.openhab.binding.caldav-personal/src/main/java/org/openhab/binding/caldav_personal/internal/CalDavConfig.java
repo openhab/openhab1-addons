@@ -35,7 +35,8 @@ public class CalDavConfig implements BindingConfig {
         START,
         END,
         TIME,
-        NAMEANDTIME
+        NAMEANDTIME,
+        CALENDAR
     }
 
     private final List<String> calendar;
