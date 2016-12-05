@@ -112,7 +112,7 @@ public class CalDavConfig implements BindingConfig {
         result = prime * result + ((filterName == null) ? 0 : filterName.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         result = prime * result + ((value == null) ? 0 : value.hashCode());
-        result = prime * result + Boolean.hashCode(categoriesFiltersAny);
+        result = prime * result + (categoriesFiltersAny ? 1231 : 1237);
         return result;
     }
 
@@ -170,7 +170,7 @@ public class CalDavConfig implements BindingConfig {
         result = prime * result + ((calendar == null) ? 0 : calendar.hashCode());
         result = prime * result + ((filterCategory == null) ? 0 : filterCategory.hashCode());
         result = prime * result + ((filterName == null) ? 0 : filterName.hashCode());
-        result = prime * result + Boolean.hashCode(categoriesFiltersAny);
+        result = prime * result + (categoriesFiltersAny ? 1231 : 1237);
         return result;
     }
 
