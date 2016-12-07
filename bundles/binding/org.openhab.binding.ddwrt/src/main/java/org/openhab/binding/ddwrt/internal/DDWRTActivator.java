@@ -30,7 +30,7 @@ public class DDWRTActivator implements BundleActivator {
      */
     @Override
     public void start(BundleContext bc) throws Exception {
-        logger.debug("DD-WRT binding has been started.");
+        logger.debug("DD-WRT binding has been activated.");
     }
 
     /**
@@ -38,7 +38,7 @@ public class DDWRTActivator implements BundleActivator {
      */
     @Override
     public void stop(BundleContext bc) throws Exception {
-        logger.debug("DD-WRT binding has been stopped.");
+        logger.debug("DD-WRT binding has been deactivated.");
     }
 
 }

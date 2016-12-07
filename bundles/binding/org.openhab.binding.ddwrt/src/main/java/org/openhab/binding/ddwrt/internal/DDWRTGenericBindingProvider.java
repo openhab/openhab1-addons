@@ -44,7 +44,7 @@ public class DDWRTGenericBindingProvider extends AbstractGenericBindingProvider 
      */
     @Override
     public String getBindingType() {
-        return "DD-WRT";
+        return "ddwrt";
     }
 
     /**

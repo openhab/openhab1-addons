@@ -60,7 +60,7 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
     }
 
     private void conditionalDeActivate() {
-        logger.info("DD-WRT conditional deActivate: {}", bindingsExist());
+        logger.trace("DD-WRT conditional deActivate: {}", bindingsExist());
 
         if (bindingsExist()) {
             activate();
@@ -96,15 +96,19 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
     public void activate() {
         super.activate();
         setProperlyConfigured(true);
+        logger.debug("DD-WRT binding has been started.");
     }
 
     @Override
     public void deactivate() {
+        super.deactivate();
+        logger.debug("DD-WRT binding has been started.");
     }
 
     @Override
     public void internalReceiveCommand(String itemName, Command command) {
 
+        logger.trace("internalReceiveCommand");
         if (password != null && StringUtils.isNotBlank(password)) {
             String type = null;
             for (DDWRTBindingProvider provider : providers) {
@@ -141,7 +145,11 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
     @SuppressWarnings("rawtypes")
     public void updated(Dictionary config) throws ConfigurationException {
 
-        logger.trace("updated");
+        logger.info("Update DD-WRT Binding configuration ...");
+
+        if (config == null || config.isEmpty()) {
+            throw new RuntimeException("No properties in openhab.cfg set!");
+        }
         if (config != null) {
             String ip = (String) config.get("ip");
             if (StringUtils.isNotBlank(ip)) {
