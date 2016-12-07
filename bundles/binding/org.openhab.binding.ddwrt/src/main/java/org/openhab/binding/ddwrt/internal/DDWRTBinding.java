@@ -261,7 +261,7 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
                 receive(client); // welcome text
                 send(client, cmdString);
                 Thread.sleep(1000L); // response not needed - may be interesting
-                                     // for reading status
+                // for reading status
 
                 // There is a DD-WRT problem on restarting of virtual networks. So we have to restart the lan service.
                 if (type.startsWith(DDWRTBindingProvider.TYPE_WLAN_GUEST) && !interface_guest.isEmpty()
@@ -274,9 +274,7 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
                 logger.trace("TelnetCommandThread ok send");
                 client.disconnect();
 
-            } catch (
-
-            Exception e) {
+            } catch (Exception e) {
                 logger.warn("Error processing command", e);
             }
         }
