@@ -21,16 +21,16 @@ import org.slf4j.LoggerFactory;
  *
  * @since 1.9.0
  */
-public class ddwrtActivator implements BundleActivator {
+public class DDWRTActivator implements BundleActivator {
 
-    private static Logger logger = LoggerFactory.getLogger(ddwrtActivator.class);
+    private static Logger logger = LoggerFactory.getLogger(DDWRTActivator.class);
 
     /**
      * Called whenever the OSGi framework starts our bundle
      */
     @Override
     public void start(BundleContext bc) throws Exception {
-        logger.debug("ddwrt binding has been started.");
+        logger.debug("DD-WRT binding has been started.");
     }
 
     /**
@@ -38,7 +38,7 @@ public class ddwrtActivator implements BundleActivator {
      */
     @Override
     public void stop(BundleContext bc) throws Exception {
-        logger.debug("ddwrt binding has been stopped.");
+        logger.debug("DD-WRT binding has been stopped.");
     }
 
 }

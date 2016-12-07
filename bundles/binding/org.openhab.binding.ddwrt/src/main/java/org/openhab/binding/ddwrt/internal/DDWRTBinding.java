@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.net.telnet.TelnetClient;
-import org.openhab.binding.ddwrt.ddwrtBindingProvider;
+import org.openhab.binding.ddwrt.DDWRTBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
@@ -47,7 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The ddwrt binding connects to a AVM ddwrt on the monitor port 1012 and
+ * The DD-WRT binding connects to a AVM DD-WRT on the monitor port 1012 and
  * listens to event notifications from this box. There are event for incoming
  * and outgoing calls, as well as for connections and disconnections.
  *
@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  *
  * @since 1.9.0
  */
-public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> implements ManagedService {
+public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> implements ManagedService {
 
     private static HashMap<String, String> queryMap = new HashMap<>();
 
@@ -66,10 +66,10 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
     private final String cronSchedule = "0 0 0 * * ?";
 
     static {
-        queryMap.put(ddwrtBindingProvider.TYPE_ROUTER_TYPE, "nvram get DD_BOARD");
-        queryMap.put(ddwrtBindingProvider.TYPE_WLAN_24, "ifconfig");
-        queryMap.put(ddwrtBindingProvider.TYPE_WLAN_50, "ifconfig");
-        queryMap.put(ddwrtBindingProvider.TYPE_WLAN_GUEST, "ifconfig");
+        queryMap.put(DDWRTBindingProvider.TYPE_ROUTER_TYPE, "nvram get DD_BOARD");
+        queryMap.put(DDWRTBindingProvider.TYPE_WLAN_24, "ifconfig");
+        queryMap.put(DDWRTBindingProvider.TYPE_WLAN_50, "ifconfig");
+        queryMap.put(DDWRTBindingProvider.TYPE_WLAN_GUEST, "ifconfig");
     }
 
     @Override
@@ -81,7 +81,7 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
     }
 
     private void conditionalDeActivate() {
-        logger.info("ddwrt conditional deActivate: {}", bindingsExist());
+        logger.info("DD-WRT conditional deActivate: {}", bindingsExist());
 
         if (bindingsExist()) {
             activate();
@@ -90,7 +90,7 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
         }
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(ddwrtBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(DDWRTBinding.class);
 
     /* The IP address to connect to */
     protected static String ip;
@@ -98,7 +98,7 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
     /* The port to connect to, default 23 */
     protected static String port;
 
-    /* The password of the ddwrt to access via Telnet */
+    /* The password of the DD-WRT to access via Telnet */
     protected static String password;
 
     /* The username, if used for telnet connections */
@@ -117,9 +117,9 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
      * Reference to this instance to be used with the reconnection job which is
      * static.
      */
-    private static ddwrtBinding INSTANCE;
+    private static DDWRTBinding INSTANCE;
 
-    public ddwrtBinding() {
+    public DDWRTBinding() {
         INSTANCE = this;
     }
 
@@ -138,14 +138,14 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
 
         if (password != null && !password.isEmpty()) {
             String type = null;
-            for (ddwrtBindingProvider provider : providers) {
+            for (DDWRTBindingProvider provider : providers) {
                 type = provider.getType(itemName);
                 if (type != null) {
                     break;
                 }
             }
 
-            logger.trace("ddwrt type: {}", type);
+            logger.trace("DD-WRT type: {}", type);
 
             if (type == null) {
                 return;
@@ -157,11 +157,11 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
         }
     }
 
-    protected void addBindingProvider(ddwrtBindingProvider bindingProvider) {
+    protected void addBindingProvider(DDWRTBindingProvider bindingProvider) {
         super.addBindingProvider(bindingProvider);
     }
 
-    protected void removeBindingProvider(ddwrtBindingProvider bindingProvider) {
+    protected void removeBindingProvider(DDWRTBindingProvider bindingProvider) {
         super.removeBindingProvider(bindingProvider);
     }
 
@@ -176,25 +176,25 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
         if (config != null) {
             String ip = (String) config.get("ip");
             if (StringUtils.isNotBlank(ip)) {
-                if (!ip.equals(ddwrtBinding.ip)) {
+                if (!ip.equals(DDWRTBinding.ip)) {
                     // only do something if the ip has changed
-                    ddwrtBinding.ip = ip;
+                    DDWRTBinding.ip = ip;
                     String port = (String) config.get("port");
                     if (!StringUtils.isNotBlank(port)) {
                         port = "23";
                     }
-                    ddwrtBinding.port = port;
+                    DDWRTBinding.port = port;
                     conditionalDeActivate();
 
-                    // schedule a daily reconnection as sometimes the ddwrt
+                    // schedule a daily reconnection as sometimes the DD-WRT
                     // stops sending data
                     // and thus blocks the monitor thread
                     try {
                         Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
 
                         logger.trace("updated sched");
-                        JobKey jobKey = jobKey("Reconnect", "ddwrt");
-                        TriggerKey triggerKey = triggerKey("Reconnect", "ddwrt");
+                        JobKey jobKey = jobKey("Reconnect", "DD-WRT");
+                        TriggerKey triggerKey = triggerKey("Reconnect", "DD-WRT");
 
                         if (sched.checkExists(jobKey)) {
                             logger.debug("Daily reconnection job already exists");
@@ -207,7 +207,7 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
                                     .build();
 
                             sched.scheduleJob(job, trigger);
-                            logger.debug("Scheduled a daily reconnection to ddwrt on {}:{}", ip, port);
+                            logger.debug("Scheduled a daily reconnection to DD-WRT on {}:{}", ip, port);
                         }
                     } catch (SchedulerException e) {
                         logger.warn("Could not create daily reconnection job", e);
@@ -216,27 +216,27 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
             }
             String username = (String) config.get("username");
             if (StringUtils.isNotBlank(username)) {
-                ddwrtBinding.username = username;
+                DDWRTBinding.username = username;
             }
 
             String password = (String) config.get("password");
             if (StringUtils.isNotBlank(password)) {
-                ddwrtBinding.password = password;
+                DDWRTBinding.password = password;
             }
 
             String interface_24 = (String) config.get("interface_24");
             if (StringUtils.isNotBlank(interface_24)) {
-                ddwrtBinding.interface_24 = interface_24;
+                DDWRTBinding.interface_24 = interface_24;
             }
 
             String interface_50 = (String) config.get("interface_50");
             if (StringUtils.isNotBlank(interface_50)) {
-                ddwrtBinding.interface_50 = interface_50;
+                DDWRTBinding.interface_50 = interface_50;
             }
 
             String interface_guest = (String) config.get("interface_guest");
             if (StringUtils.isNotBlank(interface_guest)) {
-                ddwrtBinding.interface_guest = interface_guest;
+                DDWRTBinding.interface_guest = interface_guest;
             }
 
         }
@@ -247,10 +247,10 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
         private static HashMap<String, String> commandMap = new HashMap<>();
 
         static {
-            commandMap.put(ddwrtBindingProvider.TYPE_ROUTER_TYPE, "nvram get DD_BOARD");
-            commandMap.put(ddwrtBindingProvider.TYPE_WLAN_24, "ifconfig");
-            commandMap.put(ddwrtBindingProvider.TYPE_WLAN_50, "ifconfig");
-            commandMap.put(ddwrtBindingProvider.TYPE_WLAN_GUEST, "ifconfig");
+            commandMap.put(DDWRTBindingProvider.TYPE_ROUTER_TYPE, "nvram get DD_BOARD");
+            commandMap.put(DDWRTBindingProvider.TYPE_WLAN_24, "ifconfig");
+            commandMap.put(DDWRTBindingProvider.TYPE_WLAN_50, "ifconfig");
+            commandMap.put(DDWRTBindingProvider.TYPE_WLAN_GUEST, "ifconfig");
         }
 
         public TelnetCommandThread(String type, Command command) {
@@ -312,7 +312,7 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
                 Thread.sleep(1000L); // response not needed - may be interesting
                                      // for reading status
 
-                // There is a ddwrt problem on restarting of virtual networks. So we have to restart the lan service.
+                // There is a DD-WRT problem on restarting of virtual networks. So we have to restart the lan service.
                 if (type.startsWith("wlanguest") && !interface_guest.isEmpty() && command == OnOffType.ON) {
                     cmdString = "stopservice lan && startservice lan";
                     send(client, cmdString);
@@ -371,7 +371,7 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
     }
 
     /**
-     * A quartz scheduler job to simply do a reconnection to the ddwrt.
+     * A quartz scheduler job to simply do a reconnection to the DD-WRT.
      */
     public static class ReconnectJob implements Job {
 
@@ -395,7 +395,7 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
         try {
             TelnetClient client = null;
 
-            for (ddwrtBindingProvider provider : providers) {
+            for (DDWRTBindingProvider provider : providers) {
                 for (String item : provider.getItemNames()) {
                     String query = null;
 
@@ -480,11 +480,11 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
 
     @Override
     protected String getName() {
-        return "ddwrt refresh Service";
+        return "DD-WRT refresh Service";
     }
 
     /**
-     * Send line via Telnet to ddwrt
+     * Send line via Telnet to DD-WRT
      *
      * @param client
      *            the telnet client
@@ -502,8 +502,8 @@ public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> im
     }
 
     /**
-     * Receive answer from ddwrt - careful! This blocks if there is no answer
-     * from ddwrt
+     * Receive answer from DD-WRT - careful! This blocks if there is no answer
+     * from DD-WRT
      *
      * @param client
      *            the telnet client

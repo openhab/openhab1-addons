@@ -10,7 +10,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.binding.ddwrt">
-   <implementation class="org.openhab.binding.ddwrt.internal.ddwrtBinding"/>
+   <implementation class="org.openhab.binding.ddwrt.internal.DDWRTBinding"/>
    
    <service>
       <provide interface="org.osgi.service.cm.ManagedService"/>
@@ -21,5 +21,5 @@
    <property name="service.pid" type="String" value="org.openhab.ddwrt"/>
    
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
-   <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.ddwrt.ddwrtBindingProvider" name="ddwrtBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
+   <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.ddwrt.DDWRTBindingProvider" name="DDWRTBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
 </scr:component>

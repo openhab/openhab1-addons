@@ -13,7 +13,7 @@ import org.openhab.core.items.Item;
 
 /**
  * This interface is implemented by classes that can map openHAB items to
- * ddwrt binding types.
+ * DD-WRT binding types.
  *
  * Implementing classes should register themselves as a service in order to be
  * taken into account.
@@ -22,7 +22,7 @@ import org.openhab.core.items.Item;
  * @author Markus Eckhardt
  * @since 1.9.0
  */
-public interface ddwrtBindingProvider extends BindingProvider {
+public interface DDWRTBindingProvider extends BindingProvider {
 
     /** binds wlan state to an item */
     static final public String TYPE_ROUTER_TYPE = "routertype";

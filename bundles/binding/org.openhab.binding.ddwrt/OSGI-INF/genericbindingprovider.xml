@@ -10,9 +10,9 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.ddwrt.genericbindingprovider">
-   <implementation class="org.openhab.binding.ddwrt.internal.ddwrtGenericBindingProvider"/>
+   <implementation class="org.openhab.binding.ddwrt.internal.DDWRTGenericBindingProvider"/>
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.openhab.binding.ddwrt.ddwrtBindingProvider"/>
+      <provide interface="org.openhab.binding.ddwrt.DDWRTBindingProvider"/>
    </service>
 </scr:component>

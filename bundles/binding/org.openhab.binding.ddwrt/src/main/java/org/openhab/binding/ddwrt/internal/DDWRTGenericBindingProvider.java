@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openhab.binding.ddwrt.ddwrtBindingProvider;
+import org.openhab.binding.ddwrt.DDWRTBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
@@ -28,8 +28,8 @@ import org.slf4j.LoggerFactory;
 /**
  * <p>
  * This class can parse information from the generic binding format and
- * provides ddwrt binding information from it. It registers as a
- * {@link ddwrtBindingProvider} service as well.
+ * provides DD-WRT binding information from it. It registers as a
+ * {@link DDWRTBindingProvider} service as well.
  * </p>
  *
  * @author Kai Kreuzer
@@ -37,16 +37,16 @@ import org.slf4j.LoggerFactory;
  *
  * @since 1.9.0
  */
-public class ddwrtGenericBindingProvider extends AbstractGenericBindingProvider implements ddwrtBindingProvider {
+public class DDWRTGenericBindingProvider extends AbstractGenericBindingProvider implements DDWRTBindingProvider {
 
-    static final Logger logger = LoggerFactory.getLogger(ddwrtGenericBindingProvider.class);
+    static final Logger logger = LoggerFactory.getLogger(DDWRTGenericBindingProvider.class);
 
     /**
      * {@inheritDoc}
      */
     @Override
     public String getBindingType() {
-        return "ddwrt";
+        return "DD-WRT";
     }
 
     /**
@@ -71,7 +71,7 @@ public class ddwrtGenericBindingProvider extends AbstractGenericBindingProvider 
         super.processBindingConfiguration(context, item, bindingConfig);
 
         if (bindingConfig != null) {
-            ddwrtBindingConfig config = parseBindingConfig(item, bindingConfig);
+            DDWRTBindingConfig config = parseBindingConfig(item, bindingConfig);
             addBindingConfig(item, config);
         } else {
             logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
@@ -86,11 +86,11 @@ public class ddwrtGenericBindingProvider extends AbstractGenericBindingProvider 
      *
      * @throws BindingConfigParseException if bindingConfig is no valid binding type
      */
-    protected ddwrtBindingConfig parseBindingConfig(Item item, String bindingConfig)
+    protected DDWRTBindingConfig parseBindingConfig(Item item, String bindingConfig)
             throws BindingConfigParseException {
-        if (ArrayUtils.contains(ddwrtBindingProvider.TYPES, bindingConfig)
-                || ArrayUtils.contains(ddwrtBindingProvider.TYPES, bindingConfig.substring(0, 3))) {
-            return new ddwrtBindingConfig(item.getClass(), bindingConfig);
+        if (ArrayUtils.contains(DDWRTBindingProvider.TYPES, bindingConfig)
+                || ArrayUtils.contains(DDWRTBindingProvider.TYPES, bindingConfig.substring(0, 3))) {
+            return new DDWRTBindingConfig(item.getClass(), bindingConfig);
         } else {
             throw new BindingConfigParseException("'" + bindingConfig + "' is no valid binding type");
         }
@@ -98,13 +98,13 @@ public class ddwrtGenericBindingProvider extends AbstractGenericBindingProvider 
 
     @Override
     public Class<? extends Item> getItemType(String itemName) {
-        ddwrtBindingConfig config = (ddwrtBindingConfig) bindingConfigs.get(itemName);
+        DDWRTBindingConfig config = (DDWRTBindingConfig) bindingConfigs.get(itemName);
         return config != null ? config.getItemType() : null;
     }
 
     @Override
     public String getType(String itemName) {
-        ddwrtBindingConfig config = (ddwrtBindingConfig) bindingConfigs.get(itemName);
+        DDWRTBindingConfig config = (DDWRTBindingConfig) bindingConfigs.get(itemName);
         return config != null ? config.getType() : null;
     }
 
@@ -112,7 +112,7 @@ public class ddwrtGenericBindingProvider extends AbstractGenericBindingProvider 
     public String[] getItemNamesForType(String eventType) {
         Set<String> itemNames = new HashSet<>();
         for (Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
-            ddwrtBindingConfig fbConfig = (ddwrtBindingConfig) entry.getValue();
+            DDWRTBindingConfig fbConfig = (DDWRTBindingConfig) entry.getValue();
             if (fbConfig.getType().equals(eventType)) {
                 itemNames.add(entry.getKey());
             }
@@ -120,12 +120,12 @@ public class ddwrtGenericBindingProvider extends AbstractGenericBindingProvider 
         return itemNames.toArray(new String[itemNames.size()]);
     }
 
-    static class ddwrtBindingConfig implements BindingConfig {
+    static class DDWRTBindingConfig implements BindingConfig {
 
         final private Class<? extends Item> itemType;
         final private String type;
 
-        public ddwrtBindingConfig(Class<? extends Item> itemType, String type) {
+        public DDWRTBindingConfig(Class<? extends Item> itemType, String type) {
             this.itemType = itemType;
             this.type = type;
         }
