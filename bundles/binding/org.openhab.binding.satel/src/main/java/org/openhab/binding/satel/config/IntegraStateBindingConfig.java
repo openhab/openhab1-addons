@@ -11,11 +11,11 @@ package org.openhab.binding.satel.config;
 import java.util.Map;
 
 import org.openhab.binding.satel.SatelBindingConfig;
+import org.openhab.binding.satel.command.ControlObjectCommand;
+import org.openhab.binding.satel.command.IntegraStateCommand;
+import org.openhab.binding.satel.command.SatelCommand;
 import org.openhab.binding.satel.internal.event.IntegraStateEvent;
 import org.openhab.binding.satel.internal.event.SatelEvent;
-import org.openhab.binding.satel.internal.protocol.SatelMessage;
-import org.openhab.binding.satel.internal.protocol.command.ControlObjectCommand;
-import org.openhab.binding.satel.internal.protocol.command.IntegraStateCommand;
 import org.openhab.binding.satel.internal.types.DoorsState;
 import org.openhab.binding.satel.internal.types.IntegraType;
 import org.openhab.binding.satel.internal.types.ObjectType;
@@ -63,7 +63,7 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 
     /**
      * Parses given binding configuration and creates configuration object.
-     * 
+     *
      * @param bindingConfig
      *            config to parse
      * @return parsed config object or <code>null</code> if config does not
@@ -170,7 +170,7 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
      * {@inheritDoc}
      */
     @Override
-    public SatelMessage convertCommandToMessage(Command command, IntegraType integraType, String userCode) {
+    public SatelCommand convertCommand(Command command, IntegraType integraType, String userCode) {
         if (command instanceof OnOffType && this.objectNumbers.length == 1) {
             boolean switchOn = ((OnOffType) command == OnOffType.ON);
             boolean force_arm = hasOptionEnabled(Options.FORCE_ARM);
@@ -179,8 +179,8 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
                 case OUTPUT:
                     byte[] outputs = getObjectBitset((integraType == IntegraType.I256_PLUS) ? 32 : 16);
                     boolean invertState = hasOptionEnabled(Options.INVERT_STATE);
-                    return ControlObjectCommand.buildMessage(
-                            switchOn ^ invertState ? OutputControl.ON : OutputControl.OFF, outputs, userCode);
+                    return new ControlObjectCommand(switchOn ^ invertState ? OutputControl.ON : OutputControl.OFF,
+                            outputs, userCode);
 
                 case DOORS:
                     break;
@@ -201,29 +201,28 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
                             if (switchOn) {
                                 return null;
                             } else {
-                                return ControlObjectCommand.buildMessage(PartitionControl.CLEAR_ALARM, partitions,
-                                        userCode);
+                                return new ControlObjectCommand(PartitionControl.CLEAR_ALARM, partitions, userCode);
                             }
 
                             // arm or disarm, depending on command
                         case ARMED:
                         case REALLY_ARMED:
-                            return ControlObjectCommand.buildMessage(
+                            return new ControlObjectCommand(
                                     switchOn ? (force_arm ? PartitionControl.FORCE_ARM_MODE_0
                                             : PartitionControl.ARM_MODE_0) : PartitionControl.DISARM,
                                     partitions, userCode);
                         case ARMED_MODE_1:
-                            return ControlObjectCommand.buildMessage(
+                            return new ControlObjectCommand(
                                     switchOn ? (force_arm ? PartitionControl.FORCE_ARM_MODE_1
                                             : PartitionControl.ARM_MODE_1) : PartitionControl.DISARM,
                                     partitions, userCode);
                         case ARMED_MODE_2:
-                            return ControlObjectCommand.buildMessage(
+                            return new ControlObjectCommand(
                                     switchOn ? (force_arm ? PartitionControl.FORCE_ARM_MODE_2
                                             : PartitionControl.ARM_MODE_2) : PartitionControl.DISARM,
                                     partitions, userCode);
                         case ARMED_MODE_3:
-                            return ControlObjectCommand.buildMessage(
+                            return new ControlObjectCommand(
                                     switchOn ? (force_arm ? PartitionControl.FORCE_ARM_MODE_3
                                             : PartitionControl.ARM_MODE_3) : PartitionControl.DISARM,
                                     partitions, userCode);
@@ -237,13 +236,13 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
             // roller shutter support
             if (command == UpDownType.UP) {
                 byte[] outputs = getObjectBitset((integraType == IntegraType.I256_PLUS) ? 32 : 16, 0);
-                return ControlObjectCommand.buildMessage(OutputControl.ON, outputs, userCode);
+                return new ControlObjectCommand(OutputControl.ON, outputs, userCode);
             } else if (command == UpDownType.DOWN) {
                 byte[] outputs = getObjectBitset((integraType == IntegraType.I256_PLUS) ? 32 : 16, 1);
-                return ControlObjectCommand.buildMessage(OutputControl.ON, outputs, userCode);
+                return new ControlObjectCommand(OutputControl.ON, outputs, userCode);
             } else if (command == StopMoveType.STOP) {
                 byte[] outputs = getObjectBitset((integraType == IntegraType.I256_PLUS) ? 32 : 16);
-                return ControlObjectCommand.buildMessage(OutputControl.OFF, outputs, userCode);
+                return new ControlObjectCommand(OutputControl.OFF, outputs, userCode);
             }
         }
 
@@ -254,8 +253,8 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
      * {@inheritDoc}
      */
     @Override
-    public SatelMessage buildRefreshMessage(IntegraType integraType) {
-        return IntegraStateCommand.buildMessage(this.stateType, integraType == IntegraType.I256_PLUS);
+    public SatelCommand buildRefreshCommand(IntegraType integraType) {
+        return new IntegraStateCommand(this.stateType, integraType == IntegraType.I256_PLUS);
     }
 
     /**

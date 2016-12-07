@@ -1013,7 +1013,8 @@
             </Reference>
             <Model>ZW100-A</Model>
             <Label lang="en">MultiSensor 6</Label>
-            <ConfigFile>aeon/zw100-a.xml</ConfigFile>
+            <ConfigFile VersionMax="1.6">aeon/zw100-a.xml</ConfigFile>
+            <ConfigFile VersionMin="1.7">aeon/zw100-17.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
@@ -2514,9 +2515,10 @@
                 <Type>101</Type>
                 <Id>0603</Id>
             </Reference>
-            <Model>ZW20R</Model>
-            <Label lang="en">20A Tamper Resistant Duplex Receptacle</Label>
-            <ConfigFile>enerwave/zw20r.xml</ConfigFile>
+            <Model>ZW20R/ZWN-RSM2</Model>
+            <Label lang="en">20A Tamper Resistant Duplex Receptacle / Smart Dual Relay Switch Module</Label>
+            <ConfigFile VersionMax="3.255">enerwave/zw20r.xml</ConfigFile>
+            <ConfigFile VersionMin="4">enerwave/zwn-rsm2.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>

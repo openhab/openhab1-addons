@@ -8,23 +8,25 @@
  */
 package org.openhab.binding.satel.internal;
 
-import java.util.ArrayList;
+import java.nio.charset.Charset;
 import java.util.Dictionary;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.satel.SatelBindingConfig;
 import org.openhab.binding.satel.SatelBindingProvider;
+import org.openhab.binding.satel.SatelCommModule;
+import org.openhab.binding.satel.command.IntegraStatusCommand;
+import org.openhab.binding.satel.command.NewStatesCommand;
+import org.openhab.binding.satel.command.SatelCommand;
 import org.openhab.binding.satel.internal.event.ConnectionStatusEvent;
 import org.openhab.binding.satel.internal.event.NewStatesEvent;
 import org.openhab.binding.satel.internal.event.SatelEvent;
 import org.openhab.binding.satel.internal.event.SatelEventListener;
 import org.openhab.binding.satel.internal.protocol.Ethm1Module;
 import org.openhab.binding.satel.internal.protocol.IntRSModule;
-import org.openhab.binding.satel.internal.protocol.SatelMessage;
 import org.openhab.binding.satel.internal.protocol.SatelModule;
-import org.openhab.binding.satel.internal.protocol.command.IntegraStatusCommand;
-import org.openhab.binding.satel.internal.protocol.command.NewStatesCommand;
 import org.openhab.binding.satel.internal.types.IntegraType;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
@@ -43,15 +45,15 @@ import org.slf4j.LoggerFactory;
  * @since 1.7.0
  */
 public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
-        implements ManagedService, SatelEventListener {
+        implements ManagedService, SatelEventListener, SatelCommModule {
 
     private static final Logger logger = LoggerFactory.getLogger(SatelBinding.class);
 
     private long refreshInterval = 10000;
     private String userCode;
     private SatelModule satelModule = null;
-    private SatelMessage newStatesCommand = null;
     private boolean forceRefresh = false;
+    private String textEncoding;
 
     /**
      * {@inheritDoc}
@@ -81,19 +83,7 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
 
         // get list of states that have changed
         logger.trace("Sending 'get new states' command");
-        if (this.newStatesCommand == null) {
-            this.newStatesCommand = NewStatesCommand
-                    .buildMessage(this.satelModule.getIntegraType() == IntegraType.I256_PLUS);
-        }
-        this.satelModule.sendCommand(this.newStatesCommand);
-    }
-
-    protected void addBindingProvider(SatelBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(SatelBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
+        this.satelModule.sendCommand(new NewStatesCommand(this.satelModule.getIntegraType() == IntegraType.I256_PLUS));
     }
 
     /**
@@ -111,6 +101,15 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
 
         this.refreshInterval = configuration.getLong("refresh", 10000);
         this.userCode = configuration.getString("user_code");
+        this.textEncoding = configuration.getString("encoding", "windows-1250");
+
+        // validate charset
+        try {
+            Charset.forName(this.textEncoding);
+        } catch (Exception e) {
+            throw new ConfigurationException("encoding",
+                    "Specified character set is either incorrect or not supported: " + this.textEncoding);
+        }
 
         int timeout = configuration.getInt("timeout", 5000);
         String host = configuration.getString("host");
@@ -146,10 +145,10 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
             SatelBindingConfig itemConfig = provider.getItemConfig(itemName);
             if (itemConfig != null) {
                 logger.trace("Sending internal command for item {}: {}", itemName, command);
-                SatelMessage message = itemConfig.convertCommandToMessage(command, this.satelModule.getIntegraType(),
+                SatelCommand satelCmd = itemConfig.convertCommand(command, this.satelModule.getIntegraType(),
                         this.userCode);
-                if (message != null) {
-                    this.satelModule.sendCommand(message);
+                if (satelCmd != null) {
+                    this.satelModule.sendCommand(satelCmd);
                 }
                 break;
             }
@@ -165,9 +164,9 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
 
         // refresh all states that have changed
         if (event instanceof NewStatesEvent) {
-            List<SatelMessage> commands = getRefreshCommands((NewStatesEvent) event);
-            for (SatelMessage message : commands) {
-                this.satelModule.sendCommand(message);
+            List<SatelCommand> commands = getRefreshCommands((NewStatesEvent) event);
+            for (SatelCommand command : commands) {
+                this.satelModule.sendCommand(command);
             }
         }
 
@@ -203,31 +202,31 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
             this.satelModule.close();
             this.satelModule = null;
         }
-        this.newStatesCommand = null;
     }
 
-    private List<SatelMessage> getRefreshCommands(NewStatesEvent nse) {
+    private List<SatelCommand> getRefreshCommands(NewStatesEvent nse) {
         logger.trace("Gathering refresh commands from all items");
 
         boolean forceRefresh = switchForceRefresh(false);
-        List<SatelMessage> commands = new ArrayList<SatelMessage>();
+        List<SatelCommand> commands = new LinkedList<SatelCommand>();
         for (SatelBindingProvider provider : providers) {
             for (String itemName : provider.getItemNames()) {
                 logger.trace("Getting refresh command from item: {}", itemName);
 
                 SatelBindingConfig itemConfig = provider.getItemConfig(itemName);
-                SatelMessage message = itemConfig.buildRefreshMessage(this.satelModule.getIntegraType());
+                SatelCommand command = itemConfig.buildRefreshCommand(this.satelModule.getIntegraType());
 
-                if (message == null || commands.contains(message)) {
+                if (command == null || commands.contains(command)) {
                     continue;
                 }
 
                 // either state has changed or this is status command (so likely RTC has changed)
                 // also if item hasn't received any update yet or refresh is forced
                 // get the latest value from the module
-                if (forceRefresh || !itemConfig.isItemInitialized() || (nse != null && nse.isNew(message.getCommand()))
-                        || message.getCommand() == IntegraStatusCommand.COMMAND_CODE) {
-                    commands.add(message);
+                byte commandCode = command.getRequest().getCommand();
+                if (forceRefresh || !itemConfig.isItemInitialized() || (nse != null && nse.isNew(commandCode))
+                        || commandCode == IntegraStatusCommand.COMMAND_CODE) {
+                    commands.add(command);
                 }
             }
         }
@@ -248,4 +247,68 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
         this.forceRefresh = forceRefresh;
         return oldValue;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isConnected() {
+        logger.debug("[SatelCommModule] isConnected");
+        return this.satelModule != null && this.satelModule.isConnected();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean sendCommand(SatelCommand command) {
+        logger.debug("[SatelCommModule] sendCommand");
+        if (this.satelModule == null) {
+            return false;
+        }
+        if (!this.satelModule.sendCommand(command, true)) {
+            return false;
+        }
+
+        while (!Thread.interrupted()) {
+            // wait for command state change
+            try {
+                synchronized (command) {
+                    command.wait(this.satelModule.getTimeout());
+                }
+            } catch (InterruptedException e) {
+                // ignore, we will leave the loop on next interruption state check
+            }
+            // check current state
+            switch (command.getState()) {
+                case SUCCEEDED:
+                    return true;
+                case FAILED:
+                    return false;
+                default:
+                    // wait for next change unless interrupted
+            }
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTextEncoding() {
+        return textEncoding;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getFirmwareVersion() {
+        if (this.satelModule == null) {
+            return null;
+        }
+        return this.satelModule.getIntegraVersion();
+    }
+
 }
