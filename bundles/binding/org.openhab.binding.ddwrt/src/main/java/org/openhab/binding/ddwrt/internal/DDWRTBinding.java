@@ -8,11 +8,6 @@
  */
 package org.openhab.binding.ddwrt.internal;
 
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.JobKey.jobKey;
-import static org.quartz.TriggerBuilder.newTrigger;
-import static org.quartz.TriggerKey.triggerKey;
-
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -30,40 +25,24 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
-import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
-import org.quartz.Job;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.TriggerKey;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The DD-WRT binding connects to a AVM DD-WRT on the monitor port 1012 and
- * listens to event notifications from this box. There are event for incoming
- * and outgoing calls, as well as for connections and disconnections.
+ * The DD-WRT binding connects to a DD-WRT router and switch the WIFI devices.
  *
+ * @author Markus Eckhardt
  * @author Kai Kreuzer
  * @author Jan N. Klug
- * @author Markus Eckhardt
  *
  * @since 1.9.0
  */
 public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> implements ManagedService {
 
     private static HashMap<String, String> queryMap = new HashMap<>();
-
-    // TODO: configurable?
-    // daily cron schedule
-    private final String cronSchedule = "0 0 0 * * ?";
 
     static {
         queryMap.put(DDWRTBindingProvider.TYPE_ROUTER_TYPE, "nvram get DD_BOARD");
@@ -113,16 +92,6 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
     /* The interface for guest network, e.g. virt_ath0 */
     protected static String interface_guest;
 
-    /**
-     * Reference to this instance to be used with the reconnection job which is
-     * static.
-     */
-    private static DDWRTBinding INSTANCE;
-
-    public DDWRTBinding() {
-        INSTANCE = this;
-    }
-
     @Override
     public void activate() {
         super.activate();
@@ -136,7 +105,7 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
     @Override
     public void internalReceiveCommand(String itemName, Command command) {
 
-        if (password != null && !password.isEmpty()) {
+        if (password != null && StringUtils.isNotBlank(password)) {
             String type = null;
             for (DDWRTBindingProvider provider : providers) {
                 type = provider.getType(itemName);
@@ -186,32 +155,6 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
                     DDWRTBinding.port = port;
                     conditionalDeActivate();
 
-                    // schedule a daily reconnection as sometimes the DD-WRT
-                    // stops sending data
-                    // and thus blocks the monitor thread
-                    try {
-                        Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
-
-                        logger.trace("updated sched");
-                        JobKey jobKey = jobKey("Reconnect", "DD-WRT");
-                        TriggerKey triggerKey = triggerKey("Reconnect", "DD-WRT");
-
-                        if (sched.checkExists(jobKey)) {
-                            logger.debug("Daily reconnection job already exists");
-                        } else {
-                            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cronSchedule);
-
-                            JobDetail job = newJob(ReconnectJob.class).withIdentity(jobKey).build();
-
-                            CronTrigger trigger = newTrigger().withIdentity(triggerKey).withSchedule(scheduleBuilder)
-                                    .build();
-
-                            sched.scheduleJob(job, trigger);
-                            logger.debug("Scheduled a daily reconnection to DD-WRT on {}:{}", ip, port);
-                        }
-                    } catch (SchedulerException e) {
-                        logger.warn("Could not create daily reconnection job", e);
-                    }
                 }
             }
             String username = (String) config.get("username");
@@ -279,13 +222,13 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
 
                 String cmdString = null;
                 if (commandMap.containsKey(type)) {
-                    if (type.startsWith("routertype")) {
+                    if (type.startsWith(DDWRTBindingProvider.TYPE_ROUTER_TYPE)) {
                         cmdString = commandMap.get(type);
-                    } else if (type.startsWith("wlan24") && !interface_24.isEmpty()) {
+                    } else if (type.startsWith(DDWRTBindingProvider.TYPE_WLAN_24) && !interface_24.isEmpty()) {
                         cmdString = commandMap.get(type) + " " + interface_24 + " " + state;
-                    } else if (type.startsWith("wlan50") && !interface_50.isEmpty()) {
+                    } else if (type.startsWith(DDWRTBindingProvider.TYPE_WLAN_50) && !interface_50.isEmpty()) {
                         cmdString = commandMap.get(type) + " " + interface_50 + " " + state;
-                    } else if (type.startsWith("wlanguest") && !interface_guest.isEmpty()) {
+                    } else if (type.startsWith(DDWRTBindingProvider.TYPE_WLAN_GUEST) && !interface_guest.isEmpty()) {
                         cmdString = commandMap.get(type) + " " + interface_guest + " " + state;
                     }
                 }
@@ -313,7 +256,8 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
                                      // for reading status
 
                 // There is a DD-WRT problem on restarting of virtual networks. So we have to restart the lan service.
-                if (type.startsWith("wlanguest") && !interface_guest.isEmpty() && command == OnOffType.ON) {
+                if (type.startsWith(DDWRTBindingProvider.TYPE_WLAN_GUEST) && !interface_guest.isEmpty()
+                        && command == OnOffType.ON) {
                     cmdString = "stopservice lan && startservice lan";
                     send(client, cmdString);
                     Thread.sleep(25000L); // response not needed but time for restarting
@@ -370,25 +314,14 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
         }
     }
 
-    /**
-     * A quartz scheduler job to simply do a reconnection to the DD-WRT.
-     */
-    public static class ReconnectJob implements Job {
-
-        @Override
-        public void execute(JobExecutionContext arg0) throws JobExecutionException {
-            INSTANCE.conditionalDeActivate();
-        }
-
-    }
-
     @Override
     protected void execute() {
 
         logger.trace("execute");
         if (password == null) {
             return;
-        } else if (password.trim().isEmpty()) {
+        } else if (StringUtils.isBlank(password)) {
+            logger.error("Password mustn't be empty!");
             return;
         }
 
@@ -401,13 +334,14 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
 
                     String type = provider.getType(item);
                     if (queryMap.containsKey(type)) {
-                        if (type.startsWith("routertype")) {
+                        if (type.startsWith(DDWRTBindingProvider.TYPE_ROUTER_TYPE)) {
                             query = queryMap.get(type);
-                        } else if (type.startsWith("wlan24") && !interface_24.isEmpty()) {
+                        } else if (type.startsWith(DDWRTBindingProvider.TYPE_WLAN_24) && !interface_24.isEmpty()) {
                             query = queryMap.get(type) + " " + interface_24 + " | grep UP";
-                        } else if (type.startsWith("wlan50") && !interface_50.isEmpty()) {
+                        } else if (type.startsWith(DDWRTBindingProvider.TYPE_WLAN_50) && !interface_50.isEmpty()) {
                             query = queryMap.get(type) + " " + interface_50 + " | grep UP";
-                        } else if (type.startsWith("wlanguest") && !interface_guest.isEmpty()) {
+                        } else if (type.startsWith(DDWRTBindingProvider.TYPE_WLAN_GUEST)
+                                && !interface_guest.isEmpty()) {
                             query = queryMap.get(type) + " " + interface_guest + " | grep UP";
                         }
                     } else {
@@ -440,7 +374,7 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
 
                     Class<? extends Item> itemType = provider.getItemType(item);
 
-                    org.openhab.core.types.State state = null;
+                    State state = null;
 
                     if (itemType.isAssignableFrom(SwitchItem.class)) {
                         if (lines.length > 2) {
@@ -480,7 +414,7 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
 
     @Override
     protected String getName() {
-        return "DD-WRT refresh Service";
+        return "DD-WRT Binding";
     }
 
     /**

@@ -26,11 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * This class can parse information from the generic binding format and
  * provides DD-WRT binding information from it. It registers as a
  * {@link DDWRTBindingProvider} service as well.
- * </p>
  *
  * @author Kai Kreuzer
  * @author Markus Eckhardt
@@ -68,14 +66,11 @@ public class DDWRTGenericBindingProvider extends AbstractGenericBindingProvider 
     @Override
     public void processBindingConfiguration(String context, Item item, String bindingConfig)
             throws BindingConfigParseException {
-        super.processBindingConfiguration(context, item, bindingConfig);
 
-        if (bindingConfig != null) {
-            DDWRTBindingConfig config = parseBindingConfig(item, bindingConfig);
-            addBindingConfig(item, config);
-        } else {
-            logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
-        }
+        DDWRTBindingConfig config = parseBindingConfig(item, bindingConfig);
+        addBindingConfig(item, config);
+
+        super.processBindingConfiguration(context, item, bindingConfig);
     }
 
     /**
@@ -92,7 +87,7 @@ public class DDWRTGenericBindingProvider extends AbstractGenericBindingProvider 
                 || ArrayUtils.contains(DDWRTBindingProvider.TYPES, bindingConfig.substring(0, 3))) {
             return new DDWRTBindingConfig(item.getClass(), bindingConfig);
         } else {
-            throw new BindingConfigParseException("'" + bindingConfig + "' is no valid binding type");
+            throw new BindingConfigParseException("'" + bindingConfig + "' is not a valid binding type");
         }
     }
 
