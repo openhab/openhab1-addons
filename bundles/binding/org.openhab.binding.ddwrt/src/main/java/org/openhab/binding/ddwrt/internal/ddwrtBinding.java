@@ -54,7 +54,8 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @author Jan N. Klug
  * @author Markus Eckhardt
- * @since 0.1.0
+ *
+ * @since 1.9.0
  */
 public class ddwrtBinding extends AbstractActiveBinding<ddwrtBindingProvider> implements ManagedService {
 

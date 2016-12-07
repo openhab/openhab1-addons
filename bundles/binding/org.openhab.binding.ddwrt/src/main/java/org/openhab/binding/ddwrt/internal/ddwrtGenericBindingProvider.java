@@ -32,21 +32,10 @@ import org.slf4j.LoggerFactory;
  * {@link ddwrtBindingProvider} service as well.
  * </p>
  *
- * <p>
- * Here are some examples for valid binding configuration strings:
- * <ul>
- * <li><code>{ ddwrt="inbound" }</code> - receives status updates on incoming calls</li>
- * <li><code>{ ddwrt="outbound" }</code> - receives status updates on outgoing calls</li>
- * <li><code>{ ddwrt="active" }</code> - receives status updates on active calls</li>
- * </ul>
- * These binding configurations can be used on either SwitchItems or StringItems. For SwitchItems,
- * it will obviously receive ON at the beginning and OFF at the end. StringItems will be filled
- * with the external phone number or an empty string.
- * </p>
- *
  * @author Kai Kreuzer
+ * @author Markus Eckhardt
  *
- * @since 0.1.0
+ * @since 1.9.0
  */
 public class ddwrtGenericBindingProvider extends AbstractGenericBindingProvider implements ddwrtBindingProvider {
 

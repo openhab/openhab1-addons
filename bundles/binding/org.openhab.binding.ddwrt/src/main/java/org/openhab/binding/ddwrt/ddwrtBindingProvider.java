@@ -20,7 +20,7 @@ import org.openhab.core.items.Item;
  *
  * @author Kai Kreuzer
  * @author Markus Eckhardt
- * @since 0.1.0
+ * @since 1.9.0
  */
 public interface ddwrtBindingProvider extends BindingProvider {
 

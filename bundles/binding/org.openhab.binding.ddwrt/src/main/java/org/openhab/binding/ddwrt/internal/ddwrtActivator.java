@@ -17,7 +17,9 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  *
  * @author Kai Kreuzer
- * @since 0.1.0
+ * @author Markus Eckhardt
+ *
+ * @since 1.9.0
  */
 public class ddwrtActivator implements BundleActivator {
 
