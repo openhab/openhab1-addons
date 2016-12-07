@@ -24,10 +24,6 @@ Import-Package: org.apache.commons.collections,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.osgi.service.event,
- org.quartz,
- org.quartz.impl,
- org.quartz.impl.matchers,
- org.quartz.utils,
  org.slf4j
 Export-Package: org.openhab.binding.ddwrt
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/ddwrtbinding.xml

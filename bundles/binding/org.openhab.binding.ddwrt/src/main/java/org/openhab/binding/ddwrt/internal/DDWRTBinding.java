@@ -102,14 +102,14 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
     @Override
     public void deactivate() {
         super.deactivate();
-        logger.debug("DD-WRT binding has been started.");
+        logger.debug("DD-WRT binding has been stopped.");
     }
 
     @Override
     public void internalReceiveCommand(String itemName, Command command) {
 
         logger.trace("internalReceiveCommand");
-        if (password != null && StringUtils.isNotBlank(password)) {
+        if (StringUtils.isNotBlank(password)) {
             String type = null;
             for (DDWRTBindingProvider provider : providers) {
                 type = provider.getType(itemName);
@@ -147,10 +147,12 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
 
         logger.info("Update DD-WRT Binding configuration ...");
 
-        if (config == null || config.isEmpty()) {
-            throw new RuntimeException("No properties in openhab.cfg set!");
-        }
-        if (config != null) {
+        if (config == null) {
+            return;
+        } else {
+            if (config.isEmpty()) {
+                throw new RuntimeException("No properties in openhab.cfg set!");
+            }
             String ip = (String) config.get("ip");
             if (StringUtils.isNotBlank(ip)) {
                 if (!ip.equals(DDWRTBinding.ip)) {
