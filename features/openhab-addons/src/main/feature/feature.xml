@@ -18,7 +18,7 @@
   <feature name="openhab-action-ecobee" description="Ecobee Action" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
-    <feature>openhab-binding-ecobee</feature>
+    <feature>openhab-binding-ecobee1</feature>
     <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.ecobee/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/ecobee.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecobee</configfile>
   </feature>
@@ -33,7 +33,7 @@
   <feature name="openhab-action-mios" description="MiOS Action" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
-    <feature>openhab-binding-mios</feature>
+    <feature>openhab-binding-mios1</feature>
     <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.mios/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/mios.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mios</configfile>
   </feature>
@@ -260,7 +260,7 @@
   <feature name="openhab-binding-fs201" description="FS20 Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
-    <feature>openhab-transport-cul</feature>
+    <feature>openhab-transport-cul1</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.fs20/${project.version}</bundle>
   </feature>
 
@@ -315,7 +315,7 @@
   <feature name="openhab-binding-intertechno1" description="Intertechno Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
-    <feature>openhab-transport-cul</feature>
+    <feature>openhab-transport-cul1</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.intertechno/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/culintertechno.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/culintertechno</configfile>
   </feature>
@@ -330,7 +330,7 @@
   <feature name="openhab-binding-irtrans1" description="IRTrans Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
-    <feature>openhab-binding-tcp</feature>
+    <feature>openhab-binding-tcp1</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.irtrans/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/irtrans.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/irtrans</configfile>
   </feature>
