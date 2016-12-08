@@ -144,6 +144,10 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
     private Date peak_period_end_time;
     private String time_zone;
     private ETA eta;
+    private Date eta_begin;
+    private Boolean rhr_enrollment;
+    private AlarmState co_alarm_state;
+    private AlarmState smoke_alarm_state;
 
     public Structure(@JsonProperty("structure_id") String structure_id) {
         this.structure_id = structure_id;
@@ -231,6 +235,14 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
     }
 
     /**
+     * Set the structure name
+     */
+    @JsonProperty("name")
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
      * @return the country_code
      */
     @JsonProperty("country_code")
@@ -284,6 +296,38 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
     @JsonProperty("eta")
     public void setEta(ETA eta) {
         this.eta = eta;
+    }
+
+    /**
+     * Read the timestamp of the earliest expected time of arrival (eta). Used to trigger actions or events.
+     */
+    @JsonProperty("eta_begin")
+    public Date getEta_begin() {
+        return eta_begin;
+    }
+
+    /**
+     * Rush Hour Rewards enrollment status.
+     */
+    @JsonProperty("rhr_enrollment")
+    public Boolean getRhr_enrollment() {
+        return rhr_enrollment;
+    }
+
+    /**
+     * @return CO alarm status
+     */
+    @JsonProperty("co_alarm_state")
+    public AlarmState getCo_alarm_state() {
+        return this.co_alarm_state;
+    }
+
+    /**
+     * @return Smoke alarm status
+     */
+    @JsonProperty("smoke_alarm_state")
+    public AlarmState getSmoke_alarm_state() {
+        return this.smoke_alarm_state;
     }
 
     /**
@@ -343,6 +387,10 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
         builder.append("peak_period_end_time", this.peak_period_end_time);
         builder.append("time_zone", this.time_zone);
         builder.append("eta", this.eta);
+        builder.append("eta_begin", this.eta_begin);
+        builder.append("rhr_enrollment", this.rhr_enrollment);
+        builder.append("co_alarm_state", this.co_alarm_state);
+        builder.append("smoke_alarm_state", this.smoke_alarm_state);
 
         return builder.toString();
     }
