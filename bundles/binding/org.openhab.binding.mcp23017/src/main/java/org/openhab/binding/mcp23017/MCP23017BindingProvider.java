@@ -20,23 +20,23 @@ import com.pi4j.io.gpio.PinState;
  */
 public interface MCP23017BindingProvider extends BindingProvider {
 
-	/**
-	 * @return the busAddress
-	 */
-	public int getBusAddress(String itemName);
+    /**
+     * @return the busAddress
+     */
+    public int getBusAddress(String itemName);
 
-	/**
-	 * @return the pin
-	 */
-	public Pin getPin(String itemName);
+    /**
+     * @return the pin
+     */
+    public Pin getPin(String itemName);
 
-	/**
-	 * @return the defaultState
-	 */
-	public PinState getDefaultState(String itemName);
+    /**
+     * @return the defaultState
+     */
+    public PinState getDefaultState(String itemName);
 
-	/**
-	 * @return the direction
-	 */
-	public PinMode getPinMode(String itemName);
+    /**
+     * @return the direction
+     */
+    public PinMode getPinMode(String itemName);
 }
