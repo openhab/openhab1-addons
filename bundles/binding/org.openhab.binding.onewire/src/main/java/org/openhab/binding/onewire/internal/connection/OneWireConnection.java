@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
  * This class establishes the connection to the 1-Wire-bus.
  *
  * @author Dennis Riegelbauer
+ * @author Chris Carman (added server connection retry logic)
  * @since 1.7.0
  *
  */
