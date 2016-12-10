@@ -319,7 +319,55 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                     }
                 }
             } else {
-                // event is already in map and not updated, ignoring
+                // event is already in map and not updated (eventContainerold and eventContainer have the same
+                // "lastchanged" date) : we need to reschedule possible new events from recurrent events
+                log.debug(
+                        "event is already in map and not updated, we NEED to update eventlist and schedule new events jobs");
+                ArrayList<CalDavEvent> eventsToAdd = new ArrayList<>();
+                for (CalDavEvent event : eventContainer.getEventList()) {
+                    boolean eventAlreadyKnown = false;
+                    for (CalDavEvent oldevent : eventContainerOld.getEventList()) {
+                        if (event.equals(oldevent)) {
+                            eventAlreadyKnown = true;
+                            log.trace("events match");
+                        } else {
+                            log.trace("eventsarenotequal : {} - {} - {} - {} - {}", event.getId(), event.getName(),
+                                    event.getStart(), event.getEnd(), event.getLastChanged());
+                            log.trace("eventsarenotequal : {} - {} - {} - {} - {}", oldevent.getId(),
+                                    oldevent.getName(), oldevent.getStart(), oldevent.getEnd(),
+                                    oldevent.getLastChanged());
+                        }
+                    }
+                    if (!eventAlreadyKnown) {
+                        eventsToAdd.add(event);
+                    }
+                }
+                // add only new events
+                for (CalDavEvent event : eventsToAdd) {
+                    eventContainerOld.getEventList().add(event);
+                    for (EventNotifier notifier : eventListenerList) {
+                        log.trace("notify listener... {}", notifier);
+                        try {
+                            notifier.eventLoaded(event);
+                        } catch (Exception e) {
+                            log.error("error while invoking listener", e);
+                        }
+                    }
+                    if (createTimer) {
+                        if (event.getEnd().isAfterNow()) {
+                            try {
+                                log.trace("creating job for event {} ", event.getShortName());
+                                createJob(eventContainerOld, event, eventContainerOld.getEventList().size());
+                                // size is 1 more than the last index
+                            } catch (SchedulerException e) {
+                                log.error("cannot create jobs for event '{}': ", event.getShortName(), e.getMessage());
+                            }
+                        }
+                    }
+
+                }
+                // update eventcontainer's calculateduntil
+                eventContainerOld.setCalculatedUntil(eventContainer.getCalculatedUntil());
             }
         } else {
             // event is new
