@@ -9,6 +9,7 @@
 package org.openhab.binding.mcp23017.internal;
 
 import java.util.Map;
+
 import org.openhab.binding.mcp23017.MCP23017BindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
@@ -18,6 +19,7 @@ import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.json.parsers.JSONParser;
 import com.json.parsers.JsonParserFactory;
 import com.pi4j.gpio.extension.mcp.MCP23017Pin;
@@ -27,7 +29,7 @@ import com.pi4j.io.gpio.PinState;
 
 /**
  * This class is responsible for parsing the binding configuration.
- * 
+ *
  * @author Diego A. Fliess
  * @since 1.9.0
  */
@@ -38,17 +40,19 @@ public class MCP23017GenericBindingProvider extends AbstractGenericBindingProvid
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getBindingType() {
         return "mcp23017";
     }
 
+    @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
         /* Only 'Switch' and 'Contact' types are allowed */
         if (!((item instanceof SwitchItem) || (item instanceof ContactItem))) {
-            logger.error("Item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
-                    + "' while only 'Switch' or 'Contact' types are allowed");
-            throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
-                    + item.getClass().getSimpleName() + "' while only 'Switch' or 'Contact' types are allowed");
+            String message = "Item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + "' ";
+            message = message + "while only 'Switch' or 'Contact' types are allowed";
+            logger.error("{}", message);
+            throw new BindingConfigParseException(message);
         }
     }
 
@@ -83,31 +87,29 @@ public class MCP23017GenericBindingProvider extends AbstractGenericBindingProvid
             if (item instanceof SwitchItem) {
                 config.setDefaultState(PinState.valueOf((String) jsonData.get("defaultState")));
             }
-        } catch (IllegalArgumentException e) {
-            logger.error(
-                    "Illegal Argument Exception in configuration string '" + bindingConfig + "' " + e.getMessage());
-            throw new BindingConfigParseException(
-                    "Illegal Access Exception  in configuration string '" + bindingConfig + "'");
-        } catch (IllegalAccessException e) {
-            logger.error(
-                    "Illegal Argument Exception in configuration string '" + bindingConfig + "' " + e.getMessage());
-            throw new BindingConfigParseException(
-                    "Illegal Argument Exception  in configuration string '" + bindingConfig + "'");
-        } catch (NoSuchFieldException e) {
-            logger.error("No Such Field Exception in configuration string '" + bindingConfig + "' " + e.getMessage());
-            throw new BindingConfigParseException(
-                    "No Such Field Exception  in configuration string '" + bindingConfig + "'");
-        } catch (SecurityException e) {
-            logger.error("Security Exception in configuration string '" + bindingConfig + "' " + e.getMessage());
-            throw new BindingConfigParseException(
-                    "Security Exception  in configuration string '" + bindingConfig + "'");
+        } catch (IllegalArgumentException exception) {
+            final String message = "Illegal argument exception in configuration string ";
+            logger.error("{} '{}': {}", message, bindingConfig, exception.getMessage());
+            throw new BindingConfigParseException(message + "'" + bindingConfig + "'");
+        } catch (IllegalAccessException exception) {
+            final String message = "Illegal access exception in configuration string ";
+            logger.error("{} '{}': {}", message, bindingConfig, exception.getMessage());
+            throw new BindingConfigParseException(message + "'" + bindingConfig + "'");
+        } catch (NoSuchFieldException exception) {
+            final String message = "No such field exception in configuration string ";
+            logger.error("{} '{}': {}", message, bindingConfig, exception.getMessage());
+            throw new BindingConfigParseException(message + "'" + bindingConfig + "'");
+        } catch (SecurityException exception) {
+            final String message = "Security exception in configuration string ";
+            logger.error("{} '{}': {}", message, bindingConfig, exception.getMessage());
+            throw new BindingConfigParseException(message + "'" + bindingConfig + "'");
         }
         addBindingConfig(item, config);
     }
 
     /**
      * This is a helper class holding binding specific configuration details
-     * 
+     *
      * @author Diego A. Fliess
      * @since 1.9.0
      */
@@ -198,6 +200,7 @@ public class MCP23017GenericBindingProvider extends AbstractGenericBindingProvid
     /**
      * @return the busAddress
      */
+    @Override
     public int getBusAddress(String itemName) {
         return getConfig(itemName).getBusAddress();
     }
@@ -205,6 +208,7 @@ public class MCP23017GenericBindingProvider extends AbstractGenericBindingProvid
     /**
      * @return the pin
      */
+    @Override
     public Pin getPin(String itemName) {
         return getConfig(itemName).getPin();
     }
@@ -212,6 +216,7 @@ public class MCP23017GenericBindingProvider extends AbstractGenericBindingProvid
     /**
      * @return the defaultState
      */
+    @Override
     public PinState getDefaultState(String itemName) {
         return getConfig(itemName).getDefaultState();
     }
@@ -219,6 +224,7 @@ public class MCP23017GenericBindingProvider extends AbstractGenericBindingProvid
     /**
      * @return the pinMode
      */
+    @Override
     public PinMode getPinMode(String itemName) {
         return getConfig(itemName).getPinMode();
     }

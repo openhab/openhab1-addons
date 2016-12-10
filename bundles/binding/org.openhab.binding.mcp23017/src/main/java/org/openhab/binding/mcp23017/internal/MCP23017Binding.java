@@ -8,6 +8,12 @@
  */
 package org.openhab.binding.mcp23017.internal;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.mcp23017.MCP23017BindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
@@ -15,8 +21,6 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-
-import org.apache.commons.lang.StringUtils;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,15 +41,10 @@ import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 import com.pi4j.wiringpi.GpioUtil;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Implement this class if you are going create an actively polling service like
  * querying a Website/Device.
- * 
+ *
  * @author Diego A. Fliess
  * @author Alexander Falkenstern
  * @since 1.9.0
@@ -89,7 +88,7 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
     /**
      * Called by the SCR to activate the component with its configuration read
      * from CAS
-     * 
+     *
      * @param bundleContext
      *            BundleContext of the Bundle that defines this component
      * @param configuration
@@ -113,16 +112,14 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
             pollingInterval = Integer.parseInt(pollingIntervalString);
         }
 
-        // read further config parameters here ...
-        logger.debug("mcp23017 activated " + this.hashCode());
         setProperlyConfigured(true);
-        logger.debug("mcp23017 activated and ProperlyConfigured " + this.hashCode());
+        logger.debug("mcp23017 activated and properly configured {}", this.hashCode());
     }
 
     /**
      * Called by the SCR when the configuration of a binding has been changed
      * through the ConfigAdmin service.
-     * 
+     *
      * @param configuration
      *            Updated configuration properties
      */
@@ -135,7 +132,7 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
      * Called by the SCR to deactivate the component when either the
      * configuration is removed or mandatory references are no longer satisfied
      * or the component has simply been stopped.
-     * 
+     *
      * @param reason
      *            Reason code for the deactivation:<br>
      *            <ul>
@@ -178,8 +175,6 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
      */
     @Override
     protected void execute() {
-        // the frequently executed code (polling) goes here ...
-        // logger.debug("execute() method is called!");
     }
 
     @Override
@@ -187,7 +182,7 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
         super.addBindingProvider(provider);
 
         /* first call contains all, better use activate ? if you have providers */
-        logger.debug("addBindingProvider: " + Arrays.toString(provider.getItemNames().toArray()));
+        logger.debug("addBindingProvider: {}", Arrays.toString(provider.getItemNames().toArray()));
         for (String itemName : provider.getItemNames()) {
             bindGpioPin((MCP23017BindingProvider) provider, itemName);
         }
@@ -197,7 +192,7 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
     public void removeBindingProvider(BindingProvider provider) {
         super.removeBindingProvider(provider);
         /* shutdown call contains all better use deactivate */
-        logger.debug("removeBindingProvider: " + Arrays.toString(provider.getItemNames().toArray()));
+        logger.debug("removeBindingProvider: {}", Arrays.toString(provider.getItemNames().toArray()));
         for (String itemName : provider.getItemNames()) {
             unBindGpioPin((MCP23017BindingProvider) provider, itemName);
         }
@@ -206,14 +201,13 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
     @Override
     public void bindingChanged(BindingProvider provider, String itemName) {
         if (provider instanceof MCP23017BindingProvider) {
+            String allItemNames = Arrays.toString(provider.getItemNames().toArray());
             if (provider.getItemNames().contains(itemName)) {
                 bindGpioPin((MCP23017BindingProvider) provider, itemName);
-                logger.debug("bindingChanged item bound " + itemName + " - "
-                        + Arrays.toString(provider.getItemNames().toArray()));
+                logger.debug("bindingChanged item bound {} - {}", itemName, allItemNames);
             } else {
                 unBindGpioPin((MCP23017BindingProvider) provider, itemName);
-                logger.debug("bindingChanged item unbound " + itemName + " - "
-                        + Arrays.toString(provider.getItemNames().toArray()));
+                logger.debug("bindingChanged item unbound  {} - {}", itemName, allItemNames);
             }
         }
         super.bindingChanged(provider, itemName);
@@ -240,26 +234,26 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
                         provider.getDefaultState(itemName));
                 gpioPins.put(itemName, output);
 
-                logger.debug("Provisioned Digital Output for " + itemName);
+                logger.debug("Provisioned digital output for {}", itemName);
             } else if (mode.equals(PinMode.DIGITAL_INPUT)) {
                 GpioPinDigitalInput input = gpio.provisionDigitalInputPin(mcp, pin, itemName, PinPullResistance.OFF);
                 input.setDebounce(20);
                 input.addListener(this);
                 gpioPins.put(itemName, input);
 
-                logger.debug("Provisioned Digital Input for " + itemName);
+                logger.debug("Provisioned digital input for {}", itemName);
             } else {
                 throw new IllegalArgumentException("Invalid Pin Mode in config " + mode.name());
             }
-        } catch (IOException e) {
-            logger.error("IO ERROR " + e.getMessage());
+        } catch (IOException exception) {
+            logger.error("I/O error {}", exception.getMessage());
         }
     }
 
     private void unBindGpioPin(MCP23017BindingProvider provider, String itemName) {
         GpioPin pin = gpioPins.remove(itemName);
         gpio.unprovisionPin(pin);
-        logger.debug("unbound " + itemName);
+        logger.debug("Unbound item {}", itemName);
     }
 
     /**
@@ -302,7 +296,7 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
             state = OpenClosedType.OPEN;
         }
         this.eventPublisher.postUpdate(pin.getName(), state);
-        logger.debug(" --> GPIO PIN STATE CHANGE: {} = {}", pin, state);
+        logger.debug("GPIO pin state change: {} = {}", pin, state);
     }
 
     /**
@@ -313,6 +307,6 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
         // the code being executed when a state was sent on the openHAB
         // event bus goes here. This method is only called if one of the
         // BindingProviders provide a binding for the given 'itemName'.
-        logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
+        logger.debug("internalReceiveUpdate({},{}) is called", itemName, newState);
     }
 }
