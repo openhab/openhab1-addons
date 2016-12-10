@@ -190,7 +190,7 @@ public class MCP23017GenericBindingProvider extends AbstractGenericBindingProvid
         MCP23017BindingConfig config = (MCP23017BindingConfig) bindingConfigs.get(itemName);
         if (config == null) {
             throw new IllegalArgumentException(
-                    "The item name '" + itemName + "'is invalid or the item isn't configured");
+                    "The item name '" + itemName + "' is invalid or the item isn't configured");
         }
         return config;
     }
