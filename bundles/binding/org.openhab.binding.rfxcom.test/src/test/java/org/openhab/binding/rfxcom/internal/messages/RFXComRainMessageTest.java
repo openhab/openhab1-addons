@@ -16,6 +16,12 @@ import javax.xml.bind.DatatypeConverter;
 import org.junit.Test;
 import org.openhab.binding.rfxcom.internal.RFXComException;
 
+/**
+ * Test for RFXCom-binding
+ *
+ * @author Martin van Wingerden
+ * @since 1.9.0
+ */
 public class RFXComRainMessageTest {
 
     @Test

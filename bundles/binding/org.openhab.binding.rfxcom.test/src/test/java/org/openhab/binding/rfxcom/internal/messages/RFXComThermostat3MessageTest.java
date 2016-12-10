@@ -8,13 +8,19 @@
  */
 package org.openhab.binding.rfxcom.internal.messages;
 
-import org.junit.Test;
-import org.openhab.binding.rfxcom.internal.RFXComException;
+import static org.junit.Assert.assertEquals;
 
 import javax.xml.bind.DatatypeConverter;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.openhab.binding.rfxcom.internal.RFXComException;
 
+/**
+ * Test for RFXCom-binding
+ *
+ * @author Martin van Wingerden
+ * @since 1.9.0
+ */
 public class RFXComThermostat3MessageTest {
 
     @Test

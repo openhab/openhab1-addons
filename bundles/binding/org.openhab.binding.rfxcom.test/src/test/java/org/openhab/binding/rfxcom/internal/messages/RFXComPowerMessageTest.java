@@ -8,19 +8,25 @@
  */
 package org.openhab.binding.rfxcom.internal.messages;
 
-import org.junit.Test;
-import org.openhab.binding.rfxcom.internal.RFXComException;
-
-import javax.xml.bind.DatatypeConverter;
-
 import static org.junit.Assert.assertEquals;
 import static org.openhab.binding.rfxcom.internal.messages.RFXComPowerMessage.SubType.ELEC5;
 
+import javax.xml.bind.DatatypeConverter;
+
+import org.junit.Test;
+import org.openhab.binding.rfxcom.internal.RFXComException;
+
+/**
+ * Test for RFXCom-binding
+ *
+ * @author Martin van Wingerden
+ * @since 1.9.0
+ */
 public class RFXComPowerMessageTest {
 
     private void testMessage(String hexMsg, RFXComPowerMessage.SubType subType, int seqNbr, String deviceId,
-                             int voltage, double instantAmps, double instantPower, double instantEnergy,
-                             double powerFactor, int frequency, int signalLevel) throws RFXComException {
+            int voltage, double instantAmps, double instantPower, double instantEnergy, double powerFactor,
+            int frequency, int signalLevel) throws RFXComException {
         final RFXComPowerMessage msg = (RFXComPowerMessage) RFXComMessageFactory
                 .getMessageInterface(DatatypeConverter.parseHexBinary(hexMsg));
         assertEquals("SubType", subType, msg.subType);

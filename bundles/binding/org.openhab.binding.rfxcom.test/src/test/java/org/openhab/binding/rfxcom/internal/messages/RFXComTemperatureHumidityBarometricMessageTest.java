@@ -8,23 +8,30 @@
  */
 package org.openhab.binding.rfxcom.internal.messages;
 
-import org.junit.Test;
-import org.openhab.binding.rfxcom.internal.RFXComException;
-
-import javax.xml.bind.DatatypeConverter;
-
 import static org.junit.Assert.assertEquals;
 import static org.openhab.binding.rfxcom.internal.messages.RFXComTemperatureHumidityBarometricMessage.ForecastStatus.RAIN;
 import static org.openhab.binding.rfxcom.internal.messages.RFXComTemperatureHumidityBarometricMessage.HumidityStatus.DRY;
 import static org.openhab.binding.rfxcom.internal.messages.RFXComTemperatureHumidityBarometricMessage.SubType.BTHR918N_BTHR968;
 
+import javax.xml.bind.DatatypeConverter;
+
+import org.junit.Test;
+import org.openhab.binding.rfxcom.internal.RFXComException;
+
+/**
+ * Test for RFXCom-binding
+ *
+ * @author Martin van Wingerden
+ * @since 1.9.0
+ */
 public class RFXComTemperatureHumidityBarometricMessageTest {
 
     @Test
     public void testSomeMessages() throws RFXComException {
         String hexMessage = "0D54020EE90000C9270203E70439";
         byte[] message = DatatypeConverter.parseHexBinary(hexMessage);
-        RFXComTemperatureHumidityBarometricMessage msg = (RFXComTemperatureHumidityBarometricMessage) RFXComMessageFactory.getMessageInterface(message);
+        RFXComTemperatureHumidityBarometricMessage msg = (RFXComTemperatureHumidityBarometricMessage) RFXComMessageFactory
+                .getMessageInterface(message);
         assertEquals("SubType", BTHR918N_BTHR968, msg.subType);
         assertEquals("Seq Number", 14, msg.seqNbr);
         assertEquals("Sensor Id", "59648", msg.generateDeviceId());

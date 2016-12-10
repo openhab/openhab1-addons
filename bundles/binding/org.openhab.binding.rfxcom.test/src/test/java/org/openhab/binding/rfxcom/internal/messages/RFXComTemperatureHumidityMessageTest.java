@@ -18,6 +18,13 @@ import org.junit.Test;
 import org.openhab.binding.rfxcom.internal.RFXComException;
 import org.openhab.binding.rfxcom.internal.messages.RFXComTemperatureHumidityMessage.HumidityStatus;
 
+/**
+ * Test for RFXCom-binding
+ *
+ * @author Ivan F. Martinez
+ * @author Martin van Wingerden
+ * @since 1.9.0
+ */
 public class RFXComTemperatureHumidityMessageTest {
 
     private void testMessage(String hexMsg, RFXComTemperatureHumidityMessage.SubType subType, int seqNbr, int sensorId,

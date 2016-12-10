@@ -8,14 +8,20 @@
  */
 package org.openhab.binding.rfxcom.internal.messages;
 
+import static org.junit.Assert.assertEquals;
+
+import javax.xml.bind.DatatypeConverter;
+
 import org.junit.Test;
 import org.openhab.binding.rfxcom.internal.RFXComException;
 import org.openhab.binding.rfxcom.internal.messages.RFXComLighting1Message.Commands;
 
-import javax.xml.bind.DatatypeConverter;
-
-import static org.junit.Assert.assertEquals;
-
+/**
+ * Test for RFXCom-binding
+ *
+ * @author Martin van Wingerden
+ * @since 1.9.0
+ */
 public class RFXComLighting1MessageTest {
 
     private void testMessage(String hexMsg, RFXComLighting1Message.SubType subType, int seqNbr, String deviceId,

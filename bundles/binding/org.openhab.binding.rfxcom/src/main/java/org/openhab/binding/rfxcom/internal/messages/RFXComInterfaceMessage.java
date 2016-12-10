@@ -249,7 +249,7 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
      * The format of message differ in some firmwares
      * Some messages with 13 bytes(14 with length) have an intermediate format
      * The firmware version is different for each hardware,
-     *  and the hardware version are in different position depending of message format
+     * and the hardware version are in different position depending of message format
      * Actually we dont know how to detect correctly for all hardwares
      *
      * Apparently we can consider this versions are using new format
@@ -259,9 +259,8 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
      *
      */
     private boolean isIntermediateFormat() {
-        return  (firmwareVersion >= 95 && firmwareVersion <= 100) ||
-                (firmwareVersion >= 195 && firmwareVersion <= 200) ||
-                (firmwareVersion >= 251);
+        return (firmwareVersion >= 95 && firmwareVersion <= 100) || (firmwareVersion >= 195 && firmwareVersion <= 200)
+                || (firmwareVersion >= 251);
     }
 
     @Override
@@ -275,7 +274,7 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
 
         firmwareType = FirmwareType.UNKNOWN;
         if (data.length > 14) {
-            firmwareVersion = (short)((data[6] & 0xff) + 1000);
+            firmwareVersion = (short) ((data[6] & 0xff) + 1000);
             for (FirmwareType type : FirmwareType.values()) {
                 if (type.toByte() == data[14]) {
                     firmwareType = type;
@@ -283,13 +282,13 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
                 }
             }
         } else {
-            firmwareVersion = (short)(data[6] & 0xff);
+            firmwareVersion = (short) (data[6] & 0xff);
             if (transceiverType == TransceiverType._433_92MHZ_RECEIVER_ONLY && firmwareVersion < 162) {
                 firmwareType = FirmwareType.Type1_RFXRec;
             } else if (transceiverType == TransceiverType._433_92MHZ_TRANSCEIVER && firmwareVersion < 162) {
                 firmwareType = FirmwareType.Type1;
-            } else if (transceiverType == TransceiverType._433_92MHZ_TRANSCEIVER &&
-                       (firmwareVersion >= 162 && firmwareVersion < 225) ) {
+            } else if (transceiverType == TransceiverType._433_92MHZ_TRANSCEIVER
+                    && (firmwareVersion >= 162 && firmwareVersion < 225)) {
                 firmwareType = FirmwareType.Type2;
             } else {
                 firmwareType = FirmwareType.Ext;
@@ -349,7 +348,7 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         data[3] = seqNbr;
         data[4] = command.toByte();
         data[5] = transceiverType.toByte();
-        data[6] = (byte)(((firmwareVersion > 1000) ? (firmwareVersion - 1000) : firmwareVersion) & 0xff);
+        data[6] = (byte) (((firmwareVersion > 1000) ? (firmwareVersion - 1000) : firmwareVersion) & 0xff);
 
         data[7] |= enableUndecodedPackets ? 0x80 : 0x00;
         data[7] |= enableRFU6Packets ? 0x40 : 0x00;
