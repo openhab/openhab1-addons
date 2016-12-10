@@ -30,6 +30,7 @@ Bundle-SymbolicName: org.openhab.binding.onewire
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/org.owfs.jowfsclient-1.2.6.jar
 

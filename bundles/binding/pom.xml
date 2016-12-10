@@ -26,11 +26,13 @@
     <module>org.openhab.binding.networkhealth</module>
     <module>org.openhab.binding.exec</module>
     <module>org.openhab.binding.exec.test</module>
+    <module>org.openhab.binding.expire</module>
     <module>org.openhab.binding.fatekplc</module>
     <module>org.openhab.binding.http</module>
     <module>org.openhab.binding.http.test</module>
     <module>org.openhab.binding.hue</module>
     <module>org.openhab.binding.fritzbox</module>
+    <module>org.openhab.binding.ddwrt</module>
     <module>org.openhab.binding.ntp</module>
     <module>org.openhab.binding.mpd</module>
     <module>org.openhab.binding.mystromecopower</module>

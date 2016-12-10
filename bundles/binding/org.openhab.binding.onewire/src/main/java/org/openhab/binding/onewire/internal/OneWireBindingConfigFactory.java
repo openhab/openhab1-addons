@@ -42,7 +42,7 @@ public class OneWireBindingConfigFactory {
      */
     public static OneWireBindingConfig createOneWireDeviceProperty(Item pvItem, String pvBindingConfig)
             throws BindingConfigParseException {
-        logger.debug("createOneWireDeviceProperty: " + pvItem.getName() + " - bindingConfig:" + pvBindingConfig);
+        logger.debug("createOneWireDeviceProperty: {} - bindingConfig:{}", pvItem.getName(), pvBindingConfig);
 
         OneWireBindingConfig lvNewBindingConfig = null;
         if (OneWireClearCacheControlBindingConfig.isBindingConfigToCreate(pvItem, pvBindingConfig)) {
@@ -63,7 +63,7 @@ public class OneWireBindingConfigFactory {
                     "the item-type " + pvItem.getClass() + " cannot be a onewire device");
         }
 
-        logger.debug("created newBindingConfig: " + lvNewBindingConfig.toString());
+        logger.debug("created newBindingConfig: {}", lvNewBindingConfig.toString());
 
         return lvNewBindingConfig;
     }
@@ -80,8 +80,8 @@ public class OneWireBindingConfigFactory {
                 || (pvItem instanceof SwitchItem) || (pvItem instanceof StringItem));
 
         if (!lvIsValidItem) {
-            logger.error("Item " + pvItem.getName() + " of type " + pvItem.getClass().getSimpleName()
-                    + " with configuration " + pvBindingConfig + " is not a valid onewire ItemType!");
+            logger.error("Item {} of type {} with configuration {} is not a valid onewire ItemType!", pvItem.getName(),
+                    pvItem.getClass().getSimpleName(), pvBindingConfig);
         }
 
         return lvIsValidItem;
