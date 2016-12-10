@@ -187,7 +187,7 @@ public class MCP3424GenericBindingProvider extends AbstractGenericBindingProvide
         }
 
         /**
-         * @param pin the pin to set
+         * @param resolution the resolution to set
          */
         public void setResolution(int resolution) {
             this.resolution = resolution;
@@ -206,7 +206,7 @@ public class MCP3424GenericBindingProvider extends AbstractGenericBindingProvide
         MCP3424BindingConfig config = (MCP3424BindingConfig) bindingConfigs.get(itemName);
         if (config == null) {
             throw new IllegalArgumentException(
-                    "The item name '" + itemName + "'is invalid or the item isn't configured");
+                    "The item name '" + itemName + "' is invalid or the item isn't configured");
         }
         return config;
     }
