@@ -74,7 +74,6 @@ public class RFXComRainMessage extends RFXComBaseMessage {
     public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public double rainRate = 0;
-    /* public byte rain = 0; */
     public double rainTotal = 0;
     public byte signalLevel = 0;
     public byte batteryLevel = 0;

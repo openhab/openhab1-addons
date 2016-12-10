@@ -92,22 +92,21 @@ public class RFXComWindMessage extends RFXComBaseMessage {
 
     @Override
     public String toString() {
-        String str = "";
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("\n - Sub type = ").append(subType);
+        sb.append("\n - Id = ").append(sensorId);
+        sb.append("\n - Wind direction = ").append(windDirection);
+        sb.append("\n - Wind speed = ").append(windSpeed);
+        sb.append("\n - Average Wind speed = ").append(windAvSpeed);
 
-        str += super.toString();
-        str += "\n - Sub type = " + subType;
-        str += "\n - Id = " + sensorId;
-        str += "\n - Wind direction = " + windDirection;
-        str += "\n - Wind speed = " + windSpeed;
-        str += "\n - Average Wind speed = " + windAvSpeed;
         if (subType == SubType.TFA) {
-            str += "\n - Temperature = " + temperature;
-            str += "\n - Chill Factor = " + chillFactor;
+            sb.append("\n - Temperature = ").append(temperature);
+            sb.append("\n - Chill Factor = ").append(chillFactor);
         }
-        str += "\n - Signal level = " + signalLevel;
-        str += "\n - Battery level = " + batteryLevel;
+        sb.append("\n - Signal level = ").append(signalLevel);
+        sb.append("\n - Battery level = ").append(batteryLevel);
 
-        return str;
+        return sb.toString();
     }
 
     @Override
