@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="fritzbox"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>Fritzbox Binding</name>
+    <description>Retrieves information about incoming and outgoing calls from a Fritz!box</description>
+    <author>Kai Kreuzer</author>
+    
+    <service-id>org.openhab.fritzbox</service-id>
+
+    <config-description>
+        <parameter name="ip" type="text" required="true">
+            <context>network-address</context>
+            <label>IP address</label>
+            <description>IP address or hostname of the Fritz!box.</description>
+        </parameter>
+    </config-description>
+</binding:binding>

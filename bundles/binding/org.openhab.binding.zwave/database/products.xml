@@ -2244,6 +2244,15 @@
         <Name>Wenzhou TKB Control System</Name>
         <Product>
             <Reference>
+                <Type>0004</Type>
+                <Id>0002</Id>
+            </Reference>
+            <Model>TZ69</Model>
+            <Label lang="en">Smart meter switch</Label>
+            <ConfigFile>tkb/tz69.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0808</Type>
                 <Id>0808</Id>
             </Reference>
@@ -2323,6 +2332,15 @@
     <Manufacturer>
         <Id>0002</Id>
         <Name>Danfoss</Name>
+        <Product>
+            <Reference>
+                <Type>0115</Type>
+                <Id>A010</Id>
+            </Reference>
+            <Model>010101</Model>
+            <Label lang="en">Popp Wireless Thermostatic Valve TRV</Label>
+            <ConfigFile>danfoss/010101.xml</ConfigFile>
+        </Product>
         <Product>
             <Reference>
                 <Type>0005</Type>
