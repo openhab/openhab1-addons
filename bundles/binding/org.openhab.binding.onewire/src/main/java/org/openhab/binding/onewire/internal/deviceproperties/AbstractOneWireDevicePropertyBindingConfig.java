@@ -211,10 +211,10 @@ public abstract class AbstractOneWireDevicePropertyBindingConfig implements OneW
 
         for (InterfaceOneWireTypeModifier lvTypeModifier : getTypeModifieryList()) {
             logger.debug("type of {} before modifier:{} type={}", getDevicePropertyPath(),
-                    lvTypeModifier.getModifierName(), lvType.toString());
+                    lvTypeModifier.getModifierName(), lvType);
             lvType = lvTypeModifier.modify4Read(lvType);
             logger.debug("type of {} after modifier:{} type={}", getDevicePropertyPath(),
-                    lvTypeModifier.getModifierName(), lvType.toString());
+                    lvTypeModifier.getModifierName(), lvType);
         }
 
         return lvType;

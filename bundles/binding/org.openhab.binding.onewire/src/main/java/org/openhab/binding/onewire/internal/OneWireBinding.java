@@ -112,7 +112,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
     @Override
     protected void internalReceiveCommand(String pvItemName, Command pvCommand) {
-        logger.debug("received command {} for item {}", pvCommand.toString(), pvItemName);
+        logger.debug("received command {} for item {}", pvCommand, pvItemName);
 
         OneWireBindingConfig lvBindigConfig = getBindingConfig(pvItemName);
 
@@ -126,7 +126,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
             AbstractOneWireControlBindingConfig lvControlBindingConfig = (AbstractOneWireControlBindingConfig) lvBindigConfig;
             lvControlBindingConfig.executeControl(this, pvCommand);
         } else {
-            logger.debug("received command {} for item {} which is not writable or executable", pvCommand.toString(),
+            logger.debug("received command {} for item {} which is not writable or executable", pvCommand,
                     pvItemName);
         }
     }
@@ -224,7 +224,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
                     }
                 } else {
                     logger.debug("Didn't add to OneWireUpdate scheduler, because refresh is <= 0: {}",
-                            lvDeviceBindingConfig.toString());
+                            lvDeviceBindingConfig);
                 }
             }
         }

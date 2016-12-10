@@ -178,7 +178,7 @@ public class OneWireConnection {
 
     public static synchronized void updated(Dictionary<String, ?> pvConfig) throws ConfigurationException {
         if (pvConfig == null) {
-            logger.info(
+            logger.debug(
                     "OneWireBinding configuration is not present. Please check your configuration file or if not needed remove the OneWireBinding addon.");
             return;
         }
@@ -341,13 +341,13 @@ public class OneWireConnection {
         while (lvAttempt <= cvRetry) {
             try {
                 logger.debug("Trying to write '{}' to '{}', write attempt={}",
-                        new Object[] { pvValue, pvDevicePropertyPath, lvAttempt });
+                        pvValue, pvDevicePropertyPath, lvAttempt);
                 if (checkIfDeviceExists(pvDevicePropertyPath)) {
                     OneWireConnection.getConnection().write(pvDevicePropertyPath, pvValue);
                     return; // Success, exit
                 } else {
                     logger.info("There is no device for path {}, write attempt={}",
-                            new Object[] { pvDevicePropertyPath, lvAttempt });
+                            pvDevicePropertyPath, lvAttempt);
                 }
             } catch (OwfsException oe) {
                 logger.error("Writing {} to path {} attempt {} threw an exception", pvValue, pvDevicePropertyPath,

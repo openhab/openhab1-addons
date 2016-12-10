@@ -39,10 +39,10 @@ public abstract class AbstractOneWireDevicePropertyWritableBindingConfig
     public String convertTypeToString(Type pvType) {
         for (InterfaceOneWireTypeModifier lvTypeModifier : getTypeModifieryList()) {
             logger.debug("type of {} before modifier:{} type={}", getDevicePropertyPath(),
-                    lvTypeModifier.getModifierName(), pvType.toString());
+                    lvTypeModifier.getModifierName(), pvType);
             pvType = lvTypeModifier.modify4Write(pvType);
             logger.debug("type of {} after modifier:{} type={}", getDevicePropertyPath(),
-                    lvTypeModifier.getModifierName(), pvType.toString());
+                    lvTypeModifier.getModifierName(), pvType);
         }
 
         return convertTypeToUnmodifiedString(pvType);
