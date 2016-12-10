@@ -80,7 +80,7 @@ public class MCP23017GenericBindingProvider extends AbstractGenericBindingProvid
         Map<String, Object> jsonData = parser.parseJson(bindingConfig);
 
         try {
-            logger.debug("processingBindingConfiguration in context " + context);
+            logger.debug("Process binding configuration in context {}", context);
             config.setBusAddress(Integer.parseInt((String) jsonData.get("address"), 16));
             config.setPin((Pin) MCP23017Pin.class.getField("GPIO_" + (String) jsonData.get("pin")).get(null));
             config.setPinMode(PinMode.valueOf((String) jsonData.get("mode")));
