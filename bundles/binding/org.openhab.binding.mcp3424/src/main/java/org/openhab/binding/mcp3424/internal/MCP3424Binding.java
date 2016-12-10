@@ -263,8 +263,8 @@ public class MCP3424Binding extends AbstractActiveBinding<MCP3424BindingProvider
     }
 
     /**
-     * Note: MCP3424 has no internal pull-down, so I used pull-up and
-     * inverted the button reading logic with a "not"
+     * Function will be called by Pi4J, if new conversion result is available.
+     * On this time we can notify openhab, that something was changed.
      **/
     @Override
     public void handleGpioPinAnalogValueChangeEvent(GpioPinAnalogValueChangeEvent event) {
