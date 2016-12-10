@@ -48,7 +48,7 @@ import java.util.Map;
  * 
  * @author Diego A. Fliess
  * @author Alexander Falkenstern
- * @since 1.8.0
+ * @since 1.9.0
  */
 public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvider> implements GpioPinListenerDigital {
 

@@ -29,7 +29,7 @@ import com.pi4j.io.gpio.PinState;
  * This class is responsible for parsing the binding configuration.
  * 
  * @author Diego A. Fliess
- * @since 1.8.0
+ * @since 1.9.0
  */
 public class MCP23017GenericBindingProvider extends AbstractGenericBindingProvider implements MCP23017BindingProvider {
 
@@ -108,8 +108,8 @@ public class MCP23017GenericBindingProvider extends AbstractGenericBindingProvid
     /**
      * This is a helper class holding binding specific configuration details
      * 
-     * @author Diego
-     * @since 1.0.0
+     * @author Diego A. Fliess
+     * @since 1.9.0
      */
     class MCP23017BindingConfig implements BindingConfig {
 

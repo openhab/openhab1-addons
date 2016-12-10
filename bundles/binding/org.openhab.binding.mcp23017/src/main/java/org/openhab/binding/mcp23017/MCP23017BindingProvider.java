@@ -16,7 +16,7 @@ import com.pi4j.io.gpio.PinState;
 
 /**
  * @author Diego A. Fliess
- * @since 1.8.0
+ * @since 1.9.0
  */
 public interface MCP23017BindingProvider extends BindingProvider {
 
