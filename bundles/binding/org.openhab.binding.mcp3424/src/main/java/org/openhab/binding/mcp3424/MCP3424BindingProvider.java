@@ -15,32 +15,32 @@ import com.pi4j.io.gpio.Pin;
 
 /**
  * @author Alexander Falkenstern
- * @since 1.8.3
+ * @since 1.9.0
  */
 public interface MCP3424BindingProvider extends BindingProvider {
 
-	/**
-	 * @return the busAddress
-	 */
-	public int getBusAddress(String itemName);
-
-	/**
-	 * @return the pin
-	 */
-	public Pin getPin(String itemName);
-
-	/**
-	 * @return the resolution
-	 */
-	public int getGain(String itemName);
+    /**
+     * @return Bus address of ADC
+     */
+    public int getBusAddress(String itemName);
 
     /**
-     * @return the resolution
+     * @return Pin
+     */
+    public Pin getPin(String itemName);
+
+    /**
+     * @return Gain of ADC amplifier
+     */
+    public int getGain(String itemName);
+
+    /**
+     * @return Resolution of conversion
      */
     public int getResolution(String itemName);
 
     /**
-     * @return configured item
+     * @return Configured item
      */
     public Item getItem(String itemName);
 }
