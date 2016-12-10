@@ -67,8 +67,8 @@ public class MCP3424GenericBindingProvider extends AbstractGenericBindingProvide
         // parse bindingConfig here ...
         /*
          * Configuration string should be a json in the form:
-         * Number Test1 "Test 1" (Tests) { mcp3424="{ address:6C, pin:'GPIO_CH0', gain:1, resolution:12" }
-         * Dimmer Test2 "Test 2" (Tests) { mcp3424="{ address:6C, pin:'GPIO_CH1', gain:1, resolution:12" }
+         * Number Test1 "Test 1" (Tests) { mcp3424="{ address:6C, pin:'CH0', gain:1, resolution:12" }
+         * Dimmer Test2 "Test 2" (Tests) { mcp3424="{ address:6C, pin:'CH1', gain:1, resolution:12" }
          */
         JsonParserFactory factory = JsonParserFactory.getInstance();
         JSONParser parser = factory.newJsonParser();
