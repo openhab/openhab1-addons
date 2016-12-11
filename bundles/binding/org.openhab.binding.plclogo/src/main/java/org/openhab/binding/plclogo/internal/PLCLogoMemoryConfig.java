@@ -78,10 +78,11 @@ public class PLCLogoMemoryConfig {
             idx = Integer.parseInt(memloc.substring(2)) - 1;
         }
 
+        if (kind.equals("VB") || kind.equals("VW")) {
+            address = Integer.parseInt(memloc.substring(2));
+        }
         if (model == PLCLogoModel.LOGO_MODEL_0BA7) {
-            if (kind.equals("VB") || kind.equals("VW")) {
-                address = Integer.parseInt(memloc.substring(2));
-            } else if (kind.equals("I")) {
+            if (kind.equals("I")) {
                 // I starts at 923 for three bytes
                 address = 923 + idx / 8;
                 bit = idx % 8;
@@ -106,40 +107,38 @@ public class PLCLogoMemoryConfig {
                 throw new BindingConfigParseException("Logo memory " + kind + " is not supported on PLC");
             }
         } else if (model == PLCLogoModel.LOGO_MODEL_0BA8) {
-            if (kind.equals("VB") || kind.equals("VW")) {
-                address = Integer.parseInt(memloc.substring(2));
-            } else if (kind.equals("I")) {
-                // I starts at 923 for three bytes
+            if (kind.equals("I")) {
+                // I starts at 1024 for 8 bytes
                 address = 1024 + idx / 8;
                 bit = idx % 8;
             } else if (kind.equals("Q")) {
-                // Q starts at 942 for two bytes
+                // Q starts at 1064 for 8 bytes
                 address = 1064 + idx / 8;
                 bit = idx % 8;
             } else if (kind.equals("M")) {
-                // Markers starts at 948 for two bytes
+                // Markers starts at 1104 for 14 bytes
                 address = 1104 + idx / 8;
                 bit = idx % 8;
             } else if (kind.equals("AI")) {
-                // AI starts at 926 for 8 words
+                // AI starts at 1032 for 32 bytes --> 16 words
                 address = 1032 + idx * 2;
             } else if (kind.equals("AQ")) {
-                // AQ starts at 944 for 2 words
+                // AQ starts at 1072 for 32 bytes --> 16 words
                 address = 1072 + idx * 2;
             } else if (kind.equals("AM")) {
-                // AM starts at 952 for 16 words
-                address = 952 + idx * 2;
+                // Analog markers starts at 1118 for 128 bytes --> 64 words
+                address = 1118 + idx * 2;
             } else if (kind.equals("NI")) {
-                // AM starts at 952 for 16 words
+                // Network inputs starts at 1246 for 16 bytes
                 address = 1246 + idx * 2;
             } else if (kind.equals("NAI")) {
-                // AM starts at 952 for 16 words
-                address = 1246 + idx * 2;
+                // Network analog inputs starts at 1262 for 128 bytes --> 64 words
+                address = 1262 + idx * 2;
             } else if (kind.equals("NQ")) {
-                // AM starts at 952 for 16 words
+                // Network outputs starts at 1390 for 16 bytes
                 address = 1390 + idx * 2;
             } else if (kind.equals("NAQ")) {
-                // AM starts at 952 for 16 words
+                // Network analog inputs starts at 1406 for 64 bytes --> 32 words
                 address = 1406 + idx * 2;
             } else {
                 throw new BindingConfigParseException("Logo memory " + kind + " is not supported on PLC");
