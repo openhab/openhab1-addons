@@ -3769,4 +3769,17 @@
             <ConfigFile>logic/zhc5010.xml</ConfigFile>
         </Product>
     </Manufacturer> 
+    <Manufacturer>
+        <Id>0258</Id>
+        <Name>Shenzhen NEO Electronics</Name>
+        <Product>
+            <Reference>
+                <Type>0003</Type>
+                <Id>1087</Id>
+            </Reference>
+            <Model>NAS-WR01Z</Model>
+            <Label lang="en">Smart Power Plug</Label>
+            <ConfigFile>szneo/nas-wr01z.xml</ConfigFile>
+        </Product>
+    </Manufacturer> 
 </Manufacturers>
