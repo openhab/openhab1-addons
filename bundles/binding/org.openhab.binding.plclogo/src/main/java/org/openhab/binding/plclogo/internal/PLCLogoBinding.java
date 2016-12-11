@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,41 +8,37 @@
  */
 package org.openhab.binding.plclogo.internal;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.concurrent.locks.ReentrantLock;
 
-import Moka7.*;
-
-import org.openhab.binding.plclogo.PLCLogoBindingProvider;
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.plclogo.PLCLogoBindingConfig;
-import org.openhab.binding.plclogo.internal.PLCLogoModel;
-
+import org.openhab.binding.plclogo.PLCLogoBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-
-import org.apache.commons.lang.StringUtils;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import Moka7.S7;
+import Moka7.S7Client;
 
 /**
  * Implement this class if you are going create an actively polling service
@@ -105,9 +101,11 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
         logger.info("PLCLogoBinding constuctor");
     }
 
+    @Override
     public void activate() {
     }
 
+    @Override
     public void deactivate() {
         for (PLCLogoBindingProvider provider : providers) {
             provider.removeBindingChangeListener(this);
@@ -168,7 +166,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                 lock.unlock();
 
                 if (result != 0) {
-                    logger.warn("Failed to read memory: " + LogoS7Client.ErrorText(result) + " Reconnecting...");
+                    logger.warn("Failed to read memory: " + S7Client.ErrorText(result) + " Reconnecting...");
                     ReconnectLogo(LogoS7Client);
                     return;
                 }
@@ -181,7 +179,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
             }
             for (PLCLogoBindingProvider provider : providers) {
                 for (String itemName : provider.getItemNames()) {
-                    PLCLogoBindingConfig config = (PLCLogoBindingConfig) provider.getBindingConfig(itemName);
+                    PLCLogoBindingConfig config = provider.getBindingConfig(itemName);
                     if (config.getController().equals(controller)) {
                         // it is for our currently selected controller
                         PLCLogoMemoryConfig rd = config.getRD();
@@ -205,30 +203,33 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                         }
 
                         if (config.isSet()) {
-                        	if (currentValue == config.getLastValue())
-                        		continue;
+                            if (currentValue == config.getLastValue()) {
+                                continue;
+                            }
 
-                    		int delta = Math.abs(config.getLastValue() - currentValue);
-                    		if (!rd.isDigital() && (delta < config.getAnalogDelta()))
-                    			continue;
+                            int delta = Math.abs(config.getLastValue() - currentValue);
+                            if (!rd.isDigital() && (delta < config.getAnalogDelta())) {
+                                continue;
+                            }
                         }
 
                         Item item = provider.getItem(itemName);
                         boolean isValid = kind.equals("I") && item instanceof ContactItem;
-                        isValid = isValid || (kind.equals("M")
-                                && (item instanceof ContactItem || item instanceof SwitchItem));
+                        isValid = isValid
+                                || (kind.equals("M") && (item instanceof ContactItem || item instanceof SwitchItem));
                         isValid = isValid || (kind.equals("Q") && item instanceof SwitchItem);
                         isValid = isValid || (kind.equals("NI") && item instanceof ContactItem);
                         isValid = isValid || (kind.equals("NQ") && item instanceof SwitchItem);
-                        isValid = isValid || (kind.equals("VB")
-                                && (item instanceof ContactItem || item instanceof SwitchItem));
-                        isValid = isValid || (kind.equals("VW")
-                                && (item instanceof ContactItem || item instanceof SwitchItem));
+                        isValid = isValid
+                                || (kind.equals("VB") && (item instanceof ContactItem || item instanceof SwitchItem));
+                        isValid = isValid
+                                || (kind.equals("VW") && (item instanceof ContactItem || item instanceof SwitchItem));
                         if (item instanceof NumberItem || isValid) {
                             eventPublisher.postUpdate(itemName, createState(item, currentValue));
                             config.setLastValue(currentValue);
                         } else {
-                            logger.warn("Block " + block + " is incompatible with item " + item.getName() + " on " + controller);
+                            logger.warn("Block " + block + " is incompatible with item " + item.getName() + " on "
+                                    + controller);
                         }
                     }
                 }
@@ -249,79 +250,76 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
     }
 
     /**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command)
-	{
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		// Note itemname is the item name not the controller name/instance!
-		//
-		super.internalReceiveCommand(itemName, command);
-		logger.debug("internalReceiveCommand() is called!");
-		for (PLCLogoBindingProvider provider : providers)
-		{
-			if (!provider.providesBindingFor(itemName)) {
+     * @{inheritDoc}
+     */
+    @Override
+    protected void internalReceiveCommand(String itemName, Command command) {
+        // the code being executed when a command was sent on the openHAB
+        // event bus goes here. This method is only called if one of the
+        // BindingProviders provide a binding for the given 'itemName'.
+        // Note itemname is the item name not the controller name/instance!
+        //
+        super.internalReceiveCommand(itemName, command);
+        logger.debug("internalReceiveCommand() is called!");
+        for (PLCLogoBindingProvider provider : providers) {
+            if (!provider.providesBindingFor(itemName)) {
                 continue;
             }
 
-			PLCLogoBindingConfig config = provider.getBindingConfig(itemName);
+            PLCLogoBindingConfig config = provider.getBindingConfig(itemName);
 
-			if (!controllers.containsKey(config.getController())) {
-				logger.warn("Invalid write requested for controller "+ config.getController());
-				continue;
-			}
+            if (!controllers.containsKey(config.getController())) {
+                logger.warn("Invalid write requested for controller " + config.getController());
+                continue;
+            }
 
-			PLCLogoConfig controller = controllers.get(config.getController());
+            PLCLogoConfig controller = controllers.get(config.getController());
 
-			PLCLogoMemoryConfig wr = config.getWR();
-			wr.setModel(controller.getModel());
-			int addr = wr.getAddress();
-			if (wr.isInRange())
-			{
-				logger.warn("Invalid write requested at memory location " + addr + " check config");
-				continue;
-			}
+            PLCLogoMemoryConfig wr = config.getWR();
+            wr.setModel(controller.getModel());
+            int addr = wr.getAddress();
+            if (wr.isInRange()) {
+                logger.warn("Invalid write requested at memory location " + addr + " check config");
+                continue;
+            }
 
-			/**************************
-			 * Send command to the LOGO! controller memory
-			 *
-			 */
+            /**************************
+             * Send command to the LOGO! controller memory
+             *
+             */
 
-			S7Client LogoS7Client = controller.getS7Client();
-			if (LogoS7Client == null) {
-				logger.debug("No S7client for "+ config.getController());
-				return;
-			} else {
-				lock.lock();
-				int result = ReadLogoDBArea(LogoS7Client, controller.getMemorySize());
-				if (result == 0) {
-					Item item = config.getItem();
-					int address = wr.getAddress();
-					if (item instanceof NumberItem && !wr.isDigital()) {
-						if (command instanceof DecimalType) {
-							S7.SetWordAt(data, address, ((DecimalType)command).intValue());
-			             }
-					} else if (item instanceof SwitchItem && wr.isDigital()) {
-						if (command instanceof OnOffType) {
-							S7.SetBitAt(data, address, wr.getBit(), command == OnOffType.ON ? true : false);
-			             }
-			        }
-					result = WriteLogoDBArea(LogoS7Client, controller.getMemorySize());
-					if (result != 0) {
-						logger.warn("Failed to write memory: " + LogoS7Client.ErrorText(result) + " Reconnecting...");
-						ReconnectLogo(LogoS7Client);
-					}
-				} else {
-					logger.warn("Failed to read memory: " + LogoS7Client.ErrorText(result) + " Reconnecting...");
-					ReconnectLogo(LogoS7Client);
-				}
-				lock.unlock();
-			}
-		}
-	}
+            S7Client LogoS7Client = controller.getS7Client();
+            if (LogoS7Client == null) {
+                logger.debug("No S7client for " + config.getController());
+                return;
+            } else {
+                lock.lock();
+                int result = ReadLogoDBArea(LogoS7Client, controller.getMemorySize());
+                if (result == 0) {
+                    Item item = config.getItem();
+                    int address = wr.getAddress();
+                    if (item instanceof NumberItem && !wr.isDigital()) {
+                        if (command instanceof DecimalType) {
+                            S7.SetWordAt(data, address, ((DecimalType) command).intValue());
+                        }
+                    } else if (item instanceof SwitchItem && wr.isDigital()) {
+                        if (command instanceof OnOffType) {
+                            S7.SetBitAt(data, address, wr.getBit(), command == OnOffType.ON ? true : false);
+                        }
+                    }
+                    result = WriteLogoDBArea(LogoS7Client, controller.getMemorySize());
+                    if (result != 0) {
+                        logger.warn("Failed to write memory: " + S7Client.ErrorText(result) + " Reconnecting...");
+                        ReconnectLogo(LogoS7Client);
+                    }
+                } else {
+                    logger.warn("Failed to read memory: " + S7Client.ErrorText(result) + " Reconnecting...");
+                    ReconnectLogo(LogoS7Client);
+                }
+                lock.unlock();
+            }
+        }
+    }
 
     /**
      * @{inheritDoc}
@@ -403,17 +401,16 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                     PLCLogoModel model = null;
 
                     if (modelName.equalsIgnoreCase("0BA7")) {
-                    	model = PLCLogoModel.LOGO_MODEL_0BA7;
-                    } else
-                    if (modelName.equalsIgnoreCase("0BA8")) {
-                		model = PLCLogoModel.LOGO_MODEL_0BA8;
+                        model = PLCLogoModel.LOGO_MODEL_0BA7;
+                    } else if (modelName.equalsIgnoreCase("0BA8")) {
+                        model = PLCLogoModel.LOGO_MODEL_0BA8;
                     } else {
-                    	logger.error("Unknown model " + modelName + " for PLC " + controllerName);
+                        logger.error("Unknown model " + modelName + " for PLC " + controllerName);
                     }
 
                     if (model != null) {
-                    	logger.info("Model " + modelName + " for PLC " + controllerName);
-                    	deviceConfig.setModel(model);
+                        logger.info("Model " + modelName + " for PLC " + controllerName);
+                        deviceConfig.setModel(model);
                     }
                 }
             } // while
@@ -543,8 +540,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
             return logoModel;
         }
 
-        public int getMemorySize()
-        {
+        public int getMemorySize() {
             return (logoModel == PLCLogoModel.LOGO_MODEL_0BA8) ? 1470 : 1024;
         }
 

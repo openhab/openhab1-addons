@@ -8,4 +8,7 @@
  */
 package org.openhab.binding.plclogo.internal;
 
-public enum PLCLogoModel { LOGO_MODEL_0BA7, LOGO_MODEL_0BA8 };
+public enum PLCLogoModel {
+    LOGO_MODEL_0BA7,
+    LOGO_MODEL_0BA8
+};
