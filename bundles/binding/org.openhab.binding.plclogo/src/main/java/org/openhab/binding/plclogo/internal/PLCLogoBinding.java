@@ -356,45 +356,38 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                 if (deviceConfig == null) {
                     deviceConfig = new PLCLogoConfig();
                     controllers.put(controllerName, deviceConfig);
-                    logger.info("Config for " + controllerName);
+                    logger.info("Create new config for {}", controllerName);
                 }
                 if (matcher.group(2).equals("host")) {
-                    // matcher.find();
-                    String IP = config.get(key).toString();
-                    deviceConfig.setIP(IP);
-                    logger.info("Host of " + controllerName + ":" + IP);
+                    String ip = config.get(key).toString();
+                    deviceConfig.setIP(ip);
+                    logger.info("Set host of {}: {}", controllerName, ip);
                     configured = true;
                 }
                 if (matcher.group(2).equals("remoteTSAP")) {
-                    // matcher.find();
-                    String remoteTSAP = config.get(key).toString();
-                    logger.info("Remote TSAP for " + controllerName + ":" + remoteTSAP);
-
-                    deviceConfig.setRemoteTSAP(Integer.decode(remoteTSAP));
+                    String tsap = config.get(key).toString();
+                    deviceConfig.setRemoteTSAP(Integer.decode(tsap));
+                    logger.info("Set remote TSAP for {}: {}", controllerName, tsap);
                 }
                 if (matcher.group(2).equals("localTSAP")) {
-                    // matcher.find();
-                    String localTSAP = config.get(key).toString();
-                    logger.info("Local TSAP for " + controllerName + ":" + localTSAP);
-
-                    deviceConfig.setLocalTSAP(Integer.decode(localTSAP));
+                    String tsap = config.get(key).toString();
+                    deviceConfig.setLocalTSAP(Integer.decode(tsap));
+                    logger.info("Set local TSAP for {}: {}", controllerName, tsap);
                 }
                 if (matcher.group(2).equals("model")) {
-                    // matcher.find();
-                    String modelName = config.get(key).toString();
                     PLCLogoModel model = null;
-
+                    String modelName = config.get(key).toString();
                     if (modelName.equalsIgnoreCase("0BA7")) {
                         model = PLCLogoModel.LOGO_MODEL_0BA7;
                     } else if (modelName.equalsIgnoreCase("0BA8")) {
                         model = PLCLogoModel.LOGO_MODEL_0BA8;
                     } else {
-                        logger.error("Unknown model " + modelName + " for PLC " + controllerName);
+                        logger.info("Found unknown model for {}: {}", controllerName, modelName);
                     }
 
                     if (model != null) {
-                        logger.info("Model " + modelName + " for PLC " + controllerName);
                         deviceConfig.setModel(model);
+                        logger.info("Set model for {}: {}", controllerName, modelName);
                     }
                 }
             } // while
@@ -403,25 +396,25 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
             while (entries.hasNext()) {
                 Entry<String, PLCLogoConfig> thisEntry = entries.next();
                 String controllerName = thisEntry.getKey();
-                PLCLogoConfig logoConfig = thisEntry.getValue();
-                S7Client LogoS7Client = logoConfig.getS7Client();
+                PLCLogoConfig deviceConfig = thisEntry.getValue();
+                S7Client LogoS7Client = deviceConfig.getS7Client();
                 if (LogoS7Client == null) {
                     LogoS7Client = new Moka7.S7Client();
                 } else {
                     LogoS7Client.Disconnect();
                 }
-                LogoS7Client.SetConnectionParams(logoConfig.getlogoIP(), logoConfig.getlocalTSAP(),
-                        logoConfig.getremoteTSAP());
-                logger.info("About to connect to " + controllerName);
+                LogoS7Client.SetConnectionParams(deviceConfig.getlogoIP(), deviceConfig.getlocalTSAP(),
+                        deviceConfig.getremoteTSAP());
+                logger.info("About to connect to {}", controllerName);
 
                 if ((LogoS7Client.Connect() == 0) && LogoS7Client.Connected) {
-                    logger.info("Connected to PLC LOGO! device " + controllerName);
+                    logger.info("Connected to PLC LOGO! device {}", controllerName);
                 } else {
-                    logger.info("Could not connect to PLC LOGO! device " + controllerName);
-                    throw new ConfigurationException("Could not connect to PLC device ",
-                            controllerName + " " + logoConfig.getlogoIP().toString());
+                    logger.info("Could not connect to PLC LOGO! device {}", controllerName);
+                    throw new ConfigurationException("Could not connect to PLC LOGO! device ",
+                            controllerName + " " + deviceConfig.getlogoIP().toString());
                 }
-                logoConfig.setS7Client(LogoS7Client);
+                deviceConfig.setS7Client(LogoS7Client);
             }
 
             setProperlyConfigured(configured);
