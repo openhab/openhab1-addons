@@ -24,6 +24,7 @@ import Moka7.*;
 
 import org.openhab.binding.plclogo.PLCLogoBindingProvider;
 import org.openhab.binding.plclogo.PLCLogoBindingConfig;
+import org.openhab.binding.plclogo.internal.PLCLogoModel;
 
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
@@ -51,7 +52,6 @@ import org.slf4j.LoggerFactory;
  * @since 1.5.0
  */
 public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider> implements ManagedService {
-
     private final ReentrantLock lock = new ReentrantLock();
     private static final Logger logger = LoggerFactory.getLogger(PLCLogoBinding.class);
     private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(.*?)$");
@@ -65,11 +65,11 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
     /**
      * Buffer for read/write operations
      */
-    private byte data[] = new byte[1024]; // 1470 for 0BA8
+    private byte data[] = new byte[2048];
 
     private static Map<String, PLCLogoConfig> controllers = new HashMap<String, PLCLogoConfig>();
 
-    private int ReadLogoDBArea(S7Client client) {
+    private int ReadLogoDBArea(S7Client client, int size) {
         int result = 0;
         int offset = 0;
         final int bufSize = 1024;
@@ -78,8 +78,8 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
         result = client.ReadArea(S7.S7AreaDB, 1, 0, bufSize, data);
         offset = offset + bufSize;
 
-        while ((result == 0) && (offset < data.length)) {
-            byte buffer[] = new byte[Math.min(data.length - offset, bufSize)];
+        while ((result == 0) && (offset < size)) {
+            byte buffer[] = new byte[Math.min(size - offset, bufSize)];
             result = client.ReadArea(S7.S7AreaDB, 1, offset, buffer.length, buffer);
             System.arraycopy(buffer, 0, data, offset, buffer.length);
             offset = offset + buffer.length;
@@ -88,8 +88,8 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
         return result;
     }
 
-    private int WriteLogoDBArea(S7Client client) {
-        return client.WriteArea(S7.S7AreaDB, 1, 0, data.length, data);
+    private int WriteLogoDBArea(S7Client client, int size) {
+        return client.WriteArea(S7.S7AreaDB, 1, 0, size, data);
     }
 
     private void ReconnectLogo(S7Client client) {
@@ -164,7 +164,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                 logger.debug("No S7client for " + controller);
             } else {
                 lock.lock();
-                int result = ReadLogoDBArea(LogoS7Client);
+                int result = ReadLogoDBArea(LogoS7Client, logoConfig.getMemorySize());
                 lock.unlock();
 
                 if (result != 0) {
@@ -185,6 +185,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                     if (config.getController().equals(controller)) {
                         // it is for our currently selected controller
                         PLCLogoMemoryConfig rd = config.getRD();
+                        rd.setModel(logoConfig.getModel());
 
                         int address = rd.getAddress();
                         String block = rd.getLocation();
@@ -194,14 +195,22 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                         if (rd.isDigital()) {
                             currentValue = S7.GetBitAt(data, address, rd.getBit()) ? 1 : 0;
                         } else {
-                            currentValue = S7.GetShortAt(data, address); // short because negative values
+                            /*
+                             * After the data transfer from a LOGO! Base Module to LOGO!Soft Comfort,
+                             * you can view only analog values within the range of -32768 to 32767 on LOGO!Soft Comfort.
+                             * If an analog value exceeds the value range,
+                             * then only the nearest upper limit (32767) or lower limit (-32768) can be displayed.
+                             */
+                            currentValue = S7.GetShortAt(data, address);
                         }
 
-                        if (!config.isSet() || currentValue != config.getLastValue()) {
-                            int delta = Math.abs(config.getLastValue() - currentValue);
-                            if (!rd.isDigital() && (delta < config.getAnalogDelta())) {
-                                continue;
-                            }
+                        if (config.isSet()) {
+                        	if (currentValue == config.getLastValue())
+                        		continue;
+
+                    		int delta = Math.abs(config.getLastValue() - currentValue);
+                    		if (!rd.isDigital() && (delta < config.getAnalogDelta()))
+                    			continue;
                         }
 
                         Item item = provider.getItem(itemName);
@@ -259,13 +268,6 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
             }
 
 			PLCLogoBindingConfig config = provider.getBindingConfig(itemName);
-			PLCLogoMemoryConfig wr = config.getWR();
-			int addr = wr.getAddress();
-			if (wr.isInRange())
-			{
-				logger.warn("Invalid write requested at memory location " + addr + " check config");
-				continue;
-			}
 
 			if (!controllers.containsKey(config.getController())) {
 				logger.warn("Invalid write requested for controller "+ config.getController());
@@ -273,6 +275,16 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 			}
 
 			PLCLogoConfig controller = controllers.get(config.getController());
+
+			PLCLogoMemoryConfig wr = config.getWR();
+			wr.setModel(controller.getModel());
+			int addr = wr.getAddress();
+			if (wr.isInRange())
+			{
+				logger.warn("Invalid write requested at memory location " + addr + " check config");
+				continue;
+			}
+
 			/**************************
 			 * Send command to the LOGO! controller memory
 			 *
@@ -284,7 +296,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 				return;
 			} else {
 				lock.lock();
-				int result = ReadLogoDBArea(LogoS7Client);
+				int result = ReadLogoDBArea(LogoS7Client, controller.getMemorySize());
 				if (result == 0) {
 					Item item = config.getItem();
 					int address = wr.getAddress();
@@ -297,7 +309,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 							S7.SetBitAt(data, address, wr.getBit(), command == OnOffType.ON ? true : false);
 			             }
 			        }
-					result = WriteLogoDBArea(LogoS7Client);
+					result = WriteLogoDBArea(LogoS7Client, controller.getMemorySize());
 					if (result != 0) {
 						logger.warn("Failed to write memory: " + LogoS7Client.ErrorText(result) + " Reconnecting...");
 						ReconnectLogo(LogoS7Client);
@@ -385,6 +397,25 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 
                     deviceConfig.setlocalTSAP(Integer.decode(localTSAP));
                 }
+                if (matcher.group(2).equals("model")) {
+                    // matcher.find();
+                    String modelName = config.get(key).toString();
+                    PLCLogoModel model = null;
+
+                    if (modelName.equalsIgnoreCase("0BA7")) {
+                    	model = PLCLogoModel.LOGO_MODEL_0BA7;
+                    } else
+                    if (modelName.equalsIgnoreCase("0BA8")) {
+                		model = PLCLogoModel.LOGO_MODEL_0BA8;
+                    } else {
+                    	logger.error("Unknown model " + modelName + " for PLC " + controllerName);
+                    }
+
+                    if (model != null) {
+                    	logger.info("Model " + modelName + " for PLC " + controllerName);
+                    	deviceConfig.setModel(model);
+                    }
+                }
             } // while
 
             Iterator<Entry<String, PLCLogoConfig>> entries = controllers.entrySet().iterator();
@@ -463,6 +494,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 
         private final String instancename;
         private String logoIP;
+        private PLCLogoModel logoModel = PLCLogoModel.LOGO_MODEL_0BA7;
         private int localTSAP = 0x0300;
         private int remoteTSAP = 0x0200;
         private S7Client LogoS7Client;
@@ -501,6 +533,19 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 
         public int getremoteTSAP() {
             return remoteTSAP;
+        }
+
+        public void setModel(PLCLogoModel model) {
+            this.logoModel = model;
+        }
+
+        public PLCLogoModel getModel() {
+            return logoModel;
+        }
+
+        public int getMemorySize()
+        {
+            return (logoModel == PLCLogoModel.LOGO_MODEL_0BA8) ? 1470 : 1024;
         }
 
         public S7Client getS7Client() {
