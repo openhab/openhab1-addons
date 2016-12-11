@@ -4,6 +4,7 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.binding.plclogo.internal.PLCLogoBinding;
 import org.openhab.binding.plclogo.internal.PLCLogoMemoryConfig;
+import org.openhab.binding.plclogo.internal.PLCLogoModel;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,7 +107,15 @@ public class PLCLogoBindingConfig implements BindingConfig {
 		return this.isset;
 	}
 
-	public Item getItem() {
+	public Item getItem()
+	{
 		return this.item;
+	}
+
+	public void setModel(PLCLogoModel model)
+	{
+		rdMem.setModel(model);
+		if (rdMem != wrMem)
+			wrMem.setModel(model);
 	}
 }
