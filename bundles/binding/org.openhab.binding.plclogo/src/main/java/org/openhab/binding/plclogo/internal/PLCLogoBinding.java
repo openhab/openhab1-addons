@@ -145,7 +145,6 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
      */
     @Override
     protected void execute() {
-        int resultant;
         // the frequently executed code (polling) goes here ...
         // logger.debug("execute() method is called!");
         if (!bindingsExist()) {
@@ -241,17 +240,6 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
     /**
      * @{inheritDoc}
      */
-    protected void reconnectOnError(S7Client LogoS7Client) {
-        LogoS7Client.Disconnect();
-        LogoS7Client.Connect();
-        if (LogoS7Client.Connected) {
-            logger.warn("Reconnect successful");
-        }
-    }
-
-    /**
-     * @{inheritDoc}
-     */
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
         // the code being executed when a command was sent on the openHAB
@@ -283,11 +271,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                 continue;
             }
 
-            /**************************
-             * Send command to the LOGO! controller memory
-             *
-             */
-
+            // Send command to the LOGO! controller memory
             S7Client LogoS7Client = controller.getS7Client();
             if (LogoS7Client == null) {
                 logger.debug("No S7client for " + config.getController());
@@ -370,7 +354,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                 PLCLogoConfig deviceConfig = controllers.get(controllerName);
 
                 if (deviceConfig == null) {
-                    deviceConfig = new PLCLogoConfig(controllerName);
+                    deviceConfig = new PLCLogoConfig();
                     controllers.put(controllerName, deviceConfig);
                     logger.info("Config for " + controllerName);
                 }
@@ -386,14 +370,14 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                     String remoteTSAP = config.get(key).toString();
                     logger.info("Remote TSAP for " + controllerName + ":" + remoteTSAP);
 
-                    deviceConfig.setremoteTSAP(Integer.decode(remoteTSAP));
+                    deviceConfig.setRemoteTSAP(Integer.decode(remoteTSAP));
                 }
                 if (matcher.group(2).equals("localTSAP")) {
                     // matcher.find();
                     String localTSAP = config.get(key).toString();
                     logger.info("Local TSAP for " + controllerName + ":" + localTSAP);
 
-                    deviceConfig.setlocalTSAP(Integer.decode(localTSAP));
+                    deviceConfig.setLocalTSAP(Integer.decode(localTSAP));
                 }
                 if (matcher.group(2).equals("model")) {
                     // matcher.find();
@@ -489,26 +473,24 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
          * @since 1.5.0
          */
 
-        private final String instancename;
         private String logoIP;
         private PLCLogoModel logoModel = PLCLogoModel.LOGO_MODEL_0BA7;
         private int localTSAP = 0x0300;
         private int remoteTSAP = 0x0200;
         private S7Client LogoS7Client;
 
-        public PLCLogoConfig(String instancename) {
-            this.instancename = instancename;
+        public PLCLogoConfig() {
         }
 
         public void setIP(String logoIP) {
             this.logoIP = logoIP;
         }
 
-        public void setlocalTSAP(int localTSAP) {
+        public void setLocalTSAP(int localTSAP) {
             this.localTSAP = localTSAP;
         }
 
-        public void setremoteTSAP(int remoteTSAP) {
+        public void setRemoteTSAP(int remoteTSAP) {
             this.remoteTSAP = remoteTSAP;
         }
 
@@ -518,10 +500,6 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 
         public String getlogoIP() {
             return logoIP;
-        }
-
-        public String getintancename() {
-            return instancename;
         }
 
         public int getlocalTSAP() {
