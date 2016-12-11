@@ -8,6 +8,8 @@
 		<version>1.9.0-SNAPSHOT</version>
 	</parent>
 
+	<name>openHAB PlcLogo Binding</name>
+
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.plclogo</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.plclogo</bundle.namespace>
@@ -19,9 +21,15 @@
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.plclogo</artifactId>
 
-	<name>openHAB PlcLogo Binding</name>
-
 	<packaging>eclipse-plugin</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>activesoap</groupId>
+			<artifactId>jaxb-xalan</artifactId>
+			<version>1.5</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>

@@ -2,123 +2,120 @@ package org.openhab.binding.plclogo;
 
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.binding.plclogo.internal.PLCLogoBinding;
+import org.openhab.binding.plclogo.internal.PLCLogoMemoryConfig;
+import org.openhab.binding.plclogo.internal.PLCLogoModel;
+import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PLCLogoBindingConfig implements BindingConfig {
-  private Item item;
-  private final String controller;
-  private final String block;
-  private final boolean invert;
-  private final int threshold;
-  private int lastValue;
-  
-  public PLCLogoBindingConfig(Item item, String controller, String block,  boolean invert, int threshold) {
-    this.item = item;
-    this.controller = controller;
-    this.block = block.toUpperCase();
-    this.threshold = threshold;
-    this.invert = invert;
-    this.lastValue = Integer.MIN_VALUE;    
-  }
-  
-  public void setLastvalue(int lastValue) {  
-    this.lastValue = lastValue;
-  }
+	private Item item;
+	private final String controller;
+	private final PLCLogoMemoryConfig rdMem;
+	private final PLCLogoMemoryConfig wrMem;
+	private boolean invert;
+	private int analogDelta;
+	private int lastValue;
+	private boolean isset;
 
-  public String getControllerName() {    
-    return this.controller;
-  }
+	private static final Logger logger =
+			LoggerFactory.getLogger(PLCLogoBinding.class);
 
-  public String getBlock () {
-    return this.block;
-  }
-  public int getAddress () {
-    int address = -1;
+	public PLCLogoBindingConfig(Item item, String configString)
+			throws BindingConfigParseException
+	{
+		this.item = item;
 
-		// TODO Add some validation to input parameters!
-		if (block.substring(0,1).equals("I")) {
-			// I starts at 1024 for 8 bytes
-			address = 1024 + ((Integer.parseInt(block.substring(1, block.length())) - 1) / 8);
-		} else if (block.substring(0,2).equals("AI")) {
-			// AI starts at 1032 for 32 bytes --> 16 words
-			address = 1032 + ((Integer.parseInt(block.substring(2, block.length())) - 1) * 2);
-		} else if (block.substring(0,1).equals("Q")) {
-			// Q starts at 1064 for 8 bytes
-			address = 1064 + ((Integer.parseInt(block.substring(1, block.length())) - 1) / 8);
-		} else if (block.substring(0,2).equals("AQ")) {
-			// AQ starts at 1072 for 32 bytes --> 16 words
-			address = 1072 + ((Integer.parseInt(block.substring(2, block.length())) - 1) * 2);
-		} else if (block.substring(0,1).equals("M")) {
-			// Markers starts at 1104 for 14 bytes
-			address = 1104 + ((Integer.parseInt(block.substring(1, block.length())) - 1) / 8);
-		} else if (block.substring(0,2).equals("AM")) {
-			// Analog markers starts at 1118 for 128 bytes --> 64 words
-			address = 1118 + ((Integer.parseInt(block.substring(2, block.length())) - 1) * 2);
-		} else if (block.substring(0,2).equals("NI")) {
-			// Network inputs starts at 1246 for 16 bytes
-			address = 1246 + ((Integer.parseInt(block.substring(1, block.length())) - 1) / 8);
-		} else if (block.substring(0,3).equals("NAI")) {
-			// Network analog inputs starts at 1262 for 128 bytes --> 64 words
-			address = 1262 + ((Integer.parseInt(block.substring(3, block.length())) - 1) * 2);
-		} else if (block.substring(0,2).equals("NQ")) {
-			// Network outputs starts at 1390 for 16 bytes
-			address = 1390 + ((Integer.parseInt(block.substring(1, block.length())) - 1) / 8);
-		} else if (block.substring(0,3).equals("NAQ")) {
-			// Network analog inputs starts at 1406 for 64 bytes --> 32 words
-			address = 1406 + ((Integer.parseInt(block.substring(3, block.length())) - 1) * 2);
-		} else if (block.substring(0,2).equals("VB") || block.substring(0,2).equals("VW")) {
-      int dot = block.indexOf(".", 2);
-      address = Integer.parseInt(block.substring(2, dot < 0 ? block.length() : dot));
-    }
-    
-    return address;
-  }
+		// the config string has the format
+		//
+		//  instancename:memloc.bit [activelow:yes|no]
+		//
+		String shouldBe = "should be controllername:memloc[.bit] [activelow:yes|no]";
+		String[] segments = configString.split(" ");
+		if (segments.length > 2)
+			throw new BindingConfigParseException("invalid item format: " + configString + ", " + shouldBe);
+		String[] dev = segments[0].split(":");
+		if (dev.length < 2)
+			throw new BindingConfigParseException("invalid item name/memory format: " + configString + ", " + shouldBe);
 
-  public int getBit () {
-    int bit = -1;
+		controller = dev[0];
+		rdMem = new PLCLogoMemoryConfig(dev[1]);
+		if (dev.length == 3)
+			wrMem = new PLCLogoMemoryConfig(dev[2]);
+		else
+			wrMem = rdMem;
 
-		if (block.substring(0,1).equals("I")) {
-			bit = (Integer.parseInt(block.substring(1, block.length())) - 1) % 8;
-		} else if (block.substring(0,1).equals("Q")) {
-			bit = (Integer.parseInt(block.substring(1, block.length())) - 1) % 8;
-		} else if (block.substring(0,1).equals("M")) {
-			bit = (Integer.parseInt(block.substring(1, block.length())) - 1) % 8;
-		} else if (block.substring(0,2).equals("NI")) {
-			bit = (Integer.parseInt(block.substring(1, block.length())) - 1) % 8;
-		} else if (block.substring(0,2).equals("NQ")) {
-			bit = (Integer.parseInt(block.substring(1, block.length())) - 1) % 8;
-		} else if (block.substring(0,2).equals("VB") || block.substring(0,2).equals("VW")) {
-      int dot = block.indexOf(".", 2);
-      if (dot >= 0) {
-        bit = Integer.parseInt(block.substring(dot + 1, block.length()));
-      }
-    }
-    
-    return bit;
-  }
-  
-  public int getThreshold() {
-    return this.threshold;
-  }
-  public boolean getInvert() {
-    return this.invert;
-  }
-  public int getLastValue() {
-    return this.lastValue;
-  }
+		// check for invert or analogdelta
+		if (segments.length == 2) {
+			logger.debug("Addtional binding config " + segments[1]);
+			String[] parts = segments[1].split("=");
+			if (parts.length != 2)
+				throw new BindingConfigParseException("invalid second parameter: " + configString + ", " + shouldBe);
 
-  public Item getItem() {
-    return this.item;
-  }
-  
-  public boolean isDigital() {
-    return block.startsWith("I") || block.startsWith("Q") || block.startsWith("M") ||
-           block.startsWith("NI") || block.startsWith("NQ") ||
-           ((block.startsWith("VB") || block.startsWith("VW")) && (getBit() >= 0));
-  }
-  
-  public boolean isInput() {
-    return block.startsWith("I") || block.startsWith("AI") ||
-           block.startsWith("NI") || block.startsWith("NAI") ||
-           block.startsWith("VB") || block.startsWith("VW");
-  }
+			if (parts[0].equalsIgnoreCase("activelow")) {
+				invert = parts[1].equalsIgnoreCase("yes");
+			}
+			if (parts[0].equalsIgnoreCase("analogdelta")) {
+				analogDelta = Integer.parseInt(parts[1]);
+				logger.debug("Setting analogDelta " + analogDelta);
+			}
+		}
+
+		this.lastValue = 0;
+		this.isset = false;
+	}
+
+	public String getController()
+	{
+		return controller;
+	}
+
+	public PLCLogoMemoryConfig getRD()
+	{
+		return rdMem;
+	}
+
+	public PLCLogoMemoryConfig getWR()
+	{
+		return wrMem;
+	}
+
+	public int getAnalogDelta()
+	{
+		return this.analogDelta;
+	}
+
+	public boolean getInvert()
+	{
+		return this.invert;
+	}
+
+	public int getLastValue()
+	{
+		return this.lastValue;
+	}
+
+	public void setLastValue(int lastValue)
+	{
+		this.isset = true;
+		this.lastValue = lastValue;
+	}
+
+	public boolean isSet()
+	{
+		return this.isset;
+	}
+
+	public Item getItem()
+	{
+		return this.item;
+	}
+
+	public void setModel(PLCLogoModel model)
+	{
+		rdMem.setModel(model);
+		if (rdMem != wrMem)
+			wrMem.setModel(model);
+	}
 }

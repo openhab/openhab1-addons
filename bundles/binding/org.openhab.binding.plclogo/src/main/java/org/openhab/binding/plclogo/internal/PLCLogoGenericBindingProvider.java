@@ -45,64 +45,30 @@ public class PLCLogoGenericBindingProvider extends AbstractGenericBindingProvide
         return config != null ? config.getItem() : null;
     }
 
-    /**
-     * @{inheritDoc}
-     */
-    @Override
-    public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        // @TODO may add additional checking based on the memloc
-        if (!(item instanceof SwitchItem || item instanceof ContactItem || item instanceof NumberItem)) {
-            throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
-                    + item.getClass().getSimpleName()
-                    + "', only Switch - Contact Items & Number are allowed - please check your *.items configuration");
-        }
-    }
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+		// @TODO may add additional checking based on the memloc
+		if (!(item instanceof SwitchItem || item instanceof ContactItem || item instanceof NumberItem)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only Switch - Contact Items & Number are allowed - please check your *.items configuration");
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void processBindingConfiguration(String context, Item item, String bindingConfig)
-            throws BindingConfigParseException {
-        super.processBindingConfiguration(context, item, bindingConfig);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException
+	{
+		super.processBindingConfiguration(context, item, bindingConfig);
 
-        // the config string has the format
-        //
-        // instancename:blocktype [activelow=yes|no]
-        //
-        String shouldBe = "should be controllername:blocktype [activelow=yes|no]";
-
-        int threshold = 0;
-        boolean invert = false;
-
-        String[] segments = bindingConfig.split(" ");
-        if (segments.length > 2) {
-            throw new BindingConfigParseException("invalid item format: " + bindingConfig + ", " + shouldBe);
-        }
-
-        String[] block = segments[0].split(":");
-        if (block.length != 2) {
-            throw new BindingConfigParseException(
-                    "invalid item name/memory format: " + bindingConfig + ", " + shouldBe);
-        }
-
-        // check for invert or threshold
-        if (segments.length == 2) {
-            logger.debug("Addtional binding config " + segments[1]);
-            String[] inversion = segments[1].split("=");
-            if (inversion.length != 2) {
-                throw new BindingConfigParseException("invalid second parameter: " + bindingConfig + ", " + shouldBe);
-            }
-            if ((inversion[0].compareToIgnoreCase("activelow") == 0)) {
-                invert = (inversion[1].compareToIgnoreCase("yes") == 0);
-            }
-            if (inversion[0].compareToIgnoreCase("threshold") == 0) {
-                threshold = Integer.parseInt(inversion[1]);
-                logger.debug("Setting threshold " + threshold);
-            }
-        }
-        addBindingConfig(item, new PLCLogoBindingConfig(item, block[0], block[1], invert, threshold));
-    }
+		PLCLogoBindingConfig config = new PLCLogoBindingConfig(item, bindingConfig);
+		addBindingConfig(item, config);
+	}
 
     @Override
     public PLCLogoBindingConfig getBindingConfig(String itemName) {
