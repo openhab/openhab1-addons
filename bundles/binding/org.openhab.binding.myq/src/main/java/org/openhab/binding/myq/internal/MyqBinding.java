@@ -10,6 +10,7 @@ package org.openhab.binding.myq.internal;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -125,27 +126,27 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
      */
     public void modified(final Map<String, Object> configuration) {
 
-        String refreshIntervalString = (String) configuration.get("refresh");
+        String refreshIntervalString = Objects.toString(configuration.get("refresh"), null);
         if (StringUtils.isNotBlank(refreshIntervalString)) {
             refreshInterval = Long.parseLong(refreshIntervalString);
         }
 
         // update the internal configuration accordingly
-        String usernameString = (String) configuration.get("username");
-        String passwordString = (String) configuration.get("password");
+        String usernameString = Objects.toString(configuration.get("username"), null);
+        String passwordString = Objects.toString(configuration.get("password"), null);
 
-        String appId = (String) configuration.get("appId");
+        String appId = Objects.toString(configuration.get("appId"), null);
         if (StringUtils.isBlank(appId)) {
             appId = MyqData.DEFAULT_APP_ID;
         }
 
         int timeout = MyqData.DEFAUALT_TIMEOUT;
-        String timeoutString = (String) configuration.get("timeout");
+        String timeoutString = Objects.toString(configuration.get("timeout"), null);
         if (StringUtils.isNotBlank(timeoutString)) {
             timeout = Integer.parseInt(timeoutString);
         }
 
-        String craftmanString = (String) configuration.get("craftman");
+        String craftmanString = Objects.toString(configuration.get("craftman"), null);
         if (StringUtils.isNotBlank(craftmanString)) {
             useCraftman = Boolean.parseBoolean(craftmanString);
         }
