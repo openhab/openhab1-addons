@@ -186,13 +186,13 @@ public class OneWireConnection {
         }
 
         logger.debug("OneWire configuration present. Setting up owserver connection.");
-        cvIp = Objects.toString(pvConfig.get("ip"), "");
+        cvIp = Objects.toString(pvConfig.get("ip"), null);
         if (StringUtils.isBlank(cvIp)) {
             logger.error("owserver IP address was configured as an empty string.");
             throw new ConfigurationException("onewire:ip", "owserver IP address was configured as an empty string.");
         }
 
-        String lvPortConfig = Objects.toString(pvConfig.get("port"), "");
+        String lvPortConfig = Objects.toString(pvConfig.get("port"), null);
         if (StringUtils.isNotBlank(lvPortConfig)) {
             cvPort = Integer.parseInt(lvPortConfig);
         }
@@ -203,7 +203,7 @@ public class OneWireConnection {
         }
         logger.debug("owserver ip:port = {}:{}", cvIp, cvPort);
 
-        String lvTempScaleString = Objects.toString(pvConfig.get("tempscale"), "");
+        String lvTempScaleString = Objects.toString(pvConfig.get("tempscale"), null);
         if (StringUtils.isNotBlank(lvTempScaleString)) {
             try {
                 cvTempScale = OwTemperatureScale.valueOf(lvTempScaleString);
@@ -215,19 +215,19 @@ public class OneWireConnection {
             }
         }
 
-        String lvRetryString = Objects.toString(pvConfig.get("retry"), "");
+        String lvRetryString = Objects.toString(pvConfig.get("retry"), null);
         if (StringUtils.isNotBlank(lvRetryString)) {
             cvRetry = Integer.parseInt(lvRetryString);
         }
         logger.debug("onewire:retry = {}", cvRetry);
 
-        String lvServerRetries = Objects.toString(pvConfig.get("server_retries"), "");
+        String lvServerRetries = Objects.toString(pvConfig.get("server_retries"), null);
         if (StringUtils.isNotBlank(lvServerRetries)) {
             cvServerRetries = Integer.parseInt(lvServerRetries);
         }
         logger.debug("onewire:server_retries = {}", cvServerRetries);
 
-        String lvRetryIntervalString = Objects.toString(pvConfig.get("server_retryInterval"), "");
+        String lvRetryIntervalString = Objects.toString(pvConfig.get("server_retryInterval"), null);
         if (StringUtils.isNotBlank(lvRetryIntervalString)) {
             cvServerRetryInterval = Integer.parseInt(lvRetryIntervalString);
             if (cvServerRetryInterval < 5 && cvServerRetryInterval > 0) {
@@ -342,14 +342,13 @@ public class OneWireConnection {
         int lvAttempt = 1;
         while (lvAttempt <= cvRetry) {
             try {
-                logger.debug("Trying to write '{}' to '{}', write attempt={}",
-                        pvValue, pvDevicePropertyPath, lvAttempt);
+                logger.debug("Trying to write '{}' to '{}', write attempt={}", pvValue, pvDevicePropertyPath,
+                        lvAttempt);
                 if (checkIfDeviceExists(pvDevicePropertyPath)) {
                     OneWireConnection.getConnection().write(pvDevicePropertyPath, pvValue);
                     return; // Success, exit
                 } else {
-                    logger.info("There is no device for path {}, write attempt={}",
-                            pvDevicePropertyPath, lvAttempt);
+                    logger.info("There is no device for path {}, write attempt={}", pvDevicePropertyPath, lvAttempt);
                 }
             } catch (OwfsException oe) {
                 logger.error("Writing {} to path {} attempt {} threw an exception", pvValue, pvDevicePropertyPath,

@@ -444,12 +444,12 @@ public class PowerMaxBinding extends AbstractActiveBinding<PowerMaxBindingProvid
         PowerMaxReceiveType.POWERLINK.setHandlerClass(PowerMaxPowerlinkMessage.class);
 
         if (config != null) {
-            String serialPortString = Objects.toString(config.get("serialPort"), "");
+            String serialPortString = Objects.toString(config.get("serialPort"), null);
             if (StringUtils.isNotBlank(serialPortString)) {
                 serialPort = serialPortString;
             }
 
-            String ipString = Objects.toString(config.get("ip"), "");
+            String ipString = Objects.toString(config.get("ip"), null);
             if (StringUtils.isNotBlank(ipString)) {
                 ipAddress = ipString;
             }
@@ -470,7 +470,7 @@ public class PowerMaxBinding extends AbstractActiveBinding<PowerMaxBindingProvid
             }
 
             if (ipAddress != null) {
-                String tcpPortString = Objects.toString(config.get("tcpPort"), "");
+                String tcpPortString = Objects.toString(config.get("tcpPort"), null);
                 if (StringUtils.isNotBlank(tcpPortString)) {
                     try {
                         tcpPort = Integer.parseInt(tcpPortString);
@@ -487,7 +487,7 @@ public class PowerMaxBinding extends AbstractActiveBinding<PowerMaxBindingProvid
                 }
             }
 
-            String motionOffDelayString = Objects.toString(config.get("motionOffDelay"), "");
+            String motionOffDelayString = Objects.toString(config.get("motionOffDelay"), null);
             if (StringUtils.isNotBlank(motionOffDelayString)) {
                 try {
                     motionOffDelay = Integer.parseInt(motionOffDelayString) * 60000;
@@ -499,22 +499,22 @@ public class PowerMaxBinding extends AbstractActiveBinding<PowerMaxBindingProvid
                 }
             }
 
-            String allowArmingString = Objects.toString(config.get("allowArming"), "");
+            String allowArmingString = Objects.toString(config.get("allowArming"), null);
             if (StringUtils.isNotBlank(allowArmingString)) {
                 allowArming = Boolean.valueOf(allowArmingString);
             }
-            String allowDisarmingString = Objects.toString(config.get("allowDisarming"), "");
+            String allowDisarmingString = Objects.toString(config.get("allowDisarming"), null);
             if (StringUtils.isNotBlank(allowDisarmingString)) {
                 allowDisarming = Boolean.valueOf(allowDisarmingString);
             }
-            String forceStandardModeString = Objects.toString(config.get("forceStandardMode"), "");
+            String forceStandardModeString = Objects.toString(config.get("forceStandardMode"), null);
             if (StringUtils.isNotBlank(forceStandardModeString)) {
                 forceStandardMode = Boolean.valueOf(forceStandardModeString);
                 PowerMaxReceiveType.POWERLINK.setHandlerClass(
                         forceStandardMode ? PowerMaxBaseMessage.class : PowerMaxPowerlinkMessage.class);
             }
 
-            String panelTypeString = Objects.toString(config.get("panelType"), "");
+            String panelTypeString = Objects.toString(config.get("panelType"), null);
             if (StringUtils.isNotBlank(panelTypeString)) {
                 try {
                     panelType = PowerMaxPanelType.fromLabel(panelTypeString);
@@ -525,12 +525,12 @@ public class PowerMaxBinding extends AbstractActiveBinding<PowerMaxBindingProvid
             }
             PowerMaxPanelSettings.initPanelSettings(panelType);
 
-            String autoSyncTimeString = Objects.toString(config.get("autoSyncTime"), "");
+            String autoSyncTimeString = Objects.toString(config.get("autoSyncTime"), null);
             if (StringUtils.isNotBlank(autoSyncTimeString)) {
                 autoSyncTime = Boolean.valueOf(autoSyncTimeString);
             }
 
-            String pinCodeString = Objects.toString(config.get("pinCode"), "");
+            String pinCodeString = Objects.toString(config.get("pinCode"), null);
             if (StringUtils.isNotBlank(pinCodeString)) {
                 pinCode = pinCodeString;
             }

@@ -96,7 +96,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
     public void updated(Dictionary<String, ?> pvConfig) throws ConfigurationException {
         if (pvConfig != null) {
             // Basic config
-            String lvPostOnlyChangedValues = Objects.toString(pvConfig.get("post_only_changed_values"), "");
+            String lvPostOnlyChangedValues = Objects.toString(pvConfig.get("post_only_changed_values"), null);
             if (StringUtils.isNotBlank(lvPostOnlyChangedValues)) {
                 ivPostOnlyChangedValues = Boolean.getBoolean(lvPostOnlyChangedValues);
             }
@@ -127,8 +127,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
             AbstractOneWireControlBindingConfig lvControlBindingConfig = (AbstractOneWireControlBindingConfig) lvBindigConfig;
             lvControlBindingConfig.executeControl(this, pvCommand);
         } else {
-            logger.debug("received command {} for item {} which is not writable or executable", pvCommand,
-                    pvItemName);
+            logger.debug("received command {} for item {} which is not writable or executable", pvCommand, pvItemName);
         }
     }
 

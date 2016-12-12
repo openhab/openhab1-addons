@@ -187,7 +187,7 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider> impl
         logger.debug("updated() is called!");
         if (config != null) {
             // Read port string
-            String portString = Objects.toString(config.get("port"), "");
+            String portString = Objects.toString(config.get("port"), null);
             logger.debug("dsmr:port=" + portString);
             if (StringUtils.isNotBlank(portString)) {
                 port = portString;
@@ -201,7 +201,7 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider> impl
             dsmrMeters.clear();
 
             for (DSMRMeterType meterType : DSMRMeterType.values()) {
-                String channelConfigValue = Objects.toString(config.get(meterType.channelConfigKey), "");
+                String channelConfigValue = Objects.toString(config.get(meterType.channelConfigKey), null);
                 logger.debug("dsmr:" + meterType.channelConfigKey + "=" + channelConfigValue);
 
                 if (StringUtils.isNotBlank(channelConfigValue)) {

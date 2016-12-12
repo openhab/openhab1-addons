@@ -736,30 +736,30 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 
             // to override the default granularity one has to add a
             // parameter to openhab.cfg like ecobee:granularity=2000
-            String granularityString = Objects.toString(config.get(CONFIG_GRANULARITY), "");
+            String granularityString = Objects.toString(config.get(CONFIG_GRANULARITY), null);
             granularity = isNotBlank(granularityString) ? Long.parseLong(granularityString) : DEFAULT_GRANULARITY;
 
             // to override the default refresh interval one has to add a
             // parameter to openhab.cfg like ecobee:refresh=240000
-            String refreshIntervalString = Objects.toString(config.get(CONFIG_REFRESH), "");
+            String refreshIntervalString = Objects.toString(config.get(CONFIG_REFRESH), null);
             refreshInterval = isNotBlank(refreshIntervalString) ? Long.parseLong(refreshIntervalString)
                     : DEFAULT_REFRESH;
 
             // to override the default quickPoll interval one has to add a
             // parameter to openhab.cfg like ecobee:quickpoll=4000
-            String quickPollIntervalString = Objects.toString(config.get(CONFIG_QUICKPOLL), "");
+            String quickPollIntervalString = Objects.toString(config.get(CONFIG_QUICKPOLL), null);
             quickPollInterval = isNotBlank(quickPollIntervalString) ? Long.parseLong(quickPollIntervalString)
                     : DEFAULT_QUICKPOLL;
 
             // to override the default HTTP timeout one has to add a
             // parameter to openhab.cfg like ecobee:timeout=20000
-            String timeoutString = Objects.toString(config.get(CONFIG_TIMEOUT), "");
+            String timeoutString = Objects.toString(config.get(CONFIG_TIMEOUT), null);
             if (isNotBlank(timeoutString)) {
                 AbstractRequest.setHttpRequestTimeout(Integer.parseInt(timeoutString));
             }
             // to override the default usage of Fahrenheit one has to add a
             // parameter to openhab.cfg, as in ecobee:tempscale=C
-            String tempScaleString = Objects.toString(config.get(CONFIG_TEMP_SCALE), "");
+            String tempScaleString = Objects.toString(config.get(CONFIG_TEMP_SCALE), null);
             if (isNotBlank(tempScaleString)) {
                 try {
                     Temperature.setLocalScale(Temperature.Scale.forValue(tempScaleString));
@@ -800,7 +800,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
                     credentialsCache.put(userid, credentials);
                 }
 
-                String value = Objects.toString(config.get(configKey), "");
+                String value = Objects.toString(config.get(configKey), null);
 
                 if (CONFIG_APP_KEY.equals(configKeyTail)) {
                     credentials.appKey = value;

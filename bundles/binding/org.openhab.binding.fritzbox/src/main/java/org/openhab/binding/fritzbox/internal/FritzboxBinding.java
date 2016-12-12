@@ -183,7 +183,7 @@ public class FritzboxBinding extends AbstractActiveBinding<FritzboxBindingProvid
     public void updated(Dictionary config) throws ConfigurationException {
 
         if (config != null) {
-            String ip = Objects.toString(config.get("ip"), "");
+            String ip = Objects.toString(config.get("ip"), null);
             if (StringUtils.isNotBlank(ip)) {
                 if (!ip.equals(FritzboxBinding.ip)) {
                     // only do something if the ip has changed
@@ -217,12 +217,12 @@ public class FritzboxBinding extends AbstractActiveBinding<FritzboxBindingProvid
                     }
                 }
             }
-            String password = Objects.toString(config.get("password"), "");
+            String password = Objects.toString(config.get("password"), null);
             if (StringUtils.isNotBlank(password)) {
                 FritzboxBinding.password = password;
             }
 
-            String username = Objects.toString(config.get("user"), "");
+            String username = Objects.toString(config.get("user"), null);
             if (StringUtils.isNotBlank(username)) {
                 FritzboxBinding.username = username;
             }

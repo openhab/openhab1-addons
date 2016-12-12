@@ -449,14 +449,14 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 
             // to override the default refresh interval one has to add a
             // parameter to openhab.cfg like nest:refresh=120000
-            String refreshIntervalString = Objects.toString(config.get(CONFIG_REFRESH), "");
+            String refreshIntervalString = Objects.toString(config.get(CONFIG_REFRESH), null);
             if (isNotBlank(refreshIntervalString)) {
                 refreshInterval = Long.parseLong(refreshIntervalString);
             }
 
             // to override the default HTTP request timeout one has to add a
             // parameter to openhab.cfg like nest:timeout=20000
-            String timeoutString = Objects.toString(config.get(CONFIG_TIMEOUT), "");
+            String timeoutString = Objects.toString(config.get(CONFIG_TIMEOUT), null);
             if (isNotBlank(timeoutString)) {
                 AbstractRequest.setHttpRequestTimeout(Integer.parseInt(timeoutString));
             }
@@ -481,7 +481,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
                     credentialsCache.put(userid, credentials);
                 }
 
-                String value = Objects.toString(config.get(configKey), "");
+                String value = Objects.toString(config.get(configKey), null);
 
                 if (CONFIG_CLIENT_ID.equals(configKeyTail)) {
                     credentials.clientId = value;

@@ -205,24 +205,24 @@ public class EcoTouchBinding extends AbstractActiveBinding<EcoTouchBindingProvid
 
         if (config != null) {
 
-            String refreshIntervalString = Objects.toString(config.get("refresh"), "");
+            String refreshIntervalString = Objects.toString(config.get("refresh"), null);
             if (StringUtils.isNotBlank(refreshIntervalString)) {
                 refreshInterval = Long.parseLong(refreshIntervalString);
             }
 
-            String ip = Objects.toString(config.get("ip"), ""); //$NON-NLS-1$
+            String ip = Objects.toString(config.get("ip"), null); //$NON-NLS-1$
             if (StringUtils.isBlank(ip)) {
                 throw new ConfigurationException("ip", "The ip address must not be empty.");
             }
             this.ip = ip;
 
-            String username = Objects.toString(config.get("username"), ""); //$NON-NLS-1$
+            String username = Objects.toString(config.get("username"), null); //$NON-NLS-1$
             if (StringUtils.isBlank(username)) {
                 throw new ConfigurationException("username", "The username must not be empty.");
             }
             this.username = username;
 
-            String password = Objects.toString(config.get("password"), ""); //$NON-NLS-1$
+            String password = Objects.toString(config.get("password"), null); //$NON-NLS-1$
             if (StringUtils.isBlank(password)) {
                 throw new ConfigurationException("password", "The password must not be empty.");
             }
