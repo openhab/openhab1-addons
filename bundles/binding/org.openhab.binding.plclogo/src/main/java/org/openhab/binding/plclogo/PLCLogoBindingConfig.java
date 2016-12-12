@@ -112,7 +112,7 @@ public class PLCLogoBindingConfig implements BindingConfig {
         return this.item;
     }
 
-    public void setModel(PLCLogoModel model) {
+    public void setModel(PLCLogoModel model) throws BindingConfigParseException {
         rdMem.setModel(model);
         if (rdMem != wrMem) {
             wrMem.setModel(model);

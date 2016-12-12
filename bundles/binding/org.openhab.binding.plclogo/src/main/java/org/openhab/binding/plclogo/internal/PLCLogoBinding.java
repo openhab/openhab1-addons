@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.plclogo.PLCLogoBindingConfig;
 import org.openhab.binding.plclogo.PLCLogoBindingProvider;
+import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
@@ -182,11 +183,16 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                     if (config.getController().equals(controller)) {
                         // it is for our currently selected controller
                         PLCLogoMemoryConfig rd = config.getRD();
-                        rd.setModel(logoConfig.getModel());
+
+                        try {
+                             rd.setModel(logoConfig.getModel());
+                        } catch(BindingConfigParseException e) {
+                             logger.warn("Invalid configuration for " + itemName + ": " + e + " on " + controller);
+                             continue;
+                        }
 
                         int address = rd.getAddress();
                         String block = rd.getLocation();
-                        String kind = rd.getKind();
 
                         int currentValue;
                         if (rd.isDigital()) {
@@ -213,16 +219,28 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                         }
 
                         Item item = provider.getItem(itemName);
-                        boolean isValid = kind.equals("I") && item instanceof ContactItem;
-                        isValid = isValid
-                                || (kind.equals("M") && (item instanceof ContactItem || item instanceof SwitchItem));
-                        isValid = isValid || (kind.equals("Q") && item instanceof SwitchItem);
-                        isValid = isValid || (kind.equals("NI") && item instanceof ContactItem);
-                        isValid = isValid || (kind.equals("NQ") && item instanceof SwitchItem);
-                        isValid = isValid
-                                || (kind.equals("VB") && (item instanceof ContactItem || item instanceof SwitchItem));
-                        isValid = isValid
-                                || (kind.equals("VW") && (item instanceof ContactItem || item instanceof SwitchItem));
+
+                        boolean isValid = false;
+
+                        switch (rd.getKind())
+                        {
+                        case I:
+                        case NI:
+                            isValid = item instanceof ContactItem;
+                            break;
+
+                        case Q:
+                        case NQ:
+                            isValid = item instanceof SwitchItem;
+                            break;
+
+                        case M:
+                        case VB:
+                        case VW:
+                            isValid = item instanceof ContactItem || item instanceof SwitchItem;
+                            break;
+                        }
+
                         if (item instanceof NumberItem || isValid) {
                             eventPublisher.postUpdate(itemName, createState(item, currentValue));
                             config.setLastValue(currentValue);
@@ -264,7 +282,13 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
             PLCLogoConfig controller = controllers.get(config.getController());
 
             PLCLogoMemoryConfig wr = config.getWR();
-            wr.setModel(controller.getModel());
+            try {
+                wr.setModel(controller.getModel());
+            } catch(BindingConfigParseException e) {
+                logger.warn("Invalid configuration for " + itemName + ": " + e + " on " + controller);
+                continue;
+            }
+
             int addr = wr.getAddress();
             if (wr.isInRange()) {
                 logger.warn("Invalid write requested at memory location " + addr + " check config");

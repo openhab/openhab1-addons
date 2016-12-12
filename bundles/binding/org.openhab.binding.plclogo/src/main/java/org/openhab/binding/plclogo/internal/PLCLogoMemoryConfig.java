@@ -8,18 +8,54 @@
  */
 package org.openhab.binding.plclogo.internal;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.openhab.binding.plclogo.internal.PLCLogoBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PLCLogoMemoryConfig {
-    private String location; // Logo-style memory location like Q10
-    private String kind; // normalized memory type VB|VW|I|Q|M|AO|AQ|AM
-    private int address; // address in logo memory block
-    private int bit; // informational bit (-1 if not used)
-    private PLCLogoModel model = PLCLogoModel.LOGO_MODEL_0BA7;
+    private String location;         // Logo-style memory location like Q10
+    private PLCLogoBlock.Kind kind;  // normalized memory type VB|VW|I|Q|M|AO|AQ|AM
+    private int idx;                 // index of specified memory type
+    private int bit;                 // informational bit (-1 if not used)
+    private PLCLogoBlock block;
+    private PLCLogoModel model;
 
     private static final Logger logger = LoggerFactory.getLogger(PLCLogoBinding.class);
+
+    private static final PLCLogoBlock PLCLogoBlock0BA7[] = {
+              new PLCLogoBlock(PLCLogoBlock.Kind.I,    923), // I starts at 923 for 3 bytes
+              new PLCLogoBlock(PLCLogoBlock.Kind.Q,    942), // Q starts at 942 for 2 bytes
+              new PLCLogoBlock(PLCLogoBlock.Kind.M,    948), // M starts at 948 for 2 bytes
+              new PLCLogoBlock(PLCLogoBlock.Kind.AI,   926), // AI starts at 926 for 8 words
+              new PLCLogoBlock(PLCLogoBlock.Kind.AQ,   944), // AQ starts at 944 for 2 words
+              new PLCLogoBlock(PLCLogoBlock.Kind.AM,   952), // AM starts at 952 for 16 words
+
+              new PLCLogoBlock(PLCLogoBlock.Kind.VB,   0),
+              new PLCLogoBlock(PLCLogoBlock.Kind.VW,   0)
+    };
+
+    private static final PLCLogoBlock PLCLogoBlock0BA8[] = {
+              new PLCLogoBlock(PLCLogoBlock.Kind.I,   1024), // I starts at 1024 for 8 bytes
+              new PLCLogoBlock(PLCLogoBlock.Kind.Q,   1064), // Q starts at 1064 for 8 bytes
+              new PLCLogoBlock(PLCLogoBlock.Kind.M,   1104), // M starts at 1104 for 14 bytes
+              new PLCLogoBlock(PLCLogoBlock.Kind.AI,  1032), // AI starts at 1032 for 32 bytes -> 16 words
+              new PLCLogoBlock(PLCLogoBlock.Kind.AQ,  1072), // AQ starts at 1072 for 32 bytes -> 16 words
+              new PLCLogoBlock(PLCLogoBlock.Kind.AM,  1118), // Analog markers starts at 1118 for 128 bytes -> 64 words
+              new PLCLogoBlock(PLCLogoBlock.Kind.NI,  1246), // Network inputs starts at 1246 for 16 bytes
+              new PLCLogoBlock(PLCLogoBlock.Kind.NAI, 1262), // Network analog inputs starts at 1262 for 128 bytes -> 64 words
+              new PLCLogoBlock(PLCLogoBlock.Kind.NQ,  1390), // Network outputs starts at 1390 for 16 bytes
+              new PLCLogoBlock(PLCLogoBlock.Kind.NAQ, 1406), // Network analog inputs starts at 1406 for 64 bytes -> 32 words
+
+              new PLCLogoBlock(PLCLogoBlock.Kind.VB, 0),
+              new PLCLogoBlock(PLCLogoBlock.Kind.VW, 0)
+    };
+
+    final static HashMap<PLCLogoBlock.Kind, PLCLogoBlock> PLCLogoBlock0BA7Map = makeBlocksMap(PLCLogoBlock0BA7);
+    final static HashMap<PLCLogoBlock.Kind, PLCLogoBlock> PLCLogoBlock0BA8Map = makeBlocksMap(PLCLogoBlock0BA8);
+
 
     public PLCLogoMemoryConfig(String memory) throws BindingConfigParseException {
         this.bit = -1;
@@ -34,26 +70,66 @@ public class PLCLogoMemoryConfig {
             }
         }
 
-        parseAddress(location);
+        if (location.length() < 2) {
+            throw new BindingConfigParseException("Wrong block definition for " + location);
+        }
+
+        if (Character.isDigit(location.charAt(1))) {
+            this.kind = PLCLogoBlock.Kind.valueOf(location.substring(0, 1).toUpperCase());
+            this.idx = Integer.parseInt(location.substring(1)) - 1;
+        } else if (Character.isDigit(location.charAt(2))) {
+            this.kind = PLCLogoBlock.Kind.valueOf(location.substring(0, 2).toUpperCase());
+            this.idx = Integer.parseInt(location.substring(2)) - 1;
+        } else if (Character.isDigit(location.charAt(3))) {
+            this.kind = PLCLogoBlock.Kind.valueOf(location.substring(0, 3).toUpperCase());
+            this.idx = Integer.parseInt(location.substring(3)) - 1;
+        } else {
+            logger.error("Wrong block type detected: {}", kind);
+            throw new BindingConfigParseException("Wrong block type detected: " + kind);
+        }
+
+        if (kind == PLCLogoBlock.Kind.VW || kind == PLCLogoBlock.Kind.VB) {
+            int dot = location.indexOf(".", 2);
+            this.idx = Integer.parseInt(location.substring(2, dot < 0 ? location.length() : dot));
+            if (dot >= 0)
+                  this.bit = Integer.parseInt(location.substring(dot + 1, location.length()));
+        }
+    }
+
+    private static HashMap<PLCLogoBlock.Kind, PLCLogoBlock> makeBlocksMap(PLCLogoBlock blocks[])
+    {
+        HashMap<PLCLogoBlock.Kind, PLCLogoBlock> bmap = new HashMap<PLCLogoBlock.Kind, PLCLogoBlock>();
+
+        for (PLCLogoBlock b : blocks) {
+            bmap.put(b.getKind(), b);
+        }
+
+        return bmap;
     }
 
     public String getLocation() {
         return this.location;
     }
 
-    public String getKind() {
+    public PLCLogoBlock.Kind getKind() {
         return this.kind;
     }
 
+    public PLCLogoBlock getBlock()
+    {
+        return block;
+    }
+
     public int getAddress() {
-        return this.address;
+        return block.getAddress(idx);
     }
 
     public int getBit() {
-        return this.bit;
+        return block.getBit(idx, bit);
     }
 
     public boolean isInRange() {
+        int address = getAddress();
         if (model == PLCLogoModel.LOGO_MODEL_0BA7) {
             return (address > 849) && (address < 942);
         } else if (model == PLCLogoModel.LOGO_MODEL_0BA8) {
@@ -63,108 +139,33 @@ public class PLCLogoMemoryConfig {
         }
     }
 
-    public void setModel(PLCLogoModel logoModel) {
+    public void setModel(PLCLogoModel logoModel) throws BindingConfigParseException {
         model = logoModel;
-    }
+        HashMap<PLCLogoBlock.Kind, PLCLogoBlock> bmap =
+                (model == PLCLogoModel.LOGO_MODEL_0BA7) ? PLCLogoBlock0BA7Map : PLCLogoBlock0BA8Map;
 
-    // bit location[0] and real mem loc[1]
-    private void parseAddress(String memloc) throws BindingConfigParseException {
-        if (memloc.length() < 2) {
-            return;
-        }
+        if (model == PLCLogoModel.LOGO_MODEL_0BA7)
+            bmap = PLCLogoBlock0BA7Map;
+        else
+        if (model == PLCLogoModel.LOGO_MODEL_0BA8)
+            bmap = PLCLogoBlock0BA8Map;
+        else
+            throw new BindingConfigParseException("Wrong Model " + logoModel);
 
-        int idx; // normalized index of element (starting from 0), for all but VB|VW
-        if (Character.isDigit(memloc.charAt(1))) {
-            kind = memloc.substring(0, 1).toUpperCase();
-            idx = Integer.parseInt(memloc.substring(1)) - 1;
-        } else if (Character.isDigit(memloc.charAt(2))) {
-            kind = memloc.substring(0, 2).toUpperCase();
-            idx = Integer.parseInt(memloc.substring(2)) - 1;
-        } else if (Character.isDigit(memloc.charAt(3))) {
-            kind = memloc.substring(0, 3).toUpperCase();
-            idx = Integer.parseInt(memloc.substring(3)) - 1;
-        } else {
-            logger.error("Wrong block type detected: {}", kind);
-            throw new BindingConfigParseException("Wrong block type detected: " + kind);
-        }
+        PLCLogoBlock b = bmap.get(kind);
 
-        if (model == PLCLogoModel.LOGO_MODEL_0BA7) {
-            if (kind.equals("I")) {
-                address = 923 + idx / 8; // I starts at 923 for 3 bytes
-                bit = idx % 8;
-            } else if (kind.equals("Q")) {
-                address = 942 + idx / 8; // Q starts at 942 for 2 bytes
-                bit = idx % 8;
-            } else if (kind.equals("M")) {
-                address = 948 + idx / 8; // Markers starts at 948 for 2 bytes
-                bit = idx % 8;
-            } else if (kind.equals("AI")) {
-                address = 926 + idx * 2; // AI starts at 926 for 8 words
-            } else if (kind.equals("AQ")) {
-                address = 944 + idx * 2; // AQ starts at 944 for 2 words
-            } else if (kind.equals("AM")) {
-                address = 952 + idx * 2; // AM starts at 952 for 16 words
-            } else if (kind.equals("VB") || kind.equals("VW")) {
-                int dot = memloc.indexOf(".", 2);
-                address = Integer.parseInt(memloc.substring(2, dot < 0 ? memloc.length() : dot));
-                if (dot >= 0) {
-                    bit = Integer.parseInt(memloc.substring(dot + 1, memloc.length()));
-                }
-            } else {
-                throw new BindingConfigParseException("Logo memory " + kind + " is not supported on PLC");
-            }
-        } else if (model == PLCLogoModel.LOGO_MODEL_0BA8) {
-            if (kind.equals("I")) {
-                address = 1024 + idx / 8; // I starts at 1024 for 8 bytes
-                bit = idx % 8;
-            } else if (kind.equals("Q")) {
-                address = 1064 + idx / 8; // Q starts at 1064 for 8 bytes
-                bit = idx % 8;
-            } else if (kind.equals("M")) {
-                address = 1104 + idx / 8; // Markers starts at 1104 for 14 bytes
-                bit = idx % 8;
-            } else if (kind.equals("AI")) {
-                address = 1032 + idx * 2; // AI starts at 1032 for 32 bytes -> 16 words
-            } else if (kind.equals("AQ")) {
-                address = 1072 + idx * 2; // AQ starts at 1072 for 32 bytes -> 16 words
-            } else if (kind.equals("AM")) {
-                address = 1118 + idx * 2; // Analog markers starts at 1118 for 128 bytes -> 64 words
-            } else if (kind.equals("NI")) {
-                address = 1246 + idx * 2; // Network inputs starts at 1246 for 16 bytes
-                bit = idx % 8;
-            } else if (kind.equals("NAI")) {
-                address = 1262 + idx * 2; // Network analog inputs starts at 1262 for 128 bytes -> 64 words
-            } else if (kind.equals("NQ")) {
-                address = 1390 + idx * 2; // Network outputs starts at 1390 for 16 bytes
-                bit = idx % 8;
-            } else if (kind.equals("NAQ")) {
-                address = 1406 + idx * 2; // Network analog inputs starts at 1406 for 64 bytes -> 32 words
-            } else if (kind.equals("VB") || kind.equals("VW")) {
-                int dot = memloc.indexOf(".", 2);
-                address = Integer.parseInt(memloc.substring(2, dot < 0 ? memloc.length() : dot));
-                if (dot >= 0) {
-                    bit = Integer.parseInt(memloc.substring(dot + 1, memloc.length()));
-                }
-            } else {
-                throw new BindingConfigParseException("Logo memory " + kind + " is not supported on PLC");
-            }
-        }
-        logger.debug("Memory map for {} = {}", memloc, address + ((bit != -1) ? ("." + bit) : ""));
-        return;
+        if (b == null)
+            throw new BindingConfigParseException("Logo memory " + kind + " is not supported on PLC " + model);
+
+        block = b;
     }
 
     public boolean isDigital() {
-        boolean result = kind.equals("I") || kind.equals("Q") || kind.equals("M");
-        result = result || kind.equals("NI") || kind.equals("NQ");
-        result = result || ((kind.equals("VB") || kind.equals("VW")) && (getBit() >= 0));
-        return result;
+        return block.isBitwise() || (block.isGeneral() && (getBit() >= 0));
     }
 
     public boolean isInput() {
-        boolean result = kind.equals("I") || kind.equals("AI");
-        result = result || kind.equals("NI") || kind.equals("NAI");
-        result = result || kind.equals("VB") || kind.equals("VW");
-        return result;
+        return block.isInput() || block.isGeneral();
     }
 
 }
