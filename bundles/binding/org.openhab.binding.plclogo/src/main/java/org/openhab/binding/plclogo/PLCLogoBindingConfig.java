@@ -10,7 +10,6 @@ package org.openhab.binding.plclogo;
 
 import org.openhab.binding.plclogo.internal.PLCLogoBinding;
 import org.openhab.binding.plclogo.internal.PLCLogoMemoryConfig;
-import org.openhab.binding.plclogo.internal.PLCLogoModel;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -110,12 +109,5 @@ public class PLCLogoBindingConfig implements BindingConfig {
 
     public Item getItem() {
         return this.item;
-    }
-
-    public void setModel(PLCLogoModel model) {
-        rdMem.setModel(model);
-        if (rdMem != wrMem) {
-            wrMem.setModel(model);
-        }
     }
 }

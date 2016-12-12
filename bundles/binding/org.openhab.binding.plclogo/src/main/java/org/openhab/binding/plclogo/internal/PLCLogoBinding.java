@@ -32,6 +32,7 @@ import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.model.item.binding.BindingConfigParseException;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -182,15 +183,24 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                     if (config.getController().equals(controller)) {
                         // it is for our currently selected controller
                         PLCLogoMemoryConfig rd = config.getRD();
-                        rd.setModel(logoConfig.getModel());
-
-                        int address = rd.getAddress();
-                        String block = rd.getLocation();
-                        String kind = rd.getKind();
+                        int address = -1;
+                        try {
+                            address = rd.getAddress(logoConfig.getModel());
+                        } catch (BindingConfigParseException exception) {
+                            logger.error("Invalid address for block {} on {}", rd.getBlockName(), controller);
+                            continue;
+                        }
 
                         int currentValue;
                         if (rd.isDigital()) {
-                            currentValue = S7.GetBitAt(data, address, rd.getBit()) ? 1 : 0;
+                            int bit = -1;
+                            try {
+                                bit = rd.getBit(logoConfig.getModel());
+                            } catch (BindingConfigParseException exception) {
+                                logger.error("Invalid bit for block {} on {}", rd.getBlockName(), controller);
+                                continue;
+                            }
+                            currentValue = S7.GetBitAt(data, address, bit) ? 1 : 0;
                         } else {
                             /*
                              * After the data transfer from a LOGO! Base Module to LOGO!Soft Comfort,
@@ -213,20 +223,13 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                         }
 
                         Item item = provider.getItem(itemName);
-                        boolean isValid = kind.equals("I") && item instanceof ContactItem;
-                        isValid = isValid
-                                || (kind.equals("M") && (item instanceof ContactItem || item instanceof SwitchItem));
-                        isValid = isValid || (kind.equals("Q") && item instanceof SwitchItem);
-                        isValid = isValid || (kind.equals("NI") && item instanceof ContactItem);
-                        isValid = isValid || (kind.equals("NQ") && item instanceof SwitchItem);
-                        isValid = isValid
-                                || (kind.equals("VB") && (item instanceof ContactItem || item instanceof SwitchItem));
-                        isValid = isValid
-                                || (kind.equals("VW") && (item instanceof ContactItem || item instanceof SwitchItem));
+                        boolean isValid = rd.isInput() && item instanceof ContactItem;
+                        isValid = isValid || (rd.isOutput() && item instanceof SwitchItem);
                         if (item instanceof NumberItem || isValid) {
                             eventPublisher.postUpdate(itemName, createState(item, currentValue));
                             config.setLastValue(currentValue);
                         } else {
+                            String block = rd.getBlockName();
                             logger.warn("Block " + block + " is incompatible with item " + item.getName() + " on "
                                     + controller);
                         }
@@ -264,10 +267,15 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
             PLCLogoConfig controller = controllers.get(config.getController());
 
             PLCLogoMemoryConfig wr = config.getWR();
-            wr.setModel(controller.getModel());
-            int addr = wr.getAddress();
-            if (wr.isInRange()) {
-                logger.warn("Invalid write requested at memory location " + addr + " check config");
+            int address = -1;
+            try {
+                address = wr.getAddress(controller.getModel());
+            } catch (BindingConfigParseException exception) {
+                logger.error("Invalid address for block {} on {}", wr.getBlockName(), controller);
+                continue;
+            }
+            if (!wr.isInRange(controller.getModel())) {
+                logger.warn("Invalid write request for block {} at address {}", wr.getBlockName(), address);
                 continue;
             }
 
@@ -281,14 +289,20 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                 int result = ReadLogoDBArea(LogoS7Client, controller.getMemorySize());
                 if (result == 0) {
                     Item item = config.getItem();
-                    int address = wr.getAddress();
                     if (item instanceof NumberItem && !wr.isDigital()) {
                         if (command instanceof DecimalType) {
                             S7.SetWordAt(data, address, ((DecimalType) command).intValue());
                         }
                     } else if (item instanceof SwitchItem && wr.isDigital()) {
                         if (command instanceof OnOffType) {
-                            S7.SetBitAt(data, address, wr.getBit(), command == OnOffType.ON ? true : false);
+                            int bit = -1;
+                            try {
+                                address = wr.getBit(controller.getModel());
+                            } catch (BindingConfigParseException exception) {
+                                logger.error("Invalid bit for block {} on {}", wr.getBlockName(), controller);
+                                continue;
+                            }
+                            S7.SetBitAt(data, address, bit, command == OnOffType.ON ? true : false);
                         }
                     }
                     result = WriteLogoDBArea(LogoS7Client, controller.getMemorySize());

@@ -65,15 +65,11 @@ public class PLCLogoGenericBindingProvider extends AbstractGenericBindingProvide
     public void processBindingConfiguration(String context, Item item, String bindingConfig)
             throws BindingConfigParseException {
         super.processBindingConfiguration(context, item, bindingConfig);
-
-        PLCLogoBindingConfig config = new PLCLogoBindingConfig(item, bindingConfig);
-        addBindingConfig(item, config);
+        addBindingConfig(item, new PLCLogoBindingConfig(item, bindingConfig));
     }
 
     @Override
     public PLCLogoBindingConfig getBindingConfig(String itemName) {
         return (PLCLogoBindingConfig) this.bindingConfigs.get(itemName);
-
     }
-
 }
