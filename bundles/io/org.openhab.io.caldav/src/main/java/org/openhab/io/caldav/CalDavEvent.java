@@ -146,31 +146,63 @@ public class CalDavEvent {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result
-                + ((calendarId == null) ? 0 : calendarId.hashCode());
+        result = prime * result + ((calendarId == null) ? 0 : calendarId.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         CalDavEvent other = (CalDavEvent) obj;
         if (calendarId == null) {
-            if (other.calendarId != null)
+            if (other.calendarId != null) {
                 return false;
-        } else if (!calendarId.equals(other.calendarId))
+            }
+        } else if (!calendarId.equals(other.calendarId)) {
             return false;
+        }
         if (id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!id.equals(other.id))
+            }
+        } else if (!id.equals(other.id)) {
             return false;
+        }
+        // supposing that the "lastChanged" timestamp has correctly been set in case of event modification for something
+        // like categories, place ... )
+        if (lastChanged == null) {
+            if (other.lastChanged != null) {
+                return false;
+            }
+        } else if (!lastChanged.equals(other.lastChanged)) {
+            return false;
+        }
+
+        // we NEED to compare event's start and stop date to be able to say they are equal :
+        if (start == null) {
+            if (other.start != null) {
+                return false;
+            }
+        } else if (!start.equals(other.start)) {
+            return false;
+        }
+        if (end == null) {
+            if (other.end != null) {
+                return false;
+            }
+        } else if (!end.equals(other.end)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -179,5 +211,4 @@ public class CalDavEvent {
         return this.getShortName();
     }
 
-    
 }
