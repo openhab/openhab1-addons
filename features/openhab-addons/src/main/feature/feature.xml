@@ -656,6 +656,12 @@
     <configfile finalname="${openhab.conf}/services/influxdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/influxdb</configfile>
   </feature>
 
+  <feature name="openhab-persistence-gcal" description="GCal Persistence" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.gcal/${project.version}</bundle>
+  </feature>
+
   <!-- JDBC Persistence for: Apache Derby, H2, HSQLDB, MariaDB, MySQL, PostgreSQL, SQLite -->
   <feature name="openhab-persistence-jdbc-derby" description="JDBC Persistence Apache Derby" version="${project.version}">
     <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
@@ -766,6 +772,12 @@
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.gpio/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-io-gcal1" description="GCal" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.gcal/${project.version}</bundle>
   </feature>
 
   <feature name="openhab-transport-cul1" description="CUL Transport" version="${project.version}">
