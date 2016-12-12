@@ -11,6 +11,7 @@ package org.openhab.binding.onewire.internal;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.onewire.OneWireBindingProvider;
@@ -95,7 +96,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
     public void updated(Dictionary<String, ?> pvConfig) throws ConfigurationException {
         if (pvConfig != null) {
             // Basic config
-            String lvPostOnlyChangedValues = (String) pvConfig.get("post_only_changed_values");
+            String lvPostOnlyChangedValues = Objects.toString(pvConfig.get("post_only_changed_values"), "");
             if (StringUtils.isNotBlank(lvPostOnlyChangedValues)) {
                 ivPostOnlyChangedValues = Boolean.getBoolean(lvPostOnlyChangedValues);
             }

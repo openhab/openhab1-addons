@@ -9,6 +9,7 @@
 package org.openhab.binding.fritzboxtr064.internal;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.fritzboxtr064.FritzboxTr064BindingProvider;
@@ -77,16 +78,16 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
 
         // to override the default refresh interval one has to add a
         // parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
-        String refreshIntervalString = (String) configuration.get("refresh");
+        String refreshIntervalString = Objects.toString(configuration.get("refresh"), "");
         if (StringUtils.isNotBlank(refreshIntervalString)) {
             refreshInterval = Long.parseLong(refreshIntervalString);
             logger.debug("Custom refresh interval set to " + refreshInterval);
         }
 
         // Check if fritzbox parameters were provided in config, otherwise does not make sense going on...
-        String fboxurl = (String) configuration.get("url");
-        String fboxuser = (String) configuration.get("user");
-        String fboxpw = (String) configuration.get("pass");
+        String fboxurl = Objects.toString(configuration.get("url"), "");
+        String fboxuser = Objects.toString(configuration.get("user"), "");
+        String fboxpw = Objects.toString(configuration.get("pass"), "");
         if (fboxurl == null) {
             logger.warn("Fritzbox URL was not provided in config. Shutting down binding.");
             // how to shutdown??

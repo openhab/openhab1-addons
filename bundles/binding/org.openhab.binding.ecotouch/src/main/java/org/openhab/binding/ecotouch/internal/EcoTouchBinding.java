@@ -13,6 +13,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -204,24 +205,24 @@ public class EcoTouchBinding extends AbstractActiveBinding<EcoTouchBindingProvid
 
         if (config != null) {
 
-            String refreshIntervalString = (String) config.get("refresh");
+            String refreshIntervalString = Objects.toString(config.get("refresh"), "");
             if (StringUtils.isNotBlank(refreshIntervalString)) {
                 refreshInterval = Long.parseLong(refreshIntervalString);
             }
 
-            String ip = (String) config.get("ip"); //$NON-NLS-1$
+            String ip = Objects.toString(config.get("ip"), ""); //$NON-NLS-1$
             if (StringUtils.isBlank(ip)) {
                 throw new ConfigurationException("ip", "The ip address must not be empty.");
             }
             this.ip = ip;
 
-            String username = (String) config.get("username"); //$NON-NLS-1$
+            String username = Objects.toString(config.get("username"), ""); //$NON-NLS-1$
             if (StringUtils.isBlank(username)) {
                 throw new ConfigurationException("username", "The username must not be empty.");
             }
             this.username = username;
 
-            String password = (String) config.get("password"); //$NON-NLS-1$
+            String password = Objects.toString(config.get("password"), ""); //$NON-NLS-1$
             if (StringUtils.isBlank(password)) {
                 throw new ConfigurationException("password", "The password must not be empty.");
             }

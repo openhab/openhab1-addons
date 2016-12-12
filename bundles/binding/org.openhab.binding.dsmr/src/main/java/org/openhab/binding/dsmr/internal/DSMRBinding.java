@@ -11,6 +11,7 @@ package org.openhab.binding.dsmr.internal;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.dsmr.DSMRBindingProvider;
@@ -48,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * @author M.Volaart
  * @since 1.7.0
  */
-public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>implements ManagedService {
+public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider> implements ManagedService {
 
     /** Update interval as specified by DSMR */
     public static final int DSMR_UPDATE_INTERVAL = 10000;
@@ -186,7 +187,7 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>imple
         logger.debug("updated() is called!");
         if (config != null) {
             // Read port string
-            String portString = (String) config.get("port");
+            String portString = Objects.toString(config.get("port"), "");
             logger.debug("dsmr:port=" + portString);
             if (StringUtils.isNotBlank(portString)) {
                 port = portString;
@@ -200,7 +201,7 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>imple
             dsmrMeters.clear();
 
             for (DSMRMeterType meterType : DSMRMeterType.values()) {
-                String channelConfigValue = (String) config.get(meterType.channelConfigKey);
+                String channelConfigValue = Objects.toString(config.get(meterType.channelConfigKey), "");
                 logger.debug("dsmr:" + meterType.channelConfigKey + "=" + channelConfigValue);
 
                 if (StringUtils.isNotBlank(channelConfigValue)) {
