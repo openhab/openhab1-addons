@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for parsing the binding configuration.
  *
  * @author g8kmh
- * @since 1.5.0
+ * @since 1.9.0
  */
 public class PLCLogoGenericBindingProvider extends AbstractGenericBindingProvider implements PLCLogoBindingProvider {
     private static final Logger logger = LoggerFactory.getLogger(PLCLogoBinding.class);

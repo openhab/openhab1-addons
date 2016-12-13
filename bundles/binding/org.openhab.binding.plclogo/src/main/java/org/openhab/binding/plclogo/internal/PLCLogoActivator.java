@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  *
  * @author g8kmh
- * @since 1.5.0
+ * @since 1.9.0
  */
 public final class PLCLogoActivator implements BundleActivator {
 
@@ -45,7 +45,7 @@ public final class PLCLogoActivator implements BundleActivator {
 
     /**
      * Returns the bundle context of this bundle
-     * 
+     *
      * @return the bundle context
      */
     public static BundleContext getContext() {

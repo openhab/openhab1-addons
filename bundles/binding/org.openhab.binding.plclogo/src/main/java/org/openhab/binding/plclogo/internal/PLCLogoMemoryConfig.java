@@ -14,6 +14,14 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ *
+ *
+ * @author vgrebenschikov
+ * @author falkena
+ * @since 1.9.0
+ */
+
 public class PLCLogoMemoryConfig {
     private String block = null; // Logo-style block name like Q10
     private PLCLogoBlock.Kind kind = null; // normalized memory type VB|VW|I|Q|M|AO|AQ|AM
@@ -24,32 +32,34 @@ public class PLCLogoMemoryConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(PLCLogoBinding.class);
 
-    private static final PLCLogoBlock PLCLogoBlock0BA7[] = { new PLCLogoBlock(PLCLogoBlock.Kind.I, 923), // I starts at
-                                                                                                         // 923 for 3
-                                                                                                         // bytes
+    // @formatter:off
+    private static final PLCLogoBlock PLCLogoBlock0BA7[] = {
+            new PLCLogoBlock(PLCLogoBlock.Kind.VB, 0),
+            new PLCLogoBlock(PLCLogoBlock.Kind.VW, 0),
+            new PLCLogoBlock(PLCLogoBlock.Kind.I, 923), // I starts at 923 for 3 bytes
             new PLCLogoBlock(PLCLogoBlock.Kind.Q, 942), // Q starts at 942 for 2 bytes
             new PLCLogoBlock(PLCLogoBlock.Kind.M, 948), // M starts at 948 for 2 bytes
             new PLCLogoBlock(PLCLogoBlock.Kind.AI, 926), // AI starts at 926 for 8 words
             new PLCLogoBlock(PLCLogoBlock.Kind.AQ, 944), // AQ starts at 944 for 2 words
-            new PLCLogoBlock(PLCLogoBlock.Kind.AM, 952), // AM starts at 952 for 16 words
+            new PLCLogoBlock(PLCLogoBlock.Kind.AM, 952) // AM starts at 952 for 16 words
 
-            new PLCLogoBlock(PLCLogoBlock.Kind.VB, 0), new PLCLogoBlock(PLCLogoBlock.Kind.VW, 0) };
+    };
 
-    private static final PLCLogoBlock PLCLogoBlock0BA8[] = { new PLCLogoBlock(PLCLogoBlock.Kind.I, 1024), // I starts at
-                                                                                                          // 1024 for 8
-                                                                                                          // bytes
+    private static final PLCLogoBlock PLCLogoBlock0BA8[] = {
+            new PLCLogoBlock(PLCLogoBlock.Kind.VB, 0),
+            new PLCLogoBlock(PLCLogoBlock.Kind.VW, 0),
+            new PLCLogoBlock(PLCLogoBlock.Kind.I, 1024), // I starts at 1024 for 8 bytes
             new PLCLogoBlock(PLCLogoBlock.Kind.Q, 1064), // Q starts at 1064 for 8 bytes
             new PLCLogoBlock(PLCLogoBlock.Kind.M, 1104), // M starts at 1104 for 14 bytes
             new PLCLogoBlock(PLCLogoBlock.Kind.AI, 1032), // AI starts at 1032 for 32 bytes -> 16 words
             new PLCLogoBlock(PLCLogoBlock.Kind.AQ, 1072), // AQ starts at 1072 for 32 bytes -> 16 words
-            new PLCLogoBlock(PLCLogoBlock.Kind.AM, 1118), // Analog markers starts at 1118 for 128 bytes -> 64 words
+            new PLCLogoBlock(PLCLogoBlock.Kind.AM, 1118), // Analog markers starts at 1118 for 128 bytes(64 words)
             new PLCLogoBlock(PLCLogoBlock.Kind.NI, 1246), // Network inputs starts at 1246 for 16 bytes
-            new PLCLogoBlock(PLCLogoBlock.Kind.NAI, 1262), // Network analog inputs starts at 1262 for 128 bytes -> 64
-                                                           // words
+            new PLCLogoBlock(PLCLogoBlock.Kind.NAI, 1262), // Network analog inputs starts at 1262 for 128 bytes(64 words)
             new PLCLogoBlock(PLCLogoBlock.Kind.NQ, 1390), // Network outputs starts at 1390 for 16 bytes
-            new PLCLogoBlock(PLCLogoBlock.Kind.NAQ, 1406), // Network analog inputs starts at 1406 for 64 bytes -> 32
-                                                           // words
-            new PLCLogoBlock(PLCLogoBlock.Kind.VB, 0), new PLCLogoBlock(PLCLogoBlock.Kind.VW, 0) };
+            new PLCLogoBlock(PLCLogoBlock.Kind.NAQ, 1406) // Network analog inputs starts at 1406 for 64 bytes(32 words)
+    };
+    // @formatter:on
 
     final static HashMap<PLCLogoBlock.Kind, PLCLogoBlock> PLCLogoBlock0BA7Map = makeBlocksMap(PLCLogoBlock0BA7);
     final static HashMap<PLCLogoBlock.Kind, PLCLogoBlock> PLCLogoBlock0BA8Map = makeBlocksMap(PLCLogoBlock0BA8);

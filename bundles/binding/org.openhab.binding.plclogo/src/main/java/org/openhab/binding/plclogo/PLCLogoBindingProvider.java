@@ -13,14 +13,14 @@ import org.openhab.core.items.Item;
 
 /**
  * @author g8kmh
- * @since 1.5.0
+ * @since 1.9.0
  */
 public interface PLCLogoBindingProvider extends BindingProvider {
     public PLCLogoBindingConfig getBindingConfig(String itemName);
 
     /**
      * Returns the item identified by {@code itemName}
-     * 
+     *
      * @param itemName the name of the item to find
      * @return item identified by {@code itemName}
      */

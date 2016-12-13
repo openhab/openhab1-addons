@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.plclogo.PLCLogoBindingConfig;
 import org.openhab.binding.plclogo.PLCLogoBindingProvider;
-import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
@@ -47,7 +46,8 @@ import Moka7.S7Client;
  * like querying a Website/Device.
  *
  * @author g8kmh
- * @since 1.5.0
+ * @author falkena
+ * @since 1.9.0
  */
 public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider> implements ManagedService {
     private final ReentrantLock lock = new ReentrantLock();
@@ -227,23 +227,22 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 
                         boolean isValid = false;
 
-                        switch (rd.getKind())
-                        {
-                        case I:
-                        case NI:
-                            isValid = item instanceof ContactItem;
-                            break;
+                        switch (rd.getKind()) {
+                            case I:
+                            case NI:
+                                isValid = item instanceof ContactItem;
+                                break;
 
-                        case Q:
-                        case NQ:
-                            isValid = item instanceof SwitchItem;
-                            break;
+                            case Q:
+                            case NQ:
+                                isValid = item instanceof SwitchItem;
+                                break;
 
-                        case M:
-                        case VB:
-                        case VW:
-                            isValid = item instanceof ContactItem || item instanceof SwitchItem;
-                            break;
+                            case M:
+                            case VB:
+                            case VW:
+                                isValid = item instanceof ContactItem || item instanceof SwitchItem;
+                                break;
                         }
 
                         if (item instanceof NumberItem || isValid) {
@@ -492,15 +491,14 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
         }
     }
 
+    /**
+     * Class which represents a LOGO! online controller/PLC connection parameters
+     * and current instance - there may be multiple PLC's
+     *
+     * @author g8kmh
+     * @since 1.9.0
+     */
     private class PLCLogoConfig {
-        /**
-         * Class which represents a LOGO! online controller/PLC connection params
-         * and current instance - there may be multiple PLC's
-         *
-         * @author g8kmh
-         * @since 1.5.0
-         */
-
         private String logoIP;
         private PLCLogoModel logoModel = PLCLogoModel.LOGO_MODEL_0BA7;
         private int localTSAP = 0x0300;

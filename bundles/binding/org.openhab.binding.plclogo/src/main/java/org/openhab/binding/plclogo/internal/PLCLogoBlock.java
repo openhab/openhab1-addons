@@ -8,6 +8,13 @@
  */
 package org.openhab.binding.plclogo.internal;
 
+/**
+ *
+ *
+ * @author vgrebenschikov
+ * @author falkena
+ * @since 1.9.0
+ */
 public class PLCLogoBlock {
 
     public enum Kind {
