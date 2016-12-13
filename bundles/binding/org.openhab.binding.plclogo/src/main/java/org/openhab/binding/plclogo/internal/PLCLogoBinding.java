@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.plclogo.PLCLogoBindingConfig;
 import org.openhab.binding.plclogo.PLCLogoBindingProvider;
+import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
@@ -223,8 +224,28 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                         }
 
                         Item item = provider.getItem(itemName);
-                        boolean isValid = rd.isInput() && item instanceof ContactItem;
-                        isValid = isValid || (rd.isOutput() && item instanceof SwitchItem);
+
+                        boolean isValid = false;
+
+                        switch (rd.getKind())
+                        {
+                        case I:
+                        case NI:
+                            isValid = item instanceof ContactItem;
+                            break;
+
+                        case Q:
+                        case NQ:
+                            isValid = item instanceof SwitchItem;
+                            break;
+
+                        case M:
+                        case VB:
+                        case VW:
+                            isValid = item instanceof ContactItem || item instanceof SwitchItem;
+                            break;
+                        }
+
                         if (item instanceof NumberItem || isValid) {
                             eventPublisher.postUpdate(itemName, createState(item, currentValue));
                             config.setLastValue(currentValue);
