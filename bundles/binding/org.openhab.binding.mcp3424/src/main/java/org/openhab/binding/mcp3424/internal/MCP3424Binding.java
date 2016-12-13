@@ -276,8 +276,7 @@ public class MCP3424Binding extends AbstractActiveBinding<MCP3424BindingProvider
             try {
                 this.eventPublisher.postUpdate(pin.getName(), new DecimalType(value));
             } catch (NumberFormatException exception) {
-                logger.warn("Unable to convert '{}' for item {} to number",
-                        new String[] { String.valueOf(value), pin.getName() });
+                logger.warn("Unable to convert '{}' for item {} to number", String.valueOf(value), pin.getName());
             }
             logger.debug("GPIO channel change: {} = {}", pin, value);
         } else if (pin.getTag() instanceof DimmerItem) {
@@ -285,8 +284,7 @@ public class MCP3424Binding extends AbstractActiveBinding<MCP3424BindingProvider
             try {
                 this.eventPublisher.postUpdate(pin.getName(), new PercentType((int) value));
             } catch (NumberFormatException e) {
-                logger.warn("Unable to convert '{}' for item {} to number",
-                        new String[] { String.valueOf(value), pin.getName() });
+                logger.warn("Unable to convert '{}' for item {} to number", String.valueOf(value), pin.getName());
             }
             logger.debug("GPIO channel change: {} = {}", pin, value);
         }
