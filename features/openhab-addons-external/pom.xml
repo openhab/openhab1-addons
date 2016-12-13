@@ -53,6 +53,7 @@
                                 <artifact><file>src/main/resources/conf/fritzboxtr064.cfg</file><type>cfg</type><classifier>fritzboxtr064</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/garadget.cfg</file><type>cfg</type><classifier>garadget</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/gc100ir.cfg</file><type>cfg</type><classifier>gc100ir</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/gcal.cfg</file><type>cfg</type><classifier>gcal</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/gpio.cfg</file><type>cfg</type><classifier>gpio</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/heatmiser.cfg</file><type>cfg</type><classifier>heatmiser</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/homematic.cfg</file><type>cfg</type><classifier>homematic</classifier></artifact>
