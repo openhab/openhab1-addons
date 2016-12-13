@@ -35,19 +35,21 @@ import javax.xml.bind.JAXBException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.netty.handler.timeout.TimeoutException;
 import org.openhab.binding.plex.internal.communication.AbstractSessionItem;
-import org.openhab.binding.plex.internal.communication.Child;
 import org.openhab.binding.plex.internal.communication.Connection;
 import org.openhab.binding.plex.internal.communication.Device;
 import org.openhab.binding.plex.internal.communication.MediaContainer;
 import org.openhab.binding.plex.internal.communication.Player;
 import org.openhab.binding.plex.internal.communication.Server;
+import org.openhab.binding.plex.internal.communication.SessionUpdate;
 import org.openhab.binding.plex.internal.communication.Track;
-import org.openhab.binding.plex.internal.communication.Update;
 import org.openhab.binding.plex.internal.communication.User;
+import org.openhab.binding.plex.internal.communication.websocket.NotificationContainer;
+import org.openhab.binding.plex.internal.communication.websocket.Update;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
@@ -491,8 +493,6 @@ public class PlexConnector extends Thread {
      */
     private class PlexWebSocketListener implements WebSocketTextListener {
 
-        private final ObjectMapper mapper = new ObjectMapper();
-
         @Override
         public void onOpen(WebSocket webSocket) {
             logger.info("Plex websocket connected to {}:{}", connection.getHost(), connection.getPort());
@@ -524,49 +524,56 @@ public class PlexConnector extends Thread {
         @Override
         public void onMessage(String message) {
             logger.debug("[{}]: Message received: {}", connection.getHost(), message);
-            Update update;
-            try {
-                update = mapper.readValue(message, Update.class);
-            } catch (JsonParseException e) {
-                logger.error("Error parsing JSON", e);
-                return;
-            } catch (JsonMappingException e) {
-                logger.error("Error mapping JSON", e);
-                return;
-            } catch (IOException e) {
-                logger.error("An I/O error occured while decoding JSON", e);
-                return;
-            }
+            SessionUpdate update = getSessionUpdateFrom(message);
 
-            try {
-                /*
-                 * Plex sends different kinds of status updates. We're only interested in 'now playing' updates.
-                 */
-                String type = update.getType();
-                if (type.equals("playing") && update.getChildren().size() == 1) {
-                    Child child = update.getChildren().get(0);
-                    if (!isBlank(child.getSessionKey())) {
-                        String sessionKey = child.getSessionKey();
-                        String key = child.getKey();
-                        String state = child.getState();
-                        PlexSession session = getSession(sessionKey, key);
+            if (update != null && isNotBlank(update.getSessionKey())) {
+                String sessionKey = update.getSessionKey();
+                String key = update.getKey();
+                String state = update.getState();
+                PlexSession session = getSession(sessionKey, key);
 
-                        if (!isEmpty(state) && session != null) {
-                            PlexPlayerState playerState = PlexPlayerState.of(state);
-                            session.setState(playerState);
-                            session.setViewOffset(child.getViewOffset());
-                            callback.updateReceived(session);
-                        }
-                    }
+                if (!isBlank(state) && session != null) {
+                    PlexPlayerState playerState = PlexPlayerState.of(state);
+                    session.setState(playerState);
+                    session.setViewOffset(update.getViewOffset());
+                    callback.updateReceived(session);
                 }
-            } catch (Exception e) {
-                logger.error("Error handling player state change message", e);
             }
         }
 
         @Override
         public void onFragment(String fragment, boolean last) {
         }
+
+    }
+
+    private SessionUpdate getSessionUpdateFrom(String message) {
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            switch (connection.getApiLevel()) {
+                case v1:
+                    Update update = mapper.readValue(message, Update.class);
+                    if (update.getType().equals("playing") && update.getChildren().size() > 0) {
+                        return update.getChildren().get(0);
+                    }
+                case v2:
+                    mapper.configure(Feature.UNWRAP_ROOT_VALUE, true);
+                    NotificationContainer notificationContainer = mapper.readValue(message,
+                            NotificationContainer.class);
+                    if (notificationContainer.getStateNotifications().size() > 0) {
+                        return notificationContainer.getStateNotifications().get(0);
+                    }
+            }
+        } catch (JsonParseException e) {
+            logger.error("Error parsing JSON", e);
+        } catch (JsonMappingException e) {
+            logger.error("Error mapping JSON", e);
+        } catch (IOException e) {
+            logger.error("An I/O error occured while decoding JSON", e);
+        }
+
+        return null;
     }
 
     public void refresh() {
@@ -622,14 +629,15 @@ public class PlexConnector extends Thread {
         MediaContainer container = getDocument(API_RESOURCES_URL, MediaContainer.class);
 
         if (container != null) {
-            for (Device devices : container.getDevices()) {
-                for (Connection deviceConnection : devices.getConnections()) {
+            for (Device device : container.getDevices()) {
+                for (Connection deviceConnection : device.getConnections()) {
                     boolean uriSet = (connection.getUri() != null);
                     boolean portEqual = String.valueOf(connection.getPort()).equals(deviceConnection.getPort());
                     boolean hostEqual = connection.getHost().equals(deviceConnection.getAddress());
 
                     if (!uriSet && portEqual && hostEqual) {
                         connection.setUri(deviceConnection.getUri());
+                        connection.setApiLevel(PlexApiLevel.getApiLevel(device.getProductVersion()));
                     }
                 }
             }

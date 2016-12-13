@@ -6,10 +6,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.plex.internal.communication;
+package org.openhab.binding.plex.internal.communication.websocket;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.openhab.binding.plex.internal.communication.SessionUpdate;
 
 /**
  * Part of the {@link Update} object
@@ -18,7 +19,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @since 1.7.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Child {
+public class Child implements SessionUpdate {
 
     @JsonProperty(value = "_elementType")
     private String elementType;
@@ -39,6 +40,7 @@ public class Child {
         this.elementType = elementType;
     }
 
+    @Override
     public String getKey() {
         return key;
     }
@@ -47,6 +49,7 @@ public class Child {
         this.key = key;
     }
 
+    @Override
     public String getSessionKey() {
         return sessionKey;
     }
@@ -55,6 +58,7 @@ public class Child {
         this.sessionKey = sessionKey;
     }
 
+    @Override
     public String getState() {
         return state;
     }
@@ -63,6 +67,7 @@ public class Child {
         this.state = state;
     }
 
+    @Override
     public Integer getViewOffset() {
         return viewOffset;
     }

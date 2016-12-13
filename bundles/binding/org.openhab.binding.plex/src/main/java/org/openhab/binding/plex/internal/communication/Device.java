@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Part of {@link MediaContainer}. This object contains information about a Plex device.
- * 
+ *
  * @author Jeroen Idserda
  * @since 1.8.0
  */
@@ -27,37 +27,48 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Device {
 
-	@XmlAttribute
-	private String name;
+    @XmlAttribute
+    private String name;
 
-	@XmlAttribute
-	private boolean httpsRequired;
+    @XmlAttribute
+    private String productVersion;
 
-	@XmlElement(name = "Connection")
-	private List<Connection> connections = new ArrayList<Connection>();
+    @XmlAttribute
+    private boolean httpsRequired;
 
-	public String getName() {
-		return name;
-	}
+    @XmlElement(name = "Connection")
+    private List<Connection> connections = new ArrayList<Connection>();
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public boolean isHttpsRequired() {
-		return httpsRequired;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setHttpsRequired(boolean httpsRequired) {
-		this.httpsRequired = httpsRequired;
-	}
+    public String getProductVersion() {
+        return productVersion;
+    }
 
-	public List<Connection> getConnections() {
-		return connections;
-	}
+    public void setProductVersion(String productVersion) {
+        this.productVersion = productVersion;
+    }
 
-	public void setConnections(List<Connection> connections) {
-		this.connections = connections;
-	}
+    public boolean isHttpsRequired() {
+        return httpsRequired;
+    }
+
+    public void setHttpsRequired(boolean httpsRequired) {
+        this.httpsRequired = httpsRequired;
+    }
+
+    public List<Connection> getConnections() {
+        return connections;
+    }
+
+    public void setConnections(List<Connection> connections) {
+        this.connections = connections;
+    }
 
 }
