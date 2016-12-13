@@ -275,7 +275,6 @@ public class MCP3424Binding extends AbstractActiveBinding<MCP3424BindingProvider
             double value = provider.getAnalogValue(pin.getPin());
             try {
                 this.eventPublisher.postUpdate(pin.getName(), new DecimalType(value));
-                // this.eventPublisher.sendCommand(pin.getName(), new DecimalType(value));
             } catch (NumberFormatException exception) {
                 logger.warn("Unable to convert '{}' for item {} to number",
                         new String[] { String.valueOf(value), pin.getName() });
@@ -285,7 +284,6 @@ public class MCP3424Binding extends AbstractActiveBinding<MCP3424BindingProvider
             double value = provider.getPercentValue(pin.getPin());
             try {
                 this.eventPublisher.postUpdate(pin.getName(), new PercentType((int) value));
-                // this.eventPublisher.sendCommand(pin.getName(), new PercentType(value));
             } catch (NumberFormatException e) {
                 logger.warn("Unable to convert '{}' for item {} to number",
                         new String[] { String.valueOf(value), pin.getName() });
