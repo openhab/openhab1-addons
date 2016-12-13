@@ -11,6 +11,8 @@ package org.openhab.binding.onkyo.internal;
 import java.util.EventObject;
 
 import org.openhab.binding.onkyo.internal.eiscp.Eiscp;
+import org.openhab.binding.onkyo.internal.eiscp.EiscpInterface;
+import org.openhab.binding.onkyo.internal.eiscp.EiscpSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,12 +28,18 @@ public class OnkyoConnection implements OnkyoEventListener {
 
     private String ip;
     private int port;
-    private Eiscp connection = null;
+    private String serialPortName;
+    private EiscpInterface connection = null;
 
     public OnkyoConnection(String ip, int port) {
         this.ip = ip;
         this.port = port;
         connection = new Eiscp(ip, port);
+    }
+
+    public OnkyoConnection(String serialPortName) {
+        this.serialPortName = serialPortName;
+        connection = new EiscpSerial(serialPortName);
     }
 
     public void openConnection() {
@@ -52,15 +60,20 @@ public class OnkyoConnection implements OnkyoEventListener {
 
     /**
      * Sends a command to Onkyo device.
-     * 
-     * @param cmd eISCP command to send
+     *
+     * @param cmd
+     *            eISCP command to send
      */
     public void send(final String cmd) {
 
         try {
             connection.sendCommand(cmd);
         } catch (Exception e) {
-            logger.error("Could not send command to device on {}: {}", ip + ":" + port, e);
+            if (serialPortName != null) {
+                logger.error("Could not send command to device on {}", serialPortName, e);
+            } else {
+                logger.error("Could not send command to device on {}: {}", ip + ":" + port, e);
+            }
         }
 
     }
