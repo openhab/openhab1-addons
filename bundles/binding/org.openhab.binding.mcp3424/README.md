@@ -5,10 +5,10 @@ on I2C bus. Please consider datasheet for IC for future information.
 ## Generic Item Binding Configuration
 Since MCP3424 is ADC converter on I2C bus, only two types of items are supported:
 `Number` for raw conversion output and `Dimmer` for conversion output in percent.
-Percent value is calculated dependend on set resolution. Find the example below.
+Percent value is calculated dependent on set resolution. Find the example below.
 
 # Binding Configuration in openhab.cfg
-No special cofiguration within openhab.cfg is need.
+No special configuration within openhab.cfg is needed.
 
 # Item Configuration
 `Number Test1 "Test 1" (Tests) { mcp3424="{address:6C, pin:'CH0', gain:1, resolution:12"} }`
