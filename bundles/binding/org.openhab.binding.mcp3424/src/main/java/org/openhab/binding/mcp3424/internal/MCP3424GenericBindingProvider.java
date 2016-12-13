@@ -77,7 +77,7 @@ public class MCP3424GenericBindingProvider extends AbstractGenericBindingProvide
         Map<String, Object> jsonData = parser.parseJson(bindingConfig);
 
         try {
-            logger.debug("processingBindingConfiguration in context " + context);
+            logger.debug("processingBindingConfiguration in context {}", context);
             config.setBusAddress(Integer.parseInt((String) jsonData.get("address"), 16));
             config.setPin((Pin) MCP3424Pin.class.getField("GPIO_" + (String) jsonData.get("pin")).get(null));
         } catch (IllegalArgumentException exception) {
