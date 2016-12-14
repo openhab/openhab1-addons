@@ -147,12 +147,11 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
      */
     @Override
     protected void execute() {
-        // the frequently executed code (polling) goes here ...
-        // logger.debug("execute() method is called!");
         if (!bindingsExist()) {
             logger.debug("There is no existing plclogo binding configuration => refresh cycle aborted!");
             return;
         }
+
         Iterator<Entry<String, PLCLogoConfig>> entries = controllers.entrySet().iterator();
         while (entries.hasNext()) {
             Entry<String, PLCLogoConfig> thisEntry = entries.next();
@@ -160,14 +159,14 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
             PLCLogoConfig logoConfig = thisEntry.getValue();
             S7Client LogoS7Client = logoConfig.getS7Client();
             if (LogoS7Client == null) {
-                logger.debug("No S7client for " + controller);
+                logger.debug("No S7client for {} found", controller);
             } else {
                 lock.lock();
                 int result = ReadLogoDBArea(LogoS7Client, logoConfig.getMemorySize());
                 lock.unlock();
 
                 if (result != 0) {
-                    logger.warn("Failed to read memory: " + S7Client.ErrorText(result) + " Reconnecting...");
+                    logger.warn("Failed to read memory: {}. Reconnecting...", S7Client.ErrorText(result));
                     ReconnectLogo(LogoS7Client);
                     return;
                 }
@@ -223,26 +222,28 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                             }
                         }
 
-                        Item item = provider.getItem(itemName);
-
                         boolean isValid = false;
-
+                        Item item = provider.getItem(itemName);
                         switch (rd.getKind()) {
                             case I:
-                            case NI:
+                            case NI: {
                                 isValid = item instanceof ContactItem;
                                 break;
-
+                            }
                             case Q:
-                            case NQ:
+                            case NQ: {
                                 isValid = item instanceof SwitchItem;
                                 break;
-
+                            }
                             case M:
                             case VB:
-                            case VW:
+                            case VW: {
                                 isValid = item instanceof ContactItem || item instanceof SwitchItem;
                                 break;
+                            }
+                            default: {
+                                break;
+                            }
                         }
 
                         if (item instanceof NumberItem || isValid) {
@@ -250,8 +251,8 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                             config.setLastValue(currentValue);
                         } else {
                             String block = rd.getBlockName();
-                            logger.warn("Block " + block + " is incompatible with item " + item.getName() + " on "
-                                    + controller);
+                            logger.warn("Block {} is incompatible with item {} on {}", block, item.getName(),
+                                    controller);
                         }
                     }
                 }
@@ -280,7 +281,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
             PLCLogoBindingConfig config = provider.getBindingConfig(itemName);
 
             if (!controllers.containsKey(config.getController())) {
-                logger.warn("Invalid write requested for controller " + config.getController());
+                logger.warn("Invalid write requested for controller {}", config.getController());
                 continue;
             }
 
@@ -302,7 +303,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
             // Send command to the LOGO! controller memory
             S7Client LogoS7Client = controller.getS7Client();
             if (LogoS7Client == null) {
-                logger.debug("No S7client for " + config.getController());
+                logger.debug("No S7client for controller {} found", config.getController());
                 return;
             } else {
                 lock.lock();
@@ -327,11 +328,11 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                     }
                     result = WriteLogoDBArea(LogoS7Client, controller.getMemorySize());
                     if (result != 0) {
-                        logger.warn("Failed to write memory: " + S7Client.ErrorText(result) + " Reconnecting...");
+                        logger.warn("Failed to write memory: {}. Reconnecting...", S7Client.ErrorText(result));
                         ReconnectLogo(LogoS7Client);
                     }
                 } else {
-                    logger.warn("Failed to read memory: " + S7Client.ErrorText(result) + " Reconnecting...");
+                    logger.warn("Failed to read memory: {}. Reconnecting...", S7Client.ErrorText(result));
                     ReconnectLogo(LogoS7Client);
                 }
                 lock.unlock();

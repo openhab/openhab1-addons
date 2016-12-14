@@ -18,18 +18,18 @@ package org.openhab.binding.plclogo.internal;
 public class PLCLogoBlock {
 
     public enum Kind {
-        I,
-        Q,
-        M,
-        AI,
-        AQ,
-        AM,
-        NI,
-        NAI,
-        NQ,
-        NAQ,
-        VB,
-        VW
+        I, // Digital input
+        Q, // Digital output
+        M, // Digital flag
+        AI, // Analog input
+        AQ, // Analog output
+        AM, // Analog flag
+        NI, // Digital network input
+        NAI, // Analog network input
+        NQ, // Digital network output
+        NAQ, // Analog network output
+        VB, // Virtual memory, access to byte
+        VW // Virtual memory, access to word
     };
 
     private final Kind kind;

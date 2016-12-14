@@ -52,9 +52,12 @@ public class PLCLogoGenericBindingProvider extends AbstractGenericBindingProvide
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
         // @TODO may add additional checking based on the memloc
         if (!(item instanceof SwitchItem || item instanceof ContactItem || item instanceof NumberItem)) {
-            throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
-                    + item.getClass().getSimpleName()
-                    + "', only Switch - Contact Items & Number are allowed - please check your *.items configuration");
+            String itemName = item.getName();
+            String className = item.getClass().getSimpleName();
+            logger.error("Item '{}' is of type '{}', only Contact, Switch and Number items are allowed", itemName,
+                    className);
+            throw new BindingConfigParseException("item '" + itemName + "' is of type '" + className
+                    + "', only Contact, Switch and Number are allowed");
         }
     }
 

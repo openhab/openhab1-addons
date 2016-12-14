@@ -55,7 +55,7 @@ public class PLCLogoBindingConfig implements BindingConfig {
 
         // check for invert or analogdelta
         if (segments.length == 2) {
-            logger.debug("Addtional binding config " + segments[1]);
+            logger.debug("Addtional binding config {}", segments[1]);
             String[] parts = segments[1].split("=");
             if (parts.length != 2) {
                 throw new BindingConfigParseException("invalid second parameter: " + configString + ", " + shouldBe);
@@ -66,7 +66,7 @@ public class PLCLogoBindingConfig implements BindingConfig {
             }
             if (parts[0].equalsIgnoreCase("analogdelta")) {
                 analogDelta = Integer.parseInt(parts[1]);
-                logger.debug("Setting analogDelta " + analogDelta);
+                logger.debug("Setting analogDelta {}", analogDelta);
             }
         }
 
