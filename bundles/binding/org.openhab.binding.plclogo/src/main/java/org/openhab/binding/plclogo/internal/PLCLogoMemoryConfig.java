@@ -154,7 +154,7 @@ public class PLCLogoMemoryConfig {
 
     public boolean isInRange(PLCLogoModel model) {
         if (model == PLCLogoModel.LOGO_MODEL_0BA7) {
-            return (address > 849) && (address < 942);
+            return (address >= 0) && (address < 984);
         } else if (model == PLCLogoModel.LOGO_MODEL_0BA8) {
             return (address >= 0) && (address <= 1469);
         } else {
