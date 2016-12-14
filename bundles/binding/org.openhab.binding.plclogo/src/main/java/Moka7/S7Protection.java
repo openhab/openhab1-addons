@@ -1,8 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * Moka7 librray is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Library or Lesser General Public License
+ * version 3.0 (LGPLv3) as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
  */
+
 package Moka7;
 
 // See §33.19 of "System Software for S7-300/400 System and Standard Functions"
