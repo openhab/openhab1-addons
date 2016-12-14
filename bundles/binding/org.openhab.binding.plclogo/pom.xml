@@ -13,7 +13,7 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.plclogo</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.plclogo</bundle.namespace>
-		<deb.name>openhab-addon-binding-PlcLogo</deb.name>
+		<deb.name>openhab-addon-binding-plclogo</deb.name>
 		<deb.description>openhab addon binding PlcLogo</deb.description>
 	</properties>
 
