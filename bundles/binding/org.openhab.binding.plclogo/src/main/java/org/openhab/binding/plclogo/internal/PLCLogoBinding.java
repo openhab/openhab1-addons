@@ -318,7 +318,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                         if (command instanceof OnOffType) {
                             int bit = -1;
                             try {
-                                address = wr.getBit(controller.getModel());
+                                bit = wr.getBit(controller.getModel());
                             } catch (BindingConfigParseException exception) {
                                 logger.error("Invalid bit for block {} on {}", wr.getBlockName(), controller);
                                 continue;
@@ -445,9 +445,10 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                 if ((LogoS7Client.Connect() == 0) && LogoS7Client.Connected) {
                     logger.info("Connected to PLC LOGO! device {}", controllerName);
                 } else {
-                    logger.info("Could not connect to PLC LOGO! device {}", controllerName);
+                    logger.error("Could not connect to PLC LOGO! device {} : {}", controllerName,
+                            S7Client.ErrorText(LogoS7Client.LastError));
                     throw new ConfigurationException("Could not connect to PLC LOGO! device ",
-                            controllerName + " " + deviceConfig.getlogoIP().toString());
+                            controllerName + " " + deviceConfig.getlogoIP());
                 }
                 deviceConfig.setS7Client(LogoS7Client);
             }
