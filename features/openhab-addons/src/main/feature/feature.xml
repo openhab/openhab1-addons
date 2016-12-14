@@ -661,6 +661,7 @@
     <feature>openhab-runtime-compat1x</feature>
     <feature>openhab-io-gcal1</feature>
     <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.gcal/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/gcal-persistence.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/gcal-persistence</configfile>
   </feature>
 
   <!-- JDBC Persistence for: Apache Derby, H2, HSQLDB, MariaDB, MySQL, PostgreSQL, SQLite -->
