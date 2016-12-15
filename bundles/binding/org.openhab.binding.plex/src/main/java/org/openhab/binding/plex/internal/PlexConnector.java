@@ -190,8 +190,7 @@ public class PlexConnector extends Thread {
      */
     private void open() throws IOException, InterruptedException, ExecutionException {
         close();
-        String uri = wsUri + (connection.hasToken() ? getTokenHeaderAsQueryParam() : "");
-        webSocket = client.prepareGet(uri).execute(handler).get();
+        webSocket = client.prepareGet(addDefaultQueryParameters(wsUri)).execute(handler).get();
     }
 
     /**
@@ -396,11 +395,7 @@ public class PlexConnector extends Thread {
         }
 
         if (!isBlank(cover)) {
-            cover = String.format("%s%s", connection.getUri().toString(), cover);
-
-            if (connection.hasToken()) {
-                cover = cover + getTokenHeaderAsQueryParam();
-            }
+            cover = addDefaultQueryParameters(String.format("%s%s", connection.getUri().toString(), cover));
         }
 
         return cover;
@@ -715,7 +710,11 @@ public class PlexConnector extends Thread {
         return headers;
     }
 
-    private String getTokenHeaderAsQueryParam() {
-        return "?" + TOKEN_HEADER + "=" + connection.getToken();
+    private String addDefaultQueryParameters(String uri) {
+        if (connection.hasToken()) {
+            uri += "?" + TOKEN_HEADER + "=" + connection.getToken();
+        }
+
+        return uri;
     }
 }
