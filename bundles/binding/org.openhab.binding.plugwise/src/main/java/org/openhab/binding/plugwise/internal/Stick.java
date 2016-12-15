@@ -236,11 +236,14 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
         }
 
         initialised = true;
-        sendThread.start();
-        processMessageThread.start();
 
         // initialise the Stick
         sendMessage(new InitialiseRequestMessage());
+    }
+
+    public void startBackgroundThreads() {
+        sendThread.start();
+        processMessageThread.start();
     }
 
     /**
