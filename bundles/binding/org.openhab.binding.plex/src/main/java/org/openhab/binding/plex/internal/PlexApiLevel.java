@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This enum is used to keep track of changes within the Plex API. These are not "official" API levels used by Plex.
+ * This enum keeps track of changes within the Plex API. These are not "official" API levels used by Plex.
  * They are however necessary for supporting different versions of the Plex Media Server within this binding.
  *
  * @author Jeroen Idserda
@@ -30,6 +30,15 @@ public enum PlexApiLevel {
 
     private PlexApiLevel(String fromVersion) {
         this.fromVersion = fromVersion;
+    }
+
+    /**
+     * Gets the latest (most recent) api level
+     *
+     * @return Latest api level
+     */
+    public static PlexApiLevel getLatest() {
+        return values()[values().length - 1];
     }
 
     /**
@@ -56,11 +65,11 @@ public enum PlexApiLevel {
         }
 
         // Assume latest version for unprocessable version numbers
-        return PlexApiLevel.values()[PlexApiLevel.values().length - 1];
+        return getLatest();
     }
 
     private boolean isEqualOrBeforeVersion(String version) {
-        String[] v1 = this.fromVersion.split("\\.");
+        String[] v1 = fromVersion.split("\\.");
         String[] v2 = version.split("\\.");
 
         int length = Math.min(v1.length, v2.length);

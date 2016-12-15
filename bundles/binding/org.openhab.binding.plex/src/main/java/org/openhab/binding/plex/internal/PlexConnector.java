@@ -491,7 +491,7 @@ public class PlexConnector extends Thread {
      */
     private class PlexWebSocketListener implements WebSocketTextListener {
 
-        private ObjectMapper mapper = new ObjectMapper();
+        private final ObjectMapper mapper = new ObjectMapper();
 
         @Override
         public void onOpen(WebSocket webSocket) {

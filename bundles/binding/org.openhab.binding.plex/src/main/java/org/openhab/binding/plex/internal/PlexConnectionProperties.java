@@ -37,7 +37,7 @@ public class PlexConnectionProperties {
 
     private String password;
 
-    private PlexApiLevel apiLevel;
+    private PlexApiLevel apiLevel = PlexApiLevel.getLatest();
 
     public String getHost() {
         return host;
