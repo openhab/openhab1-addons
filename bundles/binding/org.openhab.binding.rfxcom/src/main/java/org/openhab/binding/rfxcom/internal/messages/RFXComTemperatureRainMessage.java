@@ -32,8 +32,8 @@ import org.openhab.core.types.UnDefType;
 public class RFXComTemperatureRainMessage extends RFXComBaseMessage {
 
     public enum SubType {
-        UNDEF(0),
         WS1200(1),
+
         UNKNOWN(255);
 
         private final int subType;
@@ -49,13 +49,23 @@ public class RFXComTemperatureRainMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.TEMPERATURE,
             RFXComValueSelector.RAIN_TOTAL);
 
-    public SubType subType = SubType.WS1200;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public double temperature = 0.0;
     public double rainTotal = 0.0;
@@ -90,11 +100,7 @@ public class RFXComTemperatureRainMessage extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 
         temperature = (short) ((data[6] & 0x7F) << 8 | (data[7] & 0xFF)) * 0.1;
@@ -110,7 +116,7 @@ public class RFXComTemperatureRainMessage extends RFXComBaseMessage {
     public byte[] decodeMessage() {
         byte[] data = new byte[11];
 
-        data[0] = (byte)(data.length-1);
+        data[0] = (byte) (data.length - 1);
         data[1] = RFXComBaseMessage.PacketType.TEMPERATURE_RAIN.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
