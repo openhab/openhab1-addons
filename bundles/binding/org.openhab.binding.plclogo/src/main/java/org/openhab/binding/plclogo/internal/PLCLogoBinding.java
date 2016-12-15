@@ -279,7 +279,6 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
             }
 
             PLCLogoBindingConfig config = provider.getBindingConfig(itemName);
-
             if (!controllers.containsKey(config.getController())) {
                 logger.warn("Invalid write requested for controller {}", config.getController());
                 continue;
@@ -304,39 +303,43 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
             S7Client LogoS7Client = controller.getS7Client();
             if (LogoS7Client == null) {
                 logger.debug("No S7client for controller {} found", config.getController());
-                return;
-            } else {
-                lock.lock();
-                int result = ReadLogoDBArea(LogoS7Client, controller.getMemorySize());
-                if (result == 0) {
-                    Item item = config.getItem();
-                    if (item instanceof NumberItem && !wr.isDigital()) {
-                        if (command instanceof DecimalType) {
-                            S7.SetWordAt(data, address, ((DecimalType) command).intValue());
+                continue;
+            }
+            
+            lock.lock();
+            int result = ReadLogoDBArea(LogoS7Client, controller.getMemorySize());
+            if (result == 0) {
+                Item item = config.getItem();
+                if (item instanceof NumberItem && !wr.isDigital()) {
+                    if (command instanceof DecimalType) {
+                        S7.SetWordAt(data, address, ((DecimalType) command).intValue());
+                        result = WriteLogoDBArea(LogoS7Client, controller.getMemorySize());
+                    }
+                } else if (item instanceof SwitchItem && wr.isDigital()) {
+                    if (command instanceof OnOffType) {
+                        int bit = -1;
+                        try {
+                            bit = wr.getBit(controller.getModel());
+                        } catch (BindingConfigParseException exception) {
+                            logger.error("Invalid bit for block {} on {}", wr.getBlockName(), controller);
+                            bit = -1;
                         }
-                    } else if (item instanceof SwitchItem && wr.isDigital()) {
-                        if (command instanceof OnOffType) {
-                            int bit = -1;
-                            try {
-                                bit = wr.getBit(controller.getModel());
-                            } catch (BindingConfigParseException exception) {
-                                logger.error("Invalid bit for block {} on {}", wr.getBlockName(), controller);
-                                continue;
-                            }
+                            
+                        if((bit >= 0) && (bit <= 7)) {
                             S7.SetBitAt(data, address, bit, command == OnOffType.ON ? true : false);
+                            result = WriteLogoDBArea(LogoS7Client, controller.getMemorySize());
                         }
                     }
-                    result = WriteLogoDBArea(LogoS7Client, controller.getMemorySize());
-                    if (result != 0) {
-                        logger.warn("Failed to write memory: {}. Reconnecting...", S7Client.ErrorText(result));
-                        ReconnectLogo(LogoS7Client);
-                    }
-                } else {
-                    logger.warn("Failed to read memory: {}. Reconnecting...", S7Client.ErrorText(result));
+                }
+                if (result != 0) {
+                    logger.warn("Failed to write memory: {}. Reconnecting...", S7Client.ErrorText(result));
                     ReconnectLogo(LogoS7Client);
                 }
-                lock.unlock();
+            } else {
+                logger.warn("Failed to read memory: {}. Reconnecting...", S7Client.ErrorText(result));
+                ReconnectLogo(LogoS7Client);
             }
+            lock.unlock();
         }
     }
 
