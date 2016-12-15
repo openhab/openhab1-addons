@@ -93,6 +93,8 @@ public class PlexConnector extends Thread {
 
     private static final String API_RESOURCES_URL = "https://plex.tv/api/resources?includeHttps=1";
 
+    private static final String TOKEN_HEADER = "X-Plex-Token";
+
     private final AsyncHttpClient client;
 
     private final WebSocketUpgradeHandler handler;
@@ -188,7 +190,8 @@ public class PlexConnector extends Thread {
      */
     private void open() throws IOException, InterruptedException, ExecutionException {
         close();
-        webSocket = client.prepareGet(wsUri).execute(handler).get();
+        String uri = wsUri + (connection.hasToken() ? getTokenHeaderAsQueryParam() : "");
+        webSocket = client.prepareGet(uri).execute(handler).get();
     }
 
     /**
@@ -396,7 +399,7 @@ public class PlexConnector extends Thread {
             cover = String.format("%s%s", connection.getUri().toString(), cover);
 
             if (connection.hasToken()) {
-                cover = cover + "?X-Plex-Token=" + connection.getToken();
+                cover = cover + getTokenHeaderAsQueryParam();
             }
         }
 
@@ -493,6 +496,8 @@ public class PlexConnector extends Thread {
      */
     private class PlexWebSocketListener implements WebSocketTextListener {
 
+        private ObjectMapper mapper = new ObjectMapper();
+
         @Override
         public void onOpen(WebSocket webSocket) {
             logger.info("Plex websocket connected to {}:{}", connection.getHost(), connection.getPort());
@@ -541,39 +546,40 @@ public class PlexConnector extends Thread {
             }
         }
 
+        private SessionUpdate getSessionUpdateFrom(String message) {
+            try {
+                switch (connection.getApiLevel()) {
+                    case v1:
+                        mapper.configure(Feature.UNWRAP_ROOT_VALUE, false);
+                        Update update = mapper.readValue(message, Update.class);
+                        if (update.getType().equals("playing") && update.getChildren().size() > 0) {
+                            return update.getChildren().get(0);
+                        }
+                        break;
+                    case v2:
+                        mapper.configure(Feature.UNWRAP_ROOT_VALUE, true);
+                        NotificationContainer notificationContainer = mapper.readValue(message,
+                                NotificationContainer.class);
+                        if (notificationContainer.getStateNotifications().size() > 0) {
+                            return notificationContainer.getStateNotifications().get(0);
+                        }
+                        break;
+                }
+            } catch (JsonParseException e) {
+                logger.error("Error parsing JSON", e);
+            } catch (JsonMappingException e) {
+                logger.error("Error mapping JSON", e);
+            } catch (IOException e) {
+                logger.error("An I/O error occured while decoding JSON", e);
+            }
+
+            return null;
+        }
+
         @Override
         public void onFragment(String fragment, boolean last) {
         }
 
-    }
-
-    private SessionUpdate getSessionUpdateFrom(String message) {
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            switch (connection.getApiLevel()) {
-                case v1:
-                    Update update = mapper.readValue(message, Update.class);
-                    if (update.getType().equals("playing") && update.getChildren().size() > 0) {
-                        return update.getChildren().get(0);
-                    }
-                case v2:
-                    mapper.configure(Feature.UNWRAP_ROOT_VALUE, true);
-                    NotificationContainer notificationContainer = mapper.readValue(message,
-                            NotificationContainer.class);
-                    if (notificationContainer.getStateNotifications().size() > 0) {
-                        return notificationContainer.getStateNotifications().get(0);
-                    }
-            }
-        } catch (JsonParseException e) {
-            logger.error("Error parsing JSON", e);
-        } catch (JsonMappingException e) {
-            logger.error("Error mapping JSON", e);
-        } catch (IOException e) {
-            logger.error("An I/O error occured while decoding JSON", e);
-        }
-
-        return null;
     }
 
     public void refresh() {
@@ -703,9 +709,13 @@ public class PlexConnector extends Thread {
         headers.put("X-Plex-Platform-Version", Arrays.asList(SystemUtils.JAVA_VERSION));
 
         if (connection.hasToken()) {
-            headers.put("X-Plex-Token", Arrays.asList(connection.getToken()));
+            headers.put(TOKEN_HEADER, Arrays.asList(connection.getToken()));
         }
 
         return headers;
+    }
+
+    private String getTokenHeaderAsQueryParam() {
+        return "?" + TOKEN_HEADER + "=" + connection.getToken();
     }
 }
