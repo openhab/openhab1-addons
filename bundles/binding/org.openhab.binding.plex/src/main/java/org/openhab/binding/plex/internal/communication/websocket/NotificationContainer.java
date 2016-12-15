@@ -16,7 +16,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 
 /**
- * ..
+ * This object holds updates received from the Plex websocket connection for api level 2
  *
  * @author Jeroen Idserda
  * @since 1.9.0

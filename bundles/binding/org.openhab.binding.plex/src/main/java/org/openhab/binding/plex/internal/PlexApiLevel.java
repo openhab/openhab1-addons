@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A little abstraction to keep track of changes within the Plex API. These are not "official" API levels used by Plex.
+ * This enum is used to keep track of changes within the Plex API. These are not "official" API levels used by Plex.
  * They are however necessary for supporting different versions of the Plex Media Server within this binding.
  *
  * @author Jeroen Idserda

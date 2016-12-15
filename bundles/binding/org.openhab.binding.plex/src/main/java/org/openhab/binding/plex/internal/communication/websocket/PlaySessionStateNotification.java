@@ -12,7 +12,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openhab.binding.plex.internal.communication.SessionUpdate;
 
 /**
- * ..
+ * Part of the {@link NotificationContainer} object
  *
  * @author Jeroen Idserda
  * @since 1.9.0

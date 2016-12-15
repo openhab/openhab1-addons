@@ -9,7 +9,7 @@
 package org.openhab.binding.plex.internal.communication;
 
 /**
- * ..
+ * Interface for objects containing updated information for a Plex media playing session.
  *
  * @author Jeroen Idserda
  * @since 1.9.0

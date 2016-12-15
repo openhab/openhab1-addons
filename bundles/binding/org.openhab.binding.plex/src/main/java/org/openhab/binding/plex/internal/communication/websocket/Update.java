@@ -14,7 +14,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * This object holds updates received from the Plex websocket connection
+ * This object holds updates received from the Plex websocket connection for api level 1
  *
  * @author Jeroen Idserda
  * @since 1.7.0
