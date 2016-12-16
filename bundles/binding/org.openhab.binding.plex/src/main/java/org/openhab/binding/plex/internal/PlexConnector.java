@@ -17,8 +17,10 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -142,8 +144,11 @@ public class PlexConnector extends Thread {
      *            Connection properties
      * @param callback
      *            Called when a state update is received
+     * @throws UnknownHostException
+     *             If hostname is not resolvable.
      */
-    public PlexConnector(PlexConnectionProperties connection, PlexUpdateReceivedCallback callback) {
+    public PlexConnector(PlexConnectionProperties connection, PlexUpdateReceivedCallback callback)
+            throws UnknownHostException {
         this.connection = connection;
         this.callback = callback;
 
@@ -495,24 +500,25 @@ public class PlexConnector extends Thread {
 
         @Override
         public void onOpen(WebSocket webSocket) {
-            logger.info("Plex websocket connected to {}:{}", connection.getHost(), connection.getPort());
+            logger.info("Plex websocket connected to {}:{}", connection.getUri().getHost(),
+                    connection.getUri().getPort());
             connected = true;
         }
 
         @Override
         public void onError(Throwable e) {
             if (e instanceof ConnectException) {
-                logger.debug("[{}]: Websocket connection error", connection.getHost());
+                logger.debug("[{}]: Websocket connection error", connection.getUri().getHost());
             } else if (e instanceof TimeoutException) {
-                logger.debug("[{}]: Websocket timeout error", connection.getHost());
+                logger.debug("[{}]: Websocket timeout error", connection.getUri().getHost());
             } else {
-                logger.debug("[{}]: Websocket error: {}", connection.getHost(), e.getMessage());
+                logger.debug("[{}]: Websocket error: {}", connection.getUri().getHost(), e.getMessage());
             }
         }
 
         @Override
         public void onClose(WebSocket webSocket) {
-            logger.warn("[{}]: Websocket closed", connection.getHost());
+            logger.warn("[{}]: Websocket closed", connection.getUri().getHost());
             webSocket = null;
             connected = false;
 
@@ -523,7 +529,7 @@ public class PlexConnector extends Thread {
 
         @Override
         public void onMessage(String message) {
-            logger.debug("[{}]: Message received: {}", connection.getHost(), message);
+            logger.debug("[{}]: Message received: {}", connection.getUri().getHost(), message);
             SessionUpdate update = getSessionUpdateFrom(message);
 
             if (update != null && isNotBlank(update.getSessionKey())) {
@@ -626,26 +632,35 @@ public class PlexConnector extends Thread {
         return null;
     }
 
-    private void resolveServer() {
+    private void resolveServer() throws UnknownHostException {
         MediaContainer container = getDocument(API_RESOURCES_URL, MediaContainer.class);
+
+        // We need the IP-address to find this server in the server list on plex.tv
+        String ip = resolveHostname(connection.getHost());
 
         if (container != null) {
             for (Device device : container.getDevices()) {
-                for (Connection deviceConnection : device.getConnections()) {
-                    boolean uriSet = (connection.getUri() != null);
-                    boolean portEqual = String.valueOf(connection.getPort()).equals(deviceConnection.getPort());
-                    boolean hostEqual = connection.getHost().equals(deviceConnection.getAddress());
+                if (contains(device.getProvides(), "server")) {
+                    for (Connection deviceConnection : device.getConnections()) {
+                        boolean uriSet = (connection.getUri() != null);
+                        boolean portEqual = String.valueOf(connection.getPort()).equals(deviceConnection.getPort());
+                        boolean hostEqual = ip.equals(deviceConnection.getAddress());
 
-                    if (!uriSet && portEqual && hostEqual) {
-                        connection.setUri(deviceConnection.getUri());
-                        connection.setApiLevel(PlexApiLevel.getApiLevel(device.getProductVersion()));
+                        if (!uriSet && portEqual && hostEqual) {
+                            connection.setUri(deviceConnection.getUri());
+                            connection.setApiLevel(PlexApiLevel.getApiLevel(device.getProductVersion()));
+                            logger.debug("Server found, version {}, api level {}", device.getProductVersion(),
+                                    connection.getApiLevel());
+                        }
                     }
                 }
             }
         }
 
         if (connection.getUri() == null) {
-            connection.setUri(String.format("http://%s:%d", connection.getHost(), connection.getPort()));
+            logger.warn(
+                    "Server not found in plex.tv device list, setting URI from configured data. Try configuring IP-address of host.");
+            connection.setUri(String.format("http://%s:%d", ip, connection.getPort()));
         }
 
     }
@@ -716,5 +731,10 @@ public class PlexConnector extends Thread {
         }
 
         return uri;
+    }
+
+    private String resolveHostname(String host) throws UnknownHostException {
+        InetAddress address = InetAddress.getByName(host);
+        return address.getHostAddress();
     }
 }

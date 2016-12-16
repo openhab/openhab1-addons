@@ -34,6 +34,9 @@ public class Device {
     private String productVersion;
 
     @XmlAttribute
+    private String provides;
+
+    @XmlAttribute
     private boolean httpsRequired;
 
     @XmlElement(name = "Connection")
@@ -53,6 +56,14 @@ public class Device {
 
     public void setProductVersion(String productVersion) {
         this.productVersion = productVersion;
+    }
+
+    public String getProvides() {
+        return provides;
+    }
+
+    public void setProvides(String provides) {
+        this.provides = provides;
     }
 
     public boolean isHttpsRequired() {

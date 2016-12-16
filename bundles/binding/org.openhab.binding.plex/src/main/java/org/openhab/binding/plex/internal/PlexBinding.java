@@ -13,6 +13,7 @@ import static org.apache.commons.lang.StringUtils.*;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -182,8 +183,13 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
         logger.debug("Plex config, server at {}:{}", connectionProperties.getHost(), connectionProperties.getPort());
 
         if (isNotBlank(connectionProperties.getHost())) {
-            connect(connectionProperties);
-            setProperlyConfigured(true);
+            try {
+                connect(connectionProperties);
+                setProperlyConfigured(true);
+            } catch (UnknownHostException e) {
+                setProperlyConfigured(false);
+                logger.error("Cannot resolve Plex Media Server host: " + connectionProperties.getHost());
+            }
         } else {
             logger.warn("No host configured for Plex binding");
             setProperlyConfigured(false);
@@ -229,8 +235,10 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
 
     /**
      * Connect to the Plex server.
+     *
+     * @throws UnknownHostException If hostname is not resolvable.
      */
-    private void connect(PlexConnectionProperties connectionProperties) {
+    private void connect(PlexConnectionProperties connectionProperties) throws UnknownHostException {
         connector = new PlexConnector(connectionProperties, new PlexUpdateReceivedCallback() {
             @Override
             public void updateReceived(PlexSession session) {
