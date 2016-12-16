@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,102 +12,102 @@ import java.math.BigDecimal;
 
 /**
  * Properties for a connection to a Denon receiver
- * 
+ *
  * @author Jeroen Idserda
  * @since 1.7.0
  */
 public class DenonConnectionProperties {
-	
-	// Default maximum volume
-	public static final BigDecimal MAX_VOLUME = new BigDecimal("98");
-	
-	private String instance;
-	
-	private String host;
-	
-	private boolean telnet = true;
-	
-	private boolean http = false;
-	
-	private int telnetPort = 23;
-	
-	private int httpPort = 80;
-	
-	private DenonConnector connector;
-	
-	private Integer zoneCount = 2;
 
-	private BigDecimal mainVolumeMax = MAX_VOLUME;
-	
-	public String getInstance() {
-		return instance;
-	}
+    // Default maximum volume
+    public static final BigDecimal MAX_VOLUME = new BigDecimal("98");
 
-	public void setInstance(String instance) {
-		this.instance = instance;
-	}
+    private String instance;
 
-	public String getHost() {
-		return host;
-	}
+    private String host;
 
-	public void setHost(String host) {
-		this.host = host;
-	}
+    private boolean telnet = true;
 
-	public boolean isTelnet() {
-		return telnet;
-	}
+    private boolean http = false;
 
-	public void setTelnet(boolean telnet) {
-		this.telnet = telnet;
-	}
+    private int telnetPort = 23;
 
-	public boolean isHttp() {
-		return http;
-	}
+    private int httpPort = 80;
 
-	public void setHttp(boolean http) {
-		this.http = http;
-	}
+    private DenonConnector connector;
 
-	public Integer getTelnetPort() {
-		return telnetPort;
-	}
+    private Integer zoneCount = 2;
 
-	public void setTelnetPort(Integer telnetPort) {
-		this.telnetPort = telnetPort;
-	}
+    private BigDecimal mainVolumeMax = MAX_VOLUME;
 
-	public Integer getHttpPort() {
-		return httpPort;
-	}
+    public String getInstance() {
+        return instance;
+    }
 
-	public void setHttpPort(Integer httpPort) {
-		this.httpPort = httpPort;
-	}
-	
-	public DenonConnector getConnector() {
-		return connector;
-	}
+    public void setInstance(String instance) {
+        this.instance = instance;
+    }
 
-	public void setConnector(DenonConnector connector) {
-		this.connector = connector;
-	}
-	
-	public BigDecimal getMainVolumeMax() {
-		return mainVolumeMax;
-	}
-	
-	public void setMainVolumeMax(BigDecimal mainVolumeMax) {
-		this.mainVolumeMax = mainVolumeMax;
-	}
+    public String getHost() {
+        return host;
+    }
 
-	public Integer getZoneCount() {
-		return zoneCount;
-	}
+    public void setHost(String host) {
+        this.host = host;
+    }
 
-	public void setZoneCount(Integer zoneCount) {
-		this.zoneCount = zoneCount;
-	}
+    public boolean isTelnet() {
+        return telnet;
+    }
+
+    public void setTelnet(boolean telnet) {
+        this.telnet = telnet;
+    }
+
+    public boolean isHttp() {
+        return http;
+    }
+
+    public void setHttp(boolean http) {
+        this.http = http;
+    }
+
+    public Integer getTelnetPort() {
+        return telnetPort;
+    }
+
+    public void setTelnetPort(Integer telnetPort) {
+        this.telnetPort = telnetPort;
+    }
+
+    public Integer getHttpPort() {
+        return httpPort;
+    }
+
+    public void setHttpPort(Integer httpPort) {
+        this.httpPort = httpPort;
+    }
+
+    public DenonConnector getConnector() {
+        return connector;
+    }
+
+    public void setConnector(DenonConnector connector) {
+        this.connector = connector;
+    }
+
+    public BigDecimal getMainVolumeMax() {
+        return mainVolumeMax;
+    }
+
+    public void setMainVolumeMax(BigDecimal mainVolumeMax) {
+        this.mainVolumeMax = mainVolumeMax;
+    }
+
+    public Integer getZoneCount() {
+        return zoneCount;
+    }
+
+    public void setZoneCount(Integer zoneCount) {
+        this.zoneCount = zoneCount;
+    }
 }

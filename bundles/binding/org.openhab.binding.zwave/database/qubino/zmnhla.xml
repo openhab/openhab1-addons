@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZMNHLA</Model>
+	<Label lang="en">Flush PWM thermostat</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>  <!-- COMMAND_CLASS_BASIC -->
+		<Class>
+			<id>0x25</id>
+		</Class>  <!-- COMMAND_CLASS_SWITCH_BINARY -->
+		<Class>
+			<id>0x26</id>
+		</Class>  <!-- COMMAND_CLASS_SWITCH_MULTILEVEL -->
+		<Class>
+			<id>0x27</id>
+		</Class>  <!-- COMMAND_CLASS_SWITCH_ALL -->
+		<Class>
+			<id>0x30</id>
+		</Class>  <!-- COMMAND_CLASS_SENSOR_BINARY -->
+		<Class>
+			<id>0x31</id>
+		</Class>  <!-- COMMAND_CLASS_SENSOR_MULTILEVEL -->
+		<Class>
+			<id>0x70</id>
+		</Class>  <!-- COMMAND_CLASS_CONFIGURATION -->
+		<Class>
+			<id>0x72</id>
+		</Class>  <!-- COMMAND_CLASS_MANUFACTURER_SPECIFIC -->
+		<Class>
+			<id>0x85</id>
+		</Class>  <!-- COMMAND_CLASS_ASSOCIATION -->
+		<Class>
+			<id>0x86</id>
+		</Class>  <!-- COMMAND_CLASS_VERSION -->
+		<Class>
+			<id>0xEF</id>
+		</Class>  <!-- COMMAND_CLASS_MARK -->
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 1 switch type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">mono-stable switch type (push button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">bi-stable switch type</Label>
+			</Item>
+			<Help lang="en">Input 1 switch type</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 2 switch type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">mono-stable switch type (push button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">bi-stable switch type</Label>
+			</Item>
+			<Help lang="en">Input 2 switch type</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 3 switch type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">mono-stable switch type (push button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">bi-stable switch type</Label>
+			</Item>
+			<Help lang="en">Input 3 switch type</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 1 contact type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">NO (normally open) input type</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en"> NC (normally close) input type</Label>
+			</Item>
+			<Help lang="en">Input 1 contact type</Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 2 contact type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">NO (normally open) input type</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en"> NC (normally close) input type</Label>
+			</Item>
+			<Help lang="en">Input 2 contact type</Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 3 contact type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">NO (normally open) input type</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en"> NC (normally close) input type</Label>
+			</Item>
+			<Help lang="en">Input 3 contact type</Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Label lang="en">Activate / deactivate functions ALL ON/ALL OFF
+			</Label>
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">ALL ON active, ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">ALL ON is not active ALL OFF is not active</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALL ON is not active ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALL ON active ALL OFF is not active</Label>
+			</Item>
+			<Help lang="en">Flush PWM thermostat module responds to commands ALL
+				ON /
+				ALL OFF that may be sent by the main controller or by
+				other
+				controller belonging to the system.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>1</Minimum>
+			<Maximum>65535</Maximum>
+			<Size>2</Size>
+			<Label lang="en">I1 Functionality Selection</Label>
+			<Help lang="en">Default Value = 1. 65535 – Input I1 does not
+				influence
+				on the heat/cool process. 1 - Input I1 changes the mode of
+				the thermostat between OFF and AUTO.
+				In this case function on flood sensor (if connected) is disabled.
+				2 -
+				input I1 influences on cooling and heating valves according to
+				status of flood sensor. In
+				this case function of OFF and AUTO selection by I1 is disabled.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Default>65535</Default>
+			<Minimum>1</Minimum>
+			<Maximum>2</Maximum>
+			<Size>2</Size>
+			<Label lang="en">I2 Functionality Selection</Label>
+			<Help lang="en">Default = 65535, 65535 - I2 does not influence on the
+				heat/cool process, From
+				From 0 to 990 - Temperature set point from
+				0.0 C to 99.0 C. When I2 is pressed, the temperature
+				set point is
+				automatically set to value defined here. In this case function of
+				condense sensor
+				is disabled. From 1001 to 1150 - Temperature set point from -0.1 C to
+				-15.0 C. When I2 is pressed,
+				temperature set point is automatically
+				set to value defined here. In this case function of condense
+				sensor
+				is disabled. 2000 - I2 influences on the cooling valve according to
+				status of condense
+				sensor. In this case function of set point
+				selection with I2 is disabled.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>byte</Type>
+			<Default>65535</Default>
+			<Minimum>1</Minimum>
+			<Maximum>65535</Maximum>
+			<Size>2</Size>
+			<Label lang="en">I3 Functionality Selection</Label>
+			<Help lang="en">Default Value = 65535. 65535 – Input I3 does not
+				influence
+				on the heat/cool process. 1 - Input I3 changes the mode of
+				the thermostat between OFF and AUTO.
+				In this case function on window sensor is disabled.
+				2 - input I3
+				influences on cooling and heating valves according to status of
+				window sensor. In
+				this case function of HEAT and COOL selection by I3 is disabled.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>40</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Power reporting in Watts on power change</Label>
+			<Help lang="en">Default Value = 0. 0 – Reporting Disabled
+				1 - 100 = 1% - 100% Reporting enabled. Power report is sent (pushed)
+				only when actual power
+				in Watts in real time changes for more than
+				set percentage comparing to previous actual power
+				in Watts, step is
+				1%. NOTE: If power changed is less than 1W, the report is not sent
+				(pushed)
+				independent of percentage set.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>42</Index>
+			<Type>byte</Type>
+			<Default>300</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Power reporting in Watts by timer interval</Label>
+			<Help lang="en">Default Value = 300. 0 – Reporting Disabled
+				1 - 32767 = 1 second - 32767 seconds Reporting enabled. Power report
+				is sent with time interval
+				set by entered value.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>45</Index>
+			<Type>byte</Type>
+			<Default>50</Default>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Antifreeze</Label>
+			<Help lang="en">Set value at which temperature the device will be
+				turned on even if the termpearture
+				was manually set to off. Parameter can be set from 0 to 255 where 0 to
+				127 means from 0.0 C to 12.7 C
+				and from 128 to 254 means from -0.1 C to -12.6 C Default = 0. 255 =
+				Disabled NOTE:Antifreeze is
+				activated only in heating mode.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>50</Index>
+			<Type>byte</Type>
+			<Default>100</Default>
+			<Minimum>2</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">PWM Maximum Value</Label>
+			<Help lang="en">2 - 100 = 2% - 100%, step is 1% Max PWM set by
+				entered value. Default = 100.
+				The Maximum level may not be lower than the minimum level.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>51</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>99</Maximum>
+			<Size>1</Size>
+			<Label lang="en">PWM Minimum Value</Label>
+			<Help lang="en">1 - 99 = 1% - 99%, step is 1% Minimum PWM set by
+				entered value. Default = 0.
+				The Minimum level may exceed the maximum level.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>52</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>1</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">PWM Cycle Duration</Label>
+			<Help lang="en">1 - 127 = 1-127 seconds, step is 1s PWM Cycle
+				Duration set by entered value. Default = 10.
+				NOTE:PWM Cycle duration defines the summary of all ON plus OFF time periods.
+				For example if Output is set
+				to 70% with PWM cycle duration of 20s, output will be on for 14s then
+				OFF 6s, again 14s ON, etc..
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>53</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">PID Value Inside Deadband</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">PID value equals ZERO</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">PID value set to LAST VALUE</Label>
+			</Item>
+			<Help lang="en">When value is set to ZERO PID inside deadband is
+				forced to zero. LAST VALUE means
+				PID remains on same level as was before entering into deadband.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>54</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">PID Deadband</Label>
+			<Help lang="en">0 - 127 = 0.0C - 12.7C step is 0.1 C This parameter
+				defines the zone where PID is
+				not active. If the temperature difference between actual and setpoint
+				is bigger than PID deadband,
+				then the PID will start to regulate the system, otherwise the PID is
+				zero or fixed.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>55</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Integral Sampling Time</Label>
+			<Help lang="en">0 - 127 = 0s -127s step is 1s Parameter defines the
+				time between samples. On each
+				sample the controller captures difference between SP-act.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>56</Index>
+			<Type>byte</Type>
+			<Default>100</Default>
+			<Minimum>0</Minimum>
+			<Maximum>1000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">P Parameter</Label>
+			<Help lang="en">0 - 1000 P value step is 1. Default = 100
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>57</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>0</Minimum>
+			<Maximum>1000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">I Parameter</Label>
+			<Help lang="en">0 - 1000 - 0s I value step is 1. Default = 1
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>58</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>0</Minimum>
+			<Maximum>1000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">D Parameter</Label>
+			<Help lang="en">0 - 1000 - 0s D value step is 1. Default = 1
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>59</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Thermostat Mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Heat Mode</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Cool Mode</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>60</Index>
+			<Type>byte</Type>
+			<Default>50</Default>
+			<Minimum>1</Minimum>
+			<Maximum>1000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Too low temperature limit</Label>
+			<Help lang="en">1 - 1000 = 0.1 C - 100.0 C step is 0.1 C Too low
+				temperature limit is set by entered
+				value. In case measured temperature is below set value, module sends
+				BasicSet value. Default = 50
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>61</Index>
+			<Type>byte</Type>
+			<Default>700</Default>
+			<Minimum>1</Minimum>
+			<Maximum>1000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Too high temperature limit</Label>
+			<Help lang="en">1 - 1000 = 0.1 C - 100.0 C step is 0.1 C Too high
+				temperature limit is set by entered
+				value. In case measured temperature is higher than set value, module sends
+				BasicSet value. Default = 700
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>63</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Output Switch Selection</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">When system is turned off the output is 0V (NC)
+				</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">When system is turned off the output is 230V (NO)
+				</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>70</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Input 1 Status on delay</Label>
+			<Help lang="en">1 - 32000 seconds. If the value of the parameter is
+				different to 0, means that the
+				influence of this input to heating or cooling will react after inserted time.
+				Parameter 11 must be
+				set to 2!
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>71</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Input 1 Status off delay</Label>
+			<Help lang="en">1 - 32000 seconds. If the value of the parameter is
+				different to 0, means that the
+				influence of this input to heating or cooling will react after inserted time.
+				Parameter 11 must be
+				set to 2!
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>72</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Input 2 Status on delay</Label>
+			<Help lang="en">1 - 32000 seconds. If the value of the parameter is
+				different to 0, means that the
+				influence of this input to heating or cooling will react after inserted time.
+				Parameter 12 must be
+				set to 2000!
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>73</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Input 2 Status off delay</Label>
+			<Help lang="en">1 - 32000 seconds. If the value of the parameter is
+				different to 0, means that the
+				influence of this input to heating or cooling will react after inserted time.
+				Parameter 12 must be
+				set to 2000!
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>74</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Input 3 Status on delay</Label>
+			<Help lang="en">1 - 32000 seconds. If the value of the parameter is
+				different to 0, means that the
+				influence of this input to heating or cooling will react after inserted time.
+				Parameter 13 must be
+				set to 2!
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>75</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Input 3 Status off delay</Label>
+			<Help lang="en">1 - 32000 seconds. If the value of the parameter is
+				different to 0, means that the
+				influence of this input to heating or cooling will react after inserted time.
+				Parameter 13 must be
+				set to 2!
+			</Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">On/Off Triggered by Q State</Label>
+			<Help lang="en">basic on/off (triggered at change of the output
+				Q state and reflecting its state)up to 16 nodes.
+			</Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">On/Off Triggered by I2</Label>
+			<Help lang="en"> basic on/off (triggered at change of the input I2
+				state and reflecting its state)up to 16 nodes.
+			</Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">On/Off Triggered by I3</Label>
+			<Help lang="en"> basic on/off (triggered at change of the input I3
+				state and reflecting its state)up to 16 nodes.
+			</Help>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">On/Off Triggerd by High Temp</Label>
+			<Help lang="en">basic on/off (triggered by Too high temperature
+				limit, it sends FF )
+				to up to 16 nodes.
+			</Help>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">On/Off Trigger by Low Temp</Label>
+			<Help lang="en">basic on/off (triggered by Too low temperature
+				limit, it sends FF )
+				to up to 16 nodes.
+			</Help>
+		</Group>
+		<Group>
+			<Index>6</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Controller Updates</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

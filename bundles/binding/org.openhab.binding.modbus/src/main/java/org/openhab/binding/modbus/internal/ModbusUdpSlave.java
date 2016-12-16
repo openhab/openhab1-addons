@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,61 +8,44 @@
  */
 package org.openhab.binding.modbus.internal;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import org.apache.commons.pool2.KeyedObjectPool;
+import org.openhab.binding.modbus.internal.pooling.ModbusSlaveEndpoint;
+import org.openhab.binding.modbus.internal.pooling.ModbusUDPSlaveEndpoint;
+
 import net.wimpi.modbus.io.ModbusUDPTransaction;
+import net.wimpi.modbus.net.ModbusSlaveConnection;
 import net.wimpi.modbus.net.UDPMasterConnection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * ModbusSlave class instantiates physical Modbus slave. 
+ * ModbusSlave class instantiates physical Modbus slave.
  * It is responsible for polling data from physical device using TCPConnection.
- * It is also responsible for updating physical devices according to OpenHAB commands  
+ * It is also responsible for updating physical devices according to OpenHAB commands
  *
  * @author Dmitry Krasnov
  * @since 1.1.0
  */
 public class ModbusUdpSlave extends ModbusIPSlave {
 
-	private static final Logger logger = LoggerFactory.getLogger(ModbusUdpSlave.class);
+    public ModbusUdpSlave(String slave, KeyedObjectPool<ModbusSlaveEndpoint, ModbusSlaveConnection> connectionPool) {
+        super(slave, connectionPool);
+        transaction = new ModbusUDPTransaction();
+    }
 
-	private UDPMasterConnection connection = null;
+    @Override
+    protected ModbusSlaveConnection getConnection(ModbusSlaveEndpoint endpoint) {
+        ModbusSlaveConnection connection = super.getConnection(endpoint);
+        if (connection == null) {
+            return null;
+        }
+        if (!(connection instanceof UDPMasterConnection)) {
+            throw new IllegalStateException("Should not happen: wrong connection type for slave " + name);
+        }
+        ((ModbusUDPTransaction) transaction).setTerminal(((UDPMasterConnection) connection).getTerminal());
+        return connection;
+    }
 
-	public ModbusUdpSlave(String slave) {
-		super(slave);
-		transaction = new ModbusUDPTransaction();
-	}
-
-	public boolean isConnected() {
-		return true;
-	}
-
-	/**
-	 * Establishes connection to the device
-	 */
-	public boolean connect() {
-		try {
-			if (connection == null)
-				connection = new UDPMasterConnection(InetAddress.getByName(getHost()));
-		} catch (UnknownHostException e) {
-			logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
-			connection = null;
-			return false;
-		}
-		if (!connection.isConnected())
-			try {
-				connection.setPort(getPort());
-				connection.connect();
-                                ((ModbusUDPTransaction)transaction).setTerminal(connection.getTerminal());
-			} catch (Exception e) {
-				logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
-				return false;
-			}
-		return true;
-	}
-	
-	public void resetConnection() {
-		connection = null;
-	}
+    @Override
+    protected void updateEndpoint() {
+        endpoint = new ModbusUDPSlaveEndpoint(getHost(), getPort());
+    }
 }

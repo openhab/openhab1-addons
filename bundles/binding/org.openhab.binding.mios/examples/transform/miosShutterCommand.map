@@ -1,4 +1,0 @@
-DOWN=urn:upnp-org:serviceId:WindowCovering1/Down()
-UP=urn:upnp-org:serviceId:WindowCovering1/Up()
-STOP=urn:upnp-org:serviceId:WindowCovering1/Stop()
-_defaultCommand=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=??)

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,18 +11,17 @@ package org.openhab.binding.mailcontrol.service;
 import java.util.Dictionary;
 import java.util.Set;
 
+import org.creek.accessemail.connector.mail.ConnectorException;
+import org.creek.accessemail.connector.mail.MailConnector;
 import org.creek.mailcontrol.model.message.TransformException;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.creek.accessemail.connector.mail.ConnectorException;
-import org.creek.accessemail.connector.mail.MailConnector;
-
 /**
  * Receives messages in JSON format and submits them for further processing.
- * 
+ *
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */

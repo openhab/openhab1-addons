@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZWN-RSM2</Model>
+    <Label lang="en">Smart Dual Relay Switch Module</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+    <Configuration>
+        <Parameter>
+            <Index>3</Index>
+            <Type>byte</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Label lang="en">Unsolicited Report Configuration</Label>
+            <Help lang="en"><![CDATA[ZWN-RSM2 can send unsolicited status report to primary controller (Node ID 0X01) when switch toggled due to some controllers designed as gateway. If your controller is not a gateway or does not need the status or you think it could confuse your Z-Wave network, you can use Command_Class_Configuration to disable this function. By default setting, this function is disabled.<br/><ul><li>0 = Disabled (Default)</li><li>1-254 = Other controller ID</li><li>255 = Send broadcast.</li></ul>]]></Help>
+        </Parameter>
+    </Configuration>
+</Product>

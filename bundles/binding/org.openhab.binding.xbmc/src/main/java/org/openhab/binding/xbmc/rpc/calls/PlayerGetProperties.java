@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,55 +13,116 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.xbmc.rpc.RpcCall;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ning.http.client.AsyncHttpClient;
 
 /**
  * Player.GetProperties RPC
- * 
- * @author Ben Jones
+ *
+ * @author Ben jones, Plebs
  * @since 1.5.0
  */
 public class PlayerGetProperties extends RpcCall {
 
-	private int playerId;
+    private static final Logger logger = LoggerFactory.getLogger(RpcCall.class);
 
-	private boolean paused = false;
-	
-	public PlayerGetProperties(AsyncHttpClient client, String uri) {
-		super(client, uri);
-	}
-	
-	public void setPlayerId( int playerId) {
-		this.playerId = playerId;
-	}
-	
-	@Override
-	protected String getName() {
-		return "Player.GetProperties";
-	}
+    private int playerId;
+    private List<String> properties;
 
-	@Override
-	protected Map<String, Object> getParams() {
-		List<String> properties = new ArrayList<String>();
-		properties.add("speed");
-		
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("playerid", playerId);
-		params.put("properties", properties);
-		return params;
-	}
+    private Map<String, Object> item;
 
-	@Override
-	protected void processResponse(Map<String, Object> response) {
-		Map<String, Object> result = getMap(response, "result");
+    public PlayerGetProperties(AsyncHttpClient client, String uri) {
+        super(client, uri);
+    }
 
-		if (result.containsKey("speed"))
-			paused = (Integer)result.get("speed") == 0;
-	}
-	
-	public boolean isPaused() {
-		return paused;
-	}
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
+    }
+
+    public void setProperties(List<String> properties) {
+        this.properties = properties;
+    }
+
+    @Override
+    protected String getName() {
+        return "Player.GetProperties";
+    }
+
+    @Override
+    protected Map<String, Object> getParams() {
+        List<String> paramProperties = new ArrayList<String>();
+        for (String property : properties) {
+            if (property.startsWith("Property.")) {
+                String paramProperty = getParamProperty(property);
+                paramProperties.add(paramProperty);
+            }
+        }
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("playerid", playerId);
+        params.put("properties", paramProperties);
+        return params;
+    }
+
+    @Override
+    protected void processResponse(Map<String, Object> response) {
+        Map<String, Object> result = getMap(response, "result");
+        item = result;
+    }
+
+    public String getPropertyValue(String property) {
+        String paramProperty = getParamProperty(property);
+        if (!item.containsKey(paramProperty)) {
+            return null;
+        }
+
+        Object value = item.get(paramProperty);
+
+        if (value instanceof List<?>) {
+            List<?> values = (List<?>) value;
+
+            // check if list contains any values
+            if (values.size() == 0) {
+                return null;
+            }
+
+            // some properties come back as a list with an indexer
+            String paramPropertyIndex = getPropertyValue(paramProperty + "id");
+            int propertyIndex;
+            if (!StringUtils.isEmpty(paramPropertyIndex)) {
+                // attempt to parse the property index
+                try {
+                    propertyIndex = Integer.parseInt(paramPropertyIndex);
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+
+                // check if the index is valid
+                if (propertyIndex < 0 || propertyIndex >= values.size()) {
+                    return null;
+                }
+            } else {
+                // some properties come back as a list without an indexer,
+                // e.g. artist, for these we return the first in the list
+                propertyIndex = 0;
+            }
+
+            value = values.get(propertyIndex);
+        }
+
+        if (value == null) {
+            return null;
+        }
+
+        return value.toString();
+    }
+
+    private String getParamProperty(String property) {
+        // properties entered as 'Property.Title' etc - so strip the first 9 chars
+        return property.substring(9).toLowerCase();
+    }
+
 }

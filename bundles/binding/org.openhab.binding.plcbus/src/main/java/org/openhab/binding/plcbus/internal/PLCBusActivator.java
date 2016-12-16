@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,30 +15,32 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Activator for PLCBusBinding
- * 
+ *
  * @author Robin Lenz
  * @since 1.1.0
  */
 public class PLCBusActivator implements BundleActivator {
-	
-	private static Logger logger = LoggerFactory.getLogger(PLCBusActivator.class);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext bundleContext) throws Exception {
-		logger.debug("PLCBus Binding startet");
-	}
+    private static Logger logger = LoggerFactory.getLogger(PLCBusActivator.class);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext bundleContext) throws Exception {
-		logger.debug("PLCBus Binding stopped");
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+     */
+    @Override
+    public void start(BundleContext bundleContext) throws Exception {
+        logger.debug("PLCBus Binding started");
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+     */
+    @Override
+    public void stop(BundleContext bundleContext) throws Exception {
+        logger.debug("PLCBus Binding stopped");
+    }
 
 }

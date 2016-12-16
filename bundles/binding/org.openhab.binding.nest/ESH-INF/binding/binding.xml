@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="nest"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>Nest Binding</name>
+    <description>Monitor and control Nest Learning Thermostats, Nest Protect Smoke+CO detectors, and Nest Cams using the cloud-based API.</description>
+    <author>John Cocula</author>
+    
+    <service-id>org.openhab.nest</service-id>
+
+    <config-description>
+        <parameter name="refresh" type="integer">
+            <label>Refresh interval</label>
+            <description>Data refresh interval in milliseconds.</description>
+            <default>60000</default>
+        </parameter>
+        <parameter name="timeout" type="integer">
+            <label>HTTP Timeout</label>
+            <description>HTTP request timeout in milliseconds.</description>
+            <default>10000</default>
+        </parameter>
+        <parameter name="client_id" type="text" required="true">
+            <label>Nest Product ID needed to use the Nest API.</label>
+        </parameter>
+        <parameter name="client_secret" type="text" required="true">
+            <label>Nest Product Secret needed to use the Nest API.</label>
+        </parameter>
+        <parameter name="pin_code" type="text" required="true">
+            <label>PIN code that Nest presented when you authorized this client.</label>
+        </parameter>
+    </config-description>
+</binding:binding>

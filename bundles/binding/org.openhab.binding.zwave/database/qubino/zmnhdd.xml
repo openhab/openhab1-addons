@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZMNHDD</Model>
+	<Label lang="en">Flush Dimmer</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>  <!-- COMMAND_CLASS_BASIC -->
+		<Class>
+			<id>0x25</id>
+		</Class>  <!-- COMMAND_CLASS_SWITCH_BINARY -->
+		<Class>
+			<id>0x26</id>
+		</Class>  <!-- COMMAND_CLASS_SWITCH_MULTILEVEL -->
+		<Class>
+			<id>0x27</id>
+		</Class>  <!-- COMMAND_CLASS_SWITCH_ALL -->
+		<Class>
+			<id>0x32</id>
+		</Class>  <!-- COMMAND_CLASS_METER_V3 -->
+		<Class>
+			<id>0x31</id>
+		</Class>  <!-- COMMAND_CLASS_SENSOR_MULTILEVEL_V7 -->
+		<Class>
+			<id>0x70</id>
+		</Class>  <!-- COMMAND_CLASS_CONFIGURATION -->
+		<Class>
+			<id>0x72</id>
+		</Class>  <!-- COMMAND_CLASS_MANUFACTURER_SPECIFIC -->
+		<Class>
+			<id>0x85</id>
+		</Class>  <!-- COMMAND_CLASS_ASSOCIATION -->
+		<Class>
+			<id>0x86</id>
+		</Class>  <!-- COMMAND_CLASS_VERSION -->
+		<Class>
+			<id>0xEF</id>
+		</Class>  <!-- COMMAND_CLASS_MARK -->
+		<Class>
+			<id>0x73</id>
+		</Class>  <!-- COMMAND_CLASS_POWERLEVEL -->
+		<Class>
+			<id>0x5e</id>
+		</Class>  <!-- COMMAND_CLASS_ZWAVEPLUS_INFO -->
+		<Class>
+			<id>0x60</id>
+		</Class>  <!-- COMMAND_CLASS_MULTI_CHANNEL_V2 -->
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 1 switch type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 - Mono-stable switch type (push button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 - Bi-stable switch type</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 2 switch type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 - Mono-stable switch type (push button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 - Bi-stable switch type</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 2 contact type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 - NO (normally open) input type</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 - NC (normally closed) input type</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 3 contact type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 - NO (normally open) input type</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 - NC (normally closed) input type</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>2</Size>
+			<Label lang="en">Activate / deactivate functions ALL ON / ALL OFF</Label>
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">ALL ON active, ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">ALL ON is not active, ALL OFF is not active</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALL ON is not active, ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALL ON active, ALL OFF is not active</Label>
+			</Item>
+			<Help lang="en">
+				Flush dimmer module responds to commands ALL ON / ALL OFF that may be sent by
+				the main controller or by other controller belonging to the system.
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32536</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Automatic turning off output after set time</Label>
+			<Help lang="en"><![CDATA[
+				<ul><li>0 - Auto OFF disabled</li>
+				<li>1 – 32536 = 1 second – 32536 seconds Auto OFF enabled with defined time, step is 1 second.</li></ul>]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32536</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Automatic turning on output after set time</Label>
+			<Help lang="en"><![CDATA[
+				<ul><li>0 - Auto ON disabled</li>
+				<li>1 – 32536 = 1 second – 32536 seconds Auto ON enabled with defined time, step is 1 second.</li></ul>]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>20</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable / Disable 3-way switch</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 - single push button (connected to I1)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 - 3-way switch (connected to I1 and I2)</Label>
+			</Item>
+			<Help lang="en">
+				Dimming is done by push button or switch connected to I1 (by default).
+				Enabling 3way switch, dimming can be controlled by push button or switch
+				connected to I1 and I2.
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>21</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable / Disable Double click function</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 - double click disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 - double click enabled</Label>
+			</Item>
+			<Help lang="en">
+				If Double click function is enabled, a fast double click on the push button
+				will set dimming power at maximum dimming value.
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>30</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Saving the state of the device after a power failure</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 - Save state enabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 - Save state disabled</Label>
+			</Item>
+			<Help lang="en">
+				If state saving is enabled, flush dimmer module saves its state before
+				power failure (it returns to the last position saved before a power failure).
+				If state saving is disabled, flush dimmer module does not save the state
+				after a power failure, it returns to "off" position.
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>40</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Power reporting in watts on power change</Label>
+			<Help lang="en"><![CDATA[
+				Set value means percentage, set value from 0 - 100 = 0% - 100%.
+				Default value is 5.
+				<ul><li>0 – Reporting Disabled</li>
+				<li>1 – 100 = 1% - 100% Reporting enabled. Power report is sent (push) only when
+				actual power in Watts in real time changes for more than set percentage
+				compared to previous actual power in Watts, step is 1%.</li></ul>
+				NOTE: if power changed is less than 1W, the report is not sent (pushed),
+				independent of percentage set.]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>42</Index>
+			<Type>byte</Type>
+			<Default>300</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Power reporting in Watts by time interval</Label>
+			<Help lang="en"><![CDATA[
+				Set value means time interval (0 – 32767) in seconds, when power report is
+				sent.
+				<ul><li>0 – reporting disabled</li>
+				<li>1 – 32767 = 1 second – 32767 seconds. Reporting enabled. Power report is sent
+				with time interval set by entered value.</li></ul>]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>60</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>1</Minimum>
+			<Maximum>98</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Minimum dimming value</Label>
+			<Help lang="en"><![CDATA[
+				<ul><li>1-98 = 1% – 98%, step is 1%. Minimum dimming value is set by entered value.</li></ul>
+				NOTE: The minimum level may not be higher than the maximum level!
+				1% min. dimming value is defined by Z- Wave multilevel device class.]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>61</Index>
+			<Type>byte</Type>
+			<Default>99</Default>
+			<Minimum>2</Minimum>
+			<Maximum>99</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Maximum dimming value</Label>
+			<Help lang="en"><![CDATA[
+				<ul><li>2-99 = 2% – 99%, step is 1%. Maximum dimming value is set by entered value.</li></ul>
+				NOTE: The maximum level may not be lower than the minimum level!
+				99% max. dimming value is defined by Z- Wave multilevel device class.]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>65</Index>
+			<Type>byte</Type>
+			<Default>100</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Dimming time (soft on/off)</Label>
+			<Help lang="en"><![CDATA[
+				Set value means time of moving the Dimmer between min. and max. dimming
+				values by short press of push button I1 or controlled through UI (BasicSet).
+				<ul><li>default value 100 = 1s</li>
+				<li>1 - 255 = 100 mseconds – 25500 mseconds (25.5s), step is 100 mseconds</li></ul>]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>66</Index>
+			<Type>byte</Type>
+			<Default>3</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Dimming time when key pressed</Label>
+			<Help lang="en"><![CDATA[
+				Time of moving the Dimmer between min. and max dimming values by continuous
+				hold of push button I1 or associated device.
+				<ul><li>default value 3 = 3s</li>
+				<li>1- 255 = 1 second – 255 seconds.</li></ul>]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>67</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Ignore start level</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 - respect start level</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 - ignore start level</Label>
+			</Item>
+			<Help lang="en">
+				This parameter is used with association group 3.
+				A receiving device SHOULD respect the start level if the Ignore Start Level bit is 0. 
+				A receiving device MUST ignore the start level if the Ignore Start Level bit is 1.
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>68</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Label lang="en">Dimming duration</Label>
+			<Help lang="en"><![CDATA[
+				This parameter is used with association group 3.
+				The Duration field MUST specify the time that the transition should take from the current value 
+				to the new target value. A supporting device SHOULD respect the specified Duration value.
+				<ul><li>default value 0 - dimming duration according to parameter 66</li>
+				<li>1 – 127 = 1 second – 127 seconds</li></ul>]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>100</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable / Disable Endpoints I2 or select Notification Type and Event</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 – Endpoint, I2 disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 – Home Security; Motion Detection, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">2 – Carbon Monoxide; Carbon Monoxide detected, unknown location.</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">3 – Carbon Dioxide; Carbon Dioxide detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">4 – Water Alarm; Water Leak detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">5 – Heat Alarm; Overheat detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">6 - Smoke Alarm; Smoke detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">9 – Sensor binary</Label>
+			</Item>
+			<Help lang="en">
+				Enabling I2 means that Endpoint (I2) will be present on UI. 
+				Disabling it will result in hiding the endpoint according to the parameter set value. 
+				Additionally, a Notification Type and Event can be selected for the endpoint.
+				NOTE: After parameter change, module has to be re included into the network in order setting to take effect!
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>101</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable / Disable Endpoints I3 or select Notification Type and Event</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 – Endpoint, I3 disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 – Home Security; Motion Detection, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">2 – Carbon Monoxide; Carbon Monoxide detected, unknown location.</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">3 – Carbon Dioxide; Carbon Dioxide detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">4 – Water Alarm; Water Leak detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">5 – Heat Alarm; Overheat detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">6 - Smoke Alarm; Smoke detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">9 – Sensor binary</Label>
+			</Item>
+			<Help lang="en">
+				Enabling I3 means that Endpoint (I3) will be present on UI. 
+				Disabling it will result in hiding the endpoint according to the parameter set value. 
+				Additionally, a Notification Type and Event can be selected for the endpoint.
+				NOTE: After parameter change, module has to be re included into the network in order setting to take effect!
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>110</Index>
+			<Type>byte</Type>
+			<Default>32536</Default>
+			<Minimum>1</Minimum>
+			<Maximum>32536</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Temperature sensor offset settings</Label>
+			<Help lang="en"><![CDATA[Set value is added or subtracted to actual measured
+				value by sensor. Available configuration parameters:
+				<ul><li>default value 32536</li>
+				<li>32536 – offset is 0.0C</li>
+				<li>From 1 to 100 – value from 0.1 °C to 10.0 °C is
+				added to actual measured temperature.</li>
+				<li>From 1001 to 1100 – value from -0.1 °C to -10.0 °C
+				is subtracted to actual measured temperature</li></ul>]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>120</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Digital temperature sensor reporting</Label>
+			<Help lang="en"><![CDATA[If digital temperature sensor is connected, module
+				reports measured temperature on temperature change defined
+				by this parameter. Available configuration parameters:
+				<ul><li>default value 5 = 0.5°C</li>
+				<li>0 – Reporting disabled</li>
+				<li>1-127 = 0.1°C – 12.7°C, step is 0.1°C</li></ul>]]>
+			</Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Controller Updates</Label>
+			<Help lang="en">
+				Default reporting group (reserved for the main controller)
+			</Help>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I1 basic on/off</Label>
+			<Help lang="en">
+				Basic on/off (triggered at change of the input I1 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I1 start/stop level change</Label>
+			<Help lang="en">
+				Start level change/stop level change (triggered at change of the input I1 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Multilevel</Label>
+			<Help lang="en">
+				Multilevel set (triggered at changes of state/value of the Flush dimmer) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I2 basic on/off</Label>
+			<Help lang="en">
+				Basic on/off (triggered at change of the input I2 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>6</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I2 notification report</Label>
+			<Help lang="en">
+				Notification report (triggered at change of the input I2 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>7</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I2 binary sensor</Label>
+			<Help lang="en">
+				Binary sensor (triggered at change of the input I2 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>8</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I3 basic on/off</Label>
+			<Help lang="en">
+				Basic on/off (triggered at change of the input I3 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>9</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I3 notification report</Label>
+			<Help lang="en">
+				Notification report (triggered at change of the input I3 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>10</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I3 binary sensor</Label>
+			<Help lang="en">
+				Binary sensor (triggered at change of the input I3 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>11</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Multilevel sensor</Label>
+			<Help lang="en">
+				Multilevel sensor report (triggered at change of temperature sensor) up to 16 nodes.
+			</Help>
+		</Group>
+	</Associations>
+</Product>

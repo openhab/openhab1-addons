@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,208 +19,212 @@ import org.eclipse.emf.common.util.Enumerator;
  * A representation of the literals of the enumeration '<em><b>DC Drive Mode</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
+ * 
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDCDriveMode()
  * @model
  * @generated
  */
-public enum DCDriveMode implements Enumerator
-{
-  /**
-   * The '<em><b>BRAKE</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #BRAKE_VALUE
-   * @generated
-   * @ordered
-   */
-  BRAKE(0, "BRAKE", "BRAKE"), /**
-   * The '<em><b>COAST</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #COAST_VALUE
-   * @generated
-   * @ordered
-   */
-  COAST(0, "COAST", "COAST");
+public enum DCDriveMode implements Enumerator {
+    /**
+     * The '<em><b>BRAKE</b></em>' literal object.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @see #BRAKE_VALUE
+     * @generated
+     * @ordered
+     */
+    BRAKE(0, "BRAKE", "BRAKE"),
+    /**
+     * The '<em><b>COAST</b></em>' literal object.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @see #COAST_VALUE
+     * @generated
+     * @ordered
+     */
+    COAST(0, "COAST", "COAST");
 
-  /**
-   * The '<em><b>BRAKE</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of '<em><b>BRAKE</b></em>' literal object isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @see #BRAKE
-   * @model
-   * @generated
-   * @ordered
-   */
-  public static final int BRAKE_VALUE = 0;
+    /**
+     * The '<em><b>BRAKE</b></em>' literal value.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of '<em><b>BRAKE</b></em>' literal object isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * 
+     * @see #BRAKE
+     * @model
+     * @generated
+     * @ordered
+     */
+    public static final int BRAKE_VALUE = 0;
 
-  /**
-   * The '<em><b>COAST</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of '<em><b>COAST</b></em>' literal object isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @see #COAST
-   * @model
-   * @generated
-   * @ordered
-   */
-  public static final int COAST_VALUE = 0;
+    /**
+     * The '<em><b>COAST</b></em>' literal value.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of '<em><b>COAST</b></em>' literal object isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * 
+     * @see #COAST
+     * @model
+     * @generated
+     * @ordered
+     */
+    public static final int COAST_VALUE = 0;
 
-  /**
-   * An array of all the '<em><b>DC Drive Mode</b></em>' enumerators.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private static final DCDriveMode[] VALUES_ARRAY =
-    new DCDriveMode[]
-    {
-      BRAKE,
-      COAST,
-    };
+    /**
+     * An array of all the '<em><b>DC Drive Mode</b></em>' enumerators.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private static final DCDriveMode[] VALUES_ARRAY = new DCDriveMode[] { BRAKE, COAST, };
 
-  /**
-   * A public read-only list of all the '<em><b>DC Drive Mode</b></em>' enumerators.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public static final List<DCDriveMode> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
+    /**
+     * A public read-only list of all the '<em><b>DC Drive Mode</b></em>' enumerators.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public static final List<DCDriveMode> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
-  /**
-   * Returns the '<em><b>DC Drive Mode</b></em>' literal with the specified literal value.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public static DCDriveMode get(String literal)
-  {
-    for (int i = 0; i < VALUES_ARRAY.length; ++i)
-    {
-      DCDriveMode result = VALUES_ARRAY[i];
-      if (result.toString().equals(literal))
-      {
-        return result;
-      }
+    /**
+     * Returns the '<em><b>DC Drive Mode</b></em>' literal with the specified literal value.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public static DCDriveMode get(String literal) {
+        for (int i = 0; i < VALUES_ARRAY.length; ++i) {
+            DCDriveMode result = VALUES_ARRAY[i];
+            if (result.toString().equals(literal)) {
+                return result;
+            }
+        }
+        return null;
     }
-    return null;
-  }
 
-  /**
-   * Returns the '<em><b>DC Drive Mode</b></em>' literal with the specified name.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public static DCDriveMode getByName(String name)
-  {
-    for (int i = 0; i < VALUES_ARRAY.length; ++i)
-    {
-      DCDriveMode result = VALUES_ARRAY[i];
-      if (result.getName().equals(name))
-      {
-        return result;
-      }
+    /**
+     * Returns the '<em><b>DC Drive Mode</b></em>' literal with the specified name.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public static DCDriveMode getByName(String name) {
+        for (int i = 0; i < VALUES_ARRAY.length; ++i) {
+            DCDriveMode result = VALUES_ARRAY[i];
+            if (result.getName().equals(name)) {
+                return result;
+            }
+        }
+        return null;
     }
-    return null;
-  }
 
-  /**
-   * Returns the '<em><b>DC Drive Mode</b></em>' literal with the specified integer value.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public static DCDriveMode get(int value)
-  {
-    switch (value)
-    {
-      case BRAKE_VALUE: return BRAKE;
+    /**
+     * Returns the '<em><b>DC Drive Mode</b></em>' literal with the specified integer value.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public static DCDriveMode get(int value) {
+        switch (value) {
+            case BRAKE_VALUE:
+                return BRAKE;
+        }
+        return null;
     }
-    return null;
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private final int value;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private final int value;
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private final String name;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private final String name;
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private final String literal;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private final String literal;
 
-  /**
-   * Only this class can construct instances.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private DCDriveMode(int value, String name, String literal)
-  {
-    this.value = value;
-    this.name = name;
-    this.literal = literal;
-  }
+    /**
+     * Only this class can construct instances.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private DCDriveMode(int value, String name, String literal) {
+        this.value = value;
+        this.name = name;
+        this.literal = literal;
+    }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public int getValue()
-  {
-    return value;
-  }
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public int getValue() {
+        return value;
+    }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String getName()
-  {
-    return name;
-  }
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public String getName() {
+        return name;
+    }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String getLiteral()
-  {
-    return literal;
-  }
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public String getLiteral() {
+        return literal;
+    }
 
-  /**
-   * Returns the literal value of the enumerator, which is its string representation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    return literal;
-  }
-  
-} //DCDriveMode
+    /**
+     * Returns the literal value of the enumerator, which is its string representation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public String toString() {
+        return literal;
+    }
+
+} // DCDriveMode

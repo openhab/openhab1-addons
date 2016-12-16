@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
- * 
+ *
  * <p>
  * Valid bindings for the main device are:
  * <ul>
@@ -38,88 +38,87 @@ import org.slf4j.LoggerFactory;
  * <li><code>{ enphaseenergy="12345#operational_at" }</code></li>
  * <li><code>{ enphaseenergy="12345#last_report_at" }</code></li>
  * </ul>
- * </li> </ul>
- * 
+ * </li>
+ * </ul>
+ *
  * @author Markus Fritze
  * @since 1.7.0
  */
-public class EnphaseenergyGenericBindingProvider extends
-		AbstractGenericBindingProvider implements EnphaseenergyBindingProvider {
+public class EnphaseenergyGenericBindingProvider extends AbstractGenericBindingProvider
+        implements EnphaseenergyBindingProvider {
 
-	private static Logger logger = LoggerFactory.getLogger(EnphaseenergyGenericBindingProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(EnphaseenergyGenericBindingProvider.class);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getBindingType() {
-		return "enphaseenergy";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getBindingType() {
+        return "enphaseenergy";
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	public void validateItemType(final Item item, final String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof NumberItem || item instanceof DateTimeItem || item instanceof StringItem)) {
-			throw new BindingConfigParseException(
-				"item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + 
-				"', only NumberItems, DateTimeItems and StringItems are allowed - please check your *.items configuration");
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public EnphaseenergyItemType getItemType(String itemName){ 
-		final EnphaseenergyBindingConfig config = 
-			(EnphaseenergyBindingConfig) this.bindingConfigs.get(itemName);
-		return config != null ? config.measureType : null;
-	}
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    public void validateItemType(final Item item, final String bindingConfig) throws BindingConfigParseException {
+        if (!(item instanceof NumberItem || item instanceof DateTimeItem || item instanceof StringItem)) {
+            throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
+                    + item.getClass().getSimpleName()
+                    + "', only NumberItems, DateTimeItems and StringItems are allowed - please check your *.items configuration");
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Integer getSystemId(final String itemName) {
-		final EnphaseenergyBindingConfig config = 
-			(EnphaseenergyBindingConfig) this.bindingConfigs.get(itemName);
-		return config != null ? config.systemId : null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public EnphaseenergyItemType getItemType(String itemName) {
+        final EnphaseenergyBindingConfig config = (EnphaseenergyBindingConfig) this.bindingConfigs.get(itemName);
+        return config != null ? config.measureType : null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processBindingConfiguration(final String context,
-			final Item item, final String bindingConfig) throws BindingConfigParseException {
-		logger.debug("Processing binding configuration: '{}'", bindingConfig);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Integer getSystemId(final String itemName) {
+        final EnphaseenergyBindingConfig config = (EnphaseenergyBindingConfig) this.bindingConfigs.get(itemName);
+        return config != null ? config.systemId : null;
+    }
 
-		super.processBindingConfiguration(context, item, bindingConfig);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void processBindingConfiguration(final String context, final Item item, final String bindingConfig)
+            throws BindingConfigParseException {
+        logger.debug("Processing binding configuration: '{}'", bindingConfig);
 
-		final EnphaseenergyBindingConfig config = new EnphaseenergyBindingConfig();
+        super.processBindingConfiguration(context, item, bindingConfig);
 
-		final String[] configParts = bindingConfig.split("#");
-		config.systemId = Integer.parseInt(configParts[0]);;
-		config.measureType = EnphaseenergyItemType.fromString(configParts[1]);
+        final EnphaseenergyBindingConfig config = new EnphaseenergyBindingConfig();
 
-		logger.debug("Adding binding: {}", config);
+        final String[] configParts = bindingConfig.split("#");
+        config.systemId = Integer.parseInt(configParts[0]);
+        ;
+        config.measureType = EnphaseenergyItemType.fromString(configParts[1]);
 
-		addBindingConfig(item, config);
-	}
-	
-		
-	private static class EnphaseenergyBindingConfig implements BindingConfig {
+        logger.debug("Adding binding: {}", config);
 
-		Integer systemId;
-		EnphaseenergyItemType measureType;
+        addBindingConfig(item, config);
+    }
 
-		@Override
-		public String toString() {
-			return "EnphaseenergyBindingConfig [systemId=" + this.systemId
-					+ ", measure=" + this.measureType.getMeasure() + "]";
-		}
-	}
-	
+    private static class EnphaseenergyBindingConfig implements BindingConfig {
+
+        Integer systemId;
+        EnphaseenergyItemType measureType;
+
+        @Override
+        public String toString() {
+            return "EnphaseenergyBindingConfig [systemId=" + this.systemId + ", measure="
+                    + this.measureType.getMeasure() + "]";
+        }
+    }
+
 }

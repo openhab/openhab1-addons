@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,10 +13,9 @@ import org.openhab.core.scriptengine.action.ParamDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * This class contains the methods that are made available in scripts and rules for HarmonyHub.
- * 
+ *
  * @author Matt Tucker
  * @author Dan Cunningham
  * @since 1.7.0
@@ -24,9 +23,9 @@ import org.slf4j.LoggerFactory;
 public class HarmonyHub {
     private static final Logger logger = LoggerFactory.getLogger(HarmonyHub.class);
 
-    @ActionDoc(text="Send a button press event to the Harmony Hub",
-            returns="<code>true</code>, if successful and <code>false</code> otherwise.")
-    public static boolean harmonyPressButton(@ParamDoc(name="deviceId") String deviceId, @ParamDoc(name="action") String action) {
+    @ActionDoc(text = "Send a button press event to the Harmony Hub", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean harmonyPressButton(@ParamDoc(name = "deviceId") String deviceId,
+            @ParamDoc(name = "action") String action) {
         if (!HarmonyHubActionService.isProperlyConfigured()) {
             logger.debug("HarmonyHub action is not yet configured - execution aborted!");
             return false;
@@ -35,11 +34,10 @@ public class HarmonyHub {
 
         return true;
     }
-    
-    @ActionDoc(text="Send a button press event to the Harmony Hub",
-            returns="<code>true</code>, if successful and <code>false</code> otherwise.")
-    public static boolean harmonyPressButton(@ParamDoc(name="qualifier") String qualifier,
-    		@ParamDoc(name="deviceId") String deviceId, @ParamDoc(name="action") String action) {
+
+    @ActionDoc(text = "Send a button press event to the Harmony Hub", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean harmonyPressButton(@ParamDoc(name = "qualifier") String qualifier,
+            @ParamDoc(name = "deviceId") String deviceId, @ParamDoc(name = "action") String action) {
         if (!HarmonyHubActionService.isProperlyConfigured()) {
             logger.debug("HarmonyHub action is not yet configured - execution aborted!");
             return false;
@@ -49,9 +47,8 @@ public class HarmonyHub {
         return true;
     }
 
-    @ActionDoc(text="Notify the Harmony Hub to start an activity",
-            returns="<code>true</code>, if successful and <code>false</code> otherwise.")
-    public static boolean harmonyStartActivity(@ParamDoc(name="activityName") int activityId) {
+    @ActionDoc(text = "Notify the Harmony Hub to start an activity", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean harmonyStartActivity(@ParamDoc(name = "activityName") int activityId) {
         if (!HarmonyHubActionService.isProperlyConfigured()) {
             logger.debug("HarmonyHub action is not yet configured - execution aborted!");
             return false;
@@ -60,11 +57,10 @@ public class HarmonyHub {
 
         return true;
     }
-    
-    @ActionDoc(text="Notify the Harmony Hub to start an activity",
-            returns="<code>true</code>, if successful and <code>false</code> otherwise.")
-    public static boolean harmonyStartActivity(@ParamDoc(name="qualifier") String qualifier,
-    		@ParamDoc(name="activityName") int activityId) {
+
+    @ActionDoc(text = "Notify the Harmony Hub to start an activity", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean harmonyStartActivity(@ParamDoc(name = "qualifier") String qualifier,
+            @ParamDoc(name = "activityName") int activityId) {
         if (!HarmonyHubActionService.isProperlyConfigured()) {
             logger.debug("HarmonyHub action is not yet configured - execution aborted!");
             return false;
@@ -74,9 +70,8 @@ public class HarmonyHub {
         return true;
     }
 
-    @ActionDoc(text="Notify the Harmony Hub to start an activity",
-            returns="<code>true</code>, if successful and <code>false</code> otherwise.")
-    public static boolean harmonyStartActivity(@ParamDoc(name="activityName") String label) {
+    @ActionDoc(text = "Notify the Harmony Hub to start an activity", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean harmonyStartActivity(@ParamDoc(name = "activityName") String label) {
         if (!HarmonyHubActionService.isProperlyConfigured()) {
             logger.debug("HarmonyHub action is not yet configured - execution aborted!");
             return false;
@@ -85,16 +80,15 @@ public class HarmonyHub {
 
         return true;
     }
-    
-    @ActionDoc(text="Notify the Harmony Hub to start an activity",
-            returns="<code>true</code>, if successful and <code>false</code> otherwise.")
-    public static boolean harmonyStartActivity(@ParamDoc(name="qualifier") String qualifier,
-    		@ParamDoc(name="activityName") String label) {
+
+    @ActionDoc(text = "Notify the Harmony Hub to start an activity", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean harmonyStartActivity(@ParamDoc(name = "qualifier") String qualifier,
+            @ParamDoc(name = "activityName") String label) {
         if (!HarmonyHubActionService.isProperlyConfigured()) {
             logger.debug("HarmonyHub action is not yet configured - execution aborted!");
             return false;
         }
-        HarmonyHubActionService.gateway().startActivity(qualifier,label);
+        HarmonyHubActionService.gateway().startActivity(qualifier, label);
 
         return true;
     }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -34,161 +34,162 @@ import org.slf4j.LoggerFactory;
 /**
  * This class in mainly used for receiving internal command and to send them to
  * the Panasonic TV.
- * 
+ *
  * @author André Heuer
  * @since 1.7.0
  */
-public class PanasonicTVBinding extends AbstractBinding<PanasonicTVBindingProvider> implements ManagedService {
+public class PanasonicTVBinding extends AbstractBinding<PanasonicTVBindingProvider>implements ManagedService {
 
-	private Map<String, String> registeredTVs = new HashMap<String, String>();
+    private Map<String, String> registeredTVs = new HashMap<String, String>();
 
-	private static final Logger logger = LoggerFactory.getLogger(PanasonicTVBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(PanasonicTVBinding.class);
 
-	/**
-	 * the refresh interval which is used to poll values from the PanansonicTV
-	 * server (optional, defaults to 60000ms)
-	 */
-	private long refreshInterval = 60000;
+    /**
+     * the refresh interval which is used to poll values from the PanansonicTV
+     * server (optional, defaults to 60000ms)
+     */
+    private long refreshInterval = 60000;
 
-	/**
-	 * Listening port of the TV
-	 */
-	private final int tvPort = 55000;
+    /**
+     * Listening port of the TV
+     */
+    private final int tvPort = 55000;
 
-	public PanasonicTVBinding() {
-	}
+    public PanasonicTVBinding() {
+    }
 
-	public void activate() {
-	}
+    @Override
+    public void activate() {
+    }
 
-	public void deactivate() {
-	}
+    @Override
+    public void deactivate() {
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		logger.debug("internalReceiveCommand() for item: " + itemName
-				+ " with command: " + command.toString());
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    protected void internalReceiveCommand(String itemName, Command command) {
+        logger.debug("internalReceiveCommand() for item: " + itemName + " with command: " + command.toString());
 
-		if (this.providers.isEmpty()) {
-			logger.error("Binding is properly configured or loaded. No provider was found.");
-			return;
-		}
+        if (this.providers.isEmpty()) {
+            logger.error("Binding is properly configured or loaded. No provider was found.");
+            return;
+        }
 
-		for (PanasonicTVBindingProvider provider : this.providers) {
-			PanasonicTVBindingConfig config = provider
-					.getBindingConfigForItem(itemName);
-			if (config == null)
-				continue;
-			int response = sendCommand(config);
-			if (response != 200) {
-				logger.warn("Command " + config.getCommand()
-						+ " to TV with IP " + registeredTVs.get(config.getTv())
-						+ " failed with HTTP Reponse Code " + response);
-				continue;
-			}
-			eventPublisher.postUpdate(itemName, OnOffType.OFF);
-		}
+        for (PanasonicTVBindingProvider provider : this.providers) {
+            PanasonicTVBindingConfig config = provider.getBindingConfigForItem(itemName);
+            if (config == null) {
+                continue;
+            }
+            int response = sendCommand(config);
+            if (response != 200) {
+                logger.warn("Command " + config.getCommand() + " to TV with IP " + registeredTVs.get(config.getTv())
+                        + " failed with HTTP Reponse Code " + response);
+                continue;
+            }
+            eventPublisher.postUpdate(itemName, OnOffType.OFF);
+        }
 
-	}
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		if (config != null) {
-			String refreshIntervalString = (String) config.get("refresh");
-			if (StringUtils.isNotBlank(refreshIntervalString)) {
-				refreshInterval = Long.parseLong(refreshIntervalString);
-			}
+    protected void addBindingProvider(PanasonicTVBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
 
-			for (Enumeration<?> e = config.keys(); e.hasMoreElements();) {
-				String tv = (String) e.nextElement();
-				if (tv.equalsIgnoreCase("service.pid") || tv.equalsIgnoreCase("refresh")) {
-					continue;
-				}
-				logger.info("TV registered '" + tv + "' with IP '" + config.get(tv) + "'");
-				registeredTVs.put(tv, config.get(tv).toString());
-			}
+    protected void removeBindingProvider(PanasonicTVBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
 
-			if (registeredTVs.isEmpty()) {
-				logger.debug("No TV was registered in config file");
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+        if (config != null) {
+            String refreshIntervalString = (String) config.get("refresh");
+            if (StringUtils.isNotBlank(refreshIntervalString)) {
+                refreshInterval = Long.parseLong(refreshIntervalString);
+            }
 
-	/**
-	 * This methods sends the command to the TV
-	 * 
-	 * @return HTTP response code from the TV (should be 200)
-	 */
-	private int sendCommand(PanasonicTVBindingConfig config) {
-		String command = config.getCommand().toUpperCase();
+            for (Enumeration<?> e = config.keys(); e.hasMoreElements();) {
+                String tv = (String) e.nextElement();
+                if (tv.equalsIgnoreCase("service.pid") || tv.equalsIgnoreCase("refresh")) {
+                    continue;
+                }
+                logger.info("TV registered '" + tv + "' with IP '" + config.get(tv) + "'");
+                registeredTVs.put(tv, config.get(tv).toString());
+            }
 
-		final String soaprequest_skeleton = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">"
-				+ "<s:Body><u:X_SendKey xmlns:u=\"urn:panasonic-com:service:p00NetworkControl:1\">"
-				+ "<X_KeyEvent>NRC_%s</X_KeyEvent></u:X_SendKey></s:Body></s:Envelope>\r";
-		String soaprequest = "";
+            if (registeredTVs.isEmpty()) {
+                logger.debug("No TV was registered in config file");
+            }
+        }
+    }
 
-		if (config.getCommand().toUpperCase().startsWith("HDMI")) {
-			soaprequest = String.format(soaprequest_skeleton, command);
-		} else {
-			soaprequest = String.format(soaprequest_skeleton, command
-					+ "-ONOFF");
-		}
+    /**
+     * This methods sends the command to the TV
+     *
+     * @return HTTP response code from the TV (should be 200)
+     */
+    private int sendCommand(PanasonicTVBindingConfig config) {
+        String command = config.getCommand().toUpperCase();
 
-		String tvIp = registeredTVs.get(config.getTv());
+        final String soaprequest_skeleton = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+                + "<s:Body><u:X_SendKey xmlns:u=\"urn:panasonic-com:service:p00NetworkControl:1\">"
+                + "<X_KeyEvent>NRC_%s</X_KeyEvent></u:X_SendKey></s:Body></s:Envelope>\r";
+        String soaprequest = "";
 
-		if ((tvIp == null) || tvIp.isEmpty()) {
-			return 0;
-		}
+        if (config.getCommand().toUpperCase().startsWith("HDMI")) {
+            soaprequest = String.format(soaprequest_skeleton, command);
+        } else {
+            soaprequest = String.format(soaprequest_skeleton, command + "-ONOFF");
+        }
 
-		try {
-			Socket client = new Socket(tvIp, tvPort);
+        String tvIp = registeredTVs.get(config.getTv());
 
-			BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(
-					client.getOutputStream(), "UTF8"));
+        if ((tvIp == null) || tvIp.isEmpty()) {
+            return 0;
+        }
 
-			String header = "POST /nrc/control_0/ HTTP/1.1\r\n";
-			header = header + "Host: " + tvIp + ":" + tvPort + "\r\n";
-			header = header
-					+ "SOAPACTION: \"urn:panasonic-com:service:p00NetworkControl:1#X_SendKey\"\r\n";
-			header = header + "Content-Type: text/xml; charset=\"utf-8\"\r\n";
-			header = header + "Content-Length: " + soaprequest.length()
-					+ "\r\n";
-			header = header + "\r\n";
+        try {
+            Socket client = new Socket(tvIp, tvPort);
 
-			String request = header + soaprequest;
+            BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(client.getOutputStream(), "UTF8"));
 
-			logger.debug("Request send to TV with IP " + tvIp + ": " + request);
+            String header = "POST /nrc/control_0/ HTTP/1.1\r\n";
+            header = header + "Host: " + tvIp + ":" + tvPort + "\r\n";
+            header = header + "SOAPACTION: \"urn:panasonic-com:service:p00NetworkControl:1#X_SendKey\"\r\n";
+            header = header + "Content-Type: text/xml; charset=\"utf-8\"\r\n";
+            header = header + "Content-Length: " + soaprequest.length() + "\r\n";
+            header = header + "\r\n";
 
-			wr.write(header);
-			wr.write(soaprequest);
+            String request = header + soaprequest;
 
-			wr.flush();
+            logger.debug("Request send to TV with IP " + tvIp + ": " + request);
 
-			InputStream inFromServer = client.getInputStream();
+            wr.write(header);
+            wr.write(soaprequest);
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					inFromServer));
+            wr.flush();
 
-			String response = reader.readLine();
+            InputStream inFromServer = client.getInputStream();
 
-			client.close();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inFromServer));
 
-			logger.debug("TV Response from " + tvIp + ": " + response);
+            String response = reader.readLine();
 
-			return Integer.parseInt(response.split(" ")[1]);
-		} catch (IOException e) {
-			logger.error("Exception during communication to the TV: "
-					+ e.getStackTrace());
-		} catch (Exception e) {
-			logger.error("Exception in binding during execution of command: "
-					+ e.getStackTrace());
-		}
-		return 0;
-	}
+            client.close();
+
+            logger.debug("TV Response from " + tvIp + ": " + response);
+
+            return Integer.parseInt(response.split(" ")[1]);
+        } catch (IOException e) {
+            logger.error("Exception during communication to the TV: " + e.getStackTrace());
+        } catch (Exception e) {
+            logger.error("Exception in binding during execution of command: " + e.getStackTrace());
+        }
+        return 0;
+    }
 }

@@ -27,31 +27,30 @@ package net.wimpi.modbus.procimg;
  * @author Dieter Wimberger
  * @version @version@ (@date@)
  */
-public interface Register
-    extends InputRegister {
+public interface Register extends InputRegister {
 
-  /**
-   * Sets the content of this <tt>Register</tt> from the given
-   * unsigned 16-bit value (unsigned short).
-   *
-   * @param v the value as unsigned short (<tt>int</tt>).
-   */
-  public void setValue(int v);
+    /**
+     * Sets the content of this <tt>Register</tt> from the given
+     * unsigned 16-bit value (unsigned short).
+     *
+     * @param v the value as unsigned short (<tt>int</tt>).
+     */
+    public void setValue(int v);
 
-  /**
-   * Sets the content of this register from the given
-   * signed 16-bit value (short).
-   *
-   * @param s the value as <tt>short</tt>.
-   */
-  public void setValue(short s);
+    /**
+     * Sets the content of this register from the given
+     * signed 16-bit value (short).
+     *
+     * @param s the value as <tt>short</tt>.
+     */
+    public void setValue(short s);
 
-  /**
-   * Sets the content of this register from the given
-   * raw bytes.
-   *
-   * @param bytes the raw data as <tt>byte[]</tt>.
-   */
-  public void setValue(byte[] bytes);
+    /**
+     * Sets the content of this register from the given
+     * raw bytes.
+     *
+     * @param bytes the raw data as <tt>byte[]</tt>.
+     */
+    public void setValue(byte[] bytes);
 
-}//interface Register
+}// interface Register

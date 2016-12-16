@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,457 +39,488 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-	
 
 /**
- * Binding listening to openHAB event bus and send commands to Onkyo devices when certain
- * commands are received.
- * 
+ * Binding listening to openHAB event bus and send commands to Onkyo devices
+ * when certain commands are received.
+ *
  * @author Pauli Anttila
  * @since 1.3.0
  */
-public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider> implements ManagedService, BindingChangeListener, OnkyoEventListener {
+public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
+        implements ManagedService, BindingChangeListener, OnkyoEventListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(OnkyoBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(OnkyoBinding.class);
 
-	protected static final String ADVANCED_COMMAND_KEY = "#";
-	protected static final String WILDCARD_COMMAND_KEY = "*";
+    protected static final String ADVANCED_COMMAND_KEY = "#";
+    protected static final String WILDCARD_COMMAND_KEY = "*";
 
-	/** RegEx to validate a config <code>'^(.*?)\\.(host|port)$'</code> */
-	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port)$");
-	
-	/** Onkyo receiver default tcp port */
-	private final static int DEFAULT_PORT = Eiscp.DEFAULT_EISCP_PORT;
+    /**
+     * RegEx to validate a config
+     * <code>'^(.*?)\\.(host|port|serialPortName)$'</code>
+     */
+    private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port|serialPortName)$");
+    /** Onkyo receiver default tcp port */
+    private final static int DEFAULT_PORT = Eiscp.DEFAULT_EISCP_PORT;
 
-	/** Map table to store all available receivers configured by the user */
-	protected Map<String, DeviceConfig> deviceConfigCache = null;
-	
-	public OnkyoBinding() {
-	}
+    /** Map table to store all available receivers configured by the user */
+    protected Map<String, DeviceConfig> deviceConfigCache = null;
 
-	public void activate() {
-		logger.debug("Activate");
-	}
+    public OnkyoBinding() {
+    }
 
-	public void deactivate() {
-		logger.debug("Deactivate");
-		closeAllConnections();
-	}
+    @Override
+    public void activate() {
+        logger.debug("Activate");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void bindingChanged(BindingProvider provider, String itemName) {
-		logger.debug("bindingChanged {}", itemName);
-		initializeItem(itemName);
-	}
+    @Override
+    public void deactivate() {
+        logger.debug("Deactivate");
+        closeAllConnections();
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void bindingChanged(BindingProvider provider, String itemName) {
+        logger.debug("bindingChanged {}", itemName);
+        initializeItem(itemName);
+    }
 
-		if (itemName != null) {
-			OnkyoBindingProvider provider = 
-				findFirstMatchingBindingProvider(itemName, command.toString());
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    protected void internalReceiveCommand(String itemName, Command command) {
 
-			if (provider == null) {
-				logger.warn("Doesn't find matching binding provider [itemName={}, command={}]", itemName, command);
-				return;
-			}
+        if (itemName != null) {
+            OnkyoBindingProvider provider = findFirstMatchingBindingProvider(itemName, command.toString());
 
-			logger.debug(
-				"Received command (item='{}', state='{}', class='{}')",
-				new Object[] { itemName, command.toString(), command.getClass().toString() });
+            if (provider == null) {
+                logger.warn("Doesn't find matching binding provider [itemName={}, command={}]", itemName, command);
+                return;
+            }
 
-			String tmp = provider.getDeviceCommand(itemName, command.toString());
+            logger.debug("Received command (item='{}', state='{}', class='{}')",
+                    new Object[] { itemName, command.toString(), command.getClass().toString() });
 
-			if (tmp == null) {
-				tmp = provider.getDeviceCommand(itemName, WILDCARD_COMMAND_KEY);	
-			}
-			
-			String[] commandParts = tmp.split(":");
-			String deviceId = commandParts[0];
-			String deviceCmd = commandParts[1];
-			
-			DeviceConfig device = deviceConfigCache.get(deviceId);
-			OnkyoConnection remoteController = device.getConnection();
+            String tmp = provider.getDeviceCommand(itemName, command.toString());
 
-			if (device != null && remoteController != null) {
-		
-				if (deviceCmd.startsWith(ADVANCED_COMMAND_KEY)) {
-					
-					// advanced command
-					
-					deviceCmd = deviceCmd.replace(ADVANCED_COMMAND_KEY, "");
-			
-					if (deviceCmd.contains("%")) {
+            if (tmp == null) {
+                tmp = provider.getDeviceCommand(itemName, WILDCARD_COMMAND_KEY);
+            }
 
-						// eISCP command is a template where value should be updated 
-						deviceCmd = convertOpenHabCommandToDeviceCommand( command, deviceCmd);
-					}
-					
-				} else {
-					
-					// normal command
-					
-					EiscpCommand cmd = EiscpCommand.valueOf(deviceCmd);
-					deviceCmd = cmd.getCommand();
-					
-					if (deviceCmd.contains("%")) {
+            String[] commandParts = tmp.split(":");
+            String deviceId = commandParts[0];
+            String deviceCmd = commandParts[1];
 
-						// eISCP command is a template where value should be updated 
-						deviceCmd = convertOpenHabCommandToDeviceCommand( command, deviceCmd);
-					} 
-				}
-				
-				if (deviceCmd != null) {
-					remoteController.send(deviceCmd);
-				} else {
-					logger.warn("Cannot convert value '{}' to eISCP format", command);
-				}
+            DeviceConfig device = deviceConfigCache.get(deviceId);
+            OnkyoConnection remoteController = device.getConnection();
 
-			} else {
-				logger.warn("Cannot find connection details for device id '{}'", deviceId);
-			}
-		}
-	}
-	
-	/**
-	 * Convert OpenHAB commmand to onkyo receiver command.
-	 * 
-	 * @param command
-	 * @param cmdTemplate
-	 * 
-	 * @return
-	 */
-	private String convertOpenHabCommandToDeviceCommand( Command command, String cmdTemplate ) {
-		String deviceCmd = null;
-		
-		if (command instanceof OnOffType) {
-			deviceCmd = String.format(cmdTemplate, command == OnOffType.ON ? 1: 0);	 
-		
-		} else if (command instanceof StringType) {
-			deviceCmd = String.format(cmdTemplate, command);	 
-			
-		} else if (command instanceof DecimalType) {
-			deviceCmd = String.format(cmdTemplate, ((DecimalType) command).intValue());	 
-				
-		} else if (command instanceof PercentType) {
-			deviceCmd = String.format(cmdTemplate, ((DecimalType) command).intValue());	 
-		} 
+            if (device != null && remoteController != null) {
 
-		return deviceCmd;
-	}
+                if (deviceCmd.startsWith(ADVANCED_COMMAND_KEY)) {
 
-	/**
-	 * Find the first matching {@link OnkyoBindingProvider} according to
-	 * <code>itemName</code>.
-	 * 
-	 * @param itemName
-	 * 
-	 * @return the matching binding provider or <code>null</code> if no binding
-	 *         provider could be found
-	 */
-	private OnkyoBindingProvider findFirstMatchingBindingProvider(String itemName, String command) {
-		OnkyoBindingProvider firstMatchingProvider = null;
+                    // advanced command
 
-		for (OnkyoBindingProvider provider : this.providers) {
-			String tmp = provider.getDeviceCommand(itemName, command.toString());
-			if (tmp != null) {
-				firstMatchingProvider = provider;
-				break;
-			}
-		}
+                    deviceCmd = deviceCmd.replace(ADVANCED_COMMAND_KEY, "");
 
-		if (firstMatchingProvider == null) {
-			for (OnkyoBindingProvider provider : this.providers) {
-				String tmp = provider.getDeviceCommand(itemName, WILDCARD_COMMAND_KEY);
-				if (tmp != null) {
-					firstMatchingProvider = provider;
-					break;
-				}
-			}
+                    if (deviceCmd.contains("%")) {
 
-		}
-		
-		return firstMatchingProvider;
-	}
+                        // eISCP command is a template where value should be
+                        // updated
+                        deviceCmd = convertOpenHabCommandToDeviceCommand(command, deviceCmd);
+                    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+                } else {
 
-		logger.debug("Configuration updated, config {}", config != null ? true
-				: false);
+                    // normal command
 
-		if (config != null) {
-			Enumeration<String> keys = config.keys();
-			
-			if ( deviceConfigCache == null ) {
-				deviceConfigCache = new HashMap<String, DeviceConfig>();
-			}
-			
-			while (keys.hasMoreElements()) {
-				String key = (String) keys.nextElement();
+                    EiscpCommand cmd = EiscpCommand.valueOf(deviceCmd);
+                    deviceCmd = cmd.getCommand();
 
-				// the config-key enumeration contains additional keys that we
-				// don't want to process here ...
-				if ("service.pid".equals(key)) {
-					continue;
-				}
+                    if (deviceCmd.contains("%")) {
 
-				Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
+                        // eISCP command is a template where value should be
+                        // updated
+                        deviceCmd = convertOpenHabCommandToDeviceCommand(command, deviceCmd);
+                    }
+                }
 
-				if (!matcher.matches()) {
-					logger.debug("given config key '" + key
-						+ "' does not follow the expected pattern '<id>.<host|port>'");
-					continue;
-				}
+                if (deviceCmd != null) {
+                    remoteController.send(deviceCmd);
+                } else {
+                    logger.warn("Cannot convert value '{}' to eISCP format", command);
+                }
 
-				matcher.reset();
-				matcher.find();
+            } else {
+                logger.warn("Cannot find connection details for device id '{}'", deviceId);
+            }
+        }
+    }
 
-				String deviceId = matcher.group(1);
+    /**
+     * Convert OpenHAB commmand to onkyo receiver command.
+     *
+     * @param command
+     * @param cmdTemplate
+     *
+     * @return
+     */
+    private String convertOpenHabCommandToDeviceCommand(Command command, String cmdTemplate) {
+        String deviceCmd = null;
 
-				DeviceConfig deviceConfig = deviceConfigCache.get(deviceId);
+        if (command instanceof OnOffType) {
+            deviceCmd = String.format(cmdTemplate, command == OnOffType.ON ? 1 : 0);
 
-				if (deviceConfig == null) {
-					deviceConfig = new DeviceConfig(deviceId);
-					deviceConfigCache.put(deviceId, deviceConfig);
-				}
+        } else if (command instanceof StringType) {
+            deviceCmd = String.format(cmdTemplate, command);
 
-				String configKey = matcher.group(2);
-				String value = (String) config.get(key);
+        } else if (command instanceof DecimalType) {
+            deviceCmd = String.format(cmdTemplate, ((DecimalType) command).intValue());
 
-				if ("host".equals(configKey)) {
-					deviceConfig.host = value;
-				} else if ("port".equals(configKey)) {
-					deviceConfig.port = Integer.valueOf(value);
-				} else {
-					throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
-				}
-			}
-			
-			// open connection to all receivers
-			for (String device : deviceConfigCache.keySet()) {
-				OnkyoConnection connection = deviceConfigCache.get(device).getConnection();
-				if (connection != null) {
-					connection.openConnection();
-					connection.addEventListener(this);
-				}
-			}
-			
-			for (OnkyoBindingProvider provider : this.providers) {
-				for (String itemName : provider.getItemNames()) {
-					initializeItem(itemName);
-				}
-			}
+        } else if (command instanceof PercentType) {
+            deviceCmd = String.format(cmdTemplate, ((DecimalType) command).intValue());
+        }
 
-		}
-	}
+        return deviceCmd;
+    }
 
-	private void closeAllConnections() {
-		if (deviceConfigCache != null) {
-			for (String device : deviceConfigCache.keySet()) {
-				OnkyoConnection connection = deviceConfigCache.get(device).getConnection();
-				if (connection != null) {
-					connection.closeConnection();
-					connection.removeEventListener(this);
-				}
-			}
-			deviceConfigCache = null;
-		}
-	}
+    /**
+     * Find the first matching {@link OnkyoBindingProvider} according to
+     * <code>itemName</code>.
+     *
+     * @param itemName
+     *
+     * @return the matching binding provider or <code>null</code> if no binding
+     *         provider could be found
+     */
+    private OnkyoBindingProvider findFirstMatchingBindingProvider(String itemName, String command) {
+        OnkyoBindingProvider firstMatchingProvider = null;
 
-	/**
-	 * Find receiver from device caache by ip address.
-	 * 
-	 * @param ip
-	 * @return
-	 */
-	private DeviceConfig findDevice(String ip) {
-		for (String device : deviceConfigCache.keySet()) {
-			DeviceConfig deviceConfig = deviceConfigCache.get(device);
-			if (deviceConfig != null) {
-				if (deviceConfig.getHost().equals(ip)) {
-					return deviceConfig;
-				}
-			}
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public void statusUpdateReceived(EventObject event, String ip, String data) {
-		// find correct device from device cache
-		DeviceConfig deviceConfig = findDevice(ip);
+        for (OnkyoBindingProvider provider : this.providers) {
+            String tmp = provider.getDeviceCommand(itemName, command.toString());
+            if (tmp != null) {
+                firstMatchingProvider = provider;
+                break;
+            }
+        }
 
-		if (deviceConfig != null) {
-			logger.debug("Received status update '{}' from device {}", data, deviceConfig.host);
+        if (firstMatchingProvider == null) {
+            for (OnkyoBindingProvider provider : this.providers) {
+                String tmp = provider.getDeviceCommand(itemName, WILDCARD_COMMAND_KEY);
+                if (tmp != null) {
+                    firstMatchingProvider = provider;
+                    break;
+                }
+            }
 
-			for (OnkyoBindingProvider provider : providers) {
-				for (String itemName : provider.getItemNames()) {
-					// Update all items which refer to command
-					HashMap<String, String> values = provider.getDeviceCommands(itemName);
+        }
 
-					for (String cmd : values.keySet()) {
-						String[] commandParts = values.get(cmd).split(":");
-						String deviceCmd = commandParts[1];
+        return firstMatchingProvider;
+    }
 
-						boolean match = false;
-						if (deviceCmd.startsWith(ADVANCED_COMMAND_KEY)) {
-							// skip advanced command key and compare 3 first character
-							if (data.startsWith(deviceCmd.substring(1, 4))) {
-								match = true;
-							}
-						} else {
-							try {
-								String eiscpCmd = EiscpCommand.valueOf(deviceCmd).getCommand();
-								
-								// compare 3 first character
-								if (data.startsWith(eiscpCmd.substring(0, 3))) {
-									match = true;
-								}
-								
-							} catch (Exception e) {
-								logger.error("Unregonized command '" + deviceCmd + "'", e);
-							}
-						}
+    protected void addBindingProvider(OnkyoBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
 
-						if (match) {
-							Class<? extends Item> itemType = provider.getItemType(itemName);
-							State v = convertDeviceValueToOpenHabState(itemType, data);
-							eventPublisher.postUpdate(itemName, v);
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
+    protected void removeBindingProvider(OnkyoBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
 
-	/**
-	 * Convert receiver value to OpenHAB state.
-	 * 
-	 * @param itemType
-	 * @param data
-	 * 
-	 * @return
-	 */
-	private State convertDeviceValueToOpenHabState(Class<? extends Item> itemType, String data) {
-		State state = UnDefType.UNDEF;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 
-		try {
-			int index;
-			String s;
-		
-			if (itemType == SwitchItem.class) {
-				index = Integer.parseInt(data.substring(3, 5), 16);
-				state = index == 0 ? OnOffType.OFF : OnOffType.ON;
-				
-			} else if (itemType == NumberItem.class) {
-				index = Integer.parseInt(data.substring(3, 5), 16);
-				state = new DecimalType(index);
-				
-			} else if (itemType == DimmerItem.class) {
-				index = Integer.parseInt(data.substring(3, 5), 16);
-				state = new PercentType(index);
-				
-			} else if (itemType == RollershutterItem.class) {
-				index = Integer.parseInt(data.substring(3, 5), 16);
-				state = new PercentType(index);
-				
-			} else if (itemType == StringItem.class) {
-				s = data.substring(3, data.length());
-				state = new StringType(s);
-			}
-		} catch (Exception e) {
-			logger.debug("Cannot convert value '{}' to data type {}", data, itemType);
-		}
-		
-		return state;
-	}
-	
-	/**
-	 * Initialize item value. Method send query to receiver if init query is configured to binding item configuration
-	 * 
-	 * @param itemType
-	 * 
-	 */
-	private void initializeItem(String itemName) {
-		for (OnkyoBindingProvider provider : providers) {
-			String initCmd = provider.getItemInitCommand(itemName);
-			if (initCmd != null) {
-				logger.debug("Initialize item {}", itemName);
+        logger.debug("Configuration updated, config {}", config != null ? true : false);
 
-				String[] commandParts = initCmd.split(":");
-				String deviceId = commandParts[0];
-				String deviceCmd = commandParts[1];
+        if (config != null) {
+            Enumeration<String> keys = config.keys();
 
-				DeviceConfig device = deviceConfigCache.get(deviceId);
-				OnkyoConnection remoteController = device.getConnection();
+            if (deviceConfigCache == null) {
+                deviceConfigCache = new HashMap<String, DeviceConfig>();
+            }
 
-				if (device != null && remoteController != null) {
-					if (deviceCmd.startsWith(ADVANCED_COMMAND_KEY)) {
-						deviceCmd = deviceCmd.replace(ADVANCED_COMMAND_KEY, "");
-					} else {
-						EiscpCommand cmd = EiscpCommand.valueOf(deviceCmd);
-						deviceCmd = cmd.getCommand();
-					}
+            while (keys.hasMoreElements()) {
+                String key = keys.nextElement();
 
-					remoteController.send(deviceCmd);
-				} else {
-					logger.warn(
-							"Cannot find connection details for device id '{}'",
-							deviceId);
-				}
-			}
-		}
-	}
-	
+                // the config-key enumeration contains additional keys that we
+                // don't want to process here ...
+                if ("service.pid".equals(key)) {
+                    continue;
+                }
 
-	/**
-	 * Internal data structure which carries the connection details of one
-	 * device (there could be several)
-	 */
-	static class DeviceConfig {
+                Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
 
-		String host;
-		int port = DEFAULT_PORT;
+                if (!matcher.matches()) {
+                    logger.debug(
+                            "given config key '{}' does not follow the expected pattern '<id>.<host|port|serialPortName>'",
+                            key);
+                    continue;
+                }
 
-		OnkyoConnection connection = null;
-		String deviceId;
+                matcher.reset();
+                matcher.find();
 
-		public DeviceConfig(String deviceId) {
-			this.deviceId = deviceId;
-		}
+                String deviceId = matcher.group(1);
 
-		public String getHost(){
-			return host;
-		}
-		
-		public int getPort(){
-			return port;
-		}
-		
-		@Override
-		public String toString() {
-			return "Device [id=" + deviceId + ", host=" + host + ", port=" + port + "]";
-		}
+                DeviceConfig deviceConfig = deviceConfigCache.get(deviceId);
 
-		OnkyoConnection getConnection() {
-			if (connection == null) {
-				connection = new OnkyoConnection(host, port);
-			}
-			return connection;
-		}
+                if (deviceConfig == null) {
+                    deviceConfig = new DeviceConfig(deviceId);
+                    deviceConfigCache.put(deviceId, deviceConfig);
+                }
 
-	}
+                String configKey = matcher.group(2);
+                String value = (String) config.get(key);
+                if ("serialPortName".equals(configKey)) {
+                    deviceConfig.serialPortName = value;
+                } else if ("host".equals(configKey)) {
+                    deviceConfig.host = value;
+                } else if ("port".equals(configKey)) {
+                    deviceConfig.port = Integer.valueOf(value);
+                } else {
+                    throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
+                }
+            }
+
+            // open connection to all receivers
+            for (String device : deviceConfigCache.keySet()) {
+                OnkyoConnection connection = deviceConfigCache.get(device).getConnection();
+                if (connection != null) {
+                    connection.openConnection();
+                    connection.addEventListener(this);
+                }
+            }
+
+            for (OnkyoBindingProvider provider : this.providers) {
+                for (String itemName : provider.getItemNames()) {
+                    initializeItem(itemName);
+                }
+            }
+
+        }
+    }
+
+    private void closeAllConnections() {
+        if (deviceConfigCache != null) {
+            for (String device : deviceConfigCache.keySet()) {
+                OnkyoConnection connection = deviceConfigCache.get(device).getConnection();
+                if (connection != null) {
+                    connection.closeConnection();
+                    connection.removeEventListener(this);
+                }
+            }
+            deviceConfigCache = null;
+        }
+    }
+
+    /**
+     * Find receiver from device caache by ip address or serial Port.
+     *
+     * @param ip
+     * @return
+     */
+    private DeviceConfig findDevice(String ipOrSerial) {
+        for (String device : deviceConfigCache.keySet()) {
+            DeviceConfig deviceConfig = deviceConfigCache.get(device);
+            if (deviceConfig != null) {
+                if ((deviceConfig.getSerialPortName() != null && deviceConfig.getSerialPortName().equals(ipOrSerial))
+                        || (deviceConfig.getHost() != null && deviceConfig.getHost().equals(ipOrSerial))) {
+                    return deviceConfig;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public void statusUpdateReceived(EventObject event, String iporSerialPort, String data) {
+        // find correct device from device cache
+        DeviceConfig deviceConfig = findDevice(iporSerialPort);
+
+        if (deviceConfig != null) {
+            logger.debug("Received status update '{}' from device {}", data,
+                    (deviceConfig.serialPortName != null) ? deviceConfig.serialPortName : deviceConfig.host);
+            for (OnkyoBindingProvider provider : providers) {
+                for (String itemName : provider.getItemNames()) {
+                    // Update all items which refer to command
+                    HashMap<String, String> values = provider.getDeviceCommands(itemName);
+
+                    for (String cmd : values.keySet()) {
+                        String[] commandParts = values.get(cmd).split(":");
+                        String deviceId = commandParts[0];
+                        String deviceCmd = commandParts[1];
+
+                        if (!deviceConfig.deviceId.equals(deviceId)) {
+                            continue;
+                        }
+
+                        boolean match = false;
+
+                        if (deviceCmd.startsWith(ADVANCED_COMMAND_KEY)) {
+                            // skip advanced command key and compare remaining
+                            // characters
+                            if (data.startsWith(deviceCmd.substring(1))) {
+                                match = true;
+                            }
+                        } else {
+                            try {
+                                String eiscpCmd = EiscpCommand.valueOf(deviceCmd).getCommand();
+
+                                // compare 3 first character
+                                if (data.startsWith(eiscpCmd.substring(0, 3))) {
+                                    match = true;
+                                }
+                            } catch (Exception e) {
+                                logger.error("Unrecognized command ", e);
+                            }
+                        }
+
+                        if (match) {
+                            Class<? extends Item> itemType = provider.getItemType(itemName);
+                            State v = convertDeviceValueToOpenHabState(itemType, data);
+                            eventPublisher.postUpdate(itemName, v);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Convert receiver value to OpenHAB state.
+     *
+     * @param itemType
+     * @param data
+     *
+     * @return
+     */
+    private State convertDeviceValueToOpenHabState(Class<? extends Item> itemType, String data) {
+        State state = UnDefType.UNDEF;
+
+        try {
+            int index;
+            String s;
+
+            if (itemType == SwitchItem.class) {
+                index = Integer.parseInt(data.substring(3, 5), 16);
+                state = index == 0 ? OnOffType.OFF : OnOffType.ON;
+
+            } else if (itemType == NumberItem.class) {
+                index = Integer.parseInt(data.substring(3, 5), 16);
+                state = new DecimalType(index);
+
+            } else if (itemType == DimmerItem.class) {
+                index = Integer.parseInt(data.substring(3, 5), 16);
+                state = new PercentType(index);
+
+            } else if (itemType == RollershutterItem.class) {
+                index = Integer.parseInt(data.substring(3, 5), 16);
+                state = new PercentType(index);
+
+            } else if (itemType == StringItem.class) {
+                s = data.substring(3, data.length());
+                state = new StringType(s);
+            }
+        } catch (Exception e) {
+            logger.debug("Cannot convert value '{}' to data type {}", data, itemType);
+        }
+
+        return state;
+    }
+
+    /**
+     * Initialize item value. Method send query to receiver if init query is
+     * configured to binding item configuration
+     *
+     * @param itemType
+     *
+     */
+    private void initializeItem(String itemName) {
+        for (OnkyoBindingProvider provider : providers) {
+            String initCmd = provider.getItemInitCommand(itemName);
+            if (initCmd != null) {
+                logger.debug("Initialize item {}", itemName);
+
+                String[] commandParts = initCmd.split(":");
+                String deviceId = commandParts[0];
+                String deviceCmd = commandParts[1];
+
+                DeviceConfig device = deviceConfigCache.get(deviceId);
+                OnkyoConnection remoteController = device.getConnection();
+
+                if (device != null && remoteController != null) {
+                    if (deviceCmd.startsWith(ADVANCED_COMMAND_KEY)) {
+                        deviceCmd = deviceCmd.replace(ADVANCED_COMMAND_KEY, "");
+                    } else {
+                        EiscpCommand cmd = EiscpCommand.valueOf(deviceCmd);
+                        deviceCmd = cmd.getCommand();
+                    }
+
+                    remoteController.send(deviceCmd);
+                } else {
+                    logger.warn("Cannot find connection details for device id '{}'", deviceId);
+                }
+            }
+        }
+    }
+
+    /**
+     * Internal data structure which carries the connection details of one
+     * device (there could be several)
+     */
+    static class DeviceConfig {
+
+        String host;
+        String serialPortName;
+        int port = DEFAULT_PORT;
+
+        OnkyoConnection connection = null;
+        String deviceId;
+
+        public DeviceConfig(String deviceId) {
+            this.deviceId = deviceId;
+        }
+
+        public String getHost() {
+            return host;
+        }
+
+        public String getSerialPortName() {
+            return serialPortName;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        @Override
+        public String toString() {
+            if (serialPortName != null) {
+                return "Device [id=" + deviceId + ", serialPort=" + serialPortName + "]";
+            } else {
+                return "Device [id=" + deviceId + ", host=" + host + ", port=" + port + "]";
+            }
+        }
+
+        OnkyoConnection getConnection() {
+            if (connection == null) {
+                if (serialPortName != null) {
+                    connection = new OnkyoConnection(serialPortName);
+                } else {
+                    connection = new OnkyoConnection(host, port);
+                }
+            }
+            return connection;
+        }
+
+    }
 
 }

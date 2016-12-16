@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,16 +21,16 @@ import org.openhab.binding.lightwaverf.internal.command.LightwaveRfVersionMessag
  */
 public interface LightwaveRFMessageListener {
 
-	public void roomDeviceMessageReceived(LightwaveRfRoomDeviceMessage message);
+    public void roomDeviceMessageReceived(LightwaveRfRoomDeviceMessage message);
 
-	public void roomMessageReceived(LightwaveRfRoomMessage message);
+    public void roomMessageReceived(LightwaveRfRoomMessage message);
 
-	public void serialMessageReceived(LightwaveRfSerialMessage message);
+    public void serialMessageReceived(LightwaveRfSerialMessage message);
 
-	public void okMessageReceived(LightwaveRfCommandOk message);
+    public void okMessageReceived(LightwaveRfCommandOk message);
 
-	public void versionMessageReceived(LightwaveRfVersionMessage message);
+    public void versionMessageReceived(LightwaveRfVersionMessage message);
 
-	public void heatInfoMessageReceived(LightwaveRfHeatInfoRequest command);
+    public void heatInfoMessageReceived(LightwaveRfHeatInfoRequest command);
 
 }

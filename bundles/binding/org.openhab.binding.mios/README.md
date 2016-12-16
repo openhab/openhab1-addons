@@ -84,9 +84,9 @@ You can also declare multiple MiOS Units, as illustrated in this example.
 
 Internally, the MiOS Binding uses the openHAB _Transformation Service_.  The MiOS Binding supplies a number of pre-configured MAP Transformation for the common use-cases.
 
-From a configuration standpoint, these transformations need to be copied from the source-code repository:
+For the MiOS Binding configuration, each MAP Transformation file is named `mios*.map`.  These need to be copied from the source-code repository:
 
-    bundles/binding/org.openhab.binding.mios/examples/transform/mios*.map
+ * [/features/openhab-addons-external/src/main/resources/transform](/features/openhab-addons-external/src/main/resources/transform)
     
 and placed into your openHAB installation under the directory:
 
@@ -232,6 +232,10 @@ The _serviceAliases_ are built into the MiOS Binding and may be expanded over ti
 |`urn:upnp-org:serviceId:HouseStatus1`|`HouseStatus1`,`HouseStatus`|
 |`urn:upnp-org:serviceId:ContentDirectory`|`ContentDirectory`|
 |`urn:upnp-org:serviceId:AudioIn`|`AudioIn`|
+|`urn:upnp-org:serviceId:DigitalSecurityCameraSettings1`|`DigitalSecurityCameraSettings1`|
+|`urn:upnp-org:serviceId:DigitalSecurityCameraStillImage1`|`DigitalSecurityCameraStillImage1`|
+|`urn:upnp-org:serviceId:EnergyCalculator1`|`EnergyCalculator1`|
+|`urn:upnp-org:serviceId:FanSpeed1`|`FanSpeed1`|
 
 
 
@@ -260,7 +264,22 @@ The _serviceAliases_ are built into the MiOS Binding and may be expanded over ti
 |`urn:micasaverde-com:serviceId:IrTransmitter1`|`IrTransmitter1`,`IrTransmitter`|
 |`urn:micasaverde-com:serviceId:IrDevice1`|`IrDevice1`,`IrDevice`|
 |`urn:micasaverde-com:serviceId:GenericIO`|`GenericIO`|
-
+|`urn:micasaverde-com:serviceId:CameraMotionDetection1` |`CameraMotionDetection1`
+|`urn:micasaverde-com:serviceId:DiscretePower1` |`DiscretePower1`
+|`urn:micasaverde-com:serviceId:InputSelection1` |`InputSelection1`
+|`urn:micasaverde-com:serviceId:Keypad1` |`Keypad1`
+|`urn:micasaverde-com:serviceId:MediaNavigation1` |`MediaNavigation1`
+|`urn:micasaverde-com:serviceId:MenuNavigation1` |`MenuNavigation1`
+|`urn:micasaverde-com:serviceId:Misc1` |`Misc1`
+|`urn:micasaverde-com:serviceId:NumericEntry1` |`NumericEntry1`
+|`urn:micasaverde-com:serviceId:PIP1` |`PIP1`
+|`urn:micasaverde-com:serviceId:Scene1` |`Scene1`
+|`urn:micasaverde-com:serviceId:TV1` |`TV1`
+|`urn:micasaverde-com:serviceId:TogglePower1` |`TogglePower1`
+|`urn:micasaverde-com:serviceId:Tuning1` |`Tuning1`
+|`urn:micasaverde-com:serviceId:VideoAdjustment1` |`VideoAdjustment1`
+|`urn:micasaverde-com:serviceId:Volume1` |`Volume1`
+|`urn:micasaverde-com:serviceId:WMC1` |`WMC1`
 
 
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,36 +14,36 @@ import org.openhab.core.items.Item;
 /**
  * This interface is implemented by classes that can provide mapping information
  * between openHAB items and NetworkUpsTools items.
- * 
- * Implementing classes should register themselves as a service in order to be 
+ *
+ * Implementing classes should register themselves as a service in order to be
  * taken into account.
- * 
+ *
  * @author jaroslawmazgaj
  * @since 1.7.0
  */
 public interface NetworkUpsToolsBindingProvider extends BindingProvider {
-	/**
-	 * Returns the Type of the Item identified by {@code itemName}
-	 * 
-	 * @param itemName the name of the item to find the type for
-	 * @return the type of the Item identified by {@code itemName}
-	 */
-	public Class<? extends Item> getItemType(String itemName);
-	
-	/**
-	 * Returns the UPS name identified by {@code itemName}
-	 * 
-	 * @param itemName the name of the item to find the type for
-	 * @return the UPS name identified by {@code itemName}
-	 */	
-	public String getUps(String itemName);
-	
-	/**
-	 * Returns the UPS property identified by {@code itemName}
-	 * 
-	 * @param itemName the name of the item to find the type for
-	 * @return the UPS property identified by {@code itemName}
-	 */	
-	public String getProperty(String itemName);
+    /**
+     * Returns the Type of the Item identified by {@code itemName}
+     * 
+     * @param itemName the name of the item to find the type for
+     * @return the type of the Item identified by {@code itemName}
+     */
+    public Class<? extends Item> getItemType(String itemName);
+
+    /**
+     * Returns the UPS name identified by {@code itemName}
+     * 
+     * @param itemName the name of the item to find the type for
+     * @return the UPS name identified by {@code itemName}
+     */
+    public String getUps(String itemName);
+
+    /**
+     * Returns the UPS property identified by {@code itemName}
+     * 
+     * @param itemName the name of the item to find the type for
+     * @return the UPS property identified by {@code itemName}
+     */
+    public String getProperty(String itemName);
 
 }

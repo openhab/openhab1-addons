@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>MT2653</Model>
+    <Label lang="en">Keyfob</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x2D</id>             <!-- SCENE_CONTROLLER_CONF -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5B</id>             <!-- CENTRAL_SCENE -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x8E</id>             <!-- MULTI_INSTANCE_ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x8F</id>             <!-- MULTI_CMD -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Button 1 and 3 pair mode</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Separately</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">In pair without double clicks</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">In pair with double clicks</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Button 2 and 4 pair mode</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Separately</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">In pair without double clicks</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">In pair with double clicks</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>11</Index>
+            <Label lang="en">Action on group 1</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Switch On/Off only (send Basic Set)</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Switch all</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Send Scenes</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Send Preconfigured Scenes</Label>
+            </Item>
+            <Item>
+                <Value>6</Value>
+                <Label lang="en">Control devices in proximity</Label>
+            </Item>
+            <Item>
+                <Value>7</Value>
+                <Label lang="en">Control door lock</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">Central scene to gateway</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>12</Index>
+            <Label lang="en">Action on group 2</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Switch On/Off only (send Basic Set)</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Switch all</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Send Scenes</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Send Preconfigured Scenes</Label>
+            </Item>
+            <Item>
+                <Value>6</Value>
+                <Label lang="en">Control devices in proximity</Label>
+            </Item>
+            <Item>
+                <Value>7</Value>
+                <Label lang="en">Control door lock</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">Central scene to gateway</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>13</Index>
+            <Label lang="en">Action on group 3</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Switch On/Off only (send Basic Set)</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Switch all</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Send Scenes</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Send Preconfigured Scenes</Label>
+            </Item>
+            <Item>
+                <Value>6</Value>
+                <Label lang="en">Control devices in proximity</Label>
+            </Item>
+            <Item>
+                <Value>7</Value>
+                <Label lang="en">Control door lock</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">Central scene to gateway</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>14</Index>
+            <Label lang="en">Action on group 4</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Switch On/Off only (send Basic Set)</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Switch all</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Send Scenes</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Send Preconfigured Scenes</Label>
+            </Item>
+            <Item>
+                <Value>6</Value>
+                <Label lang="en">Control devices in proximity</Label>
+            </Item>
+            <Item>
+                <Value>7</Value>
+                <Label lang="en">Control door lock</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">Central scene to gateway</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>21</Index>
+            <Label lang="en">Send the following Switch All commands</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Switch off only</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Switch on only</Label>
+            </Item>
+            <Item>
+                <Value>255</Value>
+                <Label lang="en">Switch all on and off</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>22</Index>
+            <Label lang="en">Invert buttons</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">No</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Yes</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>25</Index>
+            <Label lang="en">Block Wake up</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Wake up is BLOCKED</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Wake up is POSSIBLE according to Intervall</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>30</Index>
+            <Label lang="en">Send unsolicited Battery Report on Wake Up</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">No</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">To same node as wake up notification</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Broadcast to neighbours</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">ZWave Plus Lifeline</Label>
+            <Maximum>10</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Controlled by button 1 or single clicks of buttons 1 and 3</Label>
+            <Maximum>10</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Controlled by button 3 or double clicks of buttons 1 and 3</Label>
+            <Maximum>10</Maximum>
+        </Group>
+
+        <Group>
+            <Index>4</Index>
+            <Label lang="en">Controlled by button 2 or single clicks of buttons 2 and 4</Label>
+            <Maximum>10</Maximum>
+        </Group>
+
+        <Group>
+            <Index>5</Index>
+            <Label lang="en">Controlled by button 4 or double clicks of buttons 2 and 4</Label>
+            <Maximum>10</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,62 +18,62 @@ import org.openhab.binding.denon.internal.communication.entities.types.VolumeTyp
 
 /**
  * Holds limited information about the secondary zones of the receiver
- * 
+ *
  * @author Jeroen Idserda
  * @since 1.7.0
  */
-@XmlRootElement(name="item")
+@XmlRootElement(name = "item")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ZoneStatusLite {
-	
-	private OnOffType power; 
 
-	private StringType inputFuncSelect;
-	
-	private StringType volumeDisplay;
-	
-	private VolumeType masterVolume;
-	
-	private OnOffType mute;
+    private OnOffType power;
 
-	public OnOffType getPower() {
-		return power;
-	}
+    private StringType inputFuncSelect;
 
-	public void setPower(OnOffType power) {
-		this.power = power;
-	}
+    private StringType volumeDisplay;
 
-	public StringType getInputFuncSelect() {
-		return inputFuncSelect;
-	}
+    private VolumeType masterVolume;
 
-	public void setInputFuncSelect(StringType inputFuncSelect) {
-		this.inputFuncSelect = inputFuncSelect;
-	}
+    private OnOffType mute;
 
-	public StringType getVolumeDisplay() {
-		return volumeDisplay;
-	}
+    public OnOffType getPower() {
+        return power;
+    }
 
-	public void setVolumeDisplay(StringType volumeDisplay) {
-		this.volumeDisplay = volumeDisplay;
-	}
+    public void setPower(OnOffType power) {
+        this.power = power;
+    }
 
-	public VolumeType getMasterVolume() {
-		return masterVolume;
-	}
+    public StringType getInputFuncSelect() {
+        return inputFuncSelect;
+    }
 
-	public void setMasterVolume(VolumeType masterVolume) {
-		this.masterVolume = masterVolume;
-	}
+    public void setInputFuncSelect(StringType inputFuncSelect) {
+        this.inputFuncSelect = inputFuncSelect;
+    }
 
-	public OnOffType getMute() {
-		return mute;
-	}
+    public StringType getVolumeDisplay() {
+        return volumeDisplay;
+    }
 
-	public void setMute(OnOffType mute) {
-		this.mute = mute;
-	}
-	
+    public void setVolumeDisplay(StringType volumeDisplay) {
+        this.volumeDisplay = volumeDisplay;
+    }
+
+    public VolumeType getMasterVolume() {
+        return masterVolume;
+    }
+
+    public void setMasterVolume(VolumeType masterVolume) {
+        this.masterVolume = masterVolume;
+    }
+
+    public OnOffType getMute() {
+        return mute;
+    }
+
+    public void setMute(OnOffType mute) {
+        this.mute = mute;
+    }
+
 }

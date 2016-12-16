@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZW096</Model>
+    <Label lang="en">Smart Switch 6</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x32</id>             <!-- METER -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Current overload protection enable</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">enabled</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>20</Index>
+            <Label lang="en">Output load after re-power</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">last status</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">always on</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">always off</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>80</Index>
+            <Label lang="en">Enable send to associated devices</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">nothing</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">hail CC</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">basic CC report</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>81</Index>
+            <Label lang="en">Configure LED state</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">LED follows load</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">LED follows load for 5 seconds</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Night light mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>90</Index>
+            <Label lang="en">Enable items 91 and 92</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">enabled</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>91</Index>
+            <Label lang="en">Wattage Threshold</Label>
+            <Type>short</Type>
+            <Default>25</Default>
+            <Minimum>0</Minimum>
+            <Maximum>60000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>92</Index>
+            <Label lang="en">Wattage Percent Change</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>100</Index>
+            <Label lang="en">Set 101‐103 to default. </Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>111</Index>
+            <Label lang="en">Time interval for sending to group 1</Label>
+            <Type>short</Type>
+            <Default>3</Default>
+            <Minimum>1</Minimum>
+            <Maximum>2147483647</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>112</Index>
+            <Label lang="en">Time interval for sending to group 2</Label>
+            <Type>short</Type>
+            <Default>600</Default>
+            <Minimum>1</Minimum>
+            <Maximum>2147483647</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>252</Index>
+            <Label lang="en">Configuration Locked</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">enabled</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>255</Index>
+            <Label lang="en">RESET</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Group 1</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Group 2</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>

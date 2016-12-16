@@ -77,6 +77,12 @@ class UDPHandler(SocketServer.BaseRequestHandler):
             response = UdpPacket(DIGITAL_READ_ACK, packet.pin, pfio.digital_read(packet.pin))
             socket.sendto(response.for_network(), self.client_address)
 
+        elif packet.command == READ_OUT_CMD:
+            if verbose:
+                print "Digital read request for output pins"
+            response = UdpPacket(READ_OUT_ACK, 0, pfio.read_output())
+            socket.sendto(response.for_network(), self.client_address)
+
         elif packet.command == WATCHDOG_CMD:
             if verbose:
                 print "Watchdog request"

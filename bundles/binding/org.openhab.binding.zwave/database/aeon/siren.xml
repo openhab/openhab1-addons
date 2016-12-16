@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>Smart Strip</Model>
+	<Label lang="en">Siren</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x31</id>
+		</Class>
+		<Class>
+			<id>0x32</id>
+			<endpoint>5</endpoint>
+			<add>true</add>
+		</Class>
+		<Class>
+			<id>0x32</id>
+			<endpoint>6</endpoint>
+			<add>true</add>
+		</Class>
+		<Class>
+			<id>0x60</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x80</id>
+		</Class>
+		<Class>
+			<id>0x84</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+	</CommandClasses>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 1</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+	<Configuration>
+		<Parameter>
+			<Index>37</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Default>1</Default>
+			<Size>2</Size>
+			<Label lang="en">Siren Sound</Label>
+			<Help lang="en"><![CDATA[1,The value1 (low byte) is used to select the Siren sound</br>
+			Value1=0,do not change the current Siren sound.</br>
+			Value1=1,Siren sound1 is selected.</br>
+			Value1=2,Siren sound2 is selected.</br>
+			Value1=3,Siren sound3 is selected.</br>
+			Value1=4,Siren sound4 is selected.</br>
+			Value1=5,Siren sound5 is selected.</br>
+			Other values will be ignored.</br>
+			2,The value 2(high byte)is used to adjust the volume:</br>
+			Value2=0,do not change the current volume.</br>
+			Value2=1,set the volume to 88dB.</br>
+			Value2=2,set the volume to 100dB.</br>
+			Value2=3,set the volume to 105dB.</br>
+			Othervalueswillbeignored.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>80</Index>
+			<Type>byte</Type>
+			<Default>25</Default>
+			<Minimum>0</Minimum>
+			<Maximum>60000</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Enable Notifications</Label>
+			<Help lang="en">Enable to send notifications to associated devices (Group1) when the state of Siren changed (0=nothing,1=hailCC,2=basic CC report).</Help>
+		</Parameter>
+	</Configuration>
+</Product>

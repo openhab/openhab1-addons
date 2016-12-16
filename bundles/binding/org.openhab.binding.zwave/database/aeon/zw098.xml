@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZW098</Model>
+    <Label lang="en">LED Bulb</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x26</id>             <!-- SWITCH_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x2B</id>             <!-- SCENE_ACTIVATION -->
+        </Class>
+        <Class>
+            <id>0x32</id>             <!-- METER -->
+        </Class>
+        <Class>
+            <id>0x33</id>             <!-- COLOR -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>32</Index>
+            <Label lang="en">Toggle send report on color change</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">disable color updates</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">send HAIL CC</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>34</Index>
+            <Label lang="en">Allow external switch to toggle bulb</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">enabled</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>35</Index>
+            <Label lang="en">Allow external switch to change color</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">enabled</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>36</Index>
+            <Label lang="en">Control color mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">reboot normal mode</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">boot into color programming</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">exit color programming</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">save and exit color programming</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>80</Index>
+            <Label lang="en">Enable notifications</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Hail</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Basic</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>252</Index>
+            <Label lang="en">Lock configuration</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">enabled</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Group 1</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Group 2</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>

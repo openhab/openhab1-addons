@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZIR010</Model>
+	<Label lang="en">PIR Motion Sensor</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>17</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Mode</Label>
+			<Help lang="en">The ZIR010 can be configured to operate in 1 of 3 modes.
+				Those modes are:
+				Lighting Mode (factory default)
+				Alarm Mode
+				Sensor Mode
+				Information reproduced from: http://www.pepper1.net/zwavedb/uploads/resources/bdf086a9388325a2fb8b8aa298e24e512faec65d.pdf
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Lightning</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Alarm</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Sensor</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>18</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Label lang="en">Off/Idle delay</Label>
+			<Help lang="en">The configuration parameter that can be used to adjust the amount of delay before the OFF or IDLE command is transmitted is Configuration Parameter # 18.
+				This parameter can be configured with the value of 0 through 255.
+				Where 0 means no delay and 255 means 255 minutes of delay.
+				Default appears to be 1 min.
+				Information reproduced from: http://www.pepper1.net/zwavedb/uploads/resources/bdf086a9388325a2fb8b8aa298e24e512faec65d.pdf
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>19</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Label lang="en">Unsolicited Commands</Label>
+			<Help lang="en">The ZIR010 can be disabled from sending commands unsolicited without removing associated devices by
+				setting Configuration Parameter # 19 to 0 (when asked for number of bytes, select 1).
+				Setting it back to 1 will re-enable the ZIR010.
+				Information reproduced from: http://www.pepper1.net/zwavedb/uploads/resources/bdf086a9388325a2fb8b8aa298e24e512faec65d.pdf
+			</Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">enabled</Label>
+			</Item>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">disabled</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>22</Index>
+			<Type>byte</Type>
+			<Default>30</Default>
+			<Minimum>15</Minimum>
+			<Maximum>45</Maximum>
+			<Label lang="en">Awake Time</Label>
+			<Help lang="en">
+				The time the ZIR010 stays awake can be adjusted from 15 seconds to 45 seconds by sending a value of 15
+				to 45 to the ZIR010 using Configuration Parameter # 22 (when asked for the number of bytes, select 1).
+				This awake time period starts over every time the ZIR010 receives a command or request.
+				Defaults to 30 seconds.
+				Information reproduced from: http://www.pepper1.net/zwavedb/uploads/resources/bdf086a9388325a2fb8b8aa298e24e512faec65d.pdf
+			</Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Motion</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Tamper</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Battery</Label>
+		</Group>
+	</Associations>
+</Product>

@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZMNHID</Model>
+    <Label lang="en">Flush on/off thermostat</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x32</id>             <!-- METER -->
+        </Class>
+        <Class>
+            <id>0x40</id>             <!-- THERMOSTAT_MODE -->
+        </Class>
+        <Class>
+            <id>0x43</id>             <!-- THERMOSTAT_SETPOINT -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Input 1 switch type</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">mono-stable switch type (push button)</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">bi-stable switch type</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Input 2 switch type</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">mono-stable switch type (push button)</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">bi-stable switch type</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Input 3 switch type</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">mono-stable switch type (push button)</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">bi-stable switch type</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Input 2 contact type</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">NO (normally open) input type</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">NC (normally close) input type</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">Input 3 contact type</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">NO (normally open) input type</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">NC (normally close) input type</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>10</Index>
+            <Label lang="en">Activate / deactivate functions ALL ON/ALL OFF</Label>
+            <Type>list</Type>
+            <Default>255</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">ALL ON is not active ALL OFF is not active</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">ALL ON is not active ALL OFF active</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">ALL ON active ALL OFF is not active</Label>
+            </Item>
+            <Item>
+                <Value>255</Value>
+                <Label lang="en">ALL ON active, ALL OFF active</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>11</Index>
+            <Label lang="en">Set point set by I2</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>12</Index>
+            <Label lang="en">Set point set by I3</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>40</Index>
+            <Label lang="en">Power reporting in Watts on power change for Q1</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>42</Index>
+            <Label lang="en">Power reporting in Watts by time interval for Q1</Label>
+            <Type>short</Type>
+            <Default>300</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>43</Index>
+            <Label lang="en">Hysteresis On</Label>
+            <Type>short</Type>
+            <Default>132</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>44</Index>
+            <Label lang="en">Hysteresis Off</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>45</Index>
+            <Label lang="en">Antifreeze</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>60</Index>
+            <Label lang="en">Too low temperature limit</Label>
+            <Type>short</Type>
+            <Default>50</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>61</Index>
+            <Label lang="en">Too high temperature limit</Label>
+            <Type>short</Type>
+            <Default>700</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>63</Index>
+            <Label lang="en">Switch selection</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Basic on/off Q1</Label>
+            <Maximum>16</Maximum>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Basic on/off I2</Label>
+            <Maximum>16</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Basic on/off I3</Label>
+            <Maximum>16</Maximum>
+        </Group>
+
+        <Group>
+            <Index>4</Index>
+            <Label lang="en">High Temperature</Label>
+            <Maximum>16</Maximum>
+        </Group>
+
+        <Group>
+            <Index>5</Index>
+            <Label lang="en">Low Temperature</Label>
+            <Maximum>16</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>6</Index>
+            <Label lang="en">Default Reporting Group</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,21 +8,14 @@
  */
 package org.openhab.binding.mailcontrol.service;
 
-import static org.creek.mailcontrol.model.data.DataType.DECIMAL;
-import static org.creek.mailcontrol.model.data.DataType.HSB;
-import static org.creek.mailcontrol.model.data.DataType.INCREASE_DECREASE;
-import static org.creek.mailcontrol.model.data.DataType.ON_OFF;
-import static org.creek.mailcontrol.model.data.DataType.OPEN_CLOSED;
-import static org.creek.mailcontrol.model.data.DataType.PERCENT;
-import static org.creek.mailcontrol.model.data.DataType.STOP_MOVE;
-import static org.creek.mailcontrol.model.data.DataType.STRING;
+import static org.creek.mailcontrol.model.data.DataType.*;
 
 import org.creek.mailcontrol.model.data.CommandTransformable;
 import org.creek.mailcontrol.model.data.DataType;
-import org.creek.mailcontrol.model.data.ItemCommandData;
 import org.creek.mailcontrol.model.data.DecimalData;
 import org.creek.mailcontrol.model.data.HSBData;
 import org.creek.mailcontrol.model.data.IncreaseDecreaseData;
+import org.creek.mailcontrol.model.data.ItemCommandData;
 import org.creek.mailcontrol.model.data.OnOffData;
 import org.creek.mailcontrol.model.data.OpenClosedData;
 import org.creek.mailcontrol.model.data.PercentData;
@@ -45,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
@@ -93,7 +86,7 @@ public class ItemCommandProcessor<T extends Command> {
             return (OpenhabCommandTransformable<T>) new OpenhabStopMoveData((StopMoveData) command);
         } else if (dataType == STRING) {
             return (OpenhabCommandTransformable<T>) new OpenhabStringData((StringData) command);
-        } else /* if (StateType == UP_DOWN) */{
+        } else /* if (StateType == UP_DOWN) */ {
             return (OpenhabCommandTransformable<T>) new OpenhabUpDownData((UpDownData) command);
         }
     }

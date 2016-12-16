@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ACT Homepro ZRM230</Model>
+	<Label lang="en">Wall Switch/Transmitter (2-gang)</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x25</id>
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>01</Default>
+			<Size>1</Size>
+			<Label lang="en">Ignore start level</Label>
+			<Help lang="en">Set ignore start level bit when transmitting dim
+				commands.
+				The ZDM230 can send Dim commands to Z-Wave enabled dimmers.
+				The Dim command has a start level embedded in it.
+				A dimmer receiving this command will start dimming from that start
+				level.
+				However, the command also has a bit that indicates whether the dimmer should
+				ignore the start level. If the bit is set to 1, the dimmer will
+				ignore the
+				start level and instead start dimming from its current level.
+				If this bit is set to 0, the dimmer will not ignore the start level.
+			</Help>
+			<Item>
+				<Value>00</Value>
+				<Label lang="en">Ignore start level</Label>
+			</Item>
+			<Item>
+				<Value>01</Value>
+				<Label lang="en">Do not ignore start level</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>00</Default>
+			<Size>1</Size>
+			<Label lang="en">Suspend Group 4</Label>
+			<Help lang="en">You may wish to disable transmitting commands to
+				Z-Wave devices that are in
+				Group 4 without “disassociating” those devices from the group.
+				Setting parameter 2 to the value of 1 will stop the ZRM230 from
+				transmitting
+				to devices that are “associated” into Group 4.
+			</Help>
+			<Item>
+				<Value>00</Value>
+				<Label lang="en">Transmit to group 4 devices</Label>
+			</Item>
+			<Item>
+				<Value>01</Value>
+				<Label lang="en">Stop transmit to group 4 devices</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>00</Default>
+			<Size>1</Size>
+			<Label lang="en">Night Light</Label>
+			<Help lang="en">The LED on the ZRM230 will by default, turn ON when
+				the load
+				attached is turned ON. To make the LED turn ON when the load
+				attached is turned OFF instead, set parameter 3 to a value of 1.
+			</Help>
+			<Item>
+				<Value>00</Value>
+				<Label lang="en">Led when load on</Label>
+			</Item>
+			<Item>
+				<Value>01</Value>
+				<Label lang="en">Led when load off</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>00</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert Switch</Label>
+			<Help lang="en">To change the top of the switch to OFF and the bottom
+				of the
+				switch ON, set parameter 4 to 1. Note: If you invert the switches
+				and also install the product upside down, remember the load will
+				now be controlled by the right, not the left switch.
+			</Help>
+			<Item>
+				<Value>00</Value>
+				<Label lang="en">Invert off</Label>
+			</Item>
+			<Item>
+				<Value>01</Value>
+				<Label lang="en">Invert on</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>20</Index>
+			<Type>byte</Type>
+			<Default>02</Default>
+			<Size>1</Size>
+			<Label lang="en">Poll Group 2 Interval</Label>
+			<Help lang="en">Poll Group 2 Interval (minutes). Valid Values = 1
+				through 255 (Default value is 2).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>22</Index>
+			<Type>byte</Type>
+			<Default>01</Default>
+			<Size>1</Size>
+			<Label lang="en">Poll Group 2</Label>
+			<Help lang="en">Poll Group 2. If value is 1, the ZRM230 will poll
+				group 2 at the interval set in Configuration Parameter 20.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>byte</Type>
+			<Default>00</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable Shade Control Group 2</Label>
+			<Help lang="en">The ZRW230 can operate shade control devices via its
+				group 2 if this configuration parameter is set to 1.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>byte</Type>
+			<Default>00</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable Shade Control Group 3</Label>
+			<Help lang="en">The ZRW230 can operate shade control devices via its
+				group 3 if this configuration parameter is set to 1.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>19</Index>
+			<Type>list</Type>
+			<Default>02</Default>
+			<Size>1</Size>
+			<Label lang="en">LED Transmission Indication</Label>
+			<Help lang="en">The ZRM230 will flicker its LED when it is
+				transmitting to any of its 4 groups.
+				This flickering can be set to not flicker at all (set to 0), to flicker
+				the
+				entire time it is transmitting (set to 1), or to flicker for only 1 second
+				when
+				it begins transmitting (set to 2). By default, the ZRM230 is set to
+				flicker for only 1 second.
+			</Help>
+			<Item>
+				<Value>00</Value>
+				<Label lang="en">No flicker</Label>
+			</Item>
+			<Item>
+				<Value>01</Value>
+				<Label lang="en">Flicker for 1 second</Label>
+			</Item>
+			<Item>
+				<Value>02</Value>
+				<Label lang="en">Flicker for 2 second</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Left paddle (relais)</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Right paddle</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Right double click paddle</Label>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group used to inform devices about the updates of
+				status of the ZRM230 dimmer</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

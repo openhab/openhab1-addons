@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,8 +12,7 @@ import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.openhab.binding.souliss.internal.network.typicals.Constants;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissGenericTypical;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissNetworkParameter;
@@ -22,7 +21,8 @@ import org.openhab.binding.souliss.internal.network.typicals.SoulissT1A;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissT31;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissTServiceUpdater;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissTypicals;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * This class decodes incoming Souliss packets, starting from decodevNet
  * 
@@ -33,8 +33,7 @@ import org.openhab.binding.souliss.internal.network.typicals.SoulissTypicals;
 public class UDPSoulissDecoder {
 
 	private SoulissTypicals soulissTypicalsRecipients;
-	private static Logger logger = LoggerFactory
-			.getLogger(UDPSoulissDecoder.class);
+	private static Logger logger = LoggerFactory.getLogger(UDPSoulissDecoder.class);
 
 	public UDPSoulissDecoder(SoulissTypicals typicals) {
 		soulissTypicalsRecipients = typicals;
@@ -62,12 +61,11 @@ public class UDPSoulissDecoder {
 	 */
 	private void decodeMacaco(ArrayList<Short> macacoPck) {
 		int functionalCode = macacoPck.get(0);
-		logger.debug("decodeMacaco: Received functional code: 0x"
-				+ Integer.toHexString(functionalCode));
+		logger.debug("decodeMacaco: Received functional code: 0x"+ Integer.toHexString(functionalCode));
 		switch (functionalCode) {
 
 		case (byte) ConstantsUDP.Souliss_UDP_function_ping_resp:
-			logger.info("function_ping_resp");
+			logger.debug("function_ping_resp");
 			decodePing(macacoPck);
 			break;
 		case (byte) ConstantsUDP.Souliss_UDP_function_subscribe_resp:
@@ -79,31 +77,31 @@ public class UDPSoulissDecoder {
 		case ConstantsUDP.Souliss_UDP_function_typreq_resp:// Answer for
 															// assigned
 			// typical logic
-			logger.info("** TypReq answer");
+			logger.debug("** TypReq answer");
 			decodeTypRequest(macacoPck);
 			break;
 		case (byte) ConstantsUDP.Souliss_UDP_function_health_resp:// Answer
 																	// nodes
 																	// healty
-			logger.info("function_health_resp");
+			logger.debug("function_health_resp");
 			decodeHealthRequest(macacoPck);
 			break;
 		case (byte) ConstantsUDP.Souliss_UDP_function_db_struct_resp:// Answer
 																		// nodes
-			logger.info("function_db_struct_resp");
+			logger.debug("function_db_struct_resp");
 			decodeDBStructRequest(macacoPck);
 			break;
 		case 0x83:
-			logger.info("Functional code not supported");
+			logger.debug("Functional code not supported");
 			break;
 		case 0x84:
-			logger.info("Data out of range");
+			logger.debug("Data out of range");
 			break;
 		case 0x85:
-			logger.info("Subscription refused");
+			logger.debug("Subscription refused");
 			break;
 		default:
-			logger.info("Unknown functional code");
+			logger.debug("Unknown functional code");
 			break;
 		}
 	}
@@ -114,7 +112,7 @@ public class UDPSoulissDecoder {
 	private void decodePing(ArrayList<Short> mac) {
 		int putIn_1 = mac.get(1);
 		int putIn_2 = mac.get(2);
-		logger.info("decodePing: putIn code: {}, {}", putIn_1, putIn_2);
+		logger.debug("decodePing: putIn code: {}, {}", putIn_1, putIn_2);
 	}
 
 	/**
@@ -161,7 +159,7 @@ public class UDPSoulissDecoder {
 			int numberOf = mac.get(4);
 
 			int typXnodo = SoulissNetworkParameter.maxnodes;
-			logger.info(
+			logger.debug(
 					"--DECODE MACACO OFFSET: {} NUMOF: {} TYPICALSXNODE: {}",
 					tgtnode, numberOf, typXnodo);
 			// creates Souliss nodes

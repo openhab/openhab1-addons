@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,13 +10,12 @@ package org.openhab.binding.mailcontrol.internal;
 
 import java.util.Dictionary;
 
+import org.apache.commons.lang.StringUtils;
+import org.creek.accessemail.connector.mail.MailConnector;
 import org.openhab.binding.mailcontrol.MailControlBindingProvider;
 import org.openhab.binding.mailcontrol.connection.ConnectorBuilder;
 import org.openhab.binding.mailcontrol.service.MessagesService;
 import org.openhab.binding.mailcontrol.service.ServiceException;
-
-import org.apache.commons.lang.StringUtils;
-import org.creek.accessemail.connector.mail.MailConnector;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
@@ -27,11 +26,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Implement this class if you are going create an actively polling service like
  * querying a Website/Device.
- * 
+ *
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
-public class MailControlBinding<T extends Command> extends AbstractActiveBinding<MailControlBindingProvider> implements ManagedService {
+public class MailControlBinding<T extends Command> extends AbstractActiveBinding<MailControlBindingProvider>
+        implements ManagedService {
     private ConnectorBuilder connectorBuilder;
     private MessagesService<T> service;
 
@@ -42,15 +42,17 @@ public class MailControlBinding<T extends Command> extends AbstractActiveBinding
      * server (optional, defaults to 60000ms)
      */
     private long refreshInterval = 6000L;
-    
+
     private Dictionary<String, ?> config;
 
     public MailControlBinding() {
     }
 
+    @Override
     public void activate() {
     }
 
+    @Override
     public void deactivate() {
     }
 
@@ -86,8 +88,16 @@ public class MailControlBinding<T extends Command> extends AbstractActiveBinding
         }
     }
 
+    protected void addBindingProvider(MailControlBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(MailControlBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

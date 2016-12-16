@@ -83,7 +83,8 @@
 			<Size>2</Size>
 			<Label lang="en">Current Threshold - Whole strip</Label>
 			<Help lang="en">Threshold change in wattage to induce a automatic
-				report (Whole HEM). (Valid values 0-60000)</Help>
+				report (Whole HEM). (Valid values 0-60000)
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>6</Index>
@@ -94,7 +95,8 @@
 			<Size>2</Size>
 			<Label lang="en">Current Threshold - Socket 1</Label>
 			<Help lang="en">Threshold change in wattage to induce a automatic
-				report (Socket 1). (Valid values 0-60000)</Help>
+				report (Socket 1). (Valid values 0-60000)
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>7</Index>
@@ -105,7 +107,8 @@
 			<Size>2</Size>
 			<Label lang="en">Current Threshold - Socket 2</Label>
 			<Help lang="en">Threshold change in wattage to induce a automatic
-				report (Socket 2). (Valid values 0-60000)</Help>
+				report (Socket 2). (Valid values 0-60000)
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>8</Index>
@@ -116,7 +119,8 @@
 			<Size>2</Size>
 			<Label lang="en">Current Threshold - Socket 3</Label>
 			<Help lang="en">Threshold change in wattage to induce a automatic
-				report (Socket 3). (Valid values 0-60000)</Help>
+				report (Socket 3). (Valid values 0-60000)
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>9</Index>
@@ -127,7 +131,8 @@
 			<Size>2</Size>
 			<Label lang="en">Current Threshold - Socket 4</Label>
 			<Help lang="en">Threshold change in wattage to induce a automatic
-				report (Socket 4). (Valid values 0-60000)</Help>
+				report (Socket 4). (Valid values 0-60000)
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>10</Index>
@@ -138,7 +143,8 @@
 			<Size>2</Size>
 			<Label lang="en">Current Threshold - Socket 5</Label>
 			<Help lang="en">Threshold change in wattage to induce a automatic
-				report (Socket 5). (Valid values 0-60000)</Help>
+				report (Socket 5). (Valid values 0-60000)
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>11</Index>
@@ -149,7 +155,8 @@
 			<Size>2</Size>
 			<Label lang="en">Current Threshold - Socket 6</Label>
 			<Help lang="en">Threshold change in wattage to induce a automatic
-				report (Socket 6). (Valid values 0-60000)</Help>
+				report (Socket 6). (Valid values 0-60000)
+			</Help>
 		</Parameter>
 
 		<Parameter>
@@ -161,7 +168,8 @@
 			<Size>1</Size>
 			<Label lang="en">Percent Change - Whole Strip</Label>
 			<Help lang="en">Percentage change in wattage to induce a automatic
-				report (Whole HEM). (Valid values 0-100)</Help>
+				report (Whole Smart Strip). (Valid values 0-100)
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>13</Index>
@@ -172,7 +180,8 @@
 			<Size>1</Size>
 			<Label lang="en">Percent Change - Socket 1</Label>
 			<Help lang="en">Percentage change in wattage to induce a automatic
-				report (Socket 1). (Valid values 0-100)</Help>
+				report (Socket 1). (Valid values 0-100)
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>14</Index>
@@ -183,7 +192,8 @@
 			<Size>1</Size>
 			<Label lang="en">Percent Change - Socket 2</Label>
 			<Help lang="en">Percentage change in wattage to induce a automatic
-				report (Socket 2). (Valid values 0-100)</Help>
+				report (Socket 2). (Valid values 0-100)
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>15</Index>
@@ -194,7 +204,8 @@
 			<Size>1</Size>
 			<Label lang="en">Percent Change - Socket 3</Label>
 			<Help lang="en">Percentage change in wattage to induce a automatic
-				report (Socket 3). (Valid values 0-100)</Help>
+				report (Socket 3). (Valid values 0-100)
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>16</Index>
@@ -205,7 +216,8 @@
 			<Size>1</Size>
 			<Label lang="en">Percent Change - Socket 4</Label>
 			<Help lang="en">Percentage change in wattage to induce a automatic
-				report (Socket 4). (Valid values 0-100)</Help>
+				report (Socket 4). (Valid values 0-100)
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>17</Index>
@@ -216,7 +228,8 @@
 			<Size>1</Size>
 			<Label lang="en">Percent Change - Socket 5</Label>
 			<Help lang="en">Percentage change in wattage to induce a automatic
-				report (Socket 5). (Valid values 0-100)</Help>
+				report (Socket 5). (Valid values 0-100)
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>16</Index>
@@ -227,7 +240,8 @@
 			<Size>1</Size>
 			<Label lang="en">Percent Change - Socket 6</Label>
 			<Help lang="en">Percentage change in wattage to induce a automatic
-				report (Socket 6). (Valid values 0-100)</Help>
+				report (Socket 6). (Valid values 0-100)
+			</Help>
 		</Parameter>
 
 		<Parameter>
@@ -249,7 +263,8 @@
 				<Label lang="en">Send Basic</Label>
 			</Item>
 			<Help lang="en">Status of load changed,send group 1 associate nodes
-				Hail CC or Basic report CC.</Help>
+				Hail CC or Basic report CC.
+			</Help>
 		</Parameter>
 
 		<Parameter>
@@ -259,16 +274,41 @@
 			<Size>4</Size>
 			<Label lang="en">Get Temperature</Label>
 			<ReadOnly>true</ReadOnly>
-			<Help lang="en"></Help>
+			<Help lang="en">Get temperature of Smart Strip (Only GET is valid)
+			</Help>
 		</Parameter>
-
+		<Parameter>
+			<Index>100</Index>
+			<Type>List</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Reset 0x65~0x67 to default value</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Reset</Label>
+			</Item>
+			<Help lang="en">Reset 0x65~0x67 to default value</Help>
+		</Parameter>
 		<Parameter>
 			<Index>101</Index>
 			<Type>int</Type>
 			<Default>8</Default>
 			<Size>4</Size>
-			<Label lang="en">Which reports need to send automatically for group
-				1</Label>
+			<Label lang="en">Which reports need to send automatically for Group
+				1
+			</Label>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Multisensor Report</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Meter Report (Watts)</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Meter Report (kWh)</Label>
+			</Item>
 			<Help lang="en"></Help>
 		</Parameter>
 		<Parameter>
@@ -276,52 +316,80 @@
 			<Type>int</Type>
 			<Default>8</Default>
 			<Size>4</Size>
-			<Label lang="en">Which reports need to send automatically for group
-				2</Label>
+			<Label lang="en">Which reports need to send automatically for Group
+				2
+			</Label>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Multisensor Report</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Meter Report (Watts)</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Meter Report (kWh)</Label>
+			</Item>
 			<Help lang="en"></Help>
 		</Parameter>
 		<Parameter>
-			<Index>101</Index>
+			<Index>103</Index>
 			<Type>int</Type>
 			<Default>8</Default>
 			<Size>4</Size>
-			<Label lang="en">Which reports need to send automatically for group
-				3</Label>
+			<Label lang="en">Which reports need to send automatically for Group
+				3
+			</Label>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Multisensor Report</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Meter Report (Watts)</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Meter Report (kWh)</Label>
+			</Item>
 			<Help lang="en"></Help>
 		</Parameter>
-
 		<Parameter>
 			<Index>111</Index>
 			<Type>int</Type>
 			<Minimum>1</Minimum>
 			<Maximum>2678400</Maximum>
-			<Default>720</Default>
+			<Default>600</Default>
 			<Size>4</Size>
-			<Label lang="en">Interval to send out reports of group 1</Label>
+			<Label lang="en">Interval to send out reports of Group 1</Label>
 			<Label lang="de">Interval in welchem die Berichte der Gruppe 1
-				gesendet werden</Label>
+				gesendet werden
+			</Label>
 		</Parameter>
 		<Parameter>
 			<Index>112</Index>
 			<Type>int</Type>
 			<Minimum>1</Minimum>
 			<Maximum>2678400</Maximum>
-			<Default>720</Default>
+			<Default>600</Default>
 			<Size>4</Size>
-			<Label lang="en">Interval to send out reports of group 2</Label>
+			<Label lang="en">Interval to send out reports of Group 2</Label>
 			<Label lang="de">Interval in welchem die Berichte der Gruppe 2
-				gesendet werden</Label>
+				gesendet werden
+			</Label>
 		</Parameter>
 		<Parameter>
 			<Index>113</Index>
 			<Type>int</Type>
 			<Minimum>1</Minimum>
 			<Maximum>2678400</Maximum>
-			<Default>720</Default>
+			<Default>600</Default>
 			<Size>4</Size>
-			<Label lang="en">Interval to send out reports of group 3</Label>
+			<Label lang="en">Interval to send out reports of Group 3</Label>
 			<Label lang="de">Interval in welchem die Berichte der Gruppe 3
-				gesendet werden</Label>
+				gesendet werden
+			</Label>
 		</Parameter>
 	</Configuration>
 </Product>

@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>WPS104</Model>
+	<Label lang="en">Energy Driven Switch</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x5e</id>
+		</Class>
+		<Class>
+			<id>0x25</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x7a</id>
+		</Class>
+		<Class> 
+			<id>0x31</id> 
+		</Class>
+		<Class> 
+			<id>0x85</id> 
+		</Class>
+		<Class> 
+			<id>0x5a</id> 
+		</Class>
+		<Class> 
+			<id>0x32</id> 
+		</Class>
+		<Class> 
+			<id>0x59</id> 
+		</Class>
+        <Class> 
+			<id>0x73</id> 
+		</Class>
+		<Class> 
+			<id>0x20</id> 
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en"></Label>
+			<Help lang="en">Controlling the relay by means of a single click on the external switch or on the 
+			integrated button. 
+			TOGGLE: If initial status is ON, then final status is OFF. If initial status 
+			is OFF, then final status is ON.
+			ON: If the initial status is OFF the system switches to ON; conversely, it maintains 
+			its status (ON).
+			OFF: If the initial status is ON the system switches to OFF; conversely, it maintains 
+			its status (OFF).</Help>
+			<Item>	
+				<Value>1</Value>
+				<Label lang="en">TOGGLE:ON/OFF</Label>
+			</Item>
+			<Item>	
+				<Value>2</Value>
+				<Label lang="en">ON</Label>
+			</Item>
+			<Item>	
+				<Value>3</Value>
+				<Label lang="en">OFF</Label>
+			</Item>
+			<Item>	
+				<Value>4</Value>
+				<Label lang="en">IGNORE</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>20</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Device Status</Label>
+			<Help lang="en">The final status achieved by the device when it receives a Basic Set command through 
+			the Z-Wave network. Available Parameters are;
+			AS RECIEVED: If received command is ON, then final status is ON. If received command is OFF, then 
+			final status is OFF.
+			IGNORE IF ON: If received command is ON, then the initial status is maintained. If received command 
+			is OFF, then final status is OFF.
+			IGNORE IF OFF: If received command is ON, then final status is ON. If received command is OFF, then 
+			the initial status is maintained.
+			IGNORE: The device maintains the initial status.</Help>
+			<Item>	
+				<Value>1</Value>
+				<Label lang="en">AS RECEIVED</Label>
+			</Item>
+			<Item>	
+				<Value>2</Value>
+				<Label lang="en">IGNORE IF ON</Label>
+			</Item>
+			<Item>	
+				<Value>3</Value>
+				<Label lang="en">IGNORE IF OFF</Label>
+			</Item>
+			<Item>	
+				<Value>4</Value>
+				<Label lang="en">IGNORE</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>30</Index>
+			<Type>byte</Type>
+			<Default>4500</Default>
+			<Minimum>0</Minimum>
+			<Maximum>4500</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Overcurrent Level</Label>
+			<Help lang="en">Sets the current level above which the time spent above that level is measured. 
+			Defined value is divided by 100.</Help>
+		</Parameter>	
+		<Parameter>
+			<Index>31</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>0</Minimum>
+			<Maximum>10800</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Overcurrent Time</Label>
+			<Help lang="en">Sets the time beyond which, in the case of overcurrent at a level higher than that 
+			established in parameter 30, an OverCurrent event occurs.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>32</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Next State</Label>
+			<Help lang="en">Defines the next state of the device if an overcurrent event has occurred.
+			Available Parameters: IGNORE - The device maintains the initial status.
+			ON - If the initial status is OFF the system switches to ON; 
+			conversely, it maintains its status (ON).
+			OFF - If the initial status is ON the system switches to OFF: 
+			conversely, it maintains its status (OFF).
+			TOGGLE  - If the initial status is ON/OFF the system switches to OFF/ON.</Help>
+			<Item>	
+				<Value>0</Value>
+				<Label lang="en">IGNORE</Label>
+			</Item>
+			<Item>	
+				<Value>1</Value>
+				<Label lang="en">ON</Label>
+			</Item>
+			<Item>	
+				<Value>2</Value>
+				<Label lang="en">OFF</Label>
+			</Item>
+			<Item>	
+				<Value>3</Value>
+				<Label lang="en">TOGGLE</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>33</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<Label lang="en">Meter Reset</Label>
+			<Help lang="en">Provides total operating time from last meter reset. When set 
+			to 0 it resets the cumulative values of energy and total operating time.</Help>
+			<Item>	
+				<Value>0</Value>
+				<Label lang="en">Meter parameters, including total operating time, will be reset.</Label>
+			</Item>
+			<Item>	
+				<Value>1</Value>
+				<Label lang="en">Greater than 0 – IGNORE (The meter will not be reset.)</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>34</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Energy flow</Label>
+			<Help lang="en">Determines whether energy events are related to energy consumed or energy produced.
+			Available Parameters are: CONSUMED - Events will be active for Consumed energy flows to which the 
+			positive sign will be attributed.
+			PRODUCED - Events will be active for Produced energy flows to which the negative sign will be attributed.</Help>
+			<Item>	
+				<Value>1</Value>
+				<Label lang="en">CONSUMED</Label>
+			</Item>
+			<Item>	
+				<Value>2</Value>
+				<Label lang="en">PRODUCED</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>35</Index>
+			<Type>byte</Type>
+			<Default>11250</Default>
+			<Minimum>0</Minimum>
+			<Maximum>11250</Maximum>
+			<Size>2</Size>
+			<Label lang="en">UP Power Level</Label>
+			<Help lang="en">Sets the level of instantaneous power in Watts beyond which time of permanence above this 
+			level is calculated.
+			0 W - 11250 W Define level of instantaneous power.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>36</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>0</Minimum>
+			<Maximum>10800</Maximum>
+			<Size>2</Size>
+			<Label lang="en">UP Power Time</Label>
+			<Help lang="en">Sets the time in seconds beyond which, if instantaneous power remains at 
+			levels exceeding threshold defined by parameter 35, a UP Power event occurs.
+			0 sec - 10800 sec Define time parameter.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>37</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label>UP Power State</Label>
+			<Help lang="en">Defines the next status of the device in the case of a UP Power event occurring.
+			Available Parameters: IGNORE - The device maintains the initial status.
+			ON - If the initial status is OFF the system switches to ON; 
+			conversely, it maintains its status (ON).
+			OFF - If the initial status is ON the system switches to OFF: 
+			conversely, it maintains its status (OFF).
+			TOGGLE  - If the initial status is ON/OFF the system switches to OFF/ON.</Help>
+			<Item>	
+				<Value>0</Value>
+				<Label lang="en">IGNORE</Label>
+			</Item>
+			<Item>	
+				<Value>1</Value>
+				<Label lang="en">ON</Label>
+			</Item>
+			<Item>	
+				<Value>2</Value>
+				<Label lang="en">OFF</Label>
+			</Item>
+			<Item>	
+				<Value>3</Value>
+				<Label lang="en">TOGGLE</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>38</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>-1</Minimum>
+			<Maximum>99</Maximum>
+			<Size>1</Size>
+			<Label lang="en">UP Power Associated</Label>
+			<Help lang="en">Sets the level of instantaneous power beyond which the time 
+			of permanence below this level is calculated. 
+			0 - Associated devices are switched OFF.
+			-1 - Associated devices are switched ON.
+			1 - 99 Set parameter for dimming purposes.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>39</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>11250</Maximum>
+			<Size>2</Size>
+			<Label lang="en">DOWN Power Level</Label>
+			<Help lang="en">Sets the level of instantaneous power beyond which the time 
+			of permanence below this level is calculated.
+			0 W - 11250 W Define level of instantaneous power.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>40</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>0</Minimum>
+			<Maximum>10800</Maximum>
+			<Size>2</Size>
+			<Label lang="en">DOWN Power Time</Label>
+			<Help lang="en">SSets the time beyond which, if instantaneous power remains at 
+			levels below threshold defined by parameter 39, a DOWN Power event occurs.
+			0 sec - 10800 sec. Define time parameter.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>41</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label>DOWN Power State</Label>
+			<Help lang="en">Defines the next state of the device in the case of a DOWN Power event occurring.
+			Available Parameters: IGNORE - The device maintains the initial status.
+			ON - If the initial status is OFF the system switches to ON; 
+			conversely, it maintains its status (ON).
+			OFF - If the initial status is ON the system switches to OFF: 
+			conversely, it maintains its status (OFF).
+			TOGGLE  - If the initial status is ON/OFF the system switches to OFF/ON.</Help>
+			<Item>	
+				<Value>0</Value>
+				<Label lang="en">IGNORE</Label>
+			</Item>
+			<Item>	
+				<Value>1</Value>
+				<Label lang="en">ON</Label>
+			</Item>
+			<Item>	
+				<Value>2</Value>
+				<Label lang="en">OFF</Label>
+			</Item>
+			<Item>	
+				<Value>3</Value>
+				<Label lang="en">TOGGLE</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>42</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>-1</Minimum>
+			<Maximum>99</Maximum>
+			<Size>1</Size>
+			<Label lang="en">DOWN Power Associated</Label>
+			<Help lang="en">Defines the status of associated devices in the presence of a DOWN Power event.
+ 			0 - Associated devices are switched OFF.
+			-1 - Associated devices are switched ON.
+			1 - 99 Set parameter for dimming purposes.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>43</Index>
+			<Type>byte</Type>
+			<Default>2000000</Default>
+			<Minimum>0</Minimum>
+			<Maximum>2000000</Maximum>
+			<Size>4</Size>
+			<Label lang="en">DOWN Power Associated</Label>
+			<Help lang="en">Sets the energy level that once exceeded an Energy Limit event occurs.
+			Available Range: 0 KWh - 2000000 KWh</Help>
+		</Parameter>
+		<Parameter>
+			<Index>44</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label>Energy Limit State</Label>
+			<Help lang="en">Defines the next state of the device in the case of an Energy Limit event occurring.
+			Available Parameters: IGNORE - The device maintains the initial status.
+			ON - If the initial status is OFF the system switches to ON; 
+			conversely, it maintains its status (ON).
+			OFF - If the initial status is ON the system switches to OFF: 
+			conversely, it maintains its status (OFF).
+			TOGGLE  - If the initial status is ON/OFF the system switches to OFF/ON.</Help>
+			<Item>	
+				<Value>0</Value>
+				<Label lang="en">IGNORE</Label>
+			</Item>
+			<Item>	
+				<Value>1</Value>
+				<Label lang="en">ON</Label>
+			</Item>
+			<Item>	
+				<Value>2</Value>
+				<Label lang="en">OFF</Label>
+			</Item>
+			<Item>	
+				<Value>3</Value>
+				<Label lang="en">TOGGLE</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>45</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Variation Instantaneous Power</Label>
+			<Help lang="en">Defines the percentage variation of instantaneous power determining the sending of the report.
+			Available Range: 1 % - 100 %</Help>
+		</Parameter>
+		<Parameter>
+			<Index>46</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Report Time Frequency</Label>
+			<Help lang="en">Defines the percentage variation of instantaneous power determining the sending of the report.
+			Available Range: 1 min - 100 mins</Help>
+		</Parameter>
+		<Parameter>
+			<Index>47</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label>Variation Total Energy</Label>
+			<Help lang="en">Defines the increase of total energy required to generate a report listing the level 
+			of total energy to the devices associated to the Energy Notification Group.
+			</Help>
+			<Item>	
+				<Value>0</Value>
+				<Label lang="en">IGNORE: No report provided.</Label>
+			</Item>
+			<Item>	
+				<Value>1</Value>
+				<Label lang="en">No report provided.</Label>
+			</Item>
+			<Item>	
+				<Value>2</Value>
+				<Label lang="en">Report at 1 hundredth of KWh.</Label>
+			</Item>
+			<Item>	
+				<Value>3</Value>
+				<Label lang="en">Report at 1 tenth of KWh</Label>
+			</Item>
+			<Item>	
+				<Value>4</Value>
+				<Label lang="en">Report at 1 KWh</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>48</Index>
+			<Type>byte</Type>
+			<Default>2300</Default>
+			<Minimum>1100</Minimum>
+			<Maximum>2500</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Nominal Voltage</Label>
+			<Help lang="en">Defines the nominal voltage value in tenths of volts. Together with parameter No. 49 
+			this is used by the automatic notification system to send reports on variations of voltage.
+			Available Range: 1100 v - 2500 v</Help>
+		</Parameter>
+		<Parameter>
+			<Index>49</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Fall In Maximum Voltage</Label>
+			<Help lang="en">Defines, as a percentage, the nominal value for permitted fall in maximum voltage.
+			Available Range: 1 - 100%</Help>
+		</Parameter>
+		<Parameter>
+			<Index>50</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>62</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Electric parameters subjected to automatic notification</Label>
+			<Help lang="en">Defines which electric parameters, other than power, will be subjected to automatic 
+			notification. The value to be set for this parameter must be calculated as the sum of values 
+			associated to the individual electric parameter: Power=0, Energy=2, Voltage=4, Current=8, 
+			Power factor=16, Multilevel Sensor: Power Report=32 To send report only for Power please set 
+			the value to 0. By default the report are sent for (Power, Energy, Voltage, Current, Power Factor)
+			 0+2+4+8+16=30</Help>
+		</Parameter>
+		<Parameter>
+			<Index>51</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Voltage RMS value</Label>
+			<Help lang="en">Reading of this parameter returns the value of voltage RMS at the time of the reading 
+			expressed in tenths of Volts.</Help>
+			<ReadOnly>true</ReadOnly>
+		</Parameter>
+		<Parameter>
+			<Index>52</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Current RMS value</Label>
+			<Help lang="en">Returns the value of current RMS expressed in hundredths of Amperes.</Help>
+			<ReadOnly>true</ReadOnly>
+		</Parameter>
+		<Parameter>
+			<Index>53</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<Label lang="en">Power Factor</Label>
+			<Help lang="en">Returns the value of power factor as a percentage</Help>
+			<ReadOnly>true</ReadOnly>
+		</Parameter>	
+		<Parameter>
+			<Index>54</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<Label lang="en">Total energy consumed</Label>
+			<Help lang="en">Returns the value of total energy consumed expressed in Wh (thousandths of KWh).</Help>
+			<ReadOnly>true</ReadOnly>
+		</Parameter>
+		<Parameter>
+			<Index>55</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<Label lang="en">Total energy produced</Label>
+			<Help lang="en">Returns the value of total energy consumed expressed in Wh (thousandths of KWh).</Help>
+			<ReadOnly>true</ReadOnly>
+		</Parameter>
+		<Parameter>
+			<Index>60</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label>Start-up status</Label>
+			<Help lang="en">Defines the status of the device following a restart.</Help>
+			<Item>	
+				<Value>1</Value>
+				<Label lang="en">ON: Device on</Label>
+			</Item>
+			<Item>	
+				<Value>2</Value>
+				<Label lang="en">OFF: Device off</Label>
+			</Item>
+			<Item>	
+				<Value>3</Value>
+				<Label lang="en">PREVIOUS STATUS: Status prior to restart</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>61</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label>Configuration reset</Label>
+			<Help lang="en">Defines which parameters should be reset to default values.</Help>
+			<Item>	
+				<Value>0</Value>
+				<Label lang="en">FACTORY RESET: The device is reset to the original factory settings.</Label>
+			</Item>
+			<Item>	
+				<Value>1</Value>
+				<Label lang="en">ASSOCIATIONS RESET: All associations and only the associations are reset.</Label>
+			</Item>
+			<Item>	
+				<Value>2</Value>
+				<Label lang="en">CONFIGURATIONS RESET: The associations are maintained while all other configuration
+				 parameters are reset to the original factory settings, except for the specific configuration.</Label>
+			</Item>
+			<Item>	
+				<Value>3</Value>
+				<Label lang="en">IGNORE: No action is performed.</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>62</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label>Type of external switch</Label>
+			<Help lang="en">Defines the type of external switch connected to the device.</Help>
+			<Item>	
+				<Value>0</Value>
+				<Label lang="en">IGNORE: The external switch is not connected or not present.</Label>
+			</Item>
+			<Item>	
+				<Value>1</Value>
+				<Label lang="en">BUTTON: The external switch is a normally open button.</Label>
+			</Item>
+			<Item>	
+				<Value>2</Value>
+				<Label lang="en">SWITCH: The external switch is a traditional switch.</Label>
+			</Item>
+			<Item>	
+				<Value>3</Value>
+				<Label lang="en">AUTOMATIC RECOGNITION:</Label> 
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>63</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label>Load Control</Label>
+			<Help lang="en">Defines the load control mode. Available Parameters are:
+			1 - DIRECT CONTROL The external load is controlled directly by the relay. 
+				Reference diagram local load control.
+			2 - The external load is controlled by a contactor that in a resting state has open contacts 
+				(load control by means of external contactor).	
+			3 - The external load is controlled by a contactor that in a resting state has closed contacts 
+				(load control by means of external contactor).	
+			4 - The relay is only used to control the ignition of an external warning light, as, 
+				for example, in the case of notification of excess loads and surges (remote load control).</Help>
+			<Item>	
+				<Value>1</Value>
+				<Label lang="en">DIRECT CONTROL</Label>
+			</Item>
+			<Item>	
+				<Value>2</Value>
+				<Label lang="en">CONTROL BY MEANS OF A CONTACTOR WITH NORMALLY OPEN COMMAND:</Label>
+			</Item>
+			<Item>	
+				<Value>3</Value>
+				<Label lang="en">CONTROL BY MEANS OF A CONTACTOR WITH NORMALLY CLOSED COMMAND:</Label>
+			</Item>
+			<Item>	
+				<Value>4</Value>
+				<Label lang="en">AS AN EXTERNAL INDICATOR:</Label> 
+			</Item>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+        	<Index>1</Index>
+            <Maximum>8</Maximum>
+            <Label lang="en">Group 1</Label>
+        	<SetToController>true</SetToController>
+        </Group>
+        <Group>
+            <Index>2</Index>
+            <Maximum>8</Maximum>
+            <Label lang="en">Up Power Level Group</Label>
+        </Group>
+        <Group>
+        	<Index>3</Index>
+            <Maximum>8</Maximum>
+            <Label lang="en">Down Power Level Group</Label>
+        </Group>
+	</Associations>
+</Product>	
+	

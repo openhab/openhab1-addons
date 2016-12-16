@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,68 +21,64 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.AuxSensorProperties;
 
 /**
  * An Auxiliary is a temperature and/or humidity sensors
- * 
+ *
  * @author Dan Cunningham
  * @since 1.5.0
  */
 public class Auxiliary extends OmnilinkDevice {
-	private static final Logger logger = LoggerFactory.getLogger(Auxiliary.class);
+    private static final Logger logger = LoggerFactory.getLogger(Auxiliary.class);
 
-	private AuxSensorProperties properties;
-	private boolean celsius;
+    private AuxSensorProperties properties;
+    private boolean celsius;
 
-	public Auxiliary(AuxSensorProperties properties, boolean celius) {
-		this.properties = properties;
-		this.celsius = celius;
-	}
+    public Auxiliary(AuxSensorProperties properties, boolean celius) {
+        this.properties = properties;
+        this.celsius = celius;
+    }
 
-	@Override
-	public AuxSensorProperties getProperties() {
-		return properties;
-	}
+    @Override
+    public AuxSensorProperties getProperties() {
+        return properties;
+    }
 
-	public void setProperties(AuxSensorProperties properties) {
-		this.properties = properties;
-	}
+    public void setProperties(AuxSensorProperties properties) {
+        this.properties = properties;
+    }
 
-	@Override
-	public void updateItem(Item item, OmniLinkBindingConfig config,
-			EventPublisher publisher) {
-		int setting = 0;
-		switch (config.getObjectType()) {
-		case AUX_CURRENT:
-			setting = celsius ? MessageUtils.omniToC(properties.getCurrent())
-					: MessageUtils.omniToF(properties.getCurrent());
-			break;
-		case AUX_HIGH:
-			setting = celsius ? MessageUtils.omniToC(properties
-					.getHighSetpoint()) : MessageUtils.omniToF(properties
-					.getCurrent());
-			break;
-		case AUX_LOW:
-			setting = celsius ? MessageUtils.omniToC(properties
-					.getLowSetpoint()) : MessageUtils.omniToF(properties
-					.getCurrent());
-			break;
-		case AUX_STATUS:
-			setting = properties.getStatus();
-			break;
-		default:
-			return;
-		}
-		logger.debug("updating item {} for type {} to  {}", item.getName(),
-				config.getObjectType(), setting);
-		if (item instanceof NumberItem) {
-			publisher.postUpdate(item.getName(), new DecimalType(setting));
-		}
-	}
+    @Override
+    public void updateItem(Item item, OmniLinkBindingConfig config, EventPublisher publisher) {
+        int setting = 0;
+        switch (config.getObjectType()) {
+            case AUX_CURRENT:
+                setting = celsius ? MessageUtils.omniToC(properties.getCurrent())
+                        : MessageUtils.omniToF(properties.getCurrent());
+                break;
+            case AUX_HIGH:
+                setting = celsius ? MessageUtils.omniToC(properties.getHighSetpoint())
+                        : MessageUtils.omniToF(properties.getCurrent());
+                break;
+            case AUX_LOW:
+                setting = celsius ? MessageUtils.omniToC(properties.getLowSetpoint())
+                        : MessageUtils.omniToF(properties.getCurrent());
+                break;
+            case AUX_STATUS:
+                setting = properties.getStatus();
+                break;
+            default:
+                return;
+        }
+        logger.debug("updating item {} for type {} to {}", item.getName(), config.getObjectType(), setting);
+        if (item instanceof NumberItem) {
+            publisher.postUpdate(item.getName(), new DecimalType(setting));
+        }
+    }
 
-	public boolean isCelsius() {
-		return celsius;
-	}
+    public boolean isCelsius() {
+        return celsius;
+    }
 
-	public void setCelsius(boolean celsius) {
-		this.celsius = celsius;
-	}
+    public void setCelsius(boolean celsius) {
+        this.celsius = celsius;
+    }
 
 }

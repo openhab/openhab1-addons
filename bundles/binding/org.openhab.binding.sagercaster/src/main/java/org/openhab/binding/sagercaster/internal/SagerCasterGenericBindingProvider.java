@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * This class can parse information from the generic binding format and provides
  * SagerCaster binding information from it.
  * </p>
- * 
+ *
  * <p>
  * The syntax of the binding configuration strings accepted is the following:
  * <p>
@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * </code>
  * <p>
  * <p>
- * Where keyword can be one of : 
+ * Where keyword can be one of :
  * <ul>
  * <li><code>compass</code></li>
  * <li><code>windtrend</code></li>
@@ -57,70 +57,67 @@ import org.slf4j.LoggerFactory;
  * @author Gaël L'hopital
  * @since 1.7.0
  */
-public class SagerCasterGenericBindingProvider extends AbstractGenericBindingProvider implements SagerCasterBindingProvider {
-	private static final Logger logger = LoggerFactory.getLogger(SagerCasterGenericBindingProvider.class);
+public class SagerCasterGenericBindingProvider extends AbstractGenericBindingProvider
+        implements SagerCasterBindingProvider {
+    private static final Logger logger = LoggerFactory.getLogger(SagerCasterGenericBindingProvider.class);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getBindingType() {
-		return "sagercaster";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getBindingType() {
+        return "sagercaster";
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException {
-		if (!(item instanceof NumberItem || item instanceof StringItem || item instanceof SwitchItem)) {
-			throw new BindingConfigParseException(
-					"item '"
-							+ item.getName()
-							+ "' is of type '"
-							+ item.getClass().getSimpleName()
-							+ "', only String- and NumberItems are allowed - please check your *.items configuration");
-		}
-	}
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+        if (!(item instanceof NumberItem || item instanceof StringItem || item instanceof SwitchItem)) {
+            throw new BindingConfigParseException(
+                    "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
+                            + "', only String- and NumberItems are allowed - please check your *.items configuration");
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processBindingConfiguration(String context, Item item,	String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
-		SagerCasterBindingConfig config = parseBindingConfig(bindingConfig,	item);
-		logger.debug("Adding item {} with {}", item.getName(), config);
-		addBindingConfig(item, config);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void processBindingConfiguration(String context, Item item, String bindingConfig)
+            throws BindingConfigParseException {
+        super.processBindingConfiguration(context, item, bindingConfig);
+        SagerCasterBindingConfig config = parseBindingConfig(bindingConfig, item);
+        logger.debug("Adding item {} with {}", item.getName(), config);
+        addBindingConfig(item, config);
+    }
 
-	private SagerCasterBindingConfig parseBindingConfig(String bindingConfig,
-			Item item) throws BindingConfigParseException {
+    private SagerCasterBindingConfig parseBindingConfig(String bindingConfig, Item item)
+            throws BindingConfigParseException {
 
-		String command = StringUtils.trim(bindingConfig);
-		CommandType commandType = CommandType.fromString(command);
+        String command = StringUtils.trim(bindingConfig);
+        CommandType commandType = CommandType.fromString(command);
 
-		return new SagerCasterBindingConfig(commandType, item);
-	}
+        return new SagerCasterBindingConfig(commandType, item);
+    }
 
-	@Override
-	public Iterable<String> getItemNamesBy(CommandType commandType) {
-		Set<String> items = new HashSet<String>();
+    @Override
+    public Iterable<String> getItemNamesBy(CommandType commandType) {
+        Set<String> items = new HashSet<String>();
 
-		for (String key : bindingConfigs.keySet()) {
-			SagerCasterBindingConfig config = (SagerCasterBindingConfig) bindingConfigs
-					.get(key);
-			if (config.commandType == commandType) {
-				items.add(key);
-			}
-		}
-		return items;
-	}
+        for (String key : bindingConfigs.keySet()) {
+            SagerCasterBindingConfig config = (SagerCasterBindingConfig) bindingConfigs.get(key);
+            if (config.commandType == commandType) {
+                items.add(key);
+            }
+        }
+        return items;
+    }
 
-	@Override
-	public SagerCasterBindingConfig getConfig(String itemName) {
-		SagerCasterBindingConfig config = (SagerCasterBindingConfig) bindingConfigs.get(itemName);
-		return config;
-	}
+    @Override
+    public SagerCasterBindingConfig getConfig(String itemName) {
+        SagerCasterBindingConfig config = (SagerCasterBindingConfig) bindingConfigs.get(itemName);
+        return config;
+    }
 }

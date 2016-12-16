@@ -31,7 +31,6 @@
 			<id>0x86</id>
 		</Class>
 	</CommandClasses>
-
 	<Configuration>
 		<Parameter>
 			<Index>3</Index>
@@ -51,8 +50,8 @@
 				<Value>2</Value>
 				<Label lang="en">LED is always off</Label>
 			</Item>
-			<Help lang="en">Defines the behavior of the blue LED. Default is LED
-				on when switch is off.</Help>
+			<Help lang="en"><![CDATA[Defines the behavior of the blue LED. <br>
+			Default is LED on when switch is off.]]></Help>
 		</Parameter>
 	</Configuration>
 </Product>

@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZMNHCD</Model>
+	<Label lang="en">Flush Shutter</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>  <!-- COMMAND_CLASS_BASIC -->
+		<Class>
+			<id>0x25</id>
+		</Class>  <!-- COMMAND_CLASS_SWITCH_BINARY -->
+		<Class>
+			<id>0x26</id>
+		</Class>  <!-- COMMAND_CLASS_SWITCH_MULTILEVEL -->
+		<Class>
+			<id>0x27</id>
+		</Class>  <!-- COMMAND_CLASS_SWITCH_ALL -->
+		<Class>
+			<id>0x33</id>
+		</Class>  <!-- COMMAND_CLASS_METER -->
+		<Class>
+			<id>0x31</id>
+		</Class>  <!-- COMMAND_CLASS_SENSOR_MULTILEVEL -->
+		<Class>
+			<id>0x70</id>
+		</Class>  <!-- COMMAND_CLASS_CONFIGURATION -->
+		<Class>
+			<id>0x72</id>
+		</Class>  <!-- COMMAND_CLASS_MANUFACTURER_SPECIFIC -->
+		<Class>
+			<id>0x85</id>
+		</Class>  <!-- COMMAND_CLASS_ASSOCIATION -->
+		<Class>
+			<id>0x86</id>
+		</Class>  <!-- COMMAND_CLASS_VERSION -->
+		<Class>
+			<id>0xEF</id>
+		</Class>  <!-- COMMAND_CLASS_MARK -->
+		<Class>
+			<id>0x73</id>
+		</Class>  <!-- COMMAND_CLASS_POWERLEVEL -->
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>2</Size>
+			<Label lang="en">ALL ON/ALL OFF</Label>
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">255 - ALL ON active, ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 - ALL ON is not active ALL OFF is not active</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 - ALL ON is not active ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">2 - ALL ON is not active ALL OFF is not active</Label>
+			</Item>
+			<Help lang="en">Flush shutter responds to commands ALL ON / ALL OFF
+				that may be sent by the main controller or by other
+				controllers
+				belonging to the system
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>40</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Power reporting in watts on power change</Label>
+			<Help lang="en">Power reporting in Watts on power
+				change for Q1 or
+				Q2
+				default value 1
+				0 – reporting disabled
+				1 – 100 = 1% - 100% Reporting
+				enabled. Power
+				report is send (push) only when actual power (in
+				Watts) in real time changes for more than set
+				percentage comparing to
+				previous actual power in
+				Watts, step is 1%.
+				NOTE: if power changed is
+				less than 1W, the report is not
+				send (pushed), independent of
+				percentage set
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>42</Index>
+			<Type>byte</Type>
+			<Default>300</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Power reporting in Watts by time interval</Label>
+			<Help lang="en">- Power reporting in Watts by time
+				interval for Q1 or
+				Q2
+				Set value means time interval (0 – 32767) in seconds,
+				Available
+				configuration parameters:
+				default value 300 = 300s
+				0 – Reporting
+				Disabled
+				1 – 32767 = 1 second – 32767 seconds. Reporting
+				enabled,
+				power report is send with time interval set
+				by entered value.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>71</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Operating modes</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 – Shutter mode</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 – Venetian mode (up/down and slate rotation)</Label>
+			</Item>
+			<Help lang="en">This parameter defines selection between two
+				available
+				operating modes. default value 0, 0 – Shutter mode, 1 –
+				Venetian mode
+				(up/down and slate rotation)
+				NOTE: When setting
+				parameter, module needs to be
+				reconfigured! Please check detailed
+				description in this
+				manual.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>72</Index>
+			<Type>byte</Type>
+			<Default>150</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Slats tilting full turn time</Label>
+			<Help lang="en">This parameter defines the time necessary for slats
+				to
+				make full turn (180 degrees). Available configuration
+				parameters:
+				default value 150 = 150 seconds
+				0 – Tilting time disabled
+				1 – 32767 =
+				1 second – 32767 seconds
+				NOTE: If time set is too high, this will
+				result that after full
+				turn, shutter will start move up or down, for
+				time
+				remaining.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>73</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">– Slats position</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 - Slats return to previously set position only in case of UI control</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 - Slats return UI control, push-buttons, limit switch is reached.</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">1 - Slats return UI control, push button, limit, switch or a “STOP” frame</Label>
+			</Item>
+			<Help lang="en">This parameter defines slats position after up/down
+				movement through UI or push-buttons. Available
+				configuration
+				parameters:
+				default value 2
+				0 - Slats return to previously set
+				position only in
+				case of UI control.
+				1 - Slats return to previously
+				set position in case of
+				UI control, push-buttons operation, or when
+				the limit
+				switch is reached.
+				2 - Slats return to previously set
+				position in case of
+				UI control, push button operation, when the limit
+				switch is reached or after receiving a “STOP” frame
+				(Switch
+				Multilevel Stop Level Change) from UI.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>74</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Motor moving up/down time</Label>
+			<Help lang="en">This parameter defines shutter motor moving time of
+				complete opening or complete closing. Available
+				configuration
+				parameters:
+				default value 0
+				0 – moving time disabled (working with
+				limit
+				switches)
+				1 – 32767 = 1 second – 32767 seconds
+				After that time
+				motor is stopped (relay goes to off
+				state)
+				NOTE: Important is that the
+				reference position to manually set moving
+				time is always shutter
+				lower
+				position!
+				Set parameter 74 to 0 and move the shutter (using
+				up/down push buttons or main controller UI) to desired
+				lower
+				position. On this shutter position, set parameter 74
+				to time for
+				complete opening or complete closing. At this
+				point shutter can be
+				moved up (open) for set time, but
+				can't be moved down because this
+				position is already set
+				as lower shutter position.
+				To change shutter
+				lower position below already set
+				(manual recalibration), parameter 74
+				must be set to 0 and
+				repeat the procedure described above.
+				In case
+				shutter has limit switches, but anyhow you would
+				like to limit
+				opening/closing position by time, you can still
+				do it. In case you
+				put time that is longer that
+				opening/closing real time limited by
+				limit switches, shutter
+				will stop at limit switch, but the module
+				relay will switch off
+				after define time, not by shutter limit switch.
+				Take in
+				consideration that in this condition, the positioning with
+				slider through UI will not show correct shutter position.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>76</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Motor operation detection</Label>
+			<Help lang="en">Power threshold to be interpreted when motor reach
+				the limit switch. Available configuration parameters:
+				default value
+				10 = 10W
+				0 - 127 = 1-127 W. The value 0 means reaching a
+				limit switch
+				will not be detected.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>78</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Forced Shutter calibration</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 - Default</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 - Start Calibration Process</Label>
+			</Item>
+			<Help lang="en">By modifying the parameters setting from 0 to 1 a
+				Shutter
+				enters the calibration mode. Available configuration
+				parameters : default value 0
+				1 - Start calibration process (after shutter performs
+				the calibration process, completing full cycle - up,
+				down and up, set the parameter 78 (Forced Shutter
+				calibration) value back to 0.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>80</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Reporting to Controller</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 - Reporting to Controller Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 - Reporting to Controller Enabled</Label>
+			</Item>
+			<Help lang="en">This parameter defines if reporting regarding power
+				level,
+				multilevel, etc,…is reported to controller or not. Available
+				configuration parameters:
+				default value 1
+				0 reporting to controller is disabled
+				1 reporting to controller is enabled
+				NOTE: Disabling reporting is recommended in case
+				Z-wave modules communicate in association groups
+				without using controller
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>85</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>50</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Power consumption max delay time</Label>
+			<Help lang="en">This parameter defines the max time before motor
+				power
+				consumption is read after one of the relays is switched
+				ON. If there is no power consumption during this max
+				time (motor not connected, damaged or requires higher
+				time to start, motor in end position) the relay will switch
+				OFF. Time is defined by entering it manually. Available
+				configuration parameters:
+				default value 0 = time is set automatically
+				3 – 50 = 0.3 seconds – 5 seconds (100ms resolution)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>86</Index>
+			<Type>byte</Type>
+			<Default>8</Default>
+			<Minimum>3</Minimum>
+			<Maximum>50</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Power consumption at limit switch delay time</Label>
+			<Help lang="en">This parameter defines the max time at limit switch,
+				when
+				power consumption is below power threshold. If the
+				power consumption during this time is below power
+				threshold (par. 76), the active output will switch off,
+				means that limit switch is reached. Available configuration
+				parameters (data type is 1 Byte DEC):
+				default value 8 = 800ms
+				3 – 50 = 0.3 seconds – 5 seconds (100ms resolution)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>90</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>1</Minimum>
+			<Maximum>30</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Relay delay time</Label>
+			<Help lang="en">This parameter defines the time delay between output
+				relay switching (time between switching up/down and
+				vice versa). Available configuration parameters :
+				default value 5 = 500ms
+				1 – 30 = 0.1 seconds – 3 seconds (100ms resolution)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>110</Index>
+			<Type>byte</Type>
+			<Default>32536</Default>
+			<Minimum>1</Minimum>
+			<Maximum>32536</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Temperature sensor offset settings</Label>
+			<Help lang="en">Set value is added or subtracted to actual measured
+				value by sensor. Available configuration parameters:
+				default value 32536
+				32536 – offset is 0.0C
+				From 1 to 100 – value from 0.1 °C to 10.0 °C is
+				added to actual measured temperature.
+				From 1001 to 1100 – value from -0.1 °C to -10.0 °C
+				is subtracted to actual measured temperature
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>120</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Digital temperature sensor reporting</Label>
+			<Help lang="en">If digital temperature sensor is connected, module
+				reports
+				measured temperature on temperature change defined
+				by this parameter. Available configuration parameters:
+				default value 5 = 0.5°C
+				0 – Reporting disabled
+				1-127 = 0.1°C – 12.7°C, step is 0.1°C
+			</Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Controller Updates</Label>
+			<Help lang="en"> default reporting group (reserved for the main
+				controller)
+			</Help>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">On/Off Triggered by I2</Label>
+			<Help lang="en"> basic on/off (triggered at change of the input I1
+				state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">On/Off Triggered by I3</Label>
+			<Help lang="en"> basic on/off (triggered at change of the input I3
+				state and reflecting its state)up to 16 nodes.
+			</Help>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Multi-level Triggerd by Shutter Position</Label>
+			<Help lang="en"> multilevel (triggered at changes of value of the
+				Flush shutter position) up to 16 nodes..
+			</Help>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Multilevel Trigger by Slat Position</Label>
+			<Help lang="en"> Multilevel (triggered at changes of value of slats
+				tilting position) up to 16 nodes.
+			</Help>
+		</Group>
+	</Associations>
+</Product>

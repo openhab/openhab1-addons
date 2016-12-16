@@ -21,12 +21,14 @@
 		<Parameter>
 			<Index>1</Index>
 			<Type>short</Type>
-			<Default>10000</Default>
-			<Size>4</Size>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Default>1024</Default>
+			<Size>2</Size>
 			<Label lang="en">Pulse factor</Label>
 			<Label lang="de">Impulsfaktor</Label>
-			<Help lang="en">How many pulses * 10 per kWh</Help>
-			<Help lang="de">Impulsanzahl * 10 pro kWh</Help>
+			<Help lang="en">Impulse or Rotation factor per KWh * 10</Help>
+			<Help lang="de">Impulsanzahl pro kWh * 10</Help>
 		</Parameter>
 		<Parameter>
 			<Index>2</Index>
@@ -50,7 +52,7 @@
 			<Index>3</Index>
 			<Type>byte</Type>
 			<Minimum>0</Minimum>
-			<Maximum>127</Maximum>
+			<Maximum>255</Maximum>
 			<Default>0</Default>
 			<Size>1</Size>
 			<Label lang="en">IR Listen period</Label>
@@ -62,8 +64,8 @@
 			<Index>4</Index>
 			<Type>byte</Type>
 			<Minimum>0</Minimum>
-			<Maximum>127</Maximum>
-			<Default>50</Default>
+			<Maximum>255</Maximum>
+			<Default>0</Default>
 			<Size>1</Size>
 			<Label lang="en">IR Pulse Width</Label>
 			<Label lang="de">IR Impulsbreite</Label>
@@ -83,40 +85,112 @@
 			<Help lang="de">Anzahl Aufwachvorgänge pro Sekunde. Dieser Wert kontrolliert auch die Anzahl Messungen pro sekunde bei menanischen Zählern.</Help>
 		</Parameter>
 		<Parameter>
+			<Index>6</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>143</Maximum>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Pulse Threshold Low</Label>
+			<Label lang="de">Impulschwellwert Unten</Label>
+			<Help lang="en">Low detection threshold for wheel meters</Help>
+			<Help lang="de">Unterer Schwellwert für Drehscheibenzähler</Help>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>143</Maximum>
+			<Default>5</Default>
+			<Size>1</Size>
+			<Label lang="en">Pulse Threshold High</Label>
+			<Label lang="de">Impulschwellwert Oben</Label>
+			<Help lang="en">High detection threshold for wheel meters</Help>
+			<Help lang="de">Oberer Schwellwert für Drehscheibenzähler</Help>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>int</Type>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Wakeup Interval</Label>
+			<Label lang="de">Ausweckinterval</Label>
+			<Help lang="en">like WAKEUP command class</Help>
+			<Help lang="de">wie bei WAKEUP Kommandoklasse</Help>
+		</Parameter>
+		<Parameter>
 			<Index>9</Index>
 			<Type>int</Type>
 			<Minimum>1</Minimum>
-			<Maximum>50</Maximum>
-			<Default>20</Default>
+			<Maximum>4294967295</Maximum>
+			<Default>0</Default>
 			<Size>4</Size>
 			<Label lang="en">Pulse count</Label>
 			<Label lang="de">Impulsanzahl</Label>
-			<Help lang="en">Current pulse count in device (pulse count / pulse factor = kWh)</Help>
-			<Help lang="de">Anzahl Impuls im Zähler (Impulsanzahl / Impulsfaktor = kWh</Help>
+			<Help lang="en">Total pulse count (Meter reading / impulse factor)</Help>
+			<Help lang="de">Anzahl Impuls im Zähler (Zählerstand / Impulsfaktor)</Help>
 		</Parameter>
 		<Parameter>
 			<Index>10</Index>
 			<Type>int</Type>
 			<Minimum>0</Minimum>
-			<Maximum>32767</Maximum>
-			<Default>60</Default>
+			<Maximum>65535</Maximum>
+			<Default>3</Default>
 			<Size>2</Size>
 			<Label lang="en">Keep alive period</Label>
 			<Label lang="de">Wachperiode</Label>
-			<Help lang="en">How many ticks before going back to sleep in normal wakeup mode.</Help>
+			<Help lang="en">How many seconds before going back to sleep in normal wakeup mode.</Help>
 			<Help lang="de">Anzahl Sekunden bevor der Zähler wieder in den Schlafmodus wechselt.</Help>
 		</Parameter>
 		<Parameter>
 			<Index>11</Index>
 			<Type>int</Type>
 			<Minimum>0</Minimum>
-			<Maximum>32767</Maximum>
+			<Maximum>65535</Maximum>
 			<Default>0</Default>
 			<Size>2</Size>
 			<Label lang="en">Real-time mode</Label>
 			<Label lang="de">Echtzeitmodus</Label>
 			<Help lang="en">Set this to enter real-time mode from remote. Contains seconds * poll frequency before going back to sleep. If you press the button once this value will be set.</Help>
 			<Help lang="de">Setzen sie diesen Wert um in den Echtzeitmodus zu wechseln. Anzahl Sekunden * Abfrageintervall vor dem Schlafmodus. Beim drücken der Taste wird dieser Modus aktiviert.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>int</Type>
+			<Size>4</Size>
+			<Label lang="en">Serial number</Label>
+			<Label lang="de">Seriennummer</Label>
+			<Help lang="en">Read-only serial number in decimal</Help>
+			<Help lang="de">Nur-Lese Seriennummer im Dezimalformat</Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Debug mode</Label>
+			<Label lang="de">Debugmodus</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Off</Label>
+				<Label lang="de">Aus</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">LED blinks at pulse counting</Label>
+				<Label lang="de">LED blinkt bei Zählimpuls</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>int</Type>
+			<Size>4</Size>
+			<Label lang="en">Calibration status</Label>
+			<Label lang="de">Kalibrierungsstatus</Label>
+			<Help lang="en">The calibration progress is calculated as (value[1] - 65 + value[2] / value[3]) * 25. The calibration is finished successfully when value[0]  =  2 and value[2] = value[3]. The calibration has failed if value[0] != 1 OR (value[0] = 2 AND value[2] != value[3]. Setting the value 0 on this register will restart the calibration process.</Help>
+			<Help lang="de">Die Kalibrierung Fortschritt wird wie folgt berechnet (value[1] - 65 + value[2] / value[3]) * 25. Die Kalibrierung erfolgreich, wenn Sie fertig value[0]  =  2 and value[2] = value[3]. Wenn die Kalibrierung fehlgeschlagen ist value[0] != 1 OR (value[0] = 2 AND value[2] != value[3]. Wenn Sie den Wert 0 in diesem Register wird die Kalibrierung neu starten</Help>
 		</Parameter>
 	</Configuration>
 </Product>

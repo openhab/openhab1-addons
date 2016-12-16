@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,35 +18,35 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Wrapper for a list of {@link CommandTx}
- * 
+ *
  * @author Jeroen Idserda
  * @since 1.7.0
  */
-@XmlRootElement(name="tx")
+@XmlRootElement(name = "tx")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AppCommandRequest {
-	
-	@XmlElement(name="cmd")
-	private List<CommandTx> commands = new ArrayList<CommandTx>();
-	
-	public AppCommandRequest() {
-	}
 
-	public List<CommandTx> getCommands() {
-		return commands;
-	}
+    @XmlElement(name = "cmd")
+    private List<CommandTx> commands = new ArrayList<CommandTx>();
 
-	public void setCommands(List<CommandTx> commands) {
-		this.commands = commands;
-	}
-	
-	public AppCommandRequest add(CommandTx command) {
-		commands.add(command);
-		return this;
-	}
-	
-	public static AppCommandRequest of(CommandTx command) {
-		AppCommandRequest tx = new AppCommandRequest();
-		return tx.add(command);
-	}
+    public AppCommandRequest() {
+    }
+
+    public List<CommandTx> getCommands() {
+        return commands;
+    }
+
+    public void setCommands(List<CommandTx> commands) {
+        this.commands = commands;
+    }
+
+    public AppCommandRequest add(CommandTx command) {
+        commands.add(command);
+        return this;
+    }
+
+    public static AppCommandRequest of(CommandTx command) {
+        AppCommandRequest tx = new AppCommandRequest();
+        return tx.add(command);
+    }
 }

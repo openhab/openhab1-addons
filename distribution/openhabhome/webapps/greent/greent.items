@@ -1,1 +1,0 @@
-Switch update_greent { exec="ON:java -jar ./webapps/greent/updater.jar"}
