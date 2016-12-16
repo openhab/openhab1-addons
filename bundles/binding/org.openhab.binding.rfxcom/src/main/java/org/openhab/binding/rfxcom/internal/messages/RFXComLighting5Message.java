@@ -8,25 +8,37 @@
  */
 package org.openhab.binding.rfxcom.internal.messages;
 
-import org.openhab.binding.rfxcom.RFXComValueSelector;
-import org.openhab.binding.rfxcom.internal.RFXComException;
-import org.openhab.core.library.items.*;
-import org.openhab.core.library.types.*;
-import org.openhab.core.types.State;
-import org.openhab.core.types.Type;
-import org.openhab.core.types.UnDefType;
+import static org.openhab.binding.rfxcom.internal.messages.RFXComLighting5Message.SubType.*;
 
-import javax.xml.bind.DatatypeConverter;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.openhab.binding.rfxcom.internal.messages.RFXComLighting5Message.SubType.*;
+import javax.xml.bind.DatatypeConverter;
+
+import org.openhab.binding.rfxcom.RFXComValueSelector;
+import org.openhab.binding.rfxcom.internal.RFXComException;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
+import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StopMoveType;
+import org.openhab.core.library.types.StringType;
+import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
+import org.openhab.core.types.UnDefType;
 
 /**
  * RFXCOM data class for lighting5 message.
  *
- * @author Paul Hampson, Neil Renaud
+ * @author Paul Hampson, Neil Renaud, Martin van Wingerden
  * @since 1.3.0
  */
 public class RFXComLighting5Message extends RFXComBaseMessage {
@@ -68,6 +80,14 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
         }
     }
 
+    /**
+     * Note: for the lighting5 commands, some command are only supported for certain sub types and
+     * some command-bytes have a different meaning for different sub types.
+     *
+     * If no sub types are specified for a command, its supported by all sub types.
+     * Otherwise the list of sub types after the bind are the sub types which support
+     * this command with this byte.
+     */
     public enum Commands {
         OFF(0x00),
         ON(0x01),
