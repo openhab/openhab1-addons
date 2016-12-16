@@ -82,11 +82,14 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 
     /**
      * Note: for the lighting5 commands, some command are only supported for certain sub types and
-     * some command-bytes have a different meaning for different sub types.
+     * command-bytes might even have a different meaning for another sub type.
      *
      * If no sub types are specified for a command, its supported by all sub types.
-     * Otherwise the list of sub types after the bind are the sub types which support
-     * this command with this byte.
+     * An example is the command OFF which is represented by the byte 0x00 for all subtypes.
+     *
+     * Otherwise the list of sub types after the command-bytes indicates the sub types
+     * which support this command with this byte.
+     * Example byte value 0x03 means GROUP_ON for IT and some others while it means MOOD1 for LIGHTWAVERF
      */
     public enum Commands {
         OFF(0x00),
