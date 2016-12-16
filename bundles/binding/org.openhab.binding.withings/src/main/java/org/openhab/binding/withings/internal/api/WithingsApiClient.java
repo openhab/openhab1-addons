@@ -56,7 +56,6 @@ public class WithingsApiClient {
 
 	private final String userId;
 
-	
 	public WithingsApiClient(OAuthConsumer consumer, String userId) {
 		this.consumer = consumer;
 		this.userId = userId;
@@ -74,7 +73,8 @@ public class WithingsApiClient {
 	 *             if a connection, server or authorization error occurs
 	 * @see http://www.withings.com/de/api#bodymetrics
 	 */
-	public List<MeasureGroup> getMeasures() throws OAuthException, WithingsConnectionException {
+	public List<MeasureGroup> getMeasures() throws OAuthException,
+			WithingsConnectionException {
 		return getMeasures(0);
 	}
 
@@ -94,7 +94,8 @@ public class WithingsApiClient {
 	public List<MeasureGroup> getMeasures(int startTime) throws OAuthException,
 			WithingsConnectionException {
 
-		String url = getServiceUrl(API_ENDPOINT_MEASURE, API_METHOD_GET_MEASURES);
+		String url = getServiceUrl(API_ENDPOINT_MEASURE,
+				API_METHOD_GET_MEASURES);
 		if (startTime > 0) {
 			url = url + "&startdate=" + startTime;
 		}
@@ -124,13 +125,15 @@ public class WithingsApiClient {
 			UnsupportedEncodingException {
 
 		HttpURLConnection httpURLConnection;
-		httpURLConnection = (HttpURLConnection) new URL(signedUrl).openConnection();
+		httpURLConnection = (HttpURLConnection) new URL(signedUrl)
+				.openConnection();
 		httpURLConnection.connect();
 
 		int responseCode = httpURLConnection.getResponseCode();
 
 		if (responseCode != HttpURLConnection.HTTP_OK) {
-			throw new WithingsConnectionException("Illegal response code: " + responseCode);
+			throw new WithingsConnectionException("Illegal response code: "
+					+ responseCode);
 		}
 
 		Reader reader = null;
@@ -153,17 +156,18 @@ public class WithingsApiClient {
 
 	private GsonBuilder createGsonBuilder() {
 		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.registerTypeAdapter(
-			MeasureType.class, new JsonDeserializers.MeasureTypeJsonDeserializer());
-		gsonBuilder.registerTypeAdapter(
-			Category.class, new JsonDeserializers.CategoryJsonDeserializer());
-		gsonBuilder.registerTypeAdapter(
-			Attribute.class, new JsonDeserializers.AttributeJsonDeserializer());
+		gsonBuilder.registerTypeAdapter(MeasureType.class,
+				new JsonDeserializers.MeasureTypeJsonDeserializer());
+		gsonBuilder.registerTypeAdapter(Category.class,
+				new JsonDeserializers.CategoryJsonDeserializer());
+		gsonBuilder.registerTypeAdapter(Attribute.class,
+				new JsonDeserializers.AttributeJsonDeserializer());
 		return gsonBuilder;
 	}
 
 	private String getServiceUrl(String endpoint, String method) {
-		return API_URL + endpoint + "?action=" + method + "&userid=" + this.userId;
+		return API_URL + endpoint + "?action=" + method + "&userid="
+				+ this.userId;
 	}
 
 }

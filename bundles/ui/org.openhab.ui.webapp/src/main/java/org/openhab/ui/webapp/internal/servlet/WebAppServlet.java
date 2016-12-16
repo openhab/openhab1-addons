@@ -142,8 +142,6 @@ public class WebAppServlet extends BaseServlet {
 					result.append(renderer.processPage(renderer.getItemUIRegistry().getWidgetId(w), sitemapName, label, children, async));
 				}
 				
-			} else if (widgetId.equals("Colorpicker")) {
-				result.append("<root></root>");
 			}
 		} catch(RenderException e) {
 			throw new ServletException(e.getMessage(), e);

@@ -38,25 +38,16 @@ public class HueBulb {
 	}
 
 	private HueBridge bridge = null;
-	private String deviceId;
+	private int deviceNumber = 1;
 	private boolean isOn = false;
 	private boolean isReachable = false;
-	private int brightness = 0; // possible values are 0 - 254
+	private int brightness = 0; // possible values are 0 - 255
 	private int colorTemperature = 154; // possible values are 154 - 500
 	private int hue = 0; // 0 - 65535
-	private int saturation = 0; // 0 - 254
-	
-	/** The maximum brightness value of the Hue bulb */
-	public static final int MAX_BRIGHTNESS = 254;
-	/** The maximum saturation value of the Hue bulb */
-	public static final int MAX_SATURATION = 254;
+	private int saturation = 0; // 0 - 255
 
 	private Client client;
 
-	public HueBulb(HueBridge connectedBridge, String deviceId) {
-		this(connectedBridge, deviceId, connectedBridge.getSettings());
-	}
-	
 	/**
 	 * Constructor for the HueBulb.
 	 * 
@@ -65,10 +56,10 @@ public class HueBulb {
 	 * @param deviceNumber
 	 *            The number under which the bulb is filed in the bridge.
 	 */
-	public HueBulb(HueBridge connectedBridge, String deviceId, HueSettings settings) {
+	public HueBulb(HueBridge connectedBridge, int deviceNumber) {
 		this.bridge = connectedBridge;
-		this.deviceId = deviceId;
-		getStatus(settings);
+		this.deviceNumber = deviceNumber;
+		getStatus(this.bridge.getSettings());
 
 		this.client = Client.create();
 		this.client.setReadTimeout(1000);
@@ -80,16 +71,12 @@ public class HueBulb {
 	 * @param HueSettings retrieved from hub
 	 */
 	public void getStatus(HueSettings settings){
-		if(settings.isValidId(deviceId)){
-			this.isOn = settings.isBulbOn(this.deviceId);
-			this.isReachable = settings.isReachable(this.deviceId);
-			this.colorTemperature = settings.getColorTemperature(this.deviceId);
-			this.brightness = settings.getBrightness(this.deviceId);
-			this.hue = settings.getHue(this.deviceId);
-			this.saturation = settings.getSaturation(this.deviceId);			
-		}else{
-			logger.warn("Not a valid id on the bridge: " + deviceId);
-		}
+		this.isOn = settings.isBulbOn(this.deviceNumber);
+		this.isReachable = settings.isReachable(this.deviceNumber);
+		this.colorTemperature = settings.getColorTemperature(this.deviceNumber);
+		this.brightness = settings.getBrightness(this.deviceNumber);
+		this.hue = settings.getHue(this.deviceNumber);
+		this.saturation = settings.getSaturation(this.deviceNumber);
 	}
 
 	/**
@@ -108,9 +95,9 @@ public class HueBulb {
 		int newHueCalculated = new Long(Math.round(newHue * 360.0 * 182.0))
 				.intValue();
 		int newSaturationCalculated = new Long(
-				Math.round(newSaturation * MAX_SATURATION)).intValue();
+				Math.round(newSaturation * 255.0)).intValue();
 		int newBrightnessCalculated = new Long(
-				Math.round(newBrightness * MAX_BRIGHTNESS)).intValue();
+				Math.round(newBrightness * 255.0)).intValue();
 
 		colorizeByHSBInternally(newHueCalculated, newSaturationCalculated,
 				newBrightnessCalculated);
@@ -118,7 +105,7 @@ public class HueBulb {
 
 	/**
 	 * Increases the brightness of the bulb by the given amount to a maximum of
-	 * {@link #MAX_BRIGHTNESS}. If the bulb is not switched on this will be done implicitly.
+	 * 255. If the bulb is not switched on this will be done implicitly.
 	 * 
 	 * @param amount
 	 *            The amount by which the brightness shall be increased.
@@ -152,7 +139,7 @@ public class HueBulb {
 
 		this.brightness = brightness;
 		this.brightness = this.brightness < 0 ? 0 : this.brightness;
-		this.brightness = this.brightness > MAX_BRIGHTNESS ? MAX_BRIGHTNESS : this.brightness;
+		this.brightness = this.brightness > 255 ? 255 : this.brightness;
 
 		if (this.brightness > 0) {
 			this.isOn = true;
@@ -162,7 +149,7 @@ public class HueBulb {
 			executeMessage("{\"on\":false}");
 		}
 
-		return (int) Math.round((100.0 / MAX_BRIGHTNESS) * this.brightness);
+		return (int) Math.round((100.0 / 255.0) * this.brightness);
 
 	}
 	
@@ -220,6 +207,9 @@ public class HueBulb {
 				: this.colorTemperature;
 
 		executeMessage("{\"ct\":" + this.colorTemperature + "}");
+
+//		return (int) Math.round((100.0 / (500.0 - 154.0)) * (this.colorTemperature - 154.0));
+
 	}
 
 	/**
@@ -231,9 +221,9 @@ public class HueBulb {
 	 */
 	public void setOnAtFullBrightness(boolean newState) {
 		if (newState) {
-			increaseBrightness(MAX_BRIGHTNESS);
+			increaseBrightness(255);
 		} else {
-			decreaseBrightness(MAX_BRIGHTNESS);
+			decreaseBrightness(255);
 		}
 	}
 
@@ -243,9 +233,9 @@ public class HueBulb {
 	 * @param hue
 	 *            The hue of the color. (0..65535)
 	 * @param saturation
-	 *            The saturation of the color. (0..{@link #MAX_SATURATION})
+	 *            The saturation of the color. (0..255)
 	 * @param brightness
-	 *            The brightness of the color. (0..{@link #MAX_BRIGHTNESS})
+	 *            The brightness of the color. (0..255)
 	 */
 	private void colorizeByHSBInternally(int hue, int saturation, int brightness) {
 
@@ -267,9 +257,8 @@ public class HueBulb {
 	 *            bulb.
 	 */
 	private void executeMessage(String message) {
-		String targetURL = bridge.getUrl() + "lights/" + deviceId + "/state";
+		String targetURL = bridge.getUrl() + "lights/" + deviceNumber + "/state";
 		WebResource webResource = client.resource(targetURL);
-
 		ClientResponse response = webResource.type("application/json").put(
 				ClientResponse.class, message);
 

@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public class Zone extends DSCAlarmDevice{
 	private static final Logger logger = LoggerFactory.getLogger(Zone.class);
 
-	public DSCAlarmDeviceProperties zoneProperties = new DSCAlarmDeviceProperties();
+	DSCAlarmDeviceProperties zoneProperties = new DSCAlarmDeviceProperties();
 	
 	/**
 	 * Constructor

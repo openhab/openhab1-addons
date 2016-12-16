@@ -8,13 +8,11 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import java.math.BigDecimal;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 
 /**
@@ -27,59 +25,18 @@ import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickDCConfigurationImpl#getThreshold <em>Threshold</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickDCConfigurationImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickDCConfigurationImpl#getVelocity <em>Velocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickDCConfigurationImpl#getAcceleration <em>Acceleration</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickDCConfigurationImpl#getPwmFrequency <em>Pwm Frequency</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickDCConfigurationImpl#getDriveMode <em>Drive Mode</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickDCConfigurationImpl#getSwitchOnVelocity <em>Switch On Velocity</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implements TFBrickDCConfiguration
+public class TFBrickDCConfigurationImpl extends MinimalEObjectImpl.Container implements TFBrickDCConfiguration
 {
-  /**
-   * The default value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getThreshold()
-   * @generated
-   * @ordered
-   */
-  protected static final BigDecimal THRESHOLD_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getThreshold()
-   * @generated
-   * @ordered
-   */
-  protected BigDecimal threshold = THRESHOLD_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected static final int CALLBACK_PERIOD_EDEFAULT = 0;
-
-  /**
-   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected int callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
-
   /**
    * The default value of the '{@link #getVelocity() <em>Velocity</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -148,7 +105,7 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
    * @generated
    * @ordered
    */
-  protected static final String DRIVE_MODE_EDEFAULT = null;
+  protected static final int DRIVE_MODE_EDEFAULT = 0;
 
   /**
    * The cached value of the '{@link #getDriveMode() <em>Drive Mode</em>}' attribute.
@@ -158,7 +115,27 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
    * @generated
    * @ordered
    */
-  protected String driveMode = DRIVE_MODE_EDEFAULT;
+  protected int driveMode = DRIVE_MODE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getSwitchOnVelocity() <em>Switch On Velocity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSwitchOnVelocity()
+   * @generated
+   * @ordered
+   */
+  protected static final short SWITCH_ON_VELOCITY_EDEFAULT = 0;
+
+  /**
+   * The cached value of the '{@link #getSwitchOnVelocity() <em>Switch On Velocity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSwitchOnVelocity()
+   * @generated
+   * @ordered
+   */
+  protected short switchOnVelocity = SWITCH_ON_VELOCITY_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -179,52 +156,6 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
   protected EClass eStaticClass()
   {
     return ModelPackage.Literals.TF_BRICK_DC_CONFIGURATION;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public BigDecimal getThreshold()
-  {
-    return threshold;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setThreshold(BigDecimal newThreshold)
-  {
-    BigDecimal oldThreshold = threshold;
-    threshold = newThreshold;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_BRICK_DC_CONFIGURATION__THRESHOLD, oldThreshold, threshold));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public int getCallbackPeriod()
-  {
-    return callbackPeriod;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setCallbackPeriod(int newCallbackPeriod)
-  {
-    int oldCallbackPeriod = callbackPeriod;
-    callbackPeriod = newCallbackPeriod;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_BRICK_DC_CONFIGURATION__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
   }
 
   /**
@@ -301,7 +232,7 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getDriveMode()
+  public int getDriveMode()
   {
     return driveMode;
   }
@@ -311,12 +242,35 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setDriveMode(String newDriveMode)
+  public void setDriveMode(int newDriveMode)
   {
-    String oldDriveMode = driveMode;
+    int oldDriveMode = driveMode;
     driveMode = newDriveMode;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_BRICK_DC_CONFIGURATION__DRIVE_MODE, oldDriveMode, driveMode));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public short getSwitchOnVelocity()
+  {
+    return switchOnVelocity;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSwitchOnVelocity(short newSwitchOnVelocity)
+  {
+    short oldSwitchOnVelocity = switchOnVelocity;
+    switchOnVelocity = newSwitchOnVelocity;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY, oldSwitchOnVelocity, switchOnVelocity));
   }
 
   /**
@@ -329,10 +283,6 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
   {
     switch (featureID)
     {
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION__THRESHOLD:
-        return getThreshold();
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION__CALLBACK_PERIOD:
-        return getCallbackPeriod();
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__VELOCITY:
         return getVelocity();
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__ACCELERATION:
@@ -341,6 +291,8 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
         return getPwmFrequency();
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__DRIVE_MODE:
         return getDriveMode();
+      case ModelPackage.TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY:
+        return getSwitchOnVelocity();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -355,12 +307,6 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
   {
     switch (featureID)
     {
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION__THRESHOLD:
-        setThreshold((BigDecimal)newValue);
-        return;
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION__CALLBACK_PERIOD:
-        setCallbackPeriod((Integer)newValue);
-        return;
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__VELOCITY:
         setVelocity((Short)newValue);
         return;
@@ -371,7 +317,10 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
         setPwmFrequency((Integer)newValue);
         return;
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__DRIVE_MODE:
-        setDriveMode((String)newValue);
+        setDriveMode((Integer)newValue);
+        return;
+      case ModelPackage.TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY:
+        setSwitchOnVelocity((Short)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -387,12 +336,6 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
   {
     switch (featureID)
     {
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION__THRESHOLD:
-        setThreshold(THRESHOLD_EDEFAULT);
-        return;
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION__CALLBACK_PERIOD:
-        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
-        return;
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__VELOCITY:
         setVelocity(VELOCITY_EDEFAULT);
         return;
@@ -404,6 +347,9 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
         return;
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__DRIVE_MODE:
         setDriveMode(DRIVE_MODE_EDEFAULT);
+        return;
+      case ModelPackage.TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY:
+        setSwitchOnVelocity(SWITCH_ON_VELOCITY_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -419,10 +365,6 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
   {
     switch (featureID)
     {
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION__THRESHOLD:
-        return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__VELOCITY:
         return velocity != VELOCITY_EDEFAULT;
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__ACCELERATION:
@@ -430,49 +372,11 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__PWM_FREQUENCY:
         return pwmFrequency != PWM_FREQUENCY_EDEFAULT;
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__DRIVE_MODE:
-        return DRIVE_MODE_EDEFAULT == null ? driveMode != null : !DRIVE_MODE_EDEFAULT.equals(driveMode);
+        return driveMode != DRIVE_MODE_EDEFAULT;
+      case ModelPackage.TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY:
+        return switchOnVelocity != SWITCH_ON_VELOCITY_EDEFAULT;
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
-  {
-    if (baseClass == TFBaseConfiguration.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.TF_BRICK_DC_CONFIGURATION__THRESHOLD: return ModelPackage.TF_BASE_CONFIGURATION__THRESHOLD;
-        case ModelPackage.TF_BRICK_DC_CONFIGURATION__CALLBACK_PERIOD: return ModelPackage.TF_BASE_CONFIGURATION__CALLBACK_PERIOD;
-        default: return -1;
-      }
-    }
-    return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
-  {
-    if (baseClass == TFBaseConfiguration.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.TF_BASE_CONFIGURATION__THRESHOLD: return ModelPackage.TF_BRICK_DC_CONFIGURATION__THRESHOLD;
-        case ModelPackage.TF_BASE_CONFIGURATION__CALLBACK_PERIOD: return ModelPackage.TF_BRICK_DC_CONFIGURATION__CALLBACK_PERIOD;
-        default: return -1;
-      }
-    }
-    return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
   /**
@@ -486,11 +390,7 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (threshold: ");
-    result.append(threshold);
-    result.append(", callbackPeriod: ");
-    result.append(callbackPeriod);
-    result.append(", velocity: ");
+    result.append(" (velocity: ");
     result.append(velocity);
     result.append(", acceleration: ");
     result.append(acceleration);
@@ -498,6 +398,8 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
     result.append(pwmFrequency);
     result.append(", driveMode: ");
     result.append(driveMode);
+    result.append(", switchOnVelocity: ");
+    result.append(switchOnVelocity);
     result.append(')');
     return result.toString();
   }

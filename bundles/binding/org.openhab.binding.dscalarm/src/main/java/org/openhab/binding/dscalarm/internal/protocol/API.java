@@ -78,20 +78,13 @@ public class API {
 	 * @param sPort
 	 * @param baud
 	 */	
-	public API(String sPort, int baud, String userCode) {
+	public API(String sPort, int baud) {
 		if (StringUtils.isNotBlank(sPort)) {
 			serialPort = sPort;
 		}
 
 		if(isValidBaudRate(baud))
 			baudRate = baud;
-
-		if (StringUtils.isNotBlank(userCode)) {
-			this.dscAlarmUserCode = userCode;
-		}
-
-		//The IT-100 requires 6 digit codes. Shorter codes are right padded with 0.
-		this.dscAlarmUserCode = StringUtils.rightPad(dscAlarmUserCode, 6, '0');
 
 		connectorType = DSCAlarmConnectorType.SERIAL;
 	}
@@ -101,9 +94,9 @@ public class API {
 	 * 
 	 * @param ip
 	 * @param password
-	 * @param userCode
+	 * @param dscAlarmUserCode
 	 */
-	public API(String ip, String password, String userCode) {
+	public API(String ip, String password, String dscAlarmUserCode) {
 		if (StringUtils.isNotBlank(ip)) {
 			ipAddress = ip;
 		}
@@ -112,8 +105,8 @@ public class API {
 			this.password = password;
 		}
 
-		if (StringUtils.isNotBlank(userCode)) {
-			this.dscAlarmUserCode = userCode;
+		if (StringUtils.isNotBlank(dscAlarmUserCode)) {
+			this.dscAlarmUserCode = dscAlarmUserCode;
 		}
 
 		connectorType = DSCAlarmConnectorType.TCP;
@@ -396,7 +389,7 @@ public class API {
  			apiCommand.setAPICommand(command, data);
     		dscAlarmConnector.write(apiCommand.toString());
     		successful = true;
-    		logger.debug("sendCommand(): '{}' Command Sent - {}",apiCode,apiCommand);
+    		logger.debug("sendCommand(): Command Sent - {}",apiCommand.toString());
     	}
     	else
     		logger.error("sendCommand(): Command Not Sent - Invalid!");

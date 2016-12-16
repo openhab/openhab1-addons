@@ -9,13 +9,13 @@
 package org.openhab.binding.insteonplm.internal.device;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map.Entry;
-import java.util.PriorityQueue;
 
 import org.openhab.binding.insteonplm.InsteonPLMBindingConfig;
-import org.openhab.binding.insteonplm.internal.device.DeviceType.FeatureGroup;
 import org.openhab.binding.insteonplm.internal.driver.Driver;
 import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
@@ -51,14 +51,9 @@ public class InsteonDevice {
 	private Long						m_lastTimePolled = 0L;
 	private Long						m_lastMsgReceived = 0L;
 	private boolean						m_isModem		= false;
-	private	PriorityQueue<QEntry>		m_requestQueue  = new PriorityQueue<QEntry>();
-	private	DeviceFeature				m_featureQueried = null;
-	/** time to wait for reply after direct message */
-	private static final long			TIMEOUT_DIRECT_MESSAGE_REPLY	= 30000;
-	/** need to wait after query to avoid misinterpretation of duplicate replies */
-	private static final int			QUIET_TIME_DIRECT_MESSAGE = 2000;
-	/** how far to space out poll messages */
-	private static final int			TIME_BETWEEN_POLL_MESSAGES = 1500;
+	private	 Deque<QEntry>				m_requestQueue  = new LinkedList<QEntry>();
+	private DeviceFeature.QueryStatus	m_requestQueueState = DeviceFeature.QueryStatus.QUERY_ANSWERED;
+	private static final long			QUERY_TIMEOUT	= 2000;
 	private long						m_lastQueryTime	= 0L;					
 	private	boolean						m_hasModemDBEntry = false;
 	private DeviceStatus				m_status		= DeviceStatus.INITIALIZED;
@@ -121,16 +116,6 @@ public class InsteonDevice {
 		logger.trace("setting poll interval for {} to {} ", m_address, pi);
 		if (pi > 0) m_pollInterval = pi;
 	}
-	public void setFeatureQueried(DeviceFeature f) {
-		synchronized (m_requestQueue) {
-			m_featureQueried = f;
-		}
-	};
-	public DeviceFeature getFeatureQueried() {
-		synchronized (m_requestQueue) {
-			return (m_featureQueried);
-		}
-	};
 
 	/**
 	 * Add a port. Currently only a single port is being used.
@@ -181,19 +166,15 @@ public class InsteonDevice {
 	 * Execute poll on this device: create an array of messages,
 	 * add them to the request queue, and schedule the queue
 	 * for processing.
-	 * @param delay scheduling delay (in milliseconds)
 	 */
-	public void doPoll(long delay) {
-		long now = System.currentTimeMillis();
+	public void doPoll() {
 		ArrayList<QEntry> l = new ArrayList<QEntry>();
 		synchronized(m_features) {
-			int spacing = 0;
 			for (DeviceFeature i : m_features.values()) {
 				if (i.hasListeners()) {
 					Msg m = i.makePollMsg();
-					if (m != null) l.add(new QEntry(i, m, now + delay + spacing));
+					if (m != null) l.add(new QEntry(i, m));
 				}
-				spacing += TIME_BETWEEN_POLL_MESSAGES;
 			}
 		}
 		if (l.isEmpty()) return;
@@ -202,7 +183,8 @@ public class InsteonDevice {
 				m_requestQueue.add(e);
 			}
 		}
-		RequestQueueManager.s_instance().addQueue(this, now + delay);
+		long now = System.currentTimeMillis();
+		RequestQueueManager.s_instance().addQueue(this, now);
 		
 		if (!l.isEmpty()) {
 			synchronized(m_lastTimePolled) {
@@ -227,10 +209,6 @@ public class InsteonDevice {
 			for (DeviceFeature f : m_features.values()) {
 				if (!f.isStatusFeature()) {
 					if (f.handleMessage(msg, fromPort)) {
-						// handled a reply to a query,
-						// mark it as processed
-						logger.trace("handled reply of direct: {}", f);
-						setFeatureQueried(null);
 						break;
 					}
 				}
@@ -326,44 +304,27 @@ public class InsteonDevice {
 			if (m_requestQueue.isEmpty()) {
 				return 0L;
 			}
-			if (m_featureQueried != null) {
-				// A feature has been queried, but
-				// the response has not been digested yet.
-				// Must wait for the query to be processed.
-				long dt = timeNow - (m_lastQueryTime + TIMEOUT_DIRECT_MESSAGE_REPLY);
+			if (m_requestQueueState == DeviceFeature.QueryStatus.QUERY_PENDING) {
+				long dt = timeNow - (m_lastQueryTime + QUERY_TIMEOUT);
 				if (dt < 0) {
 					logger.debug("still waiting for query reply from {} for another {} usec",
-							m_address, -dt);
-					return (timeNow + 2000L); // retry soon
+							m_address, dt);
+					return (m_lastQueryTime + QUERY_TIMEOUT);
 				} else {
 					logger.warn("gave up waiting for query reply from device {}", m_address);
 				}
-			}
-			QEntry qe = m_requestQueue.poll(); // take it off the queue!
-			if (!qe.getMsg().isBroadcast()) {
-				logger.debug("qe taken off direct: {} {}", qe.getFeature(), qe.getMsg());
-				m_lastQueryTime = timeNow;
-				// mark feature as pending
-				qe.getFeature().setQueryStatus(DeviceFeature.QueryStatus.QUERY_PENDING);
-				// also mark this queue as pending so there is no doubt
-				m_featureQueried = qe.getFeature();
-			} else {
-				logger.debug("qe taken off bcast: {} {}", qe.getFeature(), qe.getMsg());
-			}
+			} 
+			m_lastQueryTime = timeNow;
+			QEntry qe = m_requestQueue.poll();
+			qe.getFeature().setQueryStatus(DeviceFeature.QueryStatus.QUERY_PENDING);
 			long quietTime = qe.getMsg().getQuietTime();
-			qe.getMsg().setQuietTime(500L); // rate limiting downstream!
+			qe.getMsg().setQuietTime(500L); // rate limiting downstream:
 			try {
 				writeMessage(qe.getMsg());
 			} catch (IOException e) {
 				logger.error("message write failed for msg {}", qe.getMsg(), e);
 			}
-			// figure out when the request queue should be checked next
-			QEntry qnext = m_requestQueue.peek();
-			long nextExpTime = (qnext == null ? 0L : qnext.getExpirationTime());
-			long nextTime = Math.max(timeNow + quietTime, nextExpTime);
-			logger.debug("next request queue processed in {} msec, quiettime = {}",
-						 nextTime - timeNow, quietTime);
-			return (nextTime);
+			return (timeNow + quietTime);
 		}
 	}
 	/**
@@ -382,13 +343,10 @@ public class InsteonDevice {
 	 * @param d time (in milliseconds)to delay before enqueuing message
 	 */
 	public void enqueueDelayedMessage(Msg m, DeviceFeature f, long delay) {
-		long now = System.currentTimeMillis();
 		synchronized (m_requestQueue) {
-			m_requestQueue.add(new QEntry(f, m, now + delay));
+			m_requestQueue.add(new QEntry(f, m));
 		}
-		if (!m.isBroadcast()) {
-			m.setQuietTime(QUIET_TIME_DIRECT_MESSAGE);
-		}
+		long now = System.currentTimeMillis();
 		logger.trace("enqueing direct message with delay {}", delay);
 		RequestQueueManager.s_instance().addQueue(this, now + delay);
 	}
@@ -404,29 +362,6 @@ public class InsteonDevice {
 				logger.error("device type {} references unknown feature: {}", dt, fe.getValue());
 			} else {
 				addFeature(fe.getKey(), f);
-			}
-		}
-		for (Entry<String, FeatureGroup> fe : dt.getFeatureGroups().entrySet()) {
-			FeatureGroup fg = fe.getValue();
-			DeviceFeature f = DeviceFeature.s_makeDeviceFeature(fg.getType());
-			if (f == null) {
-				logger.error("device type {} references unknown feature group: {}",
-						dt, fg.getType());
-			} else {
-				addFeature(fe.getKey(), f);
-			}
-			connectFeatures(fe.getKey(), f, fg.getFeatures());
-		}
-	}
-
-	private void connectFeatures(String gn, DeviceFeature fg, ArrayList<String> features) {
-		for (String fs : features) {
-			DeviceFeature f = m_features.get(fs);
-			if (f == null) {
-				logger.error("feature group {} references unknown feature {}", gn, fs);
-			} else {
-				logger.debug("{} connected feature: {}", gn, f);
-				fg.addConnectedFeature(f);
 			}
 		}
 	}
@@ -462,21 +397,14 @@ public class InsteonDevice {
 	 * Queue entry helper class
 	 * @author Bernd Pfrommer
 	 */
-	public static class QEntry implements Comparable<QEntry> {
+	public static class QEntry {
 		private DeviceFeature	m_feature	= null;
 		private Msg 			m_msg		= null;
-		private long			m_expirationTime = 0L;
 		public DeviceFeature getFeature() { return m_feature; }
 		public Msg getMsg() { return m_msg; }
-		public long getExpirationTime() { return m_expirationTime; }
-		QEntry(DeviceFeature f, Msg m, long t) {
-			m_feature			= f;
-			m_msg				= m;
-			m_expirationTime	= t;
-		}
-		@Override
-		public int compareTo(QEntry a) {
-			return (int)(m_expirationTime - a.m_expirationTime);
+		QEntry(DeviceFeature f, Msg m) {
+			m_feature	= f;
+			m_msg		= m;
 		}
 	}
 }

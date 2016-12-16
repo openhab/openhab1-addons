@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -171,9 +172,9 @@ ZWaveCommandClassDynamicState {
 		}
 		
 		dynamicDone = true;
-
+		
 		logger.debug("NODE {}: Thermostat Mode Report, value = {}", this.getNode().getNodeId(), modeType.getLabel());
-		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
+		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
 		this.getController().notifyEventListeners(zEvent);
 	}
 
@@ -304,8 +305,7 @@ ZWaveCommandClassDynamicState {
 		AUTO_CHANGEOVER(10,"Auto Changeover"),
 		HEAT_ECON(11,"Heat Econ"),
 		COOL_ECON(12,"Cool Econ"),
-		AWAY(13,"Away"),
-		MANUAL(31, "Manual");
+		AWAY(13,"Away");
 
 		/**
 		 * A mapping between the integer code and its corresponding mode type

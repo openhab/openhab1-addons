@@ -101,8 +101,6 @@ public class CmdServlet extends BaseServlet {
 				}
 			}
 		}
-		res.setContentType("application/xml;charset=UTF-8");
-		res.getWriter().write("<root></root>");
 	}
 	
 

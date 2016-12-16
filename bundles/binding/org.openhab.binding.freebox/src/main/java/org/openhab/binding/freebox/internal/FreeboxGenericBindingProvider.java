@@ -23,13 +23,10 @@ import org.openhab.binding.freebox.FreeboxBindingConfig;
 /**
  * This class is responsible for parsing the binding configuration.
  * 
- * The syntax of the binding configuration strings accepted is either: <br>
+ * The syntax of the binding configuration strings accepted is the following: <br>
  * freebox="commandtype" <br>
- * or <br>
- * freebox="commandtype/value" <br>
  * where "commandtype" matches one of the enumerated commands present in
  * org.openhab.binding.freebox.internal.CommandType
- * and "value" is a parameter for the command defined by the user
  * 
  * @author clinique
  * @since 1.5.0
@@ -70,14 +67,10 @@ public class FreeboxGenericBindingProvider extends AbstractGenericBindingProvide
 	
 	private FreeboxBindingConfig parseBindingConfig(String bindingConfig, Item item) throws BindingConfigParseException {
 
-		String commandElts[] = StringUtils.split(StringUtils.trim(bindingConfig), '/');
-		CommandType commandType = CommandType.fromString(commandElts[0]);
-		String commandParam = null;
-		if (commandElts.length == 2) {
-			commandParam = commandElts[1];
-		}
+		String command = StringUtils.trim(bindingConfig);
+		CommandType commandType = CommandType.fromString(command);
 
-		return new FreeboxBindingConfig(commandType, commandParam, item);
+		return new FreeboxBindingConfig(commandType, item);
 	}
 	
 

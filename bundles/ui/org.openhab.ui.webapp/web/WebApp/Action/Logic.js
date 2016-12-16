@@ -1,6 +1,6 @@
 var WebApp = (function() {
 	var _def, _headView, _head, _header;
-	var _webapp, _group, _bdo, _bdy;
+	var _webapp, _group, _bdo, _bdy, _file;
 	var _maxw, _maxh;
 	var _scrID, _scrolling, _scrAmount;
 	var _opener, _radio;
@@ -9,6 +9,7 @@ var WebApp = (function() {
 	var _historyPos	= -1;	// warning: must order properly var names for reduction script
 	var _history	= [];
 	var _loader		= [];
+	var _fading		= [];
 	var _ajax		= [];
 	var _initialNav	= history.length;
 	var _sliding	= 0;
@@ -23,6 +24,7 @@ var WebApp = (function() {
 	var _proxy		= "";
 	var _pil		= 0;
 	var _tmp		= setInterval(InitBlocks, 250);
+	var _locker		= null;
 	var _win		= window;
 
 	// RFC 2397 (http://www.scalora.org/projects/uriencoder/)
@@ -30,6 +32,7 @@ var WebApp = (function() {
 
 	var _wkt;
 	var _v2			= !!document.getElementsByClassName && UA("WebKit");	// FIXME: no UA?
+	var _fullscreen	= !!navigator.standalone;
 	var _touch		= IsDefined(_win.ontouchstart) && !UA("Android");	// FIXME: null on android???
 	var _translator	= _touch ? tr_iphone : tr_others;					// FIXME: added for WKT bug on Iphone 3
 
@@ -276,7 +279,7 @@ var WebApp = (function() {
 				return;
 			}
 
-			var a = [url, prms];
+			var r, a = [url, prms];
 			if (!CallListeners("beginasync", a)) {
 				if (loader) {
 					setTimeout(DelClass, 100, loader, "__sel");	// TO have feedback - will be removed if touchstart is added
@@ -555,7 +558,6 @@ var WebApp = (function() {
 		return h;
 	}
 	function DelClass(o) {
-		if (!o) return;
 		var c = GetClass(o);
 		var a = arguments;
 		for (var i = 1; i < a.length; i++) {
@@ -659,7 +661,7 @@ var WebApp = (function() {
 	}
 
 	function Cleanup() {
-		var s, i;
+		var s, i, c;
 
 // FIXME: may cancel some unwanted visual loaders
 
@@ -772,7 +774,7 @@ var WebApp = (function() {
 
 		var k = true;
 		for (var i = 0; i < l; i++) {
-			k = k && _handler[evt][i](e);
+			k = k && (_handler[evt][i](e) == false ? false : true);
 		}
 		return k;
 	}
@@ -1025,7 +1027,7 @@ var WebApp = (function() {
 	}
 
 	function startsWith(s1) {
-		var i, a = arguments;
+		var r, i, a = arguments;
 		for (i = 1; i < a.length; i++) {
 			if (s1.toLowerCase().indexOf(a[i]) == 0) {
 				return 1;
@@ -1357,7 +1359,7 @@ var WebApp = (function() {
 	}
 
 	function BasicAsync(item, cb, q) {
-		var o, u, i;
+		var h, o, u, i;
 
 		i = (typeof item == "object");
 		u = (i ? item.href : item);
@@ -1536,17 +1538,8 @@ var WebApp = (function() {
 		}
 
 		er = (o.status != 200 && o.status != 0); // 0 for file based requests
-		try { 
-			if (cb) { 
-				ld = cb(o, lr, DefaultCallback()); 
-			} 
-		}
-		catch (ex) { 
-			er = ex;
-			if (console && console.error) {
-				console.error(er);
-			}
-		}
+		try { if (cb) { ld = cb(o, lr, DefaultCallback()); } }
+		catch (ex) { er = ex; console.error(er); }
 
 		if (lr) {
 			$pc.Loader(lr, 0);

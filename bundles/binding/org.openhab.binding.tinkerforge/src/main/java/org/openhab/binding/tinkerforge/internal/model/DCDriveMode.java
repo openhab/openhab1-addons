@@ -18,6 +18,9 @@ import org.eclipse.emf.common.util.Enumerator;
  * <!-- begin-user-doc -->
  * A representation of the literals of the enumeration '<em><b>DC Drive Mode</b></em>',
  * and utility methods for working with them.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDCDriveMode()
  * @model
@@ -26,52 +29,54 @@ import org.eclipse.emf.common.util.Enumerator;
 public enum DCDriveMode implements Enumerator
 {
   /**
-   * The '<em><b>BRAKE</b></em>' literal object.
+   * The '<em><b>Brake</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #BRAKE_VALUE
    * @generated
    * @ordered
    */
-  BRAKE(0, "BRAKE", "BRAKE"), /**
-   * The '<em><b>COAST</b></em>' literal object.
+  BRAKE(0, "Brake", "Brake"),
+
+  /**
+   * The '<em><b>Coast</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #COAST_VALUE
    * @generated
    * @ordered
    */
-  COAST(0, "COAST", "COAST");
+  COAST(1, "Coast", "Coast");
 
   /**
-   * The '<em><b>BRAKE</b></em>' literal value.
+   * The '<em><b>Brake</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>BRAKE</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>Brake</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
    * @see #BRAKE
-   * @model
+   * @model name="Brake"
    * @generated
    * @ordered
    */
   public static final int BRAKE_VALUE = 0;
 
   /**
-   * The '<em><b>COAST</b></em>' literal value.
+   * The '<em><b>Coast</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>COAST</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>Coast</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
    * @see #COAST
-   * @model
+   * @model name="Coast"
    * @generated
    * @ordered
    */
-  public static final int COAST_VALUE = 0;
+  public static final int COAST_VALUE = 1;
 
   /**
    * An array of all the '<em><b>DC Drive Mode</b></em>' enumerators.
@@ -143,6 +148,7 @@ public enum DCDriveMode implements Enumerator
     switch (value)
     {
       case BRAKE_VALUE: return BRAKE;
+      case COAST_VALUE: return COAST;
     }
     return null;
   }

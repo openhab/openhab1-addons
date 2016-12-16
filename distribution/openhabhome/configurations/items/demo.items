@@ -120,6 +120,3 @@ Number Temperature_Setpoint		"Temperature [%.1f °C]" <temperature>
 
 String UnknownDevices    "Unknown Devices in Range: [%s]" { bluetooth="?" }
 Number NoOfPairedDevices "Paired Devices in Range: [%d]"  { bluetooth="!" }
-
-/* Locations */
-Location DemoLocation			"Brandenburg Gate Berlin"

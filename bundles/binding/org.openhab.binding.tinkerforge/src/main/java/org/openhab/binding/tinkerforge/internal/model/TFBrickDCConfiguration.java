@@ -24,6 +24,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getAcceleration <em>Acceleration</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getPwmFrequency <em>Pwm Frequency</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getDriveMode <em>Drive Mode</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getSwitchOnVelocity <em>Switch On Velocity</em>}</li>
  * </ul>
  * </p>
  *
@@ -31,7 +32,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  * @model
  * @generated
  */
-public interface TFBrickDCConfiguration extends DimmableConfiguration, TFBaseConfiguration
+public interface TFBrickDCConfiguration extends TFConfig
 {
   /**
    * Returns the value of the '<em><b>Velocity</b></em>' attribute.
@@ -120,12 +121,12 @@ public interface TFBrickDCConfiguration extends DimmableConfiguration, TFBaseCon
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Drive Mode</em>' attribute.
-   * @see #setDriveMode(String)
+   * @see #setDriveMode(int)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFBrickDCConfiguration_DriveMode()
    * @model unique="false"
    * @generated
    */
-  String getDriveMode();
+  int getDriveMode();
 
   /**
    * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getDriveMode <em>Drive Mode</em>}' attribute.
@@ -135,6 +136,32 @@ public interface TFBrickDCConfiguration extends DimmableConfiguration, TFBaseCon
    * @see #getDriveMode()
    * @generated
    */
-  void setDriveMode(String value);
+  void setDriveMode(int value);
+
+  /**
+   * Returns the value of the '<em><b>Switch On Velocity</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Switch On Velocity</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Switch On Velocity</em>' attribute.
+   * @see #setSwitchOnVelocity(short)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFBrickDCConfiguration_SwitchOnVelocity()
+   * @model unique="false"
+   * @generated
+   */
+  short getSwitchOnVelocity();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getSwitchOnVelocity <em>Switch On Velocity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Switch On Velocity</em>' attribute.
+   * @see #getSwitchOnVelocity()
+   * @generated
+   */
+  void setSwitchOnVelocity(short value);
 
 } // TFBrickDCConfiguration

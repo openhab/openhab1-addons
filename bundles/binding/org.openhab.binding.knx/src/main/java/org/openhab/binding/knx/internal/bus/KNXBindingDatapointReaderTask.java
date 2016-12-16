@@ -11,8 +11,6 @@
  */
 package org.openhab.binding.knx.internal.bus;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 import org.openhab.binding.knx.internal.connection.KNXConnection;
@@ -36,7 +34,6 @@ import tuwien.auto.calimero.process.ProcessCommunicator;
 public class KNXBindingDatapointReaderTask extends Thread implements KNXConnectionListener {
 
 	private final BlockingQueue<Datapoint> readQueue;
-	private final Map<Datapoint, Integer> dpReadRetries = new HashMap<Datapoint, Integer>();
 	private final static Logger sLogger = LoggerFactory.getLogger(KNXBindingDatapointReaderTask.class);
 	private boolean mKNXConnected=true;
 
@@ -89,7 +86,7 @@ public class KNXBindingDatapointReaderTask extends Thread implements KNXConnecti
 		try {
 			ProcessCommunicator pc = KNXConnection.getCommunicator();
 			if (pc != null) {
-				sLogger.debug("Autorefresh: Sending read request to KNX for item '{}' DPT '{}'", datapoint.getName(), datapoint.getDPT());
+				sLogger.debug("Autorefresh: Sending read request to KNX for item '{}'", datapoint.getName());
 				pc.read(datapoint);
 			}
 			else {
@@ -100,8 +97,7 @@ public class KNXBindingDatapointReaderTask extends Thread implements KNXConnecti
 		} catch (KNXInvalidResponseException e) {
 			sLogger.warn("Autorefresh: Cannot read value for item '{}' from KNX bus: {}: invalid response", datapoint.getName(), e.getMessage() );
 		} catch (KNXTimeoutException e) {
-			sLogger.warn("Autorefresh: Cannot read value for item '{}' from KNX bus: {}: timeout", datapoint.getName(), e.getMessage());
-			addToReadQueue(datapoint);
+			sLogger.warn("Autorefresh: Cannot read value for item '{}' from KNX bus: {}: timeout", datapoint.getName(), e.getMessage() );
 		} catch (KNXLinkClosedException e) {
 			sLogger.warn("Autorefresh: Cannot read value for item '{}' from KNX bus: {}: link closed", datapoint.getName(), e.getMessage() );
 		} catch (KNXException e) {
@@ -112,24 +108,6 @@ public class KNXBindingDatapointReaderTask extends Thread implements KNXConnecti
 
 	}
 
-
-	/**
-	 * Adds or re-adds a datapoint to readQueue, 
-	 * if datapoint is known in dpReadRetries, retries will be reduced.
-	 * Otherwise it will be registered in dpReadRetries with retriesLimit.
-	 *  
-	 * @param datapoint
-	 */
-	private void addToReadQueue(Datapoint datapoint) throws InterruptedException {
-		Integer r = dpReadRetries.remove(datapoint);
-		int retries = ( r != null ? r : KNXConnection.getReadRetriesLimit() ) - 1;
-		if(retries >= 0 ){
-			sLogger.warn("Autorefresh: Remaining retries for address '{}' = '{}'", datapoint.getMainAddress().toString(), retries );
-			readQueue.put(datapoint);
-			dpReadRetries.put(datapoint, retries);
-		}else if(retries == -1)sLogger.warn("Autorefresh: Give up, could not read address '{}' after '{}' retries.", datapoint.getMainAddress().toString(), KNXConnection.getReadRetriesLimit() );
-	}
-	
 	/* (non-Javadoc)
 	 * @see org.openhab.binding.knx.internal.connection.KNXConnectionListener#connectionEstablished()
 	 */

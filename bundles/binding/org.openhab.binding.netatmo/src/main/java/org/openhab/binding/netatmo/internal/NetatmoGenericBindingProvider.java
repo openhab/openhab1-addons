@@ -12,9 +12,7 @@ import org.openhab.binding.netatmo.NetatmoBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DateTimeItem;
-import org.openhab.core.library.items.LocationItem;
 import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.StringItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -22,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
- *
+ * 
  * <p>
  * Valid bindings for the main device are:
  * <ul>
@@ -56,7 +54,7 @@ import org.slf4j.LoggerFactory;
  * <li><code>{ netatmo="00:00:00:00:00:00#00:00:00:00:00:00#TimeStamp" }</code></li>
  * </ul>
  * </li> </ul>
- *
+ * 
  * @author Andreas Brenk
  * @author Thomas.Eichstaedt-Engelen
  * @author Gaël L'hopital
@@ -65,8 +63,8 @@ import org.slf4j.LoggerFactory;
 public class NetatmoGenericBindingProvider extends
 		AbstractGenericBindingProvider implements NetatmoBindingProvider {
 
-	private static Logger logger = LoggerFactory
-			.getLogger(NetatmoGenericBindingProvider.class);
+	private static Logger logger = 
+		LoggerFactory.getLogger(NetatmoGenericBindingProvider.class);
 
 	/**
 	 * {@inheritDoc}
@@ -80,36 +78,31 @@ public class NetatmoGenericBindingProvider extends
 	 * @{inheritDoc
 	 */
 	@Override
-	public void validateItemType(final Item item, final String bindingConfig)
-			throws BindingConfigParseException {
-		if (!(item instanceof NumberItem || item instanceof DateTimeItem
-				|| item instanceof LocationItem || item instanceof StringItem)) {
+	public void validateItemType(final Item item, final String bindingConfig) throws BindingConfigParseException {
+		if (!(item instanceof NumberItem || item instanceof DateTimeItem)) {
 			throw new BindingConfigParseException(
-					"item '"
-							+ item.getName()
-							+ "' is of type '"
-							+ item.getClass().getSimpleName()
-							+ "', only NumberItems, DateTimeItems, StringItems and LocationItems are allowed - please check your *.items configuration");
+				"item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + 
+				"', only NumberItems and DateTimeItems are allowed - please check your *.items configuration");
 		}
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String getUserid(final String itemName) {
-		final NetatmoBindingConfig config = (NetatmoBindingConfig) this.bindingConfigs
-				.get(itemName);
+		final NetatmoBindingConfig config = 
+			(NetatmoBindingConfig) this.bindingConfigs.get(itemName);
 		return config != null ? config.userid : null;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String getDeviceId(final String itemName) {
-		final NetatmoBindingConfig config = (NetatmoBindingConfig) this.bindingConfigs
-				.get(itemName);
+		final NetatmoBindingConfig config = 
+			(NetatmoBindingConfig) this.bindingConfigs.get(itemName);
 		return config != null ? config.deviceId : null;
 	}
 
@@ -117,9 +110,9 @@ public class NetatmoGenericBindingProvider extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	public NetatmoMeasureType getMeasureType(String itemName) {
-		final NetatmoBindingConfig config = (NetatmoBindingConfig) this.bindingConfigs
-				.get(itemName);
+	public NetatmoMeasureType getMeasureType(String itemName){ 
+		final NetatmoBindingConfig config = 
+			(NetatmoBindingConfig) this.bindingConfigs.get(itemName);
 		return config != null ? config.measureType : null;
 	}
 
@@ -128,8 +121,8 @@ public class NetatmoGenericBindingProvider extends
 	 */
 	@Override
 	public String getModuleId(final String itemName) {
-		final NetatmoBindingConfig config = (NetatmoBindingConfig) this.bindingConfigs
-				.get(itemName);
+		final NetatmoBindingConfig config = 
+			(NetatmoBindingConfig) this.bindingConfigs.get(itemName);
 		return config != null ? config.moduleId : null;
 	}
 
@@ -138,8 +131,7 @@ public class NetatmoGenericBindingProvider extends
 	 */
 	@Override
 	public void processBindingConfiguration(final String context,
-			final Item item, final String bindingConfig)
-			throws BindingConfigParseException {
+			final Item item, final String bindingConfig) throws BindingConfigParseException {
 		logger.debug("Processing binding configuration: '{}'", bindingConfig);
 
 		super.processBindingConfiguration(context, item, bindingConfig);
@@ -172,7 +164,8 @@ public class NetatmoGenericBindingProvider extends
 
 		addBindingConfig(item, config);
 	}
-
+	
+		
 	private static class NetatmoBindingConfig implements BindingConfig {
 
 		String userid;
@@ -182,11 +175,13 @@ public class NetatmoGenericBindingProvider extends
 
 		@Override
 		public String toString() {
-			return "NetatmoBindingConfig [userid=" + this.userid
-					+ ", deviceId=" + this.deviceId + ", moduleId="
-					+ this.moduleId + ", measure="
+			return "NetatmoBindingConfig [userid=" + this.userid 
+					+ ", deviceId=" + this.deviceId
+					+ ", moduleId=" + this.moduleId + ", measure="
 					+ this.measureType.getMeasure() + "]";
 		}
 	}
 
+
+	
 }

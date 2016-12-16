@@ -10,7 +10,6 @@ package org.openhab.binding.opensprinkler.internal;
 
 import static org.openhab.binding.opensprinkler.internal.OpenSprinklerBinding.OpenSprinklerMode.HTTP;
 
-import java.util.Arrays;
 import java.util.Dictionary;
 
 import net.jonathangiles.opensprinkler.OpenSprinkler;
@@ -38,9 +37,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.3.0
  */
 public class OpenSprinklerBinding extends AbstractActiveBinding<OpenSprinklerBindingProvider> implements ManagedService {
-	
-	private static String[] VALID_STATION_NUMBER_LIST = {"8", "16", "24", "32", "40", "48"};
-	
+
 	private static String RAIN_SENSOR_CONTACT_VALUE = "rs";
 	
 	private static final Logger logger = 
@@ -207,11 +204,8 @@ public class OpenSprinklerBinding extends AbstractActiveBinding<OpenSprinklerBin
 			// parameter to openhab.cfg like openSprinkler:numberOfStations=<count>
 			String numberOfStationsString = (String) config.get("numberOfStations");
 			if (StringUtils.isNotBlank(numberOfStationsString)) {
-			    if (Arrays.asList(VALID_STATION_NUMBER_LIST).contains(numberOfStationsString)) {
-					numberOfStations = Integer.parseInt(numberOfStationsString);
-				} else {
-					logger.warn(numberOfStationsString + " is not a valid number of stations OpenSprinkler supports. Defaulting to 8.");
-				}
+				numberOfStations = Integer.parseInt(numberOfStationsString);
+				openSprinkler.setNumberOfStations(numberOfStations);
 			}
 			
 			// read further config parameters here ...

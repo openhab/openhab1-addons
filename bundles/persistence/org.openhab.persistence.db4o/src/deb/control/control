@@ -1,0 +1,9 @@
+Package: [[deb.name]]
+Version: [[version]]
+Section: [[deb.section]]
+Priority: optional
+Architecture: all
+Maintainer: [[deb.maintainer]]
+Description: [[deb.description]]
+Distribution: [[deb.distribution]]
+Depends: [[deb.depends]]

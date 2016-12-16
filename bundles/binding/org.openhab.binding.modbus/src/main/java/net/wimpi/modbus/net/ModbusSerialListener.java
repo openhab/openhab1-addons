@@ -16,9 +16,6 @@
 
 package net.wimpi.modbus.net;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.ModbusCoupler;
 import net.wimpi.modbus.ModbusIOException;
@@ -37,7 +34,6 @@ import net.wimpi.modbus.util.SerialParameters;
  */
 public class ModbusSerialListener {
 
-  private static final Logger logger = LoggerFactory.getLogger(ModbusSerialListener.class);
   //Members
   private boolean m_Listening;               	//Flag for toggling listening/!listening
   private SerialConnection m_SerialCon;
@@ -50,7 +46,7 @@ public class ModbusSerialListener {
    */
   public ModbusSerialListener(SerialParameters params) {
     m_SerialCon = new SerialConnection(params);
-    logger.trace("Created connection");
+    //System.out.println("Created connection.");
     listen();
   }//constructor
 
@@ -61,8 +57,7 @@ public class ModbusSerialListener {
     try {
       m_Listening = true;
       m_SerialCon.open();
-      logger.trace("Opened Serial connection.");
-
+      //System.out.println("Opened Serial connection.");
       ModbusTransport transport = m_SerialCon.getModbusTransport();
       do {
         if (m_Listening) {
@@ -79,8 +74,10 @@ public class ModbusSerialListener {
               response = request.createResponse();
             }
 
-            logger.debug("Request:{}", request.getHexMessage());
-            logger.debug("Response:{}", response.getHexMessage());
+            if (Modbus.debug)
+              System.out.println("Request:" + request.getHexMessage());
+            if (Modbus.debug)
+              System.out.println("Response:" + response.getHexMessage());
 
             transport.writeMessage(response);
 

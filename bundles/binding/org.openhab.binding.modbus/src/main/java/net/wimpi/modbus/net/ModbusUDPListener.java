@@ -18,9 +18,6 @@ package net.wimpi.modbus.net;
 
 import java.net.InetAddress;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.ModbusCoupler;
 import net.wimpi.modbus.ModbusIOException;
@@ -35,7 +32,6 @@ import net.wimpi.modbus.msg.ModbusResponse;
  * @version @version@ (@date@)
  */
 public class ModbusUDPListener {
-  private static final Logger logger = LoggerFactory.getLogger(ModbusUDPListener.class);
 
   private UDPSlaveTerminal m_Terminal;
   private ModbusUDPHandler m_Handler;
@@ -140,7 +136,7 @@ public class ModbusUDPListener {
         do {
           //1. read the request
           ModbusRequest request = m_Transport.readRequest();
-          logger.trace("Request: {}", request.getHexMessage());
+          //System.out.println("Request:" + request.getHexMessage());
           ModbusResponse response = null;
 
           //test if Process image exists
@@ -150,9 +146,11 @@ public class ModbusUDPListener {
           } else {
             response = request.createResponse();
           }
-          logger.debug("Request: {}", request.getHexMessage());
-          logger.debug("Response: {}", response.getHexMessage());
+          /*DEBUG*/
+          if (Modbus.debug) System.out.println("Request:" + request.getHexMessage());
+          if (Modbus.debug) System.out.println("Response:" + response.getHexMessage());
 
+          //System.out.println("Response:" + response.getHexMessage());
           m_Transport.writeMessage(response);
         } while (m_Continue);
       } catch (ModbusIOException ex) {

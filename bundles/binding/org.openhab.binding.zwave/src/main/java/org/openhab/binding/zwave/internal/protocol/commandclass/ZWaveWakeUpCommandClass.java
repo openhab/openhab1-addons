@@ -9,9 +9,7 @@
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -72,8 +70,6 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	private int maxInterval = 0;
 	private int defaultInterval = 0;
 	private int intervalStep = 0;
-	
-	private Date lastWakeup = null;
 	
 	@XStreamOmitField
 	private volatile boolean isAwake = false;
@@ -410,8 +406,6 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 		if(isAwake) {
 			logger.debug("NODE {}: Is awake with {} messages in the wake-up queue.", this.getNode().getNodeId(), this.wakeUpQueue.size());
 
-			this.lastWakeup = Calendar.getInstance().getTime();
-			
 			ZWaveWakeUpEvent event = new ZWaveWakeUpEvent(getNode().getNodeId(), WAKE_UP_NOTIFICATION);
 			this.getController().notifyEventListeners(event);
 
@@ -475,14 +469,6 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	public int getTargetNodeId() {
 		return targetNodeId;
 	}
-	
-	/**
-	 * Gets the time the node last woke up
-	 * @return Date of the last wakeup
-	 */
-	public Date getLastWakeup() {
-		return lastWakeup;
-	}
 
 	// The following timer implements a re-triggerable timer. The timer is triggered
 	// when there are no more messages to be sent in the wake-up queue. When the timer
@@ -516,7 +502,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 		timerTask = new WakeupTimerTask(this);
 
 		// Start the timer
-		timer.schedule(timerTask, 1000);
+		timer.schedule(timerTask, 2000);
 	}
 
 	public synchronized void resetSleepTimer() {

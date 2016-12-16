@@ -69,6 +69,9 @@ public class IhcClient {
 	/** Thread to handle controller's state change notifications */
 	private IhcControllerStateListener controllerStateListener = null;
 
+	/** Holds cookie information (session id) from authentication procedure */
+	private static List<String> cookies = null;
+
 	private String username = "";
 	private String password = "";
 	private String ip = "";
@@ -80,6 +83,8 @@ public class IhcClient {
 	private HashMap<Integer, ArrayList<IhcEnumValue>> enumDictionary = new HashMap<Integer, ArrayList<IhcEnumValue>>();
 	private List<IhcEventListener> eventListeners = new ArrayList<IhcEventListener>();
 	private WSControllerState controllerState = null;
+
+	List<? extends Integer> resourceIdList = null;
 	
 	public IhcClient(String ip, String username, String password) {
 		this.ip = ip;
@@ -211,16 +216,19 @@ public class IhcClient {
 
 		logger.debug("Connection successfully opened");
 
-		resourceInteractionService = new IhcResourceInteractionService(ip, timeout);
-		controllerService = new IhcControllerService(ip, timeout);
+		cookies = authenticationService.getCookies();
+		resourceInteractionService = new IhcResourceInteractionService(ip);
+		resourceInteractionService.setCookies(cookies);
+		controllerService = new IhcControllerService(ip);
+		controllerService.setCookies(cookies);
 		controllerState = controllerService.getControllerState();
 		loadProject();
-		startIhcListeners();
+		startIhcListener();
 		setConnectionState(ConnectionState.CONNECTED);
 	}
 
-	private void startIhcListeners() {
-		logger.debug("startIhcListeners");
+	private void startIhcListener() {
+		logger.debug("startIhcListener");
 		resourceValueNotificationListener = new IhcResourceValueNotificationListener();
 		resourceValueNotificationListener.start();
 		controllerStateListener = new IhcControllerStateListener();
@@ -345,7 +353,8 @@ public class IhcClient {
 			WSControllerState previousState, int timeoutInSeconds)
 			throws IhcExecption {
 
-		IhcControllerService service = new IhcControllerService(ip, timeout);
+		IhcControllerService service = new IhcControllerService(ip);
+		service.setCookies(cookies);
 		return service.waitStateChangeNotifications(previousState, timeoutInSeconds);
 	}
 
@@ -372,6 +381,8 @@ public class IhcClient {
 			List<? extends Integer> resourceIdList)
 			throws IhcExecption {
 		
+		this.resourceIdList = resourceIdList;
+		
 		resourceInteractionService.enableRuntimeValueNotifications(resourceIdList);
 	}
 
@@ -389,7 +400,9 @@ public class IhcClient {
 	private List<? extends WSResourceValue> waitResourceValueNotifications(
 			int timeoutInSeconds) throws IhcExecption, SocketTimeoutException {
 
-		IhcResourceInteractionService service = new IhcResourceInteractionService(ip, timeout);
+		IhcResourceInteractionService service = new IhcResourceInteractionService(ip);
+		service.setCookies(cookies);
+
 		List<? extends WSResourceValue> list = service.waitResourceValueNotifications(timeoutInSeconds);
 		
 		for (WSResourceValue val : list) {
@@ -643,6 +656,4 @@ public class IhcClient {
 			logger.error("Event listener invoking error", e);
 		}
 	}
-
-
 }

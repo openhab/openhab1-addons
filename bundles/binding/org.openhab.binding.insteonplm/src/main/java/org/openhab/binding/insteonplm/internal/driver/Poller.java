@@ -21,15 +21,7 @@ import org.slf4j.LoggerFactory;
  * Between successive polls of a any device there is a quiet time of
  * at least MIN_MSEC_BETWEEN_POLLS. This avoids bunching up of poll messages
  * and keeps the network bandwidth open for other messages.
- * 
- * - An entry in the poll queue corresponds to a single device, i.e. each device should
- *   have exactly one entry in the poll queue. That entry is created when startPolling()
- *   is called, and then re-enqueued whenever it expires.  
- * - When a device comes up for polling, its doPoll() method is called, which in turn
- *   puts an entry into that devices request queue. So the Poller class actually never
- *   sends out messages directly. That is done by the device itself via its request
- *   queue. The poller just reminds the device to poll.
- *    
+ *  
  * @author Bernd Pfrommer
  * @since 1.5.0
  */
@@ -112,13 +104,6 @@ public class Poller {
 			logger.debug("got interrupted on exit: {}", e.getMessage());
 		}
 	}
-	/**
-	 * Adds a device to the poll queue. After this call, the device's doPoll() method
-	 * will be called according to the polling frequency set.
-	 * @param d the device to poll periodically
-	 * @param time the target time for the next poll to happen. Note that this time is merely
-	 * a suggestion, and may be adjusted, because there must be at least a minimum gap in polling.
-	 */
 	
 	private void addToPollQueue(InsteonDevice d, long time) {
 		long texp = findNextExpirationTime(d, time);
@@ -126,15 +111,6 @@ public class Poller {
 		logger.trace("added entry {} originally aimed at time {}", ne, String.format("%tc", new Date(time)));
 		m_pollQueue.add(ne);
 	}
-	/**
-	 * Finds the best expiration time for a poll queue, i.e. a time slot that is after the
-	 * desired expiration time, but does not collide with any of the already scheduled
-	 * polls.
-	 *
-	 * @param d		device to poll (for logging)
-	 * @param aTime desired time after which the device should be polled
-	 * @return the suggested time to poll
-	 */
 	
 	private long findNextExpirationTime(InsteonDevice d, long aTime) {
 		long expTime = aTime;
@@ -186,11 +162,6 @@ public class Poller {
 			logger.debug("poll thread exiting");
 		}
 
-		/**
-		 * Waits for first element of poll queue to become current,
-		 * then process it.
-		 * @throws InterruptedException
-		 */
 		private void readPollQueue() throws InterruptedException {
 			while (m_pollQueue.isEmpty() && m_keepRunning) {
 				m_pollQueue.wait();
@@ -211,23 +182,14 @@ public class Poller {
 				processQueue(now);
 			}
 		}
-		/**
-		 * Takes first element off the poll queue, polls the corresponding device,
-		 * and puts the device back into the poll queue to be polled again later.
-		 * @param now the current time 
-		 */
+		
 		private void processQueue(long now) {
 			PQEntry pqe = m_pollQueue.pollFirst();
-			pqe.getDevice().doPoll(0);
+			pqe.getDevice().doPoll();
 			addToPollQueue(pqe.getDevice(), now + pqe.getDevice().getPollInterval());
 		}
 	}
-	/**
-	 * A poll queue entry corresponds to a single device that needs
-	 * to be polled.
-	 * @author Bernd Pfrommer
-	 *
-	 */
+	
 	private static class PQEntry implements Comparable<PQEntry> {
 		private InsteonDevice	m_dev = null;
 		private long			m_expirationTime = 0L;
@@ -250,10 +212,7 @@ public class Poller {
 			return m_dev.getAddress().toString() + "/" + String.format("%tc", new Date(m_expirationTime));
 		}
 	}
-	/**
-	 * Singleton pattern instance() method
-	 * @return the poller instance
-	 */
+	
 	public static synchronized Poller s_instance() {
 		if (s_poller == null) {
 			s_poller = new Poller();

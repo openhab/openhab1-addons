@@ -20,17 +20,15 @@ import org.openhab.core.binding.BindingConfig;
  */
 public class WithingsBindingConfig implements BindingConfig {
 
-	public String accountId;
 	public MeasureType measureType;
 
-	public WithingsBindingConfig(String accountId, MeasureType measureType) {
-		this.accountId = accountId;
+	public WithingsBindingConfig(MeasureType measureType) {
 		this.measureType = measureType;
 	}
 
 	@Override
 	public String toString() {
-		return "WithingsBindingConfig [accountId=" + accountId + ", measureType=" + measureType + "]";
+		return "WithingsBindingConfig [measureType=" + measureType + "]";
 	}
 
 }

@@ -145,9 +145,7 @@ public enum APICode {
     SoftwareVersion("908"),
     CommandOutputPressed("912"),
     MasterCodeRequired("921"),
-    InstallersCodeRequired("922"),
-
-    UnknownCode("-1");
+    InstallersCodeRequired("922");
 
 	private String code;
 
@@ -190,17 +188,9 @@ public enum APICode {
 	 * @return enum value
 	 */
 	public static APICode getAPICodeValue(String code) {
-		APICode apiCode;
-		
 		if (codeToAPICodeValue == null) {
 			initMapping();
 		}
-		
-		apiCode = codeToAPICodeValue.get(code);
-		
-		if(apiCode == null)
-			apiCode = UnknownCode;
-		
-		return apiCode;
+		return codeToAPICodeValue.get(code);
 	}
 }

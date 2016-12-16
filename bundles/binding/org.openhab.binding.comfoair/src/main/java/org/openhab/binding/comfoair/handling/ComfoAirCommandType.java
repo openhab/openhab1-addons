@@ -146,20 +146,20 @@ public enum ComfoAirCommandType {
 		}
 	},
 
-	EWT_TEMPERATUR_LOW {
+	EWT_TEMPERATUR_HIGH {
 		{
-			key = "ewt_temperatur_low";
-			data_type = DataTypeNumber.class;
+			key = "ewt_temperatur_high";
+			data_type = DataTypeTemperature.class;
 			read_command = 0xeb;
 			read_reply_command = 0xec;
 			read_reply_data_pos = new int[] { 0 };
 		}
 	},
 
-	EWT_TEMPERATUR_HIGH {
+	EWT_TEMPERATUR_LOW {
 		{
-			key = "ewt_temperatur_high";
-			data_type = DataTypeNumber.class;
+			key = "ewt_temperatur_low";
+			data_type = DataTypeTemperature.class;
 			read_command = 0xeb;
 			read_reply_command = 0xec;
 			read_reply_data_pos = new int[] { 1 };
@@ -173,17 +173,6 @@ public enum ComfoAirCommandType {
 			read_command = 0xeb;
 			read_reply_command = 0xec;
 			read_reply_data_pos = new int[] { 2 };
-		}
-	},
-
-	EWT_MODE {
-		{
-			key = "ewt_mode";
-			data_type = DataTypeBoolean.class;
-			read_command = 0x37;
-			read_reply_command = 0x3c;
-			read_reply_data_pos = new int[] { 6 };
-			read_reply_data_bits = 0x80;
 		}
 	},
 
@@ -287,7 +276,7 @@ public enum ComfoAirCommandType {
 	int[] possible_values;
 
 	/*
-	 * Cmd code to change properties on the comfoair.
+	 * Cmd code to swich properties on the comforair.
 	 */
 	int change_command;
 	/*

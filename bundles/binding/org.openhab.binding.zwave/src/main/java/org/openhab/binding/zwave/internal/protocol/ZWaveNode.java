@@ -226,13 +226,8 @@ public class ZWaveNode {
 			this.resendCount = 0;
 			break;
 
-		case DEAD:
-			// If the node is failed, then we don't allow transitions to DEAD
-			// The only valid state change from FAILED is to ALIVE
-			if(nodeState == ZWaveNodeState.FAILED) {
-				return;
-			}
 		case FAILED:
+		case DEAD:
 			this.deadCount++;
 			this.deadTime = Calendar.getInstance().getTime();
 			logger.debug("NODE {}: Node is DEAD.", this.nodeId);
@@ -409,16 +404,16 @@ public class ZWaveNode {
 	 * Gets the node application firmware version
 	 * @return the version
 	 */
-	public String getApplicationVersion() {
+	public double getApplicationVersion() {
 		ZWaveVersionCommandClass versionCmdClass = (ZWaveVersionCommandClass) this.getCommandClass(CommandClass.VERSION);
 		if(versionCmdClass == null) {
-			return "0.0";
+			return 0.0;
 		}
 
-		String appVersion = versionCmdClass.getApplicationVersion();
+		Double appVersion = versionCmdClass.getApplicationVersion();
 		if(appVersion == null) {
 			logger.trace("NODE {}: App version requested but version is unknown", this.getNodeId());
-			return "0.0";
+			return 0.0;			
 		}
 		
 		return appVersion;

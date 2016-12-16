@@ -23,7 +23,7 @@ public interface WeatherProvider {
 	/**
 	 * Returns the weather data for the specified location config.
 	 */
-	public Weather getWeather(LocationConfig locationConfig) throws Exception;
+	public Weather getWeather(LocationConfig locationConfig);
 
 	/**
 	 * Returns the provider name.

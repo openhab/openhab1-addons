@@ -16,8 +16,6 @@
 
 package net.wimpi.modbus.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Class that implements a collection for
@@ -29,7 +27,6 @@ import org.slf4j.LoggerFactory;
  * @version @version@ (@date@)
  */
 public final class BitVector {
-	private static final Logger logger = LoggerFactory.getLogger(BitVector.class);
 
   //instance attributes
   private int m_Size;
@@ -134,7 +131,7 @@ public final class BitVector {
   public final boolean getBit(int index)
       throws IndexOutOfBoundsException {
     index = translateIndex(index);
-    logger.trace("Get bit #{}", index);
+    //System.out.println("Get bit #" + index);
     return (
         (m_Data[byteIndex(index)]
         & (0x01 << bitIndex(index))) != 0
@@ -154,7 +151,7 @@ public final class BitVector {
   public final void setBit(int index, boolean b)
       throws IndexOutOfBoundsException {
     index = translateIndex(index);
-    logger.trace("Set bit #{}", index);
+    //System.out.println("Set bit #"+index);
     int value = ((b) ? 1 : 0);
     int byteNum = byteIndex(index);
     int bitNum = bitIndex(index);

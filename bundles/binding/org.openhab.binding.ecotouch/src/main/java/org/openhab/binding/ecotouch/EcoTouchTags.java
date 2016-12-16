@@ -10,7 +10,6 @@ package org.openhab.binding.ecotouch;
 
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.SwitchItem;
 
 /**
  * Represents all valid commands which could be processed by this binding
@@ -353,132 +352,6 @@ public enum EcoTouchTags {
 		}
 	},
 
-	// German: nviNormAussen
-	TYPE_NVINORMAUSSEN {
-		{
-			command = "nviNormAussen";
-			itemClass = NumberItem.class;
-			tagName = "A91";
-		}
-	},
-
-	// German: nviHeizkreisNorm
-	TYPE_NVIHEIZKREISNORM {
-		{
-			command = "nviHeizkreisNorm";
-			itemClass = NumberItem.class;
-			tagName = "A92";
-		}
-	},
-
-	// German: nviTHeizgrenze
-	TYPE_NVITHEIZGRENZE {
-		{
-			command = "nviTHeizgrenze";
-			itemClass = NumberItem.class;
-			tagName = "A93";
-		}
-	},
-
-	// German: nviTHeizgrenzeSoll
-	TYPE_NVITHEIZGRENZESOLL {
-		{
-			command = "nviTHeizgrenzeSoll";
-			itemClass = NumberItem.class;
-			tagName = "A94";
-		}
-	},
-
-	// German: Betriebsstunden Verdichter 1
-	TYPE_OPERATING_HOURS_COMPRESSOR1 {
-		{
-			command = "operating_hours_compressor1";
-			itemClass = NumberItem.class;
-			tagName = "I10";
-			type = Type.Word;
-		}
-	},
-
-	// German: Betriebsstunden Verdichter 2
-	TYPE_OPERATING_HOURS_COMPRESSOR2 {
-		{
-			command = "operating_hours_compressor2";
-			itemClass = NumberItem.class;
-			tagName = "I14";
-			type = Type.Word;
-		}
-	},
-
-	// German: Betriebsstunden Heizungsumwälzpumpe
-	TYPE_OPERATING_HOURS_CIRCULATION_PUMP {
-		{
-			command = "operating_hours_circulation_pump";
-			itemClass = NumberItem.class;
-			tagName = "I18";
-			type = Type.Word;
-		}
-	},
-
-	// German: Betriebsstunden Quellenpumpe
-	TYPE_OPERATING_HOURS_SOURCE_PUMP {
-		{
-			command = "operating_hours_source_pump";
-			itemClass = NumberItem.class;
-			tagName = "I20";
-			type = Type.Word;
-		}
-	},
-
-	// German: Betriebsstunden Solarkreis
-	TYPE_OPERATING_HOURS_SOLAR {
-		{
-			command = "operating_hours_solar";
-			itemClass = NumberItem.class;
-			tagName = "I22";
-			type = Type.Word;
-		}
-	},
-
-	// German: Handabschaltung Heizbetrieb
-	TYPE_ENABLE_HEATING {
-		{
-			command = "enable_heating";
-			itemClass = SwitchItem.class;
-			tagName = "I30";
-			type = Type.Word;
-		}
-	},
-
-	// German: Handabschaltung Kühlbetrieb
-	TYPE_ENABLE_COOLING {
-		{
-			command = "enable_cooling";
-			itemClass = SwitchItem.class;
-			tagName = "I31";
-			type = Type.Word;
-		}
-	},
-
-	// German: Handabschaltung Warmwasserbetrieb
-	TYPE_ENABLE_WARMWATER {
-		{
-			command = "enable_warmwater";
-			itemClass = SwitchItem.class;
-			tagName = "I32";
-			type = Type.Word;
-		}
-	},
-
-	// German: Handabschaltung Pool_Heizbetrieb
-	TYPE_ENABLE_POOL {
-		{
-			command = "enable_pool";
-			itemClass = SwitchItem.class;
-			tagName = "I33";
-			type = Type.Word;
-		}
-	},
-
 	// German: Status der Wärmepumpenkomponenten
 	TYPE_STATE {
 		{
@@ -493,7 +366,7 @@ public enum EcoTouchTags {
 	TYPE_STATE_SOURCEPUMP {
 		{
 			command = "state_sourcepump";
-			itemClass = SwitchItem.class;
+			itemClass = NumberItem.class;
 			tagName = "I51";
 			type = Type.Bitfield;
 			bitnum = 0;
@@ -504,7 +377,7 @@ public enum EcoTouchTags {
 	TYPE_STATE_HEATINGPUMP {
 		{
 			command = "state_heatingpump";
-			itemClass = SwitchItem.class;
+			itemClass = NumberItem.class;
 			tagName = "I51";
 			type = Type.Bitfield;
 			bitnum = 1;
@@ -516,7 +389,7 @@ public enum EcoTouchTags {
 	TYPE_STATE_EVD {
 		{
 			command = "state_evd";
-			itemClass = SwitchItem.class;
+			itemClass = NumberItem.class;
 			tagName = "I51";
 			type = Type.Bitfield;
 			bitnum = 2;
@@ -527,7 +400,7 @@ public enum EcoTouchTags {
 	TYPE_STATE_compressor1 {
 		{
 			command = "state_compressor1";
-			itemClass = SwitchItem.class;
+			itemClass = NumberItem.class;
 			tagName = "I51";
 			type = Type.Bitfield;
 			bitnum = 3;
@@ -538,7 +411,7 @@ public enum EcoTouchTags {
 	TYPE_STATE_compressor2 {
 		{
 			command = "state_compressor2";
-			itemClass = SwitchItem.class;
+			itemClass = NumberItem.class;
 			tagName = "I51";
 			type = Type.Bitfield;
 			bitnum = 4;
@@ -549,7 +422,7 @@ public enum EcoTouchTags {
 	TYPE_STATE_extheater {
 		{
 			command = "state_extheater";
-			itemClass = SwitchItem.class;
+			itemClass = NumberItem.class;
 			tagName = "I51";
 			type = Type.Bitfield;
 			bitnum = 5;
@@ -560,7 +433,7 @@ public enum EcoTouchTags {
 	TYPE_STATE_alarm {
 		{
 			command = "state_alarm";
-			itemClass = SwitchItem.class;
+			itemClass = NumberItem.class;
 			tagName = "I51";
 			type = Type.Bitfield;
 			bitnum = 6;
@@ -571,7 +444,7 @@ public enum EcoTouchTags {
 	TYPE_STATE_cooling {
 		{
 			command = "state_cooling";
-			itemClass = SwitchItem.class;
+			itemClass = NumberItem.class;
 			tagName = "I51";
 			type = Type.Bitfield;
 			bitnum = 7;
@@ -582,7 +455,7 @@ public enum EcoTouchTags {
 	TYPE_STATE_water {
 		{
 			command = "state_water";
-			itemClass = SwitchItem.class;
+			itemClass = NumberItem.class;
 			tagName = "I51";
 			type = Type.Bitfield;
 			bitnum = 8;
@@ -593,7 +466,7 @@ public enum EcoTouchTags {
 	TYPE_STATE_pool {
 		{
 			command = "state_pool";
-			itemClass = SwitchItem.class;
+			itemClass = NumberItem.class;
 			tagName = "I51";
 			type = Type.Bitfield;
 			bitnum = 9;
@@ -604,7 +477,7 @@ public enum EcoTouchTags {
 	TYPE_STATE_solar {
 		{
 			command = "state_solar";
-			itemClass = SwitchItem.class;
+			itemClass = NumberItem.class;
 			tagName = "I51";
 			type = Type.Bitfield;
 			bitnum = 10;
@@ -615,43 +488,12 @@ public enum EcoTouchTags {
 	TYPE_STATE_cooling4way {
 		{
 			command = "state_cooling4way";
-			itemClass = SwitchItem.class;
+			itemClass = NumberItem.class;
 			tagName = "I51";
 			type = Type.Bitfield;
 			bitnum = 11;
 		}
 	},
-
-	// German: Meldungen von Ausfällen F0xx die zum Wärmepumpenausfall führen
-	TYPE_ALARM {
-		{
-			command = "alarm";
-			itemClass = NumberItem.class;
-			tagName = "I52";
-			type = Type.Word;
-		}
-	},
-
-	// German: Unterbrechungen
-	TYPE_INTERRUPTIONS {
-		{
-			command = "interruptions";
-			itemClass = NumberItem.class;
-			tagName = "I53";
-			type = Type.Word;
-		}
-	},
-
-	// German: Temperaturanpassung für die Heizung
-	TYPE_ADAPT_HEATING {
-		{
-			command = "adapt_heating";
-			itemClass = NumberItem.class;
-			tagName = "I263";
-			type = Type.Word; // value range 0..8 => -2K .. +2K
-		}
-	},
-
 
 	;
 

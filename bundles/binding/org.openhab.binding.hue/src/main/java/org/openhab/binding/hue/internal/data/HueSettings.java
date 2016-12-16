@@ -9,7 +9,6 @@
 package org.openhab.binding.hue.internal.data;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -57,81 +56,67 @@ public class HueSettings {
 	}
 
 	/**
-	 * Return the keys of lights connected to Hue hub
-	 * 
-	 * @return the keys of lights connected to Hue hub
-	 */
-	public Set<String> getKeys() {
-		if (settingsData == null) {
-			logger.error("Hue bridge settings not initialized correctly.");
-			return null;
-		}
-		return settingsData.node("lights").getKeys();
-	}
-
-	/**
-	 * Determines whether the given bulb is valid in the settings of the bridge.
-	 * 
-	 * @param deviceId
-	 *            The bulb id the bridge has filed the bulb under.
-	 * @return true if the bulb is turned on, false otherwise.
-	 */
-	public boolean isValidId(String deviceId) {
-		if (settingsData == null) {
-			logger.error("Hue bridge settings not initialized correctly.");
-			return false;
-		}
-		return (Boolean) (settingsData.node("lights")
-				.node(deviceId) != null);
-	}
-	
-	/**
 	 * Determines whether the given bulb is turned on.
 	 * 
-	 * @param deviceId
-	 *            The bulb id the bridge has filed the bulb under.
+	 * @param deviceNumber
+	 *            The bulb number the bridge has filed the bulb under.
 	 * @return true if the bulb is turned on, false otherwise.
 	 */
-	public boolean isBulbOn(String deviceId) {
+	public boolean isBulbOn(int deviceNumber) {
 		if (settingsData == null) {
 			logger.error("Hue bridge settings not initialized correctly.");
 			return false;
 		}
 		return (Boolean) settingsData.node("lights")
-				.node(deviceId).node("state").value("on");
+				.node(Integer.toString(deviceNumber)).node("state").value("on");
 	}
+	
 	
 	/**
 	 * Determines whether the given bulb is reachable.
 	 * Once a bulb is physical disconnected it becomes unreachable after around 10 seconds. 
 	 * The hearbeat service of the Hue hub device is responsible for this behavior.  
 	 * 
-	 * @param deviceId
-	 *            The bulb id the bridge has filed the bulb under.
+	 * @param deviceNumber
+	 *            The bulb number the bridge has filed the bulb under.
 	 * @return true if the bulb is reachable, false otherwise.
 	 */
-	public boolean isReachable(String deviceId) {
+	public boolean isReachable(int deviceNumber) {
 		if (settingsData == null) {
 			logger.error("Hue bridge settings not initialized correctly.");
 			return false;
 		}
 		return (Boolean) settingsData.node("lights")
-				.node(deviceId).node("state").value("reachable");
+				.node(Integer.toString(deviceNumber)).node("state").value("reachable");
 	}
 	
+	
+	/**
+	 * Determine amount of lights connected to Hue hub
+	 * 
+	 * @return amount of lights connected to Hue hub
+	 */
+	public int getCount() {
+		if (settingsData == null) {
+			logger.error("Hue bridge settings not initialized correctly.");
+			return -1;
+		}
+		return settingsData.node("lights").count();
+	}
+
 	/**
 	 * Determines the color temperature of the given bulb.
 	 * 
-	 * @param deviceId
-	 *            The bulb id the bridge has filed the bulb under.
+	 * @param deviceNumber
+	 *            The bulb number the bridge has filed the bulb under.
 	 * @return The color temperature as a value from 154 - 500
 	 */
-	public int getColorTemperature(String deviceId) {
+	public int getColorTemperature(int deviceNumber) {
 		if (settingsData == null) {
 			logger.error("Hue bridge settings not initialized correctly.");
 			return 154;
 		}
-		Object ct = settingsData.node("lights").node(deviceId).node("state").value("ct");
+		Object ct = settingsData.node("lights").node(Integer.toString(deviceNumber)).node("state").value("ct");
 		if(ct instanceof Integer) {
 			return (Integer) ct;
 		} else {
@@ -142,35 +127,35 @@ public class HueSettings {
 	/**
 	 * Determines the brightness of the given bulb.
 	 * 
-	 * @param deviceId
-	 *            The bulb id the bridge has filed the bulb under.
-	 * @return The brightness as a value from 0 - {@link HueBulb#MAX_BRIGHTNESS}
+	 * @param deviceNumber
+	 *            The bulb number the bridge has filed the bulb under.
+	 * @return The brightness as a value from 0 - 255
 	 */
-	public int getBrightness(String deviceId) {
+	public int getBrightness(int deviceNumber) {
 		if (settingsData == null) {
 			logger.error("Hue bridge settings not initialized correctly.");
 			return 0;
 		}
 		return (Integer) settingsData.node("lights")
-				.node(deviceId).node("state")
+				.node(Integer.toString(deviceNumber)).node("state")
 				.value("bri");
 	}
 
 	/**
 	 * Determines the hue of the given bulb.
 	 * 
-	 * @param deviceId
-	 *            The bulb id the bridge has filed the bulb under.
+	 * @param deviceNumber
+	 *            The bulb number the bridge has filed the bulb under.
 	 * @return The hue as a value from 0 - 65535
 	 */
-	public int getHue(String deviceId) {
+	public int getHue(int deviceNumber) {
 		if (settingsData == null) {
 			logger.error("Hue bridge settings not initialized correctly.");
 			return 0;
 		}
 
 		Object hue = settingsData.node("lights")
-				.node(deviceId).node("state")
+				.node(Integer.toString(deviceNumber)).node("state")
 				.value("hue");
 		if(hue instanceof Integer) {
 			return (Integer) hue;
@@ -182,18 +167,18 @@ public class HueSettings {
 	/**
 	 * Determines the saturation of the given bulb.
 	 * 
-	 * @param deviceId
-	 *            The bulb id the bridge has filed the bulb under.
-	 * @return The saturation as a value from 0 - {@link HueBulb#MAX_BRIGHTNESS}
+	 * @param deviceNumber
+	 *            The bulb number the bridge has filed the bulb under.
+	 * @return The saturation as a value from 0 - 254
 	 */
-	public int getSaturation(String deviceId) {
+	public int getSaturation(int deviceNumber) {
 		if (settingsData == null) {
 			logger.error("Hue bridge settings not initialized correctly.");
 			return 0;
 		}
 
 		Object sat = settingsData.node("lights")
-				.node(deviceId).node("state")
+				.node(Integer.toString(deviceNumber)).node("state")
 				.value("sat");
 		if(sat instanceof Integer) {
 			return (Integer) sat;
@@ -238,10 +223,6 @@ public class HueSettings {
 			return dataMap.size();
 		}
 
-		protected Set<String> getKeys(){
-			return dataMap.keySet();
-		}
-		
 		/**
 		 * @param valueName
 		 *            The name of the child node.

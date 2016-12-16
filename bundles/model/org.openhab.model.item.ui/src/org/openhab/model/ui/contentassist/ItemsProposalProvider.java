@@ -40,7 +40,6 @@ public class ItemsProposalProvider extends AbstractItemsProposalProvider {
 		ITEMTYPES.add("Contact");
 		ITEMTYPES.add("Rollershutter");
 		ITEMTYPES.add("DateTime");
-		ITEMTYPES.add("Location");
 	}
 	
 	@Override

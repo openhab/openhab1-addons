@@ -43,7 +43,7 @@ public class RFXComConnection implements ManagedService {
 	private static byte[] setMode = null;
 
 	static RFXComSerialConnector connector = new RFXComSerialConnector();
-	private final MessageLister eventLister = new MessageLister();
+	private MessageLister eventLister = new MessageLister();
 	
 	public void activate() {
 		logger.debug("Activate");
@@ -138,12 +138,13 @@ public class RFXComConnection implements ManagedService {
 		}
 	}
 	
-	private static class MessageLister implements RFXComEventListener {
+	private class MessageLister implements RFXComEventListener {
 
 		@Override
 		public void packetReceived(EventObject event, byte[] data) {
 
 			try {
+				
 				RFXComMessageInterface obj = RFXComMessageFactory.getMessageInterface(data);
 				logger.debug("Data received:\n{}", obj.toString());
 				

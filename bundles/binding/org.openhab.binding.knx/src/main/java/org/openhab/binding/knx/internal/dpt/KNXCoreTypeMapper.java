@@ -71,6 +71,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	static private final Logger logger = LoggerFactory.getLogger(KNXCoreTypeMapper.class);
 
 	private final static SimpleDateFormat TIME_DAY_FORMATTER = new SimpleDateFormat("EEE, HH:mm:ss", Locale.US);
+	private final static SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("HH:mm:ss", Locale.US);
 	private final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 
 	/** stores the openHAB type class for all (supported) KNX datapoint types */
@@ -249,7 +250,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		//check for HSBType first, because it extends PercentType as well
 		if(type instanceof HSBType) {
 			Color color = ((HSBType)type).toColor();
-
+		
 			return "r:" + Integer.toString(color.getRed()) + " g:" + Integer.toString(color.getGreen()) + " b:" + Integer.toString(color.getBlue());
 		} else if(type instanceof OnOffType) {
 			return type.equals(OnOffType.OFF)?dpt.getLowerValue():dpt.getUpperValue();
@@ -384,8 +385,8 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 					decimalValue += 0x80;
 				}
 				value = String.valueOf(decimalValue);
-
-				break;
+				
+			break;
 			case 19:
 				DPTXlatorDateTime translatorDateTime = (DPTXlatorDateTime) translator;
 				if (translatorDateTime.isFaultyClock()) {
@@ -520,19 +521,28 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 				date = DATE_FORMATTER.parse(value);
 			}
 			else if (DPTXlatorTime.DPT_TIMEOFDAY.getID().equals(dpt)) {
-				if (value.contains("no-day")) {
+				if (value.contains("no-day, ")) {
 					/* 
 					 * KNX "no-day" needs special treatment since openHAB's DateTimeType doesn't support "no-day".
 					 * Workaround: remove the "no-day" String, parse the remaining time string, which will result in a date of "1970-01-01".
-					 * Replace "no-day" with the current day name
+					 * Increase the month value as a marker, that "no-day" was in the KNX message. This shouldn't matter since year, month and day
+					 * haven't been set anyways.
 					 */
 					StringBuffer stb = new StringBuffer(value);
-					int start =stb.indexOf("no-day");
-					int end =start+"no-day".length();
-					stb.replace(start, end, String.format(Locale.US, "%1$ta", Calendar.getInstance()));
+					int start =stb.indexOf("no-day, ");
+					int end =start+"no-day, ".length();
+					stb.delete(start, end);
 					value = stb.toString();
+
+					date = TIME_FORMATTER.parse(value);
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(date);
+					cal.set(Calendar.MONTH, 2);
+					date = cal.getTime();
 				}
-				date = TIME_DAY_FORMATTER.parse(value);
+				else {
+					date = TIME_DAY_FORMATTER.parse(value);
+				}
 			}
 		}
 		catch (ParseException pe) {
@@ -562,7 +572,17 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			return dateType.format("%tF");
 		}
 		else if (DPTXlatorTime.DPT_TIMEOFDAY.getID().equals(dpt)) {
-			return dateType.format(Locale.US, "%1$ta, %1$tT");
+			/*
+			 * Check if the calendar's month was set to February. This is "marker" indicating
+			 * that actually "no-day" was set. (see {@link private String formatDateTime(String value, String dpt)} above)
+			 */
+			Calendar cal=dateType.getCalendar();
+			if (cal.get(Calendar.MONTH)==2) {
+				return dateType.format(Locale.US, "%1$tT");
+			}
+			else {
+				return dateType.format(Locale.US, "%1$ta, %1$tT");
+			}
 		}
 		else if (DPTXlatorDateTime.DPT_DATE_TIME.getID().equals(dpt)) {
 			return dateType.format(Locale.US, "%tF %1$tT");

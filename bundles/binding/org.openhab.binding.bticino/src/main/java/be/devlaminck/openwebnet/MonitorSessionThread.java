@@ -23,7 +23,7 @@ import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
  * openwebnet) and on code of Flavio Fcrisciani
  * (https://github.com/fcrisciani/java-myhome-library) released under EPL
  * 
- * @author Tom De Vlaminck, Lago Moreno
+ * @author Tom De Vlaminck
  * @serial 1.0
  * @since 1.7.0
  */
@@ -66,7 +66,7 @@ public class MonitorSessionThread extends Thread {
 
 	public void buildEventFromFrame(String frame) {
 		logger.info("Received OpenWebNet frame '" + frame
-			+ "' now translate it to an event.");
+				+ "' now translate it to an event.");
 		String who = null;
 		String what = null;
 		String where = null;
@@ -77,13 +77,8 @@ public class MonitorSessionThread extends Thread {
 		String[] frameParts = null;
 		ProtocolRead event = null;
 
-		if (frame.isEmpty()) {
-			logger.error("Empty frame");
-			return;
-		}
-		
 		int length = frame.length();
-		if (!frame.endsWith("##")) {
+		if (frame.isEmpty() || !frame.endsWith("##")) {
 			logger.error("Malformed frame " + frame + " "
 					+ frame.substring(length - 2, length));
 			return;
@@ -99,7 +94,6 @@ public class MonitorSessionThread extends Thread {
 			return;
 		}
 
-		// Status request frame
 		if (frame.substring(0, 2).equalsIgnoreCase("*#")) {
 			// remove *# and ##
 			frame = frame.substring(2, length - 2);
@@ -200,12 +194,12 @@ public class MonitorSessionThread extends Thread {
 			}
 			// TERMOREGULATION
 			if (who.equalsIgnoreCase("4")) {
-				messageType = "thermoregulation";
 				objectClass = "Thermo";
 				objectName = who + "*" + where;
 
+				String temperature = null;
 				if (frameParts[2].equalsIgnoreCase("0")) {
-					String temperature = frameParts[3];
+					temperature = frameParts[3];
 					temperature = OWNUtilities.convertTemperature(temperature);
 					messageDescription = "Temperature value";
 					if (temperature != null) {
@@ -413,12 +407,9 @@ public class MonitorSessionThread extends Thread {
 			// notify event
 			logger.info(OWNUtilities.getDateTime() + " Rx: " + frame + " "
 					+ "(" + messageDescription + ")");
-			
-			// Notify all the listeners an event has been received
-			pluginReference.notifyEvent(event);
+
 		}
 
-		// Command frame
 		if (!(frame.substring(0, 2).equalsIgnoreCase("*#"))
 				&& (frame.substring(0, 1).equalsIgnoreCase("*"))) {
 			// remove delimiter chars * and ##
@@ -434,8 +425,15 @@ public class MonitorSessionThread extends Thread {
 				where = "";
 			event = new ProtocolRead(frame);
 			objectName = who + "*" + where;
-			boolean virtual_where = false;
-			String[] what_parts;
+
+			// Virtual configurator support
+			// where=XXYY (XX = A (01-10), YY = PL (01-15))
+			// eg. A=10 and PL=5 the where will be 1005, A=2 and PL=12 the where
+			// will be 0212
+			// split in parts, if 2 parts with riser
+			// todo
+			boolean virtual_where = (where.length() == 4);
+
 			switch (Integer.parseInt(who)) {
 			// LIGHTING
 			case 1:
@@ -444,12 +442,11 @@ public class MonitorSessionThread extends Thread {
 
 				// For virtual configuration we receive for light on 1000#1
 				// so assuming the second part is the what
-                what_parts = what.split("#");
-                if (what_parts.length > 1) {
-                	virtual_where = true;
-                    // take the last part for the what
-                    what = what_parts[what_parts.length - 1];
-                }
+				if (virtual_where) {
+					String[] what_parts = what.split("#");
+					// take the last part for the what
+					what = what_parts[what_parts.length - 1];
+				}
 
 				switch (Integer.parseInt(what)) {
 				// Light OFF
@@ -510,7 +507,7 @@ public class MonitorSessionThread extends Thread {
 			// THERMOREGULATION
 			case 4:
 				messageType = "thermoregulation";
-				objectClass = "Thermo";
+				objectClass = "Temperature";
 
 				switch (Integer.parseInt(what)) {
 				case 0:
@@ -683,7 +680,7 @@ public class MonitorSessionThread extends Thread {
 				messageType = "CEN Basic and Evolved";
 				objectClass = "CEN";
 
-				what_parts = what.split("#");
+				String[] what_parts = what.split("#");
 
 				if (what_parts.length == 1) {
 					// type of pressure
@@ -728,10 +725,11 @@ public class MonitorSessionThread extends Thread {
 			if (objectName != null) {
 				event.addProperty("object.name", objectName);
 			}
+
 			logger.info("Frame " + frame + " is " + messageType
-				+ " message. Notify it as OpenHab event "
-				+ messageDescription == "No Description set" ? ""
-				: messageDescription); // for debug
+					+ " message. Notify it as OpenHab event "
+					+ messageDescription == "No Description set" ? ""
+					: messageDescription); // for debug
 
 			// Notify all the listeners an event has been received
 			pluginReference.notifyEvent(event);

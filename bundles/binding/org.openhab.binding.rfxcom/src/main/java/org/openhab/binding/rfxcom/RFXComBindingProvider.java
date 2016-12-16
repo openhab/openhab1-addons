@@ -9,7 +9,7 @@
 package org.openhab.binding.rfxcom;
 
 import org.openhab.binding.rfxcom.internal.messages.RFXComBaseMessage.PacketType;
-import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
+import org.openhab.core.binding.BindingProvider;
 
 /**
  * This interface is implemented by classes that can provide mapping information
@@ -18,13 +18,10 @@ import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
  * Implementing classes should register themselves as a service in order to be
  * taken into account.
  * 
- * Extending AutoUpdateBindingProvider to only update the state of items if
- * the command was successfully sent by the RFXComm Tranceiver hardware.
- * 
- * @author Pauli Anttila, Jürgen Richtsfeld
+ * @author Pauli Anttila
  * @since 1.2.0
  */
-public interface RFXComBindingProvider extends AutoUpdateBindingProvider {
+public interface RFXComBindingProvider extends BindingProvider {
 
 	/**
 	 * Returns the id to the given <code>itemName</code>.

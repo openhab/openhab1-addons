@@ -39,8 +39,6 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
-import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +49,6 @@ import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
-import com.tinkerforge.BrickletDualButton;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
@@ -59,28 +56,21 @@ import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialDigitalOut4;
-import com.tinkerforge.BrickletIndustrialDual020mA;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
-import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
-import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
-import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
-import com.tinkerforge.BrickletSolidStateRelay;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
 import com.tinkerforge.BrickletTilt;
 import com.tinkerforge.BrickletVoltageCurrent;
-import com.tinkerforge.CryptoException;
 import com.tinkerforge.IPConnection;
 import com.tinkerforge.NotConnectedException;
-import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -96,11 +86,9 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getIpConnection <em>Ip Connection</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getHost <em>Host</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getPort <em>Port</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getAuthkey <em>Authkey</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getIsConnected <em>Is Connected</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isIsConnected <em>Is Connected</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isAutoReconnect <em>Auto Reconnect</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isReconnected <em>Reconnected</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getConnectedCounter <em>Connected Counter</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getTimeout <em>Timeout</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getMdevices <em>Mdevices</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getEcosystem <em>Ecosystem</em>}</li>
@@ -192,44 +180,24 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
   protected int port = PORT_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getAuthkey() <em>Authkey</em>}' attribute.
+   * The default value of the '{@link #isIsConnected() <em>Is Connected</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getAuthkey()
+   * @see #isIsConnected()
    * @generated
    * @ordered
    */
-  protected static final String AUTHKEY_EDEFAULT = null;
+  protected static final boolean IS_CONNECTED_EDEFAULT = false;
 
   /**
-   * The cached value of the '{@link #getAuthkey() <em>Authkey</em>}' attribute.
+   * The cached value of the '{@link #isIsConnected() <em>Is Connected</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getAuthkey()
+   * @see #isIsConnected()
    * @generated
    * @ordered
    */
-  protected String authkey = AUTHKEY_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getIsConnected() <em>Is Connected</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getIsConnected()
-   * @generated
-   * @ordered
-   */
-  protected static final HighLowValue IS_CONNECTED_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getIsConnected() <em>Is Connected</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getIsConnected()
-   * @generated
-   * @ordered
-   */
-  protected HighLowValue isConnected = IS_CONNECTED_EDEFAULT;
+  protected boolean isConnected = IS_CONNECTED_EDEFAULT;
 
   /**
    * The default value of the '{@link #isAutoReconnect() <em>Auto Reconnect</em>}' attribute.
@@ -270,26 +238,6 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
    * @ordered
    */
   protected boolean reconnected = RECONNECTED_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getConnectedCounter() <em>Connected Counter</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getConnectedCounter()
-   * @generated
-   * @ordered
-   */
-  protected static final DecimalValue CONNECTED_COUNTER_EDEFAULT = (DecimalValue)ModelFactory.eINSTANCE.createFromString(ModelPackage.eINSTANCE.getMDecimalValue(), "0");
-
-  /**
-   * The cached value of the '{@link #getConnectedCounter() <em>Connected Counter</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getConnectedCounter()
-   * @generated
-   * @ordered
-   */
-  protected DecimalValue connectedCounter = CONNECTED_COUNTER_EDEFAULT;
 
   /**
    * The default value of the '{@link #getTimeout() <em>Timeout</em>}' attribute.
@@ -441,30 +389,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getAuthkey()
-  {
-    return authkey;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setAuthkey(String newAuthkey)
-  {
-    String oldAuthkey = authkey;
-    authkey = newAuthkey;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__AUTHKEY, oldAuthkey, authkey));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public HighLowValue getIsConnected()
+  public boolean isIsConnected()
   {
     return isConnected;
   }
@@ -474,9 +399,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setIsConnected(HighLowValue newIsConnected)
+  public void setIsConnected(boolean newIsConnected)
   {
-    HighLowValue oldIsConnected = isConnected;
+    boolean oldIsConnected = isConnected;
     isConnected = newIsConnected;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__IS_CONNECTED, oldIsConnected, isConnected));
@@ -526,29 +451,6 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     reconnected = newReconnected;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__RECONNECTED, oldReconnected, reconnected));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public DecimalValue getConnectedCounter()
-  {
-    return connectedCounter;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setConnectedCounter(DecimalValue newConnectedCounter)
-  {
-    DecimalValue oldConnectedCounter = connectedCounter;
-    connectedCounter = newConnectedCounter;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__CONNECTED_COUNTER, oldConnectedCounter, connectedCounter));
   }
 
   /**
@@ -653,122 +555,120 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 		logger.trace("{} After connect call", LoggerConstants.TFINIT);
 	}
 
-  // /**
-  // * @see makeConnectThread()
-  // *
-  // * @generated NOT
-  // */
-  // private void makeConnect() {
-  // try {
-  // logger.debug(
-  // "trying to establish connection to {}:{}", host, port);
-  // ipConnection.connect(getHost(), getPort());
-  // } catch (AlreadyConnectedException e) {
-  // logger.debug("connect successful: {}:{}", host,
-  // port);
-  // } catch (ConnectException e) {
-  // // lets try it endless: don't set connected to true
-  // logger.debug(
-  // "connect failed with ConnectionException: {}:{}", host,
-  // port);
-  // } catch (UnknownHostException e) {
-  // logger.error("fatal error: {}", e);
-  // } catch (IOException e) {
-  // logger.error("connect failed with IOException {}", e);
-  // }
-  // }
+	/**
+	 * @see makeConnectThread()
+	 * 
+	 * @generated NOT
+	 */
+	@SuppressWarnings("unused")
+	private void makeConnect() {
+		try {
+			logger.debug(
+					"trying to establish connection to {}:{}", host, port);
+			ipConnection.connect(getHost(), getPort());
+		} catch (AlreadyConnectedException e) {
+			logger.debug("connect successful: {}:{}", host,
+					port);
+		} catch (ConnectException e) {
+			// lets try it endless: don't set connected to true
+			logger.debug(
+					"connect failed with ConnectionException: {}:{}", host,
+					port);
+		} catch (UnknownHostException e) {
+			logger.error("fatal error: {}", e);
+		} catch (IOException e) {
+			logger.error("connect failed with IOException {}", e);
+		}
+	}
 
-	  /**
-   * Connects the ipConnection to the brickd. A thread is used to retry the connection in case of a
-   * ConnectExpeption. This is as workaround for an issue in the IpConnection api: If autoReconnect
-   * is chosen the reconnect does not work for the connect method call. This call must anyway be
-   * successful. Only later disconnects are handled by autoReconnect. If this issue is solved in the
-   * upstream api, the makeConnect method of this should be preferred.
-   * 
-   * @generated NOT
-   */
-  private void makeConnectThread() {
-    connectThread = new Thread() {
-      boolean connected = false;
-      boolean fatalError = false;
+	/**
+	 * Connects the ipConnection to the brickd. A thread is used to retry the
+	 * connection in case of a ConnectExpeption. This is as workaround for an
+	 * issue in the IpConnection api: If autoReconnect is chosen the reconntect
+	 * does not work for the connect method call. This call must anyway be
+	 * succesfull. Only later disconnects are handled by autoReconnect. If this
+	 * issue is solved in the upstream api, the makeConnect method of this
+	 * should be preferred.
+	 * 
+	 * @generated NOT
+	 */
+	private void makeConnectThread() {
+		connectThread = new Thread() {
+			boolean connected = false;
+			boolean fatalError = false;
 
-      @Override
-      public void run() {
-        while (!connected && !fatalError && !isInterrupted()) {
-          try {
-            logger.trace("trying to establish connection to {}:{}", host, port);
-            ipConnection.connect(getHost(), getPort());
-          } catch (AlreadyConnectedException e) {
-            logger.trace("connect successful: {}:{}", host, port);
-            connected = true;
-          } catch (ConnectException e) {
-            // lets try it endless: don't set connected to true
-            logger.debug("connect failed with ConnectionException: {}:{}", host, port);
-            try {
-              Thread.sleep(1000);
-            } catch (InterruptedException e1) {
-              logger.debug("connect interrupt recieved: {}:{}", host, port);
-              interrupt();
-            }
-          } catch (UnknownHostException e) {
-            // TODO use TinkerforeExceptionHandler
-            logger.error("fatal error: {}", e);
-            fatalError = true;
-          } catch (IOException e) {
-            logger.error("connect failed with IOException {}", e);
-            try {
-              Thread.sleep(1000);
-            } catch (InterruptedException e1) {
-              logger.debug("connect interrupt recieved: {}:{}", host, port);
-              interrupt();
-            }
-          }
-        }
-      }
-    };
-    connectThread.setDaemon(true);
-    connectThread.start();
-  }
+			@Override
+			public void run() {
+				while (!connected && !fatalError && ! isInterrupted() ) {
+					try {
+						logger.trace(
+								"trying to establish connection to {}:{}",
+								host, port);
+						ipConnection.connect(getHost(), getPort());
+					} catch (AlreadyConnectedException e) {
+						logger.trace("connect successful: {}:{}", host, port);
+						connected = true;
+					} catch (ConnectException e) {
+						// lets try it endless: don't set connected to true
+						logger.debug(
+								"connect failed with ConnectionException: {}:{}",
+								host, port);
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e1) {
+							logger.debug("connect interrupt recieved: {}:{}",
+									host, port);
+							interrupt();
+						}
+					} catch (UnknownHostException e) {
+						//TODO use TinkerforeExceptionHandler
+						logger.error("fatal error: {}", e);
+						fatalError = true;
+					} catch (IOException e) {
+						logger.error("connect failed with IOException {}", e);
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e1) {
+							logger.debug("connect interrupt recieved: {}:{}",
+									host, port);
+							interrupt();
+						}
+					}
+				}
+			}
+		};
+		connectThread.setDaemon(true);
+		connectThread.start();
+	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
 	 */
-  private class ConnectedListener implements IPConnection.ConnectedListener {
-    IPConnection ipcon;
+	private class ConnectedListener implements IPConnection.ConnectedListener {
+		IPConnection ipcon;
 
-    public ConnectedListener(IPConnection ipcon) {
-      super();
-      this.ipcon = ipcon;
-    }
+		public ConnectedListener(IPConnection ipcon) {
+			super();
+			this.ipcon = ipcon;
+		}
 
-    @Override
-    public void connected(short connectReason) {
-      logger.debug("{} Connected listener was called.", LoggerConstants.TFINIT);
-      if (connectReason == IPConnection.CONNECT_REASON_AUTO_RECONNECT) {
-        setReconnected(true);
-      }
-      try {
-        if (authkey != null && !authkey.equals("")) {
-          ipcon.authenticate(authkey);
-        }
-        ipcon.enumerate();
-      } catch (TimeoutException e) {
-        TinkerforgeErrorHandler.handleError(getLogger(),
-            TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-      } catch (CryptoException e) {
-        TinkerforgeErrorHandler.handleError(getLogger(),
-            TinkerforgeErrorHandler.TF_NOT_CRYPTO_EXCEPTION, e);
-      } catch (NotConnectedException e) {
-        TinkerforgeErrorHandler.handleError(getLogger(),
-            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-      }
-      setIsConnected(HighLowValue.HIGH);
-      Integer counternew = connectedCounter.intValue() + 1;
-      setConnectedCounter(new DecimalValue(counternew));
-    }
-  }
+		@Override
+		public void connected(short connectReason) {
+			logger.debug("{} Connected listener was called.", LoggerConstants.TFINIT);
+			setIsConnected(true);
+			if (connectReason == IPConnection.CONNECT_REASON_AUTO_RECONNECT){
+			  setReconnected(true);
+			}
+			try {
+				ipcon.enumerate();
+			} catch (NotConnectedException e) {
+				logger.error("{} enumeration failed with NotConnectedException", LoggerConstants.TFINIT);
+			}
+		}
+
+	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -791,7 +691,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 		public void disconnected(short connectReason) {
 			modelLock.lock();
 			try {
-				setIsConnected(HighLowValue.LOW);
+				setIsConnected(false);
 				ArrayList<String> deviceUidList = new ArrayList<String>();
 				for (MDevice<?> mDevice : mdevices) {
 					deviceUidList.add(mDevice.getUid());
@@ -985,30 +885,6 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletLEDStrip");
               mDevice = factory.createMBrickletLEDStrip();
               mDevice.setDeviceIdentifier(BrickletLEDStrip.DEVICE_IDENTIFIER);
-            } else if (deviceIdentifier == BrickletJoystick.DEVICE_IDENTIFIER){
-              logger.debug("addDevice BrickletJoystick");
-              mDevice = factory.createMBrickletJoystick();
-              mDevice.setDeviceIdentifier(BrickletJoystick.DEVICE_IDENTIFIER);
-            } else if (deviceIdentifier == BrickletLinearPoti.DEVICE_IDENTIFIER){
-              logger.debug("addDevice BrickletLinearPoti");
-              mDevice = factory.createMBrickletLinearPoti();
-              mDevice.setDeviceIdentifier(BrickletLinearPoti.DEVICE_IDENTIFIER);
-            } else if (deviceIdentifier == BrickletDualButton.DEVICE_IDENTIFIER){
-              logger.debug("addDevice BrickletDualButton");
-              mDevice = factory.createMBrickletDualButton();
-              mDevice.setDeviceIdentifier(BrickletDualButton.DEVICE_IDENTIFIER);
-            } else if (deviceIdentifier == BrickletPTC.DEVICE_IDENTIFIER) {
-              logger.debug("addDevice BrickletPTC");
-              mDevice = factory.createMBrickletPTC();
-              mDevice.setDeviceIdentifier(BrickletPTC.DEVICE_IDENTIFIER);
-            } else if (deviceIdentifier == BrickletIndustrialDual020mA.DEVICE_IDENTIFIER){
-              logger.debug("addDevice BrickletIndustrialDual020mA");
-              mDevice = factory.createMBrickletIndustrialDual020mA();
-              mDevice.setDeviceIdentifier(BrickletIndustrialDual020mA.DEVICE_IDENTIFIER);
-            } else if (deviceIdentifier == BrickletSolidStateRelay.DEVICE_IDENTIFIER){
-              logger.debug("addDevice BrickletSolidStateRelay");
-              mDevice = factory.createMBrickletSolidStateRelay();
-              mDevice.setDeviceIdentifier(BrickletSolidStateRelay.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());
@@ -1142,16 +1018,12 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
         return getHost();
       case ModelPackage.MBRICKD__PORT:
         return getPort();
-      case ModelPackage.MBRICKD__AUTHKEY:
-        return getAuthkey();
       case ModelPackage.MBRICKD__IS_CONNECTED:
-        return getIsConnected();
+        return isIsConnected();
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         return isAutoReconnect();
       case ModelPackage.MBRICKD__RECONNECTED:
         return isReconnected();
-      case ModelPackage.MBRICKD__CONNECTED_COUNTER:
-        return getConnectedCounter();
       case ModelPackage.MBRICKD__TIMEOUT:
         return getTimeout();
       case ModelPackage.MBRICKD__MDEVICES:
@@ -1185,20 +1057,14 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
       case ModelPackage.MBRICKD__PORT:
         setPort((Integer)newValue);
         return;
-      case ModelPackage.MBRICKD__AUTHKEY:
-        setAuthkey((String)newValue);
-        return;
       case ModelPackage.MBRICKD__IS_CONNECTED:
-        setIsConnected((HighLowValue)newValue);
+        setIsConnected((Boolean)newValue);
         return;
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         setAutoReconnect((Boolean)newValue);
         return;
       case ModelPackage.MBRICKD__RECONNECTED:
         setReconnected((Boolean)newValue);
-        return;
-      case ModelPackage.MBRICKD__CONNECTED_COUNTER:
-        setConnectedCounter((DecimalValue)newValue);
         return;
       case ModelPackage.MBRICKD__TIMEOUT:
         setTimeout((Integer)newValue);
@@ -1236,9 +1102,6 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
       case ModelPackage.MBRICKD__PORT:
         setPort(PORT_EDEFAULT);
         return;
-      case ModelPackage.MBRICKD__AUTHKEY:
-        setAuthkey(AUTHKEY_EDEFAULT);
-        return;
       case ModelPackage.MBRICKD__IS_CONNECTED:
         setIsConnected(IS_CONNECTED_EDEFAULT);
         return;
@@ -1247,9 +1110,6 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
         return;
       case ModelPackage.MBRICKD__RECONNECTED:
         setReconnected(RECONNECTED_EDEFAULT);
-        return;
-      case ModelPackage.MBRICKD__CONNECTED_COUNTER:
-        setConnectedCounter(CONNECTED_COUNTER_EDEFAULT);
         return;
       case ModelPackage.MBRICKD__TIMEOUT:
         setTimeout(TIMEOUT_EDEFAULT);
@@ -1282,16 +1142,12 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
         return HOST_EDEFAULT == null ? host != null : !HOST_EDEFAULT.equals(host);
       case ModelPackage.MBRICKD__PORT:
         return port != PORT_EDEFAULT;
-      case ModelPackage.MBRICKD__AUTHKEY:
-        return AUTHKEY_EDEFAULT == null ? authkey != null : !AUTHKEY_EDEFAULT.equals(authkey);
       case ModelPackage.MBRICKD__IS_CONNECTED:
-        return IS_CONNECTED_EDEFAULT == null ? isConnected != null : !IS_CONNECTED_EDEFAULT.equals(isConnected);
+        return isConnected != IS_CONNECTED_EDEFAULT;
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         return autoReconnect != AUTO_RECONNECT_EDEFAULT;
       case ModelPackage.MBRICKD__RECONNECTED:
         return reconnected != RECONNECTED_EDEFAULT;
-      case ModelPackage.MBRICKD__CONNECTED_COUNTER:
-        return CONNECTED_COUNTER_EDEFAULT == null ? connectedCounter != null : !CONNECTED_COUNTER_EDEFAULT.equals(connectedCounter);
       case ModelPackage.MBRICKD__TIMEOUT:
         return timeout != TIMEOUT_EDEFAULT;
       case ModelPackage.MBRICKD__MDEVICES:
@@ -1346,16 +1202,12 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     result.append(host);
     result.append(", port: ");
     result.append(port);
-    result.append(", authkey: ");
-    result.append(authkey);
     result.append(", isConnected: ");
     result.append(isConnected);
     result.append(", autoReconnect: ");
     result.append(autoReconnect);
     result.append(", reconnected: ");
     result.append(reconnected);
-    result.append(", connectedCounter: ");
-    result.append(connectedCounter);
     result.append(", timeout: ");
     result.append(timeout);
     result.append(')');

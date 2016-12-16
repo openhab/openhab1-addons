@@ -65,7 +65,6 @@ import org.slf4j.LoggerFactory;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayBrickletImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayBrickletImpl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayBrickletImpl#getMsubdevices <em>Msubdevices</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayBrickletImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -272,26 +271,6 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
    * @ordered
    */
   protected EList<MIndustrialQuadRelay> msubdevices;
-
-  /**
-   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDeviceType()
-   * @generated
-   * @ordered
-   */
-  protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_quad_relay";
-
-  /**
-   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDeviceType()
-   * @generated
-   * @ordered
-   */
-  protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -606,16 +585,6 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
-  public String getDeviceType()
-  {
-    return deviceType;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void initSubDevices()
@@ -754,8 +723,6 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
         return getBrickd();
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__MSUBDEVICES:
         return getMsubdevices();
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__DEVICE_TYPE:
-        return getDeviceType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -896,8 +863,6 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
         return getBrickd() != null;
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__MSUBDEVICES:
         return msubdevices != null && !msubdevices.isEmpty();
-      case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__DEVICE_TYPE:
-        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
     return super.eIsSet(featureID);
   }
@@ -1016,8 +981,6 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
-    result.append(", deviceType: ");
-    result.append(deviceType);
     result.append(')');
     return result.toString();
   }

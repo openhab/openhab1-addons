@@ -62,7 +62,6 @@ import org.openhab.model.sitemap.Slider;
 import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Video;
 import org.openhab.model.sitemap.Webview;
-import org.openhab.model.sitemap.Mapview;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
@@ -79,7 +78,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author Kai Kreuzer
  * @author Chris Jackson
- * @author Gaël L'hopital
  * @since 0.8.0
  */
 @Path(SitemapResource.PATH_SITEMAPS)
@@ -261,7 +259,7 @@ public class SitemapResource {
 		bean.label = sitemap.getLabel();
 
     	bean.link = UriBuilder.fromUri(uri).path(SitemapResource.PATH_SITEMAPS).path(bean.name).build().toASCIIString();
-    	bean.homepage = createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, false, uri);
+    	bean.homepage = createPageBean(sitemap.getName(), sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, false, uri);
     	return bean;
     }
     
@@ -377,8 +375,7 @@ public class SitemapResource {
     	}
     	if (widget instanceof Image ||
     		widget instanceof Video ||
-    		widget instanceof Webview || 
-    		widget instanceof Mapview) {
+    		widget instanceof Webview) {
 
         	if(widget instanceof Image) {
         		Image imageWidget = (Image) widget;
@@ -393,15 +390,11 @@ public class SitemapResource {
         			bean.encoding = videoWidget.getEncoding();
         		}
         		bean.url = videoWidget.getUrl();
-        	}        	
-        	else if (widget instanceof Webview) {
+        	}
+        	else {
 				Webview webViewWidget = (Webview) widget;
 				bean.height = webViewWidget.getHeight();
 				bean.url = webViewWidget.getUrl();
-        	}
-        	else if (widget instanceof Mapview) {
-				Mapview mapViewWidget = (Mapview) widget;
-				bean.height = mapViewWidget.getHeight();
         	}
 
 			String wId = itemUIRegistry.getWidgetId(widget);
@@ -422,9 +415,6 @@ public class SitemapResource {
 				catch (UnsupportedEncodingException ex) {
 					throw new RuntimeException(ex.getMessage(), ex);
 				}
-			}
-			if(uri.getFragment() != null) {
-				sb.append("#" + uri.getFragment());
 			}
 			sbBaseUrl.append(sb.toString());
 			bean.url = sbBaseUrl.toString();

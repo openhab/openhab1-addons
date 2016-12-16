@@ -16,30 +16,26 @@ package org.openhab.binding.pilight.internal.communication;
  */
 public class Identification {
 	
-	public static String ACTION_IDENTIFY = "identify";
+	public static String CLIENT_GUI = "client gui";
+	public static String REQUEST_CONFIG = "request config";
+	public static String ACCEPTED = "accept client";
+	public static String REJECTED = "reject client";
 
-	private String action;
-	
-	private Options options;
+	private String message;
 	
 	public Identification() {
-		this.action = ACTION_IDENTIFY;
+		
 	}
 	
-	public String getAction() {
-		return action;
-	}
-
-	public void setAction(String action) {
-		this.action = action;
-	}
-
-	public Options getOptions() {
-		return options;
-	}
-
-	public void setOptions(Options options) {
-		this.options = options;
+	public Identification (String message) {
+		this.message = message;
 	}
 	
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getMessage() {
+		return message;
+	}
 }

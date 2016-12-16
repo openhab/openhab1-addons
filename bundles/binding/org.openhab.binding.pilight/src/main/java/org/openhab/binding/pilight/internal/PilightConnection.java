@@ -8,10 +8,13 @@
  */
 package org.openhab.binding.pilight.internal;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.Date;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.binding.pilight.internal.communication.Config;
+import org.openhab.binding.pilight.internal.communication.Identification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +26,6 @@ import org.slf4j.LoggerFactory;
  */
 public class PilightConnection {
 	
-	@SuppressWarnings("unused")
 	private static final Logger logger = 
 			LoggerFactory.getLogger(PilightConnection.class);
 	
@@ -37,7 +39,7 @@ public class PilightConnection {
 	private Long delay;
 	
 	/* Runtime properties */
-	private PilightConnector connector;
+	private PilightListener listener;
 	
 	private Socket socket;
 
@@ -69,12 +71,12 @@ public class PilightConnection {
 		this.port = port;
 	}
 	
-	public PilightConnector getConnector() {
-		return connector;
+	public PilightListener getListener() {
+		return listener;
 	}
 
-	public void setConnector(PilightConnector connector) {
-		this.connector = connector;
+	public void setListener(PilightListener listener) {
+		this.listener = listener;
 	}
 
 	public Socket getSocket() {
@@ -110,7 +112,37 @@ public class PilightConnection {
 	}
 	
 	public boolean isConnected() {
-		return getConnector() != null && getConnector().isConnected();
+		return getListener() != null && getListener().isConnected();
 	}
 	
+	/**
+	 * Try to connect to the pilight instance represented by this object  
+	 * 
+	 * @param inputMapper The JSON inputmapper to use
+	 * @param outputMapper The JSON outputmapper to use
+	 * @return true when successfully connected 
+	 */
+	@SuppressWarnings("resource")
+	public boolean connect(ObjectMapper inputMapper, ObjectMapper outputMapper) {
+		try {
+			Socket socket = new Socket(getHostname(), getPort());
+			Identification id = new Identification(Identification.CLIENT_GUI);
+			outputMapper.writeValue(socket.getOutputStream(), id);
+			
+			Identification response = inputMapper.readValue(socket.getInputStream(), Identification.class);
+			
+			if (response.getMessage().equals(Identification.ACCEPTED)) 
+				setSocket(socket);
+			else {
+				logger.error("pilight client not accepted: {}", response.getMessage());
+				return false;
+			}
+			
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+			return false;
+		}
+		
+		return true;
+	}
 }

@@ -58,8 +58,7 @@ import com.db4o.query.Query;
 /**
  * This is a {@link PersistenceService} implementation using the db4o database.
  * 
- * @author Kai Kreuzer - Initial Contribution
- * @author Theo Weiss - get DB_FOLDER from property
+ * @author Kai Kreuzer
  * @since 1.0.0
  */
 public class Db4oPersistenceService implements QueryablePersistenceService {
@@ -68,7 +67,7 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 	
 	private static final String SERVICE_NAME = "db4o";
 	
-	private static final String DB_FOLDER = getUserPersistenceDataFolder() + File.separator + "db4o";
+	private static final String DB_FOLDER_NAME = "etc/db4o";
 	private static final String DB_FILE_NAME = "store.db4o";
 
 	private static final String SCHEDULER_GROUP = "DB4O_SchedulerGroup";
@@ -81,9 +80,9 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 	}
 	
 	public void activate() {
-		File folder = new File(DB_FOLDER);
+		File folder = new File(DB_FOLDER_NAME);
 		if(!folder.exists()) {
-			folder.mkdirs();
+			folder.mkdir();
 		}
 	    openDbFile();
 	    Db4oItem.configure(db.ext().configure());
@@ -192,7 +191,7 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 	}
 
 	private static void openDbFile() {
-		db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_FOLDER + File.separator + DB_FILE_NAME);
+		db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_FOLDER_NAME + File.separator + DB_FILE_NAME);
 	}
 	
 
@@ -296,10 +295,10 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 		@Override
 		public void execute(JobExecutionContext context) throws JobExecutionException {
 			long startTime = System.currentTimeMillis();
-			String backupFileName = DB_FOLDER + File.separator + 
+			String backupFileName = DB_FOLDER_NAME + File.separator + 
 				DATE_FORMATTER.format(System.currentTimeMillis()) + "_" + DB_FILE_NAME + ".bak";
 			
-			removeObsoleteBackupFiles(DB_FOLDER);
+			removeObsoleteBackupFiles(DB_FOLDER_NAME);
 			try {
 				ExtObjectContainer extDb = db.ext();
 				if (!extDb.isClosed()) {
@@ -347,14 +346,6 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 		}
 		
 	}
-
-	static private String getUserPersistenceDataFolder() {
-		String progArg = System.getProperty("smarthome.userdata");
-		if (progArg != null) {
-			return progArg + File.separator + "persistence";
-		} else {
-			return "etc";
-		}
-	}
+	
 
 }

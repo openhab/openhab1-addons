@@ -50,7 +50,6 @@ public class WeatherJob implements Job {
 			weatherPublisher.publish(locationId);
 
 		} catch (Exception ex) {
-			logger.error(ex.getMessage(), ex);
 			throw new JobExecutionException(ex.getMessage(), ex);
 		}
 	}

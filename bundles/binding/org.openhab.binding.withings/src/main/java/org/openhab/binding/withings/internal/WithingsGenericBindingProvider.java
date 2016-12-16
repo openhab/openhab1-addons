@@ -41,29 +41,15 @@ public class WithingsGenericBindingProvider extends
 			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
-		String[] configElements = bindingConfig.split(":");
-		
-		String accountId = null;
-		MeasureType measureType = null;
-		
-		if (configElements.length == 1) {
-			measureType = MeasureType.valueOf(configElements[1].toUpperCase());
-		}
-		else if (configElements.length == 2) {
-			accountId = configElements[0];
-			measureType = MeasureType.valueOf(configElements[1].toUpperCase());
-		}
-		else {
-			throw new BindingConfigParseException("Unknown Binding configuration '{}'. The Binding "
-				+ "configuration should consists of either one or two elements.");
-		}
+		MeasureType measureType = MeasureType.valueOf(bindingConfig
+				.toUpperCase());
 
 		if (measureType == null) {
 			throw new BindingConfigParseException("Could not convert string '"
 					+ bindingConfig + "' to according measure type.");
 		}
 
-		WithingsBindingConfig config = new WithingsBindingConfig(accountId, measureType);
+		WithingsBindingConfig config = new WithingsBindingConfig(measureType);
 
 		addBindingConfig(item, config);
 	}

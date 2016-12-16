@@ -13,6 +13,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * Extension of the default OSGi bundle activator
  * 
@@ -21,20 +22,20 @@ import org.slf4j.LoggerFactory;
  */
 public final class OneWireActivator implements BundleActivator {
 
-	private static final Logger logger = LoggerFactory.getLogger(OneWireActivator.class);
-
+	private static Logger logger = LoggerFactory.getLogger(OneWireActivator.class); 
+	
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
-	public void start(BundleContext pvBundleContext) throws Exception {
+	public void start(BundleContext bc) throws Exception {
 		logger.debug("OneWire binding has been started.");
 	}
 
 	/**
 	 * Called whenever the OSGi framework stops our bundle
 	 */
-	public void stop(BundleContext pvBundleContext) throws Exception {
+	public void stop(BundleContext bc) throws Exception {
 		logger.debug("OneWire binding has been stopped.");
 	}
-
+	
 }

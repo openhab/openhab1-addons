@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import tuwien.auto.calimero.CloseEvent;
 import tuwien.auto.calimero.FrameEvent;
-import tuwien.auto.calimero.IndividualAddress;
 import tuwien.auto.calimero.exception.KNXException;
 import tuwien.auto.calimero.knxnetip.KNXnetIPConnection;
 import tuwien.auto.calimero.link.KNXNetworkLink;
@@ -63,12 +62,6 @@ public class KNXConnection implements ManagedService {
 
 	/** the ip address to use for connecting to the KNX bus */
 	private static String sIp;
-
-	/** the KNX bus address to use as local sourceaddress in KNX bus */
-	private static String sLocalSourceAddr = "0.0.0";
-
-	/** the KNX bus address to use as local sourceaddress in KNX bus */
-	private static boolean sIgnoreLocalSourceEvents = false;
 
 	/** the ip connection type for connecting to the KNX bus. Could be either TUNNEL or ROUTING */
 	private static int sIpConnectionType;
@@ -259,8 +252,8 @@ public class KNXConnection implements ManagedService {
 				sLogger.warn("Couldn't find an IP address for this host. Please check the .hosts configuration or use the 'localIp' parameter to configure a valid IP address.");
 			}
 		}
-		
-		return new KNXNetworkLinkIP(ipConnectionType, localEndPoint, new InetSocketAddress(ip, port), false, new TPSettings(new IndividualAddress(sLocalSourceAddr), true));
+
+		return new KNXNetworkLinkIP(ipConnectionType, localEndPoint, new InetSocketAddress(ip, port), false, TPSettings.TP1);
 	}
 
 	private static KNXNetworkLink connectBySerial(String serialPort) throws KNXException {
@@ -295,16 +288,6 @@ public class KNXConnection implements ManagedService {
 		if (config != null) {
 			sLogger.debug("KNXBinding configuration present. Setting up KNX bus connection.");
 			sIp = (String) config.get("ip");
-
-			String readingBusAddrString = (String) config.get("busaddr");
-			if (StringUtils.isNotBlank(readingBusAddrString)) {
-				sLocalSourceAddr = readingBusAddrString;
-			}
-
-			String readingIgnLocEv = (String) config.get("ignorelocalevents");
-			if (StringUtils.isNotBlank(readingIgnLocEv)) {
-				sIgnoreLocalSourceEvents = readingIgnLocEv.equalsIgnoreCase("true");
-			}
 
 			String connectionTypeString = (String) config.get("type");
 			if (StringUtils.isNotBlank(connectionTypeString)) {
@@ -425,15 +408,6 @@ public class KNXConnection implements ManagedService {
 		}
 	}
 
-	
-	public static String getLocalSourceAddr() {
-		return sLocalSourceAddr;
-	}
-
-	public static boolean getIgnoreLocalSourceEvents() {
-		return sIgnoreLocalSourceEvents;
-	}
-	
 	public static long getReadingPause() {
 		return sReadingPause;
 	}

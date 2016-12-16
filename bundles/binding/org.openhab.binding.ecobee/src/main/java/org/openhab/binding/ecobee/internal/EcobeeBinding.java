@@ -9,9 +9,7 @@
 package org.openhab.binding.ecobee.internal;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -51,6 +49,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -154,9 +153,9 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	}
 
 	/**
-	 * the refresh interval which is used to poll values from the Ecobee server (optional, defaults to 180000ms)
+	 * the refresh interval which is used to poll values from the Ecobee server (optional, defaults to 60000ms)
 	 */
-	private long refreshInterval = 180000;
+	private long refreshInterval = 60000;
 
 	/**
 	 * A map of userids from the openhab.cfg file to OAuth credentials used to communicate with each app instance.
@@ -166,9 +165,38 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	/**
 	 * used to store events that we have sent ourselves; we need to remember them for not reacting to them
 	 */
-	private List<String> ignoreEventList = Collections.synchronizedList(new ArrayList<String>());
+	private Set<String> ignoreEventSet = new HashSet<String>();
+
+	/**
+	 * The most recently received list of revisions, or an empty Map if none have been retrieved yet.
+	 */
+	private Map<String, Revision> lastRevisionMap = new HashMap<String, Revision>();
+
+	// Injected by the OSGi Container through the setItemRegistry and
+	// unsetItemRegistry methods.
+	private ItemRegistry itemRegistry;
 
 	public EcobeeBinding() {
+	}
+
+	/**
+	 * Invoked by the OSGi Framework.
+	 * 
+	 * This method is invoked by OSGi during the initialization of the EcobeeBinding, so we have subsequent access to
+	 * the ItemRegistry (needed to get values from Items in openHAB)
+	 */
+	public void setItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = itemRegistry;
+	}
+
+	/**
+	 * Invoked by the OSGi Framework.
+	 * 
+	 * This method is invoked by OSGi during the initialization of the EcobeeBinding, so we have subsequent access to
+	 * the ItemRegistry (needed to get values from Items in openHAB)
+	 */
+	public void unsetItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = null;
 	}
 
 	/**
@@ -279,7 +307,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		Set<String> thermostatIdentifiers = new HashSet<String>();
 
 		for (Revision newRevision : newRevisionMap.values()) {
-			Revision lastRevision = oauthCredentials.getLastRevisionMap().get(newRevision.getThermostatIdentifier());
+			Revision lastRevision = this.lastRevisionMap.get(newRevision.getThermostatIdentifier());
 
 			// If this thermostat's values have changed,
 			// add it to the list for full retrieval
@@ -294,8 +322,8 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			boolean changed = false;
 
 			changed = changed
-					|| (newRevision.hasRuntimeChanged(lastRevision) && (selection.includeRuntime()
-							|| selection.includeExtendedRuntime() || selection.includeSensors()));
+					|| (newRevision.hasRuntimeChanged(lastRevision) && (selection.includeRuntime() || selection
+							.includeExtendedRuntime()));
 			changed = changed
 					|| (newRevision.hasThermostatChanged(lastRevision) && (selection.includeSettings() || selection
 							.includeProgram()));
@@ -306,7 +334,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		}
 
 		// Remember the new revisions for the next execute() call.
-		oauthCredentials.setLastRevisionMap(newRevisionMap);
+		this.lastRevisionMap = newRevisionMap;
 
 		if (0 == thermostatIdentifiers.size()) {
 			logger.debug("No changes detected.");
@@ -339,18 +367,28 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		// Iterate through bindings and update all inbound values.
 		for (final EcobeeBindingProvider provider : this.providers) {
 			for (final String itemName : provider.getItemNames()) {
-				if (provider.isInBound(itemName) && credentialsMatch(provider, itemName, oauthCredentials)) {
+				if (provider.isInBound(itemName)) {
 					final State newState = getState(provider, thermostats, itemName);
+					State oldState = (itemRegistry == null) ? null : itemRegistry.getItem(itemName).getState();
 
-					logger.debug("readEcobee: Updating itemName '{}' with newState '{}'", itemName, newState);
+					if ((oldState == null && newState != null)
+							|| (UnDefType.UNDEF.equals(oldState) && !UnDefType.UNDEF.equals(newState))
+							|| !oldState.equals(newState)) {
+						logger.debug("readEcobee: Updating itemName '{}' with newState '{}', oldState '{}'", itemName,
+								newState, oldState);
 
-					/*
-					 * we need to make sure that we won't send out this event to Ecobee again, when receiving it on the
-					 * openHAB bus
-					 */
-					ignoreEventList.add(itemName + newState.toString());
-					logger.trace("Added event (item='{}', newState='{}') to the ignore event list", itemName, newState);
-					this.eventPublisher.postUpdate(itemName, newState);
+						/*
+						 * we need to make sure that we won't send out this event to Ecobee again, when receiving it on
+						 * the openHAB bus
+						 */
+						ignoreEventSet.add(itemName + newState.toString());
+						logger.trace("Added event (item='{}', newState='{}') to the ignore event list", itemName,
+								newState);
+						this.eventPublisher.postUpdate(itemName, newState);
+					} else {
+						logger.trace("readEcobee: Ignoring item='{}' with newState='{}', oldState='{}'", itemName,
+								newState, oldState);
+					}
 				}
 			}
 		}
@@ -421,8 +459,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			}
 		} else if (Temperature.class.isAssignableFrom(dataType)) {
 			return new DecimalType(((Temperature) propertyValue).toLocalTemperature());
-		} else if (State.class.isAssignableFrom(dataType)) {
-			return (State) propertyValue;
 		} else {
 			return new StringType(propertyValue.toString());
 		}
@@ -463,8 +499,9 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	}
 
 	private boolean isEcho(String itemName, State state) {
-		String ignoreEventListKey = itemName + state.toString();
-		if (ignoreEventList.remove(ignoreEventListKey)) {
+		String ignoreEventSetKey = itemName + state.toString();
+		if (ignoreEventSet.contains(ignoreEventSetKey)) {
+			ignoreEventSet.remove(ignoreEventSetKey);
 			logger.trace(
 					"We received this event (item='{}', state='{}') from Ecobee, so we don't send it back again -> ignore!",
 					itemName, state.toString());
@@ -499,7 +536,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		} else {
 			final Selection selection = new Selection(selectionMatch);
 			List<AbstractFunction> functions = null;
-			logger.trace("Selection for update: {}", selection);
+			logger.debug("Selection for update: {}", selection);
 
 			String property = provider.getProperty(itemName);
 
@@ -510,7 +547,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 
 				thermostat.setProperty(property, newState);
 
-				logger.trace("Thermostat for update: {}", thermostat);
+				logger.debug("Thermostat for update: {}", thermostat);
 
 				OAuthCredentials oauthCredentials = getOAuthCredentials(provider.getUserid(itemName));
 
@@ -553,8 +590,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		// Forget prior revisions because we may be concerned with
 		// different thermostats or properties than before.
 		if (provider instanceof EcobeeBindingProvider) {
-			String userid = ((EcobeeBindingProvider) provider).getUserid(itemName);
-			getOAuthCredentials(userid).getLastRevisionMap().clear();
+			this.lastRevisionMap.clear();
 		}
 	}
 
@@ -566,9 +602,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		// Forget prior revisions because we may be concerned with
 		// different thermostats or properties than before.
 		if (provider instanceof EcobeeBindingProvider) {
-			for (String userid : this.credentialsCache.keySet()) {
-				getOAuthCredentials(userid).getLastRevisionMap().clear();
-			}
+			this.lastRevisionMap.clear();
 		}
 	}
 
@@ -597,7 +631,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		if (config != null) {
 
 			// to override the default refresh interval one has to add a
-			// parameter to openhab.cfg like ecobee:refresh=240000
+			// parameter to openhab.cfg like ecobee:refresh=120000
 			String refreshIntervalString = (String) config.get(CONFIG_REFRESH);
 			if (isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
@@ -680,23 +714,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	}
 
 	/**
-	 * Return true if the given itemName pertains to the given OAuthCredentials. Since there is a single userid-based
-	 * mapping of credential objects for the binding, if the credentials object is the same object as the one in the
-	 * userid-based map, then we know that this item pertains to these credentials.
-	 * 
-	 * @param provider
-	 *            the binding provider
-	 * @param itemName
-	 *            the item name
-	 * @param oauthCredentials
-	 *            the OAuthCredentials to compare
-	 * @return true if the given itemName pertains to the given OAuthCredentials.
-	 */
-	private boolean credentialsMatch(EcobeeBindingProvider provider, String itemName, OAuthCredentials oauthCredentials) {
-		return oauthCredentials == getOAuthCredentials(provider.getUserid(itemName));
-	}
-
-	/**
 	 * Creates the necessary {@link Selection} object to request all information required from the Ecobee API for all
 	 * thermostats and sub-objects that have a binding, per set of credentials configured in openhab.cfg. One
 	 * {@link ThermostatRequest} can then query all information in one go.
@@ -723,7 +740,8 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 				 * We are also only concerned with items that can be reached by the given credentials.
 				 */
 
-				if (!provider.isInBound(itemName) || !credentialsMatch(provider, itemName, oauthCredentials)) {
+				if (!provider.isInBound(itemName)
+						|| oauthCredentials != getOAuthCredentials(provider.getUserid(itemName))) {
 					continue;
 				}
 
@@ -767,8 +785,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 					selection.setIncludePrivacy(true);
 				} else if (property.startsWith("version")) {
 					selection.setIncludeVersion(true);
-				} else if (property.startsWith("remoteSensors")) {
-					selection.setIncludeSensors(true);
 				}
 			}
 		}
@@ -877,11 +893,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		 */
 		private String accessToken;
 
-		/**
-		 * The most recently received list of revisions, or an empty Map if none have been retrieved yet.
-		 */
-		private Map<String, Revision> lastRevisionMap = new HashMap<String, Revision>();
-
 		public OAuthCredentials(String userid) {
 
 			try {
@@ -890,14 +901,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			} catch (Exception e) {
 				throw new EcobeeException("Cannot create OAuthCredentials.", e);
 			}
-		}
-
-		public Map<String, Revision> getLastRevisionMap() {
-			return this.lastRevisionMap;
-		}
-
-		public void setLastRevisionMap(final Map<String, Revision> lastRevisionMap) {
-			this.lastRevisionMap = lastRevisionMap;
 		}
 
 		private Preferences getPrefsNode() {

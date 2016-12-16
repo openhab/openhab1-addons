@@ -11,7 +11,6 @@ package org.openhab.binding.hue.internal;
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.hue.HueBindingProvider;
@@ -59,7 +58,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 	// Caches all bulbs controlled to prevent the recreation of the bulbs which
 	// triggers a rereading of the settings from the bridge which is very
 	// expensive.
-	private HashMap<String, HueBulb> bulbCache = new HashMap<String, HueBulb>();
+	private HashMap<Integer, HueBulb> bulbCache = new HashMap<Integer, HueBulb>();
 
 	/**
 	 * Default constructor for the Hue binding.
@@ -94,24 +93,18 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 			// Get settings and update the bulbs
 			// Observation : If the power of a hue lamp is removed, the status is not updated in hue hub.
 			// The heartbeat functionality should fix this, but 
-			logger.debug("Start Hue data refresh");
 			HueSettings settings = activeBridge.getSettings();
 			if (settings == null) {
-				logger.warn("Hue settings were null, maybe misconfigured bridge IP.");
+				logger.debug("Hue settings were null, maybe misconfigured bridge IP.");
 				return;
 			}
-			Set<String> keys = settings.getKeys();
-			for(String key: keys){				
-				try{
-					HueBulb bulb = bulbCache.get(key);
-					if (bulb == null) {
-						bulb = new HueBulb(activeBridge, key, settings);
-						bulbCache.put(key, bulb);
-					}
-					bulb.getStatus(settings);
-				}catch(NumberFormatException e){
-					logger.warn("lights index {} is not a number", key);
+			for (int i = 1; i <= settings.getCount(); i++) {
+				HueBulb bulb = bulbCache.get(i);
+				if (bulb == null) {
+					bulb = new HueBulb(activeBridge, i);
+					bulbCache.put(i, bulb);
 				}
+				bulb.getStatus(settings);
 			}
 			
 			// Update the items that are linked with the bulbs.
@@ -121,7 +114,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 					HueBindingConfig deviceConfig = getConfigForItemName(hueItemName);
 					
 					if (deviceConfig != null) {
-						HueBulb bulb = bulbCache.get(deviceConfig.getDeviceId());
+						HueBulb bulb = bulbCache.get(deviceConfig.getDeviceNumber());
 						if (bulb != null) {
 						
 							// Enhancement: only send a postUpdate for items that have changed.
@@ -144,7 +137,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 							if (deviceConfig.getType().equals(BindingType.brightness)) {
 								if ((bulb.getIsOn() == true) && (bulb.getIsReachable() == true)) {
 									// Only postUpdate when bulb is on, otherwise dimmer item is not retaining state and shows to max brightness value
-									PercentType newPercent = new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double) HueBulb.MAX_BRIGHTNESS));
+									PercentType newPercent = new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double)255));
 									if ((deviceConfig.itemStatePercentType == null) || (deviceConfig.itemStatePercentType.equals(newPercent) == false)) {
 										eventPublisher.postUpdate(hueItemName, newPercent);
 										deviceConfig.itemStatePercentType = newPercent;
@@ -154,8 +147,8 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 								if ((bulb.getIsOn() == true) && (bulb.getIsReachable() == true)) {
 									// Only postUpdate when bulb is on, otherwise color item is not retaining state and shows to max brightness value
 									DecimalType decimalHue = new DecimalType(bulb.getHue() / (double)182);
-									PercentType percentBrightness = new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double) HueBulb.MAX_BRIGHTNESS));
-									PercentType percentSaturation = new PercentType((int)Math.round((bulb.getSaturation() * (double)100) / (double) HueBulb.MAX_SATURATION));
+									PercentType percentBrightness = new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double)255));
+									PercentType percentSaturation = new PercentType((int)Math.round((bulb.getSaturation() * (double)100) / (double)255));
 									HSBType newHsb = new HSBType(decimalHue, percentSaturation, percentBrightness);
 									if ((deviceConfig.itemStateHSBType == null) || (deviceConfig.itemStateHSBType.equals(newHsb) == false)) {
 										eventPublisher.postUpdate(hueItemName, newHsb);
@@ -167,7 +160,6 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 					}
 				}
 			}
-			logger.debug("Done Hue data refresh.");
 		}
 	}
 	
@@ -206,10 +198,10 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 			return;
 		}
 
-		HueBulb bulb = bulbCache.get(deviceConfig.getDeviceId());
+		HueBulb bulb = bulbCache.get(deviceConfig.getDeviceNumber());
 		if (bulb == null) {
-			bulb = new HueBulb(bridge, deviceConfig.getDeviceId());
-			bulbCache.put(deviceConfig.getDeviceId(), bulb);
+			bulb = new HueBulb(bridge, deviceConfig.getDeviceNumber());
+			bulbCache.put(deviceConfig.getDeviceNumber(), bulb);
 		}
 
 		if (command instanceof OnOffType) {
@@ -234,7 +226,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 				int resultingValue = bulb.decreaseBrightness(deviceConfig.getStepSize());
 				eventPublisher.postUpdate(itemName, new PercentType(resultingValue));
 			} else if ((command instanceof PercentType) && !(command instanceof HSBType)) {
-				bulb.setBrightness((int)Math.round((double)HueBulb.MAX_BRIGHTNESS / (double)100 * ((PercentType) command).intValue()));
+				bulb.setBrightness((int)Math.round((double)255 / (double)100 * ((PercentType) command).intValue()));
 			}
 		}
 
