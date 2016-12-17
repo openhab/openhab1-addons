@@ -12,11 +12,10 @@
 
     <config-description>
         <parameter name="host" type="text" required="true">
-            <context>network-address</context>
             <label>Host</label>
-            <description>IP address of the Plex server</description>
+            <description>IP address or hostname of the Plex server</description>
         </parameter>
-        <parameter name="port" type="text">
+        <parameter name="port" type="integer">
             <label>Port</label>
             <description>Port that the Plex server is running on</description>
             <default>32400</default>

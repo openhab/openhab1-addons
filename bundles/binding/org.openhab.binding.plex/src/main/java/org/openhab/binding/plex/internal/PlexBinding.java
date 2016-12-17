@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.openhab.binding.plex.PlexBindingProvider;
 import org.openhab.binding.plex.internal.annotations.ItemMapping;
@@ -164,17 +165,17 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
     private void configureBinding(final Map<String, Object> configuration) {
         PlexConnectionProperties connectionProperties = new PlexConnectionProperties();
 
-        connectionProperties.setHost((String) configuration.get("host"));
-        connectionProperties.setToken((String) configuration.get("token"));
-        connectionProperties.setUsername((String) configuration.get("username"));
-        connectionProperties.setPassword((String) configuration.get("password"));
+        connectionProperties.setHost(Objects.toString(configuration.get("host"), null));
+        connectionProperties.setToken(Objects.toString(configuration.get("token"), null));
+        connectionProperties.setUsername(Objects.toString(configuration.get("username"), null));
+        connectionProperties.setPassword(Objects.toString(configuration.get("password"), null));
 
-        String port = (String) configuration.get("port");
+        String port = Objects.toString(configuration.get("port"), null);
         if (isNotBlank(port) && isNumeric(port)) {
             connectionProperties.setPort(Integer.valueOf(port));
         }
 
-        String refresh = (String) configuration.get("refresh");
+        String refresh = Objects.toString(configuration.get("refresh"), null);
         if (isNotBlank(refresh) && isNumeric(refresh)) {
             refreshInterval = Long.parseLong(refresh);
         }
