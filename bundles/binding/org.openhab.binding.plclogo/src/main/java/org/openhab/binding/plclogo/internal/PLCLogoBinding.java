@@ -86,10 +86,6 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
         return result;
     }
 
-    private int WriteLogoDBArea(S7Client client, int size) {
-        return client.WriteArea(S7.S7AreaDB, 1, 0, size, data);
-    }
-
     private void ReconnectLogo(S7Client client) {
         // try and reconnect
         client.Disconnect();
@@ -191,7 +187,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                             continue;
                         }
 
-                        int currentValue;
+                        int currentValue = Integer.MAX_VALUE;
                         if (rd.isDigital()) {
                             int bit = -1;
                             try {
@@ -211,15 +207,13 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                             currentValue = S7.GetShortAt(data, address);
                         }
 
-                        if (config.isSet()) {
-                            if (currentValue == config.getLastValue()) {
-                                continue;
-                            }
+                        if (currentValue == config.getLastValue()) {
+                            continue;
+                        }
 
-                            int delta = Math.abs(config.getLastValue() - currentValue);
-                            if (!rd.isDigital() && (delta < config.getAnalogDelta())) {
-                                continue;
-                            }
+                        int delta = Math.abs(config.getLastValue() - currentValue);
+                        if (!rd.isDigital() && (delta < config.getAnalogDelta())) {
+                            continue;
                         }
 
                         boolean isValid = false;
@@ -288,14 +282,21 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 
             PLCLogoMemoryConfig wr = config.getWR();
             int address = -1;
-            int bit = -1;
             try {
                 address = wr.getAddress(controller.getModel());
-                bit = wr.getBit(controller.getModel());
             } catch (BindingConfigParseException exception) {
                 logger.error("Invalid address for block {} on {}", wr.getBlockName(), controller);
                 continue;
             }
+
+            int bit = -1;
+            try {
+                bit = wr.getBit(controller.getModel());
+            } catch (BindingConfigParseException exception) {
+                logger.error("Invalid bit for block {} on {}", wr.getBlockName(), controller);
+                continue;
+            }
+
             if (!wr.isInRange(controller.getModel())) {
                 logger.warn("Invalid write request for block {} at address {}", wr.getBlockName(), address);
                 continue;
@@ -308,37 +309,37 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                 continue;
             }
 
-            lock.lock();
-
-            byte buf[] = new byte[2];
+            final byte buffer[] = new byte[2];
             int size = wr.isDigital() ? 1 : 2;
-            int result = LogoS7Client.ReadArea(S7.S7AreaDB, 1, address, size, buf);
+
+            lock.lock();
+            int result = LogoS7Client.ReadArea(S7.S7AreaDB, 1, address, size, buffer);
             logger.debug("Read word from logo memory: at {} {} bytes, result = {}", address, size, result);
             if (result == 0) {
-
-                if (bit >= 0) {
-                    int value = S7.GetBitAt(buf, 0, bit) ? 1 : 0;
-                    logger.debug("Read bit from logo memory: at {}.{} value = {}", address, bit, value);
-                } else {
-                    int value = S7.GetShortAt(buf, 0);
-                    logger.debug("Read word from logo memory: at {} value = {}", address, value);
-                }
-
                 Item item = config.getItem();
                 if (item instanceof NumberItem && !wr.isDigital()) {
                     if (command instanceof DecimalType) {
-                        S7.SetWordAt(buf, 0, ((DecimalType) command).intValue());
+                        int oldValue = S7.GetShortAt(buffer, 0);
+                        int newValue = ((DecimalType) command).intValue();
+                        S7.SetWordAt(buffer, 0, newValue);
+                        logger.debug("Changed word at {} from {} to {}", address, oldValue, newValue);
+
+                        result = LogoS7Client.WriteArea(S7.S7AreaDB, 1, address, size, buffer);
+                        logger.debug("Wrote to memory at {} two bytes: [{}, {}]", address, buffer[0], buffer[1]);
                     }
                 } else if (item instanceof SwitchItem && wr.isDigital()) {
                     if (command instanceof OnOffType) {
-                        if((bit >= 0) && (bit <= 7)) {
-                            S7.SetBitAt(buf, 0, bit, command == OnOffType.ON ? true : false);
-                        }
+                        boolean oldValue = S7.GetBitAt(buffer, 0, bit) ? true : false;
+                        boolean newValue = command == OnOffType.ON ? true : false;
+                        S7.SetBitAt(buffer, 0, bit, newValue);
+                        logger.debug("Changed bit {}.{} from {} to {}", address, bit, oldValue, newValue);
+
+                        result = LogoS7Client.WriteArea(S7.S7AreaDB, 1, address, size, buffer);
+                        logger.debug("Wrote to memory at {} one byte: [{}]", address, buffer[0]);
                     }
                 }
 
-                result = LogoS7Client.WriteArea(S7.S7AreaDB, 1, address, size, buf);
-                logger.debug("Write to logo memory: at {} {} bytes, [{}, {}], result = ", address, size, buf[0], buf[1], result);
+                // If nothing was written and read was ok, nothing will happen here
                 if (result != 0) {
                     logger.warn("Failed to write memory: {}. Reconnecting...", S7Client.ErrorText(result));
                     ReconnectLogo(LogoS7Client);
@@ -471,37 +472,26 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
     }
 
     private State createState(Item item, Object value) {
-        DecimalType num = null;
+        DecimalType number = null;
         if (value instanceof Number) {
-            num = new DecimalType(value.toString());
+            number = new DecimalType(value.toString());
         }
 
+        State state = null;
         if (item instanceof StringType) {
-            return new StringType((String) value);
+            state = new StringType((String) value);
         } else if (item instanceof NumberItem) {
-            if (num != null) {
-                return num;
+            if (number != null) {
+                return number;
             } else if (value instanceof String) {
-                String stringValue = ((String) value).replaceAll("[^\\d|.]", "");
-                return new DecimalType(stringValue);
-            } else {
-                return null;
+                state = new DecimalType(((String) value).replaceAll("[^\\d|.]", ""));
             }
-        } else if (item instanceof SwitchItem) {
-            if (num != null) {
-                return (num.intValue() > 0) ? OnOffType.ON : OnOffType.OFF;
-            } else {
-                return null;
-            }
-        } else if (item instanceof ContactItem) {
-            if (num != null) {
-                return (num.intValue() > 0) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
-            } else {
-                return null;
-            }
-        } else {
-            return null;
+        } else if (item instanceof SwitchItem && (number != null)) {
+            state = (number.intValue() > 0) ? OnOffType.ON : OnOffType.OFF;
+        } else if (item instanceof ContactItem && (number != null)) {
+            state = (number.intValue() > 0) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
         }
+        return state;
     }
 
     /**
