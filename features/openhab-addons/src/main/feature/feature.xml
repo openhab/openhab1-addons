@@ -526,6 +526,13 @@
     <configfile finalname="${openhab.conf}/services/owserver.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/owserver</configfile>
   </feature>
 
+  <feature name="openhab-binding-plex" description="Plex Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.plex/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/plex.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/plex</configfile>
+  </feature>
+
   <feature name="openhab-binding-plugwise1" description="Plugwise Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
