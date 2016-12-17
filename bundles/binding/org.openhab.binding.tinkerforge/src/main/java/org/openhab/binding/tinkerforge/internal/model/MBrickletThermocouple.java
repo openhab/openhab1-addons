@@ -1,12 +1,18 @@
 /**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model;
-
-import com.tinkerforge.BrickletThermocouple;
 
 import java.math.BigDecimal;
 
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+
+import com.tinkerforge.BrickletThermocouple;
 
 /**
  * <!-- begin-user-doc -->
@@ -43,7 +49,7 @@ public interface MBrickletThermocouple extends MDevice<BrickletThermocouple>, MS
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletThermocouple_DeviceType()
      * @model default="bricklet_thermocouple" unique="false" changeable="false"
@@ -60,7 +66,7 @@ public interface MBrickletThermocouple extends MDevice<BrickletThermocouple>, MS
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Threshold</em>' attribute.
      * @see #setThreshold(BigDecimal)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletThermocouple_Threshold()
@@ -74,7 +80,7 @@ public interface MBrickletThermocouple extends MDevice<BrickletThermocouple>, MS
      * <em>Threshold</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @param value the new value of the '<em>Threshold</em>' attribute.
      * @see #getThreshold()
      * @generated
@@ -84,10 +90,11 @@ public interface MBrickletThermocouple extends MDevice<BrickletThermocouple>, MS
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @model annotation="http://www.eclipse.org/emf/2002/GenModel body=''"
      * @generated
      */
+    @Override
     void init();
 
 } // MBrickletThermocouple

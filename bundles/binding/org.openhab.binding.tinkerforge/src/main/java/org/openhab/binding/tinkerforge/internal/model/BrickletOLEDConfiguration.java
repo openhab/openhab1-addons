@@ -1,4 +1,10 @@
 /**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model;
 
@@ -29,7 +35,7 @@ public interface BrickletOLEDConfiguration extends TFConfig {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Contrast</em>' attribute.
      * @see #setContrast(Short)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletOLEDConfiguration_Contrast()
@@ -44,7 +50,7 @@ public interface BrickletOLEDConfiguration extends TFConfig {
      * attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @param value the new value of the '<em>Contrast</em>' attribute.
      * @see #getContrast()
      * @generated
@@ -59,7 +65,7 @@ public interface BrickletOLEDConfiguration extends TFConfig {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Invert</em>' attribute.
      * @see #setInvert(boolean)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletOLEDConfiguration_Invert()
@@ -73,7 +79,7 @@ public interface BrickletOLEDConfiguration extends TFConfig {
      * <em>Invert</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @param value the new value of the '<em>Invert</em>' attribute.
      * @see #isInvert()
      * @generated

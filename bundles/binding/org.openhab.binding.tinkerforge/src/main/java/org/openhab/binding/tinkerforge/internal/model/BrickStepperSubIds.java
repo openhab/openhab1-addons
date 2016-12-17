@@ -1,4 +1,10 @@
 /**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model;
 
@@ -13,7 +19,7 @@ import org.eclipse.emf.common.util.Enumerator;
  * A representation of the literals of the enumeration '<em><b>Brick Stepper Sub Ids</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
- * 
+ *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickStepperSubIds()
  * @model
  * @generated
@@ -23,7 +29,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * The '<em><b>Stepper drive</b></em>' literal object.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_DRIVE_VALUE
      * @generated
      * @ordered
@@ -34,7 +40,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * The '<em><b>Stepper velocity</b></em>' literal object.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_VELOCITY_VALUE
      * @generated
      * @ordered
@@ -45,7 +51,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * The '<em><b>Stepper current</b></em>' literal object.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_CURRENT_VALUE
      * @generated
      * @ordered
@@ -56,7 +62,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * The '<em><b>Stepper position</b></em>' literal object.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_POSITION_VALUE
      * @generated
      * @ordered
@@ -67,7 +73,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * The '<em><b>Stepper steps</b></em>' literal object.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_STEPS_VALUE
      * @generated
      * @ordered
@@ -78,7 +84,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * The '<em><b>Stepper stack voltage</b></em>' literal object.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_STACK_VOLTAGE_VALUE
      * @generated
      * @ordered
@@ -89,7 +95,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * The '<em><b>Stepper external voltage</b></em>' literal object.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_EXTERNAL_VOLTAGE_VALUE
      * @generated
      * @ordered
@@ -100,7 +106,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * The '<em><b>Stepper consumption</b></em>' literal object.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_CONSUMPTION_VALUE
      * @generated
      * @ordered
@@ -111,7 +117,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * The '<em><b>Stepper under voltage</b></em>' literal object.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_UNDER_VOLTAGE_VALUE
      * @generated
      * @ordered
@@ -122,7 +128,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * The '<em><b>Stepper state</b></em>' literal object.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_STATE_VALUE
      * @generated
      * @ordered
@@ -133,7 +139,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * The '<em><b>Stepper chip temperature</b></em>' literal object.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_CHIP_TEMPERATURE_VALUE
      * @generated
      * @ordered
@@ -144,7 +150,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * The '<em><b>Stepper led</b></em>' literal object.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_LED_VALUE
      * @generated
      * @ordered
@@ -159,7 +165,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_DRIVE
      * @model name="stepper_drive"
      * @generated
@@ -175,7 +181,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_VELOCITY
      * @model name="stepper_velocity"
      * @generated
@@ -191,7 +197,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_CURRENT
      * @model name="stepper_current"
      * @generated
@@ -207,7 +213,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_POSITION
      * @model name="stepper_position"
      * @generated
@@ -223,7 +229,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_STEPS
      * @model name="stepper_steps"
      * @generated
@@ -239,7 +245,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_STACK_VOLTAGE
      * @model name="stepper_stack_voltage"
      * @generated
@@ -255,7 +261,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_EXTERNAL_VOLTAGE
      * @model name="stepper_external_voltage"
      * @generated
@@ -271,7 +277,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_CONSUMPTION
      * @model name="stepper_consumption"
      * @generated
@@ -287,7 +293,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_UNDER_VOLTAGE
      * @model name="stepper_under_voltage"
      * @generated
@@ -303,7 +309,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_STATE
      * @model name="stepper_state"
      * @generated
@@ -319,7 +325,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_CHIP_TEMPERATURE
      * @model name="stepper_chip_temperature"
      * @generated
@@ -335,7 +341,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #STEPPER_LED
      * @model name="stepper_led"
      * @generated
@@ -347,7 +353,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * An array of all the '<em><b>Brick Stepper Sub Ids</b></em>' enumerators.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     private static final BrickStepperSubIds[] VALUES_ARRAY = new BrickStepperSubIds[] { STEPPER_DRIVE, STEPPER_VELOCITY,
@@ -358,7 +364,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * A public read-only list of all the '<em><b>Brick Stepper Sub Ids</b></em>' enumerators.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public static final List<BrickStepperSubIds> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
@@ -367,7 +373,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * Returns the '<em><b>Brick Stepper Sub Ids</b></em>' literal with the specified literal value.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @param literal the literal.
      * @return the matching enumerator or <code>null</code>.
      * @generated
@@ -386,7 +392,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * Returns the '<em><b>Brick Stepper Sub Ids</b></em>' literal with the specified name.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @param name the name.
      * @return the matching enumerator or <code>null</code>.
      * @generated
@@ -405,7 +411,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * Returns the '<em><b>Brick Stepper Sub Ids</b></em>' literal with the specified integer value.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @param value the integer value.
      * @return the matching enumerator or <code>null</code>.
      * @generated
@@ -421,7 +427,7 @@ public enum BrickStepperSubIds implements Enumerator {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     private final int value;
@@ -429,7 +435,7 @@ public enum BrickStepperSubIds implements Enumerator {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     private final String name;
@@ -437,7 +443,7 @@ public enum BrickStepperSubIds implements Enumerator {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     private final String literal;
@@ -446,7 +452,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * Only this class can construct instances.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     private BrickStepperSubIds(int value, String name, String literal) {
@@ -458,7 +464,7 @@ public enum BrickStepperSubIds implements Enumerator {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public int getValue() {
@@ -468,7 +474,7 @@ public enum BrickStepperSubIds implements Enumerator {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public String getName() {
@@ -478,7 +484,7 @@ public enum BrickStepperSubIds implements Enumerator {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public String getLiteral() {
@@ -489,7 +495,7 @@ public enum BrickStepperSubIds implements Enumerator {
      * Returns the literal value of the enumerator, which is its string representation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override

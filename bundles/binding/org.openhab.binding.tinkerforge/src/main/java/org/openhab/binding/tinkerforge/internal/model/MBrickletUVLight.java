@@ -1,12 +1,18 @@
 /**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model;
-
-import com.tinkerforge.BrickletUVLight;
 
 import java.math.BigDecimal;
 
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+
+import com.tinkerforge.BrickletUVLight;
 
 /**
  * <!-- begin-user-doc -->
@@ -42,7 +48,7 @@ public interface MBrickletUVLight extends MDevice<BrickletUVLight>, MSensor<Deci
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletUVLight_DeviceType()
      * @model default="bricklet_uv_light" unique="false" changeable="false"
@@ -59,7 +65,7 @@ public interface MBrickletUVLight extends MDevice<BrickletUVLight>, MSensor<Deci
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Threshold</em>' attribute.
      * @see #setThreshold(BigDecimal)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletUVLight_Threshold()
@@ -73,7 +79,7 @@ public interface MBrickletUVLight extends MDevice<BrickletUVLight>, MSensor<Deci
      * <em>Threshold</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @param value the new value of the '<em>Threshold</em>' attribute.
      * @see #getThreshold()
      * @generated
@@ -83,10 +89,11 @@ public interface MBrickletUVLight extends MDevice<BrickletUVLight>, MSensor<Deci
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @model annotation="http://www.eclipse.org/emf/2002/GenModel body=''"
      * @generated
      */
+    @Override
     void init();
 
 } // MBrickletUVLight

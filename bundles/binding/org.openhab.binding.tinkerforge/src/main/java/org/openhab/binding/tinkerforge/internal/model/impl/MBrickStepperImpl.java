@@ -1,31 +1,27 @@
 /**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickStepper;
-import com.tinkerforge.IPConnection;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.Collection;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
-
 import org.openhab.binding.tinkerforge.internal.model.MBrickStepper;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MStepperDevice;
@@ -33,9 +29,11 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-
 import org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration;
 import org.slf4j.Logger;
+
+import com.tinkerforge.BrickStepper;
+import com.tinkerforge.IPConnection;
 
 /**
  * <!-- begin-user-doc -->
@@ -74,7 +72,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getLogger()
      * @generated
      * @ordered
@@ -85,7 +83,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getLogger()
      * @generated
      * @ordered
@@ -96,7 +94,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getUid()
      * @generated
      * @ordered
@@ -107,7 +105,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getUid()
      * @generated
      * @ordered
@@ -118,7 +116,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #isPoll()
      * @generated
      * @ordered
@@ -129,7 +127,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #isPoll()
      * @generated
      * @ordered
@@ -140,7 +138,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -151,7 +149,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -162,7 +160,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The cached value of the '{@link #getTinkerforgeDevice() <em>Tinkerforge Device</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getTinkerforgeDevice()
      * @generated
      * @ordered
@@ -173,7 +171,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The default value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -184,7 +182,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The cached value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -195,7 +193,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The default value of the '{@link #getConnectedUid() <em>Connected Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getConnectedUid()
      * @generated
      * @ordered
@@ -206,7 +204,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The cached value of the '{@link #getConnectedUid() <em>Connected Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getConnectedUid()
      * @generated
      * @ordered
@@ -217,7 +215,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The default value of the '{@link #getPosition() <em>Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getPosition()
      * @generated
      * @ordered
@@ -228,7 +226,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The cached value of the '{@link #getPosition() <em>Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getPosition()
      * @generated
      * @ordered
@@ -239,7 +237,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The default value of the '{@link #getDeviceIdentifier() <em>Device Identifier</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getDeviceIdentifier()
      * @generated
      * @ordered
@@ -250,7 +248,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The cached value of the '{@link #getDeviceIdentifier() <em>Device Identifier</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getDeviceIdentifier()
      * @generated
      * @ordered
@@ -261,7 +259,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getName()
      * @generated
      * @ordered
@@ -272,7 +270,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getName()
      * @generated
      * @ordered
@@ -283,7 +281,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The cached value of the '{@link #getMsubdevices() <em>Msubdevices</em>}' containment reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getMsubdevices()
      * @generated
      * @ordered
@@ -294,7 +292,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getTfConfig()
      * @generated
      * @ordered
@@ -305,7 +303,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -316,7 +314,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
      * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -326,7 +324,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     protected MBrickStepperImpl() {
@@ -336,7 +334,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -347,9 +345,10 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public Logger getLogger() {
         return logger;
     }
@@ -357,23 +356,25 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired())
+        if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_STEPPER__LOGGER, oldLogger,
                     logger));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public String getUid() {
         return uid;
     }
@@ -381,22 +382,25 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired())
+        if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_STEPPER__UID, oldUid, uid));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public boolean isPoll() {
         return poll;
     }
@@ -404,22 +408,25 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired())
+        if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_STEPPER__POLL, oldPoll, poll));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public AtomicBoolean getEnabledA() {
         return enabledA;
     }
@@ -427,23 +434,26 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired())
+        if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_STEPPER__ENABLED_A, oldEnabledA,
                     enabledA));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public BrickStepper getTinkerforgeDevice() {
         return tinkerforgeDevice;
     }
@@ -451,23 +461,26 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void setTinkerforgeDevice(BrickStepper newTinkerforgeDevice) {
         BrickStepper oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired())
+        if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_STEPPER__TINKERFORGE_DEVICE,
                     oldTinkerforgeDevice, tinkerforgeDevice));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public IPConnection getIpConnection() {
         return ipConnection;
     }
@@ -475,23 +488,26 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired())
+        if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_STEPPER__IP_CONNECTION,
                     oldIpConnection, ipConnection));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public String getConnectedUid() {
         return connectedUid;
     }
@@ -499,23 +515,26 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired())
+        if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_STEPPER__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public char getPosition() {
         return position;
     }
@@ -523,23 +542,26 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired())
+        if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_STEPPER__POSITION, oldPosition,
                     position));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public int getDeviceIdentifier() {
         return deviceIdentifier;
     }
@@ -547,23 +569,26 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired())
+        if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_STEPPER__DEVICE_IDENTIFIER,
                     oldDeviceIdentifier, deviceIdentifier));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -571,44 +596,49 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired())
+        if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_STEPPER__NAME, oldName, name));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICK_STEPPER__BRICKD)
+        if (eContainerFeatureID() != ModelPackage.MBRICK_STEPPER__BRICKD) {
             return null;
+        }
         return (MBrickd) eContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public MBrickd basicGetBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICK_STEPPER__BRICKD)
+        if (eContainerFeatureID() != ModelPackage.MBRICK_STEPPER__BRICKD) {
             return null;
+        }
         return (MBrickd) eInternalContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public NotificationChain basicSetBrickd(MBrickd newBrickd, NotificationChain msgs) {
@@ -619,34 +649,41 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICK_STEPPER__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd))
+            if (EcoreUtil.isAncestor(this, newBrickd)) {
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null)
+            if (eInternalContainer() != null) {
                 msgs = eBasicRemoveFromContainer(msgs);
-            if (newBrickd != null)
+            }
+            if (newBrickd != null) {
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
+            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null)
+            if (msgs != null) {
                 msgs.dispatch();
-        } else if (eNotificationRequired())
+            }
+        } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_STEPPER__BRICKD, newBrickd,
                     newBrickd));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public EList<MStepperDevice> getMsubdevices() {
         if (msubdevices == null) {
             msubdevices = new EObjectContainmentWithInverseEList<MStepperDevice>(MStepperDevice.class, this,
@@ -665,9 +702,10 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public TFBrickStepperConfiguration getTfConfig() {
         return tfConfig;
     }
@@ -675,7 +713,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public NotificationChain basicSetTfConfig(TFBrickStepperConfiguration newTfConfig, NotificationChain msgs) {
@@ -684,10 +722,11 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICK_STEPPER__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null)
+            if (msgs == null) {
                 msgs = notification;
-            else
+            } else {
                 msgs.add(notification);
+            }
         }
         return msgs;
     }
@@ -695,32 +734,38 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void setTfConfig(TFBrickStepperConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null)
+            if (tfConfig != null) {
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICK_STEPPER__TF_CONFIG, null, msgs);
-            if (newTfConfig != null)
+            }
+            if (newTfConfig != null) {
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICK_STEPPER__TF_CONFIG, null, msgs);
+            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null)
+            if (msgs != null) {
                 msgs.dispatch();
-        } else if (eNotificationRequired())
+            }
+        } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_STEPPER__TF_CONFIG, newTfConfig,
                     newTfConfig));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public String getDeviceType() {
         return deviceType;
     }
@@ -728,9 +773,10 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void initSubDevices() {
         // TODO: implement this method
         // Ensure that you remove @generated or mark it @generated NOT
@@ -740,9 +786,10 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void init() {
         // TODO: implement this method
         // Ensure that you remove @generated or mark it @generated NOT
@@ -752,9 +799,10 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void enable() {
         // TODO: implement this method
         // Ensure that you remove @generated or mark it @generated NOT
@@ -764,9 +812,10 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void disable() {
         // TODO: implement this method
         // Ensure that you remove @generated or mark it @generated NOT
@@ -776,7 +825,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @SuppressWarnings("unchecked")
@@ -784,8 +833,9 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICK_STEPPER__BRICKD:
-                if (eInternalContainer() != null)
+                if (eInternalContainer() != null) {
                     msgs = eBasicRemoveFromContainer(msgs);
+                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
             case ModelPackage.MBRICK_STEPPER__MSUBDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMsubdevices()).basicAdd(otherEnd, msgs);
@@ -796,7 +846,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -815,7 +865,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -830,7 +880,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -857,8 +907,9 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
             case ModelPackage.MBRICK_STEPPER__NAME:
                 return getName();
             case ModelPackage.MBRICK_STEPPER__BRICKD:
-                if (resolve)
+                if (resolve) {
                     return getBrickd();
+                }
                 return basicGetBrickd();
             case ModelPackage.MBRICK_STEPPER__MSUBDEVICES:
                 return getMsubdevices();
@@ -873,7 +924,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @SuppressWarnings("unchecked")
@@ -927,7 +978,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -979,7 +1030,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -1022,7 +1073,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -1049,7 +1100,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -1076,7 +1127,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -1101,7 +1152,7 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -1126,13 +1177,14 @@ public class MBrickStepperImpl extends MinimalEObjectImpl.Container implements M
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy())
+        if (eIsProxy()) {
             return super.toString();
+        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

@@ -1,14 +1,17 @@
 /**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 
@@ -33,7 +36,7 @@ public class BrickletOLEDConfigurationImpl extends MinimalEObjectImpl.Container 
      * The default value of the '{@link #getContrast() <em>Contrast</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getContrast()
      * @generated
      * @ordered
@@ -44,7 +47,7 @@ public class BrickletOLEDConfigurationImpl extends MinimalEObjectImpl.Container 
      * The cached value of the '{@link #getContrast() <em>Contrast</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getContrast()
      * @generated
      * @ordered
@@ -55,7 +58,7 @@ public class BrickletOLEDConfigurationImpl extends MinimalEObjectImpl.Container 
      * The default value of the '{@link #isInvert() <em>Invert</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #isInvert()
      * @generated
      * @ordered
@@ -66,7 +69,7 @@ public class BrickletOLEDConfigurationImpl extends MinimalEObjectImpl.Container 
      * The cached value of the '{@link #isInvert() <em>Invert</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #isInvert()
      * @generated
      * @ordered
@@ -76,7 +79,7 @@ public class BrickletOLEDConfigurationImpl extends MinimalEObjectImpl.Container 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     protected BrickletOLEDConfigurationImpl() {
@@ -86,7 +89,7 @@ public class BrickletOLEDConfigurationImpl extends MinimalEObjectImpl.Container 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -97,9 +100,10 @@ public class BrickletOLEDConfigurationImpl extends MinimalEObjectImpl.Container 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public Short getContrast() {
         return contrast;
     }
@@ -107,23 +111,26 @@ public class BrickletOLEDConfigurationImpl extends MinimalEObjectImpl.Container 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void setContrast(Short newContrast) {
         Short oldContrast = contrast;
         contrast = newContrast;
-        if (eNotificationRequired())
+        if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.BRICKLET_OLED_CONFIGURATION__CONTRAST,
                     oldContrast, contrast));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public boolean isInvert() {
         return invert;
     }
@@ -131,21 +138,23 @@ public class BrickletOLEDConfigurationImpl extends MinimalEObjectImpl.Container 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
+    @Override
     public void setInvert(boolean newInvert) {
         boolean oldInvert = invert;
         invert = newInvert;
-        if (eNotificationRequired())
+        if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.BRICKLET_OLED_CONFIGURATION__INVERT,
                     oldInvert, invert));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -162,7 +171,7 @@ public class BrickletOLEDConfigurationImpl extends MinimalEObjectImpl.Container 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -181,7 +190,7 @@ public class BrickletOLEDConfigurationImpl extends MinimalEObjectImpl.Container 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -200,7 +209,7 @@ public class BrickletOLEDConfigurationImpl extends MinimalEObjectImpl.Container 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -217,13 +226,14 @@ public class BrickletOLEDConfigurationImpl extends MinimalEObjectImpl.Container 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy())
+        if (eIsProxy()) {
             return super.toString();
+        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (contrast: ");
