@@ -288,8 +288,10 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 
             PLCLogoMemoryConfig wr = config.getWR();
             int address = -1;
+            int bit = -1;
             try {
                 address = wr.getAddress(controller.getModel());
+                bit = wr.getBit(controller.getModel());
             } catch (BindingConfigParseException exception) {
                 logger.error("Invalid address for block {} on {}", wr.getBlockName(), controller);
                 continue;
@@ -305,32 +307,38 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
                 logger.debug("No S7client for controller {} found", config.getController());
                 continue;
             }
-            
+
             lock.lock();
-            int result = ReadLogoDBArea(LogoS7Client, controller.getMemorySize());
+
+            byte buf[] = new byte[2];
+            int size = wr.isDigital() ? 1 : 2;
+            int result = LogoS7Client.ReadArea(S7.S7AreaDB, 1, address, size, buf);
+            logger.debug("Read word from logo memory: at {} {} bytes, result = {}", address, size, result);
             if (result == 0) {
+
+                if (bit >= 0) {
+                    int value = S7.GetBitAt(buf, 0, bit) ? 1 : 0;
+                    logger.debug("Read bit from logo memory: at {}.{} value = {}", address, bit, value);
+                } else {
+                    int value = S7.GetShortAt(buf, 0);
+                    logger.debug("Read word from logo memory: at {} value = {}", address, value);
+                }
+
                 Item item = config.getItem();
                 if (item instanceof NumberItem && !wr.isDigital()) {
                     if (command instanceof DecimalType) {
-                        S7.SetWordAt(data, address, ((DecimalType) command).intValue());
-                        result = WriteLogoDBArea(LogoS7Client, controller.getMemorySize());
+                        S7.SetWordAt(buf, 0, ((DecimalType) command).intValue());
                     }
                 } else if (item instanceof SwitchItem && wr.isDigital()) {
                     if (command instanceof OnOffType) {
-                        int bit = -1;
-                        try {
-                            bit = wr.getBit(controller.getModel());
-                        } catch (BindingConfigParseException exception) {
-                            logger.error("Invalid bit for block {} on {}", wr.getBlockName(), controller);
-                            bit = -1;
-                        }
-                            
                         if((bit >= 0) && (bit <= 7)) {
-                            S7.SetBitAt(data, address, bit, command == OnOffType.ON ? true : false);
-                            result = WriteLogoDBArea(LogoS7Client, controller.getMemorySize());
+                            S7.SetBitAt(buf, 0, bit, command == OnOffType.ON ? true : false);
                         }
                     }
                 }
+
+                result = LogoS7Client.WriteArea(S7.S7AreaDB, 1, address, size, buf);
+                logger.debug("Write to logo memory: at {} {} bytes, [{}, {}], result = ", address, size, buf[0], buf[1], result);
                 if (result != 0) {
                     logger.warn("Failed to write memory: {}. Reconnecting...", S7Client.ErrorText(result));
                     ReconnectLogo(LogoS7Client);
