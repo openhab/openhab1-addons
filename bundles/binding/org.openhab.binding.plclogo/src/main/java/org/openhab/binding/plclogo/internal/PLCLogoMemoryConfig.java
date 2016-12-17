@@ -115,16 +115,20 @@ public class PLCLogoMemoryConfig {
         return this.kind;
     }
 
+    public PLCLogoBlock getBlock(PLCLogoModel model) throws BindingConfigParseException {
+        if (model == PLCLogoModel.LOGO_MODEL_0BA7) {
+            return PLCLogoBlock0BA7Map.get(kind);
+        } else if (model == PLCLogoModel.LOGO_MODEL_0BA8) {
+            return PLCLogoBlock0BA8Map.get(kind);
+        } else {
+            throw new BindingConfigParseException("Wrong model " + model);
+        }
+    }
+
     public int getAddress(PLCLogoModel model) throws BindingConfigParseException {
         // First time this function called, address is less 0 -> Calculate it
         if (address < 0) {
-            if (model == PLCLogoModel.LOGO_MODEL_0BA7) {
-                address = PLCLogoBlock0BA7Map.get(kind).getAddress(index);
-            } else if (model == PLCLogoModel.LOGO_MODEL_0BA8) {
-                address = PLCLogoBlock0BA8Map.get(kind).getAddress(index);
-            } else {
-                throw new BindingConfigParseException("Wrong model " + model);
-            }
+            address = getBlock(model).getAddress(index);
             logger.debug("Address of {} = {}", block, address + ((bit != -1) ? ("." + bit) : ""));
         }
 
@@ -134,13 +138,7 @@ public class PLCLogoMemoryConfig {
     public int getBit(PLCLogoModel model) throws BindingConfigParseException {
         // First time this function called, bit is less 0 excepting VB/VW blocks -> Calculate it
         if ((bit < 0) && PLCLogoBlock.isBitwise(kind)) {
-            if (model == PLCLogoModel.LOGO_MODEL_0BA7) {
-                bit = PLCLogoBlock0BA7Map.get(kind).getBit(index);
-            } else if (model == PLCLogoModel.LOGO_MODEL_0BA8) {
-                bit = PLCLogoBlock0BA8Map.get(kind).getBit(index);
-            } else {
-                throw new BindingConfigParseException("Wrong model " + model);
-            }
+            bit = getBlock(model).getBit(index);
 
             if ((bit < 0) || (bit > 7)) {
                 logger.error("Invalid bit {} for block {} found", bit, block);

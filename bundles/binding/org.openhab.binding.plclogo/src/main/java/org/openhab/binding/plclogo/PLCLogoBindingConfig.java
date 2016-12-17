@@ -21,10 +21,10 @@ public class PLCLogoBindingConfig implements BindingConfig {
     private final String controller;
     private final PLCLogoMemoryConfig rdMem;
     private final PLCLogoMemoryConfig wrMem;
-    private boolean invert;
-    private int analogDelta;
-    private int lastValue;
-    private boolean isset;
+    private boolean invert = false;
+    private int analogDelta = 0;
+    private int lastValue = 0;
+    private boolean isset = false;
 
     private static final Logger logger = LoggerFactory.getLogger(PLCLogoBinding.class);
 
@@ -69,9 +69,6 @@ public class PLCLogoBindingConfig implements BindingConfig {
                 logger.debug("Setting analogDelta {}", analogDelta);
             }
         }
-
-        this.lastValue = 0;
-        this.isset = false;
     }
 
     public String getController() {
@@ -99,8 +96,8 @@ public class PLCLogoBindingConfig implements BindingConfig {
     }
 
     public void setLastValue(int lastValue) {
-        this.isset = true;
         this.lastValue = lastValue;
+        this.isset = true;
     }
 
     public boolean isSet() {
