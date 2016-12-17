@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.powerdoglocalapi.internal;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,17 +15,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.binding.powerdoglocalapi.PowerDogLocalApiBindingProvider;
-import org.openhab.core.binding.BindingConfig;
-import org.openhab.core.items.Item;
-import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.StringItem;
-import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.types.StringType;
-import org.openhab.core.types.Command;
-import org.openhab.model.item.binding.AbstractGenericBindingProvider;
-import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,10 +28,16 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Here are some examples for valid binding configuration strings:
  * <ul>
- * <li><code>{ powerdoglocalapi="<serverId:arithmetic_1234567890:300000" }</code></li>
- * <li><code>{ powerdoglocalapi="<powerdog:pv_global_1234567890:300000" }</code></li>
- * <li><code>{ powerdoglocalapi="<powerdog:pv_global_1234567890:300000:Current_Value" }</code></li>
- * <li><code>{ powerdoglocalapi="<powerdog:impulsecounter_1234567890:300000:Unit_1000000" }</code></li>
+ * <li>
+ * <code>{ powerdoglocalapi="<serverId:arithmetic_1234567890:300000" }</code></li>
+ * <li><code>{ powerdoglocalapi="<powerdog:pv_global_1234567890:300000" }</code>
+ * </li>
+ * <li>
+ * <code>{ powerdoglocalapi="<powerdog:pv_global_1234567890:300000:Current_Value" }</code>
+ * </li>
+ * <li>
+ * <code>{ powerdoglocalapi="<powerdog:impulsecounter_1234567890:300000:Unit_1000000" }</code>
+ * </li>
  * <li><code>{ powerdoglocalapi=">powerdog:powerapi_1234567890:300000" }</code></li>
  * </ul>
  * 
@@ -54,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * binding and configuration file. <b>NOTE</b>: The parameter is case sensitive!
  * 
  * @author wuellueb
- * @since 1.8.0
+ * @since 1.9.0
  */
 public class PowerDogLocalApiGenericBindingProvider extends
 		AbstractGenericBindingProvider implements
@@ -117,12 +111,12 @@ public class PowerDogLocalApiGenericBindingProvider extends
 		if (bindingConfig != null) {
 			PowerDogLocalApiBindingConfig config = parseBindingConfig(item,
 					bindingConfig);
-			logger.debug("bindingConfig adeed (config=" + config.toString()
-					+ ")");
+			logger.debug("bindingConfig added (config={})", config.toString());
 			addBindingConfig(item, config);
 		} else {
-			logger.warn("bindingConfig is NULL (item=" + item
-					+ ") -> process bindingConfig aborted!");
+			logger.warn(
+					"bindingConfig is NULL (item={}) -> process bindingConfig aborted!",
+					item);
 		}
 	}
 
@@ -224,12 +218,13 @@ public class PowerDogLocalApiGenericBindingProvider extends
 			configElement.serverId = matcher.group(1);
 			configElement.valueId = matcher.group(2);
 			configElement.refreshInterval = Integer.valueOf(matcher.group(3));
-			if (matcher.group(4).isEmpty()) // group 4 is optional
+			if (matcher.group(4).isEmpty()) { // group 4 is optional
 				configElement.name = "Current_Value";
-			else
+			} else {
 				configElement.name = matcher.group(4).substring(1);
+			}
 
-			logger.debug("PowerDogLocalAPI: " + configElement);
+			logger.debug("PowerDogLocalAPI: {}", configElement);
 			config.put(key, configElement);
 		}
 
@@ -349,7 +344,7 @@ public class PowerDogLocalApiGenericBindingProvider extends
 	 * be a map like <code>ON->PowerDogLocalAPIBindingConfigElement</code>
 	 * 
 	 * @author wuellueb
-	 * @since 1.8.0
+	 * @since 1.9.0
 	 */
 	class PowerDogLocalApiBindingConfig extends
 			HashMap<Command, PowerDogLocalApiBindingConfigElement> implements

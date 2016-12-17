@@ -5,10 +5,11 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB PowerDogLocalApi Binding
 Bundle-SymbolicName: org.openhab.binding.powerdoglocalapi
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.8.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the PowerDogLocalApi binding of the open Home Aut
  omation Bus (openHAB)
+Bundle-ActivationPolicy: lazy
 Import-Package: javax.xml,
  org.apache.commons.lang,
  org.openhab.core.binding,

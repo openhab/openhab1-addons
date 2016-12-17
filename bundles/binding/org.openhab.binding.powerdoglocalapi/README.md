@@ -42,7 +42,7 @@ You can set different refresh rates per PowerDog unit. The `powerdoglocalapi:<se
     # defaults to empty string if not set
     #powerdoglocalapi:<serverId>.password=1abcd2
 
-Normally you will need to set this value. The `powerdoglocalapi:<serverId>.host` value defaults for the binding to an empty string, but on a PowerDog it is set to the unlock key by default.
+Normally you will need to set this value. The `powerdoglocalapi:<serverId>.password` value defaults for the binding to an empty string, but on a PowerDog it is set to the unlock key by default.
 
 
 ## Item Configuration

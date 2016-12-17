@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,41 +12,26 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import redstone.xmlrpc.XmlRpcProxy;
-import redstone.xmlrpc.XmlRpcFault;
-import redstone.xmlrpc.XmlRpcStruct;
-
-import org.openhab.binding.powerdoglocalapi.PowerDogLocalApiBindingProvider;
 
 import org.apache.commons.lang.StringUtils;
-import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.items.Item;
-import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.IncreaseDecreaseType;
-import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.StringType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
+import org.openhab.binding.powerdoglocalapi.PowerDogLocalApiBindingProvider;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import redstone.xmlrpc.XmlRpcFault;
+import redstone.xmlrpc.XmlRpcProxy;
+import redstone.xmlrpc.XmlRpcStruct;
 
 /**
  * Queries eco-data PowerDog
  * 
  * @author wuellueb
- * @since 1.8.0
+ * @since 1.9.0
  */
 public class PowerDogLocalApiBinding extends
 		AbstractActiveBinding<PowerDogLocalApiBindingProvider> {
@@ -104,12 +89,12 @@ public class PowerDogLocalApiBinding extends
 		logger.debug("activate() method is called!");
 
 		// the configuration is guaranteed not to be null, because the component
-		// definition has the configuration-policy set to require. If set to 
+		// definition has the configuration-policy set to require. If set to
 		// 'optional' then the configuration may be null
 		this.bundleContext = bundleContext;
 
 		// to override the default refresh interval for all powerdogs one has to
-		// add a parameter to openhab.cfg like 
+		// add a parameter to openhab.cfg like
 		// <bindingName>:refresh=<intervalInMs>
 		String refreshIntervalString = (String) configuration.get("refresh");
 		if (StringUtils.isNotBlank(refreshIntervalString)) {
@@ -216,8 +201,8 @@ public class PowerDogLocalApiBinding extends
 					boolean serverNeedsUpdate = false;
 					if (server == null) {
 						serverNeedsUpdate = false;
-						logger.error("Unknown PowerDog server referenced: "
-								+ unit);
+						logger.error("Unknown PowerDog server referenced: {}",
+								unit);
 						continue;
 					} else {
 						age = System.currentTimeMillis() - server.lastUpdate;
@@ -264,8 +249,8 @@ public class PowerDogLocalApiBinding extends
 				server.cache = response;
 				server.lastUpdate = System.currentTimeMillis();
 
-				logger.debug("PowerDog.getAllCurrentLinearValues() result: "
-						+ response.toString());
+				logger.debug("PowerDog.getAllCurrentLinearValues() result: {}",
+						response.toString());
 			} catch (Exception e) {
 				logger.warn("PowerDogLocalApi querying PowerDog failed");
 				logger.warn(e.getMessage());
@@ -336,8 +321,9 @@ public class PowerDogLocalApiBinding extends
 
 		// cycle on all available powerdogs
 		for (PowerDogLocalApiBindingProvider provider : providers) {
-			if (!provider.providesBindingFor(itemName))
+			if (!provider.providesBindingFor(itemName)) {
 				continue;
+			}
 
 			// only in case of an outbinding, this need to be handled
 			if (provider.getOutBindingItemNames().contains(itemName)) {
@@ -356,14 +342,16 @@ public class PowerDogLocalApiBinding extends
 					// Convert new State to PowerDog set Current_Value string
 					String value = "0";
 					if (newState instanceof OnOffType) {
-						if (newState == OnOffType.ON)
+						if (newState == OnOffType.ON) {
 							value = "1";
+						}
 					} // C-like Not-Zero is True, Zero is false; Powerdog does
 						// not offer boolean for PowerAPI, so this might not be
 						// the best solution, but it is sufficient
 					else if (newState instanceof OpenClosedType) {
-						if (newState == OpenClosedType.OPEN)
+						if (newState == OpenClosedType.OPEN) {
 							value = "1";
+						}
 					} // see comment above
 					else if (newState instanceof PercentType) {
 						value = newState.toString();
@@ -389,8 +377,9 @@ public class PowerDogLocalApiBinding extends
 
 						lastUpdateMap.put(itemName, System.currentTimeMillis());
 
-						logger.debug("PowerDog.setLinearSensorDevice() result: "
-								+ response.toString());
+						logger.debug(
+								"PowerDog.setLinearSensorDevice() result: {}",
+								response.toString());
 					} catch (Exception e) {
 						logger.warn("PowerDogLocalApi sending to PowerDog failed");
 						logger.warn(e.getMessage());
@@ -424,19 +413,21 @@ public class PowerDogLocalApiBinding extends
 			// Assign according to output type or cast to output type directly
 			if (itemType.isAssignableFrom(SwitchItem.class)) {
 				int value = Math.round(Float.parseFloat(transformedResponse));
-				if (value > 0)
+				if (value > 0) {
 					return OnOffType.ON;
-				else
+				} else {
 					return OnOffType.OFF;
+				}
 			} else if (itemType.isAssignableFrom(DimmerItem.class)) {
 				return new PercentType(Math.round(Float
 						.parseFloat(transformedResponse)));
 			} else if (itemType.isAssignableFrom(ContactItem.class)) {
 				int value = Math.round(Float.parseFloat(transformedResponse));
-				if (value > 0)
+				if (value > 0) {
 					return OpenClosedType.OPEN;
-				else
+				} else {
 					return OpenClosedType.CLOSED;
+				}
 			} else if (itemType.isAssignableFrom(NumberItem.class)) {
 				return DecimalType.valueOf(transformedResponse);
 			} else {
@@ -508,11 +499,11 @@ public class PowerDogLocalApiBinding extends
 
 				if ("host".equals(configKey)) {
 					deviceConfig.host = value;
-					logger.debug("value: " + value);
+					logger.debug("value: {}", value);
 				} else if ("port".equals(configKey)) {
 					if (StringUtils.isNotBlank(value)) {
 						deviceConfig.port = (int) Long.parseLong(value);
-						logger.debug("value: " + value);
+						logger.debug("value: {}", value);
 					}
 				} else if ("password".equals(configKey)) {
 					deviceConfig.password = value;
@@ -521,16 +512,17 @@ public class PowerDogLocalApiBinding extends
 						// refresh cannot be lower than refresh interval
 						deviceConfig.refresh = (int) Math.max(
 								Long.parseLong(value), refreshInterval);
-						logger.debug("value: " + value);
+						logger.debug("value: {}", value);
 					}
 				} else {
 					// cannot throw new ConfigurationException(configKey,
 					// "The given PowerDogLocalApi configKey '" + configKey +
 					// "' is unknown");
-					logger.warn("The given PowerDogLocalApi configKey '"
-							+ configKey + "' is unknown");
+					logger.warn(
+							"The given PowerDogLocalApi configKey '{}' is unknown",
+							configKey);
 				}
-				logger.debug("New Server config: " + deviceConfig.toString());
+				logger.debug("New Server config: {}", deviceConfig.toString());
 			}
 
 			setProperlyConfigured(true);
@@ -574,14 +566,14 @@ public class PowerDogLocalApiBinding extends
 
 	}
 
-	/**
+	/*-
 	 * PowerAPI Local Device API 0.b (15.02.2013)
 	 * 
-	 * PowerDog supports via the PowerAPI Local Device API live communication 
+	 * PowerDog supports via the PowerAPI Local Device API live communication
 	 * with your PowerDog device. The API is accessible using XMLRPC.
-     *
+	 *
 	 * This interface defines the possible RPC communication with the PowerDog.
-	 * This interface is according to PowerDog's RPC interface as per the 
+	 * This interface is according to PowerDog's RPC interface as per the
 	 * publicly available document
 	 * http://api.power-dog.eu/documentation/DOCUMENATION/PowerAPI%20Local%20Device%20API%20Description_v0.b.pdf
 	 * 
@@ -597,9 +589,8 @@ public class PowerDogLocalApiBinding extends
 	 * VariantMap setLinearSensorDevice(String password, String key, String current_value); 
 	 * VariantMap setLinearCounterDevice(String password, String key, String current_value, String countup_meter_reading);
 	 * 
-	 * Remark:
-	 * PowerDog also supports a web API with non-live data using the web 
-	 * service available at http://power-dog.eu - this interface is different 
+	 * Remark: PowerDog also supports a web API with non-live data using the web
+	 * service available at http://power-dog.eu - this interface is different
 	 * and neither used nor supported by the PowerDogLocalApiBinding.
 	 * 
 	 * @author Wuellueb
