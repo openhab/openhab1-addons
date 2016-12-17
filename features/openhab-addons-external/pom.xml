@@ -97,6 +97,7 @@
                                 <artifact><file>src/main/resources/conf/openenergymonitor.cfg</file><type>cfg</type><classifier>openenergymonitor</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/owserver.cfg</file><type>cfg</type><classifier>owserver</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pebble.cfg</file><type>cfg</type><classifier>pebble</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/plex.cfg</file><type>cfg</type><classifier>plex</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/plugwise.cfg</file><type>cfg</type><classifier>plugwise</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/powermax.cfg</file><type>cfg</type><classifier>powermax</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/prowl.cfg</file><type>cfg</type><classifier>prowl</classifier></artifact>
