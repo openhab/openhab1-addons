@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.rfxcom.internal.messages;
 
+import static org.openhab.binding.rfxcom.internal.messages.RFXComLighting5Message.SubType.*;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +38,7 @@ import org.openhab.core.types.UnDefType;
 /**
  * RFXCOM data class for lighting5 message.
  *
- * @author Paul Hampson, Neil Renaud
+ * @author Paul Hampson, Neil Renaud, Martin van Wingerden
  * @since 1.3.0
  */
 public class RFXComLighting5Message extends RFXComBaseMessage {
@@ -48,16 +50,18 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
         MDREMOTE(3),
         CONRAD_RSL2(4),
         LIVOLO(5),
+        AOKE(7),
+        EURODOMEST(9),
+        MDREMOTE_107(12),
+        AVANTEK(14),
+        IT(15),
+        MDREMOTE_108(16),
 
         UNKNOWN(255);
 
         private final int subType;
 
         SubType(int subType) {
-            this.subType = subType;
-        }
-
-        SubType(byte subType) {
             this.subType = subType;
         }
 
@@ -76,47 +80,62 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
         }
     }
 
+    /**
+     * Note: for the lighting5 commands, some command are only supported for certain sub types and
+     * command-bytes might even have a different meaning for another sub type.
+     *
+     * If no sub types are specified for a command, its supported by all sub types.
+     * An example is the command OFF which is represented by the byte 0x00 for all subtypes.
+     *
+     * Otherwise the list of sub types after the command-bytes indicates the sub types
+     * which support this command with this byte.
+     * Example byte value 0x03 means GROUP_ON for IT and some others while it means MOOD1 for LIGHTWAVERF
+     */
     public enum Commands {
-        OFF(0),
-        ON(1),
-        GROUP_OFF(2),
-        MOOD1(3),
-        MOOD2(4),
-        MOOD3(5),
-        MOOD4(6),
-        MOOD5(7),
-        RESERVED1(8),
-        RESERVED2(9),
-        UNLOCK(10),
-        LOCK(11),
-        ALL_LOCK(12),
-        CLOSE_RELAY(13),
-        STOP_RELAY(14),
-        OPEN_RELAY(15),
-        SET_LEVEL(16),
-        COLOUR_PALETTE(17),
-        COLOUR_TONE(18),
-        COLOUR_CYCLE(19),
+        OFF(0x00),
+        ON(0x01),
+        GROUP_OFF(0x02, LIGHTWAVERF, BBSB_NEW, CONRAD_RSL2, EURODOMEST, AVANTEK, IT),
+        LEARN(0x02, EMW100),
+        GROUP_ON(0x03, BBSB_NEW, CONRAD_RSL2, EURODOMEST, AVANTEK, IT),
+        MOOD1(0x03, LIGHTWAVERF),
+        MOOD2(0x04, LIGHTWAVERF),
+        MOOD3(0x05, LIGHTWAVERF),
+        MOOD4(0x06, LIGHTWAVERF),
+        MOOD5(0x07, LIGHTWAVERF),
+        RESERVED1(0x08, LIGHTWAVERF),
+        RESERVED2(0x09, LIGHTWAVERF),
+        UNLOCK(0x0A, LIGHTWAVERF),
+        LOCK(0x0B, LIGHTWAVERF),
+        ALL_LOCK(0x0C, LIGHTWAVERF),
+        CLOSE_RELAY(0x0D, LIGHTWAVERF),
+        STOP_RELAY(0x0E, LIGHTWAVERF),
+        OPEN_RELAY(0x0F, LIGHTWAVERF),
+        SET_LEVEL(0x10, LIGHTWAVERF, IT),
+        COLOUR_PALETTE(0x11, LIGHTWAVERF),
+        COLOUR_TONE(0x12, LIGHTWAVERF),
+        COLOUR_CYCLE(0x13, LIGHTWAVERF),
 
         UNKNOWN(255);
 
         private final int command;
+        private final List<SubType> supportedBySubTypes;
 
         Commands(int command) {
-            this.command = command;
+            this(command, SubType.values());
         }
 
-        Commands(byte command) {
+        Commands(int command, SubType... supportedBySubTypes) {
             this.command = command;
+            this.supportedBySubTypes = Arrays.asList(supportedBySubTypes);
         }
 
         public byte toByte() {
             return (byte) command;
         }
 
-        public static Commands fromByte(int input) {
+        public static Commands fromByte(int input, SubType subType) {
             for (Commands c : Commands.values()) {
-                if (c.command == input) {
+                if (c.command == input && c.supportedBySubTypes.contains(subType)) {
                     return c;
                 }
             }
@@ -167,7 +186,7 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
         subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 16 | (data[5] & 0xFF) << 8 | (data[6] & 0xFF);
         unitcode = data[7];
-        command = Commands.fromByte(data[8]);
+        command = Commands.fromByte(data[8], subType);
         dimmingLevel = data[9];
         signalLevel = (byte) ((data[10] & 0xF0) >> 4);
     }
@@ -213,7 +232,7 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
     /**
      * Convert a 0-31 scale value to a percent type.
      *
-     * @param pt
+     * @param value
      *            percent type to convert
      * @return converted value 0-31
      */

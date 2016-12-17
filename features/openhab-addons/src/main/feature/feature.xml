@@ -656,10 +656,10 @@
     <configfile finalname="${openhab.conf}/services/influxdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/influxdb</configfile>
   </feature>
 
-  <feature name="openhab-persistence-gcal" description="GCal Persistence" version="${project.version}">
+  <feature name="openhab-persistence-gcal" description="Google Calendar Presence Simulator" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
-    <feature>openhab-io-gcal1</feature>
+    <feature>openhab-misc-gcal1</feature>
     <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.gcal/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/gcal-persistence.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/gcal-persistence</configfile>
   </feature>
@@ -768,15 +768,18 @@
           <configfile finalname="${openhab.conf}/services/logging.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/logging</configfile>
       </feature>
   -->
-
-  <!-- shared features, not end user facing -->
-  <feature name="openhab-io-gcal1" description="GCal" version="${project.version}">
+  
+  <!-- misc -->
+  
+  <feature name="openhab-misc-gcal1" description="Google Calendar Scheduler" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.gcal/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/gcal.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/gcal</configfile>
   </feature>
 
+  <!-- shared features, not end user facing -->
+  
   <feature name="openhab-io-gpio1" description="GPIO IO" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
