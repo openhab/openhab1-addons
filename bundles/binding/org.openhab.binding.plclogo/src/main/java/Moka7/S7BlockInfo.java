@@ -1,37 +1,29 @@
-/*=============================================================================|
-|  PROJECT Moka7                                                         1.0.2 |
-|==============================================================================|
-|  Copyright (c) 2013-2016 by Davide Nardella                                  |
-|  All rights reserved.                                                        |
-|==============================================================================|
-|  This program and the accompanying materials                                 |
-|  are made available under the terms of the Eclipse Public License v1.0       |
-|  which accompanies this distribution, and is available at                    |
-|  http://www.eclipse.org/legal/epl-v10.html                                   |
-|                                                                              |
-|  SNAP7 is distributed in the hope that it will be useful,                    |
-|  but WITHOUT ANY WARRANTY; without even the implied warranty of              |
-|  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE whatever license you    |
-|  decide to adopt.                                                            |
-|                                                                              |
-|=============================================================================*/
+/**
+ * Copyright (c) 2013-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package Moka7;
 import java.util.Date;
 /**
  *
- * @author Davide
+ * @author Davide Nardella
+ * @since 1.9.0
  */
 public class S7BlockInfo {
 
     private final int BufSize = 96;
     // MilliSeconds between 1970/1/1 (Java time base) and 1984/1/1 (Siemens base)
-    private final long DeltaMilliSecs = 441763200000L; 
-    protected byte[] Buffer = new byte[BufSize];       
-        
+    private final long DeltaMilliSecs = 441763200000L;
+    protected byte[] Buffer = new byte[BufSize];
+
     protected void Update(byte[] Src, int Pos)
     {
         System.arraycopy(Src, Pos, Buffer, 0, BufSize);
-    }   
+    }
     public int BlkType()
     {
        return Buffer[2];
@@ -94,5 +86,5 @@ public class S7BlockInfo {
     {
       return S7.GetStringAt(Buffer,49,8);
     }
-    
+
 }

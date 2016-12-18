@@ -1,20 +1,11 @@
-/*=============================================================================|
-|  PROJECT Moka7                                                         1.0.2 |
-|==============================================================================|
-|  Copyright (c) 2013-2016 by Davide Nardella                                  |
-|  All rights reserved.                                                        |
-|==============================================================================|
-|  This program and the accompanying materials                                 |
-|  are made available under the terms of the Eclipse Public License v1.0       |
-|  which accompanies this distribution, and is available at                    |
-|  http://www.eclipse.org/legal/epl-v10.html                                   |
-|                                                                              |
-|  SNAP7 is distributed in the hope that it will be useful,                    |
-|  but WITHOUT ANY WARRANTY; without even the implied warranty of              |
-|  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE whatever license you    |
-|  decide to adopt.                                                            |
-|                                                                              |
-|=============================================================================*/
+/**
+ * Copyright (c) 2013-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package Moka7;
 
 import java.io.DataInputStream;
@@ -29,9 +20,10 @@ import java.util.Date;
 
 /**
  *
- * @author Dave Nardella
+ * @author Davide Nardella
+ * @since 1.9.0
  */
-public class S7Client 
+public class S7Client
 {
     // WordLength
     private static final byte S7WLByte    =0x02;
@@ -45,49 +37,49 @@ public class S7Client
     public static final int errTCPConnectionReset  = 0x0005;
     public static final int errISOInvalidPDU       = 0x0006;
     public static final int errISOConnectionFailed = 0x0007;
-    public static final int errISONegotiatingPDU   = 0x0008; 
-    public static final int errS7InvalidPDU        = 0x0009; 
-    public static final int errS7DataRead          = 0x000A; 
+    public static final int errISONegotiatingPDU   = 0x0008;
+    public static final int errS7InvalidPDU        = 0x0009;
+    public static final int errS7DataRead          = 0x000A;
     public static final int errS7DataWrite         = 0x000B;
     public static final int errS7BufferTooSmall    = 0x000C;
     public static final int errS7FunctionError     = 0x000D;
-    public static final int errS7InvalidParams     = 0x000E;           
-    
+    public static final int errS7InvalidParams     = 0x000E;
+
     // Public fields
     public boolean Connected = false;
     public int LastError = 0;
     public int RecvTimeout = 2000;
-    
+
     // Privates
     private static final int ISOTCP = 102; // ISOTCP Port
     private static final int MinPduSize = 16;
     private static final int DefaultPduSizeRequested = 480;
     private static final int IsoHSize = 7; // TPKT+COTP Header Size
-    private static final int MaxPduSize = DefaultPduSizeRequested+IsoHSize; 
-    
-    
+    private static final int MaxPduSize = DefaultPduSizeRequested+IsoHSize;
+
+
     private Socket TCPSocket;
     private final byte[] PDU = new byte[2048];
-    
+
     private DataInputStream InStream = null;
     private DataOutputStream OutStream = null;
-            
+
     private String IPAddress;
-           
+
     private byte LocalTSAP_HI;
     private byte LocalTSAP_LO;
     private byte RemoteTSAP_HI;
     private byte RemoteTSAP_LO;
     private byte LastPDUType;
-    
-    private short ConnType = S7.PG; 
+
+    private short ConnType = S7.PG;
     private int _PDULength = 0;
-    
+
     // Telegrams
     // ISO Connection Request telegram (contains also ISO Header and COTP Header)
     private static final byte ISO_CR[] = {
         // TPKT (RFC1006 Header)
-        (byte)0x03, // RFC 1006 ID (3) 
+        (byte)0x03, // RFC 1006 ID (3)
         (byte)0x00, // Reserved, always 0
         (byte)0x00, // High part of packet lenght (entire frame, payload and TPDU included)
         (byte)0x16, // Low part of packet lenght (entire frame, payload and TPDU included)
@@ -111,110 +103,110 @@ public class S7Client
         (byte)0x01, // Dst TSAP HI (will be overwritten)
         (byte)0x02  // Dst TSAP LO (will be overwritten)
     };
-    
+
     // S7 PDU Negotiation Telegram (contains also ISO Header and COTP Header)
     private static final byte S7_PN[] = {
-        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x19, 
+        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x19,
         (byte)0x02, (byte)0xf0, (byte)0x80, // TPKT + COTP (see above for info)
-        (byte)0x32, (byte)0x01, (byte)0x00, (byte)0x00, 
-        (byte)0x04, (byte)0x00, (byte)0x00, (byte)0x08, 
-        (byte)0x00, (byte)0x00, (byte)0xf0, (byte)0x00, 
-        (byte)0x00, (byte)0x01, (byte)0x00, (byte)0x01, 
+        (byte)0x32, (byte)0x01, (byte)0x00, (byte)0x00,
+        (byte)0x04, (byte)0x00, (byte)0x00, (byte)0x08,
+        (byte)0x00, (byte)0x00, (byte)0xf0, (byte)0x00,
+        (byte)0x00, (byte)0x01, (byte)0x00, (byte)0x01,
         (byte)0x00, (byte)0x1e // PDU Length Requested = HI-LO 480 bytes
 	};
 
     // S7 Read/Write Request Header (contains also ISO Header and COTP Header)
     private static final byte S7_RW[] = { // 31-35 bytes
-        (byte)0x03,(byte)0x00, 
+        (byte)0x03,(byte)0x00,
         (byte)0x00,(byte)0x1f,  // Telegram Length (Data Size + 31 or 35)
         (byte)0x02,(byte)0xf0, (byte)0x80, // COTP (see above for info)
-        (byte)0x32,             // S7 Protocol ID 
+        (byte)0x32,             // S7 Protocol ID
         (byte)0x01,             // Job Type
         (byte)0x00,(byte)0x00,  // Redundancy identification
         (byte)0x05,(byte)0x00,  // PDU Reference
         (byte)0x00,(byte)0x0e,  // Parameters Length
-        (byte)0x00,(byte)0x00,  // Data Length = Size(bytes) + 4      
-        (byte)0x04,             // Function 4 Read Var, 5 Write Var  
+        (byte)0x00,(byte)0x00,  // Data Length = Size(bytes) + 4
+        (byte)0x04,             // Function 4 Read Var, 5 Write Var
         (byte)0x01,             // Items count
         (byte)0x12,             // Var spec.
         (byte)0x0a,             // Length of remaining bytes
-        (byte)0x10,             // Syntax ID 
-        S7WLByte,               // Transport Size                        
-        (byte)0x00,(byte)0x00,  // Num Elements                          
-        (byte)0x00,(byte)0x00,  // DB Number (if any, else 0)            
-        (byte)0x84,             // Area Type                            
-        (byte)0x00,(byte)0x00,(byte)0x00, // Area Offset                     
+        (byte)0x10,             // Syntax ID
+        S7WLByte,               // Transport Size
+        (byte)0x00,(byte)0x00,  // Num Elements
+        (byte)0x00,(byte)0x00,  // DB Number (if any, else 0)
+        (byte)0x84,             // Area Type
+        (byte)0x00,(byte)0x00,(byte)0x00, // Area Offset
         // WR area
-        (byte)0x00,             // Reserved 
+        (byte)0x00,             // Reserved
         (byte)0x04,             // Transport size
-        (byte)0x00,(byte)0x00,  // Data Length * 8 (if not timer or counter) 
+        (byte)0x00,(byte)0x00,  // Data Length * 8 (if not timer or counter)
     };
     private static final int Size_RD = 31;
     private static final int Size_WR = 35;
 
     // S7 Get Block Info Request Header (contains also ISO Header and COTP Header)
     private static final byte S7_BI[] = {
-        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x25, 
-        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32, 
-        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x05, 
-        (byte)0x00, (byte)0x00, (byte)0x08, (byte)0x00, 
-        (byte)0x0c, (byte)0x00, (byte)0x01, (byte)0x12, 
-        (byte)0x04, (byte)0x11, (byte)0x43, (byte)0x03, 
-        (byte)0x00, (byte)0xff, (byte)0x09, (byte)0x00, 
-        (byte)0x08, (byte)0x30, 
+        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x25,
+        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32,
+        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x05,
+        (byte)0x00, (byte)0x00, (byte)0x08, (byte)0x00,
+        (byte)0x0c, (byte)0x00, (byte)0x01, (byte)0x12,
+        (byte)0x04, (byte)0x11, (byte)0x43, (byte)0x03,
+        (byte)0x00, (byte)0xff, (byte)0x09, (byte)0x00,
+        (byte)0x08, (byte)0x30,
         (byte)0x41, // Block Type
         (byte)0x30, (byte)0x30, (byte)0x30, (byte)0x30, (byte)0x30, // ASCII Block Number
-        (byte)0x41 
-	};    
-    
-    // SZL First telegram request   
+        (byte)0x41
+	};
+
+    // SZL First telegram request
     private static final byte S7_SZL_FIRST[] = {
-	(byte)0x03, (byte)0x00, (byte)0x00, (byte)0x21, 
-        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32, 
-        (byte)0x07, (byte)0x00, (byte)0x00, 
+	(byte)0x03, (byte)0x00, (byte)0x00, (byte)0x21,
+        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32,
+        (byte)0x07, (byte)0x00, (byte)0x00,
         (byte)0x05, (byte)0x00, // Sequence out
-        (byte)0x00, (byte)0x08, (byte)0x00, 
-        (byte)0x08, (byte)0x00, (byte)0x01, (byte)0x12, 
-        (byte)0x04, (byte)0x11, (byte)0x44, (byte)0x01, 
-        (byte)0x00, (byte)0xff, (byte)0x09, (byte)0x00, 
-        (byte)0x04, 
+        (byte)0x00, (byte)0x08, (byte)0x00,
+        (byte)0x08, (byte)0x00, (byte)0x01, (byte)0x12,
+        (byte)0x04, (byte)0x11, (byte)0x44, (byte)0x01,
+        (byte)0x00, (byte)0xff, (byte)0x09, (byte)0x00,
+        (byte)0x04,
         (byte)0x00, (byte)0x00, // ID (29)
         (byte)0x00, (byte)0x00  // Index (31)
-    };    
-    
-    // SZL Next telegram request 
+    };
+
+    // SZL Next telegram request
     private static final byte S7_SZL_NEXT[] = {
-        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x21, 
-        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32, 
-        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x06, 
-        (byte)0x00, (byte)0x00, (byte)0x0c, (byte)0x00, 
-        (byte)0x04, (byte)0x00, (byte)0x01, (byte)0x12, 
-        (byte)0x08, (byte)0x12, (byte)0x44, (byte)0x01, 
+        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x21,
+        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32,
+        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x06,
+        (byte)0x00, (byte)0x00, (byte)0x0c, (byte)0x00,
+        (byte)0x04, (byte)0x00, (byte)0x01, (byte)0x12,
+        (byte)0x08, (byte)0x12, (byte)0x44, (byte)0x01,
         (byte)0x01, // Sequence
         (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
         (byte)0x0a, (byte)0x00, (byte)0x00, (byte)0x00
-    };    
+    };
 
     // Get Date/Time request
     private static final byte S7_GET_DT[] = {
-        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x1d, 
-        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32, 
-        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x38, 
-        (byte)0x00, (byte)0x00, (byte)0x08, (byte)0x00, 
-        (byte)0x04, (byte)0x00, (byte)0x01, (byte)0x12, 
-        (byte)0x04, (byte)0x11, (byte)0x47, (byte)0x01, 
-        (byte)0x00, (byte)0x0a, (byte)0x00, (byte)0x00, 
-        (byte)0x00        
+        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x1d,
+        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32,
+        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x38,
+        (byte)0x00, (byte)0x00, (byte)0x08, (byte)0x00,
+        (byte)0x04, (byte)0x00, (byte)0x01, (byte)0x12,
+        (byte)0x04, (byte)0x11, (byte)0x47, (byte)0x01,
+        (byte)0x00, (byte)0x0a, (byte)0x00, (byte)0x00,
+        (byte)0x00
     };
-    
+
     // Set Date/Time command
     private static final byte S7_SET_DT[] = {
-        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x27, 
-        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32, 
-        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x89, 
-        (byte)0x03, (byte)0x00, (byte)0x08, (byte)0x00, 
-        (byte)0x0e, (byte)0x00, (byte)0x01, (byte)0x12, 
-        (byte)0x04, (byte)0x11, (byte)0x47, (byte)0x02, 
+        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x27,
+        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32,
+        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x89,
+        (byte)0x03, (byte)0x00, (byte)0x08, (byte)0x00,
+        (byte)0x0e, (byte)0x00, (byte)0x01, (byte)0x12,
+        (byte)0x04, (byte)0x11, (byte)0x47, (byte)0x02,
         (byte)0x00, (byte)0xff, (byte)0x09, (byte)0x00,
         (byte)0x0a, (byte)0x00, (byte)0x19, // Hi part of Year
         (byte)0x13, // Lo part of Year
@@ -223,90 +215,90 @@ public class S7Client
         (byte)0x17, // Hour
         (byte)0x37, // Min
         (byte)0x13, // Sec
-        (byte)0x00, (byte)0x01 // ms + Day of week   
+        (byte)0x00, (byte)0x01 // ms + Day of week
     };
 
     // S7 STOP request
     private static final byte S7_STOP[] = {
-        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x21, 
-        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32, 
-        (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x0e, 
-        (byte)0x00, (byte)0x00, (byte)0x10, (byte)0x00, 
-        (byte)0x00, (byte)0x29, (byte)0x00, (byte)0x00, 
-        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x09, 
-        (byte)0x50, (byte)0x5f, (byte)0x50, (byte)0x52, 
-        (byte)0x4f, (byte)0x47, (byte)0x52, (byte)0x41, 
-        (byte)0x4d 
-    };    
-    
+        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x21,
+        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32,
+        (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x0e,
+        (byte)0x00, (byte)0x00, (byte)0x10, (byte)0x00,
+        (byte)0x00, (byte)0x29, (byte)0x00, (byte)0x00,
+        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x09,
+        (byte)0x50, (byte)0x5f, (byte)0x50, (byte)0x52,
+        (byte)0x4f, (byte)0x47, (byte)0x52, (byte)0x41,
+        (byte)0x4d
+    };
+
     // S7 HOT Start request
     private static final byte S7_HOT_START[] = {
-        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x25, 
-        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32, 
+        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x25,
+        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32,
         (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x0c,
-        (byte)0x00, (byte)0x00, (byte)0x14, (byte)0x00, 
-        (byte)0x00, (byte)0x28, (byte)0x00, (byte)0x00, 
-        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, 
-        (byte)0xfd, (byte)0x00, (byte)0x00, (byte)0x09, 
-        (byte)0x50, (byte)0x5f, (byte)0x50, (byte)0x52, 
-        (byte)0x4f, (byte)0x47, (byte)0x52, (byte)0x41, 
+        (byte)0x00, (byte)0x00, (byte)0x14, (byte)0x00,
+        (byte)0x00, (byte)0x28, (byte)0x00, (byte)0x00,
+        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        (byte)0xfd, (byte)0x00, (byte)0x00, (byte)0x09,
+        (byte)0x50, (byte)0x5f, (byte)0x50, (byte)0x52,
+        (byte)0x4f, (byte)0x47, (byte)0x52, (byte)0x41,
         (byte)0x4d
-    };    
-    
+    };
+
     // S7 COLD Start request
     private static final byte S7_COLD_START[] = {
-        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x27, 
-        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32, 
-        (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x0f, 
-        (byte)0x00, (byte)0x00, (byte)0x16, (byte)0x00, 
-        (byte)0x00, (byte)0x28, (byte)0x00, (byte)0x00, 
-        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, 
-        (byte)0xfd, (byte)0x00, (byte)0x02, (byte)0x43, 
-        (byte)0x20, (byte)0x09, (byte)0x50, (byte)0x5f, 
-        (byte)0x50, (byte)0x52, (byte)0x4f, (byte)0x47, 
+        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x27,
+        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32,
+        (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x0f,
+        (byte)0x00, (byte)0x00, (byte)0x16, (byte)0x00,
+        (byte)0x00, (byte)0x28, (byte)0x00, (byte)0x00,
+        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        (byte)0xfd, (byte)0x00, (byte)0x02, (byte)0x43,
+        (byte)0x20, (byte)0x09, (byte)0x50, (byte)0x5f,
+        (byte)0x50, (byte)0x52, (byte)0x4f, (byte)0x47,
         (byte)0x52, (byte)0x41, (byte)0x4d
-    };    
+    };
 
-    // S7 Get PLC Status 
+    // S7 Get PLC Status
     private static final byte S7_GET_STAT[] = {
-        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x21, 
-        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32, 
-        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x2c, 
-        (byte)0x00, (byte)0x00, (byte)0x08, (byte)0x00, 
-        (byte)0x08, (byte)0x00, (byte)0x01, (byte)0x12, 
-        (byte)0x04, (byte)0x11, (byte)0x44, (byte)0x01, 
-        (byte)0x00, (byte)0xff, (byte)0x09, (byte)0x00, 
-        (byte)0x04, (byte)0x04, (byte)0x24, (byte)0x00, 
-        (byte)0x00 
+        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x21,
+        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32,
+        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x2c,
+        (byte)0x00, (byte)0x00, (byte)0x08, (byte)0x00,
+        (byte)0x08, (byte)0x00, (byte)0x01, (byte)0x12,
+        (byte)0x04, (byte)0x11, (byte)0x44, (byte)0x01,
+        (byte)0x00, (byte)0xff, (byte)0x09, (byte)0x00,
+        (byte)0x04, (byte)0x04, (byte)0x24, (byte)0x00,
+        (byte)0x00
     };
 
-    // S7 Set Session Password 
+    // S7 Set Session Password
     private static final byte S7_SET_PWD[] = {
-        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x25, 
-        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32, 
-        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x27, 
-        (byte)0x00, (byte)0x00, (byte)0x08, (byte)0x00, 
-        (byte)0x0c, (byte)0x00, (byte)0x01, (byte)0x12, 
-        (byte)0x04, (byte)0x11, (byte)0x45, (byte)0x01, 
-        (byte)0x00, (byte)0xff, (byte)0x09, (byte)0x00, 
-        (byte)0x08, 
+        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x25,
+        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32,
+        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x27,
+        (byte)0x00, (byte)0x00, (byte)0x08, (byte)0x00,
+        (byte)0x0c, (byte)0x00, (byte)0x01, (byte)0x12,
+        (byte)0x04, (byte)0x11, (byte)0x45, (byte)0x01,
+        (byte)0x00, (byte)0xff, (byte)0x09, (byte)0x00,
+        (byte)0x08,
         // 8 Char Encoded Password
-        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, 
-        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00        
+        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00
     };
 
-    // S7 Clear Session Password 
+    // S7 Clear Session Password
     private static final byte S7_CLR_PWD[] = {
-        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x1d, 
-        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32, 
-        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x29, 
-        (byte)0x00, (byte)0x00, (byte)0x08, (byte)0x00, 
-        (byte)0x04, (byte)0x00, (byte)0x01, (byte)0x12, 
-        (byte)0x04, (byte)0x11, (byte)0x45, (byte)0x02, 
-        (byte)0x00, (byte)0x0a, (byte)0x00, (byte)0x00, 
-        (byte)0x00    
-    };    
-        
+        (byte)0x03, (byte)0x00, (byte)0x00, (byte)0x1d,
+        (byte)0x02, (byte)0xf0, (byte)0x80, (byte)0x32,
+        (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x29,
+        (byte)0x00, (byte)0x00, (byte)0x08, (byte)0x00,
+        (byte)0x04, (byte)0x00, (byte)0x01, (byte)0x12,
+        (byte)0x04, (byte)0x11, (byte)0x45, (byte)0x02,
+        (byte)0x00, (byte)0x0a, (byte)0x00, (byte)0x00,
+        (byte)0x00
+    };
+
     public S7Client()
     {
         // Placeholder for future implementations
@@ -315,12 +307,12 @@ public class S7Client
     public static String ErrorText(int Error)
     {
         switch (Error)
-        {            
+        {
             case errTCPConnectionFailed :
                 return "TCP Connection failed.";
             case errTCPDataSend :
                 return "TCP Sending error.";
-            case errTCPDataRecv :        
+            case errTCPDataRecv :
                 return "TCP Receiving error.";
             case errTCPDataRecvTout :
                 return "Data Receiving timeout.";
@@ -344,65 +336,65 @@ public class S7Client
                 return "S7 function refused by the CPU.";
             case errS7InvalidParams :
                 return "Invalid parameters supplied to the function.";
-            default : 
+            default :
                 return "Unknown error : 0x"+Integer.toHexString(Error);
         }
     }
-    
-    private int TCPConnect() 
+
+    private int TCPConnect()
     {
         SocketAddress sockaddr = new InetSocketAddress(IPAddress, ISOTCP);
         LastError=0;
-        try {                       
-            TCPSocket = new Socket(); 
+        try {
+            TCPSocket = new Socket();
             TCPSocket.connect(sockaddr ,5000);
             TCPSocket.setTcpNoDelay(true);
             InStream = new DataInputStream(TCPSocket.getInputStream());
-            OutStream = new DataOutputStream(TCPSocket.getOutputStream());           
+            OutStream = new DataOutputStream(TCPSocket.getOutputStream());
         }
         catch (IOException e) {
             LastError=errTCPConnectionFailed;
-        }       
+        }
         return LastError;
     }
-    
-    private int WaitForData(int Size, int Timeout) 
+
+    private int WaitForData(int Size, int Timeout)
     {
         int cnt = 0;
         LastError=0;
         int SizeAvail;
         boolean Expired = false;
-        try 
+        try
         {
             SizeAvail=InStream.available();
             while ((SizeAvail<Size) && (!Expired) && (LastError==0))
             {
-                
+
                 cnt++;
                 try {
                     Thread.sleep(1);
-                } 
+                }
                 catch (InterruptedException ex) {
                     LastError=errTCPDataRecvTout;
                 }
-                SizeAvail=InStream.available();              
+                SizeAvail=InStream.available();
                 Expired=cnt>Timeout;
                 // If timeout we clean the buffer
                 if (Expired && (SizeAvail>0) && (LastError==0))
                   InStream.read(PDU, 0, SizeAvail);
             }
-        } 
-        catch (IOException ex) 
+        }
+        catch (IOException ex)
         {
             LastError=errTCPDataRecvTout;
         }
         if (cnt>=Timeout)
         {
             LastError=errTCPDataRecvTout;
-        }        
+        }
         return LastError;
     }
-    
+
     private int RecvPacket(byte[] Buffer, int Start, int Size)
     {
 	int BytesRead=0;
@@ -415,7 +407,7 @@ public class S7Client
                 LastError=errTCPDataRecv;
             }
             if (BytesRead==0)
-                LastError=errTCPConnectionReset;        
+                LastError=errTCPConnectionReset;
         }
         return LastError;
     }
@@ -427,14 +419,14 @@ public class S7Client
             OutStream.write(Buffer,0,Len);
             OutStream.flush();
         } catch (IOException ex) {
-            LastError = errTCPDataSend; 
+            LastError = errTCPDataSend;
         }
-    }   
+    }
     private void SendPacket(byte[] Buffer)
     {
         SendPacket(Buffer,Buffer.length);
-    }   
-    
+    }
+
     private int RecvIsoPacket()
     {
         Boolean Done = false;
@@ -442,7 +434,7 @@ public class S7Client
 	while ((LastError==0) && !Done)
 	{
             // Get TPKT (4 bytes)
-            RecvPacket(PDU, 0, 4); 
+            RecvPacket(PDU, 0, 4);
             if (LastError==0)
             {
                 Size=S7.GetWordAt(PDU,2);
@@ -456,38 +448,38 @@ public class S7Client
                     else
                         Done = true; // a valid Length !=7 && >16 && <247
                 }
-            }               
+            }
         }
         if (LastError==0)
         {
             RecvPacket(PDU,4, 3); // Skip remaining 3 COTP bytes
-            LastPDUType=PDU[5];   // Stores PDU Type, we need it 
-            // Receives the S7 Payload          
-            RecvPacket(PDU, 7, Size-IsoHSize);          
+            LastPDUType=PDU[5];   // Stores PDU Type, we need it
+            // Receives the S7 Payload
+            RecvPacket(PDU, 7, Size-IsoHSize);
         }
         if (LastError==0)
             return Size;
         else
             return 0;
     }
-    
-    private int ISOConnect() 
+
+    private int ISOConnect()
     {
     	int Size;
         ISO_CR[16]=LocalTSAP_HI;
         ISO_CR[17]=LocalTSAP_LO;
         ISO_CR[20]=RemoteTSAP_HI;
         ISO_CR[21]=RemoteTSAP_LO;
-        
-        // Sends the connection request telegram      
+
+        // Sends the connection request telegram
         SendPacket(ISO_CR);
         if (LastError==0)
-        {            
+        {
             // Gets the reply (if any)
             Size=RecvIsoPacket();
-            if (LastError==0) 
+            if (LastError==0)
             {
-                if (Size==22) 
+                if (Size==22)
                 {
                     if (LastPDUType!=(byte)0xD0) // 0xD0 = CC Connection confirm
                         LastError=errISOConnectionFailed;
@@ -495,21 +487,21 @@ public class S7Client
                 else
                     LastError=errISOInvalidPDU;
             }
-        }        
+        }
         return LastError;
-    }        
-    
+    }
+
     private int NegotiatePduLength()
     {
         int Length;
         // Set PDU Size Requested
-        S7.SetWordAt(S7_PN,23,DefaultPduSizeRequested);            
+        S7.SetWordAt(S7_PN,23,DefaultPduSizeRequested);
         // Sends the connection request telegram
         SendPacket(S7_PN);
-        if (LastError==0)    
+        if (LastError==0)
         {
             Length=RecvIsoPacket();
-            if (LastError==0)                 
+            if (LastError==0)
             {
                 // check S7 Error
                 if ((Length==27) && (PDU[17]==0) && (PDU[18]==0))  // 20 = size of Negotiate Answer
@@ -521,19 +513,19 @@ public class S7Client
                     else
                         LastError=errISONegotiatingPDU;
                 }
-                else 
+                else
                     LastError=errISONegotiatingPDU;
             }
         }
         return LastError;
     }
-      
+
     public void SetConnectionType(short ConnectionType)
     {
         ConnType=ConnectionType;
     }
-      
-    public int Connect() 
+
+    public int Connect()
     {
         LastError=0;
         if (!Connected)
@@ -546,10 +538,10 @@ public class S7Client
                 {
                     LastError=NegotiatePduLength(); // Third stage : S7 PDU negotiation
                 }
-            }	            
+            }
         }
         Connected=LastError==0;
-        
+
         // In case the connection is not completely established (TCP connection + ISO connection + PDU negotiation)
         // we close the socket and its IO streams to revert the object back to pre-Connect() state
         if (!Connected)
@@ -573,11 +565,11 @@ public class S7Client
                 }
             }
             _PDULength = 0;
-        }                
-        
+        }
+
 	return LastError;
     }
-    
+
     public void Disconnect()
     {
         if (Connected)
@@ -587,35 +579,35 @@ public class S7Client
                 InStream.close();
                 TCPSocket.close();
                 _PDULength=0;
-            } catch (IOException ex) {            
+            } catch (IOException ex) {
             }
             Connected=false;
         }
     }
-    
-    public int ConnectTo(String Address, int Rack, int Slot) 
-    {       
+
+    public int ConnectTo(String Address, int Rack, int Slot)
+    {
         int RemoteTSAP=(ConnType<<8)+ (Rack * 0x20) + Slot;
         SetConnectionParams(Address, 0x0100, RemoteTSAP);
         return Connect();
     }
-    
+
     public int PDULength()
     {
         return _PDULength;
     }
-    
+
     public void SetConnectionParams(String Address, int LocalTSAP, int RemoteTSAP)
     {
         int LocTSAP = LocalTSAP & 0x0000FFFF;
-        int RemTSAP = RemoteTSAP & 0x0000FFFF;        
+        int RemTSAP = RemoteTSAP & 0x0000FFFF;
         IPAddress    =  Address;
         LocalTSAP_HI = (byte) (LocTSAP>>8);
         LocalTSAP_LO = (byte) (LocTSAP & 0x00FF);
         RemoteTSAP_HI= (byte) (RemTSAP>>8);
-        RemoteTSAP_LO= (byte) (RemTSAP & 0x00FF);      
+        RemoteTSAP_LO= (byte) (RemTSAP & 0x00FF);
     }
- 
+
     public int ReadArea(int Area, int DBNumber, int Start, int Amount, byte[] Data)
     {
 	int Address;
@@ -626,16 +618,16 @@ public class S7Client
 	int Length;
 	int Offset = 0;
 	int WordSize = 1;
-	     
+
 	LastError=0;
-		
+
 	// If we are addressing Timers or counters the element size is 2
 	if ((Area==S7.S7AreaCT) || (Area==S7.S7AreaTM))
             WordSize = 2;
-	
+
         MaxElements=(_PDULength-18) / WordSize; // 18 = Reply telegram header
             TotElements=Amount;
-	
+
         while ((TotElements>0) && (LastError==0))
         {
             NumElements=TotElements;
@@ -649,7 +641,7 @@ public class S7Client
             // Set DB Number
             PDU[27] = (byte) Area;
             // Set Area
-            if (Area==S7.S7AreaDB) 
+            if (Area==S7.S7AreaDB)
                 S7.SetWordAt(PDU,25,DBNumber);
 
             // Adjusts Start and word length
@@ -667,13 +659,13 @@ public class S7Client
             // Num elements
             S7.SetWordAt(PDU,23,NumElements);
 
-            // Address into the PLC (only 3 bytes)           
+            // Address into the PLC (only 3 bytes)
             PDU[30] = (byte) (Address & 0x0FF);
             Address = Address >> 8;
             PDU[29] = (byte) (Address & 0x0FF);
             Address = Address >> 8;
-            PDU[28] = (byte) (Address & 0x0FF);         
-            
+            PDU[28] = (byte) (Address & 0x0FF);
+
             SendPacket(PDU, Size_RD);
             if (LastError==0)
             {
@@ -712,16 +704,16 @@ public class S7Client
 	int Length;
 	int Offset = 0;
 	int WordSize = 1;
-     
+
 	LastError=0;
-	
+
 	// If we are addressing Timers or counters the element size is 2
 	if ((Area==S7.S7AreaCT) || (Area==S7.S7AreaTM))
             WordSize = 2;
 
         MaxElements=(_PDULength-35) / WordSize; // 18 = Reply telegram header
 	TotElements=Amount;
-	
+
         while ((TotElements>0) && (LastError==0))
         {
             NumElements=TotElements;
@@ -742,7 +734,7 @@ public class S7Client
             PDU[17]= (byte) 0x05;
             // Set DB Number
             PDU[27] = (byte) Area;
-            if (Area==S7.S7AreaDB) 
+            if (Area==S7.S7AreaDB)
                 S7.SetWordAt(PDU,25,DBNumber);
 
             // Adjusts Start and word length
@@ -770,10 +762,10 @@ public class S7Client
             PDU[28] = (byte) (Address & 0x0FF);
             // Length
             S7.SetWordAt(PDU,33,Length);
-            
+
             // Copies the Data
             System.arraycopy(Data, Offset, PDU, 35, DataSize);
-                        
+
             SendPacket(PDU, IsoSize);
             if (LastError==0)
             {
@@ -796,7 +788,7 @@ public class S7Client
         }
         return LastError;
     }
-   
+
     public int GetAgBlockInfo(int BlockType, int BlockNumber, S7BlockInfo Block)
     {
     	int Length;
@@ -813,7 +805,7 @@ public class S7Client
         S7_BI[34]=(byte) ((BlockNumber / 10)+0x30);
         BlockNumber=BlockNumber % 10;
         S7_BI[35]=(byte) ((BlockNumber / 1)+0x30);
-        
+
         SendPacket(S7_BI);
         if (LastError==0)
         {
@@ -830,15 +822,15 @@ public class S7Client
             else
                 LastError = errS7InvalidPDU;
         }
-        
+
         return LastError;
-    }      
+    }
     /**
-     * 
+     *
      * @param DBNumber DB Number
      * @param Buffer   Destination buffer
      * @param SizeRead How many bytes were read
-     * @return 
+     * @return
      */
     public int DBGet(int DBNumber, byte[] Buffer, IntByRef SizeRead)
     {
@@ -859,8 +851,8 @@ public class S7Client
                 LastError=errS7BufferTooSmall;
         }
         return LastError;
-    }  
-    
+    }
+
     public int ReadSZL(int ID, int Index, S7Szl SZL)
     {
     	int Length;
@@ -870,7 +862,7 @@ public class S7Client
         boolean First = true;
         byte Seq_in =0x00;
         int Seq_out =0x0000;
-        
+
         LastError=0;
         SZL.DataSize=0;
         do
@@ -880,17 +872,17 @@ public class S7Client
                 S7.SetWordAt(S7_SZL_FIRST, 11, ++Seq_out);
                 S7.SetWordAt(S7_SZL_FIRST, 29, ID);
                 S7.SetWordAt(S7_SZL_FIRST, 31, Index);
-                SendPacket(S7_SZL_FIRST);                
+                SendPacket(S7_SZL_FIRST);
             }
             else
             {
                 S7.SetWordAt(S7_SZL_NEXT, 11, ++Seq_out);
                 PDU[24] = (byte)Seq_in;
-                SendPacket(S7_SZL_NEXT);                
+                SendPacket(S7_SZL_NEXT);
             }
             if (LastError!=0)
                 return LastError;
-            
+
             Length=RecvIsoPacket();
             if (LastError==0)
             {
@@ -904,10 +896,10 @@ public class S7Client
                             DataSZL=S7.GetWordAt(PDU,31)-8; // Skips extra params (ID, Index ...)
                             Done=PDU[26]==0x00;
                             Seq_in=(byte)PDU[24]; // Slice sequence
-                            
+
                             SZL.LENTHDR=S7.GetWordAt(PDU, 37);
                             SZL.N_DR=S7.GetWordAt(PDU, 39);
-                            SZL.Copy(PDU, 41, Offset, DataSZL);                       
+                            SZL.Copy(PDU, 41, Offset, DataSZL);
                             Offset+=DataSZL;
                             SZL.DataSize+=DataSZL;
                         }
@@ -924,10 +916,10 @@ public class S7Client
                         if ((S7.GetWordAt(PDU,27)==0) && (PDU[29]==(byte)0xFF))
                         {
                             // Gets Amount of this slice
-                            DataSZL=S7.GetWordAt(PDU,31); 
+                            DataSZL=S7.GetWordAt(PDU,31);
                             Done=PDU[26]==0x00;
                             Seq_in=(byte)PDU[24]; // Slice sequence
-                            SZL.Copy(PDU, 37, Offset, DataSZL);                       
+                            SZL.Copy(PDU, 37, Offset, DataSZL);
                             Offset+=DataSZL;
                             SZL.DataSize+=DataSZL;
                         }
@@ -937,19 +929,19 @@ public class S7Client
                     else
                         LastError = errS7InvalidPDU;
                 }
-            }            
+            }
             First=false;
-        }            
+        }
         while(!Done && (LastError==0));
-        
+
         return LastError;
     }
-    
-    
+
+
     public int GetCpuInfo(S7CpuInfo Info)
     {
         S7Szl SZL = new S7Szl(1024);
-        
+
         LastError = ReadSZL(0x001C, 0x0000, SZL);
         if (LastError==0)
         {
@@ -961,7 +953,7 @@ public class S7Client
     public int GetCpInfo(S7CpInfo Info)
     {
         S7Szl SZL = new S7Szl(1024);
-        
+
         LastError = ReadSZL(0x0131, 0x0001, SZL);
         if (LastError==0)
         {
@@ -969,11 +961,11 @@ public class S7Client
         }
         return LastError;
     }
-    
+
     public int GetOrderCode(S7OrderCode Code)
     {
         S7Szl SZL = new S7Szl(1024);
-        
+
         LastError = ReadSZL(0x0011, 0x0000, SZL);
         if (LastError==0)
         {
@@ -1003,30 +995,30 @@ public class S7Client
             else
                 LastError = errS7InvalidPDU;
         }
-        
+
         return LastError;
     }
 
     public int SetPlcDateTime(Date DateTime)
     {
         int Length;
-       
+
         LastError = 0;
         S7.SetDateAt(S7_SET_DT, 31, DateTime);
-        
+
         SendPacket(S7_SET_DT);
         if (LastError==0)
         {
             Length=RecvIsoPacket();
             if (Length > 30) // the minimum expected
             {
-                if (S7.GetWordAt(PDU,27)!=0) 
+                if (S7.GetWordAt(PDU,27)!=0)
                     LastError = errS7FunctionError;
             }
             else
                 LastError = errS7InvalidPDU;
         }
-        
+
         return LastError;
     }
 
@@ -1034,11 +1026,11 @@ public class S7Client
     {
         return SetPlcDateTime(new Date());
     }
-    
+
     public int PlcStop()
     {
         int Length;
-       
+
         LastError = 0;
         SendPacket(S7_STOP);
         if (LastError==0)
@@ -1046,7 +1038,7 @@ public class S7Client
             Length=RecvIsoPacket();
             if (Length > 18) // 18 is the minimum expected
             {
-                if (S7.GetWordAt(PDU,17)!=0) 
+                if (S7.GetWordAt(PDU,17)!=0)
                     LastError = errS7FunctionError;
             }
             else
@@ -1058,7 +1050,7 @@ public class S7Client
     public int PlcHotStart()
     {
         int Length;
-       
+
         LastError = 0;
         SendPacket(S7_HOT_START);
         if (LastError==0)
@@ -1066,7 +1058,7 @@ public class S7Client
             Length=RecvIsoPacket();
             if (Length > 18) // the minimum expected
             {
-                if (S7.GetWordAt(PDU,17)!=0) 
+                if (S7.GetWordAt(PDU,17)!=0)
                     LastError = errS7FunctionError;
             }
             else
@@ -1078,7 +1070,7 @@ public class S7Client
     public int PlcColdStart()
     {
         int Length;
-       
+
         LastError = 0;
         SendPacket(S7_COLD_START);
         if (LastError==0)
@@ -1086,7 +1078,7 @@ public class S7Client
             Length=RecvIsoPacket();
             if (Length > 18) // the minimum expected
             {
-                if (S7.GetWordAt(PDU,17)!=0) 
+                if (S7.GetWordAt(PDU,17)!=0)
                     LastError = errS7FunctionError;
             }
             else
@@ -1098,7 +1090,7 @@ public class S7Client
     public int GetPlcStatus(IntByRef Status)
     {
         int Length;
-       
+
         LastError = 0;
         SendPacket(S7_GET_STAT);
         if (LastError==0)
@@ -1106,7 +1098,7 @@ public class S7Client
             Length=RecvIsoPacket();
             if (Length > 30) // the minimum expected
             {
-                if (S7.GetWordAt(PDU,27)==0) 
+                if (S7.GetWordAt(PDU,27)==0)
                 {
                     switch (PDU[44])
                     {
@@ -1118,14 +1110,14 @@ public class S7Client
                         // Since RUN status is always 0x08 for all CPUs and CPs, STOP status
                         // sometime can be coded as 0x03 (especially for old cpu...)
                             Status.Value=S7.S7CpuStatusStop;
-                    }                    
+                    }
                 }
                 else
                     LastError = errS7FunctionError;
             }
             else
                 LastError = errS7InvalidPDU;
-        }            
+        }
         return LastError;
     }
 
@@ -1136,27 +1128,27 @@ public class S7Client
 
         LastError = 0;
         // Adjusts the Password length to 8
-        if (Password.length()>8) 
+        if (Password.length()>8)
             Password=Password.substring(0, 8);
         else
         {
             while (Password.length()<8)
                 Password=Password+" ";
         }
-        
+
         try {
             pwd = Password.getBytes("UTF-8");
         } catch (UnsupportedEncodingException ex) {
             LastError = errS7InvalidParams;
         }
         if (LastError==0)
-        {            
+        {
             // Encodes the password
             pwd[0]=(byte) (pwd[0] ^ 0x55);
             pwd[1]=(byte) (pwd[1] ^ 0x55);
             for (int c = 2; c < 8; c++)
             {
-                pwd[c]=(byte) (pwd[c] ^ 0x55 ^ pwd[c-2]);            
+                pwd[c]=(byte) (pwd[c] ^ 0x55 ^ pwd[c-2]);
             }
             System.arraycopy(pwd, 0, S7_SET_PWD, 29, 8);
             // Sends the telegrem
@@ -1166,40 +1158,40 @@ public class S7Client
                 Length=RecvIsoPacket();
                 if (Length > 32) // the minimum expected
                 {
-                    if (S7.GetWordAt(PDU,27)!=0) 
-                        LastError = errS7FunctionError;                    
-                }                
+                    if (S7.GetWordAt(PDU,27)!=0)
+                        LastError = errS7FunctionError;
+                }
                 else
-                    LastError = errS7InvalidPDU;                
-            }            
-        }        
+                    LastError = errS7InvalidPDU;
+            }
+        }
         return LastError;
     }
-        
+
     public int ClearSessionPassword()
     {
         int Length;
-       
-        LastError = 0;       
+
+        LastError = 0;
         SendPacket(S7_CLR_PWD);
         if (LastError==0)
         {
             Length=RecvIsoPacket();
             if (Length > 30) // the minimum expected
             {
-                if (S7.GetWordAt(PDU,27)!=0) 
+                if (S7.GetWordAt(PDU,27)!=0)
                     LastError = errS7FunctionError;
             }
             else
                 LastError = errS7InvalidPDU;
-        }        
+        }
         return LastError;
     }
-    
+
     public int GetProtection(S7Protection Protection)
     {
         S7Szl SZL = new S7Szl(256);
-        
+
         LastError = ReadSZL(0x0232, 0x0004, SZL);
         if (LastError==0)
         {
@@ -1207,5 +1199,5 @@ public class S7Client
         }
         return LastError;
     }
-    
+
 }
