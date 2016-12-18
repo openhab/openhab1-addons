@@ -98,6 +98,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 
         if (stick != null) {
             setupNonStickDevices(config);
+            stick.startBackgroundThreads();
             setProperlyConfigured(true);
         } else {
             logger.warn("Plugwise needs at least one Stick in order to operate");
