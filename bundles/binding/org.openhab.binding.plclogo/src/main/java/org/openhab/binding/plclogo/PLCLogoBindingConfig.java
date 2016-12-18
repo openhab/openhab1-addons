@@ -16,6 +16,15 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Binding configuration for PLCLogo items
+ *
+ * @author g8kmh
+ * @author vgrebenschikov
+ * @author falkena
+ * @since 1.9.0
+ */
+
 public class PLCLogoBindingConfig implements BindingConfig {
     private Item item;
     private final String controller;

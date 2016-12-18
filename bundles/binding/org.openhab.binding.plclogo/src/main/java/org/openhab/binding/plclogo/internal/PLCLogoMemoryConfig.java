@@ -15,7 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Memory configruration for PLCLogo item binding
+ * One memory configuration may be assigned for input and another for output for same item.
  *
  * @author vgrebenschikov
  * @author falkena

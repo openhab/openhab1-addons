@@ -9,7 +9,7 @@
 package org.openhab.binding.plclogo.internal;
 
 /**
- *
+ * PLCLogo Block represented by this class, as well as address/bit calculations
  *
  * @author vgrebenschikov
  * @author falkena

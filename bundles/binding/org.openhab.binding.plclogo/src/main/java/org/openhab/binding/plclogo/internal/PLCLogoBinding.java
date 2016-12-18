@@ -46,6 +46,7 @@ import Moka7.S7Client;
  * like querying a Website/Device.
  *
  * @author g8kmh
+ * @author vgrebenschikov
  * @author falkena
  * @since 1.9.0
  */
