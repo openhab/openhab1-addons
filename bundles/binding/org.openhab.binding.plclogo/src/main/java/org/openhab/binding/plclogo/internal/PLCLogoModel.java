@@ -11,7 +11,7 @@ package org.openhab.binding.plclogo.internal;
 /**
  * Enum with supported Siemence Logo models
  *
- * @author vgrebenschikov
+ * @author Vladimir Grebenschikov
  * @since 1.9.0
  */
 public enum PLCLogoModel {

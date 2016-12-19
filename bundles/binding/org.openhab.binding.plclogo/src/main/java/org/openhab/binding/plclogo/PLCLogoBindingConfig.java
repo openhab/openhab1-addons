@@ -19,9 +19,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Binding configuration for PLCLogo items
  *
- * @author g8kmh
- * @author vgrebenschikov
- * @author falkena
+ * @author Lehane Kellett
+ * @author Vladimir Grebenschikov
+ * @author Alexander Falkenstern
  * @since 1.9.0
  */
 

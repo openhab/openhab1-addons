@@ -12,7 +12,7 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
 /**
- * @author g8kmh
+ * @author Lehane Kellett
  * @since 1.9.0
  */
 public interface PLCLogoBindingProvider extends BindingProvider {

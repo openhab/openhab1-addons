@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Extension of the default OSGi bundle activator
  *
- * @author g8kmh
+ * @author Lehane Kellett
  * @since 1.9.0
  */
 public final class PLCLogoActivator implements BundleActivator {

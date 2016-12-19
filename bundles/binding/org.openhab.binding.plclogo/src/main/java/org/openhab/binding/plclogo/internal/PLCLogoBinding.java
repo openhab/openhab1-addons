@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.plclogo.PLCLogoBindingConfig;
@@ -45,9 +46,9 @@ import Moka7.S7Client;
  * Implement this class if you are going create an actively polling service
  * like querying a Website/Device.
  *
- * @author g8kmh
- * @author vgrebenschikov
- * @author falkena
+ * @author Lehane Kellett
+ * @author Vladimir Grebenschikov
+ * @author Alexander Falkenstern
  * @since 1.9.0
  */
 public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider> implements ManagedService {
@@ -123,25 +124,24 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
         controllers.clear();
     }
 
-    /**
-     * @{inheritDoc}
-     */
+    protected void addBindingProvider(PLCLogoBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(PLCLogoBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     protected long getRefreshInterval() {
         return refreshInterval;
     }
 
-    /**
-     * @{inheritDoc}
-     */
     @Override
     protected String getName() {
         return "PLCLogo Polling Service";
     }
 
-    /**
-     * @{inheritDoc}
-     */
     @Override
     protected void execute() {
         if (!bindingsExist()) {
@@ -258,9 +258,6 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
         }
     }
 
-    /**
-     * @{inheritDoc}
-     */
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
         // the code being executed when a command was sent on the openHAB
@@ -355,26 +352,11 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
         }
     }
 
-    /**
-     * @{inheritDoc}
-     */
-    @Override
-    protected void internalReceiveUpdate(String itemName, State newState) {
-        // the code being executed when a state was sent on the openHAB
-        // event bus goes here. This method is only called if one of the
-        // BindingProviders provide a binding for the given 'itemName'.
-        super.internalReceiveUpdate(itemName, newState);
-        logger.debug("internalReceiveUpdate() is called!");
-    }
-
-    /**
-     * @{inheritDoc}
-     */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
         Boolean configured = false;
         if (config != null) {
-            String refreshIntervalString = (String) config.get("refresh");
+            String refreshIntervalString = Objects.toString(config.get("refresh"), null);
             if (StringUtils.isNotBlank(refreshIntervalString)) {
                 refreshInterval = Long.parseLong(refreshIntervalString);
             }
@@ -501,7 +483,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
      * Class which represents a LOGO! online controller/PLC connection parameters
      * and current instance - there may be multiple PLC's
      *
-     * @author g8kmh
+     * @author Lehane Kellett
      * @since 1.9.0
      */
     private class PLCLogoConfig {

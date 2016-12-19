@@ -22,32 +22,23 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is responsible for parsing the binding configuration.
  *
- * @author g8kmh
+ * @author Lehane Kellett
  * @since 1.9.0
  */
 public class PLCLogoGenericBindingProvider extends AbstractGenericBindingProvider implements PLCLogoBindingProvider {
     private static final Logger logger = LoggerFactory.getLogger(PLCLogoBinding.class);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getBindingType() {
         return "plclogo";
     }
 
-    /**
-     * @{inheritDoc}
-     */
     @Override
     public Item getItem(String itemName) {
         PLCLogoBindingConfig config = (PLCLogoBindingConfig) bindingConfigs.get(itemName);
         return config != null ? config.getItem() : null;
     }
 
-    /**
-     * @{inheritDoc}
-     */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
         // @TODO may add additional checking based on the memloc
@@ -61,9 +52,6 @@ public class PLCLogoGenericBindingProvider extends AbstractGenericBindingProvide
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void processBindingConfiguration(String context, Item item, String bindingConfig)
             throws BindingConfigParseException {
