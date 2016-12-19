@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +23,12 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemRegistryChangeListener;
+import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
@@ -46,11 +49,12 @@ import org.slf4j.LoggerFactory;
  * and processes commands for items received from openHAB Cloud.
  *
  * @author Victor Belov
+ * @author Kai Kreuzer - Created openhabcloud version from myopenhab bundle
  * @since 1.3.0
  *
  */
-public class CloudServiceImpl extends AbstractEventSubscriber
-        implements NotificationAction, ActionService, CloudClientListener {
+public class CloudServiceImpl
+        implements NotificationAction, ActionService, CloudClientListener, StateChangeListener, ItemRegistryChangeListener {
 
     private static Logger logger = LoggerFactory.getLogger(CloudServiceImpl.class);
 
@@ -135,8 +139,9 @@ public class CloudServiceImpl extends AbstractEventSubscriber
     }
 
     protected void deactivate() {
-        logger.debug("openHAB Cloud connector deactivated");
+        removeChangeListenerOnExposedItems();
         cloudClient.shutdown();
+        logger.debug("openHAB Cloud connector deactivated");
     }
 
     protected void modified(Map<String, ?> config) {
@@ -169,11 +174,14 @@ public class CloudServiceImpl extends AbstractEventSubscriber
             while (value.endsWith("]")) {
                 value = value.substring(0, value.length() - 1);
             }
+            // first remove us as a listener on all old items
+            removeChangeListenerOnExposedItems();
             exposedItems = new HashSet<>();
             for (String itemName : Arrays.asList((value).split(","))) {
                 exposedItems.add(itemName.trim());
             }
             logger.debug("exposedItems set to '{}'", exposedItems);
+            addChangeListenerOnExposedItems();
         } else {
             exposedItems = null;
         }
@@ -193,6 +201,34 @@ public class CloudServiceImpl extends AbstractEventSubscriber
         cloudClient.setListener(this);
         CloudService.notificationAction = this;
     }
+
+	private void addChangeListenerOnExposedItems() {
+		if(exposedItems!=null) {
+			for (String itemName : exposedItems) {
+				try {
+			        Item item = mItemUIRegistry.getItem(itemName);
+			        if(item instanceof GenericItem) {
+			        	GenericItem gItem = (GenericItem) item;
+			        	gItem.addStateChangeListener(this);
+			        }
+				} catch (ItemNotFoundException e) {}
+			}
+		}
+	}
+
+	private void removeChangeListenerOnExposedItems() {
+		if(exposedItems!=null) {
+			for(String itemName : exposedItems) {
+				try {
+		            Item item = mItemUIRegistry.getItem(itemName);
+		            if(item instanceof GenericItem) {
+		            	GenericItem gItem = (GenericItem) item;
+		            	gItem.removeStateChangeListener(this);
+		            }
+				} catch (ItemNotFoundException e) {}
+			}
+		}
+	}
 
     @Override
     public String getActionClassName() {
@@ -331,9 +367,11 @@ public class CloudServiceImpl extends AbstractEventSubscriber
 
     public void setItemUIRegistry(ItemUIRegistry itemUIRegistry) {
         this.mItemUIRegistry = itemUIRegistry;
+        mItemUIRegistry.addItemRegistryChangeListener(this);
     }
 
     public void unsetItemUIRegistry(ItemUIRegistry itemUIRegistry) {
+    	mItemUIRegistry.removeItemRegistryChangeListener(this);
         this.mItemUIRegistry = null;
     }
 
@@ -348,10 +386,36 @@ public class CloudServiceImpl extends AbstractEventSubscriber
     }
 
 	@Override
-	public void receiveUpdate(String itemName, State newStatus) {
-        if (exposedItems != null && exposedItems.contains(itemName)) {
-            logger.debug("Sending item update to openhab Cloud: {} - {}", itemName, newStatus);
-            cloudClient.sendItemUpdate(itemName, newStatus.toString());
+	public void stateChanged(Item item, State oldState, State newState) {
+	}
+
+	@Override
+	public void stateUpdated(Item item, State state) {
+        if (exposedItems != null && exposedItems.contains(item.getName())) {
+	        logger.debug("Sending item update to openhab Cloud: {} - {}", item.getName(), state.toString());
+	        cloudClient.sendItemUpdate(item.getName(), state.toString());
         }
+	}
+
+	@Override
+	public void allItemsChanged(Collection<String> oldItemNames) {
+		removeChangeListenerOnExposedItems();
+		addChangeListenerOnExposedItems();
+	}
+
+	@Override
+	public void itemAdded(Item item) {
+		if(exposedItems!=null && exposedItems.contains(item.getName()) && item instanceof GenericItem) {
+			GenericItem gItem = (GenericItem) item;
+			gItem.addStateChangeListener(this);
+		}
+	}
+
+	@Override
+	public void itemRemoved(Item item) {
+		if(exposedItems!=null && exposedItems.contains(item.getName()) && item instanceof GenericItem) {
+			GenericItem gItem = (GenericItem) item;
+			gItem.removeStateChangeListener(this);
+		}
 	}
 }
