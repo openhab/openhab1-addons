@@ -51,15 +51,6 @@ public class KM200CommObject {
         valueParameter = val;
     }
 
-    public void setValue(String val, String type) {
-        if (type == "stringValue") {
-            value = new String(val);
-        }
-        if (type == "floatValue") {
-            value = new Float(Float.valueOf(val));
-        }
-    }
-
     /* gets */
     public Integer getReadable() {
         return readable;
@@ -82,18 +73,10 @@ public class KM200CommObject {
     }
 
     public Object getValue() {
-        if (value == null) {
-            return null;
-        } else {
-            return value;
-        }
+        return value;
     }
 
     public Object getValueParameter() {
-        if (valueParameter == null) {
-            return null;
-        } else {
-            return valueParameter;
-        }
+        return valueParameter;
     }
 }

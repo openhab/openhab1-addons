@@ -85,7 +85,7 @@ public class KM200GenericBindingProvider extends AbstractGenericBindingProvider 
         String service = null;
         HashMap<String, String> parameterMap = new HashMap<String, String>();
         /* Check whether some defined services are used */
-        logger.info("Bind Config: " + bindingConfig);
+        logger.info("Bind Config: {}", bindingConfig);
         if (bindingConfig.trim().equals(KM200BindingProvider.DATE_TIME)) {
             return new KM200BindingConfig(item.getClass(), KM200BindingProvider.DATE_TIME, "/gateway/DateTime",
                     parameterMap);
@@ -95,18 +95,18 @@ public class KM200GenericBindingProvider extends AbstractGenericBindingProvider 
         /* Available options for a SwitchItem are on:xxx and off:yyy with a allowed value xxx|yyy */
 
         String[] keyTypeStructure = bindingConfig.split("\\s+");
-        logger.info("Bind Config nbr: " + keyTypeStructure.length);
+        logger.debug("Bind Config nbr: {}", keyTypeStructure.length);
         if (keyTypeStructure.length > 3) {
-            logger.error("Incorrect numer of structures in configuration string '" + bindingConfig + "'");
+            logger.error("Incorrect number of structures in configuration string '{}'", bindingConfig);
             throw new BindingConfigParseException(
-                    "Incorrect numer of structures in configuration string '" + bindingConfig + "'");
+                    "Incorrect number of structures in configuration string '" + bindingConfig + "'");
         }
         for (String structure : keyTypeStructure) {
 
             String[] keyValueStructure = structure.split(":");
 
             if (keyValueStructure.length != 2) {
-                logger.error("Incorrect key:value structure in configuration string '" + bindingConfig + "'");
+                logger.error("Incorrect key:value structure in configuration string '{}'", bindingConfig);
                 throw new BindingConfigParseException(
                         "Incorrect key:value structure in configuration string '" + bindingConfig + "'");
             }
@@ -117,14 +117,14 @@ public class KM200GenericBindingProvider extends AbstractGenericBindingProvider 
             if (key.equals("service")) {
                 service = value;
                 if (!service.contains("/")) {
-                    logger.error("Wrong service string without / in configuration string '" + bindingConfig + "'");
+                    logger.error("Wrong service string without / in configuration string '{}'", bindingConfig);
                     throw new BindingConfigParseException(
                             "Wrong service string without / in configuration string '" + bindingConfig + "'");
                 }
             } else if (key.equals("on") || key.equals("off")) {
                 parameterMap.put(key, value);
             } else {
-                logger.error("Unsupported key (" + key + ") in configuration string '" + bindingConfig + "'");
+                logger.error("Unsupported key: ({}) in configuration string: '{}'", key, bindingConfig);
                 throw new BindingConfigParseException(
                         "Unsupported key (" + key + ") in configuration string '" + bindingConfig + "'");
             }

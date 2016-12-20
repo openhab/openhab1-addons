@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.io.ByteStreams;
 
 /**
- * The KM200Comm class does the communication to the device and do any encyption/decription/converting jobs
+ * The KM200Comm class does the communication to the device and does any encryption/decryption/converting jobs
  *
  * @author Markus Eckhardt
  *
@@ -64,6 +64,7 @@ import com.google.common.io.ByteStreams;
 class KM200Comm {
 
     private static final Logger logger = LoggerFactory.getLogger(KM200Comm.class);
+    private HttpClient client = null;
 
     public KM200Comm() {
 
@@ -72,9 +73,6 @@ class KM200Comm {
     /**
      * This function removes zero padding from a byte array.
      *
-     * @author Markus Eckhardt
-     *
-     * @since 1.9.0
      */
     public static byte[] removeZeroPadding(byte[] bytes) {
         int i = bytes.length - 1;
@@ -87,9 +85,6 @@ class KM200Comm {
     /**
      * This function adds zero padding to a byte array.
      *
-     * @author Markus Eckhardt
-     *
-     * @since 1.9.0
      */
     public static byte[] addZeroPadding(byte[] bdata, int bSize, String cSet) throws UnsupportedEncodingException {
         int encrypt_padchar = bSize - (bdata.length % bSize);
@@ -103,9 +98,6 @@ class KM200Comm {
     /**
      * This function converts a hex string to a byte array
      *
-     * @author Markus Eckhardt
-     *
-     * @since 1.9.0
      */
     public static byte[] hexToBytes(String str) {
         if (str == null) {
@@ -125,9 +117,6 @@ class KM200Comm {
     /**
      * This function converts a byte array to a hex string
      *
-     * @author Markus Eckhardt
-     *
-     * @since 1.9.0
      */
     public static String bytesToHex(byte[] data) {
         if (data == null) {
@@ -140,7 +129,7 @@ class KM200Comm {
             if ((data[i] & 0xFF) < 16) {
                 str = str + "0" + java.lang.Integer.toHexString(data[i] & 0xFF);
             } else {
-                str = str + java.lang.Integer.toHexString(data[i] & 0xFF);
+                str = str + Integer.toHexString(data[i] & 0xFF);
             }
         }
         return str;
@@ -149,14 +138,13 @@ class KM200Comm {
     /**
      * This function does the GET http communication to the device
      *
-     * @author Markus Eckhardt
-     *
-     * @since 1.9.0
      */
     public byte[] getDataFromService(KM200Device device, String service) {
         byte[] responseBodyB64 = null;
         // Create an instance of HttpClient.
-        HttpClient client = new HttpClient();
+        if (client == null) {
+            client = new HttpClient();
+        }
 
         // Create a method instance.
         GetMethod method = new GetMethod("http://" + device.getIP4Address() + service);
@@ -186,10 +174,10 @@ class KM200Comm {
             responseBodyB64 = ByteStreams.toByteArray(method.getResponseBodyAsStream());
 
         } catch (HttpException e) {
-            logger.error("Fatal protocol violation: " + e.getMessage());
+            logger.error("Fatal protocol violation: {}", e);
             e.printStackTrace();
         } catch (IOException e) {
-            logger.error("Fatal transport error: " + e.getMessage());
+            logger.error("Fatal transport error: {}", e);
             e.printStackTrace();
         } finally {
             // Release the connection.
@@ -201,13 +189,12 @@ class KM200Comm {
     /**
      * This function does the SEND http communication to the device
      *
-     * @author Markus Eckhardt
-     *
-     * @since 1.9.0
      */
     public void sendDataToService(KM200Device device, String service, byte[] data) {
         // Create an instance of HttpClient.
-        HttpClient client = new HttpClient();
+        if (client == null) {
+            client = new HttpClient();
+        }
 
         // Create a method instance.
         PostMethod method = new PostMethod("http://" + device.getIP4Address() + service);
@@ -223,17 +210,17 @@ class KM200Comm {
             client.executeMethod(method);
 
         } catch (Exception e) {
-            logger.error("Failed to send data ", e);
+            logger.error("Failed to send data {}", e);
 
+        } finally {
+            // Release the connection.
+            method.releaseConnection();
         }
     }
 
     /**
      * This function does the decoding for a new message from the device
      *
-     * @author Markus Eckhardt
-     *
-     * @since 1.9.0
      */
     public String decodeMessage(KM200Device device, byte[] encoded) {
         String retString = null;
@@ -242,7 +229,7 @@ class KM200Comm {
         try {
             decodedB64 = Base64.getMimeDecoder().decode(encoded);
         } catch (IllegalArgumentException e) {
-            logger.error("Message is not in valid Base64 scheme:" + e.getMessage());
+            logger.error("Message is not in valid Base64 scheme: {}", e);
             e.printStackTrace();
         }
         try {
@@ -262,7 +249,7 @@ class KM200Comm {
         } catch (BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException
                 | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
             // failure to authenticate
-            logger.error("Exception on encoding:" + e.getMessage());
+            logger.error("Exception on encoding: {}", e);
             return null;
         } catch (final GeneralSecurityException e) {
             throw new IllegalStateException("Algorithms or unlimited crypto files not available", e);
@@ -272,9 +259,6 @@ class KM200Comm {
     /**
      * This function does the encoding for a new message to the device
      *
-     * @author Markus Eckhardt
-     *
-     * @since 1.9.0
      */
     public byte[] encodeMessage(KM200Device device, String data) {
         byte[] encryptedDataB64 = null;
@@ -292,14 +276,14 @@ class KM200Comm {
             try {
                 encryptedDataB64 = Base64.getMimeEncoder().encode(encryptedData);
             } catch (IllegalArgumentException e) {
-                logger.error("Base64encoding not possible:" + e.getMessage());
+                logger.error("Base64encoding not possible: {}", e);
                 e.printStackTrace();
             }
             return encryptedDataB64;
         } catch (BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException
                 | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
             // failure to authenticate
-            logger.error("Exception on encoding:" + e.getMessage());
+            logger.error("Exception on encoding: {}", e);
             return null;
         } catch (final GeneralSecurityException e) {
             throw new IllegalStateException("Algorithms or unlimited crypto files not available", e);
@@ -309,9 +293,6 @@ class KM200Comm {
     /**
      * This function checks the capabilities of a service on the device
      *
-     * @author Markus Eckhardt
-     *
-     * @since 1.9.0
      */
     public void initObjects(KM200Device device, String service) {
         String id = null, type = null, decodedData = null;
@@ -319,9 +300,9 @@ class KM200Comm {
         Integer recordable = 0;
         JSONObject nodeRoot = null;
         KM200CommObject newObject = null;
-        logger.debug("Init:" + service);
+        logger.debug("Init: {}", service);
         if (device.blacklistMap.contains(service)) {
-            logger.debug("Service on blacklist: " + service);
+            logger.debug("Service on blacklist: {}", service);
             return;
         }
         byte[] recData = getDataFromService(device, service.toString());
@@ -362,14 +343,14 @@ class KM200Comm {
                 logger.debug(val.toString());
                 recordable = val;
             }
-            logger.debug("Typ: " + type);
+            logger.debug("Typ: {}", type);
 
             newObject = new KM200CommObject(id, type, writeable, recordable);
 
             /* Check whether the type is a single value containing a string value */
             if (type.equals("stringValue")) {
                 Object valObject = null;
-                logger.debug("initDevice: type string value : " + decodedData.toString());
+                logger.debug("initDevice: type string value: {}", decodedData.toString());
                 valObject = new String(nodeRoot.getString("value"));
                 newObject.setValue(valObject);
                 if (nodeRoot.has("allowedValues")) {
@@ -386,7 +367,7 @@ class KM200Comm {
             } else if (type
                     .equals("floatValue")) { /* Check whether the type is a single value containing a float value */
                 Object valObject = null;
-                logger.debug("initDevice: type float value : " + decodedData.toString());
+                logger.debug("initDevice: type float value: {}", decodedData.toString());
                 valObject = new Float(nodeRoot.getDouble("value"));
                 newObject.setValue(valObject);
                 if (nodeRoot.has("minValue") && nodeRoot.has("maxValue")) {
@@ -398,20 +379,20 @@ class KM200Comm {
                 device.serviceMap.put(id, newObject);
 
             } else if (type.equals("switchProgram")) { /* Check whether the type is a switchProgram */
-                logger.debug("initDevice: type switchProgram : " + decodedData.toString());
+                logger.debug("initDevice: type switchProgram {}", decodedData.toString());
                 JSONArray sPoints = nodeRoot.getJSONArray("switchPoints");
                 newObject.setValue(sPoints);
                 device.serviceMap.put(id, newObject);
                 /* have to be completed */
 
             } else if (type.equals("errorList")) { /* Check whether the type is a errorList */
-                logger.debug("initDevice: type errorList : " + decodedData.toString());
+                logger.debug("initDevice: type errorList: {}", decodedData.toString());
                 JSONArray errorValues = nodeRoot.getJSONArray("values");
                 newObject.setValue(errorValues);
                 /* have to be completed */
 
             } else if (type.equals("refEnum")) { /* Check whether the type is a refEnum */
-                logger.debug("initDevice: type refEnum : " + decodedData.toString());
+                logger.debug("initDevice: type refEnum: {}", decodedData.toString());
                 device.serviceMap.put(id, newObject);
                 JSONArray refers = nodeRoot.getJSONArray("references");
                 for (int i = 0; i < refers.length(); i++) {
@@ -421,7 +402,7 @@ class KM200Comm {
                 }
 
             } else if (type.equals("moduleList")) { /* Check whether the type is a moduleList */
-                logger.debug("initDevice: type moduleList : " + decodedData.toString());
+                logger.debug("initDevice: type moduleList: {}", decodedData.toString());
                 device.serviceMap.put(id, newObject);
                 JSONArray vals = nodeRoot.getJSONArray("values");
                 for (int i = 0; i < vals.length(); i++) {
@@ -431,27 +412,27 @@ class KM200Comm {
                 }
 
             } else if (type.equals("yRecording")) { /* Check whether the type is a yRecording */
-                logger.debug("initDevice: type yRecording : " + decodedData.toString());
+                logger.debug("initDevice: type yRecording: {}", decodedData.toString());
                 device.serviceMap.put(id, newObject);
                 /* have to be completed */
 
             } else if (type.equals("systeminfo")) { /* Check whether the type is a systeminfo */
-                logger.debug("initDevice: type systeminfo : " + decodedData.toString());
+                logger.debug("initDevice: type systeminfo: {}", decodedData.toString());
                 JSONArray sInfo = nodeRoot.getJSONArray("values");
                 newObject.setValue(sInfo);
                 device.serviceMap.put(id, newObject);
                 /* have to be completed */
 
             } else { /* Unknown type */
-                logger.info("initDevice: type unknown for service: " + service.toString() + "Data:"
-                        + decodedData.toString());
+                logger.info("initDevice: type unknown for service: {}",
+                        service.toString() + "Data:" + decodedData.toString());
                 newObject.setValue(decodedData);
                 device.serviceMap.put(id, newObject);
             }
         } catch (
 
         JSONException e) {
-            logger.error("Parsingexception in JSON: " + e.getMessage() + "###" + decodedData);
+            logger.error("Parsingexception in JSON: {} data: {}", e, decodedData);
             e.printStackTrace();
         }
     }
@@ -459,9 +440,6 @@ class KM200Comm {
     /**
      * This function checks the state of a service on the device
      *
-     * @author Markus Eckhardt
-     *
-     * @since 1.9.0
      */
     public State getProvidersState(KM200Device device, KM200BindingProvider provider, String item) {
         String decodedData = null;
@@ -470,19 +448,19 @@ class KM200Comm {
         State state = null;
         Class<? extends Item> itemType = provider.getItemType(item);
         JSONObject nodeRoot = null;
-        logger.debug("Check state of:" + service + " " + type + " " + itemType.getName().toString());
+        logger.debug("Check state of: {} type: {} item: {}", service, type, itemType.getName().toString());
         if (device.blacklistMap.contains(service)) {
-            logger.debug("Service on blacklist: " + service);
+            logger.debug("Service on blacklist: {}", service);
             return null;
         }
         if (device.serviceMap.containsKey(service)) {
             if (device.serviceMap.get(service).getReadable() == 0) {
-                logger.error("Service is listed as protected (reading is not possible): " + service);
+                logger.error("Service is listed as protected (reading is not possible): {}", service);
                 return null;
             }
             type = device.serviceMap.get(service).getServiceType();
         } else {
-            logger.error("Service is not in the determined device service list: " + service);
+            logger.error("Service is not in the determined device service list: {}", service);
             return null;
         }
         byte[] recData = getDataFromService(device, service.toString());
@@ -495,7 +473,7 @@ class KM200Comm {
             }
             /* Look whether the communication was forbidden */
             if (recData.length == 1) {
-                logger.error("Service is listed as readable but communication is forbidden: " + service);
+                logger.error("Service is listed as readable but communication is forbidden: {}", service);
                 return null;
             }
             decodedData = decodeMessage(device, recData);
@@ -512,7 +490,7 @@ class KM200Comm {
 
             /* Check whether the type is a single value containing a string value */
             if (type.equals("stringValue")) {
-                logger.debug("initDevice: type string value : " + decodedData.toString());
+                logger.debug("initDevice: type string value: {}", decodedData.toString());
                 String val = nodeRoot.getString("value");
                 if (itemType.isAssignableFrom(SwitchItem.class)) {
                     if (provider.getParameter(item).containsKey("on")) {
@@ -522,7 +500,7 @@ class KM200Comm {
                             state = OnOffType.ON;
                         }
                     } else {
-                        logger.error("Switch-Item only on configured on/off string values : " + decodedData.toString());
+                        logger.error("Switch-Item only on configured on/off string values: {}", decodedData.toString());
                         return null;
                     }
 
@@ -530,8 +508,8 @@ class KM200Comm {
                     try {
                         state = new DecimalType(Float.parseFloat(val));
                     } catch (NumberFormatException e) {
-                        logger.error("Conversion of the string value to Decimal wasn't possible: " + e.getMessage()
-                                + decodedData.toString());
+                        logger.error("Conversion of the string value to Decimal wasn't possible, data: {} error: {}",
+                                decodedData.toString(), e);
                         return null;
                     }
 
@@ -539,8 +517,8 @@ class KM200Comm {
                     try {
                         state = new DateTimeType(val);
                     } catch (IllegalArgumentException e) {
-                        logger.error("Conversion of the string value to DateTime wasn't possible: " + e.getMessage()
-                                + decodedData.toString());
+                        logger.error("Conversion of the string value to DateTime wasn't possible, data: {} error: {}",
+                                decodedData.toString(), e);
                         return null;
                     }
 
@@ -549,7 +527,7 @@ class KM200Comm {
                     state = new StringType(val);
 
                 } else {
-                    logger.error("Bindingtype not supported for string values : " + itemType.getClass().toString());
+                    logger.error("Bindingtype not supported for string values: {}", itemType.getClass().toString());
                     return null;
                 }
 
@@ -557,7 +535,7 @@ class KM200Comm {
 
             } else if (type
                     .equals("floatValue")) { /* Check whether the type is a single value containing a float value */
-                logger.debug("state of: type float value : " + decodedData.toString());
+                logger.debug("state of type float value: {}", decodedData.toString());
                 Float val = new Float(nodeRoot.getDouble("value"));
                 if (itemType.isAssignableFrom(NumberItem.class)) {
                     state = new DecimalType(val.floatValue());
@@ -565,32 +543,32 @@ class KM200Comm {
                 } else if (itemType.isAssignableFrom(StringItem.class)) {
                     state = new StringType(val.toString());
                 } else {
-                    logger.error("Bindingtype not supported for float values : " + itemType.getClass().toString());
+                    logger.error("Bindingtype not supported for float values: {}", itemType.getClass().toString());
                     return null;
                 }
                 return state;
 
             } else if (type.equals("switchProgram")) { /* Check whether the type is a switchProgram */
-                logger.info("state of: type switchProgram is not supported yet: " + decodedData.toString());
+                logger.info("state of: type switchProgram is not supported yet: {}", decodedData.toString());
                 /* have to be completed */
 
             } else if (type.equals("errorList")) { /* Check whether the type is a errorList */
-                logger.info("state of: type errorList is not supported yet: " + decodedData.toString());
+                logger.info("state of: type errorList is not supported yet: {}", decodedData.toString());
                 /* have to be completed */
 
             } else if (type.equals("yRecording")) { /* Check whether the type is a yRecording */
-                logger.info("state of: type yRecording is not supported yet: " + decodedData.toString());
+                logger.info("state of: type yRecording is not supported yet: {}", decodedData.toString());
                 /* have to be completed */
 
             } else if (type.equals("systeminfo")) { /* Check whether the type is a systeminfo */
-                logger.info("state of: type systeminfo is not supported yet: " + decodedData.toString());
+                logger.info("state of: type systeminfo is not supported yet: {}", decodedData.toString());
                 /* have to be completed */
             }
 
         } catch (
 
         JSONException e) {
-            logger.error("Parsingexception in JSON: " + e.getMessage() + "###" + decodedData);
+            logger.error("Parsingexception in JSON, data: {} error: {} ", decodedData, e);
             e.printStackTrace();
         }
         return null;
@@ -599,9 +577,6 @@ class KM200Comm {
     /**
      * This function sets the state of a service on the device
      *
-     * @author Markus Eckhardt
-     *
-     * @since 1.9.0
      */
     public void sendProvidersState(KM200Device device, KM200BindingProvider provider, String item, Command command) {
         String service = provider.getService(item);
@@ -610,24 +585,24 @@ class KM200Comm {
         Class<? extends Item> itemType = provider.getItemType(item);
         JSONObject nodeRoot = null;
 
-        logger.debug("Prepare item for send:" + service + " " + type + " " + itemType.getName().toString());
+        logger.debug("Prepare item for send: {} type: {} item: {}", service, type, itemType.getName().toString());
         if (device.blacklistMap.contains(service)) {
-            logger.debug("Service on blacklist: " + service);
+            logger.debug("Service on blacklist: {}", service);
             return;
         }
         if (device.serviceMap.containsKey(service)) {
             if (device.serviceMap.get(service).getWriteable() == 0) {
-                logger.error("Service is listed as read-only: " + service);
+                logger.error("Service is listed as read-only: {}", service);
                 return;
             }
             object = device.serviceMap.get(service);
             type = object.getServiceType();
         } else {
-            logger.error("Service is not in the determined device service list: " + service);
+            logger.error("Service is not in the determined device service list: {}", service);
             return;
         }
 
-        logger.debug("state of: " + command.toString() + "type: " + type.toString());
+        logger.debug("state of: {} type: {}", command.toString(), type.toString());
         if (itemType.isAssignableFrom(NumberItem.class)) {
             Float val = ((DecimalType) command).floatValue();
             if (object.getValueParameter() != null) {
@@ -646,7 +621,7 @@ class KM200Comm {
             } else if (type.equals("stringValue")) {
                 nodeRoot = new JSONObject().put("value", val.toString());
             } else {
-                logger.error("Not supported type for numberItem:" + type.toString());
+                logger.error("Not supported type for numberItem: {}", type.toString());
             }
         } else if (itemType.isAssignableFrom(StringItem.class)) {
             String val = ((StringItem) command).toString();
@@ -661,7 +636,7 @@ class KM200Comm {
             } else if (type.equals("floatValue")) {
                 nodeRoot = new JSONObject().put("value", Float.parseFloat(val));
             } else {
-                logger.error("Not supported type for stringItem:" + type.toString());
+                logger.error("Not supported type for stringItem: {}", type.toString());
             }
 
         } else if (itemType.isAssignableFrom(DateTimeItem.class)) {
@@ -669,7 +644,7 @@ class KM200Comm {
             if (type.equals("stringValue")) {
                 nodeRoot = new JSONObject().put("value", val);
             } else {
-                logger.error("Not supported type for dateTimeItem:" + type.toString());
+                logger.error("Not supported type for dateTimeItem: {}", type.toString());
             }
 
         } else if (itemType.isAssignableFrom(SwitchItem.class)) {
@@ -681,17 +656,17 @@ class KM200Comm {
                     val = provider.getParameter(item).get("on");
                 }
             } else {
-                logger.error("witch-Item only on configured on/off string values:" + command.toString());
+                logger.error("witch-Item only on configured on/off string values {}", command.toString());
                 return;
             }
             if (type.equals("stringValue")) {
                 nodeRoot = new JSONObject().put("value", val);
             } else {
-                logger.error("Not supported type for SwitchItem:" + type.toString());
+                logger.error("Not supported type for SwitchItem:{}", type.toString());
             }
 
         } else {
-            logger.error("Bindingtype not supported : " + itemType.getClass().toString());
+            logger.error("Bindingtype not supported: {}", itemType.getClass().toString());
             return;
         }
         if (nodeRoot == null) {

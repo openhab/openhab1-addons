@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 class KM200Device {
 
-    private static final Logger logger = LoggerFactory.getLogger(KM200Binding.class);
+    private static final Logger logger = LoggerFactory.getLogger(KM200Device.class);
 
     /* valid IPv4 address of the KMxxx. */
     protected String ip4Address = null;
@@ -91,7 +93,7 @@ class KM200Device {
             try {
                 md = MessageDigest.getInstance("MD5");
             } catch (NoSuchAlgorithmException e) {
-                // TODO Auto-generated catch block
+                logger.error("No such algorithm, MD5");
                 e.printStackTrace();
             }
 
@@ -99,7 +101,7 @@ class KM200Device {
             try {
                 bytesOfGatewayPassword = gatewayPassword.getBytes("UTF-8");
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
+                logger.error("No such encoding, UTF-8");
                 e.printStackTrace();
             }
             byte[] CombParts1 = new byte[bytesOfGatewayPassword.length + MD5Salt.length];
@@ -114,7 +116,7 @@ class KM200Device {
             try {
                 bytesOfPrivatePassword = privatePassword.getBytes("UTF-8");
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
+                logger.error("No such encoding, UTF-8");
                 e.printStackTrace();
             }
             byte[] CombParts2 = new byte[bytesOfPrivatePassword.length + MD5Salt.length];
@@ -166,9 +168,6 @@ class KM200Device {
     /**
      * This function outputs a ";" separated list of all on the device available services with its capabilities
      *
-     * @author Markus Eckhardt
-     *
-     * @since 1.9.0
      */
     public void listAllServices() {
         if (serviceMap != null) {
@@ -209,14 +208,16 @@ class KM200Device {
                                     valPara += ";";
                                 }
                             }
+                        } else {
+                            valPara += ";;";
                         }
                     } else {
                         val = "";
                         valPara = ";";
                     }
-                    logger.info(object.getReadable().toString() + ";" + object.getWriteable().toString() + ";"
-                            + object.getRecordable().toString() + ";" + type + ";" + object.getFullServiceName() + ";"
-                            + val + ";" + valPara);
+                    logger.info("{};{};{};{};{};{};{}", object.getReadable().toString(),
+                            object.getWriteable().toString(), object.getRecordable().toString(), type,
+                            object.getFullServiceName(), val, valPara);
                 }
             }
             logger.info("##################################################################");
@@ -239,12 +240,12 @@ class KM200Device {
     }
 
     public void setMD5Salt(String salt) {
-        MD5Salt = javax.xml.bind.DatatypeConverter.parseHexBinary(salt);
+        MD5Salt = DatatypeConverter.parseHexBinary(salt);
         RecreateKeys();
     }
 
     public void setCryptKeyPriv(String key) {
-        cryptKeyPriv = javax.xml.bind.DatatypeConverter.parseHexBinary(key);
+        cryptKeyPriv = DatatypeConverter.parseHexBinary(key);
     }
 
     public void setCharSet(String charset) {
