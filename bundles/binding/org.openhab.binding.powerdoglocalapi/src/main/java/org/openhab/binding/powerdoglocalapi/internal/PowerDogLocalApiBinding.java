@@ -447,7 +447,7 @@ public class PowerDogLocalApiBinding extends AbstractActiveBinding<PowerDogLocal
             }
 
             // check keys of config set
-            for (Iterator< String>keys = keyset.iterator(); keys.hasNext();) {
+            for (Iterator<String>keys = keyset.iterator(); keys.hasNext();) {
                 String key = keys.next();
 
                 // the config-key enumeration contains additional keys that we
