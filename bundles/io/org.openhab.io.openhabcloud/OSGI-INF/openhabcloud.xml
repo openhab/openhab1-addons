@@ -15,11 +15,9 @@
    <service>
 	   <provide interface="org.openhab.io.openhabcloud.NotificationAction"/>
 	   <provide interface="org.openhab.core.scriptengine.action.ActionService" />
-	   <provide interface="org.osgi.service.event.EventHandler"/>
    </service>
    
    <property name="service.pid" type="String" value="org.openhab.openhabcloud"/>
-   <property name="event.topics" type="String" value="openhab/*"/>
    
    <reference bind="setItemUIRegistry" cardinality="1..1" 
 		interface="org.openhab.ui.items.ItemUIRegistry" name="ItemUIRegistry" 
