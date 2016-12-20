@@ -25,11 +25,9 @@ import org.slf4j.LoggerFactory;
  * @author Davy Vanherbergen
  * @since 1.2.0
  */
-public class DmxChannel implements Comparable<DmxChannel> {
+public class DmxChannel extends DmxSimpleChannel {
 
     protected static final Logger logger = LoggerFactory.getLogger(DmxChannel.class);
-
-    private int channelId;
 
     /** Current channel value in the range from 0-255 **/
     private int value;
@@ -50,19 +48,23 @@ public class DmxChannel implements Comparable<DmxChannel> {
     public static int DMX_MIN_VALUE = 0;
 
     /**
-     * Create new DMX channel.
-     * 
-     * @param channelId
-     *            DMX channel id.
+     * {@inheritDoc}
+     */
+    public DmxChannel(int universeId, int channelId) {
+        super(universeId, channelId);
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public DmxChannel(int channelId) {
-        this.channelId = channelId;
+        super(channelId);
     }
 
     /**
      * Set the channel output to a fixed value. This will stop any active
      * actions on the channel.
-     * 
+     *
      * @param value
      *            output value
      */
@@ -81,7 +83,7 @@ public class DmxChannel implements Comparable<DmxChannel> {
      * Set the channel output to a fixed value of output level * 255, if no
      * actions are available. If actions are available, they are faded to the
      * output level.
-     * 
+     *
      * @param value
      *            output value
      */
@@ -106,7 +108,7 @@ public class DmxChannel implements Comparable<DmxChannel> {
 
     /**
      * Get the value of the channel.
-     * 
+     *
      * @return value 0 - 255.
      */
     public synchronized int getValue() {
@@ -139,9 +141,9 @@ public class DmxChannel implements Comparable<DmxChannel> {
     /**
      * Get the new value for this channel as determined by active actions or the
      * current value.
-     * 
+     *
      * @param calculationTime
-     * 
+     *
      * @return value 0-255
      */
     public synchronized Integer getNextValue(long calculationTime) {
@@ -179,7 +181,7 @@ public class DmxChannel implements Comparable<DmxChannel> {
 
     /**
      * Replace the current list of channel actions with the provided one.
-     * 
+     *
      * @param channelAction
      *            action for this channel.
      */
@@ -194,7 +196,7 @@ public class DmxChannel implements Comparable<DmxChannel> {
 
     /**
      * Add a channel action to the current list of channel actions.
-     * 
+     *
      * @param channelAction
      *            action for this channel.
      */
@@ -203,27 +205,8 @@ public class DmxChannel implements Comparable<DmxChannel> {
     }
 
     /**
-     * @return dmx channel id.
-     */
-    public int getChannelId() {
-        return channelId;
-    }
-
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    public int compareTo(DmxChannel arg0) {
-
-        if (arg0 == null) {
-            return -1;
-        }
-        return new Integer(getChannelId()).compareTo(new Integer(arg0.getChannelId()));
-    }
-
-    /**
      * Increase channel value.
-     * 
+     *
      * @param increment
      *            % to increase
      */
@@ -247,7 +230,7 @@ public class DmxChannel implements Comparable<DmxChannel> {
 
     /**
      * Decrease channel value level.
-     * 
+     *
      * @param decrement
      *            % to decrease.
      */

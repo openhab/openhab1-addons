@@ -68,9 +68,13 @@ public class Lib485Connection implements DmxConnection {
     }
 
     @Override
-    public void sendDmx(byte[] buffer) throws Exception {
-        logger.debug("Sending Data to DMX");
-        connection.getOutputStream().write(buffer);
+    public void sendDmx(int universeId, byte[] buffer) throws Exception {
+        if (universeId != 1) {
+            logger.error("Multi-universe support is not available for Lib485Connection");
+        } else {
+            logger.debug("Sending Data to DMX");
+            connection.getOutputStream().write(buffer);
+        }
     }
 
 }

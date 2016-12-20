@@ -20,12 +20,15 @@ public interface DmxConnection {
 
     /**
      * Send the given buffer to the DMX device.
-     * 
+     *
+     * @param universeId
+     *            id of universe to send to
      * @param buffer
      *            buffer containing max 512 DMX values
+     *
      * @throws Exception
      */
-    public void sendDmx(byte[] buffer) throws Exception;
+    public void sendDmx(int universeId, byte[] buffer) throws Exception;
 
     /**
      * @return true if the connection is closed.
@@ -35,7 +38,7 @@ public interface DmxConnection {
     /**
      * Open the connection. The connection string is taken from the
      * dmx:connection property in the openhab configuration file.
-     * 
+     *
      * @param connectionString
      * @throws Exception
      */

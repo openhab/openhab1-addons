@@ -11,6 +11,7 @@ package org.openhab.binding.dmx.internal.config;
 import org.openhab.binding.dmx.DmxBindingProvider;
 import org.openhab.binding.dmx.DmxService;
 import org.openhab.binding.dmx.internal.core.DmxChannel;
+import org.openhab.binding.dmx.internal.core.DmxSimpleChannel;
 import org.openhab.binding.dmx.internal.core.DmxUtil;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.PercentType;
@@ -30,7 +31,7 @@ public class DmxDimmerItem extends DmxSwitchItem {
 
     /**
      * Create new dimmer item using a given configuration string.
-     * 
+     *
      * @param itemName
      *            name of the item
      * @param configString
@@ -56,7 +57,7 @@ public class DmxDimmerItem extends DmxSwitchItem {
             IncreaseDecreaseType t = (IncreaseDecreaseType) command;
 
             if (IncreaseDecreaseType.INCREASE.equals(t)) {
-                for (int channelId : channels) {
+                for (DmxSimpleChannel channelId : channels) {
                     service.enableChannel(channelId);
                     service.increaseChannel(channelId, DIMMER_STEP_SIZE);
                     if (service.getChannelValue(channelId) == 0) {
@@ -64,7 +65,7 @@ public class DmxDimmerItem extends DmxSwitchItem {
                     }
                 }
             } else {
-                for (int channelId : channels) {
+                for (DmxSimpleChannel channelId : channels) {
                     service.decreaseChannel(channelId, DIMMER_STEP_SIZE);
                 }
             }
@@ -73,7 +74,7 @@ public class DmxDimmerItem extends DmxSwitchItem {
 
         // process percent command
         if (command instanceof PercentType && !isRedefinedByCustomCommand(command)) {
-            for (int channelId : channels) {
+            for (DmxSimpleChannel channelId : channels) {
                 service.setChannelValue(channelId, DmxChannel.DMX_MAX_VALUE);
                 service.setChannelValue(channelId, (PercentType) command);
             }

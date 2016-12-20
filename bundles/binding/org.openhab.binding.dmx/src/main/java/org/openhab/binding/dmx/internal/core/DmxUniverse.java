@@ -35,11 +35,33 @@ public class DmxUniverse {
 
     private int minimumBufferSize = 32;
 
+    private int universeId;
+
     private List<DmxStatusUpdateListener> updateListeners = new ArrayList<DmxStatusUpdateListener>();
 
     /**
+     * create a new universe
+     *
+     * @param universeId
+     *            the id of the Dmx universe
+     */
+    public DmxUniverse(int universeId) {
+        this.universeId = universeId;
+    }
+
+    /**
+     * get this universe id
+     *
+     * @return
+     *         the universe id
+     */
+    public int getUniverseId() {
+        return universeId;
+    }
+
+    /**
      * Change the buffer value at the given index.
-     * 
+     *
      * @param index
      * @param value
      */
@@ -55,7 +77,7 @@ public class DmxUniverse {
 
     /**
      * Calculate the current DMX buffer state.
-     * 
+     *
      * @return DMX buffer.
      */
     public byte[] calculateBuffer() {
@@ -76,7 +98,7 @@ public class DmxUniverse {
 
     /**
      * Add a new DMX channel.
-     * 
+     *
      * @param channel
      *            to add.
      */
@@ -100,7 +122,7 @@ public class DmxUniverse {
 
     /**
      * Find a channel by id. If it doesn't exist, it is created.
-     * 
+     *
      * @param channelId
      *            int
      * @return channel
@@ -129,7 +151,7 @@ public class DmxUniverse {
     /**
      * Add a new status update listener, which can receive values when a channel
      * is changed.
-     * 
+     *
      * @param listener
      *            status listener to add.
      */
@@ -139,7 +161,7 @@ public class DmxUniverse {
 
     /**
      * Stop a given status update listener from receiving updates.
-     * 
+     *
      * @param listener
      *            status listener to remove.
      */
@@ -155,10 +177,10 @@ public class DmxUniverse {
         for (DmxStatusUpdateListener listener : updateListeners) {
 
             if (System.currentTimeMillis() > listener.getLastUpdateTime() + listener.getUpdateDelay()) {
-
+                DmxSimpleChannel channel = listener.getChannel();
                 int values[] = new int[listener.getFootPrint()];
                 for (int i = 0; i < listener.getFootPrint(); i++) {
-                    values[i] = getChannel(listener.getChannel() + i).getValue();
+                    values[i] = getChannel(channel.getChannelId() + i).getValue();
                 }
                 listener.processStatusUpdate(values);
             }

@@ -12,6 +12,7 @@ import java.awt.Color;
 
 import org.openhab.binding.dmx.DmxBindingProvider;
 import org.openhab.binding.dmx.DmxService;
+import org.openhab.binding.dmx.internal.core.DmxSimpleChannel;
 import org.openhab.binding.dmx.internal.core.DmxUtil;
 import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -33,7 +34,7 @@ public class DmxColorItem extends DmxDimmerItem {
 
     /**
      * Create new color item using a given configuration string.
-     * 
+     *
      * @param itemName
      *            name of the item
      * @param configString
@@ -76,7 +77,7 @@ public class DmxColorItem extends DmxDimmerItem {
                 if (hsb == null) {
                     hsb = new HSBType(Color.WHITE);
                 }
-                for (int ch : channels) {
+                for (DmxSimpleChannel ch : channels) {
                     service.enableChannel(ch);
                 }
 
@@ -136,7 +137,7 @@ public class DmxColorItem extends DmxDimmerItem {
         }
 
         int j = 0;
-        for (int c : channels) {
+        for (DmxSimpleChannel c : channels) {
             service.setChannelValue(c, values[j++]);
             if (j == values.length) {
                 j = 0;
@@ -146,7 +147,7 @@ public class DmxColorItem extends DmxDimmerItem {
 
     /**
      * Check if this item represents RGB or RGBW.
-     * 
+     *
      * @return true if color item is RGBW.
      */
     private boolean isRgbw() {

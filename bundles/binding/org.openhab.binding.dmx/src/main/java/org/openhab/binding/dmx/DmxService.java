@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.dmx;
 
+import org.openhab.binding.dmx.internal.core.DmxSimpleChannel;
 import org.openhab.core.library.types.PercentType;
 
 /**
@@ -28,7 +29,7 @@ public interface DmxService {
 
     /**
      * Start DMX Transmission
-     * 
+     *
      * @throws Exception
      */
     public void start() throws Exception;
@@ -41,59 +42,57 @@ public interface DmxService {
     /**
      * Set a given DMX channel to the provided value. If a channel is disabled,
      * setting the value will also enable the channel.
-     * 
+     *
      * @param channel
      *            DMX channel id.
      * @param value
      *            0-255 target value.
      */
-    public void setChannelValue(int channel, int value);
+    public void setChannelValue(DmxSimpleChannel channel, int value);
 
     /**
      * For channels without active actions, this will set the channel to the
      * provided value. If a channel is disabled, setting the value will also
      * enable the channel. For channels with active actions, this will set the
      * output level on the actions to the provided value.
-     * 
+     *
      * @param channelId
      * @param outputlevel
      *            0-100
      */
-    public void setChannelValue(int channelId, PercentType value);
+    public void setChannelValue(DmxSimpleChannel channelId, PercentType value);
 
     /**
      * Get the output value of a given DMX channel.
-     * 
-     * @param universeId
-     *            DMX universe id.
-     * @param channel
-     *            DMX channel id.
+     *
+     * @param channelId
+     *            simple channel id
      * @return output value 0-255.
      */
-    public int getChannelValue(int channelId);
+    public int getChannelValue(DmxSimpleChannel channelId);
 
     /**
      * Disable a channel. This will switch off the channel. The last know value
      * is stored in the channel and will be restored when the channel is enabled
      * again.
-     * 
+     *
      * @param channel
      *            DMX channel to disable.
      */
-    public void disableChannel(int channel);
+    public void disableChannel(DmxSimpleChannel channel);
 
     /**
      * Enable a channel. The last know value in the channel will be restored.
-     * 
+     *
      * @param channel
      *            DMX channel to enable.
      */
-    public void enableChannel(int channel);
+    public void enableChannel(DmxSimpleChannel channel);
 
     /**
      * Register a new listener which receives the new state of a channel if the
      * value has been changed.
-     * 
+     *
      * @param listener
      *            change listener.
      */
@@ -101,7 +100,7 @@ public interface DmxService {
 
     /**
      * Unregister a status listener.
-     * 
+     *
      * @param listener
      *            change listener.
      */
@@ -109,7 +108,7 @@ public interface DmxService {
 
     /**
      * Add a channel fade action.
-     * 
+     *
      * @param channel
      *            DMX channel id.
      * @param fadeTime
@@ -125,11 +124,11 @@ public interface DmxService {
      *            this channel. When false, the new fade is appended to the list
      *            of existing fades for this channel.
      */
-    public void fadeChannel(int channel, int fadeTime, int targetValue, int holdTime, boolean immediate);
+    public void fadeChannel(DmxSimpleChannel channel, int fadeTime, int targetValue, int holdTime, boolean immediate);
 
     /**
      * Add a fade action to multiple channels.
-     * 
+     *
      * @param channel
      *            DMX channel id.
      * @param fadeTime
@@ -146,57 +145,58 @@ public interface DmxService {
      *            this channel. When false, the new fade is appended to the list
      *            of existing fades for this channel.
      */
-    public void fadeChannels(int channel, int fadeTime, int[] targetValue, int holdTime, boolean immediate);
+    public void fadeChannels(DmxSimpleChannel channel, int fadeTime, int[] targetValue, int holdTime,
+            boolean immediate);
 
     /**
      * Switch to the next available action for a DMX channel.
-     * 
+     *
      * @param channel
      *            channel id
      */
-    public void switchToNextAction(int channel);
+    public void switchToNextAction(DmxSimpleChannel channel);
 
     /**
      * Switch to the next available action for a range of DMX channels.
-     * 
+     *
      * @param fromChannel
      *            start channel id
      * @param numberOfChannels
      *            number of channels
      */
-    public void switchToNextAction(int fromChannel, int numberOfChannels);
+    public void switchToNextAction(DmxSimpleChannel fromChannel, int numberOfChannels);
 
     /**
      * Make a channel mirror another channel for a given period.
-     * 
+     *
      * @param sourceChannel
      * @param mirrorChannel
      * @param duration
      */
-    public void mirrorChannel(int sourceChannel, int mirrorChannel, int duration);
+    public void mirrorChannel(DmxSimpleChannel sourceChannel, DmxSimpleChannel mirrorChannel, int duration);
 
     /**
      * Increase a channel output value with a given increment
-     * 
+     *
      * @param channel
      * @param increment
      *            0-100
      */
-    public void increaseChannel(int channel, int increment);
+    public void increaseChannel(DmxSimpleChannel channel, int increment);
 
     /**
      * Reduce a channel output value with a given decrement
-     * 
+     *
      * @param channel
      * @param decrement
      *            0-100
      */
-    public void decreaseChannel(int channel, int decrement);
+    public void decreaseChannel(DmxSimpleChannel channel, int decrement);
 
     /**
      * Suspend output of the DMX service so that the configuration can be
      * changed without immediately effecting the DMX output.
-     * 
+     *
      * @param suspend
      *            true to suspend, false to resume
      */
@@ -206,25 +206,25 @@ public interface DmxService {
      * @param channelId
      * @return true if there are fade actions or others active
      */
-    public boolean hasChannelActions(int channelId);
+    public boolean hasChannelActions(DmxSimpleChannel channelId);
 
     /**
      * Get an active DMX device connection;
-     * 
+     *
      * @return active DMX Device Connection;
      */
     public DmxConnection getConnection();
 
     /**
      * Inject DMX connection to use.
-     * 
+     *
      * @param conn
      */
     public void setConnection(DmxConnection conn);
 
     /**
      * Stop using given DMX connection.
-     * 
+     *
      * @param conn
      */
     public void unsetConnection(DmxConnection conn);
@@ -233,19 +233,19 @@ public interface DmxService {
      * Suspend any active fades for the given channel. If previous fades have
      * been suspended, these will be overwritten with the current fade being
      * suspended.
-     * 
+     *
      * @param channel
      *            channel number
      */
-    public void suspendChannel(int channel);
+    public void suspendChannel(DmxSimpleChannel channel);
 
     /**
      * Add an action to a channel to resume a fades which was previously suspended.
      * The action will be executed after any existing actions.
-     * 
+     *
      * @param channel
      *            channel number
      */
-    public void addChannelResume(int channel);
+    public void addChannelResume(DmxSimpleChannel channel);
 
 }

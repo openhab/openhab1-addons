@@ -70,8 +70,12 @@ public class OlaConnection implements DmxConnection {
     }
 
     @Override
-    public void sendDmx(byte[] arg0) throws Exception {
-        client.streamDmx(0, arg0);
+    public void sendDmx(int universeId, byte[] arg0) throws Exception {
+        if (universeId != 1) {
+            logger.error("Multi-universe support is not implemented for OLA");
+        } else {
+            client.streamDmx(0, arg0);
+        }
     }
 
     /**
