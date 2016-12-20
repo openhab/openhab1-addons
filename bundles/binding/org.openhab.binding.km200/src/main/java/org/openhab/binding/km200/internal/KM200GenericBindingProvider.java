@@ -90,6 +90,27 @@ public class KM200GenericBindingProvider extends AbstractGenericBindingProvider 
             return new KM200BindingConfig(item.getClass(), KM200BindingProvider.DATE_TIME, "/gateway/DateTime",
                     parameterMap);
         }
+        if (bindingConfig.trim().equals(KM200BindingProvider.SYS_BRAND)) {
+            return new KM200BindingConfig(item.getClass(), KM200BindingProvider.SYS_BRAND, "/system/brand",
+                    parameterMap);
+        }
+        if (bindingConfig.trim().equals(KM200BindingProvider.SYS_TYPE)) {
+            return new KM200BindingConfig(item.getClass(), KM200BindingProvider.SYS_TYPE, "/system/appliance/type",
+                    parameterMap);
+        }
+        if (bindingConfig.trim().equals(KM200BindingProvider.SYS_STATE)) {
+            return new KM200BindingConfig(item.getClass(), KM200BindingProvider.SYS_STATE, "/system/healthStatus",
+                    parameterMap);
+        }
+        if (bindingConfig.trim().equals(KM200BindingProvider.VER_FIRMWARE)) {
+            return new KM200BindingConfig(item.getClass(), KM200BindingProvider.VER_FIRMWARE,
+                    "/gateway/versionFirmware", parameterMap);
+        }
+        if (bindingConfig.trim().equals(KM200BindingProvider.VER_HARDWARE)) {
+            return new KM200BindingConfig(item.getClass(), KM200BindingProvider.VER_HARDWARE,
+                    "/gateway/versionHardware", parameterMap);
+        }
+
         /* Maybe it's a configuration */
         /* Configuration string should be in the form "service:/gateway/versionFirmware" */
         /* Available options for a SwitchItem are on:xxx and off:yyy with a allowed value xxx|yyy */

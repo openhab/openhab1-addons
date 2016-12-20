@@ -27,6 +27,11 @@ public interface KM200BindingProvider extends BindingProvider {
 
     /** binds the date_time service to an item */
     static final public String DATE_TIME = "date_time";
+    static final public String SYS_BRAND = "sys_brand";
+    static final public String SYS_TYPE = "sys_type";
+    static final public String SYS_STATE = "sys_state";
+    static final public String VER_FIRMWARE = "ver_firmware";
+    static final public String VER_HARDWARE = "ver_hardware";
 
     /** binds the date_time service to an item */
     static final public String DIRECT_SERVICE = "service";
