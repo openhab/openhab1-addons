@@ -8,6 +8,11 @@
  */
 package org.openhab.binding.rfxcom.internal.messages;
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.bind.DatatypeConverter;
+
 import org.openhab.binding.rfxcom.RFXComValueSelector;
 import org.openhab.binding.rfxcom.internal.RFXComException;
 import org.openhab.core.library.items.ContactItem;
@@ -20,10 +25,6 @@ import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
-
-import javax.xml.bind.DatatypeConverter;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * RFXCOM data class for lighting4 message.
