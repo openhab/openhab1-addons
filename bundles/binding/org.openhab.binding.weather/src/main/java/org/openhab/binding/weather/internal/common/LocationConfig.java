@@ -29,6 +29,7 @@ public class LocationConfig {
     private Integer updateInterval = DEFAULT_UPDATE_INTERVAL;
     private String locationId;
     private String name;
+    private String units = "si";
 
     /**
      * Returns the language.
@@ -140,6 +141,20 @@ public class LocationConfig {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Returns the units of measurement.
+     */
+    public String getMeasurementUnits() {
+        return units;
+    }
+
+    /**
+     * Sets the units of measurement.
+     */
+    public void setMeasurementUnits(String u) {
+        units = u;
     }
 
     /**
