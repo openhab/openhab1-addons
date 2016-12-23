@@ -17,7 +17,7 @@ import gnu.io.SerialPort;
  * to a DSMRPortSettings object (e.g. 115200 8N1)
  *
  * @author M. Volaart
- * @since 1.8.2
+ * @since 1.9.0
  */
 public class DSMRPortSettings {
     /* logger */

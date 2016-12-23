@@ -9,7 +9,6 @@
 package org.openhab.binding.dsmr.internal;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -338,27 +337,6 @@ public class DSMRPort {
     }
 
     /**
-     * Adds port name to the system property gnu.io.rxtx.SerialPorts if it is not
-     * already present
-     *
-     * @param portName String containing the port name to add
-     */
-    private void addPortToSystemProperty(String portName) {
-        Properties properties = System.getProperties();
-        String currentPorts = properties.getProperty("gnu.io.rxtx.SerialPorts", "");
-        if (currentPorts.indexOf(portName) >= 0) {
-            logger.warn("{} is already listed in system property gnu.io.rxtx.SerialPorts", portName);
-        } else {
-            logger.info("Adding port {} to system property gnu.io.rxtx.SerialPorts", portName);
-            if (currentPorts.length() == 0) {
-                properties.setProperty("gnu.io.rxtx.SerialPorts", portName);
-            } else {
-                properties.setProperty("gnu.io.rxtx.SerialPorts", currentPorts + File.pathSeparator + portName);
-            }
-        }
-    }
-
-    /**
      * Opens the Operation System Serial Port
      * <p>
      * This method opens the port and set Serial Port parameters according to
@@ -386,7 +364,8 @@ public class DSMRPort {
                 // GNU.io autodetects standard serial port names
                 // Add non standard port names if not exists (fixes part of #4175)
                 if (!portExists(portName)) {
-                    addPortToSystemProperty(portName);
+                    logger.warn("Port {} does not exists according to the system, we will still try to open it",
+                            portName);
                 }
                 // Opening Operating System Serial Port
                 logger.debug("Creating CommPortIdentifier");
