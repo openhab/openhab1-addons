@@ -127,7 +127,7 @@ class KM200Comm {
         String str = "";
         for (int i = 0; i < len; i++) {
             if ((data[i] & 0xFF) < 16) {
-                str = str + "0" + java.lang.Integer.toHexString(data[i] & 0xFF);
+                str = str + "0" + Integer.toHexString(data[i] & 0xFF);
             } else {
                 str = str + Integer.toHexString(data[i] & 0xFF);
             }
@@ -165,7 +165,7 @@ class KM200Comm {
                     byte[] test = new byte[1];
                     return test;
                 } else {
-                    logger.error("HTTP GET failed: " + method.getStatusLine());
+                    logger.error("HTTP GET failed: {}", method.getStatusLine());
                     return null;
                 }
             }
@@ -673,7 +673,7 @@ class KM200Comm {
             logger.error("Couldn't find the right configuration");
             return;
         }
-        logger.debug("Encoding" + nodeRoot.toString());
+        logger.debug("Encoding: {}", nodeRoot.toString());
         byte[] encData = encodeMessage(device, nodeRoot.toString());
         if (encData == null) {
             logger.error("Couldn't encrypt data");

@@ -177,7 +177,7 @@ class KM200Device {
             for (KM200CommObject object : serviceMap.values()) {
                 if (object != null) {
                     String val = "", type, valPara = "";
-                    logger.debug("List:" + object.getServiceType() + " " + object.getFullServiceName());
+                    logger.debug("List type: {} service: {}", object.getServiceType(), object.getFullServiceName());
                     type = object.getServiceType();
                     if (type == null) {
                         type = new String();
@@ -204,7 +204,7 @@ class KM200Device {
                                     valPara += ";";
                                     valPara += valParas.get(1);
                                 } else {
-                                    logger.error("Value parameter for float != 2");
+                                    logger.debug("Value parameter for float != 2, this shouldn't happen");
                                     valPara += ";";
                                 }
                             }
