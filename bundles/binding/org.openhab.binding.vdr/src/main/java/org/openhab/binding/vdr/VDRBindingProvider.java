@@ -53,7 +53,7 @@ public interface VDRBindingProvider extends BindingProvider {
      * @param vdrCommand the vdr command for which items should be returned
      * 
      * @return the name of the item which is associated to <code>vdrId</code>
-     *         and <code>vdrComannd</code>
+     *         and <code>vdrCommand</code>
      */
     public String getBindingItemName(String vdrId, VDRCommandType vdrCommand);
 
