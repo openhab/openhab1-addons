@@ -54,6 +54,7 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
     private SatelModule satelModule = null;
     private boolean forceRefresh = false;
     private String textEncoding;
+    private String userCodeOverride = null;
 
     /**
      * {@inheritDoc}
@@ -146,12 +147,20 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
             if (itemConfig != null) {
                 logger.trace("Sending internal command for item {}: {}", itemName, command);
                 SatelCommand satelCmd = itemConfig.convertCommand(command, this.satelModule.getIntegraType(),
-                        this.userCode);
+                        getUserCode());
                 if (satelCmd != null) {
                     this.satelModule.sendCommand(satelCmd);
                 }
                 break;
             }
+        }
+    }
+
+    private String getUserCode() {
+        if (StringUtils.isNotEmpty(this.userCodeOverride)) {
+            return this.userCodeOverride;
+        } else {
+            return this.userCode;
         }
     }
 
@@ -318,7 +327,15 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
      */
     @Override
     public void setUserCode(String userCode) {
-        this.userCode = userCode;
+        this.userCodeOverride = userCode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void resetUserCode() {
+        this.userCodeOverride = null;
     }
 
 }
