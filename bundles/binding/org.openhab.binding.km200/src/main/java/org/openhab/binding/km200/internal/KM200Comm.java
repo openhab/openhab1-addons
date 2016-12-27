@@ -624,7 +624,7 @@ class KM200Comm {
                 logger.error("Not supported type for numberItem: {}", type.toString());
             }
         } else if (itemType.isAssignableFrom(StringItem.class)) {
-            String val = ((StringItem) command).toString();
+            String val = ((StringType) command).toString();
             if (object.getValueParameter() != null) {
                 List<String> valParas = (List<String>) object.getValueParameter();
                 if (!valParas.contains(val)) {
@@ -640,7 +640,7 @@ class KM200Comm {
             }
 
         } else if (itemType.isAssignableFrom(DateTimeItem.class)) {
-            String val = ((DateTimeItem) command).toString();
+            String val = ((DateTimeType) command).toString();
             if (type.equals("stringValue")) {
                 nodeRoot = new JSONObject().put("value", val);
             } else {
