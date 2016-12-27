@@ -3768,5 +3768,45 @@
             <Label lang="en">FUGA Wall 4-way Switch + Relay</Label>
             <ConfigFile>logic/zhc5010.xml</ConfigFile>
         </Product>
-    </Manufacturer> 
+    </Manufacturer>
+	<Manufacturer>
+		<Id>0258</Id>
+		<Name>Shenzhen Neo Electronics Co., Ltd</Name>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>1083</Id>
+			</Reference>
+			<Model>Motion Sensor</Model>
+			<Label lang="en">PIR Motion Sensor</Label>
+			<ConfigFile>shenzhen/motionsensor.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>1082</Id>
+			</Reference>
+			<Model>Door/Window Sensor</Model>
+			<Label lang="en">Door/Window Sensor</Label>
+			<ConfigFile>shenzhen/doorwindowsensor.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>1087</Id>
+			</Reference>
+			<Model>Power Plug</Model>
+			<Label lang="en">Metered Wall Plug Switch</Label>
+			<ConfigFile>shenzhen/powerplug.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>1085</Id>
+			</Reference>
+			<Model>Flood sensor</Model>
+			<Label lang="en">Coolcam flood/water sensor</Label>
+			<ConfigFile>shenzhen/floodsensor.xml</ConfigFile>
+		</Product>
+	</Manufacturer> 
 </Manufacturers>
