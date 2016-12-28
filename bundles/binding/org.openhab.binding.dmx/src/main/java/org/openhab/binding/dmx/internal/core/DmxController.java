@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
  * Default DMX Service implementation
  *
  * @author Davy Vanherbergen
+ * @author Jan N. Klug
  * @since 1.2.0
  */
 public class DmxController implements DmxService, ManagedService {
@@ -34,6 +35,8 @@ public class DmxController implements DmxService, ManagedService {
     private static Logger logger = LoggerFactory.getLogger(DmxController.class);
 
     private static int TRANSMIT_FREQUENCY_MS = 35;
+    private DmxTransmitter.DmxRepeatMode repeatMode = DmxTransmitter.DmxRepeatMode.ALWAYS; // default is send every
+                                                                                           // update
 
     /** Thread in which the DMX transmitter is running **/
     private Timer transmitterTimer;
@@ -49,7 +52,6 @@ public class DmxController implements DmxService, ManagedService {
      */
     @Override
     public void start() throws Exception {
-
         logger.trace("Starting Dmx transmitter ...");
         transmitter = new DmxTransmitter(this);
         transmitterTimer = new Timer(true);
@@ -84,7 +86,6 @@ public class DmxController implements DmxService, ManagedService {
      */
     @Override
     public int getChannelValue(int channel) {
-
         int value = transmitter.getChannel(channel).getValue();
         logger.trace("Getting channel {} value: {}", channel, value);
         return value;
@@ -292,10 +293,32 @@ public class DmxController implements DmxService, ManagedService {
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
         if (config != null) {
+            // connection
             String configuredConnection = (String) config.get("connection");
             if (StringUtils.isNotBlank(configuredConnection)) {
                 connectionString = configuredConnection;
                 logger.debug("Setting connection from config: {}", connectionString);
+            }
+            // refresh timeout (i.e. interval between transmits if nothing changed)
+            String configuredRepeatMode = ((String) config.get("repeatMode"));
+            if (StringUtils.isNotBlank(configuredRepeatMode)) {
+                repeatMode = DmxTransmitter.DmxRepeatMode.fromString(configuredRepeatMode);
+                if (repeatMode == null) {
+                    repeatMode = DmxTransmitter.DmxRepeatMode.ALWAYS;
+                    logger.error("repeatMode {} not recognized, set to {}", configuredRepeatMode, repeatMode);
+                } else {
+                    logger.debug("repeatMode set to {}", repeatMode.toString());
+                }
+
+                if (transmitter != null) {
+                    transmitter.setRepeatMode(repeatMode);
+                }
+            }
+        }
+        // close connection so that the new connection string will take effekt on next getConnection
+        if (connection != null) {
+            if (!connection.isClosed()) {
+                connection.close();
             }
         }
     }
