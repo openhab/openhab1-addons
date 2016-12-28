@@ -380,8 +380,7 @@ class KM200Comm {
 
             } else if (type.equals("switchProgram")) { /* Check whether the type is a switchProgram */
                 logger.debug("initDevice: type switchProgram {}", decodedData.toString());
-                JSONArray sPoints = nodeRoot.getJSONArray("switchPoints");
-                newObject.setValue(sPoints);
+                newObject.setValue(decodedData.toString());
                 device.serviceMap.put(id, newObject);
                 /* have to be completed */
 
@@ -549,8 +548,16 @@ class KM200Comm {
                 return state;
 
             } else if (type.equals("switchProgram")) { /* Check whether the type is a switchProgram */
-                logger.info("state of: type switchProgram is not supported yet: {}", decodedData.toString());
-                /* have to be completed */
+                logger.debug("state of type switchProgram: {}", decodedData.toString());
+                /* the parsing of switchprogram-services have to be outside, using json in strings */
+                if (itemType.isAssignableFrom(StringItem.class)) {
+                    state = new StringType(decodedData.toString());
+                } else {
+                    logger.error("Bindingtype not supported for switchProgram, only json over strings supported: {}",
+                            itemType.getClass().toString());
+                    return null;
+                }
+                return state;
 
             } else if (type.equals("errorList")) { /* Check whether the type is a errorList */
                 logger.info("state of: type errorList is not supported yet: {}", decodedData.toString());
@@ -635,6 +642,8 @@ class KM200Comm {
                 nodeRoot = new JSONObject().put("value", val);
             } else if (type.equals("floatValue")) {
                 nodeRoot = new JSONObject().put("value", Float.parseFloat(val));
+            } else if (type.equals("switchProgram")) {
+                nodeRoot = new JSONObject(val);
             } else {
                 logger.error("Not supported type for stringItem: {}", type.toString());
             }
