@@ -3817,5 +3817,18 @@
 			<Label lang="en">Coolcam flood/water sensor</Label>
 			<ConfigFile>shenzhen/floodsensor.xml</ConfigFile>
 		</Product>
-	</Manufacturer> 
+	</Manufacturer>
+  <Manufacturer>
+    <Id>027A</Id>
+    <Name>Zooz</Name>
+    <Product>
+      <Reference>
+        <Type>2021</Type>
+        <Id>2101</Id>
+      </Reference>
+      <Model>ZSE40</Model>
+      <Label lang="en">4-in-1 Sensor</Label>
+      <ConfigFile>zooz/zse40.xml</ConfigFile>
+    </Product>
+  </Manufacturer>
 </Manufacturers>
