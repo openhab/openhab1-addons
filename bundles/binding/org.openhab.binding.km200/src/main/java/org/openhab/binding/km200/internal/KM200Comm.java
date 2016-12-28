@@ -16,7 +16,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 
 import javax.crypto.BadPaddingException;
@@ -25,6 +24,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -227,8 +227,8 @@ class KM200Comm {
         byte[] decodedB64 = null;
 
         try {
-            decodedB64 = Base64.getMimeDecoder().decode(encoded);
-        } catch (IllegalArgumentException e) {
+            decodedB64 = Base64.decodeBase64(encoded);
+        } catch (Exception e) {
             logger.error("Message is not in valid Base64 scheme: {}", e);
             e.printStackTrace();
         }
@@ -274,8 +274,8 @@ class KM200Comm {
             final byte[] encryptedData = cipher.doFinal(addZeroPadding(bdata, bsize, device.getCharSet()));
             logger.debug("Encrypt B64..");
             try {
-                encryptedDataB64 = Base64.getMimeEncoder().encode(encryptedData);
-            } catch (IllegalArgumentException e) {
+                encryptedDataB64 = Base64.encodeBase64(encryptedData);
+            } catch (Exception e) {
                 logger.error("Base64encoding not possible: {}", e);
                 e.printStackTrace();
             }
