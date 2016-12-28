@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+  <Model>ZWN-RSM2</Model>
+  <Label lang="en">Smart Dual Relay Switch Module</Label>
+
+  <CommandClasses>
+    <Class>
+      <id>0x00</id>
+      <!-- NO_OPERATION -->
+    </Class>
+    <Class>
+      <id>0x20</id>
+      <!-- BASIC -->
+    </Class>
+    <Class>
+      <id>0x25</id>
+      <!-- SWITCH_BINARY -->
+    </Class>
+    <Class>
+      <id>0x27</id>
+      <!-- SWITCH_ALL -->
+    </Class>
+    <Class>
+      <id>0x60</id>
+      <!-- MULTI_INSTANCE -->
+    </Class>
+    <Class>
+      <id>0x70</id>
+      <!-- CONFIGURATION -->
+    </Class>
+    <Class>
+      <id>0x72</id>
+      <!-- MANUFACTURER_SPECIFIC -->
+    </Class>
+    <Class>
+      <id>0x85</id>
+      <!-- ASSOCIATION -->
+    </Class>
+    <Class>
+      <id>0x86</id>
+      <!-- VERSION -->
+    </Class>
+    <Class>
+      <id>0x8E</id>
+      <!-- MULTI_INSTANCE_ASSOCIATION -->
+    </Class>
+  </CommandClasses>
+
+  <Configuration>
+
+    <Parameter>
+      <Index>3</Index>
+      <Label lang="en">Unsolicited Report Configuration</Label>
+      <Type>short</Type>
+      <Default>0</Default>
+      <Minimum>0</Minimum>
+      <Maximum>255</Maximum>
+      <Size>1</Size>
+      <Help>
+        <![CDATA[ZWN-RSM2 can send unsolicited status report to primary controller (Node ID 0X01) when switch toggled due to some controllers designed as gateway. If your controller is not a gateway or does not need the status or you think it could confuse your Z-Wave net
+            ]]>
+      </Help>
+    </Parameter>
+
+  </Configuration>
+
+</Product>
