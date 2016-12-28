@@ -2720,6 +2720,15 @@
             <Label lang="en">Scene Controller</Label>
             <ConfigFile>enerwave/zwn-sc7.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0101</Type>
+                <Id>5606</Id>
+            </Reference>
+            <Model>ZWN-RSM2</Model>
+            <Label lang="en">Smart Dual Relay Switch Module</Label>
+            <ConfigFile>enerwave/zwnrsm2.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0001</Id>
