@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZW4101</Model>
+    <Label lang="en">Drapery controller (up/stop/down)</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x26</id>             <!-- SWITCH_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Up output time</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Stop output time</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Down output time</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+    </Configuration>
+
+</Product>

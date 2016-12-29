@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,92 +18,155 @@ import org.slf4j.LoggerFactory;
 /**
  * DmxTransmitter, which is responsible for continuously sending all value
  * changes to the DMX connection.
- * 
+ *
  * This transmitter should always run in a separate thread to allow for smooth
  * transmissions.
- * 
+ *
  * @author Davy Vanherbergen
  * @since 1.2.0
  */
 public final class DmxTransmitter extends TimerTask {
 
-	private static Logger logger = LoggerFactory
-			.getLogger(DmxTransmitter.class);
+    /* REPEAT_INTERVAL is 750 ms (results in 800-1000ms) repetition time */
+    private static final int REPEAT_INTERVAL = 750;
+    private static final int REPEAT_COUNT = 3;
 
-	private DmxUniverse universe = new DmxUniverse();
+    public enum DmxRepeatMode {
+        ALWAYS("always"),
+        NEVER("never"),
+        REDUCED("reduced");
 
-	private DmxService service;
+        private String repeatMode;
 
-	private boolean running;
+        DmxRepeatMode(String repeatMode) {
+            this.repeatMode = repeatMode;
+        }
 
-	private boolean suspended;
+        @Override
+        public String toString() {
+            return this.repeatMode;
+        }
 
-	/**
-	 * Default constructor.
-	 */
-	public DmxTransmitter(DmxService service) {
-		this.service = service;
-	}
+        public static DmxRepeatMode fromString(String repeatMode) {
+            if (repeatMode != null) {
+                for (DmxRepeatMode mode : DmxRepeatMode.values()) {
+                    if (repeatMode.equalsIgnoreCase(mode.repeatMode)) {
+                        return mode;
+                    }
+                }
+            }
+            return null;
+        }
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	public void run() {
+    private static Logger logger = LoggerFactory.getLogger(DmxTransmitter.class);
 
-		if (suspended) {
-			return;
-		}
+    private DmxUniverse universe = new DmxUniverse();
 
-		running = true;
-		try {
-			byte[] b = universe.calculateBuffer();
-			if (universe.getBufferChanged()) {
-				DmxConnection conn = service.getConnection();
-				if (conn != null) {
-					conn.sendDmx(b);
-					universe.notifyStatusListeners();
-				}
-			}
-		} catch (Exception e) {
-			logger.error("Error sending dmx values.", e);
-		} finally {
-			running = false;
-		}
-	}
+    private DmxService service;
 
-	/**
-	 * @return true if the transmitter is calculating values and transmitting
-	 */
-	public boolean isRunning() {
-		return running;
-	}
+    private boolean running;
+    private DmxRepeatMode repeatMode = DmxRepeatMode.ALWAYS;
 
-	/**
-	 * Suspend/resume transmittting.
-	 * 
-	 * @param suspend
-	 *            true to suspend
-	 */
-	public void setSuspend(boolean suspend) {
-		this.suspended = suspend;
-	}
+    private boolean suspended;
 
-	/**
-	 * Get the DMX channel in the current universe.
-	 * 
-	 * @param channel
-	 *            number
-	 * @return DMX channel
-	 */
-	public DmxChannel getChannel(int channel) {
-		return universe.getChannel(channel);
-	}
+    private long lastTransmit = 0;
+    private int packetRepeatCount = 0;
 
-	/**
-	 * @return DMX universe
-	 */
-	public DmxUniverse getUniverse() {
-		return universe;
-	}
+    /**
+     * Default constructor.
+     */
+    public DmxTransmitter(DmxService service) {
+        this.service = service;
+    }
+
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    public void run() {
+
+        if (suspended) {
+            return;
+        }
+
+        running = true;
+        try {
+            long now = System.currentTimeMillis();
+            byte[] b = universe.calculateBuffer();
+            DmxConnection conn = service.getConnection();
+            if (conn != null) {
+                if (universe.getBufferChanged()) {
+                    logger.trace("DMX Buffer changed, also sending status updates");
+                    conn.sendDmx(b);
+                    universe.notifyStatusListeners();
+                    lastTransmit = now;
+                    packetRepeatCount = 0;
+                } else if (repeatMode == DmxRepeatMode.ALWAYS) {
+                    logger.trace("repeat mode always, sending DMX only");
+                    conn.sendDmx(b);
+                    lastTransmit = now;
+                } else if ((repeatMode == DmxRepeatMode.REDUCED)
+                        && ((packetRepeatCount < REPEAT_COUNT) || ((now - lastTransmit) > REPEAT_INTERVAL))) {
+                    logger.trace("output needs refresh, sending DMX only");
+                    conn.sendDmx(b);
+                    if (packetRepeatCount < REPEAT_COUNT) {
+                        packetRepeatCount++;
+                    }
+                    lastTransmit = now;
+                } else {
+                    logger.trace("DMX output suppressed");
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error sending dmx values.", e);
+        } finally {
+            running = false;
+        }
+    }
+
+    /**
+     * @return true if the transmitter is calculating values and transmitting
+     */
+    public boolean isRunning() {
+        return running;
+    }
+
+    /**
+     * Suspend/resume transmitting.
+     *
+     * @param suspend
+     *            true to suspend
+     */
+    public void setSuspend(boolean suspend) {
+        this.suspended = suspend;
+    }
+
+    /**
+     * change transmitter refresh cycle
+     *
+     * @param refreshInterval
+     *            interval in ms (if output did not change)
+     */
+    public void setRepeatMode(DmxRepeatMode repeatMode) {
+        this.repeatMode = repeatMode;
+    }
+
+    /**
+     * Get the DMX channel in the current universe.
+     *
+     * @param channel
+     *            number
+     * @return DMX channel
+     */
+    public DmxChannel getChannel(int channel) {
+        return universe.getChannel(channel);
+    }
+
+    /**
+     * @return DMX universe
+     */
+    public DmxUniverse getUniverse() {
+        return universe;
+    }
 }

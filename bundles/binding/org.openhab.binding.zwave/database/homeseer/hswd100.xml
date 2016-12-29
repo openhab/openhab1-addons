@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>HS-WD100+</Model>
+    <Label lang="en">Scene Capable Wall Dimmer Switch</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x26</id>             <!-- SWITCH_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x2B</id>             <!-- SCENE_ACTIVATION -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5B</id>             <!-- CENTRAL_SCENE -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Orientation</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Normal</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Inverted</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>7</Index>
+            <Label lang="en">Remote Dimming Level Increment</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>99</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>8</Index>
+            <Label lang="en">Remote Dimming Step Duration</Label>
+            <Type>short</Type>
+            <Default>3</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>9</Index>
+            <Label lang="en">Local Dimming Level Increment</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>99</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>10</Index>
+            <Label lang="en">Local Dimming Step Duration</Label>
+            <Type>short</Type>
+            <Default>3</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Group 1</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>

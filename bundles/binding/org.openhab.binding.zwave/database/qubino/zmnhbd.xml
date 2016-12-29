@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZMNHBD</Model>
+	<Label lang="en">Flush 2 relays</Label>
+	<CommandClasses>
+		<Class><id>0x00</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8E</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 1 switch type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">mono-stable switch type (push button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">bi-stable switch type</Label>
+			</Item>
+			<Help lang="en">Input 1 switch type</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 2 switch type</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">mono-stable switch type (push button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">bi-stable switch type</Label>
+			</Item>
+			<Help lang="en">Input 2 switch type</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>2</Size>
+			<Label lang="en">Activate / deactivate functions ALL ON/ALL OFF</Label>			
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">ALL ON active, ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">ALL ON is not active ALL OFF is not active</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALL ON is not active ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALL ON active ALL OFF is not active</Label>
+			</Item>
+			<Help lang="en">Flush 1 relay module responds to commands ALL ON / ALL OFF 
+				that may be sent by the main controller or by other controller belonging to the system.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatic turning off output Q1 after set time</Label>
+			<Help lang="en"><![CDATA[When relay Q1 is ON it goes automatically OFF after time defined by this parameter. 
+				Timer is reset to zero each time the module receive ON command regardless from where it comes 
+				(push button, associated module, controller,..).<br/>
+				<ul><li>0 - Auto OFF disabled</li> 
+				<li>1 – 32535 = 1second (0,01s) – 32535 seconds (325,35s) Auto OFF enabled with define time, step is 1s or 10ms according to parameter nr.15</li></ul>]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatic turning on output Q1 after set time</Label>
+			<Help lang="en"><![CDATA[When relay Q1 is OFF it goes automatically ON after time defined by this parameter. 
+				Timer is reset to zero each time the module receive OFF command regardless from where it comes 
+				(push button, associated module, controller,..).<br/>
+				<ul><li>0 - Auto ON disabled</li> 
+				<li>1 – 32535 = 1second (0,01s) – 32535 seconds (325,35s) Auto ON enabled with define time, step is 1s or 10ms according to parameter nr.15</li></ul>]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>13</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatic turning off relay Q2 after set time</Label>
+			<Help lang="en"><![CDATA[When relay Q2 is ON it goes automatically OFF after time defined by this parameter. 
+				Timer is reset to zero each time the module receive ON command regardless from where it comes 
+				(push button, associated module, controller,..).<br/>
+				<ul><li>0 - Auto OFF disabled</li> 
+				<li>1 – 32535 = 1second (0,01s) – 32535 seconds (325,35s) Auto OFF enabled with define time, step is 1s or 10ms according to parameter nr.15</li></ul>]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>14</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatic turning on output Q2 after set time</Label>
+			<Help lang="en"><![CDATA[When relay Q2 is OFF it goes automatically ON after time defined by this parameter. 
+				Timer is reset to zero each time the module receive OFF command regardless from where it comes 
+				(push button, associated module, controller,..).<br/>
+				<ul><li>0 - Auto ON disabled</li> 
+				<li>1 – 32535 = 1second (0,01s) – 32535 seconds (325,35s) Auto ON enabled with define time, step is 1s or 10ms according to parameter nr.15</li></ul>]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>15</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Automatic turning off / on seconds or milliseconds selection</Label>
+			<Help lang="en"><![CDATA[Available configuration parameters:<br/>
+				<ul><li>0 – seconds selected</li> 
+				<li>1 – milliseconds selected</li></ul><br/>
+				NOTE: Parameter is valid for both outputs Q1, Q2 and is the same for turning off or on.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>30</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Saving the state of the relays Q1 and Q2 after a power failure</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Flush 2 relays module saves its state before power failure (it returns to the last position saved before a power failure)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Flush 2 relays module does not save the state after a power failure, it returns to "off" position.</Label>
+			</Item>
+			<Help lang="en">Saving the state of the relays Q1 and Q2 after a power failure</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>40</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">Power reporting in Watts on power change for Q1</Label>			
+			<Help lang="en"><![CDATA[Power report is sent (pushed) only when actual power in Watts in real time changed for more than 
+				set percentage comparing to previous actual power in Watts, step is 1%.<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–100 = 1% - 100% Reporting enabled</li></ul>
+				NOTE: if power changed is less than 1W, the report is not sent (pushed), regardless of percentage set.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>41</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">Power reporting in Watts on power change for Q2</Label>			
+			<Help lang="en"><![CDATA[Power report is sent (pushed) only when actual power in Watts in real time changed for more than 
+				set percentage comparing to previous actual power in Watts, step is 1%.<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–100 = 1% - 100% Reporting enabled</li></ul>
+				NOTE: if power changed is less than 1W, the report is not sent (pushed), regardless of percentage set.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>42</Index>
+			<Type>byte</Type>
+			<Default>300</Default>
+			<Size>2</Size>
+			<Label lang="en">Power reporting in Watts by time interval for Q1</Label>
+			<Help lang="en"><![CDATA[default value is 300 (power report in Watts is sent each 300s)<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–32535 = 1 second – 32535 seconds. Reporting enabled. 
+				Power report is sent with time interval set by entered value.</li></ul>]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>43</Index>
+			<Type>byte</Type>
+			<Default>300</Default>
+			<Size>2</Size>
+			<Label lang="en">Power reporting in Watts by time interval for Q2</Label>
+			<Help lang="en"><![CDATA[default value is 300 (power report in Watts is sent each 300s)<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–32535 = 1 second – 32535 seconds. Reporting enabled. 
+				Power report is sent with time interval set by entered value.</li></ul>]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>63</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Output Q1 Switch selection</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">When system is turned off the output is 0V (NC)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">When system is turned off the output is 230V or 24V (NO)</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>64</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Output Q2 Switch selection</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">When system is turned off the output is 0V (NC)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">When system is turned off the output is 230V or 24V (NO)</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>110</Index>
+			<Type>byte</Type>
+			<Default>32536</Default>
+			<Size>2</Size>
+			<Label lang="en">Temperature sensor offset settings</Label>
+			<Help lang="en"><![CDATA[Set value result in adding or subtracting that value to actual measured value by sensor<br/>
+				<ul><li>32536 – offset is 0.0 °C</li>
+				<li>From 1 to 1000 – value from 0.1 °C to 10.0 °C is added to actual measured temperature.</li></ul>]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>120</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Size>1</Size>
+			<Label lang="en">Digital temperature sensor reporting</Label>
+			<Help lang="en"><![CDATA[If digital temperature sensor is connected, module reports measured temperature on temperature change defined by this parameter.<br/>
+				<ul><li>0 – Reporting disabled</li>
+				<li>1-127 = 0,1°C – 12,7°C, step is 0,1°C</li></ul>]]></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">Default Reporting Group</Label>
+			<Help lang="en">Reporting for controller</Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Q1 basic on/off</Label>
+			<Help lang="en">Triggered at change of the output Q1 state and reflecting its state</Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Q1 switch binary</Label>
+			<Help lang="en">Switch binary report (triggered at change of the output Q1 state and reflecting its state) up to 16 nodes</Help>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Q1 power meter</Label>
+			<Help lang="en">Power meter report (triggered at change of the output Q1 state) up to 16 nodes.</Help>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Q2 basic on/off</Label>
+			<Help lang="en">Triggered at change of the output Q2 state and reflecting its state</Help>
+		</Group>
+		<Group>
+			<Index>6</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Q2 switch binary</Label>
+			<Help lang="en">Switch binary report (triggered at change of the output Q2 state and reflecting its state) up to 16 nodes</Help>
+		</Group>
+		<Group>
+			<Index>7</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Q2 power meter</Label>
+			<Help lang="en">Power meter report (triggered at change of the output Q2 state) up to 16 nodes.</Help>
+		</Group>
+		<Group>
+			<Index>8</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Multilevel sensor</Label>
+			<Help lang="en">Multilevel sensor report (triggered at change of temperature sensor) up to 16 nodes.</Help>
+		</Group>
+	</Associations>
+</Product>

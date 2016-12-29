@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -38,98 +38,98 @@ import org.slf4j.LoggerFactory;
  */
 public class FibaroFGRM222Converter extends ZWaveCommandClassConverter<FibaroFGRM222CommandClass> {
 
-	private static final Logger logger = LoggerFactory.getLogger(FibaroFGRM222Converter.class);
-	private static final int REFRESH_INTERVAL = 0; // refresh interval in seconds
+    private static final Logger logger = LoggerFactory.getLogger(FibaroFGRM222Converter.class);
+    private static final int REFRESH_INTERVAL = 0; // refresh interval in seconds
 
-	public FibaroFGRM222Converter(final ZWaveController controller, final EventPublisher eventPublisher) {
-		super(controller, eventPublisher);
-		this.addStateConverter(new IntegerPercentTypeConverter());
-		this.addStateConverter(new IntegerOnOffTypeConverter());
+    public FibaroFGRM222Converter(final ZWaveController controller, final EventPublisher eventPublisher) {
+        super(controller, eventPublisher);
+        this.addStateConverter(new IntegerPercentTypeConverter());
+        this.addStateConverter(new IntegerOnOffTypeConverter());
 
-		this.addCommandConverter(new MultiLevelPercentCommandConverter());
-		this.addCommandConverter(new MultiLevelUpDownCommandConverter());
-	}
+        this.addCommandConverter(new MultiLevelPercentCommandConverter());
+        this.addCommandConverter(new MultiLevelUpDownCommandConverter());
+    }
 
-	@Override
-	SerialMessage executeRefresh(final ZWaveNode node, final FibaroFGRM222CommandClass commandClass,
-			final int endpointId, final Map<String, String> arguments) {
-		logger.debug("NODE {}: executeRefresh() -- nothing to do", node.getNodeId());
-		return null;
-	}
+    @Override
+    SerialMessage executeRefresh(final ZWaveNode node, final FibaroFGRM222CommandClass commandClass,
+            final int endpointId, final Map<String, String> arguments) {
+        logger.debug("NODE {}: executeRefresh() -- nothing to do", node.getNodeId());
+        return null;
+    }
 
-	@Override
-	void handleEvent(final ZWaveCommandClassValueEvent event, final Item item, final Map<String, String> arguments) {
-		logger.debug("NODE {}: handleEvent()", event.getNodeId());
-		ZWaveStateConverter<?, ?> converter = this.getStateConverter(item, event.getValue());
+    @Override
+    void handleEvent(final ZWaveCommandClassValueEvent event, final Item item, final Map<String, String> arguments) {
+        logger.debug("NODE {}: handleEvent()", event.getNodeId());
+        ZWaveStateConverter<?, ?> converter = this.getStateConverter(item, event.getValue());
 
-		if (converter == null) {
-			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring event.", event.getNodeId(),
-					item.getName(), event.getEndpoint());
-			return;
-		}
+        if (converter == null) {
+            logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring event.", event.getNodeId(),
+                    item.getName(), event.getEndpoint());
+            return;
+        }
 
-		String sensorType = arguments.get("type");
-		FibaroFGRM222CommandClass.FibaroFGRM222ValueEvent sensorEvent = (FibaroFGRM222CommandClass.FibaroFGRM222ValueEvent) event;
-		// Don't trigger event if this item is bound to another sensor type
-		if (sensorType != null && !sensorType.equalsIgnoreCase(sensorEvent.getSensorType().name())) {
-			return;
-		}
-		State state = converter.convertFromValueToState(event.getValue());
-		if (converter instanceof IntegerPercentTypeConverter) {
-			state = new PercentType(100 - ((DecimalType) state).intValue());
-		}
-		this.getEventPublisher().postUpdate(item.getName(), state);
+        String sensorType = arguments.get("type");
+        FibaroFGRM222CommandClass.FibaroFGRM222ValueEvent sensorEvent = (FibaroFGRM222CommandClass.FibaroFGRM222ValueEvent) event;
+        // Don't trigger event if this item is bound to another sensor type
+        if (sensorType != null && !sensorType.equalsIgnoreCase(sensorEvent.getSensorType().name())) {
+            return;
+        }
+        State state = converter.convertFromValueToState(event.getValue());
+        if (converter instanceof IntegerPercentTypeConverter) {
+            state = new PercentType(100 - ((DecimalType) state).intValue());
+        }
+        this.getEventPublisher().postUpdate(item.getName(), state);
 
-	}
+    }
 
-	@Override
-	void receiveCommand(final Item item, final Command command, final ZWaveNode node,
-			final FibaroFGRM222CommandClass commandClass, final int endpointId, final Map<String, String> arguments) {
-		logger.debug("NODE {}: receiveCommand()", node.getNodeId());
-		Command internalCommand = command;
-		SerialMessage serialMessage = null;
-		if (internalCommand instanceof StopMoveType && (StopMoveType) internalCommand == StopMoveType.STOP) {
-			// special handling for the STOP command
-			serialMessage = commandClass.stopLevelChangeMessage(arguments.get("type"));
-		} else {
-			ZWaveCommandConverter<?, ?> converter = this.getCommandConverter(command.getClass());
-			if (converter == null) {
-				logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring command.",
-						node.getNodeId(), item.getName(), endpointId);
-				return;
-			}
-			if (converter instanceof MultiLevelPercentCommandConverter) {
-				internalCommand = new PercentType(100 - ((DecimalType) command).intValue());
-			}
+    @Override
+    void receiveCommand(final Item item, final Command command, final ZWaveNode node,
+            final FibaroFGRM222CommandClass commandClass, final int endpointId, final Map<String, String> arguments) {
+        logger.debug("NODE {}: receiveCommand()", node.getNodeId());
+        Command internalCommand = command;
+        SerialMessage serialMessage = null;
+        if (internalCommand instanceof StopMoveType && (StopMoveType) internalCommand == StopMoveType.STOP) {
+            // special handling for the STOP command
+            serialMessage = commandClass.stopLevelChangeMessage(arguments.get("type"));
+        } else {
+            ZWaveCommandConverter<?, ?> converter = this.getCommandConverter(command.getClass());
+            if (converter == null) {
+                logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring command.",
+                        node.getNodeId(), item.getName(), endpointId);
+                return;
+            }
+            if (converter instanceof MultiLevelPercentCommandConverter) {
+                internalCommand = new PercentType(100 - ((DecimalType) command).intValue());
+            }
 
-			Integer value = (Integer) converter.convertFromCommandToValue(item, internalCommand);
-			if (value == 0) {
-				value = 1;
-			}
-			logger.trace("NODE {}: Converted command '{}' to value {} for item = {}, endpoint = {}.", node.getNodeId(),
-					internalCommand.toString(), value, item.getName(), endpointId);
+            Integer value = (Integer) converter.convertFromCommandToValue(item, internalCommand);
+            if (value == 0) {
+                value = 1;
+            }
+            logger.trace("NODE {}: Converted command '{}' to value {} for item = {}, endpoint = {}.", node.getNodeId(),
+                    internalCommand.toString(), value, item.getName(), endpointId);
 
-			serialMessage = commandClass.setValueMessage(value, arguments.get("type"));
-		}
+            serialMessage = commandClass.setValueMessage(value, arguments.get("type"));
+        }
 
-		// encapsulate the message in case this is a multi-instance node
-		serialMessage = node.encapsulate(serialMessage, commandClass, endpointId);
+        // encapsulate the message in case this is a multi-instance node
+        serialMessage = node.encapsulate(serialMessage, commandClass, endpointId);
 
-		if (serialMessage == null) {
-			logger.warn("NODE {}: Generating message failed for command class = {}, node = {}, endpoint = {}",
-					node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-			return;
-		}
-		this.getController().sendData(serialMessage);
+        if (serialMessage == null) {
+            logger.warn("NODE {}: Generating message failed for command class = {}, node = {}, endpoint = {}",
+                    node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
+            return;
+        }
+        this.getController().sendData(serialMessage);
 
-		if (command instanceof State) {
-			this.getEventPublisher().postUpdate(item.getName(), (State)command);
-		}
-	}
+        if (command instanceof State) {
+            this.getEventPublisher().postUpdate(item.getName(), (State) command);
+        }
+    }
 
-	@Override
-	int getRefreshInterval() {
-		return REFRESH_INTERVAL;
-	}
+    @Override
+    int getRefreshInterval() {
+        return REFRESH_INTERVAL;
+    }
 
 }

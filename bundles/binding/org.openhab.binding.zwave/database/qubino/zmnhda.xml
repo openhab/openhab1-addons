@@ -22,6 +22,7 @@
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<Label lang="en">Input 1 switch type</Label>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">mono-stable switch (push button)</Label>

@@ -27,43 +27,44 @@ import net.wimpi.modbus.Modbus;
  */
 public class AtomicCounter {
 
-  private int m_Value;
+    private int m_Value;
 
-  /**
-   * Constructs a new <tt>AtomicInteger</tt>.
-   */
-  public AtomicCounter() {
-    m_Value = 0;
-  }//constructor
+    /**
+     * Constructs a new <tt>AtomicInteger</tt>.
+     */
+    public AtomicCounter() {
+        m_Value = 0;
+    }// constructor
 
-  /**
-   * Constructs a new <tt>AtomicInteger</tt>
-   * with a given initial value.
-   *
-   * @param value the initial value.
-   */
-  public AtomicCounter(int value) {
-    m_Value = value;
-  }//constructor
+    /**
+     * Constructs a new <tt>AtomicInteger</tt>
+     * with a given initial value.
+     *
+     * @param value the initial value.
+     */
+    public AtomicCounter(int value) {
+        m_Value = value;
+    }// constructor
 
-  /**
-   * Increments this <tt>AtomicInteger</tt> by one.
-   *
-   * @return the resulting value.
-   */
-  public synchronized int increment() {
-    if (m_Value == Modbus.MAX_TRANSACTION_ID) {
-      m_Value = 0;
-    }
-    return ++m_Value;
-  }//increment
+    /**
+     * Increments this <tt>AtomicInteger</tt> by one.
+     *
+     * @return the resulting value.
+     */
+    public synchronized int increment() {
+        if (m_Value == Modbus.MAX_TRANSACTION_ID) {
+            m_Value = 0;
+        }
+        return ++m_Value;
+    }// increment
 
-  /**
-   * Returns the value of this <tt>AtomicInteger</tt>.
-   * @return the actual value.
-   */
-  public synchronized int get() {
-    return m_Value;
-  }//get
+    /**
+     * Returns the value of this <tt>AtomicInteger</tt>.
+     * 
+     * @return the actual value.
+     */
+    public synchronized int get() {
+        return m_Value;
+    }// get
 
-}//class AtomicCounter
+}// class AtomicCounter

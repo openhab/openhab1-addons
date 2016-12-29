@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,14 +15,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class registers an OSGi service for the HarmonyHub action.
- * 
+ *
  * @author Matt Tucker
  * @since 1.7.0
  */
 public class HarmonyHubActionService implements ActionService {
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory
-    .getLogger(HarmonyHubActionService.class);
+    private static final Logger logger = LoggerFactory.getLogger(HarmonyHubActionService.class);
 
     private static HarmonyHubGateway harmonyHubGateway;
 
@@ -35,10 +34,12 @@ public class HarmonyHubActionService implements ActionService {
     public void deactivate() {
     }
 
+    @Override
     public String getActionClassName() {
         return HarmonyHub.class.getCanonicalName();
     }
 
+    @Override
     public Class<?> getActionClass() {
         return HarmonyHub.class;
     }
@@ -47,13 +48,11 @@ public class HarmonyHubActionService implements ActionService {
         return harmonyHubGateway.isProperlyConfigured();
     }
 
-    public synchronized void addHarmonyHubGateway(
-            HarmonyHubGateway harmonyHubGateway) {
+    public synchronized void addHarmonyHubGateway(HarmonyHubGateway harmonyHubGateway) {
         HarmonyHubActionService.harmonyHubGateway = harmonyHubGateway;
     }
 
-    public synchronized void removeHarmonyHubGateway(
-            HarmonyHubGateway harmonyHubGateway) {
+    public synchronized void removeHarmonyHubGateway(HarmonyHubGateway harmonyHubGateway) {
         if (HarmonyHubActionService.harmonyHubGateway == harmonyHubGateway) {
             HarmonyHubActionService.harmonyHubGateway = null;
         }

@@ -24,71 +24,72 @@ package net.wimpi.modbus.util;
  */
 public class ThreadPool {
 
-  //instance attributes and associations
-  private LinkedQueue m_TaskPool;
-  private int m_Size = 1;
-
-  /**
-   * Constructs a new <tt>ThreadPool</tt> instance.
-   *
-   * @param size the size of the thread pool.
-   */
-  public ThreadPool(int size) {
-    m_Size = size;
-    m_TaskPool = new LinkedQueue();
-    initPool();
-  }//constructor
-
-  /**
-   * Execute the <tt>Runnable</tt> instance
-   * through a thread in this <tt>ThreadPool</tt>.
-   *
-   * @param task the <tt>Runnable</tt> to be executed.
-   */
-  public synchronized void execute(Runnable task) {
-    try {
-      m_TaskPool.put(task);
-    } catch (InterruptedException ex) {
-      //FIXME: Handle!?
-    }
-  }//execute
-
-  /**
-   * Initializes the pool, populating it with
-   * n started threads.
-   */
-  protected void initPool() {
-    for (int i = m_Size; --i >= 0;) {
-      new PoolThread().start();
-    }
-  }//initPool
-
-  /**
-   * Inner class implementing a thread that can be
-   * run in a <tt>ThreadPool</tt>.
-   *
-   * @author Dieter Wimberger
-   * @version @version@ (@date@)
-   */
-  private class PoolThread extends Thread {
+    // instance attributes and associations
+    private LinkedQueue m_TaskPool;
+    private int m_Size = 1;
 
     /**
-     * Runs the <tt>PoolThread</tt>.
-     * <p>
-     * This method will infinitely loop, picking
-     * up available tasks from the <tt>LinkedQueue</tt>.
+     * Constructs a new <tt>ThreadPool</tt> instance.
+     *
+     * @param size the size of the thread pool.
      */
-    public void run() {
-      // Running PoolThread
-      do {
-        try {
-          ((Runnable) m_TaskPool.take()).run();
-        } catch (Exception ex) {
-          //FIXME: Handle somehow!?
-          ex.printStackTrace();
-        }
-      } while (true);
-    }
-  }//PoolThread
+    public ThreadPool(int size) {
+        m_Size = size;
+        m_TaskPool = new LinkedQueue();
+        initPool();
+    }// constructor
 
-}//ThreadPool
+    /**
+     * Execute the <tt>Runnable</tt> instance
+     * through a thread in this <tt>ThreadPool</tt>.
+     *
+     * @param task the <tt>Runnable</tt> to be executed.
+     */
+    public synchronized void execute(Runnable task) {
+        try {
+            m_TaskPool.put(task);
+        } catch (InterruptedException ex) {
+            // FIXME: Handle!?
+        }
+    }// execute
+
+    /**
+     * Initializes the pool, populating it with
+     * n started threads.
+     */
+    protected void initPool() {
+        for (int i = m_Size; --i >= 0;) {
+            new PoolThread().start();
+        }
+    }// initPool
+
+    /**
+     * Inner class implementing a thread that can be
+     * run in a <tt>ThreadPool</tt>.
+     *
+     * @author Dieter Wimberger
+     * @version @version@ (@date@)
+     */
+    private class PoolThread extends Thread {
+
+        /**
+         * Runs the <tt>PoolThread</tt>.
+         * <p>
+         * This method will infinitely loop, picking
+         * up available tasks from the <tt>LinkedQueue</tt>.
+         */
+        @Override
+        public void run() {
+            // Running PoolThread
+            do {
+                try {
+                    ((Runnable) m_TaskPool.take()).run();
+                } catch (Exception ex) {
+                    // FIXME: Handle somehow!?
+                    ex.printStackTrace();
+                }
+            } while (true);
+        }
+    }// PoolThread
+
+}// ThreadPool

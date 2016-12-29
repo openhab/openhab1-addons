@@ -30,20 +30,20 @@ package net.wimpi.modbus.procimg;
  */
 public interface DigitalOut {
 
-  /**
-   * Tests if this <tt>DigitalOut</tt> is set.
-   * <p>
-   *
-   * @return true if set, false otherwise.
-   */
-  public boolean isSet();
+    /**
+     * Tests if this <tt>DigitalOut</tt> is set.
+     * <p>
+     *
+     * @return true if set, false otherwise.
+     */
+    public boolean isSet();
 
-  /**
-   * Sets the state of this <tt>DigitalOut</tt>.
-   * <p>
-   *
-   * @param b true if to be set, false otherwise.
-   */
-  public void set(boolean b);
+    /**
+     * Sets the state of this <tt>DigitalOut</tt>.
+     * <p>
+     *
+     * @param b true if to be set, false otherwise.
+     */
+    public void set(boolean b);
 
-}//DigitalOut
+}// DigitalOut

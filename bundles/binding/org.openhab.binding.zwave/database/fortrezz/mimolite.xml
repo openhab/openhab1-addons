@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>iTemp</Model>
-	<Label lang="en">Digital or Analog Voltage input and/or Dry Contact
-		Relay
+	<Label lang="en">Digital or Analog Voltage input and/or Dry Contact Relay
 	</Label>
 	<CommandClasses>
 		<Class>
@@ -87,8 +86,7 @@
 			<Label lang="en">Clear_Pulse_Meter_Counts</Label>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Actual value doesn't matter. Count gets reset
-					whenever this command is received</Label>
+				<Label lang="en">Actual value doesn't matter. Count gets reset whenever this command is received</Label>
 			</Item>
 		</Parameter>
 
@@ -104,8 +102,7 @@
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">SIG1 triggered/untriggered sets or clears Relay1
-				</Label>
+				<Label lang="en">SIG1 triggered/untriggered sets or clears Relay1</Label>
 			</Item>
 		</Parameter>
 
@@ -173,23 +170,19 @@
 			<Label lang="en">Trigger_Level_And_Input_Threshold</Label>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">TriggerLevel ANALOG and Triggered when input falls
-					OUTSIDE of thresholds</Label>
+				<Label lang="en">TriggerLevel ANALOG and Triggered when input falls OUTSIDE of thresholds</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">TriggerLevel ANALOG and Triggered when input falls
-					BETWEEN thresholds</Label>
+				<Label lang="en">TriggerLevel ANALOG and Triggered when input falls BETWEEN thresholds</Label>
 			</Item>
 			<Item>
 				<Value>2</Value>
-				<Label lang="en">TriggerLevel DIGITAL and Triggered when input
-					falls OUTSIDE of thresholds</Label>
+				<Label lang="en">TriggerLevel DIGITAL and Triggered when input falls OUTSIDE of thresholds</Label>
 			</Item>
 			<Item>
 				<Value>3</Value>
-				<Label lang="en">TriggerLevel DIGITAL and Triggered when input
-					falls BETWEEN thresholds (Default)</Label>
+				<Label lang="en">TriggerLevel DIGITAL and Triggered when input falls BETWEEN thresholds (Default)</Label>
 			</Item>
 		</Parameter>
 

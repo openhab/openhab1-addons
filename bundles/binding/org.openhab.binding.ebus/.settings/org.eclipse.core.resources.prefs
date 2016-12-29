@@ -1,6 +1,9 @@
 eclipse.preferences.version=1
+encoding//docs/ebus-configuration.md=UTF-8
+encoding//src/main/resources=UTF-8
+encoding//src/main/resources/_testing-configuration.json=UTF-8
+encoding//src/main/resources/_vaillant-configuration.json=UTF-8
+encoding//src/main/resources/_wolf-35-configuration.json=UTF-8
 encoding//src/main/resources/common-configuration.json=UTF-8
-encoding//src/main/resources/testing-configuration.json=UTF-8
-encoding//src/main/resources/vaillant-configuration.json=UTF-8
-encoding//src/main/resources/wolf-configuration.json=UTF-8
-encoding/readme.md=UTF-8
+encoding/README.md=UTF-8
+encoding/ebus-configuration.md=UTF-8

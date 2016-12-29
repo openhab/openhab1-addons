@@ -5,13 +5,17 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-ManifestVersion: 2
 Bundle-Name: This is the eBus binding of the open Home Aut
  omation Bus (openHAB)
-Bundle-SymbolicName: org.openhab.binding.ebus;singleton:=true
-Bundle-Version: 1.8.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-SymbolicName: org.openhab.binding.ebus
+Bundle-Version: 1.9.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: gnu.io;resolution:=optional,
+ org.apache.commons.io,
  org.apache.commons.lang,
+ org.apache.commons.lang.builder,
  org.codehaus.jackson,
+ org.codehaus.jackson.annotate,
  org.codehaus.jackson.map,
+ org.codehaus.jackson.type,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,

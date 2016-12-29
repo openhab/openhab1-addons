@@ -1,72 +1,87 @@
+/**
+ * Copyright (c) 2010-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.sonos.internal;
 
 import java.io.Serializable;
 
 /**
- * Contains the resource meta data within a browse response result 
- * "<r:resMD>..</r:resMD>".  This is used for SONOS favorites.
+ * Contains the resource meta data within a browse response result
+ * "<r:resMD>..</r:resMD>". This is used for SONOS favorites.
+ * 
  * @author Dan Cunningham
  * @since 1.8.0
  *
  */
-public class SonosResourceMetaData implements Serializable{
+public class SonosResourceMetaData implements Serializable {
 
-	private static final long serialVersionUID = 7438424501599637712L;
-	String id;
-	String parentId;
-	String title;
-	String upnpClass;
-	String desc;
-	
-	public SonosResourceMetaData(String id, String parentId, String title, String upnpClass, String desc) {
-		super();
-		this.id = id;
-		this.parentId = parentId;
-		this.title = title;
-		this.upnpClass = upnpClass;
-		this.desc = desc;
-	}
+    private static final long serialVersionUID = 7438424501599637712L;
+    String id;
+    String parentId;
+    String title;
+    String upnpClass;
+    String desc;
 
-	/**
-	 * The parent id for the resource meta data
-	 * @return
-	 */
-	public String getId() {
-		return id;
-	}
+    public SonosResourceMetaData(String id, String parentId, String title, String upnpClass, String desc) {
+        super();
+        this.id = id;
+        this.parentId = parentId;
+        this.title = title;
+        this.upnpClass = upnpClass;
+        this.desc = desc;
+    }
 
-	/**
-	 * The parent id for the resource meta data
-	 * @return
-	 */
-	public String getParentId() {
-		return parentId;
-	}
+    /**
+     * The parent id for the resource meta data
+     * 
+     * @return
+     */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * title from the resource meta data
-	 * @return
-	 */
-	public String getTitle() {
-		return title;
-	}
-	/**
-	 * The upnp class for the resource meta data.  This can be different from the
-	 * parent meta data class and should be used to match the play type over the
-	 * parent value.
-	 * @return
-	 */
-	public String getUpnpClass() {
-		return upnpClass;
-	}
-	
-	/**
-	 * The desc text for the resource meta data.  This contains the service login
-	 * id for streaming accounts (pandora, spotify, etc..)
-	 * @return
-	 */
-	public String getDesc() {
-		return desc;
-	}
+    /**
+     * The parent id for the resource meta data
+     * 
+     * @return
+     */
+    public String getParentId() {
+        return parentId;
+    }
+
+    /**
+     * title from the resource meta data
+     * 
+     * @return
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * The upnp class for the resource meta data. This can be different from the
+     * parent meta data class and should be used to match the play type over the
+     * parent value.
+     * 
+     * @return
+     */
+    public String getUpnpClass() {
+        return upnpClass;
+    }
+
+    /**
+     * The desc text for the resource meta data. This contains the service login
+     * id for streaming accounts (pandora, spotify, etc..)
+     * 
+     * @return
+     */
+    public String getDesc() {
+        return desc;
+    }
 
 }

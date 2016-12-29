@@ -16,6 +16,8 @@
 
 package net.wimpi.modbus.cmd;
 
+import java.net.InetAddress;
+
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.io.ModbusTCPTransaction;
 import net.wimpi.modbus.io.ModbusTransaction;
@@ -25,8 +27,6 @@ import net.wimpi.modbus.msg.ReadInputRegistersResponse;
 import net.wimpi.modbus.msg.WriteSingleRegisterRequest;
 import net.wimpi.modbus.net.TCPMasterConnection;
 import net.wimpi.modbus.procimg.SimpleRegister;
-
-import java.net.InetAddress;
 
 /**
  * Class that implements a simple commandline
@@ -50,96 +50,99 @@ import java.net.InetAddress;
  */
 public class AIAOTest {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    InetAddress addr = null;
-    TCPMasterConnection con = null;
-    ModbusRequest ai_req = null;
-    WriteSingleRegisterRequest ao_req = null;
+        InetAddress addr = null;
+        TCPMasterConnection con = null;
+        ModbusRequest ai_req = null;
+        WriteSingleRegisterRequest ao_req = null;
 
-    ModbusTransaction ai_trans = null;
-    ModbusTransaction ao_trans = null;
+        ModbusTransaction ai_trans = null;
+        ModbusTransaction ao_trans = null;
 
-    int ai_ref = 0;
-    int ao_ref = 0;
-    int port = Modbus.DEFAULT_PORT;
+        int ai_ref = 0;
+        int ao_ref = 0;
+        int port = Modbus.DEFAULT_PORT;
 
-    try {
-
-      //1. Setup the parameters
-      if (args.length < 3) {
-        printUsage();
-        System.exit(1);
-      } else {
         try {
-          String astr = args[0];
-          int idx = astr.indexOf(':');
-          if (idx > 0) {
-            port = Integer.parseInt(astr.substring(idx + 1));
-            astr = astr.substring(0, idx);
-          }
-          addr = InetAddress.getByName(astr);
-          ai_ref = Integer.parseInt(args[1]);
-          ao_ref = Integer.parseInt(args[2]);
+
+            // 1. Setup the parameters
+            if (args.length < 3) {
+                printUsage();
+                System.exit(1);
+            } else {
+                try {
+                    String astr = args[0];
+                    int idx = astr.indexOf(':');
+                    if (idx > 0) {
+                        port = Integer.parseInt(astr.substring(idx + 1));
+                        astr = astr.substring(0, idx);
+                    }
+                    addr = InetAddress.getByName(astr);
+                    ai_ref = Integer.parseInt(args[1]);
+                    ao_ref = Integer.parseInt(args[2]);
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    printUsage();
+                    System.exit(1);
+                }
+            }
+
+            // 2. Open the connection
+            con = new TCPMasterConnection(addr);
+            con.setPort(port);
+            con.connect();
+            if (Modbus.debug) {
+                System.out.println("Connected to " + addr.toString() + ":" + con.getPort());
+            }
+
+            // 3. Prepare the requests
+            ai_req = new ReadInputRegistersRequest(ai_ref, 1);
+            ao_req = new WriteSingleRegisterRequest();
+            ao_req.setReference(ao_ref);
+
+            ai_req.setUnitID(0);
+            ao_req.setUnitID(0);
+
+            // 4. Prepare the transactions
+            ai_trans = new ModbusTCPTransaction(con);
+            ai_trans.setRequest(ai_req);
+            ao_trans = new ModbusTCPTransaction(con);
+            ao_trans.setRequest(ao_req);
+
+            // 5. Prepare holders to update only on change
+            SimpleRegister new_out = new SimpleRegister(0);
+            ao_req.setRegister(new_out);
+            int last_out = Integer.MIN_VALUE;
+
+            // 5. Execute the transaction repeatedly
+            do {
+                ai_trans.execute();
+                int new_in = ((ReadInputRegistersResponse) ai_trans.getResponse()).getRegister(0).getValue();
+
+                // write only if differ
+                if (new_in != last_out) {
+                    new_out.setValue(new_in); // update register
+                    ao_trans.execute();
+                    last_out = new_in;
+                    if (Modbus.debug) {
+                        System.out.println("Updated Register with value from Input Register.");
+                    }
+                }
+            } while (true);
 
         } catch (Exception ex) {
-          ex.printStackTrace();
-          printUsage();
-          System.exit(1);
+            ex.printStackTrace();
+        } finally {
+            // 6. Close the connection
+            con.close();
         }
-      }
+    }// main
 
-      //2. Open the connection
-      con = new TCPMasterConnection(addr);
-      con.setPort(port);
-      con.connect();
-      if (Modbus.debug) System.out.println("Connected to " + addr.toString() + ":" + con.getPort());
+    private static void printUsage() {
+        System.out.println(
+                "java net.wimpi.modbus.cmd.AIAOTest <address{:<port>} [String]> <register a_in [int16]> <register a_out [int16]>");
+    }// printUsage
 
-      //3. Prepare the requests
-      ai_req = new ReadInputRegistersRequest(ai_ref, 1);
-      ao_req = new WriteSingleRegisterRequest();
-      ao_req.setReference(ao_ref);
-
-      ai_req.setUnitID(0);
-      ao_req.setUnitID(0);
-
-
-      //4. Prepare the transactions
-      ai_trans = new ModbusTCPTransaction(con);
-      ai_trans.setRequest(ai_req);
-      ao_trans = new ModbusTCPTransaction(con);
-      ao_trans.setRequest(ao_req);
-
-      //5. Prepare holders to update only on change
-      SimpleRegister new_out = new SimpleRegister(0);
-      ao_req.setRegister(new_out);
-      int last_out = Integer.MIN_VALUE;
-
-      //5. Execute the transaction repeatedly
-      do {
-        ai_trans.execute();
-        int new_in =
-            ((ReadInputRegistersResponse) ai_trans.getResponse()).getRegister(0).getValue();
-
-        //write only if differ
-        if (new_in != last_out) {
-          new_out.setValue(new_in); //update register
-          ao_trans.execute();
-          last_out = new_in;
-          if(Modbus.debug) System.out.println("Updated Register with value from Input Register.");
-        }
-      } while (true);
-
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    } finally {
-      //6. Close the connection
-      con.close();
-    }
-  }//main
-
-  private static void printUsage() {
-    System.out.println("java net.wimpi.modbus.cmd.AIAOTest <address{:<port>} [String]> <register a_in [int16]> <register a_out [int16]>");
-  }//printUsage
-
-}//class AIAOTest
+}// class AIAOTest

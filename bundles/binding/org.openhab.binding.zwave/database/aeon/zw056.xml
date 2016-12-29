@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZW056</Model>
+    <Label lang="en">Doorbell</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x98</id>             <!-- SECURITY -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Repetitions of ringtone</Label>
+            <Type>short</Type>
+            <Default>2</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">Default ringtone</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>6</Index>
+            <Label lang="en">Ringtone to play</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Stop</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>7</Index>
+            <Label lang="en">Send Basic Set on open/close event</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Ignore</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Play</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Stop</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Pause</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Next</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Previous</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>8</Index>
+            <Label lang="en">Ringtone volume</Label>
+            <Type>short</Type>
+            <Default>10</Default>
+            <Minimum>0</Minimum>
+            <Maximum>10</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>10</Index>
+            <Label lang="en">Define button- and button+ action</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>11</Index>
+            <Label lang="en">Define long press button- and button+</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>42</Index>
+            <Label lang="en">Get wireless button battery status</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>80</Index>
+            <Label lang="en">Enable Notifications</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>10</Value>
+                <Label lang="en">Define buton- and button+ functions</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>81</Index>
+            <Label lang="en">Enable/disable battery group notification</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>241</Index>
+            <Label lang="en">Pair doorbell with button</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>252</Index>
+            <Label lang="en">Lock configuration</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>255</Index>
+            <Label lang="en">Reset</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>4</Size>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Group 1</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Forward basic set</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

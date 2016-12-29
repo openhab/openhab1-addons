@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>  <!-- COMMAND_CLASS_BASIC -->
+		<Class>
+			<id>0x25</id>
+		</Class>  <!-- COMMAND_CLASS_SWITCH_BINARY -->
+		<Class>
+			<id>0x26</id>
+		</Class>  <!-- COMMAND_CLASS_SWITCH_MULTILEVEL -->
+		<Class>
+			<id>0x27</id>
+		</Class>  <!-- COMMAND_CLASS_SWITCH_ALL -->
+		<Class>
+			<id>0x30</id>
+		</Class>  <!-- COMMAND_CLASS_SENSOR_BINARY -->
+		<Class>
+			<id>0x31</id>
+		</Class>  <!-- COMMAND_CLASS_SENSOR_MULTILEVEL -->
+		<Class>
+			<id>0x70</id>
+		</Class>  <!-- COMMAND_CLASS_CONFIGURATION -->
+		<Class>
+			<id>0x72</id>
+		</Class>  <!-- COMMAND_CLASS_MANUFACTURER_SPECIFIC -->
+		<Class>
+			<id>0x85</id>
+		</Class>  <!-- COMMAND_CLASS_ASSOCIATION -->
+		<Class>
+			<id>0x86</id>
+		</Class>  <!-- COMMAND_CLASS_VERSION -->
+		<Class>
+			<id>0xEF</id>
+		</Class>  <!-- COMMAND_CLASS_MARK -->
+	</CommandClasses>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Lifeline</Label>
+			<Help lang="en"></Help>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">On/Off Control</Label>
+			<Help lang="en">This group defines the group of Z-Wave units that the thermostat controls. Control is done with BASIC_SET commands, thus all switching units can be used as auxiliary heating controllers.
+			</Help>
+		</Group>
+	</Associations>
+</Product>

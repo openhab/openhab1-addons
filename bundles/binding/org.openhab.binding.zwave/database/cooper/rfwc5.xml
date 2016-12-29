@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>RFWC5</Model>
+	<Label lang="en">Aspire RF Wall Mount Controller 5-Scene Keypad
+	</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x00</id>
+		</Class>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x21</id>
+		</Class>
+		<Class>
+			<id>0x22</id>
+		</Class>
+		<Class>
+			<id>0x2B</id>
+		</Class>
+		<Class>
+			<id>0x2D</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x77</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+		<Class>
+			<id>0x87</id>
+		</Class>
+	</CommandClasses>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>232</Maximum>
+			<Label lang="en">Group 1</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>232</Maximum>
+			<Label lang="en">Group 2</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>232</Maximum>
+			<Label lang="en">Group 3</Label>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>232</Maximum>
+			<Label lang="en">Group 4</Label>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>232</Maximum>
+			<Label lang="en">Group 5</Label>
+		</Group>
+		<Group>
+			<Index>255</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Group 255</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>
+

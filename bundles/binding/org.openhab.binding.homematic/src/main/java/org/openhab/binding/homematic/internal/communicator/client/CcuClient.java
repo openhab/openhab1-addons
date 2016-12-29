@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -47,303 +47,304 @@ import org.slf4j.LoggerFactory;
 
 /**
  * HomematicClient implementation for a CCU including TclRega script executer.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class CcuClient extends BaseHomematicClient {
-	private static final Logger logger = LoggerFactory.getLogger(CcuClient.class);
-	private static final boolean TRACE_ENABLED = logger.isTraceEnabled();
+    private static final Logger logger = LoggerFactory.getLogger(CcuClient.class);
+    private static final boolean TRACE_ENABLED = logger.isTraceEnabled();
 
-	private Map<String, String> tclregaScripts;
-	private HttpClient httpClient;
+    private Map<String, String> tclregaScripts;
+    private HttpClient httpClient;
 
-	public CcuClient(RpcClient rpcClient) {
-		super(rpcClient);
-	}
+    public CcuClient(RpcClient rpcClient) {
+        super(rpcClient);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public HmInterface getDefaultInterface() {
-		return HmInterface.RF;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public HmInterface getDefaultInterface() {
+        return HmInterface.RF;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void start() throws HomematicClientException {
-		logger.info("Starting {}", CcuClient.class.getSimpleName());
-		super.start();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void start() throws HomematicClientException {
+        logger.info("Starting {}", CcuClient.class.getSimpleName());
+        super.start();
 
-		tclregaScripts = loadTclRegaScripts();
+        tclregaScripts = loadTclRegaScripts();
 
-		httpClient = new HttpClient(new SimpleHttpConnectionManager(true));
-		HttpClientParams params = httpClient.getParams();
-		Long timeout = context.getConfig().getTimeout() * 1000L;
-		params.setConnectionManagerTimeout(timeout);
-		params.setSoTimeout(timeout.intValue());
-		params.setContentCharset("ISO-8859-1");
-	}
+        httpClient = new HttpClient(new SimpleHttpConnectionManager(true));
+        HttpClientParams params = httpClient.getParams();
+        Long timeout = context.getConfig().getTimeout() * 1000L;
+        params.setConnectionManagerTimeout(timeout);
+        params.setSoTimeout(timeout.intValue());
+        params.setContentCharset("ISO-8859-1");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void shutdown() throws HomematicClientException {
-		super.shutdown();
-		tclregaScripts = null;
-		httpClient = null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void shutdown() throws HomematicClientException {
+        super.shutdown();
+        tclregaScripts = null;
+        httpClient = null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void registerCallback() throws HomematicClientException {
-		rpcClient.init(getDefaultInterface());
-		rpcClient.init(HmInterface.WIRED);
-		rpcClient.init(HmInterface.CUXD);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void registerCallback() throws HomematicClientException {
+        rpcClient.init(getDefaultInterface());
+        rpcClient.init(HmInterface.WIRED);
+        rpcClient.init(HmInterface.CUXD);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void releaseCallback() throws HomematicClientException {
-		rpcClient.release(getDefaultInterface());
-		rpcClient.release(HmInterface.WIRED);
-		rpcClient.release(HmInterface.CUXD);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void releaseCallback() throws HomematicClientException {
+        rpcClient.release(getDefaultInterface());
+        rpcClient.release(HmInterface.WIRED);
+        rpcClient.release(HmInterface.CUXD);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void iterateAllDatapoints(HmValueItemIteratorCallback callback) throws HomematicClientException {
-		List<HmDevice> devices = sendScriptByName("getAllDevices", HmDeviceList.class).getDevices();
-		Map<String, HmRssiInfo> rssiList = rpcClient.getRssiInfo(HmInterface.RF);
-		for (HmDevice device : devices) {
-			addBatteryInfo(device);
-			boolean deviceHasRssiDatapoint = false;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void iterateAllDatapoints(HmValueItemIteratorCallback callback) throws HomematicClientException {
+        List<HmDevice> devices = sendScriptByName("getAllDevices", HmDeviceList.class).getDevices();
+        Map<String, HmRssiInfo> rssiList = rpcClient.getRssiInfo(HmInterface.RF);
+        for (HmDevice device : devices) {
+            addBatteryInfo(device);
+            boolean deviceHasRssiDatapoint = false;
 
-			for (HmChannel channel : device.getChannels()) {
-				boolean isChannelZero = "0".equals(channel.getNumber());
-				for (HmDatapoint dp : channel.getDatapoints()) {
-					DatapointConfig bindingConfig = new DatapointConfig(device.getAddress(), channel.getNumber(),
-							dp.getName());
-					HmRssiInfo rssiInfo = rssiList.get(bindingConfig.getAddress());
-					if (rssiInfo != null) {
-						if ("RSSI_DEVICE".equals(bindingConfig.getParameter())) {
-							dp.setValue(rssiInfo.getDevice());
-							deviceHasRssiDatapoint = true;
-						} else if ("RSSI_PEER".equals(bindingConfig.getParameter())) {
-							dp.setValue(rssiInfo.getPeer());
-							deviceHasRssiDatapoint = true;
-						}
-					}
-					callback.iterate(bindingConfig, dp);
-				}
+            for (HmChannel channel : device.getChannels()) {
+                boolean isChannelZero = "0".equals(channel.getNumber());
+                for (HmDatapoint dp : channel.getDatapoints()) {
+                    DatapointConfig bindingConfig = new DatapointConfig(device.getAddress(), channel.getNumber(),
+                            dp.getName());
+                    HmRssiInfo rssiInfo = rssiList.get(bindingConfig.getAddress());
+                    if (rssiInfo != null) {
+                        if ("RSSI_DEVICE".equals(bindingConfig.getParameter())) {
+                            dp.setValue(rssiInfo.getDevice());
+                            deviceHasRssiDatapoint = true;
+                        } else if ("RSSI_PEER".equals(bindingConfig.getParameter())) {
+                            dp.setValue(rssiInfo.getPeer());
+                            deviceHasRssiDatapoint = true;
+                        }
+                    }
+                    callback.iterate(bindingConfig, dp);
+                }
 
-				if (isChannelZero && !deviceHasRssiDatapoint) {
-					HmRssiInfo rssiInfo = rssiList.get(device.getAddress());
-					if (rssiInfo != null) {
-						logger.debug("Adding missing RSSI datapoints to device {} with address {}", device.getType(), device.getAddress());
-						addRssiDatapoint(channel, "RSSI_DEVICE", rssiInfo.getDevice(), callback);
-						addRssiDatapoint(channel, "RSSI_PEER", rssiInfo.getPeer(), callback);
-					}
-				}
-			}
-		}
-	}
+                if (isChannelZero && !deviceHasRssiDatapoint) {
+                    HmRssiInfo rssiInfo = rssiList.get(device.getAddress());
+                    if (rssiInfo != null) {
+                        logger.debug("Adding missing RSSI datapoints to device {} with address {}", device.getType(),
+                                device.getAddress());
+                        addRssiDatapoint(channel, "RSSI_DEVICE", rssiInfo.getDevice(), callback);
+                        addRssiDatapoint(channel, "RSSI_PEER", rssiInfo.getPeer(), callback);
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * Generates a missing RSSI datapoint, workaround for a CCU bug.
-	 */
-	private void addRssiDatapoint(HmChannel channel, String name, Object value, HmValueItemIteratorCallback callback) {
-		HmDatapoint dp = new HmDatapoint();
-		dp.setName(name);
-		dp.setValueType(8);
-		dp.setWriteable(false);
-		dp.setValue(value);
-		channel.addDatapoint(dp);
-		DatapointConfig bindingConfig = new DatapointConfig(channel.getDevice().getAddress(), channel.getNumber(),
-				dp.getName());
-		callback.iterate(bindingConfig, dp);
-	}
+    /**
+     * Generates a missing RSSI datapoint, workaround for a CCU bug.
+     */
+    private void addRssiDatapoint(HmChannel channel, String name, Object value, HmValueItemIteratorCallback callback) {
+        HmDatapoint dp = new HmDatapoint();
+        dp.setName(name);
+        dp.setValueType(8);
+        dp.setWriteable(false);
+        dp.setValue(value);
+        channel.addDatapoint(dp);
+        DatapointConfig bindingConfig = new DatapointConfig(channel.getDevice().getAddress(), channel.getNumber(),
+                dp.getName());
+        callback.iterate(bindingConfig, dp);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, HmRssiInfo> getRssiInfo() throws HomematicClientException {
-		return rpcClient.getRssiInfo(HmInterface.RF);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, HmRssiInfo> getRssiInfo() throws HomematicClientException {
+        return rpcClient.getRssiInfo(HmInterface.RF);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void iterateAllVariables(HmValueItemIteratorCallback callback) throws HomematicClientException {
-		List<HmVariable> variables = sendScriptByName("getAllVariables", HmVariableList.class).getVariables();
-		for (HmVariable variable : variables) {
-			VariableConfig bindingConfig = new VariableConfig(variable.getName());
-			callback.iterate(bindingConfig, variable);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void iterateAllVariables(HmValueItemIteratorCallback callback) throws HomematicClientException {
+        List<HmVariable> variables = sendScriptByName("getAllVariables", HmVariableList.class).getVariables();
+        for (HmVariable variable : variables) {
+            VariableConfig bindingConfig = new VariableConfig(variable.getName());
+            callback.iterate(bindingConfig, variable);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void executeProgram(String programName) throws HomematicClientException {
-		logger.debug("Executing program on CCU: {}", programName);
-		HmResult result = sendScriptByName("executeProgram", HmResult.class, new String[] { "program_name" },
-				new String[] { programName });
-		if (!result.isValid()) {
-			throw new HomematicClientException("Unable to start CCU program " + programName);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void executeProgram(String programName) throws HomematicClientException {
+        logger.debug("Executing program on CCU: {}", programName);
+        HmResult result = sendScriptByName("executeProgram", HmResult.class, new String[] { "program_name" },
+                new String[] { programName });
+        if (!result.isValid()) {
+            throw new HomematicClientException("Unable to start CCU program " + programName);
+        }
+    }
 
-	@Override
-	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException {
-		HmInterface hmInterface = dp.getChannel().getDevice().getHmInterface();
-		if (hmInterface == HmInterface.VIRTUALDEVICES) {
-			String groupName = HmInterface.VIRTUALDEVICES + "." + dp.getChannel().getAddress() + "." + datapointName;
-			if (dp.isIntegerValue() && value instanceof Double) {
-				value = ((Number) value).intValue();
-			}
-			String strValue = ObjectUtils.toString(value);
-			if (dp.isStringValue()) {
-				strValue = "\"" + strValue + "\"";
-			}
+    @Override
+    public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException {
+        HmInterface hmInterface = dp.getChannel().getDevice().getHmInterface();
+        if (hmInterface == HmInterface.VIRTUALDEVICES) {
+            String groupName = HmInterface.VIRTUALDEVICES + "." + dp.getChannel().getAddress() + "." + datapointName;
+            if (dp.isIntegerValue() && value instanceof Double) {
+                value = ((Number) value).intValue();
+            }
+            String strValue = ObjectUtils.toString(value);
+            if (dp.isStringValue()) {
+                strValue = "\"" + strValue + "\"";
+            }
 
-			HmResult result = sendScriptByName("setVirtualGroup", HmResult.class, new String[] { "group_name",
-					"group_state" }, new String[] { groupName, strValue });
-			if (!result.isValid()) {
-				throw new HomematicClientException("Unable to set CCU group " + groupName);
-			}
-		} else {
-			super.setDatapointValue(dp, datapointName, value);
-		}
-	}
+            HmResult result = sendScriptByName("setVirtualGroup", HmResult.class,
+                    new String[] { "group_name", "group_state" }, new String[] { groupName, strValue });
+            if (!result.isValid()) {
+                throw new HomematicClientException("Unable to set CCU group " + groupName);
+            }
+        } else {
+            super.setDatapointValue(dp, datapointName, value);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setVariable(HmValueItem hmValueItem, Object value) throws HomematicClientException {
-		String strValue = ObjectUtils.toString(value);
-		if (hmValueItem.isStringValue()) {
-			strValue = "\"" + strValue + "\"";
-		}
-		logger.debug("Sending {} with value '{}' to CCU", hmValueItem.getName(), strValue);
-		HmResult result = sendScriptByName("setVariable", HmResult.class, new String[] { "variable_name",
-				"variable_state" }, new String[] { hmValueItem.getName(), strValue });
-		if (!result.isValid()) {
-			throw new HomematicClientException("Unable to set CCU variable " + hmValueItem.getName());
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setVariable(HmValueItem hmValueItem, Object value) throws HomematicClientException {
+        String strValue = ObjectUtils.toString(value);
+        if (hmValueItem.isStringValue()) {
+            strValue = "\"" + strValue + "\"";
+        }
+        logger.debug("Sending {} with value '{}' to CCU", hmValueItem.getName(), strValue);
+        HmResult result = sendScriptByName("setVariable", HmResult.class,
+                new String[] { "variable_name", "variable_state" }, new String[] { hmValueItem.getName(), strValue });
+        if (!result.isValid()) {
+            throw new HomematicClientException("Unable to set CCU variable " + hmValueItem.getName());
+        }
+    }
 
-	/**
-	 * Sends a TclRega script to the CCU.
-	 */
-	private <T> T sendScriptByName(String scriptName, Class<T> clazz) throws HomematicClientException {
-		return sendScript(getTclRegaScript(scriptName), clazz);
-	}
+    /**
+     * Sends a TclRega script to the CCU.
+     */
+    private <T> T sendScriptByName(String scriptName, Class<T> clazz) throws HomematicClientException {
+        return sendScript(getTclRegaScript(scriptName), clazz);
+    }
 
-	/**
-	 * Sends a TclRega script with the specified variables to the CCU.
-	 */
-	private <T> T sendScriptByName(String scriptName, Class<T> clazz, String[] variableNames, String[] values)
-			throws HomematicClientException {
-		String script = getTclRegaScript(scriptName);
-		for (int i = 0; i < variableNames.length; i++) {
-			script = StringUtils.replace(script, "{" + variableNames[i] + "}", values[i]);
-		}
-		return sendScript(script, clazz);
-	}
+    /**
+     * Sends a TclRega script with the specified variables to the CCU.
+     */
+    private <T> T sendScriptByName(String scriptName, Class<T> clazz, String[] variableNames, String[] values)
+            throws HomematicClientException {
+        String script = getTclRegaScript(scriptName);
+        for (int i = 0; i < variableNames.length; i++) {
+            script = StringUtils.replace(script, "{" + variableNames[i] + "}", values[i]);
+        }
+        return sendScript(script, clazz);
+    }
 
-	private String getTclRegaScript(String scriptName) throws HomematicClientException {
-		if (!isStarted()) {
-			throw new HomematicClientException(CcuClient.class.getSimpleName() + " is not configured!");
-		}
-		return tclregaScripts.get(scriptName);
-	}
+    private String getTclRegaScript(String scriptName) throws HomematicClientException {
+        if (!isStarted()) {
+            throw new HomematicClientException(CcuClient.class.getSimpleName() + " is not configured!");
+        }
+        return tclregaScripts.get(scriptName);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isStarted() {
-		return tclregaScripts != null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isStarted() {
+        return tclregaScripts != null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean supportsVariables() {
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean supportsVariables() {
+        return true;
+    }
 
-	/**
-	 * Main method for sending a TclRega script and parsing the XML result.
-	 */
-	@SuppressWarnings("unchecked")
-	private synchronized <T> T sendScript(String script, Class<T> clazz) throws HomematicClientException {
-		PostMethod post = null;
-		try {
-			script = StringUtils.trim(script);
-			if (StringUtils.isEmpty(script)) {
-				throw new RuntimeException("Homematic TclRegaScript is empty!");
-			}
-			if (TRACE_ENABLED) {
-				logger.trace("TclRegaScript: {}", script);
-			}
+    /**
+     * Main method for sending a TclRega script and parsing the XML result.
+     */
+    @SuppressWarnings("unchecked")
+    private synchronized <T> T sendScript(String script, Class<T> clazz) throws HomematicClientException {
+        PostMethod post = null;
+        try {
+            script = StringUtils.trim(script);
+            if (StringUtils.isEmpty(script)) {
+                throw new RuntimeException("Homematic TclRegaScript is empty!");
+            }
+            if (TRACE_ENABLED) {
+                logger.trace("TclRegaScript: {}", script);
+            }
 
-			post = new PostMethod(context.getConfig().getTclRegaUrl());
-			RequestEntity re = new ByteArrayRequestEntity(script.getBytes("ISO-8859-1"));
-			post.setRequestEntity(re);
-			httpClient.executeMethod(post);
+            post = new PostMethod(context.getConfig().getTclRegaUrl());
+            RequestEntity re = new ByteArrayRequestEntity(script.getBytes("ISO-8859-1"));
+            post.setRequestEntity(re);
+            httpClient.executeMethod(post);
 
-			String result = post.getResponseBodyAsString();
-			result = StringUtils.substringBeforeLast(result, "<xml><exec>");
-			if (TRACE_ENABLED) {
-				logger.trace("Result TclRegaScript: {}", result);
-			}
+            String result = post.getResponseBodyAsString();
+            result = StringUtils.substringBeforeLast(result, "<xml><exec>");
+            if (TRACE_ENABLED) {
+                logger.trace("Result TclRegaScript: {}", result);
+            }
 
-			Unmarshaller um = JAXBContext.newInstance(clazz).createUnmarshaller();
-			um.setListener(new CommonUnmarshallerListener());
-			return (T) um.unmarshal(new StringReader(result));
-		} catch (Exception ex) {
-			throw new HomematicClientException(ex.getMessage(), ex);
-		} finally {
-			if (post != null) {
-				post.releaseConnection();
-			}
-		}
-	}
+            Unmarshaller um = JAXBContext.newInstance(clazz).createUnmarshaller();
+            um.setListener(new CommonUnmarshallerListener());
+            return (T) um.unmarshal(new StringReader(result));
+        } catch (Exception ex) {
+            throw new HomematicClientException(ex.getMessage(), ex);
+        } finally {
+            if (post != null) {
+                post.releaseConnection();
+            }
+        }
+    }
 
-	/**
-	 * Load predefined scripts from an XML file.
-	 */
-	private Map<String, String> loadTclRegaScripts() throws HomematicClientException {
-		try {
-			Unmarshaller um = JAXBContext.newInstance(TclScripts.class).createUnmarshaller();
-			InputStream stream = Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream("homematic/tclrega-scripts.xml");
-			TclScripts scripts = (TclScripts) um.unmarshal(stream);
+    /**
+     * Load predefined scripts from an XML file.
+     */
+    private Map<String, String> loadTclRegaScripts() throws HomematicClientException {
+        try {
+            Unmarshaller um = JAXBContext.newInstance(TclScripts.class).createUnmarshaller();
+            InputStream stream = Thread.currentThread().getContextClassLoader()
+                    .getResourceAsStream("homematic/tclrega-scripts.xml");
+            TclScripts scripts = (TclScripts) um.unmarshal(stream);
 
-			Map<String, String> result = new HashMap<String, String>();
-			for (TclScript script : scripts.getScripts()) {
-				result.put(script.getName(), script.getData());
-			}
-			return result;
-		} catch (JAXBException ex) {
-			throw new HomematicClientException(ex.getMessage(), ex);
-		}
-	}
+            Map<String, String> result = new HashMap<String, String>();
+            for (TclScript script : scripts.getScripts()) {
+                result.put(script.getName(), script.getData());
+            }
+            return result;
+        } catch (JAXBException ex) {
+            throw new HomematicClientException(ex.getMessage(), ex);
+        }
+    }
 }

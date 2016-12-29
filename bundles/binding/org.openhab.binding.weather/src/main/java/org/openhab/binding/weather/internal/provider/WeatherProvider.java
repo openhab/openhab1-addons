@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,20 +14,20 @@ import org.openhab.binding.weather.internal.model.Weather;
 
 /**
  * Weather provider definition.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public interface WeatherProvider {
 
-	/**
-	 * Returns the weather data for the specified location config.
-	 */
-	public Weather getWeather(LocationConfig locationConfig) throws Exception;
+    /**
+     * Returns the weather data for the specified location config.
+     */
+    public Weather getWeather(LocationConfig locationConfig) throws Exception;
 
-	/**
-	 * Returns the provider name.
-	 */
-	public ProviderName getProviderName();
+    /**
+     * Returns the provider name.
+     */
+    public ProviderName getProviderName();
 
 }

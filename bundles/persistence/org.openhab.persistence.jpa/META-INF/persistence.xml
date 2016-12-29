@@ -11,7 +11,7 @@
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="javax.persistence.jdbc.user" value=""/>
             <property name="javax.persistence.jdbc.password" value=""/>
-            <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema"/>
+            <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(schemaAction='add')"/>
             <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
         </properties>
     </persistence-unit>
@@ -27,7 +27,7 @@
             <property name="javax.persistence.jdbc.user" value="APP"/>
             <property name="javax.persistence.jdbc.password" value="APP"/>
             <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='drop,add')"/>
-            <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
+            <property name="openjpa.Log" value="DefaultLevel=TRACE, Tool=INFO"/>
         </properties>
     </persistence-unit>
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,6 +7,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.rfxcom.internal.messages;
+
+import static org.openhab.binding.rfxcom.internal.messages.RFXComBaseMessage.PacketType.LIGHTING2;
+import static org.openhab.binding.rfxcom.internal.messages.RFXComLighting2Message.Commands.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -34,364 +37,354 @@ import org.openhab.core.types.UnDefType;
 
 /**
  * RFXCOM data class for lighting2 message.
- * 
+ *
  * @author Pauli Anttila
  * @since 1.2.0
  */
 public class RFXComLighting2Message extends RFXComBaseMessage {
 
-	public enum SubType {
-		AC(0),
-		HOME_EASY_EU(1),
-		ANSLUT(2),
-		
-		UNKNOWN(255);
+    public enum SubType {
+        AC(0),
+        HOME_EASY_EU(1),
+        ANSLUT(2),
+        KAMBROOK_RF3672(3),
 
-		private final int subType;
+        UNKNOWN(255);
 
-		SubType(int subType) {
-			this.subType = subType;
-		}
+        private final int subType;
 
-		SubType(byte subType) {
-			this.subType = subType;
-		}
+        SubType(int subType) {
+            this.subType = subType;
+        }
 
-		public byte toByte() {
-			return (byte) subType;
-		}
-	}
+        SubType(byte subType) {
+            this.subType = subType;
+        }
 
-	public enum Commands {
-		OFF(0),
-		ON(1),
-		SET_LEVEL(2),
-		GROUP_OFF(3),
-		GROUP_ON(4),
-		SET_GROUP_LEVEL(5),
-		
-		UNKNOWN(255);
+        public byte toByte() {
+            return (byte) subType;
+        }
 
-		private final int command;
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
 
-		Commands(int command) {
-			this.command = command;
-		}
+            return SubType.UNKNOWN;
+        }
+    }
 
-		Commands(byte command) {
-			this.command = command;
-		}
+    public enum Commands {
+        OFF(0),
+        ON(1),
+        SET_LEVEL(2),
+        GROUP_OFF(3),
+        GROUP_ON(4),
+        SET_GROUP_LEVEL(5),
 
-		public byte toByte() {
-			return (byte) command;
-		}
-	}
+        UNKNOWN(255);
 
-	private final static List<RFXComValueSelector> supportedValueSelectors = Arrays
-			.asList(RFXComValueSelector.RAW_DATA,
-					RFXComValueSelector.SIGNAL_LEVEL,
-					RFXComValueSelector.COMMAND,
-					RFXComValueSelector.DIMMING_LEVEL,
-					RFXComValueSelector.CONTACT);
+        private final int command;
 
-	public SubType subType = SubType.AC;
-	public int sensorId = 0;
-	public byte unitcode = 0;
-	public Commands command = Commands.OFF;
-	public byte dimmingLevel = 0;
-	public byte signalLevel = 0;
+        Commands(int command) {
+            this.command = command;
+        }
 
-	public RFXComLighting2Message() {
-		packetType = PacketType.LIGHTING2;
-	}
+        Commands(byte command) {
+            this.command = command;
+        }
 
-	public RFXComLighting2Message(byte[] data) {
-		encodeMessage(data);
-	}
+        public byte toByte() {
+            return (byte) command;
+        }
 
-	@Override
-	public String toString() {
-		String str = "";
+        public static Commands fromByte(int input) {
+            for (Commands c : Commands.values()) {
+                if (c.command == input) {
+                    return c;
+                }
+            }
 
-		str += super.toString();
-		str += "\n - Sub type = " + subType;
-		str += "\n - Id = " + sensorId;
-		str += "\n - Unit code = " + unitcode;
-		str += "\n - Command = " + command;
-		str += "\n - Dim level = " + dimmingLevel;
-		str += "\n - Signal level = " + signalLevel;
+            return Commands.UNKNOWN;
+        }
+    }
 
-		return str;
-	}
+    private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
+            RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.COMMAND, RFXComValueSelector.DIMMING_LEVEL,
+            RFXComValueSelector.CONTACT);
 
-	@Override
-	public void encodeMessage(byte[] data) {
+    public SubType subType = SubType.UNKNOWN;
+    public int sensorId = 0;
+    public byte unitcode = 0;
+    public Commands command = Commands.UNKNOWN;
+    public byte dimmingLevel = 0;
+    public byte signalLevel = 0;
 
-		super.encodeMessage(data);
+    public RFXComLighting2Message() {
+        packetType = LIGHTING2;
+    }
 
-		try {
-			subType = SubType.values()[super.subType];
-		} catch (Exception e) {
-			subType = SubType.UNKNOWN;
-		}
-		
-		sensorId = (data[4] & 0xFF) << 24 | (data[5] & 0xFF) << 16
-				| (data[6] & 0xFF) << 8 | (data[7] & 0xFF);
-		
-		try {
-			command = Commands.values()[data[9]];
-		} catch (Exception e) {
-			command = Commands.UNKNOWN;
-		}
-		if ((command == Commands.GROUP_ON) || (command == Commands.GROUP_OFF)) {
-			unitcode = 0;
-		} else {
-			unitcode = data[8];
-		}
+    public RFXComLighting2Message(byte[] data) {
+        encodeMessage(data);
+    }
 
-		dimmingLevel = data[10];
-		signalLevel = (byte) ((data[11] & 0xF0) >> 4);
-	}
+    @Override
+    public String toString() {
+        String str = "";
 
-	@Override
-	public byte[] decodeMessage() {
+        str += super.toString();
+        str += "\n - Sub type = " + subType;
+        str += "\n - Id = " + sensorId;
+        str += "\n - Unit code = " + unitcode;
+        str += "\n - Command = " + command;
+        str += "\n - Dim level = " + dimmingLevel;
+        str += "\n - Signal level = " + signalLevel;
 
-		byte[] data = new byte[12];
+        return str;
+    }
 
-		data[0] = 0x0B;
-		data[1] = RFXComBaseMessage.PacketType.LIGHTING2.toByte();
-		data[2] = subType.toByte();
-		data[3] = seqNbr;
-		data[4] = (byte) ((sensorId >> 24) & 0xFF);
-		data[5] = (byte) ((sensorId >> 16) & 0xFF);
-		data[6] = (byte) ((sensorId >> 8) & 0xFF);
-		data[7] = (byte) (sensorId & 0xFF);
+    @Override
+    public void encodeMessage(byte[] data) {
 
-		data[8] = unitcode;
-		data[9] = command.toByte();
-		data[10] = dimmingLevel;
-		data[11] = (byte) ((signalLevel & 0x0F) << 4);
+        super.encodeMessage(data);
 
-		return data;
-	}
-	
-	@Override
-	public String generateDeviceId() {
-		 return sensorId + "." + unitcode;
-	}
-	
+        subType = SubType.fromByte(super.subType);
+        sensorId = (data[4] & 0xFF) << 24 | (data[5] & 0xFF) << 16 | (data[6] & 0xFF) << 8 | (data[7] & 0xFF);
+        command = Commands.fromByte(data[9]);
 
-	/**
-	 * Convert a 0-15 scale value to a percent type.
-	 * 
-	 * @param pt
-	 *            percent type to convert
-	 * @return converted value 0-15
-	 */
-	public static int getDimLevelFromPercentType(PercentType pt) {
-		return pt
-				.toBigDecimal()
-				.multiply(BigDecimal.valueOf(15))
-				.divide(PercentType.HUNDRED.toBigDecimal(), 0,
-						BigDecimal.ROUND_UP).intValue();
-	}
+        if (command == GROUP_ON || command == GROUP_OFF) {
+            unitcode = 0;
+        } else {
+            unitcode = data[8];
+        }
 
-	/**
-	 * Convert a 0-15 scale value to a percent type.
-	 * 
-	 * @param pt
-	 *            percent type to convert
-	 * @return converted value 0-15
-	 */
-	public static PercentType getPercentTypeFromDimLevel(int value) {
-		value = Math.min(value, 15);
-		
-		return new PercentType(BigDecimal
-				.valueOf(value)
-				.multiply(BigDecimal.valueOf(100))
-				.divide(BigDecimal.valueOf(15), 0,
-						BigDecimal.ROUND_UP).intValue());
-	}
+        dimmingLevel = data[10];
+        signalLevel = (byte) ((data[11] & 0xF0) >> 4);
+    }
 
-	@Override
-	public State convertToState(RFXComValueSelector valueSelector)
-			throws RFXComException {
-		
-		org.openhab.core.types.State state = UnDefType.UNDEF;
+    @Override
+    public byte[] decodeMessage() {
 
-		if (valueSelector.getItemClass() == NumberItem.class) {
+        byte[] data = new byte[12];
 
-			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+        data[0] = 0x0B;
+        data[1] = LIGHTING2.toByte();
+        data[2] = subType.toByte();
+        data[3] = seqNbr;
+        data[4] = (byte) ((sensorId >> 24) & 0xFF);
+        data[5] = (byte) ((sensorId >> 16) & 0xFF);
+        data[6] = (byte) ((sensorId >> 8) & 0xFF);
+        data[7] = (byte) (sensorId & 0xFF);
 
-				state = new DecimalType(signalLevel);
+        data[8] = unitcode;
+        data[9] = command.toByte();
+        data[10] = dimmingLevel;
+        data[11] = (byte) ((signalLevel & 0x0F) << 4);
 
-			} else {
-				throw new RFXComException("Can't convert "
-						+ valueSelector + " to NumberItem");
-			}
+        return data;
+    }
 
-		} else if (valueSelector.getItemClass() == DimmerItem.class
-				|| valueSelector.getItemClass() == RollershutterItem.class) {
+    @Override
+    public String generateDeviceId() {
+        return sensorId + "." + unitcode;
+    }
 
-			if (valueSelector == RFXComValueSelector.DIMMING_LEVEL) {
-				state = RFXComLighting2Message.getPercentTypeFromDimLevel(dimmingLevel);
+    /**
+     * Convert a 0-15 scale value to a percent type.
+     *
+     * @param pt
+     *            percent type to convert
+     * @return converted value 0-15
+     */
+    public static int getDimLevelFromPercentType(PercentType pt) {
+        return pt.toBigDecimal().multiply(BigDecimal.valueOf(15))
+                .divide(PercentType.HUNDRED.toBigDecimal(), 0, BigDecimal.ROUND_UP).intValue();
+    }
 
-			} else {
-				throw new RFXComException("Can't convert "
-						+ valueSelector + " to DimmerItem/RollershutterItem");
-			}
+    /**
+     * Convert a 0-15 scale value to a percent type.
+     *
+     * @param pt
+     *            percent type to convert
+     * @return converted value 0-15
+     */
+    public static PercentType getPercentTypeFromDimLevel(int value) {
+        value = Math.min(value, 15);
 
-		} else if (valueSelector.getItemClass() == SwitchItem.class) {
+        return new PercentType(BigDecimal.valueOf(value).multiply(BigDecimal.valueOf(100))
+                .divide(BigDecimal.valueOf(15), 0, BigDecimal.ROUND_UP).intValue());
+    }
 
-			if (valueSelector == RFXComValueSelector.COMMAND) {
+    @Override
+    public State convertToState(RFXComValueSelector valueSelector) throws RFXComException {
 
-				switch (command) {
-				case OFF:
-				case GROUP_OFF:
-					state = OnOffType.OFF;
-					break;
+        org.openhab.core.types.State state = UnDefType.UNDEF;
 
-				case ON:
-				case GROUP_ON:
-					state = OnOffType.ON;
-					break;
+        if (valueSelector.getItemClass() == NumberItem.class) {
 
-				case SET_GROUP_LEVEL:
-				case SET_LEVEL:
-				default:
-					throw new RFXComException("Can't convert "
-							+ command + " to SwitchItem");
-				}
+            if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
 
-			} else {
-				throw new RFXComException("Can't convert "
-						+ valueSelector + " to SwitchItem");
-			}
+                state = new DecimalType(signalLevel);
 
-		} else if (valueSelector.getItemClass() == ContactItem.class) {
+            } else {
+                throw new RFXComException("Can't convert " + valueSelector + " to NumberItem");
+            }
 
-			if (valueSelector == RFXComValueSelector.CONTACT) {
+        } else if (valueSelector.getItemClass() == DimmerItem.class
+                || valueSelector.getItemClass() == RollershutterItem.class) {
 
-				switch (command) {
-				case OFF:
-				case GROUP_OFF:
-					state = OpenClosedType.CLOSED;
-					break;
+            if (valueSelector == RFXComValueSelector.DIMMING_LEVEL) {
+                state = RFXComLighting2Message.getPercentTypeFromDimLevel(dimmingLevel);
 
-				case ON:
-				case GROUP_ON:
-					state = OpenClosedType.OPEN;
-					break;
+            } else {
+                throw new RFXComException("Can't convert " + valueSelector + " to DimmerItem/RollershutterItem");
+            }
 
-				case SET_GROUP_LEVEL:
-				case SET_LEVEL:
-				default:
-					throw new RFXComException("Can't convert "
-							+ command + " to ContactItem");
-				}
+        } else if (valueSelector.getItemClass() == SwitchItem.class) {
 
-			} else {
-				throw new RFXComException("Can't convert "
-						+ valueSelector + " to ContactItem");
-			}
+            if (valueSelector == RFXComValueSelector.COMMAND) {
 
-		} else if (valueSelector.getItemClass() == StringItem.class) {
+                switch (command) {
+                    case OFF:
+                    case GROUP_OFF:
+                        state = OnOffType.OFF;
+                        break;
 
-			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+                    case ON:
+                    case GROUP_ON:
+                        state = OnOffType.ON;
+                        break;
 
-				state = new StringType(
-						DatatypeConverter.printHexBinary(rawMessage));
+                    case SET_GROUP_LEVEL:
+                    case SET_LEVEL:
+                    default:
+                        throw new RFXComException("Can't convert " + command + " to SwitchItem");
+                }
 
-			} else {
-				throw new RFXComException("Can't convert "
-						+ valueSelector + " to StringItem");
-			}
+            } else {
+                throw new RFXComException("Can't convert " + valueSelector + " to SwitchItem");
+            }
 
-		} else {
+        } else if (valueSelector.getItemClass() == ContactItem.class) {
 
-			throw new RFXComException("Can't convert " + valueSelector
-					+ " to " + valueSelector.getItemClass());
+            if (valueSelector == RFXComValueSelector.CONTACT) {
 
-		}
+                switch (command) {
+                    case OFF:
+                    case GROUP_OFF:
+                        state = OpenClosedType.CLOSED;
+                        break;
 
-		return state;
-	}
+                    case ON:
+                    case GROUP_ON:
+                        state = OpenClosedType.OPEN;
+                        break;
 
-	@Override
-	public void convertFromState(RFXComValueSelector valueSelector, String id,
-			Object subType, Type type, byte seqNumber) throws RFXComException {
-		
-		boolean group = false;
-		this.subType = ((SubType) subType);
-		seqNbr = seqNumber;
-		String[] ids = id.split("\\.");
-		sensorId = Integer.parseInt(ids[0]);
+                    case SET_GROUP_LEVEL:
+                    case SET_LEVEL:
+                    default:
+                        throw new RFXComException("Can't convert " + command + " to ContactItem");
+                }
 
-		// Get unitcode, 0 means group
-		unitcode = Byte.parseByte(ids[1]);
-		if (unitcode == 0)
-		{
-			unitcode = 1;
-			group = true;
-		}
+            } else {
+                throw new RFXComException("Can't convert " + valueSelector + " to ContactItem");
+            }
 
-		switch (valueSelector) {
-		case COMMAND:
-			if (type instanceof OnOffType) {
-				if (group) {
-					command = (type == OnOffType.ON ? Commands.GROUP_ON : Commands.GROUP_OFF);
-				} else {
-					command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);
-				}
-				dimmingLevel = 0;
-			} else {
-				throw new RFXComException("Can't convert " + type + " to Command");
-			}
-			break;
+        } else if (valueSelector.getItemClass() == StringItem.class) {
 
-		case DIMMING_LEVEL:
-			if (type instanceof OnOffType) {
-				command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);
-				dimmingLevel = 0;
-			} else if (type instanceof PercentType) {
-				command = Commands.SET_LEVEL;
-				dimmingLevel = (byte) getDimLevelFromPercentType((PercentType) type);
-				
-				if (dimmingLevel == 0) {
-					command = Commands.OFF;
-				}
-				
-			} else if (type instanceof IncreaseDecreaseType) {
-				command = Commands.SET_LEVEL;
-				//Evert: I do not know how to get previous object state...
-				dimmingLevel = 5;
-				
-			} else {
-				throw new RFXComException("Can't convert " + type + " to Command");
-			}
-			break;
-			
-		default:
-			throw new RFXComException("Can't convert " + type + " to " + valueSelector);
-		
-		}
-	}
+            if (valueSelector == RFXComValueSelector.RAW_DATA) {
 
-	@Override
-	public Object convertSubType(String subType) throws RFXComException {
+                state = new StringType(DatatypeConverter.printHexBinary(rawMessage));
 
-		for (SubType s : SubType.values()) {
-			if (s.toString().equals(subType)) {
-				return s;
-			}
-		}
-		
-		throw new RFXComException("Unknown sub type " + subType);
-	}
-	
-	@Override
-	public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
-		return supportedValueSelectors;
-	}
+            } else {
+                throw new RFXComException("Can't convert " + valueSelector + " to StringItem");
+            }
+
+        } else {
+
+            throw new RFXComException("Can't convert " + valueSelector + " to " + valueSelector.getItemClass());
+
+        }
+
+        return state;
+    }
+
+    @Override
+    public void convertFromState(RFXComValueSelector valueSelector, String id, Object subType, Type type,
+            byte seqNumber) throws RFXComException {
+
+        boolean group = false;
+        this.subType = ((SubType) subType);
+        seqNbr = seqNumber;
+        String[] ids = id.split("\\.");
+        sensorId = Integer.parseInt(ids[0]);
+
+        // Get unitcode, 0 means group
+        unitcode = Byte.parseByte(ids[1]);
+        if (unitcode == 0) {
+            unitcode = 1;
+            group = true;
+        }
+
+        switch (valueSelector) {
+            case COMMAND:
+                if (type instanceof OnOffType) {
+                    if (group) {
+                        command = (type == OnOffType.ON ? GROUP_ON : GROUP_OFF);
+                    } else {
+                        command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);
+                    }
+                    dimmingLevel = 0;
+                } else {
+                    throw new RFXComException("Can't convert " + type + " to Command");
+                }
+                break;
+
+            case DIMMING_LEVEL:
+                if (type instanceof OnOffType) {
+                    command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);
+                    dimmingLevel = 0;
+                } else if (type instanceof PercentType) {
+                    command = Commands.SET_LEVEL;
+                    dimmingLevel = (byte) getDimLevelFromPercentType((PercentType) type);
+
+                    if (dimmingLevel == 0) {
+                        command = Commands.OFF;
+                    }
+
+                } else if (type instanceof IncreaseDecreaseType) {
+                    command = Commands.SET_LEVEL;
+                    // Evert: I do not know how to get previous object state...
+                    dimmingLevel = 5;
+
+                } else {
+                    throw new RFXComException("Can't convert " + type + " to Command");
+                }
+                break;
+
+            default:
+                throw new RFXComException("Can't convert " + type + " to " + valueSelector);
+
+        }
+    }
+
+    @Override
+    public Object convertSubType(String subType) throws RFXComException {
+
+        for (SubType s : SubType.values()) {
+            if (s.toString().equals(subType)) {
+                return s;
+            }
+        }
+
+        throw new RFXComException("Unknown sub type " + subType);
+    }
+
+    @Override
+    public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
+        return supportedValueSelectors;
+    }
 
 }

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<templates><template id="commandevent" autoinsert="true" context="org.openhab.model.rule.Rules.CommandEventTrigger" deleted="false" description="Template for a command trigger event" enabled="true" name="Command Event Trigger">Item ${item} received command ${command}</template><template id="rule" autoinsert="true" context="org.openhab.model.rule.Rules.Rule" deleted="false" description="Template for a new rule" enabled="true" name="Rule">rule ${name}
-when
-	${variable:cursor}
-then
-	${variable:cursor}
-end
-</template><template id="changeevent" autoinsert="true" context="org.openhab.model.rule.Rules.ChangedEventTrigger" deleted="false" description="Template for state change triggers" enabled="true" name="State Changed Trigger">Item ${item} changed</template><template id="updateevent" autoinsert="true" context="org.openhab.model.rule.Rules.UpdateEventTrigger" deleted="false" description="Template for state update event triggers" enabled="true" name="State Updated Trigger">Item ${item} received update ${state}</template></templates>

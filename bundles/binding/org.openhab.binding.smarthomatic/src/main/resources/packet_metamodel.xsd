@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="data_types.xsd"/>
+	<xs:element name="Packet">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Header">
+					<xs:complexType>
+						<xs:group ref="DataValue" maxOccurs="unbounded"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="HeaderExtension" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="MessageType" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>All MessageTypes this HeaderExtension is valid for. Make sure only one HeaderExtension is valid for one MessageType!</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:int"/>
+								</xs:simpleType>
+							</xs:element>
+							<xs:group ref="DataValue" maxOccurs="unbounded"/>
+							<xs:element name="ContainsMessageData" type="xs:boolean"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="MessageGroup" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Name" type="xs:string"/>
+							<xs:element name="Description" type="xs:string"/>
+							<xs:element name="MessageGroupID">
+								<xs:simpleType>
+									<xs:restriction base="xs:unsignedInt">
+										<xs:minInclusive value="0"/>
+										<xs:maxInclusive value="127"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="Message" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Name" type="xs:string"/>
+										<xs:element name="Description" type="xs:string"/>
+										<xs:element name="MessageID">
+											<xs:simpleType>
+												<xs:restriction base="xs:unsignedInt">
+													<xs:minInclusive value="0"/>
+													<xs:maxInclusive value="15"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="MessageType" maxOccurs="unbounded">
+											<xs:annotation>
+												<xs:documentation>All MessageTypes this Message is valid for.</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:int"/>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="Validity">
+											<xs:annotation>
+												<xs:documentation>Tells if the message definition is only for testing (and could change in its format definition), is released for production use (and should not be changed anymore) or deprecated (and may be removed some day).</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:pattern value="test|released|deprecated"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:group ref="DataValue" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

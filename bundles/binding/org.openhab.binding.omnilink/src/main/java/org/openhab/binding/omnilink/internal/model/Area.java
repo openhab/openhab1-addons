@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,109 +22,107 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.AreaProperties;
 
 /**
  * Areas represent the basic security system in a Omni System
- * 
+ *
  * @author Dan Cunningham
  * @since 1.5.0
  */
 public class Area extends OmnilinkDevice {
-	private static final Logger logger = LoggerFactory.getLogger(Area.class);
+    private static final Logger logger = LoggerFactory.getLogger(Area.class);
 
-	public static final String[] omniText = { "Off", "Day", "Night", "Away",
-			"Vacation", "Day-Instant", "Night-Delayed" };
-	public static final String[] luminaText = { "Off", "Home", "Sleep", "Away",
-			"Vacation", "Party", "Special" };
-	public static final String[] alarms = { "Burglary", "Fire", "Gas",
-			"Auxiliary", "Freeze", "Water", "Duress", "Temperature" };
-	private AreaProperties properties;
-	private boolean omni;
+    public static final String[] omniText = { "Off", "Day", "Night", "Away", "Vacation", "Day-Instant",
+            "Night-Delayed" };
+    public static final String[] luminaText = { "Off", "Home", "Sleep", "Away", "Vacation", "Party", "Special" };
+    public static final String[] alarms = { "Burglary", "Fire", "Gas", "Auxiliary", "Freeze", "Water", "Duress",
+            "Temperature" };
+    private AreaProperties properties;
+    private boolean omni;
 
-	public Area(AreaProperties properties, boolean omni) {
-		this.properties = properties;
-		this.omni = omni;
-	}
+    public Area(AreaProperties properties, boolean omni) {
+        this.properties = properties;
+        this.omni = omni;
+    }
 
-	@Override
-	public AreaProperties getProperties() {
-		return properties;
-	}
+    @Override
+    public AreaProperties getProperties() {
+        return properties;
+    }
 
-	public void setProperties(AreaProperties properties) {
-		this.properties = properties;
-	}
+    public void setProperties(AreaProperties properties) {
+        this.properties = properties;
+    }
 
-	/**
-	 * Returns true if the system is a omni type
-	 * @return
-	 */
-	public boolean isOmni() {
-		return omni;
-	}
+    /**
+     * Returns true if the system is a omni type
+     * 
+     * @return
+     */
+    public boolean isOmni() {
+        return omni;
+    }
 
-	/**
-	 * Set if this system is a omni type
-	 * @param omni
-	 */
-	public void setOmni(boolean omni) {
-		this.omni = omni;
-	}
+    /**
+     * Set if this system is a omni type
+     * 
+     * @param omni
+     */
+    public void setOmni(boolean omni) {
+        this.omni = omni;
+    }
 
-	@Override
-	public void updateItem(Item item, OmniLinkBindingConfig config,
-			EventPublisher publisher) {
-		int setting = 0;
-		String str = "";
-		switch (config.getObjectType()) {
-		case AREA_ENTRY_TIMER:
-			setting = properties.getEntryTimer();
-			break;
-		case AREA_EXIT_TIMER:
-			setting = properties.getExitTimer();
-			break;
-		case AREA_STATUS_ENTRY_DELAY:
-			setting = properties.getEntryDelay();
-			break;
-		case AREA_STATUS_EXIT_DELAY:
-			setting = properties.getExitDelay();
-			break;
-		case AREA_STATUS_MODE:
-			setting = properties.getMode();
-			str = omni ? (setting < omniText.length ? omniText[setting]
-					: "Unknown")
-					: (setting < luminaText.length ? luminaText[setting]
-							: "Unknown");
-			break;
-		case AREA_STATUS_ALARM:
-			setting = properties.getAlarms();
+    @Override
+    public void updateItem(Item item, OmniLinkBindingConfig config, EventPublisher publisher) {
+        int setting = 0;
+        String str = "";
+        switch (config.getObjectType()) {
+            case AREA_ENTRY_TIMER:
+                setting = properties.getEntryTimer();
+                break;
+            case AREA_EXIT_TIMER:
+                setting = properties.getExitTimer();
+                break;
+            case AREA_STATUS_ENTRY_DELAY:
+                setting = properties.getEntryDelay();
+                break;
+            case AREA_STATUS_EXIT_DELAY:
+                setting = properties.getExitDelay();
+                break;
+            case AREA_STATUS_MODE:
+                setting = properties.getMode();
+                str = omni ? (setting < omniText.length ? omniText[setting] : "Unknown")
+                        : (setting < luminaText.length ? luminaText[setting] : "Unknown");
+                break;
+            case AREA_STATUS_ALARM:
+                setting = properties.getAlarms();
 
-			for (int i = 0; i < alarms.length; i++) {
-				if(((setting >> i) & 1) > 0){
-					if (str.length() > 0)
-						str += " | ";
-					str += alarms[i];
-				}
-			}
-			
-			break;
-		default:
-			break;
-		}
-		logger.debug("updating item {} for type {} to  {}", item.getName(),
-				config.getObjectType(), setting);
-		if (item instanceof NumberItem) {
-			publisher.postUpdate(item.getName(), new DecimalType(setting));
-		} else if (item instanceof StringItem) {
-			publisher.postUpdate(item.getName(), new StringType(str));
-		}
-	}
+                for (int i = 0; i < alarms.length; i++) {
+                    if (((setting >> i) & 1) > 0) {
+                        if (str.length() > 0) {
+                            str += " | ";
+                        }
+                        str += alarms[i];
+                    }
+                }
 
-	public int getModeForString(String mode) {
-		String[] modes = omni ? omniText : luminaText;
-		for (int i = 0; i < modes.length; i++) {
-			if (modes[i].equalsIgnoreCase(mode)) {
-				return i;
-			}
-		}
-		// nothing
-		return -1;
-	}
+                break;
+            default:
+                break;
+        }
+        logger.debug("updating item {} for type {} to {}", item.getName(), config.getObjectType(), setting);
+        if (item instanceof NumberItem) {
+            publisher.postUpdate(item.getName(), new DecimalType(setting));
+        } else if (item instanceof StringItem) {
+            publisher.postUpdate(item.getName(), new StringType(str));
+        }
+    }
+
+    public int getModeForString(String mode) {
+        String[] modes = omni ? omniText : luminaText;
+        for (int i = 0; i < modes.length; i++) {
+            if (modes[i].equalsIgnoreCase(mode)) {
+                return i;
+            }
+        }
+        // nothing
+        return -1;
+    }
 }

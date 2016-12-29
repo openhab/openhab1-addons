@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,13 +17,13 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface SagerCasterBindingProvider extends BindingProvider {
 
-	/**
-	 * @return all the binding config matching a given <code>commandType</code>
-	 */
-	public Iterable<String> getItemNamesBy(CommandType commandType);
-	
+    /**
+     * @return all the binding config matching a given <code>commandType</code>
+     */
+    public Iterable<String> getItemNamesBy(CommandType commandType);
+
     /**
      * @return the binding config to the given <code>itemName</code>
      */
-	public SagerCasterBindingConfig getConfig(String itemName);
+    public SagerCasterBindingConfig getConfig(String itemName);
 }

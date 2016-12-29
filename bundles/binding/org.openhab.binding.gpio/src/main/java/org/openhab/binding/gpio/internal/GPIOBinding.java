@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,6 @@ package org.openhab.binding.gpio.internal;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
@@ -31,372 +30,397 @@ import org.slf4j.LoggerFactory;
 /**
  * Binds items with GPIO pins. Manages live for backend GPIO pin
  * objects and translates GPIO events to item events.
- * 
+ *
  * @author Dancho Penev
  * @since 1.5.0
  */
-public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements GPIOPinEventHandler {
+public class GPIOBinding extends AbstractBinding<GPIOBindingProvider>implements GPIOPinEventHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(GPIOBinding.class);
-	private static final long REGISTRYLOCK_TIMEOUT = 10;
-	private static final TimeUnit REGISTRYLOCK_TIMEOUT_UNITS = TimeUnit.SECONDS;
+    private static final Logger logger = LoggerFactory.getLogger(GPIOBinding.class);
+    private static final long REGISTRYLOCK_TIMEOUT = 10;
+    private static final TimeUnit REGISTRYLOCK_TIMEOUT_UNITS = TimeUnit.SECONDS;
 
-	/** Read/write lock protecting item/pin object registry. */
-	private final ReentrantReadWriteLock registryLock = new ReentrantReadWriteLock();
+    /** Read/write lock protecting item/pin object registry. */
+    private final ReentrantReadWriteLock registryLock = new ReentrantReadWriteLock();
 
-	/** Bidirectional map for storing registered items and their
-	 * corresponding pin objects.
-	 */
-	private final BidiMap registry = new DualHashBidiMap();
+    /**
+     * Bidirectional map for storing registered items and their
+     * corresponding pin objects.
+     */
+    private final BidiMap registry = new DualHashBidiMap();
 
-	/** GPIO IO service. */
-	private volatile GPIO gpio = null;
+    /** GPIO IO service. */
+    private volatile GPIO gpio = null;
 
-	@Override
-	public void allBindingsChanged(BindingProvider provider) {
+    @Override
+    public void allBindingsChanged(BindingProvider provider) {
 
-		if (gpio != null) {
-			for (String itemName : provider.getItemNames()) {
-				changeItem((GPIOBindingProvider) provider, itemName);
-			}
-		}
+        if (gpio != null) {
+            for (String itemName : provider.getItemNames()) {
+                changeItem((GPIOBindingProvider) provider, itemName);
+            }
+        }
 
-		super.allBindingsChanged(provider);
-	}
+        super.allBindingsChanged(provider);
+    }
 
-	@Override
-	public void bindingChanged(BindingProvider provider, String itemName) {
+    @Override
+    public void bindingChanged(BindingProvider provider, String itemName) {
 
-		if (gpio != null) {
-			changeItem((GPIOBindingProvider) provider, itemName);
-		}
+        if (gpio != null) {
+            changeItem((GPIOBindingProvider) provider, itemName);
+        }
 
-		super.bindingChanged(provider, itemName);
-	}
+        super.bindingChanged(provider, itemName);
+    }
 
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
+    protected void addBindingProvider(GPIOBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
 
-		if (gpio != null) {
-			try {
-				if (registryLock.readLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
-					try {
-						GPIOPin gpioPin = (GPIOPin) registry.get(itemName);
+    protected void removeBindingProvider(GPIOBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
 
-						if (gpioPin != null) {
-							if (command == OnOffType.ON) {
-								gpioPin.setValue(GPIOPin.VALUE_HIGH);
-								logger.debug("Send command 1 to GPIO {}", gpioPin.getPinNumber());
-							} else {
-								gpioPin.setValue(GPIOPin.VALUE_LOW);
-								logger.debug("Send command 0 to GPIO {}", gpioPin.getPinNumber());
-							}
-						}
-					} catch (IOException e) {
-						logger.error("Error occured while changing pin state for item " + itemName + ", exception: " + e.getMessage());
-						return;
-					} finally {
-						registryLock.readLock().unlock();
-					}
-				} else {
-					logger.error("Pin state for item " + itemName + " hasn't been changed, timeout expired while waiting for registry lock");
-					return;
-				}
-			} catch (InterruptedException e) {
-				logger.error("Pin state for item " + itemName + " hasn't been changed, thread was interrupted while waiting for registry lock");
-				return;
-			}
-		}
-		super.internalReceiveCommand(itemName, command);
-	}
+    @Override
+    protected void internalReceiveCommand(String itemName, Command command) {
 
-	/**
-	 * Called when GPIO OSGi service is available, creates and configure
-	 * backend objects for configured items.
-	 *  
-	 * @param gpio GPIO OSGi service
-	 */
-	public void bindGPIO(GPIO gpio) {
+        if (gpio != null) {
+            try {
+                if (registryLock.readLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
+                    try {
+                        GPIOPin gpioPin = (GPIOPin) registry.get(itemName);
 
-		this.gpio = gpio;
+                        if (gpioPin != null) {
+                            if (command == OnOffType.ON) {
+                                gpioPin.setValue(GPIOPin.VALUE_HIGH);
+                                logger.debug("Send command 1 to GPIO {}", gpioPin.getPinNumber());
+                            } else {
+                                gpioPin.setValue(GPIOPin.VALUE_LOW);
+                                logger.debug("Send command 0 to GPIO {}", gpioPin.getPinNumber());
+                            }
+                        }
+                    } catch (IOException e) {
+                        logger.error("Error occured while changing pin state for item " + itemName + ", exception: "
+                                + e.getMessage());
+                        return;
+                    } finally {
+                        registryLock.readLock().unlock();
+                    }
+                } else {
+                    logger.error("Pin state for item " + itemName
+                            + " hasn't been changed, timeout expired while waiting for registry lock");
+                    return;
+                }
+            } catch (InterruptedException e) {
+                logger.error("Pin state for item " + itemName
+                        + " hasn't been changed, thread was interrupted while waiting for registry lock");
+                return;
+            }
+        }
+        super.internalReceiveCommand(itemName, command);
+    }
 
-		for (GPIOBindingProvider provider : providers) {
-			for (String itemName : provider.getItemNames()) {
-				if (provider.isItemConfigured(itemName)) {
-					newItem(provider, itemName);
-				}
-			}
-		}
-	}
+    /**
+     * Called when GPIO OSGi service is available, creates and configure
+     * backend objects for configured items.
+     *
+     * @param gpio GPIO OSGi service
+     */
+    public void bindGPIO(GPIO gpio) {
 
-	/**
-	 * Called when GPIO OSGi service is stopped, deletes previously
-	 * created backend objects for configured items.
-	 * 
-	 * @param gpio GPIO OSGi service
-	 */
-	public void unbindGPIO(GPIO gpio) {
+        this.gpio = gpio;
 
-		for (GPIOBindingProvider provider : providers) {
-			for (String itemName : provider.getItemNames()) {
-				deleteItem(itemName);
-			}
-		}
+        for (GPIOBindingProvider provider : providers) {
+            for (String itemName : provider.getItemNames()) {
+                if (provider.isItemConfigured(itemName)) {
+                    newItem(provider, itemName);
+                }
+            }
+        }
+    }
 
-		this.gpio = null;
-	}
+    /**
+     * Called when GPIO OSGi service is stopped, deletes previously
+     * created backend objects for configured items.
+     *
+     * @param gpio GPIO OSGi service
+     */
+    public void unbindGPIO(GPIO gpio) {
 
-	public void onEvent(GPIOPin pin, int value) {
+        for (GPIOBindingProvider provider : providers) {
+            for (String itemName : provider.getItemNames()) {
+                deleteItem(itemName);
+            }
+        }
 
-		try {
-			if (registryLock.readLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
-				String itemName = "";
-				try {
-					itemName = (String) registry.getKey(pin);
+        this.gpio = null;
+    }
 
-					/* The item may be deleted while waiting to acquire read lock */
-					if (itemName != null) {
-						if (value == GPIOPin.VALUE_HIGH) {
-							eventPublisher.postUpdate(itemName, OpenClosedType.OPEN);
-							logger.debug("Received command 1 from GPIO {}", pin.getPinNumber());							
-						} else {
-							eventPublisher.postUpdate(itemName, OpenClosedType.CLOSED);
-							logger.debug("Received command 0 from GPIO {}", pin.getPinNumber());	
-						}
-					}
-				} catch (IOException e) {
-					logger.error("Error occured while receiving pin state for item " + itemName + ", exception: " + e.getMessage());
-					return;
-				} finally {
-					registryLock.readLock().unlock();
-				}
-			} else {
-				logger.error("Item state hasn't been changed, timeout expired while waiting for registry lock");
-			}
-		} catch (InterruptedException e) {
-			logger.error("Item state hasn't been changed, thread was interrupted while waiting for registry lock");
-		}
-	}
+    public void onEvent(GPIOPin pin, int value) {
 
-	public void onError(GPIOPin pin, Exception exception) {
+        try {
+            if (registryLock.readLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
+                String itemName = "";
+                try {
+                    itemName = (String) registry.getKey(pin);
 
-		String itemName = null;
+                    /* The item may be deleted while waiting to acquire read lock */
+                    if (itemName != null) {
+                        if (value == GPIOPin.VALUE_HIGH) {
+                            eventPublisher.postUpdate(itemName, OpenClosedType.OPEN);
+                            logger.debug("Received command 1 from GPIO {}", pin.getPinNumber());
+                        } else {
+                            eventPublisher.postUpdate(itemName, OpenClosedType.CLOSED);
+                            logger.debug("Received command 0 from GPIO {}", pin.getPinNumber());
+                        }
+                    }
+                } catch (IOException e) {
+                    logger.error("Error occured while receiving pin state for item " + itemName + ", exception: "
+                            + e.getMessage());
+                    return;
+                } finally {
+                    registryLock.readLock().unlock();
+                }
+            } else {
+                logger.error("Item state hasn't been changed, timeout expired while waiting for registry lock");
+            }
+        } catch (InterruptedException e) {
+            logger.error("Item state hasn't been changed, thread was interrupted while waiting for registry lock");
+        }
+    }
 
-		logger.error("Error occured in pin event processing, exception: " + exception.getMessage());
+    public void onError(GPIOPin pin, Exception exception) {
 
-		try {
-			if (registryLock.readLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
-				try {
-					itemName = (String) registry.getKey(pin);
-				} finally {
-					registryLock.readLock().unlock();
-				}
-			} else {
-				logger.error("Item name can't be determined, timeout expired while waiting for registry lock");
-			}
-		} catch (InterruptedException e) {
-			logger.error("Item name can't be determined, thread was interrupted while waiting for registry lock");
-		}
+        String itemName = null;
 
-		/* The item may be deleted while waiting to acquire read lock */
-		if (itemName != null) {
-			deleteItem(itemName);
-		}
-	}
+        logger.error("Error occured in pin event processing, exception: " + exception.getMessage());
 
-	/**
-	 * Changes backend GPIO pin object for the item.
-	 * 
-	 * @param provider binding provider
-	 * @param itemName the name of the item which to process
-	 */
-	private void changeItem(GPIOBindingProvider provider, String itemName) {
+        try {
+            if (registryLock.readLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
+                try {
+                    itemName = (String) registry.getKey(pin);
+                } finally {
+                    registryLock.readLock().unlock();
+                }
+            } else {
+                logger.error("Item name can't be determined, timeout expired while waiting for registry lock");
+            }
+        } catch (InterruptedException e) {
+            logger.error("Item name can't be determined, thread was interrupted while waiting for registry lock");
+        }
 
-		if (provider.isItemConfigured(itemName)) {
+        /* The item may be deleted while waiting to acquire read lock */
+        if (itemName != null) {
+            deleteItem(itemName);
+        }
+    }
 
-			/* The item configuration was changed */
+    /**
+     * Changes backend GPIO pin object for the item.
+     *
+     * @param provider binding provider
+     * @param itemName the name of the item which to process
+     */
+    private void changeItem(GPIOBindingProvider provider, String itemName) {
 
-			try {
-				if (registryLock.writeLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
-					try {
-						GPIOPin gpioPin = (GPIOPin) registry.get(itemName);
+        if (provider.isItemConfigured(itemName)) {
 
-						/* Existing or new item */
-						if (gpioPin != null) {
+            /* The item configuration was changed */
 
-							/* Pin number change requires deletion of old and creation of new backend object */ 
-							if (gpioPin.getPinNumber() != provider.getPinNumber(itemName)) {
-								deleteItem(itemName);
-								newItem(provider, itemName);
-							} else {
-								int newActiveLow = provider.getActiveLow(itemName);
-								int currentDirection = gpioPin.getDirection();
-								int newDirection = provider.getDirection(itemName);
+            try {
+                if (registryLock.writeLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
+                    try {
+                        GPIOPin gpioPin = (GPIOPin) registry.get(itemName);
 
-								if (newActiveLow != gpioPin.getActiveLow()) {
-									gpioPin.setActiveLow(newActiveLow);
-								}
+                        /* Existing or new item */
+                        if (gpioPin != null) {
 
-								if (newDirection != currentDirection) {
-									if (currentDirection == GPIOPin.DIRECTION_IN) {
-										/* Tracking interrupts on output pins is meaningless */
-										gpioPin.removeEventHandler(this);
-									}
-									gpioPin.setDirection(newDirection);
-									if (newDirection == GPIOPin.DIRECTION_IN) {
-										gpioPin.setEdgeDetection(GPIOPin.EDGEDETECTION_BOTH);
-										gpioPin.addEventHandler(this);
-									}
-								}
+                            /* Pin number change requires deletion of old and creation of new backend object */
+                            if (gpioPin.getPinNumber() != provider.getPinNumber(itemName)) {
+                                deleteItem(itemName);
+                                newItem(provider, itemName);
+                            } else {
+                                int newActiveLow = provider.getActiveLow(itemName);
+                                int currentDirection = gpioPin.getDirection();
+                                int newDirection = provider.getDirection(itemName);
 
-								/* Debouncing is valid only for input pins */
-								if (newDirection == GPIOPin.DIRECTION_IN) {
-									long currentDebounceInterval = gpioPin.getDebounceInterval();
-									long defaultDebounceInterval = gpio.getDefaultDebounceInterval();
-									long newDebounceInterval = provider.getDebounceInterval(itemName);
+                                if (newActiveLow != gpioPin.getActiveLow()) {
+                                    gpioPin.setActiveLow(newActiveLow);
+                                }
 
-									/* If debounceInterval isn't configured its value is GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED */
-									if (newDebounceInterval != GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED) {
-										if (newDebounceInterval != currentDebounceInterval) {
-											gpioPin.setDebounceInterval(newDebounceInterval);
-										}
-									} else {
-										/* Revert back to default if was set before and after then deleted */
-										if (currentDebounceInterval != defaultDebounceInterval) {
-											gpioPin.setDebounceInterval(defaultDebounceInterval);
-										}
-									}									
-								}
-							}
-						} else {
-							newItem(provider, itemName);
-						}
-					} catch (Exception e) {
-						logger.error("Error occured while changing backend object for item " + itemName + ", exception: " + e.getMessage());
-					} finally {
-						registryLock.writeLock().unlock();
-					}
-				} else {
-					logger.error("Item " + itemName + " hasn't been changed, timeout expired while waiting for registry lock");
-				}
-			} catch (InterruptedException e) {
-				logger.error("Item " + itemName + " hasn't been changed, thread was interrupted while waiting for registry lock");
-			}
-		} else {
+                                if (newDirection != currentDirection) {
+                                    if (currentDirection == GPIOPin.DIRECTION_IN) {
+                                        /* Tracking interrupts on output pins is meaningless */
+                                        gpioPin.removeEventHandler(this);
+                                    }
+                                    gpioPin.setDirection(newDirection);
+                                    if (newDirection == GPIOPin.DIRECTION_IN) {
+                                        gpioPin.setEdgeDetection(GPIOPin.EDGEDETECTION_BOTH);
+                                        gpioPin.addEventHandler(this);
+                                    }
+                                }
 
-			/* The item was deleted from configuration file or system is shut down */
-			deleteItem(itemName);
-		}
-	}
+                                /* Debouncing is valid only for input pins */
+                                if (newDirection == GPIOPin.DIRECTION_IN) {
+                                    long currentDebounceInterval = gpioPin.getDebounceInterval();
+                                    long defaultDebounceInterval = gpio.getDefaultDebounceInterval();
+                                    long newDebounceInterval = provider.getDebounceInterval(itemName);
 
-	/**
-	 * Setup new backend GPIO pin object and relate it with the item.
-	 * 
-	 * @param provider binding provider
-	 * @param itemName the name of the item which to process
-	 */
-	private void newItem(GPIOBindingProvider provider, String itemName) {
+                                    /*
+                                     * If debounceInterval isn't configured its value is
+                                     * GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED
+                                     */
+                                    if (newDebounceInterval != GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED) {
+                                        if (newDebounceInterval != currentDebounceInterval) {
+                                            gpioPin.setDebounceInterval(newDebounceInterval);
+                                        }
+                                    } else {
+                                        /* Revert back to default if was set before and after then deleted */
+                                        if (currentDebounceInterval != defaultDebounceInterval) {
+                                            gpioPin.setDebounceInterval(defaultDebounceInterval);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            newItem(provider, itemName);
+                        }
+                    } catch (Exception e) {
+                        logger.error("Error occured while changing backend object for item " + itemName
+                                + ", exception: " + e.getMessage());
+                    } finally {
+                        registryLock.writeLock().unlock();
+                    }
+                } else {
+                    logger.error("Item " + itemName
+                            + " hasn't been changed, timeout expired while waiting for registry lock");
+                }
+            } catch (InterruptedException e) {
+                logger.error("Item " + itemName
+                        + " hasn't been changed, thread was interrupted while waiting for registry lock");
+            }
+        } else {
 
-		try {
-			int direction;
+            /* The item was deleted from configuration file or system is shut down */
+            deleteItem(itemName);
+        }
+    }
 
-			GPIOPin gpioPin = gpio.reservePin(provider.getPinNumber(itemName));
+    /**
+     * Setup new backend GPIO pin object and relate it with the item.
+     *
+     * @param provider binding provider
+     * @param itemName the name of the item which to process
+     */
+    private void newItem(GPIOBindingProvider provider, String itemName) {
 
-			gpioPin.setActiveLow(provider.getActiveLow(itemName));
+        try {
+            int direction;
 
-			direction = provider.getDirection(itemName);
-			gpioPin.setDirection(direction);
+            GPIOPin gpioPin = gpio.reservePin(provider.getPinNumber(itemName), provider.getPinForce(itemName));
 
-			/* Edge detection and debouncing are valid only for input pins */
-			if (direction == GPIOPin.DIRECTION_IN) {
-				long debounceInterval = provider.getDebounceInterval(itemName);
+            gpioPin.setActiveLow(provider.getActiveLow(itemName));
 
-				gpioPin.setEdgeDetection(GPIOPin.EDGEDETECTION_BOTH);
+            direction = provider.getDirection(itemName);
+            gpioPin.setDirection(direction);
 
-				/* If debounceInterval isn't configured its value is GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED */
-				if (debounceInterval != GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED) {
-					gpioPin.setDebounceInterval(debounceInterval);
-				}
-			}
+            /* Edge detection and debouncing are valid only for input pins */
+            if (direction == GPIOPin.DIRECTION_IN) {
+                long debounceInterval = provider.getDebounceInterval(itemName);
 
-			/* Register the pin */
-			try {
-				if (registryLock.writeLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
-					try {
-						registry.put(itemName, gpioPin);
-					} finally {
-						registryLock.writeLock().unlock();
-					}
-				} else {
-					logger.error("Item " + itemName + " hasn't been inserted into the registry, timeout expired while waiting for registry lock");
-					return;
-				}
-			} catch (InterruptedException e) {
-				logger.error("Item " + itemName + " hasn't been inserted into the registry, thread was interrupted while waiting for registry lock");
-				return;
-			}
+                gpioPin.setEdgeDetection(GPIOPin.EDGEDETECTION_BOTH);
 
-			/* Set initial item state */
-			if (direction == GPIOPin.DIRECTION_IN) {
+                /* If debounceInterval isn't configured its value is GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED */
+                if (debounceInterval != GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED) {
+                    gpioPin.setDebounceInterval(debounceInterval);
+                }
+            }
 
-				/* Item type 'Contact' */
-				if (gpioPin.getValue() == GPIOPin.VALUE_HIGH) {
-					eventPublisher.postUpdate(itemName, OpenClosedType.OPEN);
-				} else {
-					eventPublisher.postUpdate(itemName, OpenClosedType.CLOSED);
-				}
-			} else {
+            /* Register the pin */
+            try {
+                if (registryLock.writeLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
+                    try {
+                        registry.put(itemName, gpioPin);
+                    } finally {
+                        registryLock.writeLock().unlock();
+                    }
+                } else {
+                    logger.error("Item " + itemName
+                            + " hasn't been inserted into the registry, timeout expired while waiting for registry lock");
+                    return;
+                }
+            } catch (InterruptedException e) {
+                logger.error("Item " + itemName
+                        + " hasn't been inserted into the registry, thread was interrupted while waiting for registry lock");
+                return;
+            }
 
-				/* Item type 'Switch' */
-				if (gpioPin.getValue() == GPIOPin.VALUE_HIGH) {
-					eventPublisher.postUpdate(itemName, OnOffType.ON);
-				} else {
-					eventPublisher.postUpdate(itemName, OnOffType.OFF);
-				}
-			}
+            /* Set initial item state */
+            if (direction == GPIOPin.DIRECTION_IN) {
 
-			/* The item is of type 'Contact', register for state change notifications */
-			if (direction == GPIOPin.DIRECTION_IN) {
-				gpioPin.addEventHandler(this);
-			}
-		} catch (Exception e) {
-			logger.error("Error occured while creating backend object for item " +itemName + ", exception: "+ e.getMessage());
-		}
-	}
+                /* Item type 'Contact' */
+                if (gpioPin.getValue() == GPIOPin.VALUE_HIGH) {
+                    eventPublisher.postUpdate(itemName, OpenClosedType.OPEN);
+                } else {
+                    eventPublisher.postUpdate(itemName, OpenClosedType.CLOSED);
+                }
+            } else {
 
-	/**
-	 * Destroys backend GPIO pin object and clear relationship with the item.
-	 * 
-	 * @param itemName the name of the item which to process
-	 */
-	private void deleteItem(String itemName) {
+                /* Item type 'Switch' */
+                if (gpioPin.getValue() == GPIOPin.VALUE_HIGH) {
+                    eventPublisher.postUpdate(itemName, OnOffType.ON);
+                } else {
+                    eventPublisher.postUpdate(itemName, OnOffType.OFF);
+                }
+            }
 
-		try {
-			if (registryLock.writeLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
-				try {
+            /* The item is of type 'Contact', register for state change notifications */
+            if (direction == GPIOPin.DIRECTION_IN) {
+                gpioPin.addEventHandler(this);
+            }
+        } catch (Exception e) {
+            logger.error("Error occured while creating backend object for item " + itemName + ", exception: "
+                    + e.getMessage());
+        }
+    }
 
-					/* Remove the item from registry */
-					GPIOPin gpioPin = (GPIOPin) registry.remove(itemName);
+    /**
+     * Destroys backend GPIO pin object and clear relationship with the item.
+     *
+     * @param itemName the name of the item which to process
+     */
+    private void deleteItem(String itemName) {
 
-					/* Release the backend object */
-					if (gpioPin != null) {
-						try {
-							gpio.releasePin(gpioPin);
-						} catch (Exception e) {
-							logger.error("Error occured while deleting backend object for item " +itemName + ", exception: "+ e.getMessage());
-						}
-					}
+        try {
+            if (registryLock.writeLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
+                try {
 
-					/* Change the item state to 'Undefined' */
-					eventPublisher.postUpdate(itemName, UnDefType.UNDEF);
-				} finally {
-					registryLock.writeLock().unlock();
-				}
-			} else {
-				logger.error("Item " + itemName + " hasn't been deleted, timeout expired while waiting for registry lock");
-			}
-		} catch (InterruptedException e) {
-			logger.error("Item " + itemName + " hasn't been deleted, thread was interrupted while waiting for registry lock");
-		}
-	}
+                    /* Remove the item from registry */
+                    GPIOPin gpioPin = (GPIOPin) registry.remove(itemName);
+
+                    /* Release the backend object */
+                    if (gpioPin != null) {
+                        try {
+                            gpio.releasePin(gpioPin);
+                        } catch (Exception e) {
+                            logger.error("Error occured while deleting backend object for item " + itemName
+                                    + ", exception: " + e.getMessage());
+                        }
+                    }
+
+                    /* Change the item state to 'Undefined' */
+                    eventPublisher.postUpdate(itemName, UnDefType.UNDEF);
+                } finally {
+                    registryLock.writeLock().unlock();
+                }
+            } else {
+                logger.error(
+                        "Item " + itemName + " hasn't been deleted, timeout expired while waiting for registry lock");
+            }
+        } catch (InterruptedException e) {
+            logger.error("Item " + itemName
+                    + " hasn't been deleted, thread was interrupted while waiting for registry lock");
+        }
+    }
 }

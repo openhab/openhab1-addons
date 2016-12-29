@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="garadget"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>Garadget Binding</name>
+    <description>Monitor and control Garadget garage door futurizers using the Particle cloud-based API.</description>
+    <author>John Cocula</author>
+
+    <service-id>org.openhab.garadget</service-id>
+
+    <config-description>
+        <parameter name="username" type="text" required="true">
+            <label>Username</label>
+            <description>Username for accessing your account</description>
+        </parameter>
+        <parameter name="password" type="text" required="true">
+            <label>Password</label>
+            <description>Password for accessing your account</description>
+            <context>password</context>
+        </parameter>
+        <parameter name="granularity" type="integer">
+            <label>Poll Granularity</label>
+            <description>Rate at which to check if poll is to run, in milliseconds</description>
+            <default>5000</default>
+        </parameter>
+        <parameter name="refresh" type="integer">
+            <label>Refresh Interval</label>
+            <description>Data refresh interval in milliseconds</description>
+            <default>180000</default>
+        </parameter>
+        <parameter name="quickpoll" type="integer">
+            <label>Quick Poll</label>
+            <description>Time in milliseconds to wait after successful update</description>
+            <default>11000</default>
+        </parameter>
+        <parameter name="timeout" type="integer">
+            <label>HTTP Timeout</label>
+            <description>Time in milliseconds to allow an API request to complete</description>
+            <default>5000</default>
+        </parameter>
+    </config-description>
+</binding:binding>
+

@@ -3,24 +3,37 @@
 	<Model>NS210</Model>
 	<Label lang="en">Smart PowerNode</Label>
 	<CommandClasses>
-		<Class><id>0x20</id></Class>
-		<Class><id>0x25</id></Class>
-		<Class><id>0x27</id></Class>
-		<Class><id>0x32</id></Class>
-		<Class><id>0x56</id></Class>
-		<Class><id>0x70</id></Class>
-		<Class><id>0x71</id></Class>
-		<Class><id>0x72</id></Class>
-		<Class><id>0x75</id></Class>
-		<Class><id>0x85</id></Class>
-		<Class><id>0x86</id></Class>
-		<Class><id>0x87</id></Class>
+		<Class><id>0x20</id></Class><!-- COMMAND_CLASS_BASIC -->
+		<Class><id>0x25</id></Class><!-- COMMAND_CLASS_SWITCH_BINARY -->
+		<Class><id>0x27</id></Class><!-- COMMAND_CLASS_SWITCH_ALL -->
+		<Class><id>0x32</id></Class><!-- COMMAND_CLASS_METER_V2 -->
+		<Class><id>0x56</id></Class><!-- COMMAND_CLASS_CRC_16_ENCAP -->
+		<Class><id>0x70</id></Class><!-- COMMAND_CLASS_CONFIGURATION -->
+		<Class><id>0x71</id></Class><!-- COMMAND_CLASS_ALARM -->
+		<Class><id>0x72</id></Class><!-- COMMAND_CLASS_MANUFACTURER_SPECIFIC_V2 -->
+		<Class><id>0x75</id></Class><!-- COMMAND_CLASS_PROTECTION_V2 -->
+		<Class><id>0x85</id></Class><!-- COMMAND_CLASS_ASSOCIATION -->
+		<Class><id>0x86</id></Class><!-- COMMAND_CLASS_VERSION -->
+		<Class><id>0x87</id></Class><!-- COMMAND_CLASS_INDICATOR -->
 	</CommandClasses>
 	
 	<Configuration>
 		<Parameter>
+			<Index>0</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">Min. variation of load current</Label>
+			<Help lang="en">Minimum variation in load current before a message is sent. Value in percent (30 => 30%)</Help>
+		</Parameter>
+
+		<Parameter>
 			<Index>1</Index>
 			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
 			<Default>2</Default>
 			<Size>1</Size>
 			<Label lang="en">No communication light</Label>
@@ -32,6 +45,7 @@
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<ReadOnly>true</ReadOnly>
 			<Item>
 				<Value>128</Value>
 				<Label lang="en">Black</Label>
@@ -76,7 +90,69 @@
 			<Label lang="en">Room color</Label>
 			<Help lang="en">The room color (Corner wheel color) on the GreenWave device</Help>
 		</Parameter>
+
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Last state</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">On</Label>
+			</Item>
+			<Size>1</Size>
+			<Label lang="en">Power-on state</Label>
+			<Help lang="en">Default state after power loss</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">LED flash off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">LED flash on</Label>
+			</Item>
+			<Label lang="en">Network error</Label>
+			<Help lang="en">If the LED should indicate a network error by flashing or not</Help>
+		</Parameter>
 	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Wheel position change</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Current leakage on relay</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Power level change</Label>
+			<Help lang="en">The new power reading is sent if the delta of the change is greater than the defined minimum variation</Help>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Over-current detection</Label>
+		</Group>
+	</Associations>
 
 </Product>
 
