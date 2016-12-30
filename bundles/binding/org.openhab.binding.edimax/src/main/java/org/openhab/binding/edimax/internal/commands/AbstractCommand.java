@@ -29,6 +29,8 @@ import javax.xml.xpath.XPathFactory;
 
 import org.openhab.binding.edimax.internal.ConnectionInformation;
 import org.openhab.binding.edimax.internal.HTTPSend;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -42,6 +44,11 @@ import org.xml.sax.SAXException;
  * @param <T>
  */
 public abstract class AbstractCommand<T extends Object> {
+
+    /**
+     * Logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(AbstractCommand.class);
 
     /**
      * GET constructor.
@@ -186,13 +193,13 @@ public abstract class AbstractCommand<T extends Object> {
             String result = extractValueFromXML(aResponse, getXPathString());
             return unmarshal(result);
         } catch (XPathExpressionException ex) {
-            ex.printStackTrace();
+            logger.error("Error parsing XML data.", ex);
         } catch (ParserConfigurationException ex) {
-            ex.printStackTrace();
+            logger.error("Error parsing XML data.", ex);
         } catch (SAXException ex) {
-            ex.printStackTrace();
+            logger.error("Error parsing XML data.", ex);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            logger.error("Error reading XML data.", ex);
         }
 
         return null;
