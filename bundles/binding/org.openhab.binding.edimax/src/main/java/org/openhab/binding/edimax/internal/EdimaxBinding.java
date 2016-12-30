@@ -69,7 +69,7 @@ public class EdimaxBinding extends AbstractActiveBinding<EdimaxBindingProvider> 
                 String macAddress = config.getMacAddress();
                 String deviceIP = getDeviceIP(macAddress);
                 if (deviceIP == null) {
-                    logger.error("Device with MAC: " + macAddress + " not found/discovered.");
+                    logger.error("Device with MAC: {} not found/discovered.", macAddress);
                     continue;
                 }
 
@@ -100,8 +100,8 @@ public class EdimaxBinding extends AbstractActiveBinding<EdimaxBindingProvider> 
                             break;
                     }
                 } catch (IOException e) {
-                    logger.error("Error in communication with device. Device's MAC: " + macAddress
-                            + ". Cannot get update from device.", e);
+                    logger.error("Error in communication with device. Device's MAC: {}. Cannot get update from device.",
+                            macAddress, e);
                 }
                 if (newState != null) {
                     eventPublisher.postUpdate(itemName, newState);
@@ -198,7 +198,7 @@ public class EdimaxBinding extends AbstractActiveBinding<EdimaxBindingProvider> 
             EdimaxBindingConfiguration config = ((EdimaxGenericBindingProvider) provider).getConfig(itemName);
             String deviceIP = getDeviceIP(config.getMacAddress());
             if (deviceIP == null) {
-                logger.debug("No real device for item: " + itemName + " found.");
+                logger.debug("No real device for item: {} found.", itemName);
                 continue;
             }
             changeValue(itemName, deviceIP, config, command);
@@ -218,11 +218,11 @@ public class EdimaxBinding extends AbstractActiveBinding<EdimaxBindingProvider> 
                 }
 
             } catch (IOException e) {
-                logger.error("Error in communication with device: " + itemName + ". Cannot set update to device.", e);
+                logger.error("Error in communication with device: {}. Cannot set update to device.", itemName, e);
             }
 
         } else {
-            logger.error("Unsupported command: " + cmd);
+            logger.error("Unsupported command: {}.", cmd);
         }
     }
 
