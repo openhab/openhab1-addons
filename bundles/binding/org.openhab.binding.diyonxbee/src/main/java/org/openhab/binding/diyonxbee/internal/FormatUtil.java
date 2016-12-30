@@ -10,6 +10,7 @@ package org.openhab.binding.diyonxbee.internal;
  * /xbee-api/blob/master/src/com/rapplogic/xbee/util/ByteUtils.java)
  * 
  * @author juergen.richtsfeld@gmail.com
+ * @since 1.9
  */
 public abstract class FormatUtil {
 	private FormatUtil() {
