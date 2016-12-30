@@ -13,17 +13,18 @@ import java.util.List;
 
 /**
  * Command to retrieve last toggle time.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  *
  */
 public class GetLastToggleTime extends AbstractCMDNowPowerCommand<Date> {
 
-	@Override
-	protected List<String> getPath() {
-		List<String> list = super.getPath();
-		list.add("Device.System.Power.LastToggleTime");
-		return list;
-	}
+    @Override
+    protected List<String> getPath() {
+        List<String> list = super.getPath();
+        list.add("Device.System.Power.LastToggleTime");
+        return list;
+    }
 
 }

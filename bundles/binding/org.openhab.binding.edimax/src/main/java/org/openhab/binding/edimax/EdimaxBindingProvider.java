@@ -12,10 +12,11 @@ import org.openhab.core.binding.BindingProvider;
 
 /**
  * This is the binding provider for the edimax binding.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  *
  */
 public interface EdimaxBindingProvider extends BindingProvider {
-	// nothing special
+    // nothing special
 }

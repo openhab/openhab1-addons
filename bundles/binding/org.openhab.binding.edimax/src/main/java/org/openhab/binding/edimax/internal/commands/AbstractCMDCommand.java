@@ -12,33 +12,34 @@ import java.util.List;
 
 /**
  * Base class for Commands of type CMD.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  *
  * @param <T>
  */
 public abstract class AbstractCMDCommand<T> extends AbstractCommand<T> {
 
-	/**
-	 * GET constructor.
-	 */
-	public AbstractCMDCommand() {
-	}
+    /**
+     * GET constructor.
+     */
+    public AbstractCMDCommand() {
+    }
 
-	/**
-	 * SET constructor.
-	 * 
-	 * @param newValue
-	 */
-	public AbstractCMDCommand(T newValue) {
-		setValue = newValue;
-	}
+    /**
+     * SET constructor.
+     * 
+     * @param newValue
+     */
+    public AbstractCMDCommand(T newValue) {
+        setValue = newValue;
+    }
 
-	@Override
-	protected List<String> getPath() {
-		List<String> list = super.getPath();
-		list.add("CMD");
-		return list;
-	}
+    @Override
+    protected List<String> getPath() {
+        List<String> list = super.getPath();
+        list.add("CMD");
+        return list;
+    }
 
 }

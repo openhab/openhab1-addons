@@ -15,38 +15,40 @@ import org.slf4j.LoggerFactory;
 
 /**
  * OSGi Activator.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  */
 public class EdimaxActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory
-			.getLogger(EdimaxActivator.class);
+    private static Logger logger = LoggerFactory.getLogger(EdimaxActivator.class);
 
-	private static BundleContext context;
+    private static BundleContext context;
 
-	/**
-	 * Called whenever the OSGi framework starts our bundle
-	 */
-	public void start(BundleContext bc) throws Exception {
-		context = bc;
-		logger.debug("Edimax binding has been started.");
-	}
+    /**
+     * Called whenever the OSGi framework starts our bundle
+     */
+    @Override
+    public void start(BundleContext bc) throws Exception {
+        context = bc;
+        logger.debug("Edimax binding has been started.");
+    }
 
-	/**
-	 * Called whenever the OSGi framework stops our bundle
-	 */
-	public void stop(BundleContext bc) throws Exception {
-		context = null;
-		logger.debug("Edimax binding has been stopped.");
-	}
+    /**
+     * Called whenever the OSGi framework stops our bundle
+     */
+    @Override
+    public void stop(BundleContext bc) throws Exception {
+        context = null;
+        logger.debug("Edimax binding has been stopped.");
+    }
 
-	/**
-	 * Returns the bundle context of this bundle
-	 * 
-	 * @return the bundle context
-	 */
-	public static BundleContext getContext() {
-		return context;
-	}
+    /**
+     * Returns the bundle context of this bundle
+     * 
+     * @return the bundle context
+     */
+    public static BundleContext getContext() {
+        return context;
+    }
 }

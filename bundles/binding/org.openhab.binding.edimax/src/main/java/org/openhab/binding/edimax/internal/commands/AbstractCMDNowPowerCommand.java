@@ -12,18 +12,19 @@ import java.util.List;
 
 /**
  * Base class for Commands of type NOW_POWER.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  *
  * @param <T>
  */
 public abstract class AbstractCMDNowPowerCommand<T> extends AbstractCMDCommand<T> {
 
-	@Override
-	protected List<String> getPath() {
-		List<String> list = super.getPath();
-		list.add("NOW_POWER");
-		return list;
-	}
-	
+    @Override
+    protected List<String> getPath() {
+        List<String> list = super.getPath();
+        list.add("NOW_POWER");
+        return list;
+    }
+
 }

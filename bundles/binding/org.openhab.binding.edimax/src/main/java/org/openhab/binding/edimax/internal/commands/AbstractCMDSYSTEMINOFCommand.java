@@ -12,18 +12,19 @@ import java.util.List;
 
 /**
  * Base class for Commands of type SYSTEM_INFO.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  *
  * @param <T>
  */
 public abstract class AbstractCMDSYSTEMINOFCommand<T> extends AbstractCMDCommand<T> {
-	
-	@Override
-	protected List<String> getPath() {
-		List<String> list = super.getPath();
-		list.add("SYSTEM_INFO");
-		return list;
-	}
+
+    @Override
+    protected List<String> getPath() {
+        List<String> list = super.getPath();
+        list.add("SYSTEM_INFO");
+        return list;
+    }
 
 }

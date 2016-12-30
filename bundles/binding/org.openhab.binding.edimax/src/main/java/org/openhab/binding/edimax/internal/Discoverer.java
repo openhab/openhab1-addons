@@ -10,18 +10,19 @@ package org.openhab.binding.edimax.internal;
 
 /**
  * Discover interface.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  *
  */
 public interface Discoverer {
 
-	/**
-	 * Find devices.
-	 * 
-	 * @return
-	 * @throws DiscoveryException
-	 */
-	public EdimaxDevice[] discoverDevices() throws DiscoveryException;
+    /**
+     * Find devices.
+     * 
+     * @return
+     * @throws DiscoveryException
+     */
+    public EdimaxDevice[] discoverDevices() throws DiscoveryException;
 
 }

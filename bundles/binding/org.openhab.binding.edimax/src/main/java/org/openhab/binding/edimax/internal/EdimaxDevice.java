@@ -10,30 +10,31 @@ package org.openhab.binding.edimax.internal;
 
 /**
  * Represents an edimax device discovered.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  */
 public class EdimaxDevice {
-	public String ip;
-	public String mac; // only store UPPERCASE mac in here.
+    public String ip;
+    public String mac; // only store UPPERCASE mac in here.
 
-	public EdimaxDevice() {
-	}
+    public EdimaxDevice() {
+    }
 
-	public String getIp() {
-		return ip;
-	}
+    public String getIp() {
+        return ip;
+    }
 
-	public String getMac() {
-		return mac;
-	}
+    public String getMac() {
+        return mac;
+    }
 
-	public void setIp(String ip) {
-		this.ip = ip;
-	}
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
 
-	public void setMac(String mac) {
-		this.mac = mac;
-	}
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
 
 }

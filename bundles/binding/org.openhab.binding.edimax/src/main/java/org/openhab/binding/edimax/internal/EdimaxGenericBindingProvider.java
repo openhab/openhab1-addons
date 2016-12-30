@@ -15,35 +15,34 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
  * Binding Provider implementation.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  *
  */
-public class EdimaxGenericBindingProvider extends
-		AbstractGenericBindingProvider implements EdimaxBindingProvider {
+public class EdimaxGenericBindingProvider extends AbstractGenericBindingProvider implements EdimaxBindingProvider {
 
-	@Override
-	public String getBindingType() {
-		return "edimax";
-	}
+    @Override
+    public String getBindingType() {
+        return "edimax";
+    }
 
-	public EdimaxBindingConfiguration getConfig(String itemName) {
-		return (EdimaxBindingConfiguration) bindingConfigs.get(itemName);
-	}
+    public EdimaxBindingConfiguration getConfig(String itemName) {
+        return (EdimaxBindingConfiguration) bindingConfigs.get(itemName);
+    }
 
-	@Override
-	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException {
-		new EdimaxBindingConfiguration().parse(item, bindingConfig);
-	}
+    @Override
+    public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+        new EdimaxBindingConfiguration().parse(item, bindingConfig);
+    }
 
-	@Override
-	public void processBindingConfiguration(String context, Item item,
-			String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
-		EdimaxBindingConfiguration config = new EdimaxBindingConfiguration();
-		config.parse(item, bindingConfig);
-		addBindingConfig(item, config);
-	}
+    @Override
+    public void processBindingConfiguration(String context, Item item, String bindingConfig)
+            throws BindingConfigParseException {
+        super.processBindingConfiguration(context, item, bindingConfig);
+        EdimaxBindingConfiguration config = new EdimaxBindingConfiguration();
+        config.parse(item, bindingConfig);
+        addBindingConfig(item, config);
+    }
 
 }

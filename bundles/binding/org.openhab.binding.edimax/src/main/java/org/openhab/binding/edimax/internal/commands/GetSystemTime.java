@@ -13,17 +13,18 @@ import java.util.List;
 
 /**
  * Command to retrieve the device's time.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  *
  */
 public class GetSystemTime extends AbstractCMDCommand<Date> {
 
-	@Override
-	protected List<String> getPath() {
-		List<String> list = super.getPath();
-		list.add("Device.System.Time");
-		return list;
-	}
+    @Override
+    protected List<String> getPath() {
+        List<String> list = super.getPath();
+        list.add("Device.System.Time");
+        return list;
+    }
 
 }

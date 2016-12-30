@@ -13,17 +13,18 @@ import java.util.List;
 
 /**
  * Command to retrieve consumed energy of the month.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  *
  */
 public class GetEnergyMonth extends AbstractCMDNowPowerCommand<BigDecimal> {
 
-	@Override
-	protected List<String> getPath() {
-		List<String> list = super.getPath();
-		list.add("Device.System.Power.NowEnergy.Month");
-		return list;
-	}
+    @Override
+    protected List<String> getPath() {
+        List<String> list = super.getPath();
+        list.add("Device.System.Power.NowEnergy.Month");
+        return list;
+    }
 
 }

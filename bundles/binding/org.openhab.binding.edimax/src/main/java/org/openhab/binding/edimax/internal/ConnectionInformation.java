@@ -10,40 +10,40 @@ package org.openhab.binding.edimax.internal;
 
 /**
  * Information about a connect.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  *
  */
 public class ConnectionInformation {
 
-	private String username;
-	private String password;
+    private String username;
+    private String password;
 
-	private String url;
-	private int port;
+    private String url;
+    private int port;
 
-	public ConnectionInformation(String user, String pw, String target,
-			int portnum) {
-		username = user;
-		password = pw;
-		url = target;
-		port = portnum;
-	}
+    public ConnectionInformation(String user, String pw, String target, int portnum) {
+        username = user;
+        password = pw;
+        url = target;
+        port = portnum;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public int getPort() {
-		return port;
-	}
+    public int getPort() {
+        return port;
+    }
 
 }

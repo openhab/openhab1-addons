@@ -13,17 +13,18 @@ import java.util.List;
 
 /**
  * Command to retrieve consumed energy of the week.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  *
  */
 public class GetEnergyWeek extends AbstractCMDNowPowerCommand<BigDecimal> {
 
-	@Override
-	protected List<String> getPath() {
-		List<String> list = super.getPath();
-		list.add("Device.System.Power.NowEnergy.Week");
-		return list;
-	}
+    @Override
+    protected List<String> getPath() {
+        List<String> list = super.getPath();
+        list.add("Device.System.Power.NowEnergy.Week");
+        return list;
+    }
 
 }

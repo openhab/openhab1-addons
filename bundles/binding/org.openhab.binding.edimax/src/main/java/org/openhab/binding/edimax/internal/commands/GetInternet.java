@@ -12,17 +12,18 @@ import java.util.List;
 
 /**
  * Command to retrieve internet state of the device.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  *
  */
 public class GetInternet extends AbstractCMDCommand<Integer> {
 
-	@Override
-	protected List<String> getPath() {
-		List<String> list = super.getPath();
-		list.add("INTERNET");
-		return list;
-	}
+    @Override
+    protected List<String> getPath() {
+        List<String> list = super.getPath();
+        list.add("INTERNET");
+        return list;
+    }
 
 }

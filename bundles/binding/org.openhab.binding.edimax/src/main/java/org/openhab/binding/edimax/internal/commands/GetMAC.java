@@ -12,17 +12,18 @@ import java.util.List;
 
 /**
  * Command to retrive the MAC address.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  *
  */
 public class GetMAC extends AbstractCMDSYSTEMINOFCommand<String> {
 
-	@Override
-	protected List<String> getPath() {
-		List<String> list = super.getPath();
-		list.add("Run.LAN.Client.MAC.Address");
-		return list;
-	}
+    @Override
+    protected List<String> getPath() {
+        List<String> list = super.getPath();
+        list.add("Run.LAN.Client.MAC.Address");
+        return list;
+    }
 
 }

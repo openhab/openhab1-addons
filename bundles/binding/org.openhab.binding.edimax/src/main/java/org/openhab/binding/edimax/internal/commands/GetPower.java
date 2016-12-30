@@ -13,16 +13,17 @@ import java.util.List;
 
 /**
  * Command to retrieve the power consumption in Watt.
- * 
+ *
  * @author Heinz
+ * @since 1.9.0
  */
 public class GetPower extends AbstractCMDNowPowerCommand<BigDecimal> {
 
-	@Override
-	protected List<String> getPath() {
-		List<String> list = super.getPath();
-		list.add("Device.System.Power.NowPower");
-		return list;
-	}
+    @Override
+    protected List<String> getPath() {
+        List<String> list = super.getPath();
+        list.add("Device.System.Power.NowPower");
+        return list;
+    }
 
 }
