@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -52,7 +52,7 @@ public abstract class AbstractCommand<T extends Object> {
 
     /**
      * SET constructor.
-     * 
+     *
      * @param newValue
      */
     public AbstractCommand(T newValue) {
@@ -85,7 +85,7 @@ public abstract class AbstractCommand<T extends Object> {
 
     /**
      * Overwrite and add your path entry.
-     * 
+     *
      * @return
      */
     protected List<String> getPath() {
@@ -96,7 +96,7 @@ public abstract class AbstractCommand<T extends Object> {
 
     /**
      * Returns XPath expression to load response for a get request.
-     * 
+     *
      * @return
      */
     protected String getXPathString() {
@@ -116,7 +116,7 @@ public abstract class AbstractCommand<T extends Object> {
 
     /**
      * Extract return types from response.
-     * 
+     *
      * @param result
      * @return
      */
@@ -152,7 +152,7 @@ public abstract class AbstractCommand<T extends Object> {
 
     /**
      * This command to XML.
-     * 
+     *
      * @param value
      * @return
      */
@@ -177,7 +177,7 @@ public abstract class AbstractCommand<T extends Object> {
 
     /**
      * Return the extracted return type.
-     * 
+     *
      * @param aResponse
      * @return
      */
@@ -200,7 +200,7 @@ public abstract class AbstractCommand<T extends Object> {
 
     /**
      * Returns true if it is a SET command and false for GET.
-     * 
+     *
      * @return
      */
     protected boolean isSet() {
@@ -209,7 +209,7 @@ public abstract class AbstractCommand<T extends Object> {
 
     /**
      * Do the command.
-     * 
+     *
      * @param ci
      * @return
      * @throws IOException
@@ -224,7 +224,7 @@ public abstract class AbstractCommand<T extends Object> {
 
     /**
      * Create initial XML tag.
-     * 
+     *
      * @param aName
      * @return
      */
@@ -248,7 +248,7 @@ public abstract class AbstractCommand<T extends Object> {
 
     /**
      * Create end tag.
-     * 
+     *
      * @param aName
      * @return
      */
@@ -258,7 +258,7 @@ public abstract class AbstractCommand<T extends Object> {
 
     /**
      * Create leaf node.
-     * 
+     *
      * @param aName
      * @return
      */
@@ -286,7 +286,7 @@ public abstract class AbstractCommand<T extends Object> {
 
     /**
      * Extract the innermost information of the response as string.
-     * 
+     *
      * @param document
      * @param xpathExpression
      * @return

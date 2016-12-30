@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -58,7 +58,7 @@ public class HTTPSend {
 
     /**
      * Switch to.
-     * 
+     *
      * @param anIp
      * @param newState
      * @return
@@ -74,7 +74,7 @@ public class HTTPSend {
 
     /**
      * Returns state for device with given IP.
-     * 
+     *
      * @param anIp
      * @return
      * @throws IOException
@@ -89,7 +89,7 @@ public class HTTPSend {
 
     /**
      * Receive the MAC address.
-     * 
+     *
      * @param anIp
      * @return
      * @throws IOException
@@ -104,7 +104,7 @@ public class HTTPSend {
 
     /**
      * Returns the current.
-     * 
+     *
      * @param anIp
      * @return
      * @throws IOException
@@ -119,7 +119,7 @@ public class HTTPSend {
 
     /**
      * Gets the actual power.
-     * 
+     *
      * @param anIp
      * @return
      * @throws IOExceptionif
