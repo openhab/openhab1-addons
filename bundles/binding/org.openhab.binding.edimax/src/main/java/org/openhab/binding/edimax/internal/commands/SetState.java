@@ -11,7 +11,7 @@ package org.openhab.binding.edimax.internal.commands;
 import java.util.List;
 
 /**
- * Command to set the devices state.
+ * Command to set the device's state.
  *
  * @author Heinz
  * @since 1.9.0

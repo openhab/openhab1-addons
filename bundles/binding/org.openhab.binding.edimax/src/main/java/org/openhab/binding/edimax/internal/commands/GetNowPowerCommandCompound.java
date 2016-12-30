@@ -38,7 +38,6 @@ public class GetNowPowerCommandCompound extends AbstractCMDCommand<Map<AbstractC
 
     @Override
     protected String createLeafTag(String aName) {
-        // hook in here
         StringBuffer allLeafs = new StringBuffer();
         for (AbstractCMDCommand<?> cmd : getCommands) {
             String lastElement = lastPathSegmentsElement(cmd);
@@ -49,7 +48,6 @@ public class GetNowPowerCommandCompound extends AbstractCMDCommand<Map<AbstractC
 
     @Override
     protected List<String> getPath() {
-        // hook in here
         return getCommands.get(0).getPath();
     }
 
