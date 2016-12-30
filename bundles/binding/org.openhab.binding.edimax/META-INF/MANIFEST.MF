@@ -27,4 +27,5 @@ Export-Package: org.openhab.binding.edimax
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
