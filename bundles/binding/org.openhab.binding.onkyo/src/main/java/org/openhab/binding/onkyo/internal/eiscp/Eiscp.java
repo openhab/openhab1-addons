@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen (Refactoring)
  * @author Pauli Anttila (Simplified, rewritten and added status update listener functionality)
  */
-public class Eiscp {
+public class Eiscp implements EiscpInterface {
 
     private static final Logger logger = LoggerFactory.getLogger(Eiscp.class);
 
@@ -89,6 +89,7 @@ public class Eiscp {
     /**
      * Add event listener, which will be invoked when status upadte is received from receiver.
      **/
+    @Override
     public synchronized void addEventListener(OnkyoEventListener listener) {
         _listeners.add(listener);
     }
@@ -96,6 +97,7 @@ public class Eiscp {
     /**
      * Remove event listener.
      **/
+    @Override
     public synchronized void removeEventListener(OnkyoEventListener listener) {
         _listeners.remove(listener);
     }
@@ -103,6 +105,7 @@ public class Eiscp {
     /**
      * Get retry count value.
      **/
+    @Override
     public int getRetryCount() {
         return retryCount;
     }
@@ -110,6 +113,7 @@ public class Eiscp {
     /**
      * Set retry count value. How many times command is retried when error occurs.
      **/
+    @Override
     public void setRetryCount(int retryCount) {
         this.retryCount = retryCount;
     }
@@ -118,6 +122,7 @@ public class Eiscp {
      * Connects to the receiver by opening a socket connection through the
      * IP and port defined on constructor.
      **/
+    @Override
     public boolean connectSocket() {
         return connectSocket(receiverIP, receiverPort);
     }
@@ -170,9 +175,10 @@ public class Eiscp {
 
     /**
      * Closes the socket connection.
-     * 
+     *
      * @return true if the closed successfully
      **/
+    @Override
     public boolean closeSocket() {
         try {
             if (dataListener != null) {
@@ -210,7 +216,7 @@ public class Eiscp {
 
     /**
      * Wraps a command in a eiscp data message (data characters).
-     * 
+     *
      * @param eiscpCmd
      *            eISCP command.
      * @return StringBuffer holing the full iscp message packet
@@ -267,9 +273,10 @@ public class Eiscp {
     /**
      * Sends to command to the receiver.
      * It does not wait for a reply.
-     * 
+     *
      * @param eiscpCmd the eISCP command to send.
      **/
+    @Override
     public void sendCommand(String eiscpCmd) {
         logger.debug("Send command: {} to {}:{} ({})", eiscpCmd, receiverIP, receiverPort, eiscpSocket);
         StringBuilder sb = getEiscpMessage(eiscpCmd);
@@ -279,7 +286,7 @@ public class Eiscp {
     /**
      * Sends to command to the receiver and close the connection when done.
      * It does not wait for a reply.
-     * 
+     *
      * @param eiscpCmd the eISCP command to send.
      **/
     public void sendCommandAndClose(String eiscpCmd) {
@@ -290,7 +297,7 @@ public class Eiscp {
 
     /**
      * Sends to command to the receiver.
-     * 
+     *
      * @param eiscpCmd the eISCP command to send.
      * @param closeSocket flag to close the connection when done or leave it open.
      * @param retry retry count.
@@ -326,7 +333,7 @@ public class Eiscp {
 
     /**
      * This method wait any state messages form receiver.
-     * 
+     *
      * @throws IOException
      * @throws InterruptedException
      * @throws EiscpException

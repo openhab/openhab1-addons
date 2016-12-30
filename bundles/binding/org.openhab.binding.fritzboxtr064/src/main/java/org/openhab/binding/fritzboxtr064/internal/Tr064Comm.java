@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -45,6 +45,7 @@ import org.apache.http.client.AuthCache;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -79,7 +80,7 @@ import org.w3c.dom.NodeList;
  *
  */
 public class Tr064Comm {
-    private static final Logger logger = LoggerFactory.getLogger(FritzboxTr064Binding.class);
+    private static final Logger logger = LoggerFactory.getLogger(Tr064Comm.class);
     private static final String DEFAULTUSER = "dslf-config"; // is used when no username is provided.
     private static final String TR064DOWNLOADFILE = "tr64desc.xml"; // filename of all available TR064 on fbox
 
@@ -152,8 +153,8 @@ public class Tr064Comm {
 
     /***
      * Fetches a specific value from FritzBox
-     * 
-     * 
+     *
+     *
      * @param request string from config including the command and optional parameters
      * @return parsed value
      */
@@ -196,7 +197,7 @@ public class Tr064Comm {
                 }
                 beDataNode.addTextNode(dataInValue); // add data which should be requested from fbox for this service
             }
-            logger.debug("Raw SOAP Request to be sent to FritzBox: {}", soapToString(msg));
+            logger.trace("Raw SOAP Request to be sent to FritzBox: {}", soapToString(msg));
 
         } catch (Exception e) {
             logger.error("Error constructing request SOAP msg for getting parameter. {}", e.getMessage());
@@ -215,7 +216,7 @@ public class Tr064Comm {
                                                                                                          // in body ->
                                                                                                          // header)
         SOAPMessage response = readSoapResponse(soapActionHeader, smTr064Request, _url + tr064service.getControlUrl());
-        logger.debug("Raw SOAP Response from FritzBox: {}", soapToString(response));
+        logger.trace("Raw SOAP Response from FritzBox: {}", soapToString(response));
         if (response == null) {
             logger.error("Error retrieving SOAP response from FritzBox");
             return null;
@@ -224,13 +225,13 @@ public class Tr064Comm {
         // check if special "soap value parser" handler for extracting SOAP value is defined. If yes, use svp
         if (itemMap.getSoapValueParser() == null) { // extract dataOutName1 as default, no handler used
             NodeList nlDataOutNodes = response.getSOAPPart().getElementsByTagName(itemMap.getReadDataOutName());
-            if (nlDataOutNodes != null & nlDataOutNodes.getLength() > 0) {
+            if (nlDataOutNodes != null && nlDataOutNodes.getLength() > 0) {
                 // extract value from soap response
                 value = nlDataOutNodes.item(0).getTextContent();
             } else {
-                logger.error(
-                        "FritzBox returned unexpected response. Could not find expected datavalue {} in response {}",
-                        itemMap.getReadDataOutName(), soapToString(response));
+                logger.error("FritzBox returned unexpected response. Could not find expected datavalue {} in response.",
+                        itemMap.getReadDataOutName());
+                logger.debug(soapToString(response));
             }
 
         } else {
@@ -249,7 +250,7 @@ public class Tr064Comm {
 
     /***
      * Sets a parameter in fbox. Called from event bus
-     * 
+     *
      * @param request config string from itemconfig
      * @param cmd command to set
      */
@@ -331,7 +332,7 @@ public class Tr064Comm {
     /***
      * Creates a apache HTTP Client object, ignoring SSL Exceptions like self signed certificates
      * and sets Auth. Scheme to Digest Auth
-     * 
+     *
      * @param fboxUrl the URL from config file of fbox to connect to
      * @return the ready-to-use httpclient for tr064 requests
      */
@@ -383,11 +384,16 @@ public class Tr064Comm {
             logger.error(ex.getMessage());
         }
 
+        // Set timeout values
+        RequestConfig rc = RequestConfig.copy(RequestConfig.DEFAULT).setSocketTimeout(4000).setConnectTimeout(4000)
+                .setConnectionRequestTimeout(4000).build();
+
         // BUILDER
         // setup builder with parameters defined before
         hc = HttpClientBuilder.create().setSSLSocketFactory(sslsf) // set the SSL options which trust every self signed
                                                                    // cert
                 .setDefaultCredentialsProvider(credp) // set auth options using digest
+                .setDefaultRequestConfig(rc) // set the request config specifying timeout
                 .build();
 
         return hc;
@@ -395,7 +401,7 @@ public class Tr064Comm {
 
     /***
      * converts SOAP msg into string
-     * 
+     *
      * @param sm
      * @return
      */
@@ -412,7 +418,7 @@ public class Tr064Comm {
     }
 
     /***
-     * 
+     *
      * @param soapActionHeader String in HTTP Header. specific for each TR064 service
      * @param request the SOAPMEssage Object to send to fbox as request
      * @param serviceUrl URL to sent the SOAP Message to (service specific)
@@ -426,6 +432,7 @@ public class Tr064Comm {
         postSoap.addHeader("SOAPAction", soapActionHeader); // add the Header specific for this request
         HttpEntity entBody = null;
         HttpResponse resp = null; // stores raw response from fbox
+        boolean exceptionOccurred = false;
         try {
             entBody = new StringEntity(soapToString(request), ContentType.create("text/xml", "UTF-8")); // add body
             postSoap.setEntity(entBody);
@@ -447,19 +454,32 @@ public class Tr064Comm {
 
         } catch (UnsupportedEncodingException e) {
             logger.error("Encoding not supported: {}", e.getMessage().toString());
-            return null;
+            response = null;
+            exceptionOccurred = true;
         } catch (ClientProtocolException e) {
             logger.error("Client Protocol not supported: {}", e.getMessage().toString());
-            return null;
+            response = null;
+            exceptionOccurred = true;
         } catch (IOException e) {
             logger.error("Cannot send/receive: {}", e.getMessage().toString());
-            return null;
+            response = null;
+            exceptionOccurred = true;
         } catch (UnsupportedOperationException e) {
             logger.error("Operation unsupported: {}", e.getMessage().toString());
-            return null;
+            response = null;
+            exceptionOccurred = true;
         } catch (SOAPException e) {
             logger.error("SOAP Error: {}", e.getMessage().toString());
-            return null;
+            response = null;
+            exceptionOccurred = true;
+        } finally {
+            // Make sure connection is released. If error occurred make sure to print in log
+            if (exceptionOccurred) {
+                logger.error("Releasing connection to FritzBox because of error!");
+            } else {
+                logger.debug("Releasing connection");
+            }
+            postSoap.releaseConnection();
         }
 
         return response;
@@ -469,7 +489,7 @@ public class Tr064Comm {
     /***
      * sets all required namespaces and prepares the SOAP message to send
      * creates skeleton + body data
-     * 
+     *
      * @param bodyData is attached to skeleton to form entire SOAP message
      * @return ready to send SOAP message
      */
@@ -516,7 +536,7 @@ public class Tr064Comm {
 
     /***
      * looks for the proper item mapping for the item command given from item file
-     * 
+     *
      * @param itemCommand String item command
      * @return found itemMap object if found, or null
      */
@@ -540,7 +560,7 @@ public class Tr064Comm {
 
     /***
      * determines Service including which URL to connect to for value request
-     * 
+     *
      * @param the itemmap for which the service is searched
      * @return the found service or null
      */
@@ -557,7 +577,7 @@ public class Tr064Comm {
             }
         }
         if (foundService == null) {
-            logger.error("No tr064 service found for service id {}", mapping.getServiceId());
+            logger.warn("No tr064 service found for service id {}", mapping.getServiceId());
         }
         return foundService;
     }
@@ -597,7 +617,7 @@ public class Tr064Comm {
      * todo: refactore to read from config file later?
      * sets the parser based on the itemcommand -> soap value parser "svp" anonymous method
      * for each mapping
-     * 
+     *
      */
     private void generateItemMappings() {
         // services available from fbox. Needed for e.g. wifi select 5GHz/Guest Wifi
@@ -734,7 +754,7 @@ public class Tr064Comm {
                         }
                     } else {
                         NodeList nlDataOutNodes = sm.getSOAPPart().getElementsByTagName(mapping.getReadDataOutName()); // URL
-                        if (nlDataOutNodes != null & nlDataOutNodes.getLength() > 0) {
+                        if (nlDataOutNodes != null && nlDataOutNodes.getLength() > 0) {
                             // extract URL from soap response
                             String url = nlDataOutNodes.item(0).getTextContent();
                             Document xmlTamInfo = getFboxXmlResponse(url);
@@ -799,7 +819,7 @@ public class Tr064Comm {
                         }
                     } else {
                         NodeList nlDataOutNodes = sm.getSOAPPart().getElementsByTagName(mapping.getReadDataOutName()); // URL
-                        if (nlDataOutNodes != null & nlDataOutNodes.getLength() > 0) {
+                        if (nlDataOutNodes != null && nlDataOutNodes.getLength() > 0) {
                             // extract URL from soap response
                             String url = nlDataOutNodes.item(0).getTextContent();
                             // only get missed calls of the last x days
@@ -839,12 +859,13 @@ public class Tr064Comm {
     /***
      * sets up a raw http(s) connection to Fbox and gets xml response
      * as XML Document, ready for parsing
-     * 
+     *
      * @return
      */
     public Document getFboxXmlResponse(String url) {
         Document tr064response = null;
         HttpGet httpGet = new HttpGet(url);
+        boolean exceptionOccurred = false;
         try {
             CloseableHttpResponse resp = _httpClient.execute(httpGet, _httpClientContext);
             int responseCode = resp.getStatusLine().getStatusCode();
@@ -859,8 +880,16 @@ public class Tr064Comm {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("Failed to receive valid response from httpGet");
+            exceptionOccurred = true;
+            logger.error("Failed to receive valid response from httpGet: {}", e.getMessage());
+        } finally {
+            // Make sure connection is released. If error occurred make sure to print in log
+            if (exceptionOccurred) {
+                logger.error("Releasing connection to FritzBox because of error!");
+            } else {
+                logger.debug("Releasing connection");
+            }
+            httpGet.releaseConnection();
         }
         return tr064response;
     }

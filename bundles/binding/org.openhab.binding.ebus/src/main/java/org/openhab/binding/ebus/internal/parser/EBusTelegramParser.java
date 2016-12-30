@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -332,6 +332,12 @@ public class EBusTelegramParser {
 
                 // Extract the value from byte buffer
                 Object value = getValue(byteBuffer, entry.getValue());
+
+                if(value == null) {
+                    // its okay if the value is null, maybe out of range min/max or replace value found
+                    logger.trace("Returned value is null, skip ...");
+                    continue;
+                }
 
                 // If compiled script available for this key, execute it now
                 if (settings.getCsript() != null) {

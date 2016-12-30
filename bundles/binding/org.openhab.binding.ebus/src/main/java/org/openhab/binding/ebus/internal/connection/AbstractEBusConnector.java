@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -55,7 +55,7 @@ public abstract class AbstractEBusConnector extends Thread {
     }
 
     /**
-     * Connects the connector to it's backend system. It's important
+     * Connects the connector to its backend system. It's important
      * to connect before start the thread.
      * 
      * @return
@@ -67,7 +67,7 @@ public abstract class AbstractEBusConnector extends Thread {
     }
 
     /**
-     * Disconnects the connector from it's backend system.
+     * Disconnects the connector from its backend system.
      * 
      * @return
      * @throws IOException
@@ -118,7 +118,7 @@ public abstract class AbstractEBusConnector extends Thread {
 
                 int sleepTime = reConnectCounter > 24 ? 30 : 5;
 
-                logger.warn("Unable to connector to eBus, retry in {} seconds ...", sleepTime);
+                logger.warn("Unable to connect to eBus, retry in {} seconds ...", sleepTime);
                 Thread.sleep(sleepTime * 1000);
 
             } else {
@@ -136,10 +136,10 @@ public abstract class AbstractEBusConnector extends Thread {
     public void run() {
 
         // create new thread pool to send received telegrams
-        threadPool = Executors.newCachedThreadPool();
+        threadPool = Executors.newCachedThreadPool(new WorkerThreadFactory("ebus-send-receive"));
 
         int read = -1;
-
+        
         // loop until interrupt or reconnector count is -1 (to many retries)
         while (!isInterrupted() || reConnectCounter == -1) {
             try {
@@ -241,7 +241,7 @@ public abstract class AbstractEBusConnector extends Thread {
             logger.warn("Collision on eBUS detected (SYN DATA SYNC Sequence) ...");
 
         } else if (inputBuffer.position() < 5) {
-            logger.trace("Telegram to small, skip! Buffer: {}", EBusUtils.toHexDumpString(inputBuffer));
+            logger.trace("Telegram too small, skip! Buffer: {}", EBusUtils.toHexDumpString(inputBuffer));
 
         } else {
             byte[] receivedTelegram = Arrays.copyOf(inputBuffer.array(), inputBuffer.position());

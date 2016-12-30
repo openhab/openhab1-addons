@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,8 @@ package org.openhab.binding.onewire.internal.connection;
 
 import java.io.IOException;
 import java.util.Dictionary;
+import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.onewire.internal.deviceproperties.AbstractOneWireDevicePropertyBindingConfig;
@@ -28,6 +30,7 @@ import org.slf4j.LoggerFactory;
  * This class establishes the connection to the 1-Wire-bus.
  *
  * @author Dennis Riegelbauer
+ * @author Chris Carman (added server connection retry logic)
  * @since 1.7.0
  *
  */
@@ -61,13 +64,25 @@ public class OneWireConnection {
     private static int cvRetry = 3;
 
     /**
+     * The number of retries that will be attempted after a failed connection attempt.
+     * Optional, defaults to 3. 0 means no retries will be attempted.
+     */
+    private static int cvServerRetries = 3;
+
+    /**
+     * The time to wait between connection attempts. Optional, defaults to 60 seconds.
+     * May not be less than 5 seconds.
+     */
+    private static int cvServerRetryInterval = 60;
+
+    /**
      * signals that the connection is established
      */
     private static boolean cvIsEstablished = false;
 
     /**
-     * Returns a OwfsConnection
-     * 
+     * Returns an OwfsConnection
+     *
      * @return the OwfsConnection network link
      */
     public static synchronized OwfsConnection getConnection() {
@@ -81,40 +96,74 @@ public class OneWireConnection {
 
     /**
      * Tries to connect either by IP or serial bus, depending on supplied config data.
-     * 
+     *
      * @return true if connection was established, false otherwise
      */
     public static synchronized boolean connect() {
-        if (cvIp != null && cvPort > 0) {
-            OwfsConnectionFactory owfsConnectorFactory = new OwfsConnectionFactory(cvIp, cvPort);
-            OwfsConnectionConfig owConnectionConfig = new OwfsConnectionConfig(cvIp, cvPort);
-            owConnectionConfig.setTemperatureScale(cvTempScale);
-            owConnectionConfig.setPersistence(OwPersistence.ON);
-            owConnectionConfig.setBusReturn(OwBusReturn.ON);
-            owfsConnectorFactory.setConnectionConfig(owConnectionConfig);
+        OwfsConnectionFactory owfsConnectorFactory = new OwfsConnectionFactory(cvIp, cvPort);
+        OwfsConnectionConfig owConnectionConfig = new OwfsConnectionConfig(cvIp, cvPort);
+        owConnectionConfig.setTemperatureScale(cvTempScale);
+        owConnectionConfig.setPersistence(OwPersistence.ON);
+        owConnectionConfig.setBusReturn(OwBusReturn.ON);
+        owfsConnectorFactory.setConnectionConfig(owConnectionConfig);
 
-            try {
-                cvOwConnection = owfsConnectorFactory.createNewConnection();
-                cvOwConnection.listDirectory("/");
-                logger.info("Connected to owserver [IP '" + cvIp + "' Port '" + cvPort + "']");
-                cvIsEstablished = true;
-                return true;
-            } catch (Exception exception) {
-                logger.error("Couldn't connect to owserver [IP '" + cvIp + "' Port '" + cvPort + "']: ",
-                        exception.getLocalizedMessage());
+        cvOwConnection = owfsConnectorFactory.createNewConnection();
+
+        boolean connected = false;
+        int attempts = 0, retriesRemaining = cvServerRetries;
+        List<String> result = null;
+
+        try {
+            result = cvOwConnection.listDirectory("/");
+            if (result != null) {
+                connected = true;
+            } else {
                 cvIsEstablished = false;
-                return false;
             }
-        } else {
-            logger.warn("Couldn't connect to owserver because of missing connection parameters [IP '{}' Port '{}'].",
-                    cvIp, cvPort);
+        } catch (OwfsException oe) {
+            logger.warn("Unexpected owfs exception: {}", oe.getMessage(), oe);
+        } catch (IOException e) {
+            logger.warn("Unexpected connection failure.", e);
+        }
+
+        while (!connected && retriesRemaining > 0) {
+            logger.warn("Connection failed. Will retry in {} seconds.", cvServerRetryInterval);
+            synchronized (cvOwConnection) {
+                try {
+                    cvOwConnection.wait(cvServerRetryInterval * 1000L);
+                } catch (InterruptedException e) {
+                    logger.debug("Wait was interrupted.");
+                }
+            }
+            attempts++;
+            retriesRemaining--;
+            logger.info("Retrying failed connection... Attempt {} of {}.", attempts, cvServerRetries);
+            try {
+                result = cvOwConnection.listDirectory("/");
+                if (result != null) {
+                    connected = true;
+                }
+            } catch (OwfsException oe) {
+                logger.warn("Unexpected owfs exception: {}", oe.getMessage(), oe);
+            } catch (IOException e) {
+                logger.warn("Unexpected connection failure.", e);
+            }
+        }
+
+        if (!connected) {
+            logger.error("Couldn't connect to owserver [IP '{}' Port '{}']", cvIp, cvPort);
+            cvIsEstablished = false;
             return false;
         }
+
+        logger.info("Connected to owserver [IP '{}' Port '{}']", cvIp, cvPort);
+        cvIsEstablished = true;
+        return true;
     }
 
     /**
      * Reconnects to owserver
-     * 
+     *
      * @return
      */
     public static synchronized boolean reconnect() {
@@ -122,50 +171,80 @@ public class OneWireConnection {
         try {
             cvOwConnection.disconnect();
         } catch (Exception lvException) {
-            logger.error("Error while disconnecting from owserver: " + lvException, lvException);
+            logger.error("Error while disconnecting from owserver: ", lvException);
         }
         cvOwConnection = null;
+        cvIsEstablished = false;
         return connect();
     }
 
     public static synchronized void updated(Dictionary<String, ?> pvConfig) throws ConfigurationException {
-        if (pvConfig != null) {
-            logger.debug("OneWire configuration present. Setting up owserver connection.");
-            cvIp = (String) pvConfig.get("ip");
-
-            String lvPortConfig = (String) pvConfig.get("port");
-            if (StringUtils.isNotBlank(lvPortConfig)) {
-                cvPort = Integer.parseInt(lvPortConfig);
-            }
-
-            String lvTempScaleString = (String) pvConfig.get("tempscale");
-            if (StringUtils.isNotBlank(lvTempScaleString)) {
-                try {
-                    cvTempScale = OwTemperatureScale.valueOf(lvTempScaleString);
-                } catch (IllegalArgumentException iae) {
-                    String lvFehlertext = "Unknown temperature scale '" + lvTempScaleString
-                            + "'. Valid values are CELSIUS, FAHRENHEIT, KELVIN or RANKINE.";
-                    logger.error(lvFehlertext, iae);
-                    throw new ConfigurationException("onewire:tempscale", lvFehlertext);
-                }
-            }
-
-            String lvRetryString = (String) pvConfig.get("retry");
-            if (StringUtils.isNotBlank(lvRetryString)) {
-                cvRetry = Integer.parseInt(lvRetryString);
-            }
-
-            if (cvOwConnection == null) {
-                logger.debug("Not connected to owserver yet. Trying to connect...");
-                if (!connect()) {
-                    logger.warn("Inital connection to owserver failed!");
-                } else {
-                    logger.debug("Success: connected to owserver.");
-                }
-            }
-        } else {
-            logger.info(
+        if (pvConfig == null) {
+            logger.debug(
                     "OneWireBinding configuration is not present. Please check your configuration file or if not needed remove the OneWireBinding addon.");
+            return;
+        }
+
+        logger.debug("OneWire configuration present. Setting up owserver connection.");
+        cvIp = Objects.toString(pvConfig.get("ip"), null);
+        if (StringUtils.isBlank(cvIp)) {
+            logger.error("owserver IP address was configured as an empty string.");
+            throw new ConfigurationException("onewire:ip", "owserver IP address was configured as an empty string.");
+        }
+
+        String lvPortConfig = Objects.toString(pvConfig.get("port"), null);
+        if (StringUtils.isNotBlank(lvPortConfig)) {
+            cvPort = Integer.parseInt(lvPortConfig);
+        }
+        if (cvPort < 1) {
+            logger.error("owserver port was configured with an invalid value: {}", cvPort);
+            throw new ConfigurationException("onewire:port",
+                    "owserver port was configured with an invalid value: " + cvPort);
+        }
+        logger.debug("owserver ip:port = {}:{}", cvIp, cvPort);
+
+        String lvTempScaleString = Objects.toString(pvConfig.get("tempscale"), null);
+        if (StringUtils.isNotBlank(lvTempScaleString)) {
+            try {
+                cvTempScale = OwTemperatureScale.valueOf(lvTempScaleString);
+            } catch (IllegalArgumentException iae) {
+                String lvFehlertext = "Unknown temperature scale '" + lvTempScaleString
+                        + "'. Valid values are CELSIUS, FAHRENHEIT, KELVIN or RANKINE.";
+                logger.error(lvFehlertext, iae);
+                throw new ConfigurationException("onewire:tempscale", lvFehlertext);
+            }
+        }
+
+        String lvRetryString = Objects.toString(pvConfig.get("retry"), null);
+        if (StringUtils.isNotBlank(lvRetryString)) {
+            cvRetry = Integer.parseInt(lvRetryString);
+        }
+        logger.debug("onewire:retry = {}", cvRetry);
+
+        String lvServerRetries = Objects.toString(pvConfig.get("server_retries"), null);
+        if (StringUtils.isNotBlank(lvServerRetries)) {
+            cvServerRetries = Integer.parseInt(lvServerRetries);
+        }
+        logger.debug("onewire:server_retries = {}", cvServerRetries);
+
+        String lvRetryIntervalString = Objects.toString(pvConfig.get("server_retryInterval"), null);
+        if (StringUtils.isNotBlank(lvRetryIntervalString)) {
+            cvServerRetryInterval = Integer.parseInt(lvRetryIntervalString);
+            if (cvServerRetryInterval < 5 && cvServerRetryInterval > 0) {
+                logger.info("server_retryInterval was set to {}. Using the minimum allowed value of 5 instead.",
+                        cvServerRetryInterval);
+                cvServerRetryInterval = 5;
+            }
+        }
+        logger.debug("onewire:server_retryInterval = {} seconds", cvServerRetryInterval);
+
+        if (cvOwConnection == null) {
+            logger.debug("Not connected to owserver yet. Trying to connect...");
+            if (!connect()) {
+                logger.warn("Connection to owserver failed!");
+            } else {
+                logger.debug("Success: connected to owserver.");
+            }
         }
     }
 
@@ -178,7 +257,7 @@ public class OneWireConnection {
 
     /**
      * Checks if an device exists in 1-Wire network
-     * 
+     *
      * @param pvDevicePropertyPath
      * @return
      * @throws IOException
@@ -189,14 +268,14 @@ public class OneWireConnection {
         String[] pvDevicePropertyPathParts = pvDevicePropertyPath.trim().split("/");
 
         String lvDevicePath = pvDevicePropertyPathParts[0];
-        logger.debug("check if device exisits '{}': ", new Object[] { lvDevicePath });
+        logger.debug("check if device exists '{}': ", new Object[] { lvDevicePath });
 
         return OneWireConnection.getConnection().exists(lvDevicePath);
     }
 
     /**
      * Read a Value for a device property from 1-Wire network
-     * 
+     *
      * @param pvDevicePropertyPath
      * @return device property value as String
      */
@@ -217,8 +296,8 @@ public class OneWireConnection {
                     if (pvBindingConfig.isIgnore85CPowerOnResetValues()) {
                         double lvReadDouble = Double.parseDouble(lvReadValue);
                         if (lvReadDouble == 85.0) {
-                            logger.debug("reading from path " + lvDevicePropertyPath + " attempt " + lvAttempt
-                                    + " Ignoring 85°C value");
+                            logger.debug("reading from path '{}' attempt {}. Ignoring 85C value", lvDevicePropertyPath,
+                                    lvAttempt);
                         } else {
                             return lvReadValue;
                         }
@@ -239,8 +318,8 @@ public class OneWireConnection {
                     reconnect();
                 }
             } catch (IOException ioe) {
-                logger.error("couldn't establish network connection while read attempt " + lvAttempt + " '"
-                        + lvDevicePropertyPath + "' ip:port=" + cvIp + ":" + cvPort, ioe);
+                logger.error("couldn't establish network connection while read attempt {} '{}'" + " ip:port={}:{}",
+                        lvAttempt, lvDevicePropertyPath, cvIp, cvPort, ioe);
                 reconnect();
             } catch (NumberFormatException lvNumberFormatException) {
                 logger.error(
@@ -255,7 +334,7 @@ public class OneWireConnection {
 
     /**
      * Writes String to 1-Wire device property
-     * 
+     *
      * @param pvDevicePropertyPath
      * @param pvValue
      */
@@ -263,22 +342,21 @@ public class OneWireConnection {
         int lvAttempt = 1;
         while (lvAttempt <= cvRetry) {
             try {
-                logger.debug("trying to write '{}' to '{}', write attempt={}",
-                        new Object[] { pvValue, pvDevicePropertyPath, lvAttempt });
+                logger.debug("Trying to write '{}' to '{}', write attempt={}", pvValue, pvDevicePropertyPath,
+                        lvAttempt);
                 if (checkIfDeviceExists(pvDevicePropertyPath)) {
                     OneWireConnection.getConnection().write(pvDevicePropertyPath, pvValue);
                     return; // Success, exit
                 } else {
-                    logger.info("there is no device for path {}, write attempt={}",
-                            new Object[] { pvDevicePropertyPath, lvAttempt });
+                    logger.info("There is no device for path {}, write attempt={}", pvDevicePropertyPath, lvAttempt);
                 }
             } catch (OwfsException oe) {
-                logger.error("writing " + pvValue + " to path " + pvDevicePropertyPath + " attempt " + lvAttempt
-                        + " throws exception", oe);
+                logger.error("Writing {} to path {} attempt {} threw an exception", pvValue, pvDevicePropertyPath,
+                        lvAttempt, oe);
                 reconnect();
             } catch (IOException ioe) {
-                logger.error("couldn't establish network connection while write attempt " + lvAttempt + " to '"
-                        + pvDevicePropertyPath + "' ip:port=" + cvIp + ":" + cvPort, ioe);
+                logger.error("Couldn't establish network connection while write attempt {} to '{}'" + " ip:port={}:{}",
+                        lvAttempt, pvDevicePropertyPath, cvIp, cvPort, ioe);
                 reconnect();
             } finally {
                 lvAttempt++;

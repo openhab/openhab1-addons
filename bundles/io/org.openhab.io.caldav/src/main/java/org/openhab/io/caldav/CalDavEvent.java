@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,6 +7,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.io.caldav;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -30,6 +33,7 @@ public class CalDavEvent {
     private String location;
     private String content;
     private String filename;
+    private final List<String> categoryList = new ArrayList<String>();
 
     public CalDavEvent() {
         super();
@@ -121,6 +125,10 @@ public class CalDavEvent {
         this.filename = filename;
     }
 
+    public List<String> getCategoryList() {
+        return categoryList;
+    }
+
     public String getShortName() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.id);
@@ -169,6 +177,32 @@ public class CalDavEvent {
         } else if (!id.equals(other.id)) {
             return false;
         }
+        // supposing that the "lastChanged" timestamp has correctly been set in case of event modification for something
+        // like categories, place ... )
+        if (lastChanged == null) {
+            if (other.lastChanged != null) {
+                return false;
+            }
+        } else if (!lastChanged.equals(other.lastChanged)) {
+            return false;
+        }
+
+        // we NEED to compare event's start and stop date to be able to say they are equal :
+        if (start == null) {
+            if (other.start != null) {
+                return false;
+            }
+        } else if (!start.equals(other.start)) {
+            return false;
+        }
+        if (end == null) {
+            if (other.end != null) {
+                return false;
+            }
+        } else if (!end.equals(other.end)) {
+            return false;
+        }
+
         return true;
     }
 

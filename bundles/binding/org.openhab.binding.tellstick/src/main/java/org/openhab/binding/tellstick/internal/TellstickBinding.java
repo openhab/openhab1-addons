@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,9 +10,12 @@ package org.openhab.binding.tellstick.internal;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.openhab.binding.tellstick.TellstickBindingConfig;
 import org.openhab.binding.tellstick.TellstickBindingProvider;
@@ -43,6 +46,7 @@ import com.sun.jna.Platform;
  * device. It uses a JNA bridge to talk to the C api of the tellstick.
  *
  * @author jarlebh
+ * @author Elias Gabrielsson
  * @since 1.5.0
  */
 public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProvider>implements ManagedService {
@@ -64,9 +68,14 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
      */
     private long refreshInterval = 60000;
 
-    private TellstickController controller = new TellstickController();
+    private TellstickController controller;
+    private Thread controllerThread;
+    private SortedMap<TellstickDevice, TellstickSendEvent> messageQue;
 
     public TellstickBinding() {
+        messageQue = Collections.synchronizedSortedMap(new TreeMap<TellstickDevice, TellstickSendEvent>());
+        controller = new TellstickController(messageQue);
+        controllerThread = new Thread(controller);
     }
 
     @Override
@@ -79,6 +88,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
         logger.info("Deactivate " + this);
         try {
             deRegisterListeners();
+            controllerThread.interrupt();
         } catch (Exception e) {
             logger.error("Failed to deactivate", e);
         }
@@ -114,11 +124,14 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
         logger.debug("internalReceiveCommand() is called! for " + itemName + " with " + command);
         TellstickBindingConfig config = findTellstickBindingConfig(itemName);
         if (config != null) {
-            try {
-                TellstickDevice dev = findDevice(config);
-                controller.handleSendEvent(config, dev, command);
-            } catch (Exception e) {
-                logger.error("Failed to send msg to " + config, e);
+            if(!controllerThread.isAlive()){
+                controllerThread.start();
+            }
+            TellstickDevice dev = findDevice(config);
+            Long eventTime = System.currentTimeMillis();
+            synchronized (messageQue) {
+                messageQue.put(dev, new TellstickSendEvent(config, dev, command, eventTime));
+                messageQue.notify();
             }
         }
     }
@@ -134,8 +147,16 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
         return dev;
     }
 
+    protected void addBindingProvider(TellstickBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(TellstickBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

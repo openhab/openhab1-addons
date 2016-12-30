@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -59,12 +59,22 @@ public class RFXComChimeMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.CHIME_SOUND);
 
-    public SubType subType = SubType.BYRONSX;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public int chimeSound = 0;
     public byte signalLevel = 0;
@@ -97,12 +107,7 @@ public class RFXComChimeMessage extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
         chimeSound = (data[6]);
 
@@ -112,7 +117,7 @@ public class RFXComChimeMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[7];
+        byte[] data = new byte[8];
 
         data[0] = 0x07;
         data[1] = RFXComBaseMessage.PacketType.CHIME.toByte();
@@ -179,8 +184,23 @@ public class RFXComChimeMessage extends RFXComBaseMessage {
     public void convertFromState(RFXComValueSelector valueSelector, String id, Object subType, Type type,
             byte seqNumber) throws RFXComException {
 
-        throw new RFXComException("Not supported");
+        this.subType = ((SubType) subType);
+        seqNbr = seqNumber;
+        String[] ids = id.split("\\.");
+        sensorId = Integer.parseInt(ids[0]);
 
+        switch (valueSelector) {
+            case CHIME_SOUND:
+                if (type instanceof DecimalType) {
+                    chimeSound = ((DecimalType) type).intValue();
+                } else {
+                    throw new RFXComException("Can't convert " + type + " to chime sound");
+                }
+                break;
+
+            default:
+                throw new RFXComException("Can't convert " + type + " to " + valueSelector);
+        }
     }
 
     @Override

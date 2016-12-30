@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,7 +24,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 /**
  * Handles the manufacturer specific command class. Class to request and report
  * manufacturer specific information.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.3.0
  */
@@ -39,7 +39,7 @@ public class ZWaveManufacturerSpecificCommandClass extends ZWaveCommandClass {
 
     /**
      * Creates a new instance of the ZwaveManufacturerSpecificCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -98,7 +98,7 @@ public class ZWaveManufacturerSpecificCommandClass extends ZWaveCommandClass {
 
     /**
      * Gets a SerialMessage with the ManufacturerSpecific GET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getManufacturerSpecificMessage() {

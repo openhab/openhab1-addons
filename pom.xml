@@ -37,8 +37,8 @@
     <description>This is the open Home Automation Bus (openHAB)</description>
 
     <properties>
-        <ohdr.version>1.0.0</ohdr.version>
-        <ohc.version>2.0.0.b1</ohc.version>
+        <ohdr.version>1.0.10</ohdr.version>
+        <ohc.version>2.0.0.x</ohc.version>
         <jdeb-version>1.4</jdeb-version>
 
         <tycho-version>0.24.0</tycho-version>
@@ -56,6 +56,16 @@
         <maven.compiler.target>1.7</maven.compiler.target>
 
         <repo.url>https://api.bintray.com/maven/openhab/mvn/openhab</repo.url>
+
+		<!-- JDBC Databasedriver Versions -->
+		<derby.version>10.12.1.1</derby.version>
+		<h2.version>1.4.191</h2.version>
+		<hsqldb.version>2.3.3</hsqldb.version>
+		<mariadb.version>1.3.5</mariadb.version>
+		<mysql.version>5.1.38</mysql.version>
+		<postgresql.version>9.4.1212</postgresql.version>
+		<sqlite.version>3.8.11.2</sqlite.version>
+
     </properties>
 
     <packaging>pom</packaging>
@@ -180,6 +190,11 @@
                         </supportedProjectTypes>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.vafer</groupId>
+                    <artifactId>jdeb</artifactId>
+                    <version>1.5</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -236,7 +251,7 @@
         <!-- openHAB core p2 repository -->
         <repository>
             <id>p2-openhab-core</id>
-            <url>https://dl.bintray.com/kaikreuzer/openhab-core/p2/${ohc.version}</url>
+            <url>https://dl.bintray.com/openhab/p2/openhab-core/${ohc.version}</url>
             <layout>p2</layout>
         </repository>
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -56,6 +56,9 @@ public class PlexSession {
 
     @ItemMapping(property = END_TIME, type = DateTimeType.class)
     private Date endTime = null;
+
+    @ItemMapping(property = COVER, type = StringType.class)
+    private String cover = "";
 
     private int duration = 0;
 
@@ -123,6 +126,14 @@ public class PlexSession {
 
     public Date getEndTime() {
         return endTime;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 
     public int getDuration() {

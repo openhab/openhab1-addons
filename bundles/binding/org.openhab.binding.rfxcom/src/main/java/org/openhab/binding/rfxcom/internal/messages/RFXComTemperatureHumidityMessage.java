@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,7 +32,6 @@ import org.openhab.core.types.UnDefType;
 public class RFXComTemperatureHumidityMessage extends RFXComBaseMessage {
 
     public enum SubType {
-        UNDEF(0),
         THGN122_123_132_THGR122_228_238_268(1),
         THGN800_THGR810(2),
         RTGR328(3),
@@ -43,6 +42,10 @@ public class RFXComTemperatureHumidityMessage extends RFXComBaseMessage {
         WT260_WT260H_WT440H_WT450_WT450H(8),
         VIKING_02035_02038(9),
         RUBICSON(10),
+        EW109(11),
+        XT300(12),
+        WS1700(13),
+        WS3500_ET_AL(14), // Alecto WS3500, WS4500, Auriol H13726, Hama EWS1500, Meteoscan W155/W160, Ventus WS155
 
         UNKNOWN(255);
 
@@ -58,6 +61,16 @@ public class RFXComTemperatureHumidityMessage extends RFXComBaseMessage {
 
         public byte toByte() {
             return (byte) subType;
+        }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
         }
     }
 
@@ -82,17 +95,27 @@ public class RFXComTemperatureHumidityMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) humidityStatus;
         }
+
+        public static HumidityStatus fromByte(int input) {
+            for (HumidityStatus status : HumidityStatus.values()) {
+                if (status.humidityStatus == input) {
+                    return status;
+                }
+            }
+
+            return HumidityStatus.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.TEMPERATURE,
             RFXComValueSelector.HUMIDITY, RFXComValueSelector.HUMIDITY_STATUS);
 
-    public SubType subType = SubType.THGN122_123_132_THGR122_228_238_268;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public double temperature = 0;
     public byte humidity = 0;
-    public HumidityStatus humidityStatus = HumidityStatus.NORMAL;
+    public HumidityStatus humidityStatus = HumidityStatus.UNKNOWN;
     public byte signalLevel = 0;
     public byte batteryLevel = 0;
 
@@ -125,11 +148,7 @@ public class RFXComTemperatureHumidityMessage extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 
         temperature = (short) ((data[6] & 0x7F) << 8 | (data[7] & 0xFF)) * 0.1;
@@ -138,12 +157,7 @@ public class RFXComTemperatureHumidityMessage extends RFXComBaseMessage {
         }
 
         humidity = data[8];
-
-        try {
-            humidityStatus = HumidityStatus.values()[data[9]];
-        } catch (Exception e) {
-            humidityStatus = HumidityStatus.UNKNOWN;
-        }
+        humidityStatus = HumidityStatus.fromByte(data[9]);
 
         signalLevel = (byte) ((data[10] & 0xF0) >> 4);
         batteryLevel = (byte) (data[10] & 0x0F);

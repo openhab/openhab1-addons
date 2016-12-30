@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.prefs.Preferences;
@@ -293,7 +294,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
     /**
      * Given the credentials to use and what to select from the Ecobee API, read any changed information from Ecobee and
      * update the affected items.
-     * 
+     *
      * @param oauthCredentials
      *            the credentials to use
      * @param selection
@@ -413,7 +414,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 
     /**
      * Give a binding provider, a map of thermostats, and an item name, return the corresponding state object.
-     * 
+     *
      * @param provider
      *            the Ecobee binding provider
      * @param thermostats
@@ -446,11 +447,11 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
      * {@code dataTypes} are mapped to {@link StringType}.
      * <p>
      * If {@code propertyValue} is {@code null}, {@link UnDefType#NULL} will be returned.
-     * 
+     *
      * Copied/adapted from the Koubachi binding.
-     * 
+     *
      * @param propertyValue
-     * 
+     *
      * @return the new {@link State} in accordance with {@code dataType}. Will never be {@code null}.
      */
     private State createState(Object propertyValue) {
@@ -505,7 +506,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 
     /**
      * Perform the given {@code command} against all targets referenced in {@code itemName}.
-     * 
+     *
      * @param command
      *            the command to execute
      * @param the
@@ -530,7 +531,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 
     /**
      * Send the {@code newState} for the given {@code itemName} to Ecobee.
-     * 
+     *
      * @param itemName
      * @param newState
      */
@@ -611,35 +612,27 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
      * {@inheritDoc}
      */
     @Override
-    public boolean callEcobee(final String itemName, final AbstractFunction function) {
-        // Find the first binding provider for this itemName.
-        EcobeeBindingProvider provider = null;
-        String selectionMatch = null;
-        for (EcobeeBindingProvider p : this.providers) {
-            selectionMatch = p.getThermostatIdentifier(itemName);
-            if (selectionMatch != null) {
-                provider = p;
-                break;
-            }
-        }
-
-        if (provider == null) {
-            logger.warn("no matching binding provider found [itemName={}, function={}]", itemName, function);
-            return false;
-        }
-
-        final Selection selection = new Selection(selectionMatch);
-        logger.trace("Selection for function: {}", selection);
+    public boolean callEcobee(final String selection, final AbstractFunction func) {
 
         try {
-            logger.trace("Function to call: {}", function);
+            logger.trace("Function to call: {}", func);
 
-            OAuthCredentials oauthCredentials = getOAuthCredentials(provider.getUserid(itemName));
+            String userid = null;
+            String selectionMatch = selection;
+            if (selectionMatch.contains(".")) {
+                String[] parts = selectionMatch.split("\\.");
+                userid = parts[0];
+                selectionMatch = parts[1];
+            }
 
+            OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
             if (oauthCredentials == null) {
-                logger.warn("Unable to locate credentials for item {}; aborting function call.", itemName);
+                logger.warn("Unable to locate credentials for selection {}; aborting function call.", selection);
                 return false;
             }
+
+            final Selection sel = new Selection(selectionMatch);
+            logger.trace("Selection for function: {}", sel);
 
             if (oauthCredentials.noAccessToken()) {
                 if (!oauthCredentials.refreshTokens()) {
@@ -649,17 +642,17 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
             }
 
             List<AbstractFunction> functions = new ArrayList<AbstractFunction>(1);
-            functions.add(function);
+            functions.add(func);
 
-            UpdateThermostatRequest request = new UpdateThermostatRequest(oauthCredentials.accessToken, selection,
-                    functions, null);
+            UpdateThermostatRequest request = new UpdateThermostatRequest(oauthCredentials.accessToken, sel, functions,
+                    null);
 
             ApiResponse response = request.execute();
             if (response.isError()) {
                 final Status status = response.getStatus();
                 if (status.isAccessTokenExpired()) {
                     if (oauthCredentials.refreshTokens()) {
-                        return callEcobee(itemName, function);
+                        return callEcobee(selection, func);
                     }
                 } else {
                     logger.error("Error calling function: {}", response);
@@ -713,7 +706,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
      * Returns the cached {@link OAuthCredentials} for the given {@code userid}. If their is no such cached
      * {@link OAuthCredentials} element, the cache is searched with the {@code DEFAULT_USER}. If there is still no
      * cached element found {@code NULL} is returned.
-     * 
+     *
      * @param userid
      *            the userid to find the {@link OAuthCredentials}
      * @return the cached {@link OAuthCredentials} or {@code NULL}
@@ -726,6 +719,14 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
         }
     }
 
+    protected void addBindingProvider(EcobeeBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(EcobeeBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -735,30 +736,30 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 
             // to override the default granularity one has to add a
             // parameter to openhab.cfg like ecobee:granularity=2000
-            String granularityString = (String) config.get(CONFIG_GRANULARITY);
+            String granularityString = Objects.toString(config.get(CONFIG_GRANULARITY), null);
             granularity = isNotBlank(granularityString) ? Long.parseLong(granularityString) : DEFAULT_GRANULARITY;
 
             // to override the default refresh interval one has to add a
             // parameter to openhab.cfg like ecobee:refresh=240000
-            String refreshIntervalString = (String) config.get(CONFIG_REFRESH);
+            String refreshIntervalString = Objects.toString(config.get(CONFIG_REFRESH), null);
             refreshInterval = isNotBlank(refreshIntervalString) ? Long.parseLong(refreshIntervalString)
                     : DEFAULT_REFRESH;
 
             // to override the default quickPoll interval one has to add a
             // parameter to openhab.cfg like ecobee:quickpoll=4000
-            String quickPollIntervalString = (String) config.get(CONFIG_QUICKPOLL);
+            String quickPollIntervalString = Objects.toString(config.get(CONFIG_QUICKPOLL), null);
             quickPollInterval = isNotBlank(quickPollIntervalString) ? Long.parseLong(quickPollIntervalString)
                     : DEFAULT_QUICKPOLL;
 
             // to override the default HTTP timeout one has to add a
             // parameter to openhab.cfg like ecobee:timeout=20000
-            String timeoutString = (String) config.get(CONFIG_TIMEOUT);
+            String timeoutString = Objects.toString(config.get(CONFIG_TIMEOUT), null);
             if (isNotBlank(timeoutString)) {
                 AbstractRequest.setHttpRequestTimeout(Integer.parseInt(timeoutString));
             }
             // to override the default usage of Fahrenheit one has to add a
             // parameter to openhab.cfg, as in ecobee:tempscale=C
-            String tempScaleString = (String) config.get(CONFIG_TEMP_SCALE);
+            String tempScaleString = Objects.toString(config.get(CONFIG_TEMP_SCALE), null);
             if (isNotBlank(tempScaleString)) {
                 try {
                     Temperature.setLocalScale(Temperature.Scale.forValue(tempScaleString));
@@ -799,7 +800,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
                     credentialsCache.put(userid, credentials);
                 }
 
-                String value = (String) config.get(configKey);
+                String value = Objects.toString(config.get(configKey), null);
 
                 if (CONFIG_APP_KEY.equals(configKeyTail)) {
                     credentials.appKey = value;
@@ -840,7 +841,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
      * Return true if the given itemName pertains to the given OAuthCredentials. Since there is a single userid-based
      * mapping of credential objects for the binding, if the credentials object is the same object as the one in the
      * userid-based map, then we know that this item pertains to these credentials.
-     * 
+     *
      * @param provider
      *            the binding provider
      * @param itemName
@@ -858,7 +859,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
      * Creates the necessary {@link Selection} object to request all information required from the Ecobee API for all
      * thermostats and sub-objects that have a binding, per set of credentials configured in openhab.cfg. One
      * {@link ThermostatRequest} can then query all information in one go.
-     * 
+     *
      * @param oauthCredentials
      *            constrain the resulting Selection object to only select the thermostats which the configuration
      *            indicates can be reached using these credentials.
@@ -877,7 +878,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
                 /*
                  * We are only concerned with inbound items, so there would be no point to including the criteria for
                  * this item.
-                 * 
+                 *
                  * We are also only concerned with items that can be reached by the given credentials.
                  */
 
@@ -891,6 +892,8 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
                     selection.setIncludeSettings(true);
                 } else if (property.startsWith("runtime")) {
                     selection.setIncludeRuntime(true);
+                } else if (property.startsWith("alerts")) {
+                    selection.setIncludeAlerts(true);
                 } else if (property.startsWith("extendedRuntime")) {
                     selection.setIncludeExtendedRuntime(true);
                 } else if (property.startsWith("electricity")) {
@@ -945,7 +948,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
     /**
      * This internal class holds the different credentials necessary for the OAuth2 flow to work. It also provides basic
      * methods to refresh the tokens.
-     * 
+     *
      * <p>
      * OAuth States
      * <table>
@@ -983,7 +986,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
      * </tr>
      * </tbody>
      * </table>
-     * 
+     *
      * @author John Cocula
      * @since 1.7.0
      */
@@ -1004,7 +1007,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 
         /**
          * The scope needed when authorizing this client to the Ecobee API.
-         * 
+         *
          * @see AuthorizeRequest
          */
         private String scope;
@@ -1012,7 +1015,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
         /**
          * The authorization token needed to request the refresh and access tokens. Obtained and persisted when
          * {@code authorize()} is called.
-         * 
+         *
          * @see AuthorizeRequest
          * @see #authorize()
          */
@@ -1022,7 +1025,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
          * The refresh token to access the Ecobee API. Initial token is received using the <code>authToken</code>,
          * periodically refreshed using the previous refreshToken, and saved in persistent storage so it can be used
          * across activations.
-         * 
+         *
          * @see TokenRequest
          * @see RefreshTokenRequest
          */
@@ -1031,7 +1034,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
         /**
          * The access token to access the Ecobee API. Automatically renewed from the API using the refresh token and
          * persisted for use across activations.
-         * 
+         *
          * @see #refreshTokens()
          */
         private String accessToken;
@@ -1121,7 +1124,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
             logger.info("#########################################################################################");
             logger.info("# Ecobee-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
             logger.info("# 1. Login to www.ecobee.com using your '{}' account", this.userid);
-            logger.info("# 2. Enter the PIN '{}' in My Apps within the next {} seconds.", response.getEcobeePin(),
+            logger.info("# 2. Enter the PIN '{}' in My Apps within the next {} minutes.", response.getEcobeePin(),
                     response.getExpiresIn());
             logger.info("# NOTE: Any API attempts will fail in the meantime.");
             logger.info("#########################################################################################");
@@ -1135,7 +1138,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
          * This method requests access and refresh tokens to use the Ecobee API. If there is a <code>refreshToken</code>
          * , it will be used to obtain the tokens, but if there is only an <code>authToken</code>, that will be used
          * instead.
-         * 
+         *
          * @return <code>true</code> if there is reason to believe that an immediately subsequent API call would
          *         succeed.
          */

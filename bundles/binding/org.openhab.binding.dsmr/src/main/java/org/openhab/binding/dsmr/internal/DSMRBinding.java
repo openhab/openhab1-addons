@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@ package org.openhab.binding.dsmr.internal;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.dsmr.DSMRBindingProvider;
@@ -48,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * @author M.Volaart
  * @since 1.7.0
  */
-public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>implements ManagedService {
+public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider> implements ManagedService {
 
     /** Update interval as specified by DSMR */
     public static final int DSMR_UPDATE_INTERVAL = 10000;
@@ -67,10 +68,10 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>imple
 
     /*
      * the refresh interval which is used to poll values from the DSMR server
-     * 
+     *
      * Since we the device only updates every 10 seconds we let openHAB
      * introduce a pause before execute is called again.
-     * 
+     *
      * We use here half the update interval time so we have some time to read
      * the serial port (refreshInterval starts after previous executes ends)
      */
@@ -170,6 +171,14 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>imple
         }
     }
 
+    protected void addBindingProvider(DSMRBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(DSMRBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * Read the dsmr:port and dsmr:<metertype>.channel properties
      */
@@ -178,7 +187,7 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>imple
         logger.debug("updated() is called!");
         if (config != null) {
             // Read port string
-            String portString = (String) config.get("port");
+            String portString = Objects.toString(config.get("port"), null);
             logger.debug("dsmr:port=" + portString);
             if (StringUtils.isNotBlank(portString)) {
                 port = portString;
@@ -192,7 +201,7 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>imple
             dsmrMeters.clear();
 
             for (DSMRMeterType meterType : DSMRMeterType.values()) {
-                String channelConfigValue = (String) config.get(meterType.channelConfigKey);
+                String channelConfigValue = Objects.toString(config.get(meterType.channelConfigKey), null);
                 logger.debug("dsmr:" + meterType.channelConfigKey + "=" + channelConfigValue);
 
                 if (StringUtils.isNotBlank(channelConfigValue)) {

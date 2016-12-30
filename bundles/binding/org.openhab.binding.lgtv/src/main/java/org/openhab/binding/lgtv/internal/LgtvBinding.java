@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -186,10 +186,10 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider>
 
     /**
      * Convert OpenHAB commmand to LGTV command.
-     * 
+     *
      * @param command
      * @param cmdTemplate
-     * 
+     *
      * @return
      */
     private String convertOpenHabCommandToDeviceCommand(Command command, String cmdTemplate) {
@@ -214,9 +214,9 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider>
     /**
      * Find the first matching {@link LgtvBindingProvider} according to
      * <code>itemName</code>.
-     * 
+     *
      * @param itemName
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -245,10 +245,17 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider>
         return firstMatchingProvider;
     }
 
-    /**
-     * @{inheritDoc
-     */
+    protected void addBindingProvider(LgtvBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
 
+    protected void removeBindingProvider(LgtvBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 
         logger.debug("Configuration updated, config {}", config != null ? true : false);
@@ -378,7 +385,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider>
 
     /**
      * Find receiver from device caache by ip address.
-     * 
+     *
      * @param ip
      * @return
      */
@@ -445,10 +452,10 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider>
 
     /**
      * Convert receiver value to OpenHAB state.
-     * 
+     *
      * @param itemType
      * @param data
-     * 
+     *
      * @return
      */
     private State convertDeviceValueToOpenHabState(Class<? extends Item> itemType, String data) {
@@ -488,9 +495,9 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider>
     /**
      * Initialize item value. Method send query to receiver if init query is
      * configured to binding item configuration
-     * 
+     *
      * @param itemType
-     * 
+     *
      */
     private void initializeItem(String itemName) {
         for (LgtvBindingProvider provider : providers) {

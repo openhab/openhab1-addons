@@ -172,7 +172,7 @@ If the current temperature gap is larger than 2.0, a temperature report will be 
 		<Parameter>
 			<Index>42</Index>
 			<Type>short</Type>
-			<Size>2</Size>
+			<Size>1</Size>
 			<Minimum>0</Minimum>
 			<Maximum>100</Maximum>
 			<Default>10</Default>

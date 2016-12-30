@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,7 +27,7 @@ public class RFXComEnergyMessage extends RFXComBaseMessage {
 
     /*
      * Energy packet layout (length 17)
-     * 
+     *
      * packetlength = 0
      * packettype = 1
      * subtype = 2
@@ -49,12 +49,12 @@ public class RFXComEnergyMessage extends RFXComBaseMessage {
      * signal_level = 17 //bits 7-4
      */
 
-    private static float TOTAL_USAGE_CONVERSION_FACTOR = 223.666F;
-    private static float WATTS_TO_AMPS_CONVERSION_FACTOR = 230F;
+    private static double TOTAL_USAGE_CONVERSION_FACTOR = 223.666D;
+    private static double WATTS_TO_AMPS_CONVERSION_FACTOR = 230D;
 
     public enum SubType {
-        ELEC1(0),
-        ELEC2(1),
+        ELEC2(1), // CM119/160
+        ELEC3(2), // CM180
 
         UNKNOWN(255);
 
@@ -71,13 +71,23 @@ public class RFXComEnergyMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.COMMAND,
             RFXComValueSelector.INSTANT_AMPS, RFXComValueSelector.TOTAL_AMP_HOURS);
 
-    public SubType subType = SubType.ELEC1;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public byte count = 0;
     public double instantAmps = 0;
@@ -111,22 +121,16 @@ public class RFXComEnergyMessage extends RFXComBaseMessage {
 
     @Override
     public void encodeMessage(byte[] data) {
-
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
         count = data[6];
 
         // all usage is reported in Watts based on 230V
         double instantUsage = ((data[7] & 0xFF) << 24 | (data[8] & 0xFF) << 16 | (data[9] & 0xFF) << 8
                 | (data[10] & 0xFF));
-        double totalUsage = ((data[11] & 0xFF) << 40 | (data[12] & 0xFF) << 32 | (data[13] & 0xFF) << 24
+        double totalUsage = ((long) (data[11] & 0xFF) << 40 | (long) (data[12] & 0xFF) << 32 | (data[13] & 0xFF) << 24
                 | (data[14] & 0xFF) << 16 | (data[15] & 0xFF) << 8 | (data[16] & 0xFF));
 
         // convert to amps so external code can determine the watts based on local voltage
@@ -139,10 +143,10 @@ public class RFXComEnergyMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[17];
+        byte[] data = new byte[18];
 
         data[0] = 0x11;
-        data[1] = RFXComBaseMessage.PacketType.ENERGY.toByte();
+        data[1] = PacketType.ENERGY.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
 
@@ -151,9 +155,8 @@ public class RFXComEnergyMessage extends RFXComBaseMessage {
         data[6] = count;
 
         // convert our 'amp' values back into Watts since this is what comes back
-        long instantUsage = Double.doubleToRawLongBits(instantAmps * WATTS_TO_AMPS_CONVERSION_FACTOR);
-        long totalUsage = Double
-                .doubleToRawLongBits(totalAmpHours * WATTS_TO_AMPS_CONVERSION_FACTOR * TOTAL_USAGE_CONVERSION_FACTOR);
+        long instantUsage = (long) (instantAmps * WATTS_TO_AMPS_CONVERSION_FACTOR);
+        long totalUsage = (long) (totalAmpHours * WATTS_TO_AMPS_CONVERSION_FACTOR * TOTAL_USAGE_CONVERSION_FACTOR);
 
         data[7] = (byte) ((instantUsage >> 24) & 0xFF);
         data[8] = (byte) ((instantUsage >> 16) & 0xFF);

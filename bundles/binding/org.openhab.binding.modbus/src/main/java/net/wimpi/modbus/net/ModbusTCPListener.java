@@ -39,6 +39,15 @@ import net.wimpi.modbus.util.ThreadPool;
  */
 public class ModbusTCPListener implements Runnable {
 
+    public static class TCPSlaveConnectionFactoryImpl implements TCPSlaveConnectionFactory {
+
+        @Override
+        public TCPSlaveConnection create(Socket socket) {
+            return new TCPSlaveConnection(socket);
+        }
+
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(ModbusTCPListener.class);
     private static int c_RequestCounter = 0;
 
@@ -49,21 +58,30 @@ public class ModbusTCPListener implements Runnable {
     private int m_FloodProtection = 5;
     private boolean m_Listening;
     private InetAddress m_Address;
+    private TCPSlaveConnectionFactory m_ConnectionFactory;
+
+    private static InetAddress getLocalHost() {
+        try {
+            return InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            return null;
+        }
+    }
 
     /**
      * Constructs a ModbusTCPListener instance.<br>
      *
      * @param poolsize the size of the <tt>ThreadPool</tt> used to handle
      *            incoming requests.
+     * @param connectionFactory factory for creating connections
      */
-    public ModbusTCPListener(int poolsize) {
-        m_ThreadPool = new ThreadPool(poolsize);
-        try {
-            m_Address = InetAddress.getLocalHost();
-        } catch (UnknownHostException ex) {
-
-        }
+    public ModbusTCPListener(int poolsize, TCPSlaveConnectionFactory connectionFactory) {
+        this(poolsize, getLocalHost(), connectionFactory);
     }// constructor
+
+    public ModbusTCPListener(int poolsize) {
+        this(poolsize, new TCPSlaveConnectionFactoryImpl());
+    }
 
     /**
      * Constructs a ModbusTCPListener instance.<br>
@@ -71,11 +89,17 @@ public class ModbusTCPListener implements Runnable {
      * @param poolsize the size of the <tt>ThreadPool</tt> used to handle
      *            incoming requests.
      * @param addr the interface to use for listening.
+     * @param connectionFactory factory for creating connections
      */
-    public ModbusTCPListener(int poolsize, InetAddress addr) {
+    public ModbusTCPListener(int poolsize, InetAddress addr, TCPSlaveConnectionFactory connectionFactory) {
         m_ThreadPool = new ThreadPool(poolsize);
         m_Address = addr;
+        m_ConnectionFactory = connectionFactory;
     }// constructor
+
+    public ModbusTCPListener(int poolsize, InetAddress addr) {
+        this(poolsize, addr, new TCPSlaveConnectionFactoryImpl());
+    }
 
     /**
      * Sets the port to be listened to.
@@ -85,6 +109,18 @@ public class ModbusTCPListener implements Runnable {
     public void setPort(int port) {
         m_Port = port;
     }// setPort
+
+    /**
+     * Return local port of the ServerSocket.
+     * 
+     * @return
+     */
+    public int getLocalPort() {
+        if (m_ServerSocket == null) {
+            return -1;
+        }
+        return m_ServerSocket.getLocalPort();
+    }
 
     /**
      * Sets the address of the interface to be listened to.
@@ -139,7 +175,7 @@ public class ModbusTCPListener implements Runnable {
                 logger.debug("Making new connection {}", incoming.toString());
                 if (m_Listening) {
                     // FIXME: Replace with object pool due to resource issues
-                    m_ThreadPool.execute(new TCPConnectionHandler(new TCPSlaveConnection(incoming)));
+                    m_ThreadPool.execute(new TCPConnectionHandler(m_ConnectionFactory.create(incoming)));
                     count();
                 } else {
                     // just close the socket

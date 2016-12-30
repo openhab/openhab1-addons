@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * @serial 1.0
  * @since 1.7.0
  */
-public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>implements ManagedService {
+public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(BticinoBinding.class);
 
@@ -89,7 +90,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>imple
 
     /**
      * For the given item, get the bticino binding configuration
-     * 
+     *
      * @param itemName
      * @return
      * @throws Exception
@@ -113,7 +114,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>imple
     /**
      * Returns the BticinoBindingConfig(s) associated with the who / where
      * config
-     * 
+     *
      * @param who
      * @param where
      * @return
@@ -161,8 +162,16 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>imple
         }
     }
 
+    protected void addBindingProvider(BticinoBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(BticinoBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
         if (!m_binding_initialized) {
@@ -210,7 +219,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>imple
                 }
 
                 String configKey = matcher.group(2);
-                String value = (String) properties.get(key);
+                String value = Objects.toString(properties.get(key), null);
 
                 // parameter host
                 if ("host".equals(configKey)) {

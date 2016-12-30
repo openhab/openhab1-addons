@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,7 +30,7 @@ public class PhonebookManager {
     private Tr064Comm _tr064comm = null;
 
     // default logger
-    private static final Logger logger = LoggerFactory.getLogger(FritzboxTr064Binding.class);
+    private static final Logger logger = LoggerFactory.getLogger(PhonebookManager.class);
 
     // all PhonebooksEntries
     private ArrayList<PhoneBookEntry> _alEntries = null;
@@ -43,7 +43,7 @@ public class PhonebookManager {
 
     /***
      * Looks up name in phone book entries and returns name and type if found
-     * 
+     *
      * @param number number to look up name for
      * @param compareCount how many characters must match to accept a match
      * @return found name or null
@@ -111,7 +111,7 @@ public class PhonebookManager {
     }
 
     /***
-     * 
+     *
      * @param Phonebook ID to download, can be determined using TR064 GetPhonebookList
      * @return XML Document downloaded
      */

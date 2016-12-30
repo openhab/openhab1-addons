@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -60,7 +60,7 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
      * <ol>
      * <li>action type</li>
      * </ol>
-     * 
+     *
      * @see https://labs.koubachi.com/documentations/9
      */
     private static final String TASKS_BODY = "{\"care_action\":{\"action_type\":\"%1$s\"}}";
@@ -77,15 +77,15 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 
     /**
      * the URL of the Device list (optional, defaults to
-     * 'https://api.koubachi.com/v2/user/smart_devices?user_credentials=%1$s&app_key=%2$s')
+     * 'https://api.koubachi.com/v3/user/smart_devices?user_credentials=%1$s&app_key=%2$s')
      */
-    private static String apiDeviceListUrl = "https://api.koubachi.com/v2/user/smart_devices?user_credentials=%1$s&app_key=%2$s";
+    private static String apiDeviceListUrl = "https://api.koubachi.com/v3/user/smart_devices?user_credentials=%1$s&app_key=%2$s";
 
     /**
      * the URL of the Plant list (optional, defaults to
-     * 'https://api.koubachi.com/v2/user/smart_devices?user_credentials=%1$s&app_key=%2$s')
+     * 'https://api.koubachi.com/v3/user/smart_devices?user_credentials=%1$s&app_key=%2$s')
      */
-    private static String apiPlantListUrl = "https://api.koubachi.com/v2/plants?user_credentials=%1$s&app_key=%2$s";
+    private static String apiPlantListUrl = "https://api.koubachi.com/v3/plants?user_credentials=%1$s&app_key=%2$s";
 
     /**
      * The URL of the "plants/tasks" API method, to publish an action back to
@@ -102,7 +102,7 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
      * @see #updated(Dictionary)
      * @see https://labs.koubachi.com/documentations/9
      */
-    private static String apiTasksUrl = "https://api.koubachi.com/v2/plants/%3$s/tasks?user_credentials=%1$s&app_key=%2$s";
+    private static String apiTasksUrl = "https://api.koubachi.com/v3/plants/%3$s/tasks?user_credentials=%1$s&app_key=%2$s";
 
     /** The single access token configured at http://labs.kpubachi.com */
     private static String credentials;
@@ -196,11 +196,11 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 
     /**
      * Gets the list of all configured Devices from the Koubachi server.
-     * 
+     *
      * @param appKey
      * @param credentials
      * @param apiDeviceListUrl
-     * 
+     *
      * @return the list of all configured Devices. Is never {@code null}.
      */
     private List<Device> getDevices(String apiDeviceListUrl, String credentials, String appKey) {
@@ -229,7 +229,7 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 
     /**
      * Gets the list of all configured Plants from the Koubachi server.
-     * 
+     *
      * @return the list of all configured Plants. Is never {@code null}.
      */
     private List<Plant> getPlants(String apiPlantListUrl, String credentials, String appKey) {
@@ -262,7 +262,7 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
      * Refer to the <a
      * href="https://labs.koubachi.com/documentations/9">Koubachi API
      * documentation</a> for supported actions.
-     * 
+     *
      * @param plantId
      *            the id of the plant the action was performed on
      * @param actionType
@@ -287,10 +287,10 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 
     /**
      * Maps the given {@code jsonString} to {@code type}.
-     * 
+     *
      * @param type to type to map the given {@code jsonString}
      * @param jsonString the content which should be mapped to {@code type}
-     * 
+     *
      * @return a new instance of {@code type} with content of {@code jsonString}
      */
     private <T> T fromJSON(final TypeReference<T> type, final String jsonString) {
@@ -321,9 +321,9 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
      * <p>
      * If {@code propertyValue} is {@code null}, {@link UnDefType#NULL} will be
      * returned.
-     * 
+     *
      * @param propertyValue
-     * 
+     *
      * @return the new {@link State} in accordance to {@code dataType}. Will
      *         never be {@code null}.
      */
@@ -349,6 +349,14 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
         } else {
             return new StringType(propertyValue.toString());
         }
+    }
+
+    protected void addBindingProvider(KoubachiBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(KoubachiBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -45,6 +45,9 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
         RISINGSUN(6),
         PHILIPS(7),
         ENERGENIE(8),
+        ENERGENIE_5GANG(9),
+        GDR2_2000R(10),
+        HQ_COCO20(11),
 
         UNKNOWN(255);
 
@@ -60,6 +63,16 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 
         public byte toByte() {
             return (byte) subType;
+        }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
         }
     }
 
@@ -87,15 +100,25 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) command;
         }
+
+        public static Commands fromByte(int input) {
+            for (Commands c : Commands.values()) {
+                if (c.command == input) {
+                    return c;
+                }
+            }
+
+            return Commands.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.COMMAND, RFXComValueSelector.CONTACT);
 
-    public SubType subType = SubType.X10;
+    public SubType subType = SubType.UNKNOWN;
     public char sensorId = 'A';
     public byte unitcode = 0;
-    public Commands command = Commands.OFF;
+    public Commands command = Commands.UNKNOWN;
     public byte signalLevel = 0;
 
     public RFXComLighting1Message() {
@@ -126,21 +149,11 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
+        subType = SubType.fromByte(super.subType);
         sensorId = (char) data[4];
+        command = Commands.fromByte(data[6]);
 
-        try {
-            command = Commands.values()[data[6]];
-        } catch (Exception e) {
-            command = Commands.UNKNOWN;
-        }
-
-        if ((command == Commands.GROUP_ON) || (command == Commands.GROUP_OFF)) {
+        if (command == Commands.GROUP_ON || command == Commands.GROUP_OFF) {
             unitcode = 0;
         } else {
             unitcode = data[5];

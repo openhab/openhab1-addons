@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,6 +7,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tcp.protocol.internal;
+
+import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -16,7 +18,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.tcp.AbstractSocketChannelBinding;
 import org.openhab.binding.tcp.Direction;
 import org.openhab.binding.tcp.internal.TCPActivator;
@@ -42,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.1.0
  *
  */
-public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>implements ManagedService {
+public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider> implements ManagedService {
 
     static private final Logger logger = LoggerFactory.getLogger(TCPBinding.class);
 
@@ -134,11 +135,11 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
     }
 
     /**
-     * 
+     *
      * Main function to parse ASCII string received
-     * 
+     *
      * @return
-     * 
+     *
      */
     @Override
     protected void parseBuffer(String itemName, Command aCommand, Direction theDirection, ByteBuffer byteBuffer) {
@@ -164,6 +165,14 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
         }
     }
 
+    protected void addBindingProvider(TCPBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(TCPBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @SuppressWarnings("rawtypes")
     @Override
     public void updated(Dictionary config) throws ConfigurationException {
@@ -173,51 +182,50 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
         if (config != null) {
 
             String timeOutString = (String) config.get("timeout");
-            if (StringUtils.isNotBlank(timeOutString)) {
+            if (isNotBlank(timeOutString)) {
                 timeOut = Integer.parseInt((timeOutString));
             } else {
-                logger.info(
-                        "The maximum time out for blocking write operations will be set to the default vaulue of {}",
+                logger.info("The maximum time out for blocking write operations will be set to the default value of {}",
                         timeOut);
             }
 
             String blockingString = (String) config.get("blocking");
-            if (StringUtils.isNotBlank(blockingString)) {
+            if (isNotBlank(blockingString)) {
                 blocking = Boolean.parseBoolean((blockingString));
             } else {
-                logger.info("The blocking nature of read/write operations will be set to the default vaulue of {}",
+                logger.info("The blocking nature of read/write operations will be set to the default value of {}",
                         blocking);
             }
 
             String preambleString = (String) config.get("preamble");
-            if (StringUtils.isNotBlank(preambleString)) {
+            if (isNotBlank(preambleString)) {
                 preAmble = StringEscapeUtils.unescapeJava(preambleString);
             } else {
-                logger.info("The preamble for all write operations will be set to the default vaulue of \"{}\"",
+                logger.info("The preamble for all write operations will be set to the default value of \"{}\"",
                         preAmble);
             }
 
             String postambleString = (String) config.get("postamble");
-            if (StringUtils.isNotBlank(postambleString)) {
+            if (isNotBlank(postambleString)) {
                 postAmble = StringEscapeUtils.unescapeJava(postambleString);
             } else {
-                logger.info("The postamble for all write operations will be set to the default vaulue of \"{}\"",
+                logger.info("The postamble for all write operations will be set to the default value of \"{}\"",
                         postAmble);
             }
 
             String updatewithresponseString = (String) config.get("updatewithresponse");
-            if (StringUtils.isNotBlank(updatewithresponseString)) {
+            if (isNotBlank(updatewithresponseString)) {
                 updateWithResponse = Boolean.parseBoolean((updatewithresponseString));
             } else {
-                logger.info("Updating states with returned values will be set to the default vaulue of {}",
+                logger.info("Updating states with returned values will be set to the default value of {}",
                         updateWithResponse);
             }
 
             String charsetString = (String) config.get("charset");
-            if (StringUtils.isNotBlank(charsetString)) {
+            if (isNotBlank(charsetString)) {
                 charset = charsetString;
             } else {
-                logger.info("The characterset will be set to the default vaulue of {}", charset);
+                logger.info("The characterset will be set to the default value of {}", charset);
             }
 
         }
@@ -228,53 +236,40 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
     protected void configureChannel(Channel channel) {
     }
 
-    /**
-     * Splits a transformation configuration string into its two parts - the
-     * transformation type and the function/pattern to apply.
-     * 
-     * @param transformation the string to split
-     * @return a string array with exactly two entries for the type and the function
-     */
-    protected String[] splitTransformationConfig(String transformation) {
-        Matcher matcher = EXTRACT_FUNCTION_PATTERN.matcher(transformation);
-
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException("given transformation function '" + transformation
-                    + "' does not follow the expected pattern '<function>(<pattern>)'");
-        }
-        matcher.reset();
-
-        matcher.find();
-        String type = matcher.group(1);
-        String pattern = matcher.group(2);
-
-        return new String[] { type, pattern };
-    }
-
     protected String transformResponse(String transformation, String response) {
         String transformedResponse;
 
-        try {
-            String[] parts = splitTransformationConfig(transformation);
-            String transformationType = parts[0];
-            String transformationFunction = parts[1];
-
-            TransformationService transformationService = TransformationHelper
-                    .getTransformationService(TCPActivator.getContext(), transformationType);
-            if (transformationService != null) {
-                transformedResponse = transformationService.transform(transformationFunction, response);
-            } else {
-                transformedResponse = response;
-                logger.warn("couldn't transform response because transformationService of type '{}' is unavailable",
-                        transformationType);
-            }
-        } catch (Exception te) {
-            logger.error("transformation throws exception [transformation=" + transformation + ", response=" + response
-                    + "]", te);
-
-            // in case of an error we return the response without any
-            // transformation
+        if (isEmpty(transformation) || transformation.equalsIgnoreCase("default")) {
             transformedResponse = response;
+        } else {
+            Matcher matcher = EXTRACT_FUNCTION_PATTERN.matcher(transformation);
+            if (matcher.matches()) {
+                matcher.reset();
+                matcher.find();
+                String transformationServiceName = matcher.group(1);
+                String transformationServiceParam = matcher.group(2);
+                try {
+                    TransformationService transformationService = TransformationHelper
+                            .getTransformationService(TCPActivator.getContext(), transformationServiceName);
+                    if (transformationService != null) {
+                        transformedResponse = transformationService.transform(transformationServiceParam, response);
+                    } else {
+                        transformedResponse = response;
+                        logger.warn(
+                                "couldn't transform response because transformationService of type '{}' is unavailable",
+                                transformationServiceName);
+                    }
+                } catch (Exception te) {
+                    logger.error("transformation throws exception [transformation={}, response={}]", transformation,
+                            response, te);
+
+                    // in case of an error we return the response without any
+                    // transformation
+                    transformedResponse = response;
+                }
+            } else {
+                transformedResponse = transformation;
+            }
         }
 
         logger.debug("transformed response is '{}'", transformedResponse);

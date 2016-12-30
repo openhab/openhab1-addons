@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,8 @@ import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -79,6 +81,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
     private static final String PROP_PASSWORD = "password";
     private static final String PROP_USERNAME = "username";
     private static final String PROP_TIMEZONE = "timeZone";
+    private static final String PROP_CHARSET = "charset";
     public static final String PROP_DISABLE_CERTIFICATE_VERIFICATION = "disableCertificateVerification";
     private static final String PROP_LAST_MODIFIED_TIMESTAMP_VALID = "lastModifiedFileTimeStampValid";
     public static DateTimeZone defaultTimeZone = DateTimeZone.getDefault();
@@ -117,9 +120,11 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
     }
 
     private void removeAllJobs() throws SchedulerException {
-        scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_RELOADER))));
-        scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_START))));
-        scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_END))));
+        if (scheduler != null) {
+            scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_RELOADER))));
+            scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_START))));
+            scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_END))));
+        }
     }
 
     @Override
@@ -186,6 +191,13 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                     calDavConfig.setLastModifiedFileTimeStampValid(BooleanUtils.toBoolean(value));
                 } else if (paramKey.equals(PROP_DISABLE_CERTIFICATE_VERIFICATION)) {
                     calDavConfig.setDisableCertificateVerification(BooleanUtils.toBoolean(value));
+                } else if (paramKey.equals(PROP_CHARSET)) {
+                    try {
+                        Charset.forName(value);
+                        calDavConfig.setCharset(value);
+                    } catch (UnsupportedCharsetException e) {
+                        log.error("charset not valid: {}", value);
+                    }
                 }
             }
 
@@ -307,7 +319,54 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                     }
                 }
             } else {
-                // event is already in map and not updated, ignoring
+                // event is already in map and not updated (eventContainerold and eventContainer have the same
+                // "lastchanged" date) : we need to reschedule possible new events from recurrent events
+                log.debug(
+                        "event is already in map and not updated, we NEED to update eventlist and schedule new events jobs");
+                ArrayList<CalDavEvent> eventsToAdd = new ArrayList<>();
+                for (CalDavEvent event : eventContainer.getEventList()) {
+                    boolean eventAlreadyKnown = false;
+                    for (CalDavEvent oldevent : eventContainerOld.getEventList()) {
+                        if (event.equals(oldevent)) {
+                            eventAlreadyKnown = true;
+                            log.trace("events match");
+                        } else {
+                            log.trace("eventsarenotequal : {} - {} - {} - {} - {}", event.getId(), event.getName(),
+                                    event.getStart(), event.getEnd(), event.getLastChanged());
+                            log.trace("eventsarenotequal : {} - {} - {} - {} - {}", oldevent.getId(),
+                                    oldevent.getName(), oldevent.getStart(), oldevent.getEnd(),
+                                    oldevent.getLastChanged());
+                        }
+                    }
+                    if (!eventAlreadyKnown) {
+                        eventsToAdd.add(event);
+                    }
+                }
+                // add only new events
+                for (CalDavEvent event : eventsToAdd) {
+                    if (event.getEnd().isAfterNow()) {
+                        eventContainerOld.getEventList().add(event);
+                        for (EventNotifier notifier : eventListenerList) {
+                            log.trace("notify listener... {}", notifier);
+                            try {
+                                notifier.eventLoaded(event);
+                            } catch (Exception e) {
+                                log.error("error while invoking listener", e);
+                            }
+                        }
+                        if (createTimer) {
+                            try {
+                                log.trace("creating job for event {} ", event.getShortName());
+                                createJob(eventContainerOld, event, eventContainerOld.getEventList().size() - 1);
+                                // -1 because we already added the event to eventContainerOld
+                            } catch (SchedulerException e) {
+                                log.error("cannot create jobs for event '{}': ", event.getShortName(), e.getMessage());
+                            }
+                        }
+                    }
+                }
+                // update eventcontainer's calculateduntil
+                eventContainerOld.setCalculatedUntil(eventContainer.getCalculatedUntil());
             }
         } else {
             // event is new
@@ -492,6 +551,58 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                             if (calDavEvent.getStart().isAfter(query.getTo())) {
                                 continue;
                             }
+                        }
+                        if (query.getFilterName() != null) {
+                            if (!calDavEvent.getName().matches(query.getFilterName())) {
+                                continue;
+                            }
+                        }
+                        if (query.getFilterCategory() != null) {
+                            log.trace("processing filter category");
+                            if (calDavEvent.getCategoryList() == null) {
+                                log.trace("not found event category for event {}", calDavEvent.getId());
+                                continue;
+                            } else {
+                                log.trace("processing event category");
+                                boolean eventCategoriesMatchFilterCategories = false;
+                                if (query.getFilterCategoryMatchesAny()) {
+                                    log.trace("filter-category-any encountered");
+                                    int filterCategoriesIndex = 0;
+                                    List<String> filterCategories = query.getFilterCategory();
+                                    List<String> eventCategories = calDavEvent.getCategoryList();
+                                    log.trace("comparing filter '{}' to event categories '{}' from event {}",
+                                            filterCategories, eventCategories, calDavEvent.getId());
+                                    // browse filter categories, which are not null
+                                    while (eventCategoriesMatchFilterCategories == false
+                                            && filterCategoriesIndex < filterCategories.size()) {
+                                        int eventCategoriesIndex = 0;
+                                        // browse event categories, which can be null
+                                        while (eventCategoriesMatchFilterCategories == false
+                                                && eventCategoriesIndex < eventCategories.size()) {
+                                            if (eventCategories.get(eventCategoriesIndex)
+                                                    .equalsIgnoreCase(filterCategories.get(filterCategoriesIndex))) {
+                                                log.debug("filter category {} matches event category {}",
+                                                        filterCategories.get(filterCategoriesIndex),
+                                                        eventCategories.get(eventCategoriesIndex));
+                                                eventCategoriesMatchFilterCategories = true;
+                                            }
+                                            eventCategoriesIndex++;
+                                        }
+
+                                        filterCategoriesIndex++;
+                                    }
+                                } else {
+                                    log.trace("filter-category encountered");
+                                    eventCategoriesMatchFilterCategories = calDavEvent.getCategoryList()
+                                            .containsAll(query.getFilterCategory());
+                                }
+
+                                if (!eventCategoriesMatchFilterCategories) {
+                                    continue;
+                                }
+                            }
+                        } else {
+                            log.trace("not found any filter category");
                         }
                         eventList.add(calDavEvent);
                     }

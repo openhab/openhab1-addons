@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,6 +25,9 @@ public class CalDavQuery {
     private DateTime from;
     private DateTime to;
     private Sort sort;
+    private String filterName;
+    private List<String> filterCategory;
+    private boolean filterCategoryMatchesAny = false;
 
     public CalDavQuery() {
         super();
@@ -90,10 +93,37 @@ public class CalDavQuery {
         this.sort = sort;
     }
 
+    public void setFilterCategoryMatchesAny(boolean filterCategoryMatchesAny) {
+        this.filterCategoryMatchesAny = filterCategoryMatchesAny;
+    }
+
+    public boolean getFilterCategoryMatchesAny() {
+        return filterCategoryMatchesAny;
+    }
+
+    public String getFilterName() {
+        return filterName;
+    }
+
+    public void setFilterName(String filterName) {
+        this.filterName = filterName;
+    }
+    
+    public List<String> getFilterCategory() {
+        return filterCategory;
+    }
+
+    public void setFilterCategory(List<String> filterCategory) {
+        this.filterCategory = filterCategory;
+    }
+
     @Override
     public String toString() {
-        return "CalDavQuery [calendarIds=" + calendarIds + ", from=" + from + ", to=" + to + ", sort=" + sort + "]";
+        return "CalDavQuery [calendarIds=" + calendarIds + ", from=" + from
+                + ", to=" + to + ", sort=" + sort + ", filterName=" + filterName + "]";
     }
+
+
 
     public enum Sort {
         ASCENDING,

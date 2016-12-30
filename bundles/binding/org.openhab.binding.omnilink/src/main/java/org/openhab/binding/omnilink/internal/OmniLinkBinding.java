@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -61,6 +61,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.UnitProperties;
 import com.digitaldan.jomnilinkII.MessageTypes.properties.ZoneProperties;
 import com.digitaldan.jomnilinkII.MessageTypes.statuses.AreaStatus;
 import com.digitaldan.jomnilinkII.MessageTypes.statuses.AudioZoneStatus;
+import com.digitaldan.jomnilinkII.MessageTypes.statuses.AuxSensorStatus;
 import com.digitaldan.jomnilinkII.MessageTypes.statuses.Status;
 import com.digitaldan.jomnilinkII.MessageTypes.statuses.ThermostatStatus;
 import com.digitaldan.jomnilinkII.MessageTypes.statuses.UnitStatus;
@@ -68,7 +69,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.statuses.ZoneStatus;
 
 /**
  * Omnilink Binding allows full control over a HAI Omni or Lumina system
- * 
+ *
  * @author Dan Cunningham
  * @since 1.5.0
  */
@@ -194,7 +195,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
                 }
             }
         } else {
-            logger.debug("Could not send message, conncetion not established {}", omniWorker == null);
+            logger.debug("Could not send message, connection not established {}", omniWorker == null);
         }
 
         // get the
@@ -211,8 +212,16 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
         logger.debug("internalReceiveCommand() is called! {} {}", itemName, newState);
     }
 
+    protected void addBindingProvider(OmniLinkBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(OmniLinkBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -243,7 +252,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
     /**
      * Add items to be refreshed by our connection thread
-     * 
+     *
      * @param omniProvider
      */
     private void populateRefreshMapFromProvider(OmniLinkBindingProvider omniProvider) {
@@ -265,7 +274,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
     /**
      * This represents our internal connection thread, to stop set running = false
-     * 
+     *
      * @author daniel
      *
      */
@@ -283,7 +292,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * This initializes, but does not start our main connection thread
-         * 
+         *
          * @param host
          * @param port
          * @param key
@@ -404,8 +413,12 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
                         c.enableNotifications();
 
                         if (generateItems) {
-                            OmnilinkItemGenerator gen = new OmnilinkItemGenerator(c);
-                            logger.info(gen.generateItemsAndGroups());
+                            try {
+                                OmnilinkItemGenerator gen = new OmnilinkItemGenerator(c);
+                                logger.info(gen.generateItemsAndGroups());
+                            } catch (Exception e) {
+                                logger.error("Could not generate items", e);
+                            }
                         }
 
                         // update known items with state
@@ -455,7 +468,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * This goes through a map of item names and updates their state's
-         * 
+         *
          * @throws IOException
          * @throws OmniNotConnectedException
          * @throws OmniInvalidResponseException
@@ -605,7 +618,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Iterate through the system units (lights)
-         * 
+         *
          * @param number of the unti
          * @return UnitProperties of unit, null if not found
          * @throws IOException
@@ -625,7 +638,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Read the properties of a thermostat
-         * 
+         *
          * @param number of the thermostat
          * @return ThermostatProperties of thermostat or null if not found
          * @throws IOException
@@ -646,7 +659,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Read the properties of a Auxiliary sensor
-         * 
+         *
          * @param number of Auxiliary sensor
          * @return AuxSensorProperties of Auxiliary sensor or null if not found
          * @throws IOException
@@ -667,7 +680,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Read the properties of a audio zone
-         * 
+         *
          * @param number of audio zone
          * @return AudioZoneProperties of audio zone, or null if not found
          * @throws IOException
@@ -688,7 +701,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Read the properties of a area
-         * 
+         *
          * @param number of area
          * @return AreaProperties of area or null if not found
          * @throws IOException
@@ -709,7 +722,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Read the properties of a zone
-         * 
+         *
          * @param number of zone
          * @return ZoneProperties of zone, or null if not found
          * @throws IOException
@@ -730,7 +743,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Read the properties of a button
-         * 
+         *
          * @param number of button
          * @return ButtonProperties of button, or null if not found
          * @throws IOException
@@ -751,7 +764,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Populates all know audio sources which are used by known zones
-         * 
+         *
          * @throws IOException
          * @throws OmniNotConnectedException
          * @throws OmniInvalidResponseException
@@ -782,7 +795,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
         /**
          * Update audio zone text fields, this is one of the few
          * things we need to poll for
-         * 
+         *
          * @throws IOException
          * @throws OmniNotConnectedException
          * @throws OmniInvalidResponseException
@@ -829,7 +842,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
     /**
      * Updates a AudioZone's source text fields when a
      * AudioSource changes
-     * 
+     *
      * @param as the audio source that has been updated
      */
     private void updateAudioZoneText(AudioSource as) {
@@ -859,7 +872,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
     /**
      * Update a device based on a status message from the system
-     * 
+     *
      * @param status
      */
     protected void updateDeviceStatus(Status status) {
@@ -873,31 +886,36 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
             unit.getProperties().updateUnit((UnitStatus) status);
             updateItemsForDevice(unit);
         } else if (status instanceof ThermostatStatus && thermostatMap.containsKey(number)) {
-            logger.debug("Updating thermo " + number);
+            logger.debug("Updating thermo {}", number);
             Thermostat thermo = thermostatMap.get(number);
             thermo.getProperties().updateThermostat((ThermostatStatus) status);
             updateItemsForDevice(thermo);
         } else if (status instanceof AudioZoneStatus && audioZoneMap.containsKey(number)) {
-            logger.debug("Updating audioZone " + number);
+            logger.debug("Updating audioZone {}", number);
             AudioZone az = audioZoneMap.get(number);
             az.getProperties().updateAudioZone((AudioZoneStatus) status);
             updateItemsForDevice(az);
         } else if (status instanceof AreaStatus && areaMap.containsKey(number)) {
-            logger.debug("Updating area " + number);
+            logger.debug("Updating area {}", number);
             Area area = areaMap.get(number);
             area.getProperties().updateArea((AreaStatus) status);
             updateItemsForDevice(area);
         } else if (status instanceof ZoneStatus && zoneMap.containsKey(number)) {
-            logger.debug("Updating zone " + number);
+            logger.debug("Updating zone {}", number);
             Zone zone = zoneMap.get(number);
             zone.getProperties().updateZone((ZoneStatus) status);
             updateItemsForDevice(zone);
+        } else if (status instanceof AuxSensorStatus && auxMap.containsKey(number)) {
+            logger.debug("Updating aux {}", number);
+            Auxiliary aux = auxMap.get(number);
+            aux.getProperties().updateAuxSensor((AuxSensorStatus) status);
+            updateItemsForDevice(aux);
         }
     }
 
     /**
      * Update any items linked to a Omni device.
-     * 
+     *
      * @param device
      */
     protected void updateItemsForDevice(OmnilinkDevice device) {

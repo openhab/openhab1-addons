@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,12 +13,14 @@ import static org.apache.commons.lang.StringUtils.*;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.openhab.binding.plex.PlexBindingProvider;
 import org.openhab.binding.plex.internal.annotations.ItemMapping;
@@ -39,9 +41,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Binding that communicates with a Plex Media Server
- * 
+ *
  * {@link http://www.plex.tv/}
- * 
+ *
  * @author Jeroen Idserda
  * @since 1.7.0
  */
@@ -68,6 +70,14 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
     @Override
     protected String getName() {
         return "Plex Refresh Service";
+    }
+
+    protected void addBindingProvider(PlexBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(PlexBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -156,17 +166,17 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
     private void configureBinding(final Map<String, Object> configuration) {
         PlexConnectionProperties connectionProperties = new PlexConnectionProperties();
 
-        connectionProperties.setHost((String) configuration.get("host"));
-        connectionProperties.setToken((String) configuration.get("token"));
-        connectionProperties.setUsername((String) configuration.get("username"));
-        connectionProperties.setPassword((String) configuration.get("password"));
+        connectionProperties.setHost(Objects.toString(configuration.get("host"), null));
+        connectionProperties.setToken(Objects.toString(configuration.get("token"), null));
+        connectionProperties.setUsername(Objects.toString(configuration.get("username"), null));
+        connectionProperties.setPassword(Objects.toString(configuration.get("password"), null));
 
-        String port = (String) configuration.get("port");
+        String port = Objects.toString(configuration.get("port"), null);
         if (isNotBlank(port) && isNumeric(port)) {
             connectionProperties.setPort(Integer.valueOf(port));
         }
 
-        String refresh = (String) configuration.get("refresh");
+        String refresh = Objects.toString(configuration.get("refresh"), null);
         if (isNotBlank(refresh) && isNumeric(refresh)) {
             refreshInterval = Long.parseLong(refresh);
         }
@@ -174,8 +184,13 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
         logger.debug("Plex config, server at {}:{}", connectionProperties.getHost(), connectionProperties.getPort());
 
         if (isNotBlank(connectionProperties.getHost())) {
-            connect(connectionProperties);
-            setProperlyConfigured(true);
+            try {
+                connect(connectionProperties);
+                setProperlyConfigured(true);
+            } catch (UnknownHostException e) {
+                setProperlyConfigured(false);
+                logger.error("Cannot resolve Plex Media Server host: " + connectionProperties.getHost());
+            }
         } else {
             logger.warn("No host configured for Plex binding");
             setProperlyConfigured(false);
@@ -183,7 +198,7 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
     }
 
     public void deactivate(final int reason) {
-        logger.trace("Plex binding deactived");
+        logger.trace("Plex binding deactivated");
         disconnect();
     }
 
@@ -221,8 +236,10 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
 
     /**
      * Connect to the Plex server.
+     *
+     * @throws UnknownHostException If hostname is not resolvable.
      */
-    private void connect(PlexConnectionProperties connectionProperties) {
+    private void connect(PlexConnectionProperties connectionProperties) throws UnknownHostException {
         connector = new PlexConnector(connectionProperties, new PlexUpdateReceivedCallback() {
             @Override
             public void updateReceived(PlexSession session) {
@@ -241,7 +258,7 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
     /**
      * Player state update received from Plex. Update all items
      * for the machine ID this session is bound to.
-     * 
+     *
      * @param session Plex session
      */
     private void processUpdateRecevied(PlexSession session) {
@@ -261,7 +278,7 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
     /**
      * Update all {@code PlexProperty.POWER} properties according to the
      * list of clients that are currently online.
-     * 
+     *
      * @param container MediaContainer, containing the clients that are currently online
      */
     private void processServerList(MediaContainer container) {
@@ -288,7 +305,7 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
     /**
      * Maps properties from {@code session} to openHAB item {@code config}. Mapping is specified by {@link ItemMapping}
      * annotations.
-     * 
+     *
      * @param config Binding config
      * @param session Plex session
      */

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -36,33 +36,6 @@ import org.openhab.core.types.UnDefType;
  */
 public class RFXComBlinds1Message extends RFXComBaseMessage {
 
-    public enum Commands {
-        OPEN(0), // MediaMount DOWN(0),
-        CLOSE(1), // MediaMount UPP(1),
-        STOP(2),
-        CONFIRM(3),
-        SET_LIMIT(4), // YR1326 SET_UPPER_LIMIT(4),
-        SET_LOWER_LIMIT(5), // YR1326
-        DELETE_LIMITS(6), // YR1326
-        CHANGE_DIRECTON(7), // YR1326
-
-        UNKNOWN(255);
-
-        private final int command;
-
-        Commands(int command) {
-            this.command = command;
-        }
-
-        Commands(byte command) {
-            this.command = command;
-        }
-
-        public byte toByte() {
-            return (byte) command;
-        }
-    }
-
     public enum SubType {
         HASTA_NEW(0), // Hasta new/RollerTrol
         HASTA_OLD(1),
@@ -89,15 +62,62 @@ public class RFXComBlinds1Message extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
+    }
+
+    public enum Commands {
+        OPEN(0), // MediaMount DOWN(0),
+        CLOSE(1), // MediaMount UPP(1),
+        STOP(2),
+        CONFIRM(3),
+        SET_LIMIT(4), // YR1326 SET_UPPER_LIMIT(4),
+        SET_LOWER_LIMIT(5), // YR1326
+        DELETE_LIMITS(6), // YR1326
+        CHANGE_DIRECTON(7), // YR1326
+
+        UNKNOWN(255);
+
+        private final int command;
+
+        Commands(int command) {
+            this.command = command;
+        }
+
+        Commands(byte command) {
+            this.command = command;
+        }
+
+        public byte toByte() {
+            return (byte) command;
+        }
+
+        public static Commands fromByte(int input) {
+            for (Commands c : Commands.values()) {
+                if (c.command == input) {
+                    return c;
+                }
+            }
+
+            return Commands.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.COMMAND);
 
-    public SubType subType = SubType.HASTA_NEW;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public byte unitcode = 0;
-    public Commands command = Commands.STOP;
+    public Commands command = Commands.UNKNOWN;
     public byte signalLevel = 0;
     public byte batteryLevel = 0;
 
@@ -129,21 +149,10 @@ public class RFXComBlinds1Message extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 16 | (data[5] & 0xFF) << 8 | (data[6] & 0xFF);
         unitcode = data[7];
-
-        try {
-            command = Commands.values()[data[8]];
-        } catch (Exception e) {
-            command = Commands.UNKNOWN;
-        }
-
+        command = Commands.fromByte(data[8]);
         signalLevel = (byte) ((data[9] & 0xF0) >> 4);
         batteryLevel = (byte) (data[9] & 0x0F);
     }

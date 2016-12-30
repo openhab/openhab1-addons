@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.tcp.Direction;
 import org.openhab.binding.tcp.protocol.ProtocolBindingProvider;
@@ -25,6 +26,7 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
@@ -55,11 +57,13 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
     static final Logger logger = LoggerFactory.getLogger(ProtocolGenericBindingProvider.class);
 
     /** {@link Pattern} which matches a binding configuration part */
-    private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("([<>]\\[.*?\\])(?:\\s|$)");
+    private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("([<>]\\[.*?\\])(?:[,\\s]|$)");
     private static final Pattern ACTION_CONFIG_PATTERN = Pattern
             .compile("(<|>)\\[(.*?):(.*?):(.*?):(?:'(.*)'|(.*))\\]");
     private static final Pattern STATUS_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?):(.*?):(?:'(.*)'|(.*))\\]");
-
+    
+    private static final Command WILDCARD_COMMAND_KEY = StringType.valueOf("*");
+    
     static int counter = 0;
 
     @Override
@@ -104,7 +108,7 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 
     /**
      * Parses the configuration string and update the provided config
-     * 
+     *
      * @param config - the Configuration that needs to be updated with the parsing results
      * @param item - the Item that this configuration is intented for
      * @param bindingConfig - the configuration string that will be parsed
@@ -176,27 +180,31 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
     /**
      * Creates a {@link Command} out of the given <code>commandAsString</code>
      * incorporating the {@link TypeParser}.
-     * 
+     *
      * @param item
      * @param commandAsString
-     * 
+     *
      * @return an appropriate Command (see {@link TypeParser} for more
      *         information
-     * 
+     *
      * @throws BindingConfigParseException if the {@link TypeParser} couldn't
      *             create a command appropriately
-     * 
+     *
      * @see {@link TypeParser}
      */
     private Command createCommandFromString(Item item, String commandAsString) throws BindingConfigParseException {
 
-        Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandAsString);
+        if (WILDCARD_COMMAND_KEY.equals(commandAsString)) {
+            return WILDCARD_COMMAND_KEY;
+        } else {
+            Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandAsString);
 
-        if (command == null) {
-            throw new BindingConfigParseException("couldn't create Command from '" + commandAsString + "' ");
+            if (command == null) {
+                throw new BindingConfigParseException("couldn't create Command from '" + commandAsString + "' ");
+            }
+
+            return command;
         }
-
-        return command;
     }
 
     /**
@@ -252,12 +260,8 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
         List<Command> commands = new ArrayList<Command>();
         ProtocolBindingConfig aConfig = (ProtocolBindingConfig) bindingConfigs.get(itemName);
         for (Command aCommand : aConfig.keySet()) {
-            if (aCommand.equals(command)) {
+            if (aCommand.equals(command) || aCommand.equals(WILDCARD_COMMAND_KEY) || aCommand instanceof DecimalType) {
                 commands.add(aCommand);
-            } else {
-                if (aCommand instanceof DecimalType) {
-                    commands.add(aCommand);
-                }
             }
         }
 

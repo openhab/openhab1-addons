@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -62,9 +62,17 @@ public class SoulissBinding<E> extends AbstractActiveBinding<SoulissBindingProvi
 
     Timers timers = new Timers(4);
 
+    protected void addBindingProvider(SoulissBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(SoulissBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * Read parameters from cfg file
-     * 
+     *
      * @author Tonino Fazio
      * @since 1.7.0
      */
@@ -116,7 +124,7 @@ public class SoulissBinding<E> extends AbstractActiveBinding<SoulissBindingProvi
     @Override
     /**
      * Get the souliss's typical from the hash table and send a command
-     * 
+     *
      * @author Tonino Fazio
      * @since 1.7.0
      */
@@ -235,7 +243,7 @@ public class SoulissBinding<E> extends AbstractActiveBinding<SoulissBindingProvi
 
     /**
      * Convert color format from HSB to RGB
-     * 
+     *
      * @param H
      * @param S
      * @param B

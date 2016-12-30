@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * ZWaveAlarmConverter class. Converter for communication with the
  * {@link ZWaveAlarmCommandClass}. Implements polling of the alarm
  * status and receiving of alarm events.
- * 
+ *
  * @author Chris Jackson
  * @since 1.6.0
  */
@@ -45,7 +45,7 @@ public class ZWaveAlarmConverter extends ZWaveCommandClassConverter<ZWaveAlarmCo
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveAlarmConverter} class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use for sending messages.
      * @param eventPublisher the {@link EventPublisher} to use to publish events.
      */

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -41,6 +41,16 @@ public class RFXComTransmitterMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     public enum Response {
@@ -67,10 +77,20 @@ public class RFXComTransmitterMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) response;
         }
+
+        public static Response fromByte(int input) {
+            for (Response response : Response.values()) {
+                if (response.response == input) {
+                    return response;
+                }
+            }
+
+            return Response.UNKNOWN;
+        }
     }
 
-    public SubType subType = SubType.TRANSMITTER_MESSAGE;
-    public Response response = Response.ACK;
+    public SubType subType = SubType.UNKNOWN;
+    public Response response = Response.UNKNOWN;
 
     public RFXComTransmitterMessage() {
         packetType = PacketType.TRANSMITTER_MESSAGE;
@@ -96,17 +116,8 @@ public class RFXComTransmitterMessage extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
-        try {
-            response = Response.values()[data[4]];
-        } catch (Exception e) {
-            response = Response.UNKNOWN;
-        }
+        subType = SubType.fromByte(super.subType);
+        response = Response.fromByte(data[4]);
     }
 
     @Override

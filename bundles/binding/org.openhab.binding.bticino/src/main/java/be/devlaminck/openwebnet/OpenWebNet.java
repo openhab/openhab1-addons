@@ -49,7 +49,7 @@ public class OpenWebNet extends Thread {
     /*
      * OWN Diagnostic Frames
      */
-    private final static String LIGHTNING_DIAGNOSTIC_FRAME = "*#1*0##";
+    private final static String LIGHTING_DIAGNOSTIC_FRAME = "*#1*0##";
     private final static String AUTOMATIONS_DIAGNOSTIC_FRAME = "*#2*0##";
     private final static String ALARM_DIAGNOSTIC_FRAME = "*#5##";
     private final static String POWER_MANAGEMENT_DIAGNOSTIC_FRAME = "*#3##";
@@ -127,8 +127,8 @@ public class OpenWebNet extends Thread {
     // sends diagnostic frames to initialize the system
     public void initSystem() {
         try {
-            logger.info("Sending " + LIGHTNING_DIAGNOSTIC_FRAME + " frame to (re)initialize LIGHTNING");
-            myPlant.sendCommandSync(LIGHTNING_DIAGNOSTIC_FRAME);
+            logger.info("Sending " + LIGHTING_DIAGNOSTIC_FRAME + " frame to (re)initialize LIGHTING");
+            myPlant.sendCommandSync(LIGHTING_DIAGNOSTIC_FRAME);
             logger.info("Sending " + AUTOMATIONS_DIAGNOSTIC_FRAME + " frame to (re)initialize AUTOMATIONS");
             myPlant.sendCommandSync(AUTOMATIONS_DIAGNOSTIC_FRAME);
             logger.info("Sending " + ALARM_DIAGNOSTIC_FRAME + " frame to (re)initialize ALARM");

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -81,7 +81,7 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
     private static Map<String, MapDBItem> map;
 
     public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
-        logger.debug("mapdb persistence service activated");
+        logger.debug("mapdb persistence service is being activated");
 
         String commitIntervalString = (String) config.get("commitinterval");
         if (StringUtils.isNotBlank(commitIntervalString)) {
@@ -102,7 +102,11 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
 
         File folder = new File(DB_FOLDER_NAME);
         if (!folder.exists()) {
-            folder.mkdir();
+            if (!folder.mkdirs()) {
+              logger.error("Failed to create one or more directories in the path '{}'", DB_FOLDER_NAME);
+              logger.error("MapDB persistence service activation has failed.");
+              return;
+            }
         }
 
         File dbFile = new File(DB_FOLDER_NAME, DB_FILE_NAME);
@@ -110,6 +114,7 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
         Serializer<MapDBItem> serializer = new MapDBitemSerializer();
         map = db.createTreeMap("itemStore").valueSerializer(serializer).makeOrGet();
         scheduleJob();
+        logger.debug("mapdb persistence service is now activated");
     }
 
     public void deactivate(final int reason) {
@@ -144,10 +149,10 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
         logger.debug("store called for {}", alias);
 
         State state = item.getState();
-        if (item instanceof DimmerItem || item instanceof RollershutterItem) {
-            state = item.getStateAs(PercentType.class);
-        } else if (item instanceof ColorItem) {
+        if (item instanceof ColorItem) {
             state = item.getStateAs(HSBType.class);
+        } else if (item instanceof DimmerItem || item instanceof RollershutterItem) {
+            state = item.getStateAs(PercentType.class);
         }
         MapDBItem mItem = new MapDBItem();
         mItem.setName(alias);
@@ -215,7 +220,7 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
     /**
      * A quartz scheduler job to commit the mapdb transaction frequently. There
      * can be only one instance of a specific job type running at the same time.
-     * 
+     *
      * @author Jens Viebig
      * @since 1.7.0
      */

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -38,11 +38,11 @@ public abstract class AbstractOneWireDevicePropertyWritableBindingConfig
      */
     public String convertTypeToString(Type pvType) {
         for (InterfaceOneWireTypeModifier lvTypeModifier : getTypeModifieryList()) {
-            logger.debug("type of " + getDevicePropertyPath() + " before modifier:" + lvTypeModifier.getModifierName()
-                    + "type=" + pvType.toString());
+            logger.debug("type of {} before modifier:{} type={}", getDevicePropertyPath(),
+                    lvTypeModifier.getModifierName(), pvType);
             pvType = lvTypeModifier.modify4Write(pvType);
-            logger.debug("type of " + getDevicePropertyPath() + " after modifier:" + lvTypeModifier.getModifierName()
-                    + "state=" + pvType.toString());
+            logger.debug("type of {} after modifier:{} type={}", getDevicePropertyPath(),
+                    lvTypeModifier.getModifierName(), pvType);
         }
 
         return convertTypeToUnmodifiedString(pvType);

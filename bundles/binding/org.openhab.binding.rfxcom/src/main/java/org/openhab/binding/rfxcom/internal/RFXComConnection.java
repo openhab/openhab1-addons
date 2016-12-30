@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -120,6 +120,8 @@ public class RFXComConnection implements ManagedService {
         // controller does not response immediately after reset,
         // so wait a while
         Thread.sleep(1000);
+        // Clear received buffers
+        connector.clearReceiveBuffer();
 
         if (setMode != null) {
             try {

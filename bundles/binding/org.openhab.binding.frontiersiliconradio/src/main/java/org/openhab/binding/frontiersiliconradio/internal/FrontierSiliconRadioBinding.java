@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -197,7 +197,7 @@ public class FrontierSiliconRadioBinding extends AbstractActiveBinding<FrontierS
     /**
      * If {@link #cachePeriod} is set, this call checks whether the value changed. In the end, <code>newValue</code> is
      * cached so that it can be compared in subsequent calls.
-     * 
+     *
      * @param deviceId
      *            The radio id.
      * @param property
@@ -241,7 +241,7 @@ public class FrontierSiliconRadioBinding extends AbstractActiveBinding<FrontierS
     /**
      * Handle the command received for the given item provider and item. If the command switches the power state of the
      * radio, all other items are updated afterwards independent of the next refresh call.
-     * 
+     *
      * @param provider
      * @param itemName
      * @param command
@@ -325,10 +325,18 @@ public class FrontierSiliconRadioBinding extends AbstractActiveBinding<FrontierS
                     break;
                 default:
                     logger.error(
-                            "command on unkown property: '" + property + "'. Maybe trying to set read-only property?");
+                            "command on unknown property: '" + property + "'. Maybe trying to set read-only property?");
                     break;
             }
         }
+    }
+
+    protected void addBindingProvider(FrontierSiliconRadioBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(FrontierSiliconRadioBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     @Override

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>014G0160</Model>
+    <Label lang="en">Z-Wave room sensor</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x43</id>             <!-- THERMOSTAT_SETPOINT -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x87</id>             <!-- INDICATOR -->
+        </Class>
+        <Class>
+            <id>0x8F</id>             <!-- MULTI_CMD -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Temperature Report threshold</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>1</Minimum>
+            <Maximum>100</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Set-point display resolution</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>1</Minimum>
+            <Maximum>100</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Min Set-point and override limit</Label>
+            <Type>short</Type>
+            <Default>12</Default>
+            <Minimum>0</Minimum>
+            <Maximum>40</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Max Set-point and override limit</Label>
+            <Type>short</Type>
+            <Default>28</Default>
+            <Minimum>0</Minimum>
+            <Maximum>40</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">LED Flash period</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>6</Index>
+            <Label lang="en">Set-point control function</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">enabled</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>7</Index>
+            <Label lang="en">Temporarily override scheduler</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">enabled</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>8</Index>
+            <Label lang="en">Set-point type in Thermostat_Setpoint_Reports</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>10</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Heating</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Cooling</Label>
+            </Item>
+            <Item>
+                <Value>10</Value>
+                <Label lang="en">Auto-Changeover</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>9</Index>
+            <Label lang="en">LED on time</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>5</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>10</Index>
+            <Label lang="en">Number of LED flashes (duration)</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>11</Index>
+            <Label lang="en">LED color</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Green</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Red</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+</Product>

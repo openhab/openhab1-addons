@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -134,8 +134,13 @@ public abstract class Message {
     abstract protected void parsePayLoad();
 
     public String toHexString() {
-        String result = null;
-        result = typeToHexString() + sequenceNumberToHexString() + MACToHexString() + payLoadToHexString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(typeToHexString());
+        sb.append(sequenceNumberToHexString());
+        sb.append(MACToHexString());
+        sb.append(payLoadToHexString());
+
+        String result = sb.toString();
         String CRC = getCRC(result);
         result = result + CRC;
 

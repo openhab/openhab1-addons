@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,8 +28,7 @@ public class DSCAlarmBindingConfig implements BindingConfig {
      * @param zoneId the ZoneId of the item
      * @param itemType the DSC Alarm Item Type.
      */
-    public DSCAlarmBindingConfig(DSCAlarmDeviceType dscAlarmDeviceType, int partitionId, int zoneId,
-            DSCAlarmItemType dscAlarmItemType) {
+    public DSCAlarmBindingConfig(DSCAlarmDeviceType dscAlarmDeviceType, int partitionId, int zoneId, DSCAlarmItemType dscAlarmItemType) {
         this.dscAlarmDeviceType = dscAlarmDeviceType;
         this.partitionId = partitionId;
         this.zoneId = zoneId;

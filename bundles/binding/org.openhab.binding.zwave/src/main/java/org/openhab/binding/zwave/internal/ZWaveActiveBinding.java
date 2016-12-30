@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,6 +22,7 @@ import org.openhab.binding.zwave.internal.protocol.SerialInterfaceException;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveSecurityCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * ZWaveActiveBinding Class. Polls Z-Wave nodes frequently,
  * responds to item commands, and also handles events coming
  * from the Z-Wave controller.
- * 
+ *
  * @author Victor Belov
  * @author Brian Crosby
  * @author Jan-Willem Spuij
@@ -127,7 +128,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
     /**
      * Called, if a single binding has changed. The given item could have been
      * added or removed. We refresh the binding in case it's in the done stage.
-     * 
+     *
      * @param provider the binding provider where the binding has changed
      * @param itemName the item name for which the binding has changed
      */
@@ -278,7 +279,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
     /**
      * Initialises the binding. This is called after the 'updated' method
      * has been called and all configuration has been passed.
-     * 
+     *
      * @throws ConfigurationException
      */
     private void initialise() throws ConfigurationException {
@@ -310,6 +311,14 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
             this.setProperlyConfigured(false);
             throw new ConfigurationException("port", ex.getLocalizedMessage(), ex);
         }
+    }
+
+    protected void addBindingProvider(ZWaveBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(ZWaveBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -401,6 +410,11 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
                 logger.error("Error parsing 'masterController'. This must be boolean.");
             }
         }
+        if (StringUtils.isNotBlank((String) config.get("networkKey"))) {
+            String keyString = (String) config.get("networkKey");
+            // All errors will be caught and logged by
+            ZWaveSecurityCommandClass.setRealNetworkKey(keyString);
+        }
 
         // Now that we've read ALL the configuration, initialise the binding.
         initialise();
@@ -408,7 +422,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 
     /**
      * Returns the port value.
-     * 
+     *
      * @return
      */
     public String getPort() {
@@ -417,7 +431,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 
     /**
      * Event handler method for incoming Z-Wave events.
-     * 
+     *
      * @param event the incoming Z-Wave event.
      */
     @Override
@@ -449,7 +463,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 
     /**
      * Handle an incoming Command class value event
-     * 
+     *
      * @param event the incoming Z-Wave event.
      */
     private void handleZWaveCommandClassValueEvent(ZWaveCommandClassValueEvent event) {

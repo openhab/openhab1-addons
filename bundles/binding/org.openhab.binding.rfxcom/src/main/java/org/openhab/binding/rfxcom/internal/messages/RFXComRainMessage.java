@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,13 +32,13 @@ import org.openhab.core.types.UnDefType;
 public class RFXComRainMessage extends RFXComBaseMessage {
 
     public enum SubType {
-        UNDEF(0),
         RGR126_682_918_928(1),
         PCR800(2),
         TFA(3),
         UPM_RG700(4),
         WS2300(5),
         LA_CROSSE_TX5(6),
+        WS4500_ET_AL(7), // Alecto WS4500, Auriol H13726, Hama EWS1500, Meteoscan W155/W160, Ventus WS155
 
         UNKNOWN(255);
 
@@ -55,16 +55,25 @@ public class RFXComRainMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.RAIN_RATE,
             RFXComValueSelector.RAIN_TOTAL);
 
-    public SubType subType = SubType.RGR126_682_918_928;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public double rainRate = 0;
-    /* public byte rain = 0; */
     public double rainTotal = 0;
     public byte signalLevel = 0;
     public byte batteryLevel = 0;
@@ -97,11 +106,7 @@ public class RFXComRainMessage extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 
         rainRate = (short) ((data[6] & 0xFF) << 8 | (data[7] & 0xFF)) * 0.01;
@@ -112,7 +117,7 @@ public class RFXComRainMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[10];
+        byte[] data = new byte[12];
 
         data[0] = 0x0B;
         data[1] = RFXComBaseMessage.PacketType.RAIN.toByte();
@@ -126,7 +131,7 @@ public class RFXComRainMessage extends RFXComBaseMessage {
         data[7] = (byte) (rainR & 0xFF);
 
         short rainT = (short) Math.abs(rainTotal * 10);
-        data[8] = (byte) ((rainT >> 8) & 0xFF);
+        data[8] = (byte) ((rainT >> 16) & 0xFF);
         data[9] = (byte) ((rainT >> 8) & 0xFF);
         data[10] = (byte) (rainT & 0xFF);
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,7 +20,7 @@ import org.w3c.dom.Node;
 public class PhoneBookEntry {
 
     // default logger
-    private static final Logger logger = LoggerFactory.getLogger(FritzboxTr064Binding.class);
+    private static final Logger logger = LoggerFactory.getLogger(PhoneBookEntry.class);
 
     // Phone numbers
     private String _privateTel;
@@ -39,7 +39,7 @@ public class PhoneBookEntry {
 
     /***
      * Creates Entry Object by parsing the Node <contact>
-     * 
+     *
      * @param xmlNode
      */
     public PhoneBookEntry() {
@@ -48,7 +48,7 @@ public class PhoneBookEntry {
 
     /***
      * Parses the Object from xml node.
-     * 
+     *
      * @param xmlNode needs to be node with <contact>...</contact>
      * @return treu if successfully parsed
      */

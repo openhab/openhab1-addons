@@ -20,21 +20,14 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<hikari.version>2.4.2</hikari.version>
+		<hikari.version>2.4.7</hikari.version>
 		<dbutils.version>1.6</dbutils.version>
-		<yank.version>3.1.0</yank.version>
+		<yank.version>3.2.0</yank.version>
 		<bundle.symbolicName>org.openhab.persistence.jdbc</bundle.symbolicName>
 		<bundle.namespace>org.openhab.persistence.jdbc</bundle.namespace>
 		<classpath.ext>lib/</classpath.ext>
 		<deb.name>openhab-addon-persistence-jdbc</deb.name>
 		<deb.description>${project.name}</deb.description>
-		<derby.version>10.11.1.1</derby.version>
-		<h2.version>1.4.189</h2.version>
-		<hsqldb.version>2.3.3</hsqldb.version>
-		<mariadb.version>1.2.0</mariadb.version>
-		<mysql.version>5.1.36</mysql.version>
-		<postgresql.version>9.4-1201-jdbc41</postgresql.version>
-		<sqlite.version>3.8.11.2</sqlite.version>
 	</properties>
 
 	<dependencies>
@@ -47,7 +40,6 @@
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 			<version>${hikari.version}</version>
-			<!--scope>compile</scope -->
 		</dependency>
 		<dependency>
 			<groupId>org.knowm</groupId>
@@ -55,8 +47,7 @@
             <version>${yank.version}</version>
 		</dependency>
 
-
-
+        <!-- DB dependencies -->
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
@@ -103,70 +94,6 @@
 				<artifactId>jdeb</artifactId>
 			</plugin>
 
-			<!-- https://maven.apache.org/plugins/maven-dependency-plugin/examples/copying-artifacts.html 
-				copying jars for embedding to 'lib' -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.10</version>
-				<executions>
-					<execution>
-						<id>copy-libraries-dependencies</id>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>commons-dbutils</groupId>
-									<artifactId>commons-dbutils</artifactId>
-									<version>${dbutils.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>com.zaxxer</groupId>
-									<artifactId>HikariCP</artifactId>
-									<version>${hikari.version}</version>
-								</artifactItem>
-                                <artifactItem>
-                                    <groupId>org.knowm</groupId>
-                                    <artifactId>yank</artifactId>
-                                    <version>${yank.version}</version>
-                                </artifactItem>
-							</artifactItems>
-							<outputDirectory>lib</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>false</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- cleaning 'lib' from not uses Jars -->
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.6.1</version>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>${basedir}/lib</directory>
-							<includes>
-								<include>*.jar</include>
-							</includes>
-
-							<excludes>
-								<exclude>*commons-dbutils*.jar</exclude>
-								<exclude>*HikariCP*.jar</exclude>
-                                <exclude>*yank*.jar</exclude>
-							</excludes>
-
-							<followSymlinks>false</followSymlinks>
-						</fileset>
-					</filesets>
-					<failOnError>false</failOnError>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 </project>

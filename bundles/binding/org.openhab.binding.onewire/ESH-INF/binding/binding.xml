@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="onewire"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>One-Wire Binding</name>
+    <description>The OneWire bus system is a lightweight and cheap bus system mostly used for sensors like, temperature, humidity, counters and presence.</description>
+    <author>Dennis Riegelbauer</author>
+
+    <service-id>org.openhab.onewire</service-id>
+
+    <config-description>
+        <parameter name="ip" type="text" required="true">
+            <context>network-address</context>
+            <label>OwServer IP address</label>
+        </parameter>
+        <parameter name="port" type="integer">
+            <label>OwServer Port</label>
+            <default>4304</default>
+        </parameter>
+        <parameter name="retry" type="integer">
+            <label>Retry count</label>
+            <description>The retry count in case no valid value was returned upon read.</description>
+            <default>3</default>
+        </parameter>
+        <parameter name="tempscale" type="text">
+            <label>Temperature scale</label>
+            <description>Defines which temperature scale owserver should return temperatures in.</description>
+            <default>CELSIUS</default>
+            <limitToOptions>true</limitToOptions>
+            <options>
+                <option value="CELSIUS">Celsius</option>
+                <option value="FAHRENHEIT">Fahrenheit</option>
+                <option value="KELVIN">Kelvin</option>
+                <option value="RANKINE">Rankine</option>
+            </options>
+        </parameter>
+        <parameter name="post_only_changed_values" type="boolean" >
+            <label>Changes only</label>
+            <description>Only changed values are posted to the event-bus.</description>
+            <default>true</default>
+            <advanced>true</advanced>
+        </parameter>
+    </config-description>
+</binding:binding>

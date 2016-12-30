@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+Aeotec ZW120 Door/Window Sensor Gen5, base on Engineering Spec 08/01/2016 
+from https://github.com/OpenZWave/open-zwave/blob/master/config/aeotec/zw120.xml
+-->
+<Product>
+	<Model>ZW120-A</Model>
+	<Label lang="en">Door/Window sensor Gen5</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x00</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Which value of the Sensor Binary Report or Basic Set will be sent when the Magnet is triggered On/Off.</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">On=Sensor Binary Report/Basic Set 0xFF; Off=Sensor Binary Report/Basic Set 0x00</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">On=Sensor Binary Report/Basic Set 0x00; Off=Sensor Binary Report/Basic Set 0xFF</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Minimum>0</Minimum>
+			<Maximum>1</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Enable wake up 10 minutes when re-power on the sensor</Label>
+			<Help>Default setting: Disable</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>1</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Basic Set Report</Label>
+			<Help>Which value of the Basic Set will be sent when the door is Opened/Closed</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Open: 0xFF, Close: 0x00</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Open: 0x00, Close: 0xFF</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>39</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>10</Minimum>
+			<Maximum>50</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Set the low battery value.</Label>
+			<Help lang="en">10% to 50%</Help>
+		</Parameter>
+		<Parameter>
+			<Index>111</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>2147483647</Maximum>
+			<Default>86640</Default>
+			<Size>4</Size>
+			<Label lang="en">Set the interval time of low battery checking.</Label>
+			<Help lang="en">Minimum interval is 4 minutes, Range is 0 to 2147483647</Help>
+		</Parameter>
+		<Parameter>
+			<Index>121</Index>
+			<Type>int</Type>
+			<Default>1</Default>
+			<Size>4</Size>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<!--<value>256</value>-->
+			<Label lang="en">Report type</Label>
+			<Help>To configure which sensor report will be sent when the Sensor is triggered Opened/Closed. Bitsets: 0->Battery report, 4->Sensor Binary, 8->Basic Set, Default setting: 0x00000100 (Basic Set).Ideal Setting for OZW is 17 (Sensor Binary and Battery Report).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>255</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<!--<Value>1</Value>-->
+			<!--<Write_only>true</Write_only>-->
+			<Label lang="en">Reset To Factory Defaults.</Label>
+			<Item>
+				<Label lang="en">Reset to factory default setting</Label>
+				<Value>0</Value>
+			</Item>
+			<Item>
+				<Label lang="en">Normal</Label>
+				<Value>1</Value>
+			</Item>
+            <Item>
+				<Label lang="en">Reset to factory default setting and removed from the z-wave network</Label>
+				<Value>1431655765</Value>
+			</Item>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 1</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>
