@@ -22,7 +22,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Discovers EDIMAX devices by using the build-in UDP discovery. One sends a UDP
+ * Discovers EDIMAX devices by using the built-in UDP discovery. One sends a UDP
  * packet to port 20560 and Edimax device responds.
  *
  * @author Heinz

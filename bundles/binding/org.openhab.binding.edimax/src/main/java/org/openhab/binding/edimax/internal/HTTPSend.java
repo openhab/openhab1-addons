@@ -26,7 +26,7 @@ import org.openhab.binding.edimax.internal.commands.GetState;
 import org.openhab.binding.edimax.internal.commands.SetState;
 
 /**
- * Sends commands and returns responses for the edimax device, using it's http
+ * Sends commands and returns responses for the edimax device, using its http
  * interface.
  *
  * @author Heinz
@@ -122,10 +122,7 @@ public class HTTPSend {
      *
      * @param anIp
      * @return
-     * @throws IOExceptionif
-     *             (mac != null) { // found a device! Device d = new Device();
-     *             d.ip = portScanUsage.getIp(); d.mac = mac; discovered.add(d);
-     *             }
+     * @throws IOException
      */
     public BigDecimal getPower(String anIp) throws IOException {
         String completeUrl = completeURL(anIp);

@@ -71,12 +71,12 @@ public abstract class AbstractCommand<T extends Object> {
         String element = list.get(0);
 
         if (list.size() == 1) {
-            // basket case
+            // base case
             command.append(createLeafTag(element));
             return;
         }
 
-        // usually.
+        // reduce list size
         command.append(createStartTag(element));
         List<String> subList = list.subList(1, list.size());
         recurseSubList(subList, command);
