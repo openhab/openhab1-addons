@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author Jeroen Idserda
  * @since 1.7.0
  */
-public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider>implements ManagedService {
+public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider> implements ManagedService {
 
     private static final String CONFIG_REFRESH = "refresh";
 

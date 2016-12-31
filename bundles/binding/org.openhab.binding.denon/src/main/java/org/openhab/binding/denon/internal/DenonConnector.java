@@ -450,11 +450,11 @@ public class DenonConnector {
             stateCache.put(DenonProperty.POWER_MAINZONE.getCode(),
                     mainZone.getPower().getValue() ? OnOffType.ON : OnOffType.OFF);
             stateCache.put(DenonProperty.MUTE.getCode(), mainZone.getMute().getValue() ? OnOffType.ON : OnOffType.OFF);
-            if (mainZone.getSurrMode() == null ) {
+            if (mainZone.getSurrMode() == null) {
                 logger.debug("Unable to get the SURROUND_MODE. MainZone update may not be correct.");
-            }
-            else {
-                stateCache.put(DenonProperty.SURROUND_MODE.getCode(), new StringType(mainZone.getSurrMode().getValue()));
+            } else {
+                stateCache.put(DenonProperty.SURROUND_MODE.getCode(),
+                        new StringType(mainZone.getSurrMode().getValue()));
             }
         }
     }
