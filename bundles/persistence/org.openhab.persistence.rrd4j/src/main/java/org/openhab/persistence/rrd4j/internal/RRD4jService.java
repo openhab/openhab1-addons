@@ -166,10 +166,10 @@ public class RRD4jService implements QueryablePersistenceService {
                     job = scheduler.schedule(task, 1, TimeUnit.SECONDS);
                     scheduledJobs.put(name, job);
                 } else {
-                    logger.warn("Could not persist '{}' to rrd4j database: {}", new String[] { name, e.getMessage() });
+                    logger.warn("Could not persist '{}' to rrd4j database: {}", name, e.getMessage());
                 }
             } catch (Exception e) {
-                logger.warn("Could not persist '{}' to rrd4j database: {}", new String[] { name, e.getMessage() });
+                logger.warn("Could not persist '{}' to rrd4j database: {}", name, e.getMessage());
             }
             try {
                 db.close();
@@ -243,8 +243,7 @@ public class RRD4jService implements QueryablePersistenceService {
                 }
                 return items;
             } catch (IOException e) {
-                logger.warn("Could not query rrd4j database for item '{}': {}",
-                        new String[] { itemName, e.getMessage() });
+                logger.warn("Could not query rrd4j database for item '{}': {}", itemName, e.getMessage());
             }
         }
         return Collections.emptyList();
@@ -267,22 +266,18 @@ public class RRD4jService implements QueryablePersistenceService {
                 db = new RrdDb(getRrdDef(alias, file));
             }
         } catch (IOException e) {
-            logger.error("Could not create rrd4j database file '{}': {}",
-                    new String[] { file.getAbsolutePath(), e.getMessage() });
+            logger.error("Could not create rrd4j database file '{}': {}", file.getAbsolutePath(), e.getMessage());
         } catch (RejectedExecutionException e) {
             // this happens if the system is shut down
-            logger.debug("Could not create rrd4j database file '{}': {}",
-                    new String[] { file.getAbsolutePath(), e.getMessage() });
+            logger.debug("Could not create rrd4j database file '{}': {}", file.getAbsolutePath(), e.getMessage());
         }
         return db;
     }
 
     private RrdDefConfig getRrdDefConfig(String itemName) {
         RrdDefConfig useRdc = null;
-        for (Map.Entry<String, RrdDefConfig> e : rrdDefs.entrySet()) { // try to
-            // find
-            // special
-            // config
+        for (Map.Entry<String, RrdDefConfig> e : rrdDefs.entrySet()) {
+            // try to find special config
             RrdDefConfig rdc = e.getValue();
             if (rdc.appliesTo(itemName)) {
                 useRdc = rdc;
@@ -388,10 +383,8 @@ public class RRD4jService implements QueryablePersistenceService {
 
             String key = keys.next();
 
-            if (key.equals("service.pid") || key.equals("component.name")) { // ignore
-                // service.pid
-                // and
-                // name
+            if (key.equals("service.pid") || key.equals("component.name")) {
+                // ignore service.pid and name
                 continue;
             }
 
