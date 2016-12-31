@@ -431,9 +431,9 @@ public class RRD4jService implements QueryablePersistenceService {
 
         for (RrdDefConfig rrdDef : rrdDefs.values()) {
             if (rrdDef.isValid()) {
-                logger.debug("Created {}", rrdDef.toString());
+                logger.debug("Created {}", rrdDef);
             } else {
-                logger.info("Removing invalid definition {}", rrdDef.toString());
+                logger.info("Removing invalid definition {}", rrdDef);
                 rrdDefs.remove(rrdDef.name);
             }
         }
