@@ -141,7 +141,6 @@ public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider> im
         logger.debug("Denon binding updated");
 
         if (config == null) {
-            logger.warn("Denon binding has no configuration defined. Check the configuration file.");
             return;
         }
 
