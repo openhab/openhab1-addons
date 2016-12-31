@@ -48,6 +48,7 @@ import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInSubIds;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
 import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
@@ -121,6 +122,7 @@ public class ConfigurationHandler {
 
     private enum TypeKey {
         servo,
+        backlight,
         bricklet_distance_ir,
         brick_dc,
         bricklet_humidity,
@@ -311,7 +313,8 @@ public class ConfigurationHandler {
             ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(ServoSubIDs.values()));
             ohtfDevice.setTfConfig(servoConfiguration);
             fillupConfig(ohtfDevice, deviceConfig);
-        } else if (deviceType.equals(TypeKey.bricklet_distance_ir.name())
+        } else if (deviceType.equals(TypeKey.backlight.name())
+                || deviceType.equals(TypeKey.bricklet_distance_ir.name())
                 || deviceType.equals(TypeKey.bricklet_humidity.name())
                 || deviceType.equals(TypeKey.bricklet_barometer.name())
                 || deviceType.equals(TypeKey.bricklet_ambient_light.name())
@@ -335,7 +338,12 @@ public class ConfigurationHandler {
                 || deviceType.equals(TypeKey.laser_range_finder_velocity.name())) {
             logger.debug("{} setting base config", LoggerConstants.CONFIG);
             TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
-            if (deviceType.equals(TypeKey.bricklet_barometer)) {
+            if (deviceType.equals(TypeKey.backlight.name())) {
+                OHTFDevice<TFBaseConfiguration, LCDBacklightSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+                ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(LCDBacklightSubIds.values()));
+                ohtfDevice.setTfConfig(tfBaseConfiguration);
+                fillupConfig(ohtfDevice, deviceConfig);
+            } else if (deviceType.equals(TypeKey.bricklet_barometer)) {
                 OHTFDevice<TFBaseConfiguration, BarometerSubIDs> ohtfDevice = modelFactory.createOHTFDevice();
                 ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(BarometerSubIDs.values()));
                 ohtfDevice.setTfConfig(tfBaseConfiguration);
@@ -707,6 +715,7 @@ public class ConfigurationHandler {
             ohtfDevice.setTfConfig(configuration);
             fillupConfig(ohtfDevice, deviceConfig);
         } else {
+            logger.debug("deviceType {} has no subIDs", deviceType);
             logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
             logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
             OHTFDevice<?, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
@@ -736,6 +745,8 @@ public class ConfigurationHandler {
         ohtfDevice.setUid(uid);
         String subid = deviceConfig.get(ConfigKey.subid.name());
         if (subid != null) {
+            logger.debug("Checking to see if {} is a valid subid", subid);
+            logger.debug("Using device {}", ohtfDevice.getClass());
             if (!ohtfDevice.isValidSubId(subid)) {
                 throw new ConfigurationException(subid,
                         String.format("\"%s\" is an invalid subId: openhab.cfg has to be fixed!", subid));
