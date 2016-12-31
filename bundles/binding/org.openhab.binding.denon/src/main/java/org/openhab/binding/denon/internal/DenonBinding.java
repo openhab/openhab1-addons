@@ -13,6 +13,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.openhab.binding.denon.DenonBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -153,7 +154,7 @@ public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider> im
             }
 
             String[] parts = key.split("\\.");
-            String value = ((String) config.get(key)).trim();
+            String value = Objects.toString(config.get(key), null);
 
             if (parts.length == 1) {
                 String option = parts[0];
