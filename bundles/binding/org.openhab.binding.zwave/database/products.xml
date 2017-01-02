@@ -2074,6 +2074,15 @@
         <Name>ZWave.me</Name>
         <Product>
             <Reference>
+                <Type>0100</Type>
+                <Id>0400</Id>
+            </Reference>
+            <Model>Z-Weather</Model>
+            <Label lang="en">Z-Wave weather interface</Label>
+            <ConfigFile>zwaveme/zweather.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>1000</Type>
                 <Id>0002</Id>
             </Reference>
@@ -2950,6 +2959,15 @@
             <Model>ZMNHID</Model>
             <Label lang="en">Flush on/off thermostat</Label>
             <ConfigFile>qubino/zmnhid.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>0004</Type>
+                <Id>0051</Id>
+            </Reference>
+            <Model>ZMNHJD</Model>
+            <Label lang="en">Flush Pilot</Label>
+            <ConfigFile>qubino/zmnhjd.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
