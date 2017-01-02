@@ -415,6 +415,15 @@
         </Product>
         <Product>
             <Reference>
+                <Type>0003</Type>
+                <Id>0003</Id>
+            </Reference>
+            <Model>AD147</Model>
+            <Label lang="en">Z-Wave Dimmer Plug</Label>
+            <ConfigFile>everspring/ad147.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0103</Type>
                 <Id>0001</Id>
             </Reference>
