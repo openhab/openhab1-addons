@@ -21,8 +21,12 @@ public class KM200CommObject {
     private Integer readable;
     private Integer writeable;
     private Integer recordable;
+    private Integer virtual;
+    private Boolean updated = false;
+    private String parent;
     private String fullServiceName = "";
     private String serviceType = "";
+    private String jsonData = "";
     private Object value = null;
     private Object valueParameter = null;
 
@@ -32,6 +36,19 @@ public class KM200CommObject {
         readable = read;
         writeable = write;
         recordable = record;
+        virtual = 0;
+        parent = null;
+    }
+
+    public KM200CommObject(String serviceName, String type, Integer write, Integer record, Integer virtual,
+            String parent) {
+        fullServiceName = serviceName;
+        serviceType = type;
+        readable = 1;
+        writeable = write;
+        recordable = record;
+        this.virtual = virtual;
+        this.parent = parent;
     }
 
     public KM200CommObject(String serviceName, String type, Integer write, Integer record) {
@@ -40,6 +57,8 @@ public class KM200CommObject {
         readable = 1;
         writeable = write;
         recordable = record;
+        virtual = 0;
+        parent = null;
     }
 
     /* Sets */
@@ -47,8 +66,16 @@ public class KM200CommObject {
         value = val;
     }
 
+    public void setUpdated(Boolean updt) {
+        updated = updt;
+    }
+
     public void setValueParameter(Object val) {
         valueParameter = val;
+    }
+
+    public void setJSONData(String data) {
+        jsonData = data;
     }
 
     /* gets */
@@ -78,5 +105,21 @@ public class KM200CommObject {
 
     public Object getValueParameter() {
         return valueParameter;
+    }
+
+    public String getParent() {
+        return parent;
+    }
+
+    public Integer getVirtual() {
+        return virtual;
+    }
+
+    public Boolean getUpdated() {
+        return updated;
+    }
+
+    public String getJSONData() {
+        return jsonData;
     }
 }

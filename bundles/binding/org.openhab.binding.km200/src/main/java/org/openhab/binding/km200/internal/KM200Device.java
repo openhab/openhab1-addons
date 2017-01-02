@@ -56,6 +56,8 @@ class KM200Device {
     HashMap<String, KM200CommObject> serviceMap = null;
     /* Device services blacklist */
     List<String> blacklistMap = null;
+    /* List of virtual services */
+    List<KM200CommObject> virtualList = null;
 
     /* Is the first INIT done */
     protected Boolean inited = false;
@@ -64,6 +66,7 @@ class KM200Device {
         serviceMap = new HashMap<String, KM200CommObject>();
         blacklistMap = new ArrayList<String>();
         blacklistMap.add("/gateway/firmware");
+        virtualList = new ArrayList<KM200CommObject>();
     }
 
     public Boolean isConfigured() {
@@ -173,7 +176,7 @@ class KM200Device {
         if (serviceMap != null) {
             logger.info("##################################################################");
             logger.info("List of avalible services");
-            logger.info("readable;writeable;recordable;type;service;value;allowed;min;max");
+            logger.info("readable;writeable;recordable;virtual;type;service;value;allowed;min;max");
             for (KM200CommObject object : serviceMap.values()) {
                 if (object != null) {
                     String val = "", type, valPara = "";
@@ -187,6 +190,7 @@ class KM200Device {
                         val = object.getValue().toString();
                         if (object.getValueParameter() != null) {
                             if (type.equals("stringValue")) {
+                                @SuppressWarnings("unchecked")
                                 List<String> valParas = (List<String>) object.getValueParameter();
                                 for (int i = 0; i < valParas.size(); i++) {
                                     if (i > 0) {
@@ -197,6 +201,7 @@ class KM200Device {
                                 valPara += ";;";
                             }
                             if (type.equals("floatValue")) {
+                                @SuppressWarnings("unchecked")
                                 List<Float> valParas = (List<Float>) object.getValueParameter();
                                 valPara += ";";
                                 if (valParas.size() == 2) {
@@ -215,12 +220,26 @@ class KM200Device {
                         val = "";
                         valPara = ";";
                     }
-                    logger.info("{};{};{};{};{};{};{}", object.getReadable().toString(),
-                            object.getWriteable().toString(), object.getRecordable().toString(), type,
-                            object.getFullServiceName(), val, valPara);
+                    logger.info("{};{};{};{};{};{};{};{}", object.getReadable().toString(),
+                            object.getWriteable().toString(), object.getRecordable().toString(),
+                            object.getVirtual().toString(), type, object.getFullServiceName(), val, valPara);
                 }
             }
             logger.info("##################################################################");
+        }
+    }
+
+    /**
+     * This function resets the update state on all service objects
+     *
+     */
+    public void resetAllUpdates() {
+        if (serviceMap != null) {
+            for (KM200CommObject object : serviceMap.values()) {
+                if (object != null) {
+                    object.setUpdated(false);
+                }
+            }
         }
     }
 
@@ -255,4 +274,5 @@ class KM200Device {
     public void setInited(Boolean Init) {
         inited = Init;
     }
+
 }
