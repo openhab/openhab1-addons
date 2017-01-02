@@ -392,8 +392,8 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
                         logger.debug("Data sended, reset und updated providers");
 
                         /* Now update the set values and for all virtual values depending on same parent */
-                        if (device.serviceMap.get(provider.getService(item)).getVirtual() == 1) {
-                            String parent = device.serviceMap.get(provider.getService(item)).getParent();
+                        if (object.getVirtual() == 1) {
+                            String parent = object.getParent();
                             device.serviceMap.get(parent).setUpdated(false);
 
                             for (KM200BindingProvider tmpProvider : providers) {
@@ -413,6 +413,7 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
                             }
                         } else {
                             try {
+                                object.setUpdated(false);
                                 state = comm.getProvidersState(provider, item);
                                 if (state != null) {
                                     eventPublisher.postUpdate(item, state);
