@@ -20,8 +20,6 @@ import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
  * @author Theo Weiss
  * @since 1.3.0
  *        <!-- end-user-doc -->
- *        <p>
- *        </p>
  *
  * @generated
  */

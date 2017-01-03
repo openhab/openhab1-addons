@@ -47,6 +47,7 @@ import com.tinkerforge.TimeoutException;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getLogger
  * <em>Logger</em>}</li>
@@ -66,18 +67,17 @@ import com.tinkerforge.TimeoutException;
  * <em>Position</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getDeviceIdentifier
  * <em>Device Identifier</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getName <em>Name</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getName
+ * <em>Name</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getBrickd
  * <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getMsubdevices
  * <em>Msubdevices</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getTfConfig
- * <em>Tf Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getDeviceType
  * <em>Device Type</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -378,10 +378,9 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__LOGGER,
                     oldLogger, logger));
-        }
     }
 
     /**
@@ -405,10 +404,9 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__UID,
                     oldUid, uid));
-        }
     }
 
     /**
@@ -432,10 +430,9 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__POLL,
                     oldPoll, poll));
-        }
     }
 
     /**
@@ -459,10 +456,9 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__ENABLED_A, oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -486,11 +482,10 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     public void setTinkerforgeDevice(BrickletIndustrialDual020mA newTinkerforgeDevice) {
         BrickletIndustrialDual020mA oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TINKERFORGE_DEVICE, oldTinkerforgeDevice,
                     tinkerforgeDevice));
-        }
     }
 
     /**
@@ -514,10 +509,9 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__IP_CONNECTION, oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -541,10 +535,9 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__CONNECTED_UID, oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -568,10 +561,9 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__POSITION, oldPosition, position));
-        }
     }
 
     /**
@@ -595,11 +587,10 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__DEVICE_IDENTIFIER, oldDeviceIdentifier,
                     deviceIdentifier));
-        }
     }
 
     /**
@@ -623,10 +614,9 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__NAME,
                     oldName, name));
-        }
     }
 
     /**
@@ -637,10 +627,21 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -666,25 +667,20 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__BRICKD
                         && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__BRICKD,
                     newBrickd, newBrickd));
-        }
     }
 
     /**
@@ -696,8 +692,15 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     @Override
     public EList<Dual020mADevice> getMsubdevices() {
         if (msubdevices == null) {
-            msubdevices = new EObjectContainmentWithInverseEList<Dual020mADevice>(MSubDevice.class, this,
-                    ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+            msubdevices = new EObjectContainmentWithInverseEList<Dual020mADevice>(Dual020mADevice.class, this,
+                    ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK) {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public Class<?> getInverseFeatureClass() {
+                    return MSubDevice.class;
+                }
+            };
         }
         return msubdevices;
     }
@@ -725,11 +728,10 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -744,22 +746,18 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     public void setTfConfig(TFIndustrialDual020mAConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TF_CONFIG, newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -863,9 +861,8 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
             case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMsubdevices()).basicAdd(otherEnd, msgs);
@@ -937,7 +934,9 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
             case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES:
                 return getMsubdevices();
             case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TF_CONFIG:
@@ -1086,7 +1085,7 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
             case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES:
                 return msubdevices != null && !msubdevices.isEmpty();
             case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TF_CONFIG:
@@ -1209,9 +1208,8 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

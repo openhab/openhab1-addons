@@ -20,21 +20,26 @@ import com.tinkerforge.BrickletRemoteSwitch;
  *
  *        <p>
  *        The following features are supported:
- *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getDeviceType
- *        <em>Device Type</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeADevices
- *        <em>Type ADevices</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeBDevices
- *        <em>Type BDevices</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeCDevices
- *        <em>Type CDevices</em>}</li>
- *        </ul>
  *        </p>
+ *        <ul>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeADevices <em>Type
+ *        ADevices</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeBDevices <em>Type
+ *        BDevices</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeCDevices <em>Type
+ *        CDevices</em>}</li>
+ *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletRemoteSwitch()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletRemoteSwitch> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.RemoteSwitch> org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletRemoteSwitch>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
+ *        <org.openhab.binding.tinkerforge.internal.model.RemoteSwitch>
+ *        org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration>"
  * @generated
  */
 public interface MBrickletRemoteSwitch extends MDevice<BrickletRemoteSwitch>, MSubDeviceHolder<RemoteSwitch>,
@@ -74,9 +79,9 @@ public interface MBrickletRemoteSwitch extends MDevice<BrickletRemoteSwitch>, MS
     String getTypeADevices();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeADevices
-     * <em>Type ADevices</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeADevices <em>Type
+     * ADevices</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -104,9 +109,9 @@ public interface MBrickletRemoteSwitch extends MDevice<BrickletRemoteSwitch>, MS
     String getTypeBDevices();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeBDevices
-     * <em>Type BDevices</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeBDevices <em>Type
+     * BDevices</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -134,9 +139,9 @@ public interface MBrickletRemoteSwitch extends MDevice<BrickletRemoteSwitch>, MS
     String getTypeCDevices();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeCDevices
-     * <em>Type CDevices</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeCDevices <em>Type
+     * CDevices</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

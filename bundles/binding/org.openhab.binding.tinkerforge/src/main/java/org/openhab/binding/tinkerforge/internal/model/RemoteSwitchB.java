@@ -20,20 +20,24 @@ import org.openhab.binding.tinkerforge.internal.types.PercentValue;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getDeviceType <em>Device Type</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getAddress <em>Address</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getUnit <em>Unit</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getRepeats <em>Repeats</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getAbsDimmValue
- *        <em>Abs Dimm Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getAbsDimmValue <em>Abs Dimm
+ *        Value</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getRemoteSwitchB()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.PercentValue> org.openhab.binding.tinkerforge.internal.model.RemoteSwitch org.openhab.binding.tinkerforge.internal.model.DimmableActor<org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration> org.openhab.binding.tinkerforge.internal.model.PercentTypeActor"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.PercentValue>
+ *        org.openhab.binding.tinkerforge.internal.model.RemoteSwitch
+ *        org.openhab.binding.tinkerforge.internal.model.DimmableActor
+ *        <org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration>
+ *        org.openhab.binding.tinkerforge.internal.model.PercentTypeActor"
  * @generated
  */
 public interface RemoteSwitchB
@@ -103,8 +107,8 @@ public interface RemoteSwitchB
     Short getUnit();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getUnit <em>Unit</em>}
-     * ' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getUnit
+     * <em>Unit</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

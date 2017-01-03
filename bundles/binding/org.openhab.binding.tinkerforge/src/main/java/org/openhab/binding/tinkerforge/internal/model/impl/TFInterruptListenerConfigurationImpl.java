@@ -24,12 +24,12 @@ import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfigu
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>
  *        {@link org.openhab.binding.tinkerforge.internal.model.impl.TFInterruptListenerConfigurationImpl#getDebouncePeriod
  *        <em>Debounce Period</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -98,11 +98,10 @@ public class TFInterruptListenerConfigurationImpl extends MinimalEObjectImpl.Con
     public void setDebouncePeriod(long newDebouncePeriod) {
         long oldDebouncePeriod = debouncePeriod;
         debouncePeriod = newDebouncePeriod;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION__DEBOUNCE_PERIOD, oldDebouncePeriod,
                     debouncePeriod));
-        }
     }
 
     /**
@@ -175,9 +174,8 @@ public class TFInterruptListenerConfigurationImpl extends MinimalEObjectImpl.Con
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (debouncePeriod: ");

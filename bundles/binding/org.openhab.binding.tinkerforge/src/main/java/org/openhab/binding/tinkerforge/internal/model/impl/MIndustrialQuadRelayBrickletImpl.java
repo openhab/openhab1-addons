@@ -44,6 +44,7 @@ import com.tinkerforge.IPConnection;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayBrickletImpl#getLogger
  *        <em>Logger</em>}</li>
@@ -76,7 +77,6 @@ import com.tinkerforge.IPConnection;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayBrickletImpl#getDeviceType
  *        <em>Device Type</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -366,10 +366,9 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__LOGGER,
                     oldLogger, logger));
-        }
     }
 
     /**
@@ -393,10 +392,9 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__UID,
                     oldUid, uid));
-        }
     }
 
     /**
@@ -420,10 +418,9 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__POLL,
                     oldPoll, poll));
-        }
     }
 
     /**
@@ -447,10 +444,9 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__ENABLED_A, oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -474,11 +470,10 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
     public void setTinkerforgeDevice(BrickletIndustrialQuadRelay newTinkerforgeDevice) {
         BrickletIndustrialQuadRelay oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__TINKERFORGE_DEVICE, oldTinkerforgeDevice,
                     tinkerforgeDevice));
-        }
     }
 
     /**
@@ -502,10 +497,9 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__IP_CONNECTION, oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -529,10 +523,9 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__CONNECTED_UID, oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -556,10 +549,9 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__POSITION, oldPosition, position));
-        }
     }
 
     /**
@@ -583,11 +575,10 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__DEVICE_IDENTIFIER, oldDeviceIdentifier,
                     deviceIdentifier));
-        }
     }
 
     /**
@@ -611,10 +602,9 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__NAME,
                     oldName, name));
-        }
     }
 
     /**
@@ -625,10 +615,21 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -654,25 +655,20 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__BRICKD
                         && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__BRICKD,
                     newBrickd, newBrickd));
-        }
     }
 
     /**
@@ -684,8 +680,15 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
     @Override
     public EList<MIndustrialQuadRelay> getMsubdevices() {
         if (msubdevices == null) {
-            msubdevices = new EObjectContainmentWithInverseEList<MIndustrialQuadRelay>(MSubDevice.class, this,
-                    ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+            msubdevices = new EObjectContainmentWithInverseEList<MIndustrialQuadRelay>(MIndustrialQuadRelay.class, this,
+                    ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK) {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public Class<?> getInverseFeatureClass() {
+                    return MSubDevice.class;
+                }
+            };
         }
         return msubdevices;
     }
@@ -768,9 +771,8 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
             case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__MSUBDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMsubdevices()).basicAdd(otherEnd, msgs);
@@ -840,7 +842,9 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
             case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__NAME:
                 return getName();
             case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__MSUBDEVICES:
                 return getMsubdevices();
             case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__DEVICE_TYPE:
@@ -981,7 +985,7 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
             case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__MSUBDEVICES:
                 return msubdevices != null && !msubdevices.isEmpty();
             case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET__DEVICE_TYPE:
@@ -1080,9 +1084,8 @@ public class MIndustrialQuadRelayBrickletImpl extends MinimalEObjectImpl.Contain
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

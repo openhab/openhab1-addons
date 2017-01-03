@@ -24,26 +24,33 @@ import com.tinkerforge.BrickDC;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getDeviceType <em>Device Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getThreshold <em>Threshold</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMaxVelocity <em>Max Velocity</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMinVelocity <em>Min Velocity</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getVelocity <em>Velocity</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getTargetvelocity <em>Targetvelocity</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getCurrentVelocity
- *        <em>Current Velocity</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getTargetvelocity
+ *        <em>Targetvelocity</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getCurrentVelocity <em>Current
+ *        Velocity</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getAcceleration <em>Acceleration</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getPwmFrequency <em>Pwm Frequency</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getPwmFrequency <em>Pwm
+ *        Frequency</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getDriveMode <em>Drive Mode</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickDC()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickDC> org.openhab.binding.tinkerforge.internal.model.MoveActor org.openhab.binding.tinkerforge.internal.model.SetPointActor<org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor
+ *        org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MTinkerBrickDC>
+ *        org.openhab.binding.tinkerforge.internal.model.MoveActor
+ *        org.openhab.binding.tinkerforge.internal.model.SetPointActor
+ *        <org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration>
+ *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
 public interface MBrickDC extends MSensor<DecimalValue>, ProgrammableSwitchActor, MDevice<BrickDC>, MoveActor,
@@ -97,8 +104,8 @@ public interface MBrickDC extends MSensor<DecimalValue>, ProgrammableSwitchActor
     Short getMaxVelocity();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMaxVelocity
-     * <em>Max Velocity</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMaxVelocity <em>Max
+     * Velocity</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -127,8 +134,8 @@ public interface MBrickDC extends MSensor<DecimalValue>, ProgrammableSwitchActor
     Short getMinVelocity();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMinVelocity
-     * <em>Min Velocity</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMinVelocity <em>Min
+     * Velocity</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -292,8 +299,8 @@ public interface MBrickDC extends MSensor<DecimalValue>, ProgrammableSwitchActor
     int getPwmFrequency();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getPwmFrequency
-     * <em>Pwm Frequency</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getPwmFrequency <em>Pwm
+     * Frequency</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -324,8 +331,8 @@ public interface MBrickDC extends MSensor<DecimalValue>, ProgrammableSwitchActor
     DCDriveMode getDriveMode();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getDriveMode
-     * <em>Drive Mode</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getDriveMode <em>Drive
+     * Mode</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

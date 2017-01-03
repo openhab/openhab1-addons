@@ -41,18 +41,19 @@ import com.tinkerforge.TimeoutException;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getLogger <em>Logger</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#isPoll <em>Poll</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getEnabledA
- * <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getIpConnection
- * <em>Ip Connection</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getIpConnection <em>Ip
+ * Connection</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getConnectedUid
  * <em>Connected Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getPosition
@@ -61,14 +62,13 @@ import com.tinkerforge.TimeoutException;
  * <em>Device Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getName <em>Name</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getBrickd <em>Brickd</em>
- * }</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getSwitchState
- * <em>Switch State</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getBrickd
+ * <em>Brickd</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getSwitchState <em>Switch
+ * State</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -368,10 +368,9 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SOLID_STATE_RELAY__LOGGER,
                     oldLogger, logger));
-        }
     }
 
     /**
@@ -395,10 +394,9 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SOLID_STATE_RELAY__UID, oldUid,
                     uid));
-        }
     }
 
     /**
@@ -422,10 +420,9 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SOLID_STATE_RELAY__POLL,
                     oldPoll, poll));
-        }
     }
 
     /**
@@ -449,10 +446,9 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SOLID_STATE_RELAY__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -476,11 +472,10 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
     public void setTinkerforgeDevice(BrickletSolidStateRelay newTinkerforgeDevice) {
         BrickletSolidStateRelay oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_SOLID_STATE_RELAY__TINKERFORGE_DEVICE, oldTinkerforgeDevice,
                     tinkerforgeDevice));
-        }
     }
 
     /**
@@ -504,10 +499,9 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_SOLID_STATE_RELAY__IP_CONNECTION, oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -531,10 +525,9 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_SOLID_STATE_RELAY__CONNECTED_UID, oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -558,10 +551,9 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SOLID_STATE_RELAY__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -585,11 +577,10 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_SOLID_STATE_RELAY__DEVICE_IDENTIFIER, oldDeviceIdentifier,
                     deviceIdentifier));
-        }
     }
 
     /**
@@ -613,10 +604,9 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SOLID_STATE_RELAY__NAME,
                     oldName, name));
-        }
     }
 
     /**
@@ -627,10 +617,21 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_SOLID_STATE_RELAY__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_SOLID_STATE_RELAY__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_SOLID_STATE_RELAY__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -654,25 +655,20 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_SOLID_STATE_RELAY__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SOLID_STATE_RELAY__BRICKD,
                     newBrickd, newBrickd));
-        }
     }
 
     /**
@@ -696,10 +692,9 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
     public void setSwitchState(OnOffValue newSwitchState) {
         OnOffValue oldSwitchState = switchState;
         switchState = newSwitchState;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_SOLID_STATE_RELAY__SWITCH_STATE, oldSwitchState, switchState));
-        }
     }
 
     /**
@@ -797,9 +792,8 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_SOLID_STATE_RELAY__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -865,7 +859,9 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
             case ModelPackage.MBRICKLET_SOLID_STATE_RELAY__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_SOLID_STATE_RELAY__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_SOLID_STATE_RELAY__SWITCH_STATE:
                 return getSwitchState();
             case ModelPackage.MBRICKLET_SOLID_STATE_RELAY__DEVICE_TYPE:
@@ -1004,7 +1000,7 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
             case ModelPackage.MBRICKLET_SOLID_STATE_RELAY__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_SOLID_STATE_RELAY__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_SOLID_STATE_RELAY__SWITCH_STATE:
                 return SWITCH_STATE_EDEFAULT == null ? switchState != null : !SWITCH_STATE_EDEFAULT.equals(switchState);
             case ModelPackage.MBRICKLET_SOLID_STATE_RELAY__DEVICE_TYPE:
@@ -1126,9 +1122,8 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

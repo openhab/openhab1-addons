@@ -43,25 +43,25 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getSensorValue
  *        <em>Sensor Value</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getLogger
  *        <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getUid <em>Uid</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#isPoll <em>Poll</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getUid
+ *        <em>Uid</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#isPoll
+ *        <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getEnabledA
  *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getSubId
- *        <em>Sub Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getSubId <em>Sub
+ *        Id</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getMbrick
  *        <em>Mbrick</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getDeviceType
  *        <em>Device Type</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -251,10 +251,9 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     public void setSensorValue(DecimalValue newSensorValue) {
         DecimalValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
-        }
     }
 
     /**
@@ -278,10 +277,9 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__LOGGER,
                     oldLogger, logger));
-        }
     }
 
     /**
@@ -305,10 +303,9 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__UID, oldUid,
                     uid));
-        }
     }
 
     /**
@@ -332,10 +329,9 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -359,10 +355,9 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -386,10 +381,9 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__SUB_ID, oldSubId,
                     subId));
-        }
     }
 
     /**
@@ -400,10 +394,21 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
      */
     @Override
     public MBrickletBarometer getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MBAROMETER_TEMPERATURE__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.MBAROMETER_TEMPERATURE__MBRICK)
             return null;
-        }
         return (MBrickletBarometer) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletBarometer basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.MBAROMETER_TEMPERATURE__MBRICK)
+            return null;
+        return (MBrickletBarometer) eInternalContainer();
     }
 
     /**
@@ -427,25 +432,20 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     public void setMbrick(MBrickletBarometer newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBAROMETER_TEMPERATURE__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__MBRICK,
                     newMbrick, newMbrick));
-        }
     }
 
     /**
@@ -521,9 +521,8 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBAROMETER_TEMPERATURE__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletBarometer) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -582,7 +581,9 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
             case ModelPackage.MBAROMETER_TEMPERATURE__SUB_ID:
                 return getSubId();
             case ModelPackage.MBAROMETER_TEMPERATURE__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.MBAROMETER_TEMPERATURE__DEVICE_TYPE:
                 return getDeviceType();
         }
@@ -679,7 +680,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
             case ModelPackage.MBAROMETER_TEMPERATURE__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.MBAROMETER_TEMPERATURE__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.MBAROMETER_TEMPERATURE__DEVICE_TYPE:
                 return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
         }
@@ -818,9 +819,8 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (sensorValue: ");

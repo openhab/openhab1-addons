@@ -20,15 +20,20 @@ import com.tinkerforge.BrickletIndustrialDigitalIn4;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4#getDeviceType
  *        <em>Device Type</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletIndustrialDigitalIn4()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn> org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletIndustrialDigitalIn4> org.openhab.binding.tinkerforge.internal.model.InterruptListener org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
+ *        <org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn>
+ *        org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletIndustrialDigitalIn4>
+ *        org.openhab.binding.tinkerforge.internal.model.InterruptListener
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration>"
  * @generated
  */
 public interface MBrickletIndustrialDigitalIn4 extends MSubDeviceHolder<MIndustrialDigitalIn>,
