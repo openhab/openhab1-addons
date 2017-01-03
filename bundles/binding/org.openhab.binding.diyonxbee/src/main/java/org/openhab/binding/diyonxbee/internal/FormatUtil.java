@@ -46,8 +46,7 @@ public abstract class FormatUtil {
 
 	public static int[] fromReadableAddress(String remote) {
 		if (remote == null || remote.length() != 16)
-			throw new IllegalArgumentException(
-					"cannot parse XBeeAddress64 from " + remote);
+			throw new IllegalArgumentException("cannot parse XBeeAddress64 from " + remote);
 
 		final int[] address = new int[8];
 		for (int i = 0; i < 8; i++) {

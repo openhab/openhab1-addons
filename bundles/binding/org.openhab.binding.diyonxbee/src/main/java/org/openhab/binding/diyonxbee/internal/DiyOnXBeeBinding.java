@@ -56,11 +56,10 @@ import com.rapplogic.xbee.util.ByteUtils;
  * @author juergen.richtsfeld@gmail.com
  * @since 1.9
  */
-public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider>
-		implements PacketListener, ManagedService {
+public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider> implements PacketListener,
+		ManagedService {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(DiyOnXBeeBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(DiyOnXBeeBinding.class);
 
 	/**
 	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is
@@ -133,8 +132,7 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider>
 	 *            Configuration properties for this component obtained from the
 	 *            ConfigAdmin service
 	 */
-	public void activate(final BundleContext bundleContext,
-			final Map<String, Object> configuration) {
+	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
 		// this.bundleContext = bundleContext;
 	}
 
@@ -187,8 +185,7 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider>
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand({},{}) is called!", itemName,
-				command);
+		logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
 
 		for (DiyOnXBeeBindingProvider provider : providers) {
 			if (provider.providesBindingFor(itemName)) {
@@ -201,8 +198,7 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider>
 	 * 
 	 * @return if the command was sent successfully
 	 */
-	private boolean internalReceiveCommand(DiyOnXBeeBindingProvider provider,
-			String itemName, Command command) {
+	private boolean internalReceiveCommand(DiyOnXBeeBindingProvider provider, String itemName, Command command) {
 		final String remote = provider.getRemote(itemName);
 		final int[] remoteAddress = FormatUtil.fromReadableAddress(remote);
 
@@ -216,26 +212,20 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider>
 
 		final String commandValue = createCommand(item, command);
 		if (commandValue == null) {
-			logger.warn("unable to create command {} for item {}",
-					commandValue, itemName);
+			logger.warn("unable to create command {} for item {}", commandValue, itemName);
 			return false;
 		} else {
-			logger.debug("created command {} for item {}", commandValue,
-					itemName);
+			logger.debug("created command {} for item {}", commandValue, itemName);
 		}
 
-		final String commandString = new StringBuilder()
-				.append(provider.getId(itemName)).append('=')
+		final String commandString = new StringBuilder().append(provider.getId(itemName)).append('=')
 				.append(commandValue).append('\n').toString();
-		final ZNetTxRequest request = new ZNetTxRequest(new XBeeAddress64(
-				remoteAddress), createPayload(commandString));
+		final ZNetTxRequest request = new ZNetTxRequest(new XBeeAddress64(remoteAddress), createPayload(commandString));
 
 		xbeeUsageLock.lock();
 		try {
 			if (xbee == null) {
-				logger.error(
-						"cannot send command to {}  as the XBee module isn't initialized",
-						itemName);
+				logger.error("cannot send command to {}  as the XBee module isn't initialized", itemName);
 				return false;
 			} else {
 				final XBeeResponse response = xbee.sendSynchronous(request); // TODO:
@@ -267,12 +257,10 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider>
 			final State state = item.getState();
 			if (state instanceof HSBType) {
 				final HSBType hsbType = (HSBType) state;
-				return changeColorBrightness(hsbType,
-						(IncreaseDecreaseType) command);
+				return changeColorBrightness(hsbType, (IncreaseDecreaseType) command);
 			} else if (state instanceof PercentType) {
 				final PercentType percent = (PercentType) state;
-				final PercentType newBrightness = changeBrightness(
-						(IncreaseDecreaseType) command, percent);
+				final PercentType newBrightness = changeBrightness((IncreaseDecreaseType) command, percent);
 				return makeHUE(newBrightness.floatValue());
 			}
 		} else if (command instanceof HSBType) {
@@ -286,22 +274,17 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider>
 		return null;
 	}
 
-	private String changeColorBrightness(final HSBType hsbType,
-			IncreaseDecreaseType increaseDecrease) {
+	private String changeColorBrightness(final HSBType hsbType, IncreaseDecreaseType increaseDecrease) {
 		final PercentType brightness = hsbType.getBrightness();
-		final PercentType newBrightness = changeBrightness(increaseDecrease,
-				brightness);
-		final HSBType newHSB = new HSBType(hsbType.getHue(),
-				hsbType.getSaturation(), newBrightness);
+		final PercentType newBrightness = changeBrightness(increaseDecrease, brightness);
+		final HSBType newHSB = new HSBType(hsbType.getHue(), hsbType.getSaturation(), newBrightness);
 		return makeRGB(newHSB.toColor());
 	}
 
-	private PercentType changeBrightness(IncreaseDecreaseType increaseDecrease,
-			final PercentType brightness) {
+	private PercentType changeBrightness(IncreaseDecreaseType increaseDecrease, final PercentType brightness) {
 		final PercentType newBrightness;
 		if (increaseDecrease == IncreaseDecreaseType.DECREASE) {
-			BigDecimal changed = brightness.toBigDecimal().subtract(
-					BigDecimal.ONE);
+			BigDecimal changed = brightness.toBigDecimal().subtract(BigDecimal.ONE);
 			if (changed.compareTo(BigDecimal.ZERO) < 0)
 				changed = BigDecimal.ZERO;
 			newBrightness = new PercentType(changed);
@@ -383,8 +366,7 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider>
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveUpdate({},{}) is called!", itemName,
-				newState);
+		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
 	}
 
 	@Override
@@ -392,20 +374,17 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider>
 		if (response.getApiId() == ApiId.ZNET_RX_RESPONSE) {
 			final ZNetRxResponse rxResponse = (ZNetRxResponse) response;
 			final String message = ByteUtils.toString(rxResponse.getData());
-			final String remoteAddress = FormatUtil.readableAddress(rxResponse
-					.getRemoteAddress64().getAddress());
+			final String remoteAddress = FormatUtil.readableAddress(rxResponse.getRemoteAddress64().getAddress());
 
 			final String[] lines = message.split("\\r\\n");
 
 			for (final String line : lines) {
-				logger.debug("received message: '{}' from '{}'", line,
-						remoteAddress);
+				logger.debug("received message: '{}' from '{}'", line, remoteAddress);
 
 				final int idxEquals = line.indexOf('=');
 				if (idxEquals > 0) {
 					final String key = line.substring(0, idxEquals);
-					final String value = line.substring(idxEquals + 1,
-							line.length());
+					final String value = line.substring(idxEquals + 1, line.length());
 
 					boolean updated = false;
 					for (final DiyOnXBeeBindingProvider provider : providers) {
@@ -417,8 +396,7 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider>
 							if (key.equals(id) && remote.equals(remoteAddress)) {
 								final List<Class<? extends State>> availableTypes = provider
 										.getAvailableItemTypes(itemName);
-								final State state = parseState(value,
-										availableTypes, provider, itemName);
+								final State state = parseState(value, availableTypes, provider, itemName);
 								if (state != null) {
 									updated = true;
 									eventPublisher.postUpdate(itemName, state);
@@ -427,17 +405,14 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider>
 						}
 					}
 					if (!updated) {
-						logger.warn(
-								"unmatched item: key='{}', value='{}' from '{}'",
-								key, value, remoteAddress);
+						logger.warn("unmatched item: key='{}', value='{}' from '{}'", key, value, remoteAddress);
 					}
 				}
 			}
 		}
 	}
 
-	private State parseState(final String value,
-			final List<Class<? extends State>> availableTypes,
+	private State parseState(final String value, final List<Class<? extends State>> availableTypes,
 			DiyOnXBeeBindingProvider provider, String itemName) {
 		State state = TypeParser.parseState(availableTypes, value);
 		if (state == null) {
@@ -447,16 +422,14 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider>
 
 			if (max != null) {
 				final DecimalType type = (DecimalType) state;
-				final double percentage = type.doubleValue() / max.intValue()
-						* 100d;
+				final double percentage = type.doubleValue() / max.intValue() * 100d;
 				return new DecimalType(percentage);
 			}
 		}
 		return state;
 	}
 
-	private State parseCustomState(String value,
-			List<Class<? extends State>> availableTypes) {
+	private State parseCustomState(String value, List<Class<? extends State>> availableTypes) {
 		for (Class<? extends State> clazz : availableTypes) {
 			if (clazz == HSBType.class) {
 				final State rgb = parseRGBState(value);
@@ -475,8 +448,7 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider>
 	}
 
 	@Override
-	public void updated(Dictionary<String, ?> properties)
-			throws ConfigurationException {
+	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
 		{
 			final String serialPort = (String) properties.get("serialPort");
 			if (StringUtils.isNotBlank(serialPort)) {

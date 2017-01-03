@@ -24,8 +24,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @author juergen.richtsfeld@gmail.com
  * @since 1.9
  */
-public class DiyOnXBeeGenericBindingProvider extends
-		AbstractGenericBindingProvider implements DiyOnXBeeBindingProvider {
+public class DiyOnXBeeGenericBindingProvider extends AbstractGenericBindingProvider implements DiyOnXBeeBindingProvider {
 
 	/**
 	 * {@inheritDoc}
@@ -38,15 +37,12 @@ public class DiyOnXBeeGenericBindingProvider extends
 	 * @{inheritDoc
 	 */
 	@Override
-	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException {
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		if (!(bindingConfig.startsWith("<") || bindingConfig.startsWith(">"))) {
-			throw new BindingConfigParseException("config of " + item.getName()
-					+ " has to start with '<' or '>'");
+			throw new BindingConfigParseException("config of " + item.getName() + " has to start with '<' or '>'");
 		}
 		if (bindingConfig.indexOf(':') < 0) {
-			throw new BindingConfigParseException("config of " + item.getName()
-					+ " is not in the form address:id");
+			throw new BindingConfigParseException("config of " + item.getName() + " is not in the form address:id");
 		}
 	}
 
@@ -54,31 +50,27 @@ public class DiyOnXBeeGenericBindingProvider extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item,
-			String bindingConfig) throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item, String bindingConfig)
+			throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		if (bindingConfig.startsWith("<")) {
-			final DiyOnXBeeBindingConfig config = parseBindingConfig(item,
-					bindingConfig, DIRECTION.IN);
+			final DiyOnXBeeBindingConfig config = parseBindingConfig(item, bindingConfig, DIRECTION.IN);
 			addBindingConfig(item, config);
 		} else if (bindingConfig.startsWith(">")) {
-			final DiyOnXBeeBindingConfig config = parseBindingConfig(item,
-					bindingConfig, DIRECTION.OUT);
+			final DiyOnXBeeBindingConfig config = parseBindingConfig(item, bindingConfig, DIRECTION.OUT);
 			addBindingConfig(item, config);
 		}
 	}
 
-	private DiyOnXBeeBindingConfig parseBindingConfig(Item item,
-			String bindingConfig, DIRECTION direction)
+	private DiyOnXBeeBindingConfig parseBindingConfig(Item item, String bindingConfig, DIRECTION direction)
 			throws BindingConfigParseException {
 		final DiyOnXBeeBindingConfig config = new DiyOnXBeeBindingConfig();
 		config.direction = direction;
 		final String id = bindingConfig.trim().substring(1);
 		final String[] parts = id.split(":");
 		if (parts.length > 3) {
-			throw new BindingConfigParseException("config of " + item.getName()
-					+ " is not in the form address:id");
+			throw new BindingConfigParseException("config of " + item.getName() + " is not in the form address:id");
 		}
 		config.remote = parts[0];
 		config.id = parts[1];
@@ -105,8 +97,7 @@ public class DiyOnXBeeGenericBindingProvider extends
 
 	@Override
 	public Boolean autoUpdate(String itemName) {
-		final DiyOnXBeeBindingConfig bindingConfig = (DiyOnXBeeBindingConfig) bindingConfigs
-				.get(itemName);
+		final DiyOnXBeeBindingConfig bindingConfig = (DiyOnXBeeBindingConfig) bindingConfigs.get(itemName);
 		if (bindingConfig == null)
 			return null;
 		return bindingConfig.direction == DIRECTION.IN;
