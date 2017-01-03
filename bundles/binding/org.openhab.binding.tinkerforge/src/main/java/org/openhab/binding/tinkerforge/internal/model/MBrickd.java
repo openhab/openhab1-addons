@@ -28,6 +28,7 @@ import com.tinkerforge.IPConnection;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getLogger <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getIpConnection <em>Ip Connection</em>}</li>
@@ -35,16 +36,15 @@ import com.tinkerforge.IPConnection;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getPort <em>Port</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getAuthkey <em>Authkey</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getIsConnected <em>Is Connected</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isAutoReconnect <em>Auto Reconnect</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isAutoReconnect <em>Auto
+ *        Reconnect</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isReconnected <em>Reconnected</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getConnectedCounter
- *        <em>Connected Counter</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getConnectedCounter <em>Connected
+ *        Counter</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getTimeout <em>Timeout</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getMdevices <em>Mdevices</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getEcosystem <em>Ecosystem</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickd()
  * @model
@@ -98,8 +98,8 @@ public interface MBrickd extends EObject {
     IPConnection getIpConnection();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getIpConnection
-     * <em>Ip Connection</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getIpConnection <em>Ip
+     * Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -187,8 +187,8 @@ public interface MBrickd extends EObject {
     String getAuthkey();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getAuthkey <em>Authkey</em>}
-     * ' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getAuthkey
+     * <em>Authkey</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -216,8 +216,8 @@ public interface MBrickd extends EObject {
     HighLowValue getIsConnected();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getIsConnected
-     * <em>Is Connected</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getIsConnected <em>Is
+     * Connected</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -246,8 +246,8 @@ public interface MBrickd extends EObject {
     boolean isAutoReconnect();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isAutoReconnect
-     * <em>Auto Reconnect</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isAutoReconnect <em>Auto
+     * Reconnect</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -336,8 +336,8 @@ public interface MBrickd extends EObject {
     int getTimeout();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getTimeout <em>Timeout</em>}
-     * ' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getTimeout
+     * <em>Timeout</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -369,8 +369,8 @@ public interface MBrickd extends EObject {
 
     /**
      * Returns the value of the '<em><b>Ecosystem</b></em>' container reference.
-     * It is bidirectional and its opposite is '
-     * {@link org.openhab.binding.tinkerforge.internal.model.Ecosystem#getMbrickds <em>Mbrickds</em>}'.
+     * It is bidirectional and its opposite is
+     * '{@link org.openhab.binding.tinkerforge.internal.model.Ecosystem#getMbrickds <em>Mbrickds</em>}'.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Ecosystem</em>' container reference isn't clear,

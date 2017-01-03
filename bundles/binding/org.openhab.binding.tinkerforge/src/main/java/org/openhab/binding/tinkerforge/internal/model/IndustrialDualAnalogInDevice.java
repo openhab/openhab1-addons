@@ -29,7 +29,11 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getIndustrialDualAnalogInDevice()
  * @model interface="true" abstract="true" superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MSubDevice<org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ *        "org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn>
+ *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
 public interface IndustrialDualAnalogInDevice

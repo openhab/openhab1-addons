@@ -48,32 +48,32 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getDigitalState
- *        <em>Digital State</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getLogger <em>Logger</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getDigitalState <em>Digital
+ *        State</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getEnabledA
- *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getSubId <em>Sub Id</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getMbrick <em>Mbrick</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getEnabledA <em>Enabled
+ *        A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getSubId <em>Sub
+ *        Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getMbrick
+ *        <em>Mbrick</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getGenericDeviceId
  *        <em>Generic Device Id</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getTfConfig
- *        <em>Tf Config</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getPin <em>Pin</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getDefaultState
- *        <em>Default State</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#isKeepOnReconnect
- *        <em>Keep On Reconnect</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getDefaultState <em>Default
+ *        State</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#isKeepOnReconnect <em>Keep
+ *        On Reconnect</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -375,10 +375,9 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     public void setDigitalState(HighLowValue newDigitalState) {
         HighLowValue oldDigitalState = digitalState;
         digitalState = newDigitalState;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__DIGITAL_STATE,
                     oldDigitalState, digitalState));
-        }
     }
 
     /**
@@ -402,10 +401,9 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -429,9 +427,8 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -455,9 +452,8 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__POLL, oldPoll, poll));
-        }
     }
 
     /**
@@ -481,10 +477,9 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -508,10 +503,9 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__SUB_ID, oldSubId,
                     subId));
-        }
     }
 
     /**
@@ -522,10 +516,21 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
      */
     @Override
     public MBrickletIO4 getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.DIGITAL_ACTOR_IO4__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.DIGITAL_ACTOR_IO4__MBRICK)
             return null;
-        }
         return (MBrickletIO4) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletIO4 basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.DIGITAL_ACTOR_IO4__MBRICK)
+            return null;
+        return (MBrickletIO4) eInternalContainer();
     }
 
     /**
@@ -549,25 +554,20 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     public void setMbrick(MBrickletIO4 newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.DIGITAL_ACTOR_IO4__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
@@ -591,10 +591,9 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     public void setGenericDeviceId(String newGenericDeviceId) {
         String oldGenericDeviceId = genericDeviceId;
         genericDeviceId = newGenericDeviceId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__GENERIC_DEVICE_ID,
                     oldGenericDeviceId, genericDeviceId));
-        }
     }
 
     /**
@@ -620,11 +619,10 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.DIGITAL_ACTOR_IO4__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -639,22 +637,18 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     public void setTfConfig(TFIOActorConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.DIGITAL_ACTOR_IO4__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.DIGITAL_ACTOR_IO4__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -689,9 +683,8 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     public void setPin(int newPin) {
         int oldPin = pin;
         pin = newPin;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__PIN, oldPin, pin));
-        }
     }
 
     /**
@@ -715,10 +708,9 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     public void setDefaultState(String newDefaultState) {
         String oldDefaultState = defaultState;
         defaultState = newDefaultState;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__DEFAULT_STATE,
                     oldDefaultState, defaultState));
-        }
     }
 
     /**
@@ -742,16 +734,15 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     public void setKeepOnReconnect(boolean newKeepOnReconnect) {
         boolean oldKeepOnReconnect = keepOnReconnect;
         keepOnReconnect = newKeepOnReconnect;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__KEEP_ON_RECONNECT,
                     oldKeepOnReconnect, keepOnReconnect));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -776,7 +767,7 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -793,7 +784,7 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     }
 
     /**
-     * 
+     *
      * @generated NOT
      */
     private HighLowValue extractValue(int valueMask) {
@@ -809,7 +800,7 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -823,12 +814,12 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
     public void enable() {
-        logger.debug("{} enable called on DigitalActorIO4", LoggerConstants.TFINIT);
+        logger.debug("{} enable called on DigitalActorIO4 {}", LoggerConstants.TFINIT, getSubId());
         if (tfConfig != null) {
             if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("defaultState"))) {
                 logger.debug("{} setDefaultState: {}", LoggerConstants.TFINIT, tfConfig.getDefaultState());
@@ -846,12 +837,12 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
                 logger.debug("{} reconnected: no new port configuration set for {}", LoggerConstants.TFINIT,
                         getSubId());
             } else if (defaultState == null || defaultState.equals("keep")) {
-                logger.debug("{} keep: no new port configuration set", LoggerConstants.TFINIT);
+                logger.debug("{} keep: no new port configuration set for {}", LoggerConstants.TFINIT, getSubId());
             } else if (defaultState.equals("true")) {
-                logger.debug("{} setPortconfiguration to state: true", LoggerConstants.TFINIT);
+                logger.debug("{} setPortconfiguration to state: true for {}", LoggerConstants.TFINIT, getSubId());
                 getMbrick().getTinkerforgeDevice().setConfiguration((short) mask, BrickletIO4.DIRECTION_OUT, true);
             } else if (defaultState.equals("false")) {
-                logger.debug("{} setPortconfiguration to state: false", LoggerConstants.TFINIT);
+                logger.debug("{} setPortconfiguration to state: false for {}", LoggerConstants.TFINIT, getSubId());
                 getMbrick().getTinkerforgeDevice().setConfiguration((short) mask, BrickletIO4.DIRECTION_OUT, false);
             }
             fetchDigitalValue();
@@ -865,7 +856,7 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -882,9 +873,8 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.DIGITAL_ACTOR_IO4__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletIO4) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -945,7 +935,9 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
             case ModelPackage.DIGITAL_ACTOR_IO4__SUB_ID:
                 return getSubId();
             case ModelPackage.DIGITAL_ACTOR_IO4__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.DIGITAL_ACTOR_IO4__GENERIC_DEVICE_ID:
                 return getGenericDeviceId();
             case ModelPackage.DIGITAL_ACTOR_IO4__TF_CONFIG:
@@ -1083,7 +1075,7 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
             case ModelPackage.DIGITAL_ACTOR_IO4__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.DIGITAL_ACTOR_IO4__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.DIGITAL_ACTOR_IO4__GENERIC_DEVICE_ID:
                 return GENERIC_DEVICE_ID_EDEFAULT == null ? genericDeviceId != null
                         : !GENERIC_DEVICE_ID_EDEFAULT.equals(genericDeviceId);
@@ -1299,9 +1291,8 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (digitalState: ");

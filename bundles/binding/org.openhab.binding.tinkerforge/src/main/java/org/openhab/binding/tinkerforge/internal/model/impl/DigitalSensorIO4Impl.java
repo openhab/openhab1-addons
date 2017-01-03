@@ -40,36 +40,36 @@ import com.tinkerforge.TimeoutException;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Digital Sensor IO4</b></em>'.
- * 
+ *
  * @author Theo Weiss
  * @since 1.3.0
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getLogger <em>Logger</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getEnabledA
- *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getSubId <em>Sub Id</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getMbrick <em>Mbrick</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getEnabledA <em>Enabled
+ *        A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getSubId <em>Sub
+ *        Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getMbrick
+ *        <em>Mbrick</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getGenericDeviceId
  *        <em>Generic Device Id</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getSensorValue
- *        <em>Sensor Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getTfConfig
- *        <em>Tf Config</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getSensorValue <em>Sensor
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#isPullUpResistorEnabled
  *        <em>Pull Up Resistor Enabled</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl#getPin <em>Pin</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -340,10 +340,9 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_SENSOR_IO4__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -367,9 +366,8 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_SENSOR_IO4__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -393,10 +391,9 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_SENSOR_IO4__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -420,10 +417,9 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_SENSOR_IO4__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -447,10 +443,9 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_SENSOR_IO4__SUB_ID, oldSubId,
                     subId));
-        }
     }
 
     /**
@@ -461,10 +456,21 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public MBrickletIO4 getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.DIGITAL_SENSOR_IO4__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.DIGITAL_SENSOR_IO4__MBRICK)
             return null;
-        }
         return (MBrickletIO4) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletIO4 basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.DIGITAL_SENSOR_IO4__MBRICK)
+            return null;
+        return (MBrickletIO4) eInternalContainer();
     }
 
     /**
@@ -488,25 +494,20 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     public void setMbrick(MBrickletIO4 newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.DIGITAL_SENSOR_IO4__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_SENSOR_IO4__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
@@ -530,10 +531,9 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     public void setGenericDeviceId(String newGenericDeviceId) {
         String oldGenericDeviceId = genericDeviceId;
         genericDeviceId = newGenericDeviceId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_SENSOR_IO4__GENERIC_DEVICE_ID,
                     oldGenericDeviceId, genericDeviceId));
-        }
     }
 
     /**
@@ -557,10 +557,9 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     public void setSensorValue(HighLowValue newSensorValue) {
         HighLowValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_SENSOR_IO4__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
-        }
     }
 
     /**
@@ -586,11 +585,10 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.DIGITAL_SENSOR_IO4__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -605,22 +603,18 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     public void setTfConfig(TFIOSensorConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.DIGITAL_SENSOR_IO4__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.DIGITAL_SENSOR_IO4__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_SENSOR_IO4__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -655,11 +649,10 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     public void setPullUpResistorEnabled(boolean newPullUpResistorEnabled) {
         boolean oldPullUpResistorEnabled = pullUpResistorEnabled;
         pullUpResistorEnabled = newPullUpResistorEnabled;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.DIGITAL_SENSOR_IO4__PULL_UP_RESISTOR_ENABLED, oldPullUpResistorEnabled,
                     pullUpResistorEnabled));
-        }
     }
 
     /**
@@ -683,15 +676,14 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     public void setPin(int newPin) {
         int oldPin = pin;
         pin = newPin;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_SENSOR_IO4__PIN, oldPin, pin));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -710,7 +702,7 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -723,16 +715,18 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
     public void enable() {
+        logger.debug("{} enable called on DigitalSensorIO4 {}", LoggerConstants.TFINIT, getSubId());
         setSensorValue(HighLowValue.UNDEF);
         if (tfConfig != null) {
-            logger.debug("{} found config for DigitalSensor", LoggerConstants.TFINIT);
+            logger.debug("{} found config for DigitalSensor {}", LoggerConstants.TFINIT, getSubId());
             setPullUpResistorEnabled(tfConfig.isPullUpResistorEnabled());
-            logger.debug("{} pull-up resistor state is {}", LoggerConstants.TFINIT, isPullUpResistorEnabled());
+            logger.debug("{} pull-up resistor state is {} for {}", LoggerConstants.TFINIT, isPullUpResistorEnabled(),
+                    getSubId());
         }
         MBrickletIO4 bricklet = getMbrick();
         if (bricklet == null) {
@@ -754,7 +748,7 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     }
 
     /**
-     * 
+     *
      * @generated NOT
      */
     private HighLowValue extractValue(int valueMask) {
@@ -769,7 +763,7 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     private class InterruptListener implements BrickletIO4.InterruptListener {
@@ -788,7 +782,7 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -808,9 +802,8 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.DIGITAL_SENSOR_IO4__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletIO4) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -869,7 +862,9 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
             case ModelPackage.DIGITAL_SENSOR_IO4__SUB_ID:
                 return getSubId();
             case ModelPackage.DIGITAL_SENSOR_IO4__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.DIGITAL_SENSOR_IO4__GENERIC_DEVICE_ID:
                 return getGenericDeviceId();
             case ModelPackage.DIGITAL_SENSOR_IO4__SENSOR_VALUE:
@@ -998,7 +993,7 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
             case ModelPackage.DIGITAL_SENSOR_IO4__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.DIGITAL_SENSOR_IO4__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.DIGITAL_SENSOR_IO4__GENERIC_DEVICE_ID:
                 return GENERIC_DEVICE_ID_EDEFAULT == null ? genericDeviceId != null
                         : !GENERIC_DEVICE_ID_EDEFAULT.equals(genericDeviceId);
@@ -1150,9 +1145,8 @@ public class DigitalSensorIO4Impl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");
