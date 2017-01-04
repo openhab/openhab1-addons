@@ -178,7 +178,22 @@ public class KM200SwitchProgramService {
                 if (daysList != null) {
                     Integer cycl = getActiveCycle();
                     if (cycl <= daysList.size()) {
-                        daysList.set(getActiveCycle() - 1, time);
+                        Integer actC = getActiveCycle();
+                        /* if the positive switch is existing then the negative have to exist too */
+                        Integer nSwitch = switchMap.get(getNegativeSwitch()).get(getActiveDay()).get(actC - 1);
+                        /* The positiv switch cannot be higher then the negative */
+                        if (time > (nSwitch - getSwitchPointTimeRaster()) && nSwitch > 0) {
+                            time = nSwitch - getSwitchPointTimeRaster();
+                        }
+                        /* Check whether the time would overlap with the previous one */
+                        if (actC > 1) {
+                            Integer nPrevSwitch = switchMap.get(getNegativeSwitch()).get(getActiveDay()).get(actC - 2);
+                            /* The positiv switch cannot be lower then the previous negative */
+                            if (time < (nPrevSwitch + getSwitchPointTimeRaster())) {
+                                time = nPrevSwitch + getSwitchPointTimeRaster();
+                            }
+                        }
+                        daysList.set(actC - 1, time);
                     }
                 }
             }
@@ -199,10 +214,23 @@ public class KM200SwitchProgramService {
             if (week != null) {
                 ArrayList<Integer> daysList = week.get(getActiveDay());
                 if (daysList != null) {
-                    Integer cycl = getActiveCycle();
-                    if (cycl <= daysList.size()) {
-                        daysList.set(getActiveCycle() - 1, time);
+                    Integer nbrC = getNbrCycles();
+                    Integer actC = getActiveCycle();
+                    /* if the negative switch is existing then the positive have to exist too */
+                    Integer pSwitch = switchMap.get(getPositiveSwitch()).get(getActiveDay()).get(actC - 1);
+                    /* The negative switch cannot be lower then the positive */
+                    if (time < (pSwitch + getSwitchPointTimeRaster())) {
+                        time = pSwitch + getSwitchPointTimeRaster();
                     }
+                    /* Check whether the time would overlap with the next one */
+                    if (nbrC > actC) {
+                        Integer pNextSwitch = switchMap.get(getPositiveSwitch()).get(getActiveDay()).get(actC);
+                        /* The negative switch cannot be higher then the next positive switch */
+                        if (time > (pNextSwitch - getSwitchPointTimeRaster()) && pNextSwitch > 0) {
+                            time = pNextSwitch - getSwitchPointTimeRaster();
+                        }
+                    }
+                    daysList.set(actC - 1, time);
                 }
             }
         }

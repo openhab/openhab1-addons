@@ -532,7 +532,7 @@ class KM200Comm {
                     return null;
                 }
                 decodedData = decodeMessage(recData);
-                logger.debug("Check state of data:" + decodedData);
+                logger.debug("Check state of data: {}", decodedData);
                 if (decodedData == null) {
                     throw new RuntimeException("Decoding of the KM200 message is not possible!");
                 }
@@ -966,9 +966,7 @@ class KM200Comm {
                     KM200SwitchProgramService sPService = ((KM200SwitchProgramService) parObject.getValueParameter());
                     String[] servicePath = service.split("/");
                     String virtService = servicePath[servicePath.length - 1];
-                    if (virtService.equals("nbrCycles")) {
-                        /* ReadOnly */
-                    } else if (virtService.equals("cycle")) {
+                    if (virtService.equals("cycle")) {
                         /* Only parameter changing without communication to device */
                         sPService.setActiveCycle(val);
                     } else if (virtService.equals(sPService.getPositiveSwitch())) {

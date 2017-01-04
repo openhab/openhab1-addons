@@ -176,6 +176,7 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
                     logger.debug(service.getDescription());
                     comm.initObjects(service.getDescription());
                 } catch (Exception e) {
+                    logger.error("Couldn't init service: {}", service);
                     e.printStackTrace();
                 }
             }
@@ -184,6 +185,7 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
             try {
                 comm.initVirtualObjects();
             } catch (Exception e) {
+                logger.error("Couldn't init virtual services");
                 e.printStackTrace();
             }
             /* Output all availible services in the log file */
