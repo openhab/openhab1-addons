@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -58,6 +59,8 @@ import com.rapplogic.xbee.util.ByteUtils;
  */
 public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider> implements PacketListener,
 		ManagedService {
+
+	static final String ITEM_SEPARATOR = "\r\n";
 
 	private static final Logger logger = LoggerFactory.getLogger(DiyOnXBeeBinding.class);
 
@@ -228,10 +231,7 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider> 
 				logger.error("cannot send command to {}  as the XBee module isn't initialized", itemName);
 				return false;
 			} else {
-				final XBeeResponse response = xbee.sendSynchronous(request); // TODO:
-																				// evaluate
-																				// response
-																				// ?
+				final XBeeResponse response = xbee.sendSynchronous(request); // TODO: evaluate response?
 				return true;
 			}
 		} catch (XBeeTimeoutException e) {
@@ -369,6 +369,8 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider> 
 		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
 	}
 
+	private final Map<String, String> lastKeys = new HashMap<String, String>();
+
 	@Override
 	public void processResponse(XBeeResponse response) {
 		if (response.getApiId() == ApiId.ZNET_RX_RESPONSE) {
@@ -376,39 +378,69 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider> 
 			final String message = ByteUtils.toString(rxResponse.getData());
 			final String remoteAddress = FormatUtil.readableAddress(rxResponse.getRemoteAddress64().getAddress());
 
-			final String[] lines = message.split("\\r\\n");
+			processResponse(message, remoteAddress);
+		}
+	}
 
-			for (final String line : lines) {
-				logger.debug("received message: '{}' from '{}'", line, remoteAddress);
-
-				final int idxEquals = line.indexOf('=');
-				if (idxEquals > 0) {
-					final String key = line.substring(0, idxEquals);
-					final String value = line.substring(idxEquals + 1, line.length());
-
-					boolean updated = false;
-					for (final DiyOnXBeeBindingProvider provider : providers) {
-
-						for (final String itemName : provider.getItemNames()) {
-							final String id = provider.getId(itemName);
-							final String remote = provider.getRemote(itemName);
-
-							if (key.equals(id) && remote.equals(remoteAddress)) {
-								final List<Class<? extends State>> availableTypes = provider
-										.getAvailableItemTypes(itemName);
-								final State state = parseState(value, availableTypes, provider, itemName);
-								if (state != null) {
-									updated = true;
-									eventPublisher.postUpdate(itemName, state);
-								}
-							}
-						}
+	private void processResponse(final String message, final String remoteAddress) {
+		logger.debug("received message: '{}' from '{}'", message, remoteAddress);
+		
+		int startIdx = 0;
+		do {
+			final int idxEquals = message.indexOf('=', startIdx);
+			final int idxEnd = message.indexOf(ITEM_SEPARATOR, startIdx);
+			
+			if(idxEquals > 0 && idxEnd > 0) {
+				if(idxEnd > idxEquals) {
+					final String key = message.substring(startIdx, idxEquals);
+					final String value = message.substring(idxEquals+1, idxEnd);
+					startIdx = idxEnd + ITEM_SEPARATOR.length();
+					tryUpdate(key, value, remoteAddress);
+					lastKeys.remove(remoteAddress);
+				} else {
+					final String lastKey = lastKeys.remove(remoteAddress);
+					if(lastKey != null) {
+						final String value = message.substring(startIdx, idxEnd);
+						tryUpdate(lastKey, value, remoteAddress);
 					}
-					if (!updated) {
-						logger.warn("unmatched item: key='{}', value='{}' from '{}'", key, value, remoteAddress);
+					startIdx = idxEnd+ITEM_SEPARATOR.length();
+				}
+			} else if (idxEquals > 0){
+				lastKeys.put(remoteAddress, message.substring(startIdx, idxEquals));
+				startIdx = -1;
+			} else {
+				startIdx = -1;
+			}
+		} while(startIdx > 0);
+	}
+	
+	public static void main(String[] args) {
+		final DiyOnXBeeBinding binding = new DiyOnXBeeBinding();
+		binding.processResponse("a=15\r\nb=20\r\n", "abc");
+	}
+	
+	private void tryUpdate(final String key, final String value, final String remoteAddress) {
+		logger.debug("trying to set {} of {} to {}", key, remoteAddress, value);
+		boolean updated = false;
+		for (final DiyOnXBeeBindingProvider provider : providers) {
+
+			for (final String itemName : provider.getItemNames()) {
+				final String id = provider.getId(itemName);
+				final String remote = provider.getRemote(itemName);
+
+				if (key.equals(id) && remote.equals(remoteAddress)) {
+					final List<Class<? extends State>> availableTypes = provider
+							.getAvailableItemTypes(itemName);
+					final State state = parseState(value, availableTypes, provider, itemName);
+					if (state != null) {
+						updated = true;
+						eventPublisher.postUpdate(itemName, state);
 					}
 				}
 			}
+		}
+		if (!updated) {
+			logger.warn("unmatched item: key='{}', value='{}' from '{}'", key, value, remoteAddress);
 		}
 	}
 
