@@ -91,7 +91,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 
     @Override
     public void store(Item item, String alias) {
-        logger.debug("Storing item: " + item.getName());
+        logger.debug("Storing item: {}, item.getName());
 
         if (item.getState() instanceof UnDefType) {
             logger.debug("This item is of undefined type. Cannot persist it!");
@@ -99,7 +99,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
         }
 
         if (!JpaConfiguration.isInitialized) {
-            logger.warn("Trying to create EntityManagerFactory but we don't have configuration yet!");
+            logger.debug("Trying to create EntityManagerFactory but we don't have configuration yet!");
             return;
         }
 
