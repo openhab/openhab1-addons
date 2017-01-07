@@ -30,7 +30,7 @@ public class KM200Activator implements BundleActivator {
      */
     @Override
     public void start(BundleContext bc) throws Exception {
-        logger.info("KM200 binding has been activated.");
+        logger.debug("KM200 binding has been activated.");
     }
 
     /**
@@ -38,7 +38,7 @@ public class KM200Activator implements BundleActivator {
      */
     @Override
     public void stop(BundleContext bc) throws Exception {
-        logger.info("KM200 binding has been deactivated.");
+        logger.debug("KM200 binding has been deactivated.");
     }
 
 }
