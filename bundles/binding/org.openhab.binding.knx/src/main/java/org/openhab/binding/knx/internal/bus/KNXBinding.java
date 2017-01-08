@@ -186,7 +186,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
                 && e.getSourceAddr().toString().equalsIgnoreCase(KNXConnection.getLocalSourceAddr()))) {
             readFromKNX(e);
         } else {
-            logger.warn("Ignoring local Event, received from my local Source address {} for Group address {}.",
+            logger.debug("Ignoring local Event, received from my local Source address {} for Group address {}.",
                     e.getSourceAddr().toString(), e.getDestination().toString());
         }
     }
