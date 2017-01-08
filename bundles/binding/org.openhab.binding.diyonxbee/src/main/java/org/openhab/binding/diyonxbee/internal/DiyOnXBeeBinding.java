@@ -231,7 +231,9 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider> 
 				logger.error("cannot send command to {}  as the XBee module isn't initialized", itemName);
 				return false;
 			} else {
-				final XBeeResponse response = xbee.sendSynchronous(request); // TODO: evaluate response?
+				final XBeeResponse response = xbee.sendSynchronous(request); // TODO:
+																				// evaluate
+																				// response?
 				return true;
 			}
 		} catch (XBeeTimeoutException e) {
@@ -384,36 +386,36 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider> 
 
 	void processResponse(final String message, final String remoteAddress) {
 		logger.debug("received message: '{}' from '{}'", message, remoteAddress);
-		
+
 		int startIdx = 0;
 		do {
 			final int idxEquals = message.indexOf('=', startIdx);
 			final int idxEnd = message.indexOf(ITEM_SEPARATOR, startIdx);
-			
-			if(idxEquals > 0 && idxEnd > 0) {
-				if(idxEnd > idxEquals) {
+
+			if (idxEquals > 0 && idxEnd > 0) {
+				if (idxEnd > idxEquals) {
 					final String key = message.substring(startIdx, idxEquals);
-					final String value = message.substring(idxEquals+1, idxEnd);
+					final String value = message.substring(idxEquals + 1, idxEnd);
 					startIdx = idxEnd + ITEM_SEPARATOR.length();
 					tryUpdate(key, value, remoteAddress);
 					lastKeys.remove(remoteAddress);
 				} else {
 					final String lastKey = lastKeys.remove(remoteAddress);
-					if(lastKey != null) {
+					if (lastKey != null) {
 						final String value = message.substring(startIdx, idxEnd);
 						tryUpdate(lastKey, value, remoteAddress);
 					}
-					startIdx = idxEnd+ITEM_SEPARATOR.length();
+					startIdx = idxEnd + ITEM_SEPARATOR.length();
 				}
-			} else if (idxEquals > 0){
+			} else if (idxEquals > 0) {
 				lastKeys.put(remoteAddress, message.substring(startIdx, idxEquals));
 				startIdx = -1;
 			} else {
 				startIdx = -1;
 			}
-		} while(startIdx > 0);
+		} while (startIdx > 0);
 	}
-	
+
 	private void tryUpdate(final String key, final String value, final String remoteAddress) {
 		logger.debug("trying to set {} of {} to {}", key, remoteAddress, value);
 		boolean updated = false;
@@ -424,8 +426,7 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider> 
 				final String remote = provider.getRemote(itemName);
 
 				if (key.equals(id) && remote.equals(remoteAddress)) {
-					final List<Class<? extends State>> availableTypes = provider
-							.getAvailableItemTypes(itemName);
+					final List<Class<? extends State>> availableTypes = provider.getAvailableItemTypes(itemName);
 					final State state = parseState(value, availableTypes, provider, itemName);
 					if (state != null) {
 						updated = true;
