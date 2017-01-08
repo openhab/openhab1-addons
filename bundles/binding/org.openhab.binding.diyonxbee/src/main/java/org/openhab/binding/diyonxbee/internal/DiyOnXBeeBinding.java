@@ -382,7 +382,7 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider> 
 		}
 	}
 
-	private void processResponse(final String message, final String remoteAddress) {
+	void processResponse(final String message, final String remoteAddress) {
 		logger.debug("received message: '{}' from '{}'", message, remoteAddress);
 		
 		int startIdx = 0;
@@ -412,11 +412,6 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider> 
 				startIdx = -1;
 			}
 		} while(startIdx > 0);
-	}
-	
-	public static void main(String[] args) {
-		final DiyOnXBeeBinding binding = new DiyOnXBeeBinding();
-		binding.processResponse("a=15\r\nb=20\r\n", "abc");
 	}
 	
 	private void tryUpdate(final String key, final String value, final String remoteAddress) {
