@@ -81,7 +81,7 @@ public class KM200SwitchProgramService {
     }
 
     /**
-     * This function adds a switch to the switchmap
+     * This function inits the week list
      *
      */
     void initWeeklist(String setpoint) {
@@ -288,7 +288,7 @@ public class KM200SwitchProgramService {
     }
 
     /**
-     * This function checks whether the actual cycle have to be removed (Both times set to 0)
+     * This function checks whether the actual cycle have to be removed (Both times set to MAX_TIME)
      *
      */
     void checkRemovement() {
@@ -300,7 +300,7 @@ public class KM200SwitchProgramService {
     }
 
     /**
-     * This function determines the positive und negative switch point names
+     * This function determines the positive and negative switch point names
      *
      */
     void determineSwitchNames(KM200Device device) {
@@ -382,7 +382,7 @@ public class KM200SwitchProgramService {
                         sPoints.put(tmpObj);
                     }
 
-                    /* CHeck wehther one object for a new cycle is already created */
+                    /* Check whether one object for a new cycle is already created */
                     if (switchMap.get(getPositiveSwitch()).get(day).size() > minDays) {
                         JSONObject tmpObj = new JSONObject();
                         tmpObj.put("dayOfWeek", day);
@@ -439,7 +439,7 @@ public class KM200SwitchProgramService {
     }
 
     /**
-     * This function returns the number auf cycles
+     * This function returns the number of cycles
      *
      */
     Integer getNbrCycles() {
