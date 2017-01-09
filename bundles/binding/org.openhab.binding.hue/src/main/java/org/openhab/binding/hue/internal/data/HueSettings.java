@@ -273,6 +273,10 @@ public class HueSettings {
          */
         @SuppressWarnings("unchecked")
         protected SettingsTree node(String nodeName) {
+            if (dataMap.get(nodeName) == null){
+                return null;
+            }
+
             return new SettingsTree((Map<String, Object>) dataMap.get(nodeName));
         }
 

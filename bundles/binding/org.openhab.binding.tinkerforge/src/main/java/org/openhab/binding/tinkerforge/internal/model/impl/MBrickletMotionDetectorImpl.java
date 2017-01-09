@@ -45,11 +45,12 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMotionDetectorImpl#getLogger
  *        <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMotionDetectorImpl#getUid <em>Uid</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMotionDetectorImpl#getUid
+ *        <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMotionDetectorImpl#isPoll
  *        <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMotionDetectorImpl#getEnabledA
@@ -74,7 +75,6 @@ import com.tinkerforge.TimeoutException;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMotionDetectorImpl#getDeviceType
  *        <em>Device Type</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -367,10 +367,9 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MOTION_DETECTOR__LOGGER,
                     oldLogger, logger));
-        }
     }
 
     /**
@@ -394,10 +393,9 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MOTION_DETECTOR__UID, oldUid,
                     uid));
-        }
     }
 
     /**
@@ -421,10 +419,9 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MOTION_DETECTOR__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -448,10 +445,9 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MOTION_DETECTOR__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -475,11 +471,10 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     public void setTinkerforgeDevice(BrickletMotionDetector newTinkerforgeDevice) {
         BrickletMotionDetector oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_MOTION_DETECTOR__TINKERFORGE_DEVICE, oldTinkerforgeDevice,
                     tinkerforgeDevice));
-        }
     }
 
     /**
@@ -503,10 +498,9 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MOTION_DETECTOR__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -530,10 +524,9 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MOTION_DETECTOR__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -557,10 +550,9 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MOTION_DETECTOR__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -584,10 +576,9 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_MOTION_DETECTOR__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
@@ -611,10 +602,9 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MOTION_DETECTOR__NAME, oldName,
                     name));
-        }
     }
 
     /**
@@ -625,10 +615,21 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_MOTION_DETECTOR__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_MOTION_DETECTOR__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_MOTION_DETECTOR__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -652,25 +653,20 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_MOTION_DETECTOR__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MOTION_DETECTOR__BRICKD,
                     newBrickd, newBrickd));
-        }
     }
 
     /**
@@ -694,10 +690,9 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     public void setSensorValue(HighLowValue newSensorValue) {
         HighLowValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MOTION_DETECTOR__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
-        }
     }
 
     /**
@@ -803,9 +798,8 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_MOTION_DETECTOR__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -871,7 +865,9 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
             case ModelPackage.MBRICKLET_MOTION_DETECTOR__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_MOTION_DETECTOR__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_MOTION_DETECTOR__SENSOR_VALUE:
                 return getSensorValue();
             case ModelPackage.MBRICKLET_MOTION_DETECTOR__DEVICE_TYPE:
@@ -1010,7 +1006,7 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
             case ModelPackage.MBRICKLET_MOTION_DETECTOR__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_MOTION_DETECTOR__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_MOTION_DETECTOR__SENSOR_VALUE:
                 return sensorValue != null;
             case ModelPackage.MBRICKLET_MOTION_DETECTOR__DEVICE_TYPE:
@@ -1109,9 +1105,8 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

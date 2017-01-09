@@ -17,13 +17,13 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration#getIlluminanceRange
  * <em>Illuminance Range</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration#getIntegrationTime
  * <em>Integration Time</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getAmbientLightV2Configuration()
  * @model
@@ -48,8 +48,8 @@ public interface AmbientLightV2Configuration extends TFBaseConfiguration {
     short getIlluminanceRange();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration#getIlluminanceRange
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration#getIlluminanceRange
      * <em>Illuminance Range</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -78,8 +78,8 @@ public interface AmbientLightV2Configuration extends TFBaseConfiguration {
     short getIntegrationTime();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration#getIntegrationTime
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration#getIntegrationTime
      * <em>Integration Time</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="netatmo"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>Netatmo Binding (1.x)</name>
+    <description>A 1.x binding for the Netatmo Personal Weather Station and Welcome indoor security camera.</description>
+    
+    <service-id>org.openhab.netatmo</service-id>
+
+    <config-description>
+        <parameter name="granularity" type="integer" required="false">
+            <label>Granularity</label>
+            <description>Rate at which to check if poll is to run in milliseconds</description>
+            <default>5000</default>
+        </parameter>
+        <parameter name="refresh" type="integer" required="false">
+            <label>Refresh Interval</label>
+            <description>Data refresh interval in milliseconds</description>
+            <default>300000</default>
+        </parameter>
+        <parameter name="clientid" type="text" required="true">
+            <label>Client ID</label>
+            <description>See https://github.com/openhab/openhab/wiki/Netatmo-Binding</description>
+        </parameter>
+        <parameter name="clientsecret" type="text" required="true">
+            <label>Client Secret</label>
+            <description>See https://github.com/openhab/openhab/wiki/Netatmo-Binding</description>
+        </parameter>
+        <parameter name="refreshtoken" type="text" required="true">
+            <label>Refresh Token</label>
+            <description>See https://github.com/openhab/openhab/wiki/Netatmo-Binding</description>
+        </parameter>
+        <parameter name="unitsystem" type="text" required="false">
+            <label>Unit System</label>
+            <description>Metric - Celsius/meters/millimeters&lt;br&gt;US - Fahrenheit/feet/inches</description>
+            <default>M</default>
+            <limitToOptions>true</limitToOptions>
+            <options>
+                <option value="M">Metric</option>
+                <option value="US">US</option>
+            </options>
+        </parameter>
+        <parameter name="pressureunit" type="text" required="false">
+            <label>Pressure Unit</label>
+            <description>The unit of measure for pressure</description>
+            <default>mbar</default>
+            <limitToOptions>true</limitToOptions>
+            <options>
+                <option value="mbar">Millibar</option>
+                <option value="inHg">Inches of Mercury</option>
+                <option value="mmHg">Millimeters of Mercury</option>
+            </options>
+        </parameter>
+    </config-description>
+</binding:binding>

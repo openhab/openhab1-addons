@@ -7,6 +7,8 @@
     <name>Nest Binding</name>
     <description>Monitor and control Nest Learning Thermostats, Nest Protect Smoke+CO detectors, and Nest Cams using the cloud-based API.</description>
     <author>John Cocula</author>
+    
+    <service-id>org.openhab.nest</service-id>
 
     <config-description>
         <parameter name="refresh" type="integer">

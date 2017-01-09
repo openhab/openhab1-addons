@@ -21,16 +21,16 @@ import org.eclipse.emf.ecore.EObject;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getSubid <em>Subid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getOhid <em>Ohid</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getSubDeviceIds <em>Sub Device Ids</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getSubDeviceIds <em>Sub Device
+ *        Ids</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getTfConfig <em>Tf Config</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getOhConfig <em>Oh Config</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getOHTFDevice()
  * @model IDSBounds="org.openhab.binding.tinkerforge.internal.model.Enum"
@@ -127,7 +127,6 @@ public interface OHTFDevice<TFC extends TFConfig, IDS extends Enum> extends EObj
 
     /**
      * Returns the value of the '<em><b>Sub Device Ids</b></em>' attribute list.
-     * The list contents are of type {@link IDS}.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Sub Device Ids</em>' attribute isn't clear,
@@ -160,8 +159,8 @@ public interface OHTFDevice<TFC extends TFConfig, IDS extends Enum> extends EObj
     TFC getTfConfig();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getTfConfig
-     * <em>Tf Config</em>}' containment reference.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getTfConfig <em>Tf
+     * Config</em>}' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -173,8 +172,8 @@ public interface OHTFDevice<TFC extends TFConfig, IDS extends Enum> extends EObj
 
     /**
      * Returns the value of the '<em><b>Oh Config</b></em>' container reference.
-     * It is bidirectional and its opposite is '
-     * {@link org.openhab.binding.tinkerforge.internal.model.OHConfig#getOhTfDevices <em>Oh Tf Devices</em>}'.
+     * It is bidirectional and its opposite is
+     * '{@link org.openhab.binding.tinkerforge.internal.model.OHConfig#getOhTfDevices <em>Oh Tf Devices</em>}'.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Oh Config</em>' container reference isn't clear,
@@ -192,8 +191,8 @@ public interface OHTFDevice<TFC extends TFConfig, IDS extends Enum> extends EObj
     OHConfig getOhConfig();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getOhConfig
-     * <em>Oh Config</em>}' container reference.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getOhConfig <em>Oh
+     * Config</em>}' container reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -208,8 +207,10 @@ public interface OHTFDevice<TFC extends TFConfig, IDS extends Enum> extends EObj
      * <!-- end-user-doc -->
      * 
      * @model unique="false" subIdUnique="false"
-     *        annotation=
-     *        "http://www.eclipse.org/emf/2002/GenModel body='<%org.openhab.binding.tinkerforge.internal.model.OHTFDevice%><TFC,IDS> _this = this;\n<%org.eclipse.emf.common.util.EList%><IDS> _subDeviceIds = _this.getSubDeviceIds();\nfor (final IDS sid : _subDeviceIds)\n{\n\t<%java.lang.String%> _string = sid.toString();\n\tboolean _equalsIgnoreCase = _string.equalsIgnoreCase(subId);\n\tif (_equalsIgnoreCase)\n\t{\n\t\treturn true;\n\t}\n}\nreturn false;'"
+     *        annotation="http://www.eclipse.org/emf/2002/GenModel body='<%org.eclipse.emf.common.util.EList%><IDS>
+     *        _subDeviceIds = this.getSubDeviceIds();\nfor (final IDS sid : _subDeviceIds)\n{\n\t<%java.lang.String%>
+     *        _string = sid.toString();\n\tboolean _equalsIgnoreCase = _string.equalsIgnoreCase(subId);\n\tif
+     *        (_equalsIgnoreCase)\n\t{\n\t\treturn true;\n\t}\n}\nreturn false;'"
      * @generated
      */
     boolean isValidSubId(String subId);

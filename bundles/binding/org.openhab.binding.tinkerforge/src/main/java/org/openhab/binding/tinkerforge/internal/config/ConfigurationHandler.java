@@ -32,9 +32,11 @@ import org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfi
 import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ColorBrickletSubIds;
+import org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
@@ -83,6 +85,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfigu
 import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
 import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
@@ -195,7 +198,13 @@ public class ConfigurationHandler {
         bricklet_accelerometer,
         accelerometer_direction,
         accelerometer_temperature,
-        accelerometer_led
+        accelerometer_led,
+        bricklet_oled128x64,
+        bricklet_oled64x48,
+        bricklet_thermocouple,
+        bricklet_uvlight,
+        bricklet_co2,
+        bricklet_analog_out_v2
     }
 
     public ConfigurationHandler() {
@@ -220,7 +229,7 @@ public class ConfigurationHandler {
      * the first part of configuration key of the openhab.cfg entry. The configuration entries look
      * like this: tinkerforge:<openhab symbolic device name>.<property>=<value> e.g.
      * "tinkerforge:dc_garage.uid=62Zduj"
-     * 
+     *
      * @param config The configuration received from the configManagement service.
      * @return The parsed configuration for each device as Map with the configuration key as String
      *         and the value as String. These maps are hold in an outer Map with the symbolic device
@@ -294,11 +303,11 @@ public class ConfigurationHandler {
     /**
      * Generates the {@link OHConfig} EMF model configuration store for the device configuration from
      * openhab.cfg.
-     * 
+     *
      * Creates the device specific configuration object {@link OHTFDevice} and calls
      * {@link #fillupConfig(OHTFDevice, Map) fillupConfig} to fill in the configuration into the
      * configuration object.
-     * 
+     *
      * @param deviceConfig The device configuration as {@code Map} of {@code Strings}.
      * @throws ConfigurationException
      */
@@ -332,7 +341,9 @@ public class ConfigurationHandler {
                 || deviceType.equals(TypeKey.industrial_dual_analogin_channel.name())
                 || deviceType.equals(TypeKey.accelerometer_direction.name())
                 || deviceType.equals(TypeKey.laser_range_finder_distance.name())
-                || deviceType.equals(TypeKey.laser_range_finder_velocity.name())) {
+                || deviceType.equals(TypeKey.laser_range_finder_velocity.name())
+                || deviceType.equals(TypeKey.bricklet_uvlight.name())
+                || deviceType.equals(TypeKey.bricklet_co2.name())) {
             logger.debug("{} setting base config", LoggerConstants.CONFIG);
             TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
             if (deviceType.equals(TypeKey.bricklet_barometer)) {
@@ -405,7 +416,13 @@ public class ConfigurationHandler {
                 ohtfDevice.setTfConfig(tfBaseConfiguration);
                 fillupConfig(ohtfDevice, deviceConfig);
             }
-
+        } else if (deviceType.equals(TypeKey.bricklet_analog_out_v2.name())) {
+            logger.debug("{} setting bricklet analog v2 config", LoggerConstants.CONFIG);
+            DimmableConfiguration analogOutV2Configuration = modelFactory.createDimmableConfiguration();
+            OHTFDevice<DimmableConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+            ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+            ohtfDevice.setTfConfig(analogOutV2Configuration);
+            fillupConfig(ohtfDevice, deviceConfig);
         } else if (deviceType.equals(TypeKey.brick_dc.name())) {
             logger.debug("{} setting dc config", LoggerConstants.CONFIG);
             TFBrickDCConfiguration tfBrickDCConfiguration = modelFactory.createTFBrickDCConfiguration();
@@ -706,6 +723,19 @@ public class ConfigurationHandler {
             ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(LaserRangeFinderSubIds.values()));
             ohtfDevice.setTfConfig(configuration);
             fillupConfig(ohtfDevice, deviceConfig);
+        } else if (deviceType.equals(TypeKey.bricklet_oled128x64.name())
+                || deviceType.equals(TypeKey.bricklet_oled64x48.name())) {
+            BrickletOLEDConfiguration configuration = modelFactory.createBrickletOLEDConfiguration();
+            OHTFDevice<BrickletOLEDConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+            ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+            ohtfDevice.setTfConfig(configuration);
+            fillupConfig(ohtfDevice, deviceConfig);
+        } else if (deviceType.equals(TypeKey.bricklet_thermocouple.name())) {
+            TFThermocoupleConfiguration configuration = modelFactory.createTFThermocoupleConfiguration();
+            OHTFDevice<TFThermocoupleConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+            ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+            ohtfDevice.setTfConfig(configuration);
+            fillupConfig(ohtfDevice, deviceConfig);
         } else {
             logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
             logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
@@ -717,7 +747,7 @@ public class ConfigurationHandler {
 
     /**
      * Fills in the configuration into the configuration object and adds it to the {@link OHConfig}.
-     * 
+     *
      * @param ohtfDevice The device specific configuration object {@link OHTFDevice}.
      * @param deviceConfig The device configuration as {@code Map} of {@code Strings}.
      * @throws ConfigurationException
@@ -815,7 +845,7 @@ public class ConfigurationHandler {
 
     /**
      * Checks if the {@code deviceType} is known by the {@link Ecosystem}.
-     * 
+     *
      * @param ohId The name of the device found in openhab.cfg as {@code String}.
      * @param deviceType The device type found in openhab.cfg as {@code String}.
      * @throws ConfigurationException

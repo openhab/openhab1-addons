@@ -106,7 +106,7 @@ public class CirclePlus extends Circle {
                             // devices
                             device = new Circle(((RoleCallResponseMessage) message).getNodeMAC(), stick,
                                     ((RoleCallResponseMessage) message).getNodeMAC());
-                            stick.plugwiseDeviceCache.add(device);
+                            stick.addDevice(device);
                             logger.debug("Added a Circle with MAC {} to the cache", device.getMAC());
                         }
 

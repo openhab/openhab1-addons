@@ -16,6 +16,7 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -367,17 +368,17 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
             itemCache.clear();
 
             if (config != null) {
-                String timeoutString = (String) config.get(CONFIG_TIMEOUT);
+                String timeoutString = Objects.toString(config.get(CONFIG_TIMEOUT), null);
                 if (StringUtils.isNotBlank(timeoutString)) {
                     timeout = Integer.parseInt(timeoutString);
                 }
 
-                String granularityString = (String) config.get(CONFIG_GRANULARITY);
+                String granularityString = Objects.toString(config.get(CONFIG_GRANULARITY), null);
                 if (StringUtils.isNotBlank(granularityString)) {
                     granularity = Integer.parseInt(granularityString);
                 }
 
-                String formatString = (String) config.get(CONFIG_FORMAT);
+                String formatString = Objects.toString(config.get(CONFIG_FORMAT), null);
                 if (StringUtils.isNotBlank(formatString)) {
                     format = formatString.equalsIgnoreCase("true");
                 }
@@ -417,7 +418,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
                     }
 
                     String configKey = matcher.group(2);
-                    String value = (String) config.get(key);
+                    String value = Objects.toString(config.get(key), null);
 
                     if ("url".equals(configKey)) {
                         matcher = EXTRACT_CACHE_CONFIG_URL.matcher(value);

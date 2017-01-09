@@ -130,6 +130,8 @@ public enum VoltageCurrentSubIds implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param literal the literal.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static VoltageCurrentSubIds get(String literal) {
@@ -147,6 +149,8 @@ public enum VoltageCurrentSubIds implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param name the name.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static VoltageCurrentSubIds getByName(String name) {
@@ -164,6 +168,8 @@ public enum VoltageCurrentSubIds implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param value the integer value.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static VoltageCurrentSubIds get(int value) {

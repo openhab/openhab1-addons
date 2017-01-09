@@ -52,6 +52,7 @@ import com.tinkerforge.TimeoutException;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getLogger
  * <em>Logger</em>}</li>
@@ -59,12 +60,12 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#isPoll <em>Poll</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getEnabledA
- * <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getIpConnection
- * <em>Ip Connection</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getIpConnection <em>Ip
+ * Connection</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getConnectedUid
  * <em>Connected Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getPosition
@@ -77,10 +78,10 @@ import com.tinkerforge.TimeoutException;
  * <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getMsubdevices
  * <em>Msubdevices</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getTfConfig
- * <em>Tf Config</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getDistanceAverageLength
  * <em>Distance Average Length</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getVelocityAverageLength
@@ -90,7 +91,6 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getEnableLaserOnStartup
  * <em>Enable Laser On Startup</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -478,10 +478,9 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LASER_RANGE_FINDER__LOGGER,
                     oldLogger, logger));
-        }
     }
 
     /**
@@ -505,10 +504,9 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LASER_RANGE_FINDER__UID,
                     oldUid, uid));
-        }
     }
 
     /**
@@ -532,10 +530,9 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LASER_RANGE_FINDER__POLL,
                     oldPoll, poll));
-        }
     }
 
     /**
@@ -559,10 +556,9 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LASER_RANGE_FINDER__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -586,11 +582,10 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setTinkerforgeDevice(BrickletLaserRangeFinder newTinkerforgeDevice) {
         BrickletLaserRangeFinder oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_LASER_RANGE_FINDER__TINKERFORGE_DEVICE, oldTinkerforgeDevice,
                     tinkerforgeDevice));
-        }
     }
 
     /**
@@ -614,10 +609,9 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_LASER_RANGE_FINDER__IP_CONNECTION, oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -641,10 +635,9 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_LASER_RANGE_FINDER__CONNECTED_UID, oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -668,10 +661,9 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LASER_RANGE_FINDER__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -695,11 +687,10 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_LASER_RANGE_FINDER__DEVICE_IDENTIFIER, oldDeviceIdentifier,
                     deviceIdentifier));
-        }
     }
 
     /**
@@ -723,10 +714,9 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LASER_RANGE_FINDER__NAME,
                     oldName, name));
-        }
     }
 
     /**
@@ -737,10 +727,21 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LASER_RANGE_FINDER__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LASER_RANGE_FINDER__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LASER_RANGE_FINDER__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -764,25 +765,20 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_LASER_RANGE_FINDER__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LASER_RANGE_FINDER__BRICKD,
                     newBrickd, newBrickd));
-        }
     }
 
     /**
@@ -794,8 +790,15 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     @Override
     public EList<LaserRangeFinderDevice> getMsubdevices() {
         if (msubdevices == null) {
-            msubdevices = new EObjectContainmentWithInverseEList<LaserRangeFinderDevice>(MSubDevice.class, this,
-                    ModelPackage.MBRICKLET_LASER_RANGE_FINDER__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+            msubdevices = new EObjectContainmentWithInverseEList<LaserRangeFinderDevice>(LaserRangeFinderDevice.class,
+                    this, ModelPackage.MBRICKLET_LASER_RANGE_FINDER__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK) {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public Class<?> getInverseFeatureClass() {
+                    return MSubDevice.class;
+                }
+            };
         }
         return msubdevices;
     }
@@ -823,11 +826,10 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_LASER_RANGE_FINDER__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -842,22 +844,18 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setTfConfig(LaserRangeFinderConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_LASER_RANGE_FINDER__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_LASER_RANGE_FINDER__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LASER_RANGE_FINDER__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -892,11 +890,10 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setDistanceAverageLength(short newDistanceAverageLength) {
         short oldDistanceAverageLength = distanceAverageLength;
         distanceAverageLength = newDistanceAverageLength;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_LASER_RANGE_FINDER__DISTANCE_AVERAGE_LENGTH, oldDistanceAverageLength,
                     distanceAverageLength));
-        }
     }
 
     /**
@@ -920,11 +917,10 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setVelocityAverageLength(short newVelocityAverageLength) {
         short oldVelocityAverageLength = velocityAverageLength;
         velocityAverageLength = newVelocityAverageLength;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_LASER_RANGE_FINDER__VELOCITY_AVERAGE_LENGTH, oldVelocityAverageLength,
                     velocityAverageLength));
-        }
     }
 
     /**
@@ -948,10 +944,9 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setMode(short newMode) {
         short oldMode = mode;
         mode = newMode;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LASER_RANGE_FINDER__MODE,
                     oldMode, mode));
-        }
     }
 
     /**
@@ -975,11 +970,10 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public void setEnableLaserOnStartup(Boolean newEnableLaserOnStartup) {
         Boolean oldEnableLaserOnStartup = enableLaserOnStartup;
         enableLaserOnStartup = newEnableLaserOnStartup;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_LASER_RANGE_FINDER__ENABLE_LASER_ON_STARTUP, oldEnableLaserOnStartup,
                     enableLaserOnStartup));
-        }
     }
 
     /**
@@ -1098,9 +1092,8 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
             case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__MSUBDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMsubdevices()).basicAdd(otherEnd, msgs);
@@ -1172,7 +1165,9 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
             case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__MSUBDEVICES:
                 return getMsubdevices();
             case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__TF_CONFIG:
@@ -1353,7 +1348,7 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
             case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__MSUBDEVICES:
                 return msubdevices != null && !msubdevices.isEmpty();
             case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__TF_CONFIG:
@@ -1485,9 +1480,8 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");
