@@ -210,7 +210,8 @@ public class NetatmoBinding extends AbstractActiveBinding<NetatmoBindingProvider
 
                 // the config-key enumeration contains additional keys that we
                 // don't want to process here ...
-                if (CONFIG_REFRESH.equals(configKey) || "service.pid".equals(configKey)) {
+                if (CONFIG_GRANULARITY.equals(configKey) || CONFIG_REFRESH.equals(configKey)
+                        || "service.pid".equals(configKey)) {
                     continue;
                 }
 

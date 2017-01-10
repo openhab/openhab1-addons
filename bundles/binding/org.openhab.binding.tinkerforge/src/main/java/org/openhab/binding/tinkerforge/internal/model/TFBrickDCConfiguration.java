@@ -18,17 +18,17 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getVelocity <em>Velocity</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getVelocity
+ *        <em>Velocity</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getAcceleration
  *        <em>Acceleration</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getPwmFrequency
- *        <em>Pwm Frequency</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getDriveMode
- *        <em>Drive Mode</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getPwmFrequency <em>Pwm
+ *        Frequency</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getDriveMode <em>Drive
+ *        Mode</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFBrickDCConfiguration()
  * @model
@@ -82,8 +82,8 @@ public interface TFBrickDCConfiguration extends DimmableConfiguration, TFBaseCon
     int getAcceleration();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getAcceleration
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getAcceleration
      * <em>Acceleration</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -112,9 +112,9 @@ public interface TFBrickDCConfiguration extends DimmableConfiguration, TFBaseCon
     int getPwmFrequency();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getPwmFrequency
-     * <em>Pwm Frequency</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getPwmFrequency <em>Pwm
+     * Frequency</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

@@ -18,6 +18,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeADevices
  *        <em>Type ADevices</em>}</li>
@@ -26,7 +27,6 @@ package org.openhab.binding.tinkerforge.internal.model;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeCDevices
  *        <em>Type CDevices</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletRemoteSwitchConfiguration()
  * @model
@@ -51,9 +51,9 @@ public interface BrickletRemoteSwitchConfiguration extends TFConfig {
     String getTypeADevices();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeADevices
-     * <em>Type ADevices</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeADevices <em>Type
+     * ADevices</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -81,9 +81,9 @@ public interface BrickletRemoteSwitchConfiguration extends TFConfig {
     String getTypeBDevices();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeBDevices
-     * <em>Type BDevices</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeBDevices <em>Type
+     * BDevices</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -111,9 +111,9 @@ public interface BrickletRemoteSwitchConfiguration extends TFConfig {
     String getTypeCDevices();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeCDevices
-     * <em>Type CDevices</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeCDevices <em>Type
+     * CDevices</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

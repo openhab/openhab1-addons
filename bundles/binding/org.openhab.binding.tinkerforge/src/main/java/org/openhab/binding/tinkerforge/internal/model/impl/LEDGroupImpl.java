@@ -52,6 +52,7 @@ import com.tinkerforge.TimeoutException;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDGroupImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDGroupImpl#getUid <em>Uid</em>}</li>
@@ -65,7 +66,6 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDGroupImpl#getTfConfig <em>Tf Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDGroupImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -307,9 +307,8 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_GROUP__LOGGER, oldLogger, logger));
-        }
     }
 
     /**
@@ -333,9 +332,8 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_GROUP__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -359,9 +357,8 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_GROUP__POLL, oldPoll, poll));
-        }
     }
 
     /**
@@ -385,10 +382,9 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_GROUP__ENABLED_A, oldEnabledA,
                     enabledA));
-        }
     }
 
     /**
@@ -412,9 +408,8 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_GROUP__SUB_ID, oldSubId, subId));
-        }
     }
 
     /**
@@ -425,10 +420,21 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
      */
     @Override
     public MBrickletLEDStrip getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.LED_GROUP__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.LED_GROUP__MBRICK)
             return null;
-        }
         return (MBrickletLEDStrip) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletLEDStrip basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.LED_GROUP__MBRICK)
+            return null;
+        return (MBrickletLEDStrip) eInternalContainer();
     }
 
     /**
@@ -452,25 +458,20 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
     public void setMbrick(MBrickletLEDStrip newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.LED_GROUP__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_GROUP__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
@@ -494,9 +495,8 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
     public void setColor(HSBValue newColor) {
         HSBValue oldColor = color;
         color = newColor;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_GROUP__COLOR, oldColor, color));
-        }
     }
 
     /**
@@ -520,10 +520,9 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
     public void setSwitchState(OnOffValue newSwitchState) {
         OnOffValue oldSwitchState = switchState;
         switchState = newSwitchState;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_GROUP__SWITCH_STATE, oldSwitchState,
                     switchState));
-        }
     }
 
     /**
@@ -549,11 +548,10 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.LED_GROUP__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -568,22 +566,18 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
     public void setTfConfig(LEDGroupConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.LED_GROUP__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.LED_GROUP__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_GROUP__TF_CONFIG, newTfConfig,
                     newTfConfig));
-        }
     }
 
     /**
@@ -599,7 +593,7 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -615,7 +609,7 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -643,7 +637,7 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -670,12 +664,18 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
             if (ledList.hasLedRanges()) {
                 Map<Integer, Short> ledRanges = ledList.getLedRanges();
                 for (Integer led : ledRanges.keySet()) {
+                    logger.debug("setting color for range from led {} to range {}", led, ledRanges.get(led));
+                    logger.debug("color from mapping{},{},{}", colorMap.get(colorMapping[0]),
+                            colorMap.get(colorMapping[1]), colorMap.get(colorMapping[2]));
                     tinkerforgeDevice.setRGBValues(led, ledRanges.get(led), colorMap.get(colorMapping[0]),
                             colorMap.get(colorMapping[1]), colorMap.get(colorMapping[2]));
                 }
             }
             if (ledList.hasLeds()) {
                 for (Integer led : ledList.getLedNumbers()) {
+                    logger.debug("setting color for led {}", led);
+                    logger.debug("color from mapping{},{},{}", colorMap.get(colorMapping[0]),
+                            colorMap.get(colorMapping[1]), colorMap.get(colorMapping[2]));
                     tinkerforgeDevice.setRGBValues(led, (short) 1, colorMap.get(colorMapping[0]),
                             colorMap.get(colorMapping[1]), colorMap.get(colorMapping[2]));
                 }
@@ -690,7 +690,7 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -701,7 +701,7 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -720,12 +720,13 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
             // TODO throw configuration exception?
         } else {
             ledList = Tools.parseLedString(ledsstring);
+            logger.debug("ledList is {}", ledList.getLedNumbers());
         }
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -743,9 +744,8 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.LED_GROUP__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletLEDStrip) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -804,7 +804,9 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
             case ModelPackage.LED_GROUP__SUB_ID:
                 return getSubId();
             case ModelPackage.LED_GROUP__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.LED_GROUP__COLOR:
                 return getColor();
             case ModelPackage.LED_GROUP__SWITCH_STATE:
@@ -917,7 +919,7 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
             case ModelPackage.LED_GROUP__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.LED_GROUP__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.LED_GROUP__COLOR:
                 return COLOR_EDEFAULT == null ? color != null : !COLOR_EDEFAULT.equals(color);
             case ModelPackage.LED_GROUP__SWITCH_STATE:
@@ -1110,9 +1112,8 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

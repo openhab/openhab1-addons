@@ -21,11 +21,11 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLEDConfigurationImpl#isAutotoggle
  * <em>Autotoggle</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -94,10 +94,9 @@ public class DualButtonLEDConfigurationImpl extends MinimalEObjectImpl.Container
     public void setAutotoggle(boolean newAutotoggle) {
         boolean oldAutotoggle = autotoggle;
         autotoggle = newAutotoggle;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.DUAL_BUTTON_LED_CONFIGURATION__AUTOTOGGLE, oldAutotoggle, autotoggle));
-        }
     }
 
     /**
@@ -170,9 +169,8 @@ public class DualButtonLEDConfigurationImpl extends MinimalEObjectImpl.Container
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (autotoggle: ");

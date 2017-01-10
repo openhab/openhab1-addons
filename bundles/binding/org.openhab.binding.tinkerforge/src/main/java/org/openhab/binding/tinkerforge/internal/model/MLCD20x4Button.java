@@ -20,17 +20,20 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
  *
  *        <p>
  *        The following features are supported:
- *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button#getDeviceType <em>Device Type</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button#getButtonNum <em>Button Num</em>}
- *        </li>
- *        </ul>
  *        </p>
+ *        <ul>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button#getButtonNum <em>Button
+ *        Num</em>}</li>
+ *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMLCD20x4Button()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.SwitchState> org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.SwitchState>
+ *        org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration>"
  * @generated
  */
 public interface MLCD20x4Button extends MSensor<OnOffValue>, MLCDSubDevice, MTFConfigConsumer<ButtonConfiguration> {

@@ -21,10 +21,10 @@ import org.openhab.binding.tinkerforge.internal.types.HSBValue;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.ColorActor#getColor <em>Color</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getColorActor()
  * @model interface="true" abstract="true"

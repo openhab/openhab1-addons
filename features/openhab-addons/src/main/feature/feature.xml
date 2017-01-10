@@ -304,6 +304,14 @@
     <configfile finalname="${openhab.conf}/services/heatmiser.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/heatmiser</configfile>
   </feature>
 
+
+  <feature name="openhab-binding-horizon" description="Horizon Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.horizon/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/horizon.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/horizon</configfile>
+  </feature>
+
   <feature name="openhab-binding-http1" description="HTTP Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -376,7 +384,7 @@
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.lcn/${project.version}</bundle>
   </feature>
 
-  <feature name="openhab-binding-lgtv" description="LGTV Binding" version="${project.version}">
+  <feature name="openhab-binding-lgtv1" description="LGTV Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.lgtv/${project.version}</bundle>
@@ -540,7 +548,7 @@
     <configfile finalname="${openhab.conf}/services/panasonictv.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/panasonictv</configfile>
   </feature>
 
-  <feature name="openhab-binding-plex" description="Plex Binding" version="${project.version}">
+  <feature name="openhab-binding-plex1" description="Plex Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.plex/${project.version}</bundle>

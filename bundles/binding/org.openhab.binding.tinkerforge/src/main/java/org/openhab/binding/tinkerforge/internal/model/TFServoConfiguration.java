@@ -18,22 +18,22 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getVelocity <em>Velocity</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getVelocity
+ *        <em>Velocity</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getAcceleration
  *        <em>Acceleration</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getServoVoltage
- *        <em>Servo Voltage</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getPulseWidthMin
- *        <em>Pulse Width Min</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getPulseWidthMax
- *        <em>Pulse Width Max</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getServoVoltage <em>Servo
+ *        Voltage</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getPulseWidthMin <em>Pulse
+ *        Width Min</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getPulseWidthMax <em>Pulse
+ *        Width Max</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getPeriod <em>Period</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getOutputVoltage
- *        <em>Output Voltage</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getOutputVoltage <em>Output
+ *        Voltage</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFServoConfiguration()
  * @model
@@ -145,9 +145,9 @@ public interface TFServoConfiguration extends DimmableConfiguration {
     int getPulseWidthMin();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getPulseWidthMin
-     * <em>Pulse Width Min</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getPulseWidthMin <em>Pulse Width
+     * Min</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -175,9 +175,9 @@ public interface TFServoConfiguration extends DimmableConfiguration {
     int getPulseWidthMax();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getPulseWidthMax
-     * <em>Pulse Width Max</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getPulseWidthMax <em>Pulse Width
+     * Max</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -234,9 +234,9 @@ public interface TFServoConfiguration extends DimmableConfiguration {
     int getOutputVoltage();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getOutputVoltage
-     * <em>Output Voltage</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getOutputVoltage <em>Output
+     * Voltage</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

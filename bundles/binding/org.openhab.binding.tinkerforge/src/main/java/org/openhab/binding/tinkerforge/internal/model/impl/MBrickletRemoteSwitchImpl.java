@@ -51,13 +51,14 @@ import com.tinkerforge.IPConnection;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getLogger
  *        <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getUid <em>Uid</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#isPoll <em>Poll</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getUid
+ *        <em>Uid</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#isPoll
+ *        <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getEnabledA
  *        <em>Enabled A</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getTinkerforgeDevice
@@ -70,14 +71,14 @@ import com.tinkerforge.IPConnection;
  *        <em>Position</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getDeviceIdentifier
  *        <em>Device Identifier</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getName <em>Name</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getName
+ *        <em>Name</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getBrickd
  *        <em>Brickd</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getMsubdevices
  *        <em>Msubdevices</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getDeviceType
  *        <em>Device Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getTypeADevices
@@ -87,7 +88,6 @@ import com.tinkerforge.IPConnection;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getTypeCDevices
  *        <em>Type CDevices</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -453,10 +453,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__LOGGER,
                     oldLogger, logger));
-        }
     }
 
     /**
@@ -480,10 +479,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__UID, oldUid,
                     uid));
-        }
     }
 
     /**
@@ -507,10 +505,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -534,10 +531,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -561,10 +557,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setTinkerforgeDevice(BrickletRemoteSwitch newTinkerforgeDevice) {
         BrickletRemoteSwitch oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_REMOTE_SWITCH__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
-        }
     }
 
     /**
@@ -588,10 +583,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -615,10 +609,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -642,10 +635,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -669,10 +661,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_REMOTE_SWITCH__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
@@ -696,10 +687,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__NAME, oldName,
                     name));
-        }
     }
 
     /**
@@ -710,10 +700,21 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_REMOTE_SWITCH__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_REMOTE_SWITCH__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_REMOTE_SWITCH__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -737,25 +738,20 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_REMOTE_SWITCH__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__BRICKD,
                     newBrickd, newBrickd));
-        }
     }
 
     /**
@@ -767,8 +763,15 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     @Override
     public EList<RemoteSwitch> getMsubdevices() {
         if (msubdevices == null) {
-            msubdevices = new EObjectContainmentWithInverseEList<RemoteSwitch>(MSubDevice.class, this,
-                    ModelPackage.MBRICKLET_REMOTE_SWITCH__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+            msubdevices = new EObjectContainmentWithInverseEList<RemoteSwitch>(RemoteSwitch.class, this,
+                    ModelPackage.MBRICKLET_REMOTE_SWITCH__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK) {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public Class<?> getInverseFeatureClass() {
+                    return MSubDevice.class;
+                }
+            };
         }
         return msubdevices;
     }
@@ -796,11 +799,10 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -815,22 +817,18 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setTfConfig(BrickletRemoteSwitchConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -865,10 +863,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setTypeADevices(String newTypeADevices) {
         String oldTypeADevices = typeADevices;
         typeADevices = newTypeADevices;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_ADEVICES,
                     oldTypeADevices, typeADevices));
-        }
     }
 
     /**
@@ -892,10 +889,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setTypeBDevices(String newTypeBDevices) {
         String oldTypeBDevices = typeBDevices;
         typeBDevices = newTypeBDevices;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_BDEVICES,
                     oldTypeBDevices, typeBDevices));
-        }
     }
 
     /**
@@ -919,10 +915,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public void setTypeCDevices(String newTypeCDevices) {
         String oldTypeCDevices = typeCDevices;
         typeCDevices = newTypeCDevices;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__TYPE_CDEVICES,
                     oldTypeCDevices, typeCDevices));
-        }
     }
 
     /**
@@ -1040,9 +1035,8 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_REMOTE_SWITCH__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
             case ModelPackage.MBRICKLET_REMOTE_SWITCH__MSUBDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMsubdevices()).basicAdd(otherEnd, msgs);
@@ -1114,7 +1108,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
             case ModelPackage.MBRICKLET_REMOTE_SWITCH__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_REMOTE_SWITCH__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_REMOTE_SWITCH__MSUBDEVICES:
                 return getMsubdevices();
             case ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG:
@@ -1287,7 +1283,7 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
             case ModelPackage.MBRICKLET_REMOTE_SWITCH__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_REMOTE_SWITCH__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_REMOTE_SWITCH__MSUBDEVICES:
                 return msubdevices != null && !msubdevices.isEmpty();
             case ModelPackage.MBRICKLET_REMOTE_SWITCH__TF_CONFIG:
@@ -1442,9 +1438,8 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

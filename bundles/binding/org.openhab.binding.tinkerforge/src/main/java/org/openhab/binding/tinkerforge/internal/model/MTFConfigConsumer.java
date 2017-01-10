@@ -20,11 +20,11 @@ import org.eclipse.emf.ecore.EObject;
  *
  *        <p>
  *        The following features are supported:
- *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer#getTfConfig <em>Tf Config</em>}
- *        </li>
- *        </ul>
  *        </p>
+ *        <ul>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMTFConfigConsumer()
  * @model interface="true" abstract="true"
@@ -49,8 +49,8 @@ public interface MTFConfigConsumer<TFC> extends EObject {
     TFC getTfConfig();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer#getTfConfig
-     * <em>Tf Config</em>}' containment reference.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer#getTfConfig <em>Tf
+     * Config</em>}' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
