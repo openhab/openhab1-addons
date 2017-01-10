@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.fatekplc.internal
+Ignore-Package: org.openhab.binding.fatekplc.internal
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Name: openHAB Fatek PLC Binding
+Bundle-SymbolicName: org.openhab.binding.fatekplc
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.9.0.qualifier
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the Fatek PLC binding of the open Home
+ Automation Bus (openHAB)
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.transform,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Export-Package: org.openhab.binding.fatekplc
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-Activator: org.openhab.binding.fatekplc.internal.FatekPLCActivator
+Bundle-ClassPath: .,
+ lib/jfatek-1.1.0.jar

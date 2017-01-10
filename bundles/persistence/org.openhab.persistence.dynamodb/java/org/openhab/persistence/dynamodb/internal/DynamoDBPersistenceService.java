@@ -316,7 +316,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
 
         List<HistoricItem> historicItems = new ArrayList<HistoricItem>();
 
-        DynamoDBQueryExpression<DynamoDBItem<?>> queryExpression = createQueryExpression(filter);
+        DynamoDBQueryExpression<DynamoDBItem<?>> queryExpression = createQueryExpression(dtoClass, filter);
         @SuppressWarnings("rawtypes")
         final PaginatedQueryList<? extends DynamoDBItem> paginatedList;
         try {
@@ -353,15 +353,29 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
      * @param filter
      * @return DynamoDBQueryExpression corresponding to the given FilterCriteria
      */
-    private DynamoDBQueryExpression<DynamoDBItem<?>> createQueryExpression(FilterCriteria filter) {
-        final DynamoDBStringItem itemHash = new DynamoDBStringItem(filter.getItemName(), null, null);
+    private DynamoDBQueryExpression<DynamoDBItem<?>> createQueryExpression(Class<? extends DynamoDBItem<?>> dtoClass,
+            FilterCriteria filter) {
+        DynamoDBItem<?> item = getDynamoDBHashKey(dtoClass, filter.getItemName());
         final DynamoDBQueryExpression<DynamoDBItem<?>> queryExpression = new DynamoDBQueryExpression<DynamoDBItem<?>>()
-                .withHashKeyValues(itemHash).withScanIndexForward(filter.getOrdering() == Ordering.ASCENDING)
+                .withHashKeyValues(item).withScanIndexForward(filter.getOrdering() == Ordering.ASCENDING)
                 .withLimit(filter.getPageSize());
         Condition timeFilter = maybeAddTimeFilter(queryExpression, filter);
         maybeAddStateFilter(filter, queryExpression);
         logger.debug("Querying: {} with {}", filter.getItemName(), timeFilter);
         return queryExpression;
+    }
+
+    private DynamoDBItem<?> getDynamoDBHashKey(Class<? extends DynamoDBItem<?>> dtoClass, String itemName) {
+        DynamoDBItem<?> item;
+        try {
+            item = dtoClass.newInstance();
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        item.setName(itemName);
+        return item;
     }
 
     private void maybeAddStateFilter(FilterCriteria filter,

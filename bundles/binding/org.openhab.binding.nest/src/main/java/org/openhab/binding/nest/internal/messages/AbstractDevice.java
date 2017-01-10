@@ -33,6 +33,8 @@ public abstract class AbstractDevice extends AbstractMessagePart implements Data
     private String name_long;
     private Date last_connection;
     private Boolean is_online;
+    private String where_id;
+    private String where_name;
 
     public AbstractDevice(@JsonProperty("device_id") String device_id) {
         this.device_id = device_id;
@@ -109,6 +111,23 @@ public abstract class AbstractDevice extends AbstractMessagePart implements Data
         return this.is_online;
     }
 
+    /**
+     * @return Where unique identifier.
+     */
+    @JsonProperty("where_id")
+    public String getWhere_id() {
+        return this.where_id;
+    }
+
+    /**
+     * @return The display name of the device. Associated with the where_id.
+     *         Can be any room name from a list we provide, or a custom name.
+     */
+    @JsonProperty("where_name")
+    public String getWhere_name() {
+        return this.where_name;
+    }
+
     @Override
     public void sync(DataModel dataModel) {
         // Link to structure
@@ -128,6 +147,8 @@ public abstract class AbstractDevice extends AbstractMessagePart implements Data
         builder.append("name_long", this.name_long);
         builder.append("last_connection", this.last_connection);
         builder.append("is_online", this.is_online);
+        builder.append("where_id", this.where_id);
+        builder.append("where_name", this.where_name);
 
         return builder.toString();
     }

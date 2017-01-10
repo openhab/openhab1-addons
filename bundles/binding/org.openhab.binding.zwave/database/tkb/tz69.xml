@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>TZ69</Model>
+    <Label lang="en">Smart meter switch</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x32</id>             <!-- METER -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">LED Indicator Mode</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Switch off = LED off</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Switch off = LED on</Label>
+            </Item>
+            <Help><![CDATA[Sets whether LED should indicate device is on (1) or off (0)
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Memory Function</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Memory function off</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Memory function on</Label>
+            </Item>
+            <Help><![CDATA[<p>Manual states: TZ69 by default value is 1, when the value is 0, TZ69 memory funciton not open; when the value is 1, open TZ69 memory function. </p> <p>Not sure what that means - maybe if value is 0, TZ69 wont remeber the last kWH reading when turned off?</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Watt Meter Report Period</Label>
+            <Type>short</Type>
+            <Default>720</Default>
+            <Minimum>1</Minimum>
+            <Maximum>32767</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[5s x 720 (default) = 3600s = 1 hour
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">kWH Meter Report Period</Label>
+            <Type>short</Type>
+            <Default>6</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32767</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[10m * 6 (default) = 60m = 1 hour
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">Threshold of Watt for Load Caution</Label>
+            <Type>short</Type>
+            <Default>3000</Default>
+            <Minimum>10</Minimum>
+            <Maximum>3000</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Above this level, switch enters overload mode
+<p>Overload mode means the switch is disabled and the LED flashes at 0.5 second intervals. Unplug unit to clear mode.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>6</Index>
+            <Label lang="en">Threshold of kWH for Load Caution</Label>
+            <Type>short</Type>
+            <Default>10000</Default>
+            <Minimum>1</Minimum>
+            <Maximum>10000</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Over this level, unit with go into overload mode
+<p>Overload mode means the switch is disabled and the LED flashes at 0.5 second intervals. Unplug unit to clear mode.</p>
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>

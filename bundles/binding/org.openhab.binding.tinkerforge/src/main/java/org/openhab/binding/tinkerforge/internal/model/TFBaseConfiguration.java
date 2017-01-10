@@ -20,13 +20,13 @@ import java.math.BigDecimal;
  *
  *        <p>
  *        The following features are supported:
- *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration#getThreshold <em>Threshold</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration#getCallbackPeriod
- *        <em>Callback Period</em>}</li>
- *        </ul>
  *        </p>
+ *        <ul>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration#getThreshold
+ *        <em>Threshold</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration#getCallbackPeriod <em>Callback
+ *        Period</em>}</li>
+ *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFBaseConfiguration()
  * @model
@@ -80,9 +80,9 @@ public interface TFBaseConfiguration extends TFConfig {
     int getCallbackPeriod();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration#getCallbackPeriod
-     * <em>Callback Period</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration#getCallbackPeriod <em>Callback
+     * Period</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

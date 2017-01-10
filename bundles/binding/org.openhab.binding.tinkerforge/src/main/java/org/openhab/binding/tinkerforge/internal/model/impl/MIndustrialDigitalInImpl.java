@@ -43,17 +43,18 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getLogger
  *        <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getUid <em>Uid</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#isPoll <em>Poll</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getUid
+ *        <em>Uid</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#isPoll
+ *        <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getEnabledA
  *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getSubId
- *        <em>Sub Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getSubId <em>Sub
+ *        Id</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getMbrick
  *        <em>Mbrick</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getSensorValue
@@ -61,7 +62,6 @@ import com.tinkerforge.TimeoutException;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getDeviceType
  *        <em>Device Type</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -257,10 +257,9 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__LOGGER,
                     oldLogger, logger));
-        }
     }
 
     /**
@@ -284,10 +283,9 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__UID, oldUid,
                     uid));
-        }
     }
 
     /**
@@ -311,10 +309,9 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -338,10 +335,9 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -365,10 +361,9 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__SUB_ID, oldSubId,
                     subId));
-        }
     }
 
     /**
@@ -379,10 +374,21 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
      */
     @Override
     public MBrickletIndustrialDigitalIn4 getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK)
             return null;
-        }
         return (MBrickletIndustrialDigitalIn4) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletIndustrialDigitalIn4 basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK)
+            return null;
+        return (MBrickletIndustrialDigitalIn4) eInternalContainer();
     }
 
     /**
@@ -406,25 +412,20 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
     public void setMbrick(MBrickletIndustrialDigitalIn4 newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK,
                     newMbrick, newMbrick));
-        }
     }
 
     /**
@@ -448,10 +449,9 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
     public void setSensorValue(HighLowValue newSensorValue) {
         HighLowValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_DIGITAL_IN__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
-        }
     }
 
     /**
@@ -564,9 +564,8 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletIndustrialDigitalIn4) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -623,7 +622,9 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
             case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SUB_ID:
                 return getSubId();
             case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SENSOR_VALUE:
                 return getSensorValue();
             case ModelPackage.MINDUSTRIAL_DIGITAL_IN__DEVICE_TYPE:
@@ -720,7 +721,7 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
             case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.MINDUSTRIAL_DIGITAL_IN__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SENSOR_VALUE:
                 return sensorValue != null;
             case ModelPackage.MINDUSTRIAL_DIGITAL_IN__DEVICE_TYPE:
@@ -819,9 +820,8 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

@@ -49,9 +49,14 @@ public interface SatelCommModule {
 
     /**
      * Overrides user code configured in settings.
-     * 
+     *
      * @param userCode user code to set
      */
     void setUserCode(String userCode);
+
+    /**
+     * Reverts user code to the value configured in settings.
+     */
+    void resetUserCode();
 
 }

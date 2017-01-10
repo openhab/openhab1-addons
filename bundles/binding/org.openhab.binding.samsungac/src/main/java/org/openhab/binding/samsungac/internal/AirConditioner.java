@@ -49,13 +49,14 @@ import org.slf4j.LoggerFactory;
 public class AirConditioner {
 
     private static final Logger logger = LoggerFactory.getLogger(AirConditioner.class);
+    private static final int DEFAULT_PORT = 2878;
 
     private String IP;
+    private int PORT = DEFAULT_PORT;
     private String MAC;
     private String TOKEN_STRING;
     private String CERTIFICATE_FILE_NAME;
     private String CERTIFICATE_PASSWORD = "";
-    private final Integer PORT = 2878;
     private Map<CommandEnum, String> statusMap = new HashMap<CommandEnum, String>();
     private SSLSocket socket;
 
@@ -243,7 +244,7 @@ public class AirConditioner {
             writer.newLine();
             writer.flush();
         } catch (Exception e) {
-            logger.debug("Could not write line. Disconnecting..., exception..", e);
+            logger.debug("Could not write line. Disconnecting.", e);
             disconnect();
             throw (e);
         }
@@ -259,7 +260,7 @@ public class AirConditioner {
         } catch (SocketTimeoutException e) {
             logger.debug("Nothing more to read from AC");
         } catch (SSLException e) {
-            logger.debug("Got SSL Exception. Disconnecting...");
+            logger.debug("Got SSL Exception. Disconnecting.");
             disconnect();
         }
         return null;
@@ -368,6 +369,14 @@ public class AirConditioner {
 
     /**
      *
+     * @param port The TCP/IP port number on which the air conditioner is listening
+     */
+    public void setPort(int port) {
+        PORT = port;
+    }
+
+    /**
+     *
      * @param macAddress The MAC-address of the air conditioner
      */
     public void setMacAddress(String macAddress) {
@@ -400,8 +409,8 @@ public class AirConditioner {
 
     @Override
     public String toString() {
-        return "Samsung AC: [" + (IP != null ? IP : "") + ":" + (PORT != null ? PORT : "") + ", MAC: "
-                + (MAC != null ? MAC : "") + ", TOKEN: " + (TOKEN_STRING != null ? TOKEN_STRING : "") + "]";
+        return "Samsung AC: [" + (IP != null ? IP : "") + ":" + PORT + ", MAC: " + (MAC != null ? MAC : "")
+                + ", TOKEN: " + (TOKEN_STRING != null ? TOKEN_STRING : "") + "]";
 
     }
 }

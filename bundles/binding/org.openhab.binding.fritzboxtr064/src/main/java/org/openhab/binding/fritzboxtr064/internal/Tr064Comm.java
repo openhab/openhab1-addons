@@ -80,7 +80,7 @@ import org.w3c.dom.NodeList;
  *
  */
 public class Tr064Comm {
-    private static final Logger logger = LoggerFactory.getLogger(FritzboxTr064Binding.class);
+    private static final Logger logger = LoggerFactory.getLogger(Tr064Comm.class);
     private static final String DEFAULTUSER = "dslf-config"; // is used when no username is provided.
     private static final String TR064DOWNLOADFILE = "tr64desc.xml"; // filename of all available TR064 on fbox
 
@@ -197,7 +197,7 @@ public class Tr064Comm {
                 }
                 beDataNode.addTextNode(dataInValue); // add data which should be requested from fbox for this service
             }
-            logger.debug("Raw SOAP Request to be sent to FritzBox: {}", soapToString(msg));
+            logger.trace("Raw SOAP Request to be sent to FritzBox: {}", soapToString(msg));
 
         } catch (Exception e) {
             logger.error("Error constructing request SOAP msg for getting parameter. {}", e.getMessage());
@@ -216,7 +216,7 @@ public class Tr064Comm {
                                                                                                          // in body ->
                                                                                                          // header)
         SOAPMessage response = readSoapResponse(soapActionHeader, smTr064Request, _url + tr064service.getControlUrl());
-        logger.debug("Raw SOAP Response from FritzBox: {}", soapToString(response));
+        logger.trace("Raw SOAP Response from FritzBox: {}", soapToString(response));
         if (response == null) {
             logger.error("Error retrieving SOAP response from FritzBox");
             return null;
@@ -229,9 +229,9 @@ public class Tr064Comm {
                 // extract value from soap response
                 value = nlDataOutNodes.item(0).getTextContent();
             } else {
-                logger.error(
-                        "FritzBox returned unexpected response. Could not find expected datavalue {} in response {}",
-                        itemMap.getReadDataOutName(), soapToString(response));
+                logger.error("FritzBox returned unexpected response. Could not find expected datavalue {} in response.",
+                        itemMap.getReadDataOutName());
+                logger.debug(soapToString(response));
             }
 
         } else {

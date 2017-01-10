@@ -44,6 +44,7 @@ import tuwien.auto.calimero.dptxlator.DPTXlator3BitControlled;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteFloat;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteSigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteUnsigned;
+import tuwien.auto.calimero.dptxlator.DPTXlator8BitSigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
@@ -63,6 +64,7 @@ import tuwien.auto.calimero.exception.KNXIllegalArgumentException;
  *
  * @author Kai Kreuzer
  * @author Volker Daube
+ * @author Jan N. Klug
  * @since 0.3.0
  *
  */
@@ -128,6 +130,11 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
         dptTypeMap.put(DPTXlator8BitUnsigned.DPT_DECIMALFACTOR.getID(), DecimalType.class);
         dptTypeMap.put(DPTXlator8BitUnsigned.DPT_TARIFF.getID(), DecimalType.class);
         dptTypeMap.put(DPTXlator8BitUnsigned.DPT_VALUE_1_UCOUNT.getID(), DecimalType.class);
+
+        // Datapoint Types "8-bit Signed Value", Main number 6
+        dptTypeMap.put(DPTXlator8BitSigned.DPT_PERCENT_V8.getID(), DecimalType.class);
+        dptTypeMap.put(DPTXlator8BitSigned.DPT_VALUE_1_UCOUNT.getID(), DecimalType.class);
+        dptTypeMap.put(DPTXlator8BitSigned.DPT_STATUS_MODE3.getID(), DecimalType.class);
 
         // Datapoint Types "2-Octet Unsigned Value", Main number 7
         dptTypeMap.put(DPTXlator2ByteUnsigned.DPT_VALUE_2_UCOUNT.getID(), DecimalType.class);
@@ -228,7 +235,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.knx.config.KNXTypeMapper#toDPTValue(org.openhab.core.types.Type, java.lang.String)
      */
     @Override
@@ -307,7 +314,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.knx.config.KNXTypeMapper#toType(tuwien.auto.calimero.datapoint.Datapoint, byte[])
      */
     @Override
@@ -506,7 +513,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 
     /**
      * Converts a datapoint type id into an openHAB type class
-     * 
+     *
      * @param dptId the datapoint type id
      * @return the openHAB type (command or state) class or {@code null} if the datapoint type id is not supported.
      */
@@ -517,7 +524,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 
     /**
      * Converts an openHAB type class into a datapoint type id.
-     * 
+     *
      * @param typeClass the openHAB type class
      * @return the datapoint type id
      */
@@ -528,10 +535,10 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
     /**
      * Formats the given <code>value</code> according to the datapoint type
      * <code>dpt</code> to a String which can be processed by {@link DateTimeType}.
-     * 
+     *
      * @param value
      * @param dpt
-     * 
+     *
      * @return a formatted String like </code>yyyy-MM-dd'T'HH:mm:ss</code> which
      *         is target format of the {@link DateTimeType}
      */
@@ -568,14 +575,14 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
     /**
      * Formats the given internal <code>dateType</code> to a knx readable String
      * according to the target datapoint type <code>dpt</code>.
-     * 
+     *
      * @param dateType
      * @param dpt the target datapoint type
-     * 
+     *
      * @return a String which contains either an ISO8601 formatted date (yyyy-mm-dd),
      *         a formatted 24-hour clock with the day of week prepended (Mon, 12:00:00) or
      *         a formatted 24-hour clock (12:00:00)
-     * 
+     *
      * @throws IllegalArgumentException if none of the datapoint types DPT_DATE or
      *             DPT_TIMEOFDAY has been used.
      */
@@ -593,7 +600,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 
     /**
      * Retrieves sub number from a DTP ID such as "14.001"
-     * 
+     *
      * @param dptID String with DPT ID
      * @return sub number or -1
      */
@@ -620,7 +627,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 
     /**
      * Retrieves main number from a DTP ID such as "14.001"
-     * 
+     *
      * @param dptID String with DPT ID
      * @return main number or -1
      */
