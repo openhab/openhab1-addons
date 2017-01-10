@@ -77,7 +77,7 @@ public class JpaConfiguration {
         dbPassword = (String) properties.get(CFG_PASSWORD);
 
         if (properties.get(CFG_SYNCMAPPING) == null) {
-            logger.info("{} was not specified!", CFG_SYNCMAPPING);
+            logger.debug("{} was not specified!", CFG_SYNCMAPPING);
         }
         dbSyncMapping = (String) properties.get(CFG_SYNCMAPPING);
 
