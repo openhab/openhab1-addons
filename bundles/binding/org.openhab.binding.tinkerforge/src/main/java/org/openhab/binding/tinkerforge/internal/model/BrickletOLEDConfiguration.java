@@ -35,7 +35,7 @@ public interface BrickletOLEDConfiguration extends TFConfig {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Contrast</em>' attribute.
      * @see #setContrast(Short)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletOLEDConfiguration_Contrast()
@@ -50,7 +50,7 @@ public interface BrickletOLEDConfiguration extends TFConfig {
      * attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @param value the new value of the '<em>Contrast</em>' attribute.
      * @see #getContrast()
      * @generated
@@ -65,7 +65,7 @@ public interface BrickletOLEDConfiguration extends TFConfig {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Invert</em>' attribute.
      * @see #setInvert(boolean)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletOLEDConfiguration_Invert()
@@ -79,7 +79,7 @@ public interface BrickletOLEDConfiguration extends TFConfig {
      * <em>Invert</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @param value the new value of the '<em>Invert</em>' attribute.
      * @see #isInvert()
      * @generated

@@ -55,7 +55,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -66,7 +66,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -77,7 +77,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -88,7 +88,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -99,7 +99,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -110,7 +110,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -121,7 +121,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -132,7 +132,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -143,7 +143,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSubId()
      * @generated
      * @ordered
@@ -154,7 +154,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSubId()
      * @generated
      * @ordered
@@ -165,7 +165,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDigitalState()
      * @generated
      * @ordered
@@ -176,7 +176,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDigitalState()
      * @generated
      * @ordered
@@ -187,7 +187,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -198,7 +198,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -208,7 +208,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     protected MStepperStatusLedImpl() {
@@ -218,7 +218,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -229,7 +229,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -240,22 +240,21 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSTEPPER_STATUS_LED__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -266,22 +265,21 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSTEPPER_STATUS_LED__UID, oldUid, uid));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -292,23 +290,22 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSTEPPER_STATUS_LED__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -319,23 +316,22 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSTEPPER_STATUS_LED__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -346,50 +342,47 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSTEPPER_STATUS_LED__SUB_ID, oldSubId,
                     subId));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public MBrickStepper getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MSTEPPER_STATUS_LED__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.MSTEPPER_STATUS_LED__MBRICK)
             return null;
-        }
         return (MBrickStepper) eContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public MBrickStepper basicGetMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MSTEPPER_STATUS_LED__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.MSTEPPER_STATUS_LED__MBRICK)
             return null;
-        }
         return (MBrickStepper) eInternalContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public NotificationChain basicSetMbrick(MBrickStepper newMbrick, NotificationChain msgs) {
@@ -400,38 +393,33 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setMbrick(MBrickStepper newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MSTEPPER_STATUS_LED__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSTEPPER_STATUS_LED__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -442,23 +430,22 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setDigitalState(HighLowValue newDigitalState) {
         HighLowValue oldDigitalState = digitalState;
         digitalState = newDigitalState;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSTEPPER_STATUS_LED__DIGITAL_STATE,
                     oldDigitalState, digitalState));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -469,7 +456,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -482,7 +469,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -495,7 +482,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -508,7 +495,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -521,7 +508,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -534,16 +521,15 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MSTEPPER_STATUS_LED__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickStepper) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -552,7 +538,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -567,7 +553,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -583,7 +569,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -600,9 +586,8 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
             case ModelPackage.MSTEPPER_STATUS_LED__SUB_ID:
                 return getSubId();
             case ModelPackage.MSTEPPER_STATUS_LED__MBRICK:
-                if (resolve) {
+                if (resolve)
                     return getMbrick();
-                }
                 return basicGetMbrick();
             case ModelPackage.MSTEPPER_STATUS_LED__DIGITAL_STATE:
                 return getDigitalState();
@@ -615,7 +600,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -649,7 +634,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -683,7 +668,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -713,7 +698,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -732,7 +717,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -751,7 +736,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -772,7 +757,7 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -800,14 +785,13 @@ public class MStepperStatusLedImpl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

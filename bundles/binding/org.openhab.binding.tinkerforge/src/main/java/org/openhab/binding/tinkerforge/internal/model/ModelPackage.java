@@ -30338,8 +30338,7 @@ public interface ModelPackage extends EPackage {
 
     /**
      * Returns the meta object for the
-     * '
-     * {@link org.openhab.binding.tinkerforge.internal.model.OHConfig#getConfigByTFId(java.lang.String, java.lang.String)
+     * '{@link org.openhab.binding.tinkerforge.internal.model.OHConfig#getConfigByTFId(java.lang.String, java.lang.String)
      * <em>Get Config By TF Id</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -30473,8 +30472,7 @@ public interface ModelPackage extends EPackage {
 
     /**
      * Returns the meta object for the
-     * '
-     * {@link org.openhab.binding.tinkerforge.internal.model.Ecosystem#getDevices4GenericId(java.lang.String, java.lang.String)
+     * '{@link org.openhab.binding.tinkerforge.internal.model.Ecosystem#getDevices4GenericId(java.lang.String, java.lang.String)
      * <em>Get Devices4 Generic Id</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -30729,8 +30727,7 @@ public interface ModelPackage extends EPackage {
 
     /**
      * Returns the meta object for the
-     * '
-     * {@link org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin#addSubDevice(java.lang.String, java.lang.String)
+     * '{@link org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin#addSubDevice(java.lang.String, java.lang.String)
      * <em>Add Sub Device</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -32116,8 +32113,7 @@ public interface ModelPackage extends EPackage {
 
     /**
      * Returns the meta object for the
-     * '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MoveActor#move(org.openhab.core.library.types.UpDownType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MoveActor#move(org.openhab.core.library.types.UpDownType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
      * <em>Move</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -32259,8 +32255,7 @@ public interface ModelPackage extends EPackage {
 
     /**
      * Returns the meta object for the
-     * '
-     * {@link org.openhab.binding.tinkerforge.internal.model.SetPointActor#setValue(java.math.BigDecimal, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
+     * '{@link org.openhab.binding.tinkerforge.internal.model.SetPointActor#setValue(java.math.BigDecimal, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
      * <em>Set Value</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

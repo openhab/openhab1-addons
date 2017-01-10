@@ -42,7 +42,7 @@ public interface MBrickStepper extends MDevice<BrickStepper>, MSubDeviceHolder<M
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickStepper_DeviceType()
      * @model default="brick_stepper" unique="false" changeable="false"

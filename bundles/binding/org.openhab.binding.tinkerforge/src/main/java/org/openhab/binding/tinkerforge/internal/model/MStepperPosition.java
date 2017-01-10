@@ -39,7 +39,7 @@ public interface MStepperPosition extends MStepperDevice, MSensor<DecimalValue> 
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMStepperPosition_DeviceType()
      * @model default="stepper_position" unique="false" changeable="false"

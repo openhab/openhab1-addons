@@ -34,7 +34,7 @@ public interface MStepperDrive extends MStepperDevice {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMStepperDrive_DeviceType()
      * @model default="stepper_drive" unique="false" changeable="false"

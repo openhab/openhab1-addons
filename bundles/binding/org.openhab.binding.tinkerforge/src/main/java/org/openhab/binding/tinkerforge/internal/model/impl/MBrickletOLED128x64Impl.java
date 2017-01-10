@@ -90,7 +90,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getPositionPrefix() <em>Position Prefix</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPositionPrefix()
      * @generated
      * @ordered
@@ -101,7 +101,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getPositionPrefix() <em>Position Prefix</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPositionPrefix()
      * @generated
      * @ordered
@@ -112,7 +112,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getPositionSuffix() <em>Position Suffix</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPositionSuffix()
      * @generated
      * @ordered
@@ -123,7 +123,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getPositionSuffix() <em>Position Suffix</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPositionSuffix()
      * @generated
      * @ordered
@@ -134,7 +134,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getContrast() <em>Contrast</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getContrast()
      * @generated
      * @ordered
@@ -145,7 +145,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getContrast() <em>Contrast</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getContrast()
      * @generated
      * @ordered
@@ -156,7 +156,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #isInvert() <em>Invert</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isInvert()
      * @generated
      * @ordered
@@ -171,7 +171,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #isInvert() <em>Invert</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isInvert()
      * @generated
      * @ordered
@@ -182,7 +182,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -193,7 +193,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -204,7 +204,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -215,7 +215,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -226,7 +226,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -237,7 +237,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -248,7 +248,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -259,7 +259,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -270,7 +270,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getTinkerforgeDevice() <em>Tinkerforge Device</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getTinkerforgeDevice()
      * @generated
      * @ordered
@@ -281,7 +281,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -292,7 +292,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -303,7 +303,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getConnectedUid() <em>Connected Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getConnectedUid()
      * @generated
      * @ordered
@@ -314,7 +314,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getConnectedUid() <em>Connected Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getConnectedUid()
      * @generated
      * @ordered
@@ -325,7 +325,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getPosition() <em>Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPosition()
      * @generated
      * @ordered
@@ -336,7 +336,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getPosition() <em>Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPosition()
      * @generated
      * @ordered
@@ -347,7 +347,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getDeviceIdentifier() <em>Device Identifier</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceIdentifier()
      * @generated
      * @ordered
@@ -358,7 +358,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getDeviceIdentifier() <em>Device Identifier</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceIdentifier()
      * @generated
      * @ordered
@@ -369,7 +369,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getName()
      * @generated
      * @ordered
@@ -380,7 +380,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getName()
      * @generated
      * @ordered
@@ -391,7 +391,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getText() <em>Text</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getText()
      * @generated
      * @ordered
@@ -402,7 +402,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getText() <em>Text</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getText()
      * @generated
      * @ordered
@@ -413,7 +413,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getTfConfig()
      * @generated
      * @ordered
@@ -424,7 +424,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -435,7 +435,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -445,7 +445,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     protected MBrickletOLED128x64Impl() {
@@ -455,7 +455,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -466,7 +466,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -477,23 +477,22 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -504,23 +503,22 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__UID, oldUid,
                     uid));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -531,23 +529,22 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -558,23 +555,22 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -585,23 +581,22 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setTinkerforgeDevice(BrickletOLED128x64 newTinkerforgeDevice) {
         BrickletOLED128x64 oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_OLED12_8X64__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -612,23 +607,22 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -639,23 +633,22 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -666,23 +659,22 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -693,23 +685,22 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__DEVICE_IDENTIFIER,
                     oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -720,50 +711,47 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__NAME, oldName,
                     name));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_OLED12_8X64__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_OLED12_8X64__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public MBrickd basicGetBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_OLED12_8X64__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_OLED12_8X64__BRICKD)
             return null;
-        }
         return (MBrickd) eInternalContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public NotificationChain basicSetBrickd(MBrickd newBrickd, NotificationChain msgs) {
@@ -774,38 +762,33 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_OLED12_8X64__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__BRICKD, newBrickd,
                     newBrickd));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -816,23 +799,22 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setText(String newText) {
         String oldText = text;
         text = newText;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__TEXT, oldText,
                     text));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -843,7 +825,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public NotificationChain basicSetTfConfig(BrickletOLEDConfiguration newTfConfig, NotificationChain msgs) {
@@ -852,11 +834,10 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_OLED12_8X64__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -864,35 +845,31 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setTfConfig(BrickletOLEDConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_OLED12_8X64__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_OLED12_8X64__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -903,7 +880,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -914,23 +891,22 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPositionPrefix(String newPositionPrefix) {
         String oldPositionPrefix = positionPrefix;
         positionPrefix = newPositionPrefix;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__POSITION_PREFIX,
                     oldPositionPrefix, positionPrefix));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -941,23 +917,22 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPositionSuffix(String newPositionSuffix) {
         String oldPositionSuffix = positionSuffix;
         positionSuffix = newPositionSuffix;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__POSITION_SUFFIX,
                     oldPositionSuffix, positionSuffix));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -968,23 +943,22 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setContrast(short newContrast) {
         short oldContrast = contrast;
         contrast = newContrast;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__CONTRAST,
                     oldContrast, contrast));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -995,17 +969,16 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setInvert(boolean newInvert) {
         boolean oldInvert = invert;
         invert = newInvert;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLED12_8X64__INVERT, oldInvert,
                     invert));
-        }
     }
 
     /**
@@ -1235,16 +1208,15 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_OLED12_8X64__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -1253,7 +1225,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1270,7 +1242,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1285,7 +1257,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1320,9 +1292,8 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
             case ModelPackage.MBRICKLET_OLED12_8X64__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_OLED12_8X64__BRICKD:
-                if (resolve) {
+                if (resolve)
                     return getBrickd();
-                }
                 return basicGetBrickd();
             case ModelPackage.MBRICKLET_OLED12_8X64__TEXT:
                 return getText();
@@ -1337,7 +1308,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1401,7 +1372,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1465,7 +1436,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1518,7 +1489,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1579,7 +1550,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1640,7 +1611,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1683,7 +1654,7 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1724,14 +1695,13 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (positionPrefix: ");

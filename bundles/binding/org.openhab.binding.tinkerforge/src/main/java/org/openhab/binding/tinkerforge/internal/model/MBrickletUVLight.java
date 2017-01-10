@@ -48,7 +48,7 @@ public interface MBrickletUVLight extends MDevice<BrickletUVLight>, MSensor<Deci
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletUVLight_DeviceType()
      * @model default="bricklet_uv_light" unique="false" changeable="false"
@@ -65,7 +65,7 @@ public interface MBrickletUVLight extends MDevice<BrickletUVLight>, MSensor<Deci
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Threshold</em>' attribute.
      * @see #setThreshold(BigDecimal)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletUVLight_Threshold()
@@ -79,7 +79,7 @@ public interface MBrickletUVLight extends MDevice<BrickletUVLight>, MSensor<Deci
      * <em>Threshold</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @param value the new value of the '<em>Threshold</em>' attribute.
      * @see #getThreshold()
      * @generated
@@ -89,7 +89,7 @@ public interface MBrickletUVLight extends MDevice<BrickletUVLight>, MSensor<Deci
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @model annotation="http://www.eclipse.org/emf/2002/GenModel body=''"
      * @generated
      */
