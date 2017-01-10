@@ -19,6 +19,7 @@ import org.openhab.binding.onewire.internal.connection.OneWireConnection;
 import org.openhab.binding.onewire.internal.control.AbstractOneWireControlBindingConfig;
 import org.openhab.binding.onewire.internal.deviceproperties.AbstractOneWireDevicePropertyBindingConfig;
 import org.openhab.binding.onewire.internal.deviceproperties.AbstractOneWireDevicePropertyWritableBindingConfig;
+import org.openhab.binding.onewire.internal.deviceproperties.InterfaceOneWireDevicePropertyExecutableBindingConfig;
 import org.openhab.binding.onewire.internal.listener.InterfaceOneWireDevicePropertyWantsUpdateListener;
 import org.openhab.binding.onewire.internal.listener.OneWireDevicePropertyWantsUpdateEvent;
 import org.openhab.binding.onewire.internal.scheduler.OneWireUpdateScheduler;
@@ -78,13 +79,13 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
         super.deactivate();
         ivOneWireReaderScheduler.stop();
     }
-
-    protected void addBindingProvider(OneWireBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
-
-    protected void removeBindingProvider(OneWireBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
+    
+    protected void addBindingProvider(OneWireBindingProvider bindingProvider) {		
+        super.addBindingProvider(bindingProvider);		
+    }		
+ 		
+    protected void removeBindingProvider(OneWireBindingProvider bindingProvider) {		
+        super.removeBindingProvider(bindingProvider);		
     }
 
     /*
@@ -117,13 +118,23 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
         OneWireBindingConfig lvBindigConfig = getBindingConfig(pvItemName);
 
-        if (lvBindigConfig instanceof AbstractOneWireDevicePropertyWritableBindingConfig) {
+        if (lvBindigConfig instanceof InterfaceOneWireDevicePropertyExecutableBindingConfig) {
+            // This Binding implements a special behavior
+            logger.debug("call execute for item " + pvItemName);
+
+            ((InterfaceOneWireDevicePropertyExecutableBindingConfig) lvBindigConfig).execute(pvCommand);
+        } else if (lvBindigConfig instanceof AbstractOneWireDevicePropertyWritableBindingConfig) {
+            logger.debug("write to item " + pvItemName);
+
             AbstractOneWireDevicePropertyWritableBindingConfig lvWritableBindingConfig = (AbstractOneWireDevicePropertyWritableBindingConfig) lvBindigConfig;
 
+            // Standard Write Operation
             String lvStringValue = lvWritableBindingConfig.convertTypeToString(pvCommand);
 
             OneWireConnection.writeToOneWire(lvWritableBindingConfig.getDevicePropertyPath(), lvStringValue);
         } else if (lvBindigConfig instanceof AbstractOneWireControlBindingConfig) {
+            logger.debug("call executeControl for item " + pvItemName);
+
             AbstractOneWireControlBindingConfig lvControlBindingConfig = (AbstractOneWireControlBindingConfig) lvBindigConfig;
             lvControlBindingConfig.executeControl(this, pvCommand);
         } else {
