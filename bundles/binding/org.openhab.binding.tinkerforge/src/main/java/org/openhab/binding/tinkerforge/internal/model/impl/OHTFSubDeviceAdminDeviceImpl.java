@@ -23,8 +23,6 @@ import org.openhab.binding.tinkerforge.internal.model.TFConfig;
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>OHTF Sub Device Admin Device</b></em>'.
  * <!-- end-user-doc -->
- * <p>
- * </p>
  *
  * @generated
  */
@@ -58,7 +56,7 @@ public class OHTFSubDeviceAdminDeviceImpl<TFC extends TFConfig, IDS extends Enum
      * @generated
      */
     @Override
-    public boolean isValidSubId(String subId) {
+    public boolean isValidSubId(final String subId) {
         return true;
     }
 

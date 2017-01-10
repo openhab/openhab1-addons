@@ -60,40 +60,40 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getSensorValue
- *        <em>Sensor Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getSwitchState
- *        <em>Switch State</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getLogger <em>Logger</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getSensorValue <em>Sensor
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getSwitchState <em>Switch
+ *        State</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getEnabledA
- *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getSubId <em>Sub Id</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMbrick <em>Mbrick</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMinValue
- *        <em>Min Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMaxValue
- *        <em>Max Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getPercentValue
- *        <em>Percent Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getDeviceType
- *        <em>Device Type</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getAddress <em>Address</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getSubId <em>Sub
+ *        Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMbrick
+ *        <em>Mbrick</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMinValue <em>Min
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMaxValue <em>Max
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getPercentValue <em>Percent
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getAddress
+ *        <em>Address</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getUnit <em>Unit</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getRepeats <em>Repeats</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getAbsDimmValue
- *        <em>Abs Dimm Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getRepeats
+ *        <em>Repeats</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getAbsDimmValue <em>Abs Dimm
+ *        Value</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -472,10 +472,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setSensorValue(PercentValue newSensorValue) {
         PercentValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
-        }
     }
 
     /**
@@ -499,10 +498,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setSwitchState(OnOffValue newSwitchState) {
         OnOffValue oldSwitchState = switchState;
         switchState = newSwitchState;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__SWITCH_STATE,
                     oldSwitchState, switchState));
-        }
     }
 
     /**
@@ -526,10 +524,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -553,9 +550,8 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -579,9 +575,8 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__POLL, oldPoll, poll));
-        }
     }
 
     /**
@@ -605,10 +600,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__ENABLED_A, oldEnabledA,
                     enabledA));
-        }
     }
 
     /**
@@ -632,10 +626,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__SUB_ID, oldSubId,
                     subId));
-        }
     }
 
     /**
@@ -646,10 +639,21 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
      */
     @Override
     public MBrickletRemoteSwitch getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.REMOTE_SWITCH_B__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.REMOTE_SWITCH_B__MBRICK)
             return null;
-        }
         return (MBrickletRemoteSwitch) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletRemoteSwitch basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.REMOTE_SWITCH_B__MBRICK)
+            return null;
+        return (MBrickletRemoteSwitch) eInternalContainer();
     }
 
     /**
@@ -673,25 +677,20 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setMbrick(MBrickletRemoteSwitch newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.REMOTE_SWITCH_B__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
@@ -726,10 +725,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setAddress(Long newAddress) {
         Long oldAddress = address;
         address = newAddress;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__ADDRESS, oldAddress,
                     address));
-        }
     }
 
     /**
@@ -753,9 +751,8 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setUnit(Short newUnit) {
         Short oldUnit = unit;
         unit = newUnit;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__UNIT, oldUnit, unit));
-        }
     }
 
     /**
@@ -779,10 +776,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setRepeats(Short newRepeats) {
         Short oldRepeats = repeats;
         repeats = newRepeats;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__REPEATS, oldRepeats,
                     repeats));
-        }
     }
 
     /**
@@ -806,10 +802,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setAbsDimmValue(Short newAbsDimmValue) {
         Short oldAbsDimmValue = absDimmValue;
         absDimmValue = newAbsDimmValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__ABS_DIMM_VALUE,
                     oldAbsDimmValue, absDimmValue));
-        }
     }
 
     /**
@@ -835,11 +830,10 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.REMOTE_SWITCH_B__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -854,22 +848,18 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setTfConfig(RemoteSwitchBConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.REMOTE_SWITCH_B__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.REMOTE_SWITCH_B__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__TF_CONFIG, newTfConfig,
                     newTfConfig));
-        }
     }
 
     /**
@@ -893,10 +883,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setMinValue(BigDecimal newMinValue) {
         BigDecimal oldMinValue = minValue;
         minValue = newMinValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__MIN_VALUE, oldMinValue,
                     minValue));
-        }
     }
 
     /**
@@ -920,10 +909,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setMaxValue(BigDecimal newMaxValue) {
         BigDecimal oldMaxValue = maxValue;
         maxValue = newMaxValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__MAX_VALUE, oldMaxValue,
                     maxValue));
-        }
     }
 
     /**
@@ -947,10 +935,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public void setPercentValue(PercentValue newPercentValue) {
         PercentValue oldPercentValue = percentValue;
         percentValue = newPercentValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__PERCENT_VALUE,
                     oldPercentValue, percentValue));
-        }
     }
 
     /**
@@ -1189,9 +1176,8 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.REMOTE_SWITCH_B__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletRemoteSwitch) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -1254,7 +1240,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
             case ModelPackage.REMOTE_SWITCH_B__SUB_ID:
                 return getSubId();
             case ModelPackage.REMOTE_SWITCH_B__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.REMOTE_SWITCH_B__TF_CONFIG:
                 return getTfConfig();
             case ModelPackage.REMOTE_SWITCH_B__MIN_VALUE:
@@ -1423,7 +1411,7 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
             case ModelPackage.REMOTE_SWITCH_B__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.REMOTE_SWITCH_B__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.REMOTE_SWITCH_B__TF_CONFIG:
                 return tfConfig != null;
             case ModelPackage.REMOTE_SWITCH_B__MIN_VALUE:
@@ -1746,9 +1734,8 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (sensorValue: ");

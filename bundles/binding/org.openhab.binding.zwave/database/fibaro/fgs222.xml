@@ -125,8 +125,8 @@
 				<Value>2</Value>
 				<Label lang="en">Commands are sent when device is turned off, double-click sends 'turn on' command, dimmers set to 100%.</Label>
 			</Item>
-			<Help lang="en">![CDATA[NOTE: Parameter 15 value must be set to 1 to work properly.<BR />
-			This activates the double-click functionality - dimmer/roller shutter control.]]</Help>
+			<Help lang="en"><![CDATA[NOTE: Parameter 15 value must be set to 1 to work properly.<BR />
+			This activates the double-click functionality - dimmer/roller shutter control.]]></Help>
 		</Parameter>
 		
 		<Parameter>

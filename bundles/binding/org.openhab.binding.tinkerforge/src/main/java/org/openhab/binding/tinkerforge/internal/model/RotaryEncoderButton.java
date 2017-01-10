@@ -19,15 +19,18 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.RotaryEncoderButton#getDeviceType <em>Device Type</em>}
  * </li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getRotaryEncoderButton()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.RotaryEncoderDevice org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.SwitchState> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.RotaryEncoderDevice
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.SwitchState>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration>"
  * @generated
  */
 public interface RotaryEncoderButton

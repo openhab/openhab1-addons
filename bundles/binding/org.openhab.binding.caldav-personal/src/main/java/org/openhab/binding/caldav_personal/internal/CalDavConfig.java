@@ -9,10 +9,8 @@
 package org.openhab.binding.caldav_personal.internal;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.openhab.core.binding.BindingConfig;
 
 /**
@@ -46,15 +44,32 @@ public class CalDavConfig implements BindingConfig {
     private final Value value;
     private final String filterName;
     private final List<String> filterCategory = new ArrayList<String>();
-    
-    public CalDavConfig(List<String> calendar, Type type, int eventNr,
-            Value value, String filterName, List<String> filterCategory) {
+    private final boolean categoriesFiltersAny;
+
+    public CalDavConfig(List<String> calendar, Type type, int eventNr, Value value, String filterName,
+            List<String> filterCategory) {
         this.calendar = calendar;
         this.type = type;
         this.eventNr = eventNr;
         this.value = value;
         this.filterName = filterName;
         this.filterCategory.addAll(filterCategory);
+        this.categoriesFiltersAny = false;
+    }
+
+    public CalDavConfig(List<String> calendar, Type type, int eventNr, Value value, String filterName,
+            List<String> filterCategory, boolean categoriesFiltersAny) {
+        this.calendar = calendar;
+        this.type = type;
+        this.eventNr = eventNr;
+        this.value = value;
+        this.filterName = filterName;
+        this.filterCategory.addAll(filterCategory);
+        this.categoriesFiltersAny = categoriesFiltersAny;
+    }
+
+    public boolean getCategoriesFiltersAny() {
+        return categoriesFiltersAny;
     }
 
     public List<String> getCalendar() {
@@ -76,77 +91,87 @@ public class CalDavConfig implements BindingConfig {
     public String getFilterName() {
         return filterName;
     }
-    
+
     public List<String> getFilterCategory() {
         return filterCategory;
     }
 
     @Override
     public String toString() {
-        return "CalDavPresenceConfig [calendar=" + calendar + ", type=" + type
-                + ", eventNr=" + eventNr + ", value=" + value + ", filterName=" + filterName + "]";
+        return "CalDavPresenceConfig [calendar=" + calendar + ", type=" + type + ", eventNr=" + eventNr + ", value="
+                + value + ", filterName=" + filterName + ", categoriesFiltersAny=" + categoriesFiltersAny + "]";
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result
-                + ((calendar == null) ? 0 : calendar.hashCode());
+        result = prime * result + ((calendar == null) ? 0 : calendar.hashCode());
         result = prime * result + eventNr;
-        result = prime * result
-                + ((filterCategory == null) ? 0 : filterCategory.hashCode());
-        result = prime * result
-                + ((filterName == null) ? 0 : filterName.hashCode());
+        result = prime * result + ((filterCategory == null) ? 0 : filterCategory.hashCode());
+        result = prime * result + ((filterName == null) ? 0 : filterName.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         result = prime * result + ((value == null) ? 0 : value.hashCode());
+        result = prime * result + (categoriesFiltersAny ? 1231 : 1237);
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         CalDavConfig other = (CalDavConfig) obj;
         if (calendar == null) {
-            if (other.calendar != null)
+            if (other.calendar != null) {
                 return false;
-        } else if (!calendar.equals(other.calendar))
+            }
+        } else if (!calendar.equals(other.calendar)) {
             return false;
-        if (eventNr != other.eventNr)
+        }
+        if (eventNr != other.eventNr) {
             return false;
+        }
         if (filterCategory == null) {
-            if (other.filterCategory != null)
+            if (other.filterCategory != null) {
                 return false;
-        } else if (!filterCategory.equals(other.filterCategory))
+            }
+        } else if (!filterCategory.equals(other.filterCategory)) {
             return false;
+        }
         if (filterName == null) {
-            if (other.filterName != null)
+            if (other.filterName != null) {
                 return false;
-        } else if (!filterName.equals(other.filterName))
+            }
+        } else if (!filterName.equals(other.filterName)) {
             return false;
-        if (type != other.type)
+        }
+        if (type != other.type) {
             return false;
-        if (value != other.value)
+        }
+        if (value != other.value) {
             return false;
+        }
+        if (categoriesFiltersAny != other.categoriesFiltersAny) {
+            return false;
+        }
         return true;
     }
 
     public int getUniqueEventListKey() {
         final int prime = 31;
         int result = 1;
-        result = prime * result
-                + ((calendar == null) ? 0 : calendar.hashCode());
-        result = prime * result
-                + ((filterCategory == null) ? 0 : filterCategory.hashCode());
-        result = prime * result
-                + ((filterName == null) ? 0 : filterName.hashCode());
+        result = prime * result + ((calendar == null) ? 0 : calendar.hashCode());
+        result = prime * result + ((filterCategory == null) ? 0 : filterCategory.hashCode());
+        result = prime * result + ((filterName == null) ? 0 : filterName.hashCode());
+        result = prime * result + (categoriesFiltersAny ? 1231 : 1237);
         return result;
     }
-    
-    
+
 }

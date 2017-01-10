@@ -131,7 +131,7 @@ public class JdbcMapper {
     }
 
     public Item storeItemValue(Item item) {
-        logger.debug("JDBC::storeItemValue: Item={}", item.toString());
+        logger.debug("JDBC::storeItemValue: item={}", item.toString());
         String tableName = getTable(item);
         if (tableName == null) {
             logger.error("JDBC::store: Unable to store item '{}'.", item.getName());
@@ -156,7 +156,7 @@ public class JdbcMapper {
             logTime("insertItemValue", timerStart, System.currentTimeMillis());
             return r;
         } else {
-            logger.error("JDBC::getHistItemFilterQuery: TABLE is NULL, cannot get Data from not existing Table.");
+            logger.error("JDBC::getHistItemFilterQuery: TABLE is NULL; cannot get data from non-existent table.");
         }
         return null;
     }
@@ -237,7 +237,7 @@ public class JdbcMapper {
             return tableName;
         }
 
-        logger.debug("JDBC::getTable: no Table found for itemName={} in sqlTables", itemName);
+        logger.debug("JDBC::getTable: no table found for item '{}' in sqlTables", itemName);
 
         // Create a new entry in items table
         isvo = new ItemsVO();
@@ -245,7 +245,7 @@ public class JdbcMapper {
         isvo = createNewEntryInItemsTable(isvo);
         rowId = isvo.getItemid();
         if (rowId == 0) {
-            logger.error("JDBC::getTable: Creating table for item '" + itemName + "' failed.");
+            logger.error("JDBC::getTable: Creating table for item '{}' failed.", itemName);
         }
         // Create the table name
         logger.debug("JDBC::getTable: getTableName with rowId={} itemName={}", rowId, itemName);
@@ -253,7 +253,7 @@ public class JdbcMapper {
 
         // An error occurred adding the item name into the index list!
         if (tableName == null) {
-            logger.error("JDBC::getTable: tableName was null, could not create a table for item '{}'", itemName);
+            logger.error("JDBC::getTable: tableName was null; could not create a table for item '{}'", itemName);
             return null;
         }
 
@@ -312,11 +312,11 @@ public class JdbcMapper {
 
             if (oldName.startsWith(conf.getTableNamePrefix()) && !oldName.contains("_")) {
                 id = Integer.parseInt(oldName.substring(conf.getTableNamePrefix().length()));
-                logger.warn("JDBC::formatTableNames: found Table with Prefix '{}' Name= {} id={}",
+                logger.warn("JDBC::formatTableNames: found Table with Prefix '{}' Name= {} id= {}",
                         conf.getTableNamePrefix(), oldName, (id));
             } else if (oldName.contains("_")) {
                 id = Integer.parseInt(oldName.substring(oldName.lastIndexOf("_") + 1));
-                logger.warn("JDBC::formatTableNames: found Table Name= {} id={}", oldName, (id));
+                logger.warn("JDBC::formatTableNames: found Table Name= {} id= {}", oldName, (id));
             }
             logger.warn("JDBC::formatTableNames: found Table id= {}", id);
 

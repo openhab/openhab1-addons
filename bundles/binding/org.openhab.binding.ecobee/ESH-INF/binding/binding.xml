@@ -8,6 +8,8 @@
     <description>Monitor and control Ecobee thermostats and their remote sensors using the cloud-based API.</description>
     <author>John Cocula</author>
 
+    <service-id>org.openhab.ecobee</service-id>
+
     <config-description>
         <parameter name="appkey" type="text" required="true">
             <label>API Key</label>

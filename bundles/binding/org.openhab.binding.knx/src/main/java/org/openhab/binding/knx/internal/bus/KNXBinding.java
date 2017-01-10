@@ -53,7 +53,7 @@ import tuwien.auto.calimero.process.ProcessListener;
  * @since 0.3.0
  *
  */
-public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements ProcessListener, KNXConnectionListener {
+public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements ProcessListener, KNXConnectionListener {
 
     private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
@@ -121,7 +121,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
      */
     @Override
     protected void internalReceiveUpdate(String itemName, State newState) {
-        logger.debug("Received update (item='{}', state='{}')", itemName, newState.toString());
+        logger.trace("Received update (item='{}', state='{}')", itemName, newState.toString());
         if (!isEcho(itemName, newState)) {
             writeToKNX(itemName, newState);
         }
@@ -186,7 +186,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
                 && e.getSourceAddr().toString().equalsIgnoreCase(KNXConnection.getLocalSourceAddr()))) {
             readFromKNX(e);
         } else {
-            logger.warn("Ignoring local Event, received from my local Source address {} for Group address {}.",
+            logger.debug("Ignoring local Event, received from my local Source address {} for Group address {}.",
                     e.getSourceAddr().toString(), e.getDestination().toString());
         }
     }
@@ -480,6 +480,14 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
             for (Datapoint datapoint : provider.getDatapoints(itemName, typeClass)) {
                 datapoints.add(datapoint);
             }
+        }
+        if (datapoints.isEmpty()) {
+            logger.warn("no compatible datapoint found for item {} ({}), check item configuration", itemName,
+                    typeClass.getName());
+
+        } else {
+            logger.trace("found {} compatible datapoints for item {} ({})", datapoints.size(), itemName,
+                    typeClass.getName());
         }
         return datapoints;
     }

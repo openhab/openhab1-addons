@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>Flood sensor</Model>
+    <Label lang="en">Flood/water sensor</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x30</id>             <!-- SENSOR_BINARY -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Basic setting command</Label>
+            <Type>list</Type>
+            <Default>99</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">OFF</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Dim level (lower bound) (multilevel switch)</Label>
+            </Item>
+            <Item>
+                <Value>99</Value>
+                <Label lang="en">Dim level (upper bound) (multilevel switch)</Label>
+            </Item>
+            <Item>
+                <Value>255</Value>
+                <Label lang="en">ON (Binary switch)</Label>
+            </Item>
+            <Help><![CDATA[Basic setting command to be transmitted
+<p>When the water sensor trigger alarm, it will send basic setting with these parameters. The receiver will execute this parameters. For example when the lamp receive the basic setting command, the parameters decide the brightness of the lamp.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">OFF delay</Label>
+            <Type>short</Type>
+            <Default>30</Default>
+            <Minimum>1</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[The amount of delay before the OFF command is transmitted
+<p>Adjust the amount of delay before the OFF command is transmitted</p>
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Device status</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Controller updates</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>

@@ -20,6 +20,9 @@
             <id>0x32</id>             <!-- METER -->
         </Class>
         <Class>
+            <id>0x33</id>             <!-- COLOR -->
+        </Class>
+        <Class>
             <id>0x70</id>             <!-- CONFIGURATION -->
         </Class>
         <Class>
@@ -51,6 +54,9 @@
                 <Value>1</Value>
                 <Label lang="en">enabled</Label>
             </Item>
+            <Help><![CDATA[Current overload protection enable
+<p>Current Overload Protection. Load will be closed when the Current overrun (US: 15.5A, other country: 16.2A) and the time more than 2 minutes (0=disabled, 1=enabled).</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -73,6 +79,22 @@
                 <Value>2</Value>
                 <Label lang="en">always off</Label>
             </Item>
+            <Help><![CDATA[Configure the output load status after re‐power
+<p>Configure the output load status after re-power on<br />(0=last status, 1=always on, 2=always off)</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>33</Index>
+            <Label lang="en">RGB LED color testing</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>4</Size>
+            <Help><![CDATA[Set the RGB LED color value for testing.
+<p>Value1: Reserved</p> <p>Value2: Red value</p> <p>Value3: Green value</p> <p>Value4: Blue value</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -95,6 +117,9 @@
                 <Value>2</Value>
                 <Label lang="en">basic CC report</Label>
             </Item>
+            <Help><![CDATA[Enable to send notifications to Group 1
+<p>Enable to send notifications to associated devices (Group 1) when the state of Micro Switch’s load changed (0=nothing, 1=hail CC, 2=basic CC report).</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -117,6 +142,34 @@
                 <Value>2</Value>
                 <Label lang="en">Night light mode</Label>
             </Item>
+            <Help><![CDATA[Configure the state of the LED
+<p>Configure the state of LED when it is in 3 modes below:</p>
+<ul>
+<li>0= The LED will follow the status (on/off) of its load (Energy mode).</li>
+<li>1= When the state of Switch’s load changed, The LED will follow the status (on/off) of its load, but the red LED will turn off after 5 seconds if there is no any switch action (momentary indicate mode).</li>
+<li>2= Night light mode.</li>
+</ul>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>83</Index>
+            <Label lang="en">Color in night light mode</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>3</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>84</Index>
+            <Label lang="en">Color in energy mode </Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>3</Size>
         </Parameter>
 
         <Parameter>
@@ -135,6 +188,9 @@
                 <Value>1</Value>
                 <Label lang="en">enabled</Label>
             </Item>
+            <Help><![CDATA[Enables/disables parameter 91 and 92
+<p>Enables/disables parameter 91 and 92 below (1=enabled, 0=disabled).</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -145,6 +201,9 @@
             <Minimum>0</Minimum>
             <Maximum>60000</Maximum>
             <Size>2</Size>
+            <Help><![CDATA[minimum change in wattage to trigger
+<p>The value here represents minimum change in wattage (in<br />terms of wattage) for a REPORT to be sent (Valid values 0-<br />60000).</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -155,17 +214,159 @@
             <Minimum>0</Minimum>
             <Maximum>100</Maximum>
             <Size>1</Size>
+            <Help><![CDATA[minimum change in wattage percent
+<p>The value here represents minimum change in wattage<br />percent (in terms of percentage) for a REPORT to be sent<br />(Valid values 0-100).</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
             <Index>100</Index>
             <Label lang="en">Set 101‐103 to default. </Label>
-            <Type>short</Type>
+            <Type>list</Type>
             <Default>0</Default>
             <Minimum>0</Minimum>
             <Maximum>1</Maximum>
             <WriteOnly>true</WriteOnly>
             <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">False</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">True</Label>
+            </Item>
+            <Help><![CDATA[Set 101‐103 to default.
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>101</Index>
+            <Label lang="en">Values to send to group 1</Label>
+            <Type>list</Type>
+            <Default>4</Default>
+            <Minimum>0</Minimum>
+            <Maximum>15</Maximum>
+            <Size>4</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Nothing</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Voltage</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Current</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Wattage</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">kWh</Label>
+            </Item>
+            <Item>
+                <Value>15</Value>
+                <Label lang="en">All Values</Label>
+            </Item>
+            <Help><![CDATA[Which reports need to send in Report group 1
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>102</Index>
+            <Label lang="en">Values to send to group 2</Label>
+            <Type>list</Type>
+            <Default>8</Default>
+            <Minimum>0</Minimum>
+            <Maximum>15</Maximum>
+            <Size>4</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Nothing</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Voltage</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Current</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Wattage</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">kWh</Label>
+            </Item>
+            <Item>
+                <Value>15</Value>
+                <Label lang="en">All Values</Label>
+            </Item>
+            <Help><![CDATA[Which reports need to send in Report group 2
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>103</Index>
+            <Label lang="en">Values to send to group 3</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>15</Maximum>
+            <Size>4</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Nothing</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Voltage</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Current</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Wattage</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">kWh</Label>
+            </Item>
+            <Item>
+                <Value>15</Value>
+                <Label lang="en">All Values</Label>
+            </Item>
+            <Help><![CDATA[Which reports need to send in Report group 3
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>110</Index>
+            <Label lang="en">Set 111‐113 to default.</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">False</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">True</Label>
+            </Item>
+            <Help><![CDATA[Set 111‐113 to default.
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -176,6 +377,11 @@
             <Minimum>1</Minimum>
             <Maximum>2147483647</Maximum>
             <Size>4</Size>
+            <Help><![CDATA[Group 1 automatic update interval
+<p>The time interval of sending Report group 1 (Valid values 0x01-0xFFFFFFFF).</p>
+<p>Default value is 3</p>
+<p>Note: Only up to 0x7fffffff is currently supported</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -186,6 +392,24 @@
             <Minimum>1</Minimum>
             <Maximum>2147483647</Maximum>
             <Size>4</Size>
+            <Help><![CDATA[Group 2 automatic update interval
+<p>The time interval of sending Report group 1 (Valid values 0x01-0xFFFFFFFF).</p>
+<p>Default value is 600</p>
+<p>Note: Only up to 0x7fffffff is currently supported</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>113</Index>
+            <Label lang="en">Time interval for sending to group 3</Label>
+            <Type>short</Type>
+            <Default>2147483647</Default>
+            <Minimum>600</Minimum>
+            <Maximum>1</Maximum>
+            <Size>4</Size>
+            <Help><![CDATA[Group 3 automatic update interval
+<p>The time interval of sending Report group 1 (Valid values 0x01-0xFFFFFFFF).</p> <p>Default value is 600</p> <p>Note: Only up to 0x7fffffff is currently supported</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -204,6 +428,9 @@
                 <Value>1</Value>
                 <Label lang="en">enabled</Label>
             </Item>
+            <Help><![CDATA[Enable/disable Configuration Locked (0 =disable, 1 = enable).
+<p>Enable/disable Configuration Locked (0 =disable, 1 =enable).</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -215,6 +442,9 @@
             <Maximum>1</Maximum>
             <WriteOnly>true</WriteOnly>
             <Size>1</Size>
+            <Help><![CDATA[Reset the device to defaults
+<p>Reset configuration set up to default setting.</p>
+            ]]></Help>
         </Parameter>
 
     </Configuration>
@@ -232,7 +462,6 @@
             <Index>2</Index>
             <Label lang="en">Group 2</Label>
             <Maximum>5</Maximum>
-            <SetToController>true</SetToController>
         </Group>
 
     </Associations>

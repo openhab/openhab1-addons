@@ -22,13 +22,13 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientLightV2ConfigurationImpl#getIlluminanceRange
  * <em>Illuminance Range</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientLightV2ConfigurationImpl#getIntegrationTime
  * <em>Integration Time</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -119,11 +119,10 @@ public class AmbientLightV2ConfigurationImpl extends TFBaseConfigurationImpl imp
     public void setIlluminanceRange(short newIlluminanceRange) {
         short oldIlluminanceRange = illuminanceRange;
         illuminanceRange = newIlluminanceRange;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.AMBIENT_LIGHT_V2_CONFIGURATION__ILLUMINANCE_RANGE, oldIlluminanceRange,
                     illuminanceRange));
-        }
     }
 
     /**
@@ -147,11 +146,10 @@ public class AmbientLightV2ConfigurationImpl extends TFBaseConfigurationImpl imp
     public void setIntegrationTime(short newIntegrationTime) {
         short oldIntegrationTime = integrationTime;
         integrationTime = newIntegrationTime;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.AMBIENT_LIGHT_V2_CONFIGURATION__INTEGRATION_TIME, oldIntegrationTime,
                     integrationTime));
-        }
     }
 
     /**
@@ -234,9 +232,8 @@ public class AmbientLightV2ConfigurationImpl extends TFBaseConfigurationImpl imp
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (illuminanceRange: ");

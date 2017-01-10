@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * @serial 1.0
  * @since 1.7.0
  */
-public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>implements ManagedService {
+public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(BticinoBinding.class);
 
@@ -218,7 +219,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>imple
                 }
 
                 String configKey = matcher.group(2);
-                String value = (String) properties.get(key);
+                String value = Objects.toString(properties.get(key), null);
 
                 // parameter host
                 if ("host".equals(configKey)) {

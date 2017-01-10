@@ -28,6 +28,7 @@ import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
+import org.openhab.binding.tinkerforge.internal.model.IO4Device;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
@@ -136,7 +137,7 @@ import org.slf4j.LoggerFactory;
  * @author Theo Weiss
  * @since 1.3.0
  */
-public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBindingProvider>implements ManagedService {
+public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBindingProvider> implements ManagedService {
 
     private static final String CONFIG_KEY_HOSTS = "hosts";
 
@@ -309,7 +310,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                     ((MTFConfigConsumer<EObject>) device).setTfConfig(deviceTfConfig);
                     device.enable();
                 }
-            } else if (device instanceof IODevice) {
+            } else if (device instanceof IODevice || device instanceof IO4Device) {
                 logger.debug("{} ignoring unconfigured  IODevice: {}", LoggerConstants.TFINIT, logId);
                 // set the device disabled, this is needed for not getting
                 // states
@@ -449,6 +450,9 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
             if (featureID == ModelPackage.COLOR_ACTOR__COLOR) {
                 processValue((MBaseDevice) actor, notification);
             }
+        } else if (notification.getNotifier() instanceof DimmableActor<?>) {
+            DimmableActor<?> actor = (DimmableActor<?>) notification.getNotifier();
+            processValue((MBaseDevice) actor, notification);
         } else if (notification.getNotifier() instanceof MBrickd) {
             MBrickd brickd = (MBrickd) notification.getNotifier();
             int featureID = notification.getFeatureID(MBrickd.class);
@@ -780,7 +784,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                         } else if (command instanceof StringType) {
                             logger.trace("{} found string command", LoggerConstants.COMMAND);
                             if (mDevice instanceof MTextActor) {
-                                ((MTextActor) mDevice).setText(command.toString());
+                                ((MTextActor) mDevice).write(command.toString());
                             }
                         } else if (command instanceof DecimalType) {
                             logger.debug("{} found number command", LoggerConstants.COMMAND);

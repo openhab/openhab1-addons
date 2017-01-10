@@ -24,6 +24,7 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>
  *        {@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletRemoteSwitchConfigurationImpl#getTypeADevices
@@ -35,7 +36,6 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  *        {@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletRemoteSwitchConfigurationImpl#getTypeCDevices
  *        <em>Type CDevices</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -149,10 +149,9 @@ public class BrickletRemoteSwitchConfigurationImpl extends MinimalEObjectImpl.Co
     public void setTypeADevices(String newTypeADevices) {
         String oldTypeADevices = typeADevices;
         typeADevices = newTypeADevices;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_ADEVICES, oldTypeADevices, typeADevices));
-        }
     }
 
     /**
@@ -176,10 +175,9 @@ public class BrickletRemoteSwitchConfigurationImpl extends MinimalEObjectImpl.Co
     public void setTypeBDevices(String newTypeBDevices) {
         String oldTypeBDevices = typeBDevices;
         typeBDevices = newTypeBDevices;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_BDEVICES, oldTypeBDevices, typeBDevices));
-        }
     }
 
     /**
@@ -203,10 +201,9 @@ public class BrickletRemoteSwitchConfigurationImpl extends MinimalEObjectImpl.Co
     public void setTypeCDevices(String newTypeCDevices) {
         String oldTypeCDevices = typeCDevices;
         typeCDevices = newTypeCDevices;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.BRICKLET_REMOTE_SWITCH_CONFIGURATION__TYPE_CDEVICES, oldTypeCDevices, typeCDevices));
-        }
     }
 
     /**
@@ -302,9 +299,8 @@ public class BrickletRemoteSwitchConfigurationImpl extends MinimalEObjectImpl.Co
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (typeADevices: ");

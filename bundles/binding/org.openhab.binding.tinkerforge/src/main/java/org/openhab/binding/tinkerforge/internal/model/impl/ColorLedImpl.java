@@ -41,6 +41,7 @@ import com.tinkerforge.TimeoutException;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getUid <em>Uid</em>}</li>
@@ -52,7 +53,6 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -255,9 +255,8 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__LOGGER, oldLogger, logger));
-        }
     }
 
     /**
@@ -281,9 +280,8 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -307,9 +305,8 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__POLL, oldPoll, poll));
-        }
     }
 
     /**
@@ -333,10 +330,9 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__ENABLED_A, oldEnabledA,
                     enabledA));
-        }
     }
 
     /**
@@ -360,9 +356,8 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__SUB_ID, oldSubId, subId));
-        }
     }
 
     /**
@@ -373,10 +368,21 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
      */
     @Override
     public MBrickletColor getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.COLOR_LED__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.COLOR_LED__MBRICK)
             return null;
-        }
         return (MBrickletColor) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletColor basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.COLOR_LED__MBRICK)
+            return null;
+        return (MBrickletColor) eInternalContainer();
     }
 
     /**
@@ -400,25 +406,20 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     public void setMbrick(MBrickletColor newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.COLOR_LED__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
@@ -442,10 +443,9 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     public void setDigitalState(HighLowValue newDigitalState) {
         HighLowValue oldDigitalState = digitalState;
         digitalState = newDigitalState;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__DIGITAL_STATE,
                     oldDigitalState, digitalState));
-        }
     }
 
     /**
@@ -545,9 +545,8 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.COLOR_LED__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletColor) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -604,7 +603,9 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
             case ModelPackage.COLOR_LED__SUB_ID:
                 return getSubId();
             case ModelPackage.COLOR_LED__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.COLOR_LED__DIGITAL_STATE:
                 return getDigitalState();
             case ModelPackage.COLOR_LED__DEVICE_TYPE:
@@ -701,7 +702,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
             case ModelPackage.COLOR_LED__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.COLOR_LED__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.COLOR_LED__DIGITAL_STATE:
                 return DIGITAL_STATE_EDEFAULT == null ? digitalState != null
                         : !DIGITAL_STATE_EDEFAULT.equals(digitalState);
@@ -806,9 +807,8 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

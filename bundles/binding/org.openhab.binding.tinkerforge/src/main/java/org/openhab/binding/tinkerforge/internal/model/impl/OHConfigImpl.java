@@ -31,11 +31,11 @@ import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
- *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHConfigImpl#getOhTfDevices
- *        <em>Oh Tf Devices</em>}</li>
- *        </ul>
  *        </p>
+ *        <ul>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHConfigImpl#getOhTfDevices <em>Oh Tf
+ *        Devices</em>}</li>
+ *        </ul>
  *
  * @generated
  */

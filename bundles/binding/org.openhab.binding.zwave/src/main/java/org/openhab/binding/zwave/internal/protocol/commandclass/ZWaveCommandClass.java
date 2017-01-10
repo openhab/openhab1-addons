@@ -9,7 +9,6 @@
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -230,13 +229,13 @@ public abstract class ZWaveCommandClass {
                 commandClass = CommandClass.getCommandClass(node.getManufacturer(), node.getDeviceType());
             }
             if (commandClass == null) {
-                logger.warn(String.format("NODE %d: Unknown command class 0x%02x", node.getNodeId(), classId));
+                logger.debug(String.format("NODE %d: Unknown command class 0x%02x", node.getNodeId(), classId));
                 return null;
             }
             Class<? extends ZWaveCommandClass> commandClassClass = commandClass.getCommandClassClass();
 
             if (commandClassClass == null) {
-                logger.warn("NODE {}: Unsupported command class {}", node.getNodeId(), commandClass.getLabel(),
+                logger.debug("NODE {}: Unsupported command class {}", node.getNodeId(), commandClass.getLabel(),
                         classId);
                 return null;
             }
@@ -246,15 +245,11 @@ public abstract class ZWaveCommandClass {
             Constructor<? extends ZWaveCommandClass> constructor = commandClassClass.getConstructor(ZWaveNode.class,
                     ZWaveController.class, ZWaveEndpoint.class);
             return constructor.newInstance(new Object[] { node, controller, endpoint });
-        } catch (InstantiationException e) {
-        } catch (IllegalAccessException e) {
-        } catch (IllegalArgumentException e) {
-        } catch (InvocationTargetException e) {
-        } catch (NoSuchMethodException e) {
-        } catch (SecurityException e) {
+        } catch (Exception e) {
+            logger.error(String.format("NODE %d: Error instantiating command class 0x%02x", node.getNodeId(), classId),
+                    e);
+            return null;
         }
-        logger.error(String.format("NODE %d: Error instantiating command class 0x%02x", node.getNodeId(), classId));
-        return null;
     }
 
     /**
@@ -427,16 +422,18 @@ public abstract class ZWaveCommandClass {
         ASSOCIATION_GROUP_INFO(0x59, "ASSOCIATION_GROUP_INFO", null),
         DEVICE_RESET_LOCALLY(0x5a, "DEVICE_RESET_LOCALLY", null),
         CENTRAL_SCENE(0x5b, "CENTRAL_SCENE", ZWaveCentralSceneCommandClass.class),
+        ANTITHEFT(0x5d, "ANTITHEFT", null),
         ZWAVE_PLUS_INFO(0x5e, "ZWAVE_PLUS_INFO", null),
         MULTI_INSTANCE(0x60, "MULTI_INSTANCE", ZWaveMultiInstanceCommandClass.class),
-        DOOR_LOCK(0x62, "DOOR_LOCK", null),
-        USER_CODE(0x63, "USER_CODE", null),
+        DOOR_LOCK(0x62, "DOOR_LOCK", ZWaveDoorLockCommandClass.class),
+        USER_CODE(0x63, "USER_CODE", ZWaveUserCodeCommandClass.class),
+        BARRIER_OPERATOR(0x66, "BARRIER_OPERATOR", ZWaveBarrierOperatorCommandClass.class),
         CONFIGURATION(0x70, "CONFIGURATION", ZWaveConfigurationCommandClass.class),
         ALARM(0x71, "ALARM", ZWaveAlarmCommandClass.class),
         MANUFACTURER_SPECIFIC(0x72, "MANUFACTURER_SPECIFIC", ZWaveManufacturerSpecificCommandClass.class),
         POWERLEVEL(0x73, "POWERLEVEL", null),
-        PROTECTION(0x75, "PROTECTION", null),
-        LOCK(0x76, "LOCK", null),
+        PROTECTION(0x75, "PROTECTION", ZWaveProtectionCommandClass.class),
+        LOCK(0x76, "LOCK", ZWaveLockCommandClass.class),
         NODE_NAMING(0x77, "NODE_NAMING", ZWaveNodeNamingCommandClass.class),
         FIRMWARE_UPDATE_MD(0x7A, "FIRMWARE_UPDATE_MD", null),
         GROUPING_NAME(0x7B, "GROUPING_NAME", null),
@@ -468,7 +465,7 @@ public abstract class ZWaveCommandClass {
         AV_CONTENT_DIRECTORY_MD(0x95, "AV_CONTENT_DIRECTORY_MD", null),
         AV_RENDERER_STATUS(0x96, "AV_RENDERER_STATUS", null),
         AV_CONTENT_SEARCH_MD(0x97, "AV_CONTENT_SEARCH_MD", null),
-        SECURITY(0x98, "SECURITY", null),
+        SECURITY(0x98, "SECURITY", ZWaveSecurityCommandClassWithInitialization.class),
         AV_TAGGING_MD(0x99, "AV_TAGGING_MD", null),
         IP_CONFIGURATION(0x9A, "IP_CONFIGURATION", null),
         ASSOCIATION_COMMAND_CONFIGURATION(0x9B, "ASSOCIATION_COMMAND_CONFIGURATION", null),
@@ -544,7 +541,11 @@ public abstract class ZWaveCommandClass {
                 initMapping();
             }
 
-            return codeToCommandClassMapping.get(i);
+            CommandClass commandClass = codeToCommandClassMapping.get(i);
+            if (commandClass == null) {
+                logger.debug(String.format("CommandClass not found for 0x%02X", i));
+            }
+            return commandClass;
         }
 
         /**
