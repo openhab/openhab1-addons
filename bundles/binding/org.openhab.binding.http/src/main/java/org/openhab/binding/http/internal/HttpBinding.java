@@ -8,9 +8,10 @@
  */
 package org.openhab.binding.http.internal;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.openhab.binding.http.internal.HttpGenericBindingProvider.CHANGED_COMMAND_KEY;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -21,7 +22,9 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+
 import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.transform.TransformationException;
@@ -31,8 +34,10 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
 import org.openhab.io.net.http.HttpUtil;
+
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +49,7 @@ import org.slf4j.LoggerFactory;
  * @author Pauli Anttila
  * @auther Ben Jones
  * @author John Cocula
+ * @author Chris Carman
  * @since 0.6.0
  */
 public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> implements ManagedService {
@@ -184,12 +190,11 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
                             } else {
                                 transformedResponse = response;
                                 logger.warn(
-                                        "couldn't transform response because transformationService of type '{}' is unavailable",
+                                        "Couldn't transform response because transformationService of type '{}' is unavailable",
                                         transformationType);
                             }
                         } catch (TransformationException te) {
-                            logger.error("transformation throws exception [transformation=" + transformation
-                                    + ", response=" + response + "]", te);
+                            logger.error("Transformation '{}' threw an exception. [response={}]", transformation, response, te);
 
                             // in case of an error we return the response without any
                             // transformation
@@ -250,7 +255,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
         HttpBindingProvider provider = findFirstMatchingBindingProvider(itemName, command);
 
         if (provider == null) {
-            logger.trace("doesn't find matching binding provider [itemName={}, command={}]", itemName, command);
+            logger.trace("Couldn't find matching binding provider [itemName={}, command={}]", itemName, command);
             return;
         }
 
@@ -260,8 +265,31 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
             url = String.format(url, Calendar.getInstance().getTime(), value);
         }
 
-        if (isNotBlank(httpMethod) && isNotBlank(url)) {
-            HttpUtil.executeUrl(httpMethod, url, provider.getHttpHeaders(itemName, command), null, null, timeout);
+        String body = provider.getBody(itemName, command);
+        InputStream stream = null;
+
+        if (StringUtils.isNotBlank(httpMethod) && StringUtils.isNotBlank(url)) {
+            if (httpMethod.equals("POST") && StringUtils.isNotBlank(body)) {
+                try {
+                    stream = IOUtils.toInputStream(body, "UTF-8");
+                } catch (IOException ioe) {
+                    logger.error("Failed to convert the specified body into an acceptable input stream.", ioe);
+                    logger.error("Body contents: {}", body);
+                }
+                logger.debug("Executing url '{}' via method {}, with body content '{}'", url, httpMethod, body);
+                HttpUtil.executeUrl(httpMethod, url, provider.getHttpHeaders(itemName, command), stream, "text/plain",
+                        timeout);
+            } else {
+                logger.debug("Executing url '{}' via method {}", url, httpMethod);
+                HttpUtil.executeUrl(httpMethod, url, provider.getHttpHeaders(itemName, command), null, null, timeout);
+            }
+        } else {
+            if (StringUtils.isBlank(httpMethod)) {
+                logger.error("The HTTP method specified was empty.");
+            }
+            if (StringUtils.isBlank(url)) {
+                logger.error("The URL specified was empty.");
+            }
         }
     }
 
