@@ -282,6 +282,7 @@
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.garadget/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/garadget.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/garadget</configfile>
   </feature>
 
   <feature name="openhab-binding-gc100ir1" description="GC100IR Binding" version="${project.version}">
