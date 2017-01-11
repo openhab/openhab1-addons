@@ -15,6 +15,7 @@
 	<service>
 		<provide interface="org.osgi.service.event.EventHandler" />
 	</service>
+ <property name="service.pid" type="String" value="org.openhab.simplebinary"/>
 
 	<property name="event.topics" type="String" value="openhab/command/*" />
 
