@@ -382,14 +382,15 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                             break;
                         }
                     }
-                    
+
                     // check data
                     if (itemsConfig != null) {
                         // check minimum length
                         while (inBuffer.position() > 3) {
                             // check if received data has valid address (same as sent data)
                             if (lastSentData != null && !checkDeviceID(inBuffer, getLastSentData().getDeviceId())) {
-                                logger.error("{} - Address not valid: {}", this.toString());
+                                logger.error("{} - Address not valid: {}/{}", this.toString(), getDeviceID(inBuffer),
+                                        getLastSentData().getDeviceId());
                                 // print details
                                 printCommunicationInfo(inBuffer, lastSentData);
                                 // clear buffer
