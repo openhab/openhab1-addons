@@ -19,7 +19,8 @@ import org.openhab.binding.onewire.internal.connection.OneWireConnection;
 import org.openhab.binding.onewire.internal.control.AbstractOneWireControlBindingConfig;
 import org.openhab.binding.onewire.internal.deviceproperties.AbstractOneWireDevicePropertyBindingConfig;
 import org.openhab.binding.onewire.internal.deviceproperties.AbstractOneWireDevicePropertyWritableBindingConfig;
-import org.openhab.binding.onewire.internal.listener.InterfaceOneWireDevicePropertyWantsUpdateListener;
+import org.openhab.binding.onewire.internal.deviceproperties.OneWireDevicePropertyExecutableBindingConfig;
+import org.openhab.binding.onewire.internal.listener.OneWireDevicePropertyWantsUpdateListener;
 import org.openhab.binding.onewire.internal.listener.OneWireDevicePropertyWantsUpdateEvent;
 import org.openhab.binding.onewire.internal.scheduler.OneWireUpdateScheduler;
 import org.openhab.core.binding.AbstractBinding;
@@ -43,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.6.0
  */
 public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
-        implements ManagedService, InterfaceOneWireDevicePropertyWantsUpdateListener {
+        implements ManagedService, OneWireDevicePropertyWantsUpdateListener {
 
     private static final Logger logger = LoggerFactory.getLogger(OneWireBinding.class);
 
@@ -117,13 +118,23 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
         OneWireBindingConfig lvBindigConfig = getBindingConfig(pvItemName);
 
-        if (lvBindigConfig instanceof AbstractOneWireDevicePropertyWritableBindingConfig) {
+        if (lvBindigConfig instanceof OneWireDevicePropertyExecutableBindingConfig) {
+            // This Binding implements a special behavior
+            logger.debug("call execute for item " + pvItemName);
+
+            ((OneWireDevicePropertyExecutableBindingConfig) lvBindigConfig).execute(pvCommand);
+        } else if (lvBindigConfig instanceof AbstractOneWireDevicePropertyWritableBindingConfig) {
+            logger.debug("write to item " + pvItemName);
+
             AbstractOneWireDevicePropertyWritableBindingConfig lvWritableBindingConfig = (AbstractOneWireDevicePropertyWritableBindingConfig) lvBindigConfig;
 
+            // Standard Write Operation
             String lvStringValue = lvWritableBindingConfig.convertTypeToString(pvCommand);
 
             OneWireConnection.writeToOneWire(lvWritableBindingConfig.getDevicePropertyPath(), lvStringValue);
         } else if (lvBindigConfig instanceof AbstractOneWireControlBindingConfig) {
+            logger.debug("call executeControl for item " + pvItemName);
+
             AbstractOneWireControlBindingConfig lvControlBindingConfig = (AbstractOneWireControlBindingConfig) lvBindigConfig;
             lvControlBindingConfig.executeControl(this, pvCommand);
         } else {

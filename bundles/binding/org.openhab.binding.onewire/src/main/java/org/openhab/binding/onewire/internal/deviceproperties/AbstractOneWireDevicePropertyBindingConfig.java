@@ -11,10 +11,8 @@ package org.openhab.binding.onewire.internal.deviceproperties;
 import java.util.ArrayList;
 
 import org.openhab.binding.onewire.internal.OneWireBindingConfig;
-import org.openhab.binding.onewire.internal.deviceproperties.modifier.InterfaceOneWireTypeModifier;
-import org.openhab.core.types.Type;
+import org.openhab.binding.onewire.internal.deviceproperties.modifier.OneWireTypeModifier;
 import org.openhab.model.item.binding.BindingConfigParseException;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -70,7 +68,7 @@ public abstract class AbstractOneWireDevicePropertyBindingConfig implements OneW
     private int ivAutoRefreshInSecs = 60; // Default 60 Sekunden
 
     /** maintains state of filters for eliminating outliers */
-    private ArrayList<InterfaceOneWireTypeModifier> ivTypeModifieryList = new ArrayList<InterfaceOneWireTypeModifier>();
+    private ArrayList<OneWireTypeModifier> ivTypeModifieryList = new ArrayList<OneWireTypeModifier>();
 
     public AbstractOneWireDevicePropertyBindingConfig(String pvBindingConfig) throws BindingConfigParseException {
         super();
@@ -196,12 +194,12 @@ public abstract class AbstractOneWireDevicePropertyBindingConfig implements OneW
      * @return a list of configured modifiers for this 1-Wire property device
      *         binding
      */
-    public ArrayList<InterfaceOneWireTypeModifier> getTypeModifieryList() {
+    public ArrayList<OneWireTypeModifier> getTypeModifieryList() {
         return ivTypeModifieryList;
     }
 
     /**
-     * 
+     *
      * @param pvReadValue
      * @return the modified and converted given readValue String as a
      *         openHab-Type
@@ -209,9 +207,9 @@ public abstract class AbstractOneWireDevicePropertyBindingConfig implements OneW
     public Type convertReadValueToType(String pvReadValue) {
         Type lvType = convertReadValueToUnmodifiedType(pvReadValue);
 
-        for (InterfaceOneWireTypeModifier lvTypeModifier : getTypeModifieryList()) {
-            logger.debug("type of {} before modifier:{} type={}", getDevicePropertyPath(),
-                    lvTypeModifier.getModifierName(), lvType);
+        for (OneWireTypeModifier lvTypeModifier : getTypeModifieryList()) {
+            logger.debug("type of " + getDevicePropertyPath() + " before modifier:" + lvTypeModifier.getModifierName()
+                    + "type=" + lvType.toString());
             lvType = lvTypeModifier.modify4Read(lvType);
             logger.debug("type of {} after modifier:{} type={}", getDevicePropertyPath(),
                     lvTypeModifier.getModifierName(), lvType);
@@ -222,7 +220,7 @@ public abstract class AbstractOneWireDevicePropertyBindingConfig implements OneW
 
     /**
      * Abstract method, which must be implemented by specialized Classes
-     * 
+     *
      * @param pvReadValue
      * @return converts the given readValue to an unmodified openHab Type
      */

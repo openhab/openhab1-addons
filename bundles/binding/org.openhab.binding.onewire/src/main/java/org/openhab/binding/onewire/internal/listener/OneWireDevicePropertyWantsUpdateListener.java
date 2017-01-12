@@ -17,7 +17,7 @@ import java.util.EventListener;
  * @since 1.7.0
  *
  */
-public interface InterfaceOneWireDevicePropertyWantsUpdateListener extends EventListener {
+public interface OneWireDevicePropertyWantsUpdateListener extends EventListener {
 
     /**
      * This method must be implemenented by the classes, which implements the Listener
