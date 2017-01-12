@@ -10,17 +10,15 @@ package org.openhab.binding.onewire.internal.deviceproperties;
 
 import org.openhab.core.types.Command;
 
-
-
 /**
  * Interface to implement a special behavior for Items (like a Switch Tab)
- * 
+ *
  * @author Dennis Riegelbauer
- * @since 1.7.0
- * 
+ * @since 1.9.0
+ *
  */
 public interface OneWireDevicePropertyExecutableBindingConfig {
 
-	public void execute(Command pvCommand); 
+    public void execute(Command pvCommand);
 
 }

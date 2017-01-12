@@ -16,109 +16,99 @@ import org.openhab.core.types.Command;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
- * This Class is a specialized writable BindingConfig with a special execute command. 
+ * This Class is a specialized writable BindingConfig with a special execute command.
  * It connects openHab Switch-Items to 1-Wire device properties and simulates a PushButton (ON-wait-OFF or OFF-wait-ON)
- * 
+ *
  * For Basic Configuration of the binding, see
  * OneWireDevicePropertySwitchBindingConfig.java
- * 
+ *
  * Example:
  * <ul>
  * <li>
  * <code>onewire="deviceId=29.66C30E000000;propertyName=sensed.0;refreshinterval=10";pushbutton=500;invert",autoupdate="false"</code>
  * </li>
  * </ul>
- * 
+ *
  * @author Dennis Riegelbauer
- * @since 1.7.0
- * 
+ * @since 1.9.0
+ *
  */
-public class OneWireDevicePropertyPushButtonBindingConfig extends
-		OneWireDevicePropertySwitchBindingConfig implements
-		OneWireDevicePropertyExecutableBindingConfig {
+public class OneWireDevicePropertyPushButtonBindingConfig extends OneWireDevicePropertySwitchBindingConfig
+        implements OneWireDevicePropertyExecutableBindingConfig {
 
-	private int waitTime;
-	
-	public OneWireDevicePropertyPushButtonBindingConfig(String pvBindingConfig)
-			throws BindingConfigParseException {
-		super(pvBindingConfig);
-		super.parseBindingConfig(pvBindingConfig);
-		this.parsePushButtonConfig(pvBindingConfig);
-	}
-	
-	protected void parseBindingConfig(String pvBindingConfig) throws BindingConfigParseException {
-		String[] lvConfigParts = pvBindingConfig.trim().split(";");
+    private int waitTime;
 
-		for (String lvConfigPart : lvConfigParts) {
-			parsePushButtonConfig(lvConfigPart);
-		}
-	}
-	
-	private void parsePushButtonConfig(String pvConfigPart) {
-		String lvConfigProperty = null;
+    public OneWireDevicePropertyPushButtonBindingConfig(String pvBindingConfig) throws BindingConfigParseException {
+        super(pvBindingConfig);
+        super.parseBindingConfig(pvBindingConfig);
+        this.parsePushButtonConfig(pvBindingConfig);
+    }
 
-		lvConfigProperty = "pushbutton=";
-		if (pvConfigPart.startsWith(lvConfigProperty)) {
-			String lvConfigValue = pvConfigPart.substring(lvConfigProperty.length());
-			this.waitTime = Integer.parseInt(lvConfigValue);
-		}
-	}
-	
-	/**
-	 * Checks, if this special binding-type matches to the given pvBindingConfig
-	 * 
-	 * @param pvItem
-	 * @param pvBindingConfig
-	 * @return boolean
-	 */
-	public static boolean isBindingConfigToCreate(Item pvItem, String pvBindingConfig) {
-		return ((pvItem instanceof SwitchItem) && (pvBindingConfig.contains("pushbutton")));
-	}
+    @Override
+    protected void parseBindingConfig(String pvBindingConfig) throws BindingConfigParseException {
+        String[] lvConfigParts = pvBindingConfig.trim().split(";");
 
-	@Override
-	public void execute(Command pvCommand) {
-		if (pvCommand.equals(OnOffType.ON)) {
-			write(OnOffType.ON);
-			sleep();
-			write(OnOffType.OFF);
-		} else if (pvCommand.equals(OnOffType.OFF)) {
-			write(OnOffType.OFF);
-			sleep();
-			write(OnOffType.ON);
-		} else {
-			throw new IllegalStateException("Unknown command for this binding:"
-					+ pvCommand.toString());
-		}		
-	}
-	
-	private void sleep() {
-		try {
-			Thread.sleep(this.waitTime);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private void write(Command pvCommand) {
-		OneWireConnection.writeToOneWire(this.getDevicePropertyPath(),
-				this.convertTypeToString(pvCommand));
-	}
+        for (String lvConfigPart : lvConfigParts) {
+            parsePushButtonConfig(lvConfigPart);
+        }
+    }
 
-	@Override
-	public String toString() {
-		final int maxLen = 20;
-		return "OneWireDevicePropertyPushButtonBindingConfig [getDeviceId()="
-				+ getDeviceId()
-				+ ", getPropertyName()="
-				+ getPropertyName()
-				+ ", getAutoRefreshInSecs()="
-				+ getAutoRefreshInSecs()
-				+ ", getDevicePropertyPath()="
-				+ getDevicePropertyPath()
-				+ ", getTypeModifieryList()="
-				+ (getTypeModifieryList() != null ? getTypeModifieryList()
-						.subList(0,
-								Math.min(getTypeModifieryList().size(), maxLen))
-						: null) + "]";
-	}
+    private void parsePushButtonConfig(String pvConfigPart) {
+        String lvConfigProperty = null;
+
+        lvConfigProperty = "pushbutton=";
+        if (pvConfigPart.startsWith(lvConfigProperty)) {
+            String lvConfigValue = pvConfigPart.substring(lvConfigProperty.length());
+            this.waitTime = Integer.parseInt(lvConfigValue);
+        }
+    }
+
+    /**
+     * Checks, if this special binding-type matches to the given pvBindingConfig
+     * 
+     * @param pvItem
+     * @param pvBindingConfig
+     * @return boolean
+     */
+    public static boolean isBindingConfigToCreate(Item pvItem, String pvBindingConfig) {
+        return ((pvItem instanceof SwitchItem) && (pvBindingConfig.contains("pushbutton")));
+    }
+
+    @Override
+    public void execute(Command pvCommand) {
+        if (pvCommand.equals(OnOffType.ON)) {
+            write(OnOffType.ON);
+            sleep();
+            write(OnOffType.OFF);
+        } else if (pvCommand.equals(OnOffType.OFF)) {
+            write(OnOffType.OFF);
+            sleep();
+            write(OnOffType.ON);
+        } else {
+            throw new IllegalStateException("Unknown command for this binding:" + pvCommand.toString());
+        }
+    }
+
+    private void sleep() {
+        try {
+            Thread.sleep(this.waitTime);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void write(Command pvCommand) {
+        OneWireConnection.writeToOneWire(this.getDevicePropertyPath(), this.convertTypeToString(pvCommand));
+    }
+
+    @Override
+    public String toString() {
+        final int maxLen = 20;
+        return "OneWireDevicePropertyPushButtonBindingConfig [getDeviceId()=" + getDeviceId() + ", getPropertyName()="
+                + getPropertyName() + ", getAutoRefreshInSecs()=" + getAutoRefreshInSecs()
+                + ", getDevicePropertyPath()=" + getDevicePropertyPath() + ", getTypeModifieryList()="
+                + (getTypeModifieryList() != null
+                        ? getTypeModifieryList().subList(0, Math.min(getTypeModifieryList().size(), maxLen)) : null)
+                + "]";
+    }
 }
