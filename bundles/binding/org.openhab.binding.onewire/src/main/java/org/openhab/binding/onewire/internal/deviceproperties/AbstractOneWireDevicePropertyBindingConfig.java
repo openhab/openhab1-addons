@@ -12,7 +12,9 @@ import java.util.ArrayList;
 
 import org.openhab.binding.onewire.internal.OneWireBindingConfig;
 import org.openhab.binding.onewire.internal.deviceproperties.modifier.OneWireTypeModifier;
+import org.openhab.core.types.Type;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
