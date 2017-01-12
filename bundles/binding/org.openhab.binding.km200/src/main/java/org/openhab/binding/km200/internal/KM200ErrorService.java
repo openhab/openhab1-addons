@@ -67,13 +67,13 @@ public class KM200ErrorService {
                     HashMap<String, String> valMap = new HashMap<String, String>();
                     Map<String, Object> oMap = subJSON.toMap();
                     for (String para : oMap.keySet()) {
-                        logger.debug("Set: {} val: {}", para, oMap.get(para).toString());
+                        logger.debug("Set: {} val: {}", para, oMap.get(para));
                         valMap.put(para, oMap.get(para).toString());
                     }
                     errorMap.add(valMap);
                 }
             } catch (Exception e) {
-                logger.error("Error in parsing of the errorlist: {} {}", e.getMessage());
+                logger.error("Error in parsing of the errorlist: {}", e.getMessage());
                 e.printStackTrace();
             }
         }
