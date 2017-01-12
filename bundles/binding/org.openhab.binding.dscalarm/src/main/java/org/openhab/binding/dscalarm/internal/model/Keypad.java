@@ -52,69 +52,13 @@ public class Keypad extends DSCAlarmDevice {
             if (config.getDSCAlarmItemType() != null) {
                 switch (config.getDSCAlarmItemType()) {
                     case KEYPAD_READY_LED:
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                        }
-                        break;
                     case KEYPAD_ARMED_LED:
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                        }
-                        break;
                     case KEYPAD_MEMORY_LED:
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                        }
-                        break;
                     case KEYPAD_BYPASS_LED:
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                        }
-                        break;
                     case KEYPAD_TROUBLE_LED:
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                        }
-                        break;
                     case KEYPAD_PROGRAM_LED:
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                        }
-                        break;
                     case KEYPAD_FIRE_LED:
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                        }
-                        break;
                     case KEYPAD_BACKLIGHT_LED:
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                        }
-                        break;
                     case KEYPAD_AC_LED:
                         if (item instanceof NumberItem) {
                             publisher.postUpdate(item.getName(), new DecimalType(state));
@@ -145,77 +89,21 @@ public class Keypad extends DSCAlarmDevice {
 
         if (event != null) {
             apiMessage = event.getAPIMessage();
-            state = Integer.parseInt(apiMessage.getAPIData().substring(1));
             logger.debug("handleEvent(): Keypad Item Name: {}", item.getName());
 
             if (config != null) {
                 if (config.getDSCAlarmItemType() != null) {
                     switch (config.getDSCAlarmItemType()) {
                         case KEYPAD_READY_LED:
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                            }
-                            break;
                         case KEYPAD_ARMED_LED:
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                            }
-                            break;
                         case KEYPAD_MEMORY_LED:
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                            }
-                            break;
                         case KEYPAD_BYPASS_LED:
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                            }
-                            break;
                         case KEYPAD_TROUBLE_LED:
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                            }
-                            break;
                         case KEYPAD_PROGRAM_LED:
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                            }
-                            break;
                         case KEYPAD_FIRE_LED:
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                            }
-                            break;
                         case KEYPAD_BACKLIGHT_LED:
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
-                            }
-                            break;
                         case KEYPAD_AC_LED:
+                            state = Integer.parseInt(apiMessage.getAPIData().substring(1));
                             if (item instanceof NumberItem) {
                                 publisher.postUpdate(item.getName(), new DecimalType(state));
                             }
