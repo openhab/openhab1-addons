@@ -501,6 +501,24 @@ class KM200Comm {
     }
 
     /**
+     * This function checks whether the service has a replacement parameter
+     *
+     */
+    public String checkParameterReplacement(KM200BindingProvider provider, String item) {
+        String service = provider.getService(item);
+        if (provider.getParameter(item).containsKey("current")) {
+            String currentService = provider.getParameter(item).get("current");
+            if (device.serviceMap.containsKey(currentService)) {
+                if (device.serviceMap.get(currentService).getServiceType().equals("stringValue")) {
+                    String val = (String) device.serviceMap.get(currentService).getValue();
+                    return (service.replace("__current__", val));
+                }
+            }
+        }
+        return service;
+    }
+
+    /**
      * This function checks the state of a service on the device
      *
      */
@@ -510,7 +528,8 @@ class KM200Comm {
             String type = null;
             byte[] recData = null;
             KM200CommObject object = null;
-            String service = provider.getService(item);
+            String service = checkParameterReplacement(provider, item);
+
             Class<? extends Item> itemType = provider.getItemType(item);
             logger.debug("Check state of: {} type: {} item: {}", service, type, itemType.getName());
             if (device.blacklistMap.contains(service)) {
@@ -584,7 +603,7 @@ class KM200Comm {
         JSONObject nodeRoot = null;
         State state = null;
         Class<? extends Item> itemType = provider.getItemType(item);
-        String service = provider.getService(item);
+        String service = checkParameterReplacement(provider, item);
         KM200CommObject object = device.serviceMap.get(service);
         logger.debug("parseJSONData service: {}, data: {}", service, decodedData);
         /* Now parsing of the JSON String depending on its type and the type of binding item */
@@ -600,6 +619,7 @@ class KM200Comm {
                 case "stringValue": /* Check whether the type is a single value containing a string value */
                     logger.debug("initDevice: type string value: {}", decodedData);
                     String sVal = nodeRoot.getString("value");
+                    device.serviceMap.get(service).setValue(sVal);
                     /* SwitchItem Binding */
                     if (itemType.isAssignableFrom(SwitchItem.class)) {
                         if (provider.getParameter(item).containsKey("on")) {
@@ -647,6 +667,7 @@ class KM200Comm {
                 case "floatValue": /* Check whether the type is a single value containing a float value */
                     logger.debug("state of type float value: {}", decodedData);
                     Float fVal = new Float(nodeRoot.getDouble("value"));
+                    device.serviceMap.get(service).setValue(fVal);
                     /* NumberItem Binding */
                     if (itemType.isAssignableFrom(NumberItem.class)) {
                         state = new DecimalType(fVal.floatValue());
@@ -897,11 +918,11 @@ class KM200Comm {
      */
     public byte[] sendProvidersState(KM200BindingProvider provider, String item, Command command) {
         synchronized (device) {
-            String service = provider.getService(item);
             String type = null;
             String dataToSend = null;
             KM200CommObject object = null;
             Class<? extends Item> itemType = provider.getItemType(item);
+            String service = checkParameterReplacement(provider, item);
 
             logger.debug("Prepare item for send: {} type: {} item: {}", service, type, itemType.getName());
             if (device.blacklistMap.contains(service)) {
