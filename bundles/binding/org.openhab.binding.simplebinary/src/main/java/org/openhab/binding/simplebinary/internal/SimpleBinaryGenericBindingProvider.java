@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.simplebinary.internal;
 
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +37,79 @@ import org.slf4j.LoggerFactory;
 public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingProvider
         implements SimpleBinaryBindingProvider {
 
+    public enum DataDirectionFlow {
+        INOUT,
+        INPUT,
+        OUTPUT
+    }
+
+    /**
+     *
+     *
+     * @author tucek
+     * @since 1.9.0
+     *
+     */
+    public class DeviceConfig {
+        public DeviceConfig(String portName, int deviceAddress, DataDirectionFlow dataDirection, int itemAddress) {
+            this.deviceName = portName;
+            this.deviceAddress = deviceAddress;
+            this.dataDirection = dataDirection;
+            this.itemAddress = itemAddress;
+        }
+
+        /**
+         * Device(port) name
+         */
+        String deviceName;
+        /**
+         * Device(slave) address
+         */
+        int deviceAddress;
+        /**
+         * Data flow direction
+         */
+        DataDirectionFlow dataDirection = DataDirectionFlow.INOUT;
+        /**
+         * Item address
+         */
+        int itemAddress;
+
+        /**
+         * @return Device(port) name
+         */
+        public String getPortName() {
+            return deviceName;
+        }
+
+        /**
+         * @return Device(slave) address
+         */
+        public int getDeviceAddress() {
+            return deviceAddress;
+        }
+
+        /**
+         * @return Data flow direction
+         */
+        public DataDirectionFlow getDataDirection() {
+            return dataDirection;
+        }
+
+        /**
+         * @return Item address
+         */
+        public int getItemAddress() {
+            return itemAddress;
+        }
+
+        @Override
+        public String toString() {
+            return "PortName=" + deviceName + "|DeviceAddress=" + deviceAddress + "|ItemAddress=" + itemAddress
+                    + "|DataDirection=" + dataDirection;
+        }
+    }
+
     /**
      * This is a helper class holding binding specific configuration details
      *
@@ -43,24 +117,16 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
      * @since 1.9.0
      */
     class SimpleBinaryBindingConfig implements BindingConfig {
-        // put member fields here which holds the parsed values
 
         public Item item;
         Class<? extends Item> itemType;
-
-        /**
-         * Contains configured device name
-         *
-         */
-        public String device;
-        /**
-         * Contains slave address
-         *
-         */
-        public int busAddress;
-        public int direction = 0;
-        public int address;
+        LinkedList<DeviceConfig> devices;
         private String datatype = "word";
+
+        public SimpleBinaryBindingConfig(DeviceConfig device) {
+            devices = new LinkedList<DeviceConfig>();
+            devices.add(device);
+        }
 
         /**
          * Return item data length
@@ -118,8 +184,15 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
 
         @Override
         public String toString() {
-            return item.getName() + " (Device=" + this.device + " BusAddress=" + this.busAddress + " MemAddress="
-                    + this.address + " DataType=" + this.getDataType() + " Direction=" + this.direction + ")";
+            String text = item.getName() + "|DataType=" + this.getDataType() + "|Device count=" + this.devices.size()
+                    + "( ";
+
+            for (DeviceConfig d : devices) {
+                text += "Port=" + d.getPortName() + " DeviceAddress=" + d.getDeviceAddress() + " MemAddress="
+                        + d.getItemAddress() + " Direction=" + d.getDataDirection() + "|";
+            }
+
+            return text + ")";
         }
     }
 
@@ -147,6 +220,14 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
          * Requested info type
          */
         public InfoType infoType;
+
+        @Override
+        public String toString() {
+            String text = item.getName() + "|Device=" + this.device + "|DeviceAddress=" + this.busAddress + "|InfoType="
+                    + infoType;
+
+            return text;
+        }
     }
 
     public enum InfoType {
@@ -156,7 +237,7 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
         PACKET_LOST
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(SimpleBinaryBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleBinaryGenericBindingProvider.class);
 
     /**
      * Return all configs map
@@ -198,8 +279,6 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
 
         super.processBindingConfiguration(context, item, bindingConfig);
 
-        BindingConfig commonConfig = null;
-
         // config
         //
         // device:busAddress:address/ID:type:direction
@@ -225,7 +304,6 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
             } else {
                 // device info config
                 SimpleBinaryInfoBindingConfig config = new SimpleBinaryInfoBindingConfig();
-                commonConfig = config;
 
                 config.item = item;
                 config.device = matcher.group(1);
@@ -249,16 +327,16 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
                 } else {
                     throw new BindingConfigParseException("Unsupported info parameter " + param);
                 }
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Info item added: {}", config);
+                }
+
+                addBindingConfig(item, config);
             }
         } else {
-            SimpleBinaryBindingConfig config = new SimpleBinaryBindingConfig();
-            commonConfig = config;
-
-            config.item = item;
-            config.itemType = item.getClass();
-            config.device = matcher.group(1);
-            config.busAddress = Integer.valueOf(matcher.group(2)).intValue();
-            config.address = Integer.valueOf(matcher.group(3)).intValue();
+            DataDirectionFlow datadirection = DataDirectionFlow.INOUT;
+            String dataType = "";
 
             boolean dataTypeSpecified = false;
 
@@ -271,76 +349,18 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
                     String param = optionalConfigs[i].toLowerCase();
                     // is direction?
                     if (param.equals("i") || param.equals("o") || param.equals("io")) {
-                        config.direction = param.equals("io") ? 0 : param.equals("i") ? 1 : 2;
+                        datadirection = param.equals("io") ? DataDirectionFlow.INOUT
+                                : param.equals("i") ? DataDirectionFlow.INPUT : DataDirectionFlow.OUTPUT;
                     } else {
                         // is datatype?
-                        matcher = Pattern.compile("^byte|word|dword|float|hsb|rgb|rgbw|array\\[\\d+\\]$")
+                        Matcher typematcher = Pattern.compile("^byte|word|dword|float|hsb|rgb|rgbw|array\\[\\d+\\]$")
                                 .matcher(param);
 
-                        if (matcher.matches()) {
+                        if (typematcher.matches()) {
                             // datatype specified as optional parameter
                             dataTypeSpecified = true;
 
-                            if (config.itemType.isAssignableFrom(NumberItem.class)) {
-                                if (!param.equals("byte") && !param.equals("word") && !param.equals("dword")
-                                        && !param.equals("float")) {
-                                    logger.warn(
-                                            "Item %s supported datatypes: byte, word, dword or float. Type %s is ignored. Setted to word.",
-                                            item.getName(), param);
-                                    config.datatype = "word";
-                                } else {
-                                    config.datatype = param;
-                                }
-
-                            } else if (config.itemType.isAssignableFrom(SwitchItem.class)) {
-                                if (!param.equals("byte")) {
-                                    logger.warn("Item %s support datatype byte only. Type %s is ignored.",
-                                            item.getName(), param);
-                                }
-                                config.datatype = "byte";
-
-                            } else if (config.itemType.isAssignableFrom(DimmerItem.class)) {
-                                if (!param.equals("byte")) {
-                                    logger.warn("Item %s support datatype byte only. Type %s is ignored.",
-                                            item.getName(), param);
-                                }
-                                config.datatype = "byte";
-
-                            } else if (config.itemType.isAssignableFrom(ColorItem.class)) {
-                                if (!param.equals("rgb") && !param.equals("rgbw") && !param.equals("hsb")) {
-                                    logger.warn(
-                                            "Item %s supported datatypes: hsb, rgb or rgbw. Type %s is ignored. Setted to rgb.",
-                                            item.getName(), param);
-                                    config.datatype = "rgb";
-                                } else {
-                                    config.datatype = param;
-                                }
-
-                            } else if (config.itemType.isAssignableFrom(StringItem.class)) {
-                                if (!param.startsWith("array")) {
-                                    logger.warn(
-                                            "Item %s support datatype array only. Type %s is ignored. Setted to ARRAY with length 32.",
-                                            item.getName(), param);
-                                }
-                                config.datatype = "array[32]";
-
-                            } else if (config.itemType.isAssignableFrom(ContactItem.class)) {
-                                if (!param.equals("byte")) {
-                                    logger.warn("Item %s support datatype byte only. Type %s is ignored.",
-                                            item.getName(), param);
-                                }
-                                config.datatype = "byte";
-
-                            } else if (config.itemType.isAssignableFrom(RollershutterItem.class)) {
-                                if (!param.equals("word")) {
-                                    logger.warn("Item %s support datatype word only. Type %s is ignored.",
-                                            item.getName(), param);
-                                }
-                                config.datatype = "word";
-
-                            } else {
-                                throw new BindingConfigParseException("Unsupported item type: " + item);
-                            }
+                            dataType = retreiveDataType(item, item.getClass(), param);
                         } else {
                             logger.warn("Item %s. Unsupported optional parameter %s", item.getName(),
                                     optionalConfigs[i]);
@@ -351,35 +371,143 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
 
             // datatype not specified as optional parameter -> set default
             if (!dataTypeSpecified) {
-                if (config.itemType.isAssignableFrom(NumberItem.class)) {
-                    logger.warn("Item %s has not specified datatype. Setted to WORD.", item.getName());
-                    config.datatype = "word";
-                } else if (config.itemType.isAssignableFrom(SwitchItem.class)) {
-                    config.datatype = "byte";
-                } else if (config.itemType.isAssignableFrom(DimmerItem.class)) {
-                    config.datatype = "byte";
-                } else if (config.itemType.isAssignableFrom(ColorItem.class)) {
-                    logger.warn("Item %s has not specified datatype. Setted to RGB.", item.getName());
-                    config.datatype = "rgb";
-                } else if (config.itemType.isAssignableFrom(StringItem.class)) {
-                    logger.warn("Item %s has not specified datatype with length. Setted to ARRAY with length 32.",
-                            item.getName());
-                    config.datatype = "array[32]";
-                } else if (config.itemType.isAssignableFrom(ContactItem.class)) {
-                    config.datatype = "byte";
-                } else if (config.itemType.isAssignableFrom(RollershutterItem.class)) {
-                    config.datatype = "word";
-                } else {
-                    throw new BindingConfigParseException("Unsupported item type: " + item);
+                dataType = getDefaultDataType(item, item.getClass());
+            }
+
+            // device config for item
+            DeviceConfig d = new DeviceConfig(matcher.group(1), Integer.valueOf(matcher.group(2)).intValue(),
+                    datadirection, Integer.valueOf(matcher.group(3)).intValue());
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("DeviceConfig:{}", d);
+            }
+
+            // item already exists? -> add only new device
+            if (bindingConfigs.containsKey(item.getName())) {
+                // retrieve config
+                SimpleBinaryBindingConfig config = (SimpleBinaryBindingConfig) bindingConfigs.get(item.getName());
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Required/New datatype={}/{}", config.datatype, dataType);
                 }
+                // has same datatype?
+                if (!config.datatype.equals(dataType)) {
+                    logger.warn(
+                            "Device configuration ({}) for item {} is invalid. All configuration must have same data type.",
+                            d, item.getName());
+                    return;
+                }
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Updating:{}", config);
+                }
+                // add device config into device list
+                config.devices.add(d);
+            } else {
+                // create new item with device config
+                SimpleBinaryBindingConfig config = new SimpleBinaryBindingConfig(d);
+                config.item = item;
+                config.itemType = item.getClass();
+                config.datatype = dataType;
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Data item added:{}", config);
+                }
+                addBindingConfig(item, config);
             }
         }
+    }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(commonConfig.toString());
+    /**
+     * @param item
+     * @param config
+     * @throws BindingConfigParseException
+     */
+    public String getDefaultDataType(Item item, Class<? extends Item> itemType) throws BindingConfigParseException {
+        if (itemType.isAssignableFrom(NumberItem.class)) {
+            logger.warn("Item %s has not specified datatype. Setted to WORD.", item.getName());
+            return "word";
+        } else if (itemType.isAssignableFrom(SwitchItem.class)) {
+            return "byte";
+        } else if (itemType.isAssignableFrom(DimmerItem.class)) {
+            return "byte";
+        } else if (itemType.isAssignableFrom(ColorItem.class)) {
+            logger.warn("Item %s has not specified datatype. Setted to RGB.", item.getName());
+            return "rgb";
+        } else if (itemType.isAssignableFrom(StringItem.class)) {
+            logger.warn("Item %s has not specified datatype with length. Setted to ARRAY with length 32.",
+                    item.getName());
+            return "array[32]";
+        } else if (itemType.isAssignableFrom(ContactItem.class)) {
+            return "byte";
+        } else if (itemType.isAssignableFrom(RollershutterItem.class)) {
+            return "word";
+        } else {
+            throw new BindingConfigParseException("Unsupported item type: " + item);
         }
+    }
 
-        addBindingConfig(item, commonConfig);
+    /**
+     * @param item
+     * @param config
+     * @param param
+     * @throws BindingConfigParseException
+     */
+    public String retreiveDataType(Item item, Class<? extends Item> itemType, String param)
+            throws BindingConfigParseException {
+        if (itemType.isAssignableFrom(NumberItem.class)) {
+            if (!param.equals("byte") && !param.equals("word") && !param.equals("dword") && !param.equals("float")) {
+                logger.warn(
+                        "Item %s supported datatypes: byte, word, dword or float. Type %s is ignored. Setted to word.",
+                        item.getName(), param);
+                return "word";
+            } else {
+                return param;
+            }
+
+        } else if (itemType.isAssignableFrom(SwitchItem.class)) {
+            if (!param.equals("byte")) {
+                logger.warn("Item %s support datatype byte only. Type %s is ignored.", item.getName(), param);
+            }
+            return "byte";
+
+        } else if (itemType.isAssignableFrom(DimmerItem.class)) {
+            if (!param.equals("byte")) {
+                logger.warn("Item %s support datatype byte only. Type %s is ignored.", item.getName(), param);
+            }
+            return "byte";
+
+        } else if (itemType.isAssignableFrom(ColorItem.class)) {
+            if (!param.equals("rgb") && !param.equals("rgbw") && !param.equals("hsb")) {
+                logger.warn("Item %s supported datatypes: hsb, rgb or rgbw. Type %s is ignored. Setted to rgb.",
+                        item.getName(), param);
+                return "rgb";
+            } else {
+                return param;
+            }
+
+        } else if (itemType.isAssignableFrom(StringItem.class)) {
+            if (!param.startsWith("array")) {
+                logger.warn("Item %s support datatype array only. Type %s is ignored. Setted to ARRAY with length 32.",
+                        item.getName(), param);
+            }
+            return "array[32]";
+
+        } else if (itemType.isAssignableFrom(ContactItem.class)) {
+            if (!param.equals("byte")) {
+                logger.warn("Item %s support datatype byte only. Type %s is ignored.", item.getName(), param);
+            }
+            return "byte";
+
+        } else if (itemType.isAssignableFrom(RollershutterItem.class)) {
+            if (!param.equals("word")) {
+                logger.warn("Item %s support datatype word only. Type %s is ignored.", item.getName(), param);
+            }
+            return "word";
+
+        } else {
+            throw new BindingConfigParseException("Unsupported item type: " + item);
+        }
     }
 
     @Override

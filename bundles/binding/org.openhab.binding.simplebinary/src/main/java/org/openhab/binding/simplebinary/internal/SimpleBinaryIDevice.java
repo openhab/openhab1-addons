@@ -10,10 +10,11 @@ package org.openhab.binding.simplebinary.internal;
 
 import java.util.Map;
 
+import org.openhab.binding.simplebinary.internal.SimpleBinaryGenericBindingProvider.DeviceConfig;
 import org.openhab.binding.simplebinary.internal.SimpleBinaryGenericBindingProvider.SimpleBinaryBindingConfig;
 import org.openhab.binding.simplebinary.internal.SimpleBinaryGenericBindingProvider.SimpleBinaryInfoBindingConfig;
 import org.openhab.core.events.EventPublisher;
-import org.openhab.core.types.Command;
+import org.openhab.core.types.Type;
 
 /**
  * Device interface
@@ -42,11 +43,13 @@ public interface SimpleBinaryIDevice {
      *            Item name
      * @param command
      *            Command to send
-     * @param config
+     * @param itemConfig
      *            Item config
+     * @param deviceConfig
+     *            Device config
      * @throws InterruptedException
      */
-    public void sendData(String itemName, Command command, SimpleBinaryBindingConfig config)
+    public void sendData(String itemName, Type command, SimpleBinaryBindingConfig itemConfig, DeviceConfig deviceConfig)
             throws InterruptedException;
 
     /**

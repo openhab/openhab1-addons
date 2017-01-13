@@ -16,6 +16,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.simplebinary.SimpleBinaryBindingProvider;
+import org.openhab.binding.simplebinary.internal.SimpleBinaryGenericBindingProvider.DataDirectionFlow;
+import org.openhab.binding.simplebinary.internal.SimpleBinaryGenericBindingProvider.DeviceConfig;
 import org.openhab.binding.simplebinary.internal.SimpleBinaryGenericBindingProvider.SimpleBinaryBindingConfig;
 import org.openhab.binding.simplebinary.internal.SimpleBinaryGenericBindingProvider.SimpleBinaryInfoBindingConfig;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -73,7 +75,7 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
         this.bundleContext = bundleContext;
 
         logger.debug("activate() method is called!");
-        logger.debug(bundleContext.getBundle().toString());
+        logger.info(bundleContext.getBundle().toString());
 
         // the configuration is guaranteed not to be null, because the component definition has the
         // configuration-policy set to require. If set to 'optional' then the configuration may be null
@@ -361,20 +363,33 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
             logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
         }
 
+        // retrieve item config
         SimpleBinaryBindingConfig config = items.get(itemName);
 
         if (config != null) {
-            SimpleBinaryGenericDevice device = devices.get(config.device);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Config: {}", config);
+            }
 
-            if (device != null) {
-                try {
-                    device.sendData(itemName, command, config);
-                } catch (Exception ex) {
-                    logger.error("internalReceiveCommand(): line:{}|method:{}", ex.getStackTrace()[0].getLineNumber(),
-                            ex.getStackTrace()[0].getMethodName());
+            // through all devices
+            for (DeviceConfig d : config.devices) {
+                // send to output devices only
+                if (d.dataDirection == DataDirectionFlow.INPUT) {
+                    continue;
                 }
-            } else {
-                logger.warn("No device for item: {}", itemName);
+
+                SimpleBinaryGenericDevice device = devices.get(d.deviceName);
+
+                if (device != null) {
+                    try {
+                        device.sendData(itemName, command, config, d);
+                    } catch (Exception ex) {
+                        logger.error("internalReceiveCommand(): line:{}|method:{}",
+                                ex.getStackTrace()[0].getLineNumber(), ex.getStackTrace()[0].getMethodName());
+                    }
+                } else {
+                    logger.warn("No device for item: {}", itemName);
+                }
             }
         } else {
             logger.warn("No config for item: {}", itemName);
@@ -396,8 +411,6 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
 
     @Override
     public void bindingChanged(BindingProvider provider, String itemName) {
-        super.bindingChanged(provider, itemName);
-
         if (logger.isDebugEnabled()) {
             logger.debug("bindingChanged({},{}) is called!", provider, itemName);
         }
@@ -426,11 +439,15 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
         if (logger.isDebugEnabled()) {
             logger.debug("ItemsConfig: {}:{}", items, items.entrySet().size());
         }
+
+        super.bindingChanged(provider, itemName);
     }
 
     @Override
     public void allBindingsChanged(BindingProvider provider) {
-        super.allBindingsChanged(provider);
+        if (logger.isDebugEnabled()) {
+            logger.debug("allBindingsChanged() is called!");
+        }
 
         items.clear();
         infoItems.clear();
@@ -444,7 +461,10 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("allBindingsChanged({}) is called!", provider);
+            logger.debug("Record processed: {}", ((SimpleBinaryGenericBindingProvider) provider).configs().size());
+            logger.debug("Configured data/info items: {}/{}", items.size(), infoItems.size());
         }
+
+        super.allBindingsChanged(provider);
     }
 }

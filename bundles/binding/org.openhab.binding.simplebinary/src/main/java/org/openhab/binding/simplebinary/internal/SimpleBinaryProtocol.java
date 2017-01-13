@@ -11,6 +11,7 @@ package org.openhab.binding.simplebinary.internal;
 import java.awt.Color;
 import java.util.Map;
 
+import org.openhab.binding.simplebinary.internal.SimpleBinaryGenericBindingProvider.DeviceConfig;
 import org.openhab.binding.simplebinary.internal.SimpleBinaryGenericBindingProvider.SimpleBinaryBindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ColorItem;
@@ -26,7 +27,7 @@ import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
-import org.openhab.core.types.Command;
+import org.openhab.core.types.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,16 +71,16 @@ public class SimpleBinaryProtocol {
      *            Requested item configuration
      * @return
      */
-    public static SimpleBinaryItemData compileReadDataFrame(SimpleBinaryBindingConfig itemConfig) {
+    public static SimpleBinaryItemData compileReadDataFrame(DeviceConfig itemConfig) {
         byte[] data = new byte[5];
 
-        data[0] = (byte) (itemConfig.busAddress & 0xFF);
+        data[0] = (byte) (itemConfig.getDeviceAddress() & 0xFF);
         data[1] = (byte) 0xD1;
-        data[2] = (byte) (itemConfig.address & 0xFF);
-        data[3] = (byte) ((itemConfig.address & 0xFF00) >> 8);
+        data[2] = (byte) (itemConfig.getItemAddress() & 0xFF);
+        data[3] = (byte) ((itemConfig.getItemAddress() & 0xFF00) >> 8);
         data[4] = evalCRC(data, 4);
 
-        return new SimpleBinaryItemData((byte) 0xD1, itemConfig.busAddress, data);
+        return new SimpleBinaryItemData((byte) 0xD1, itemConfig.getDeviceAddress(), data);
     }
 
     /**
@@ -90,15 +91,16 @@ public class SimpleBinaryProtocol {
      * @param config
      * @return
      */
-    public static SimpleBinaryItem compileDataFrame(String itemName, Command command,
-            SimpleBinaryBindingConfig config) {
-        byte[] data = compileDataFrameEx(itemName, command, config);
+    public static SimpleBinaryItem compileDataFrame(String itemName, Type command, SimpleBinaryBindingConfig itemConfig,
+            DeviceConfig deviceConfig) {
+        byte[] data = compileDataFrameEx(itemName, command, itemConfig, deviceConfig);
 
         if (data == null) {
             return null;
         }
 
-        return new SimpleBinaryItem(itemName, config, data[1], config.busAddress, config.address, data);
+        return new SimpleBinaryItem(itemName, itemConfig, data[1], deviceConfig.getDeviceAddress(),
+                deviceConfig.getItemAddress(), data);
     }
 
     /**
@@ -109,14 +111,15 @@ public class SimpleBinaryProtocol {
      * @param config
      * @return
      */
-    public static byte[] compileDataFrameEx(String itemName, Command command, SimpleBinaryBindingConfig config) {
+    public static byte[] compileDataFrameEx(String itemName, Type command, SimpleBinaryBindingConfig itemConfig,
+            DeviceConfig deviceConfig) {
         byte[] data;
 
         if (logger.isDebugEnabled()) {
-            logger.debug("compileDataFrame(): item:{}|datatype:{}", itemName, config.getDataType());
+            logger.debug("compileDataFrame(): item:{}|datatype:{}", itemName, itemConfig.getDataType());
         }
 
-        switch (config.getDataType()) {
+        switch (itemConfig.getDataType()) {
             case BYTE:
                 data = new byte[6];
                 data[1] = (byte) 0xDA;
@@ -137,7 +140,7 @@ public class SimpleBinaryProtocol {
                 data[1] = (byte) 0xDD;
                 break;
             case ARRAY:
-                int arraylen = config.getDataLenght();
+                int arraylen = itemConfig.getDataLenght();
                 data = new byte[7 + arraylen];
                 data[1] = (byte) 0xDE;
                 // length
@@ -151,21 +154,21 @@ public class SimpleBinaryProtocol {
         int datalen = data.length;
 
         // bus address
-        data[0] = (byte) config.busAddress;
+        data[0] = (byte) deviceConfig.getDeviceAddress();
         // item address / ID
-        data[2] = (byte) (config.address & 0xFF);
-        data[3] = (byte) ((config.address >> 8) & 0xFF);
+        data[2] = (byte) (deviceConfig.getDeviceAddress() & 0xFF);
+        data[3] = (byte) ((deviceConfig.getDeviceAddress() >> 8) & 0xFF);
 
-        switch (config.getDataType()) {
+        switch (itemConfig.getDataType()) {
             case BYTE:
                 if (command instanceof PercentType) {
                     PercentType cmd = (PercentType) command;
                     data[4] = cmd.byteValue();
 
-                    if (config.itemType.isAssignableFrom(DimmerItem.class)) {
-                        ((DimmerItem) config.item).setState(new PercentType(cmd.byteValue()));
-                    } else if (config.itemType.isAssignableFrom(RollershutterItem.class)) {
-                        ((RollershutterItem) config.item).setState(new PercentType(cmd.byteValue()));
+                    if (itemConfig.itemType.isAssignableFrom(DimmerItem.class)) {
+                        ((DimmerItem) itemConfig.item).setState(new PercentType(cmd.byteValue()));
+                    } else if (itemConfig.itemType.isAssignableFrom(RollershutterItem.class)) {
+                        ((RollershutterItem) itemConfig.item).setState(new PercentType(cmd.byteValue()));
                     }
                 } else if (command instanceof DecimalType) {
                     DecimalType cmd = (DecimalType) command;
@@ -180,37 +183,37 @@ public class SimpleBinaryProtocol {
                 } else if (command instanceof OnOffType) {
                     OnOffType cmd = (OnOffType) command;
 
-                    if (config.itemType.isAssignableFrom(SwitchItem.class)) {
+                    if (itemConfig.itemType.isAssignableFrom(SwitchItem.class)) {
                         if (cmd == OnOffType.ON) {
                             data[4] = 1;
                         } else {
                             data[4] = 0;
                         }
-                    } else if (config.itemType.isAssignableFrom(DimmerItem.class)) {
+                    } else if (itemConfig.itemType.isAssignableFrom(DimmerItem.class)) {
                         if (cmd == OnOffType.ON) {
-                            PercentType val = ((PercentType) (config.item).getStateAs(PercentType.class));
+                            PercentType val = ((PercentType) (itemConfig.item).getStateAs(PercentType.class));
                             if (val == null) {
                                 data[4] = 100;
-                                ((DimmerItem) config.item).setState(PercentType.HUNDRED);
+                                ((DimmerItem) itemConfig.item).setState(PercentType.HUNDRED);
                             } else {
                                 data[4] = val.byteValue();
-                                ((DimmerItem) config.item).setState(PercentType.ZERO);
+                                ((DimmerItem) itemConfig.item).setState(PercentType.ZERO);
                             }
                         } else {
                             data[4] = 0;
                         }
                     } else {
                         logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
-                                config.getDataType());
+                                itemConfig.getDataType());
                     }
 
                 } else if (command instanceof IncreaseDecreaseType
-                        && config.itemType.isAssignableFrom(DimmerItem.class)) {
+                        && itemConfig.itemType.isAssignableFrom(DimmerItem.class)) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("IncreaseDecreaseType - DimmerItem");
                     }
 
-                    DecimalType val = ((DecimalType) ((DimmerItem) (config.item)).getStateAs(DecimalType.class));
+                    DecimalType val = ((DecimalType) ((DimmerItem) (itemConfig.item)).getStateAs(DecimalType.class));
 
                     if (val == null) {
                         return null;
@@ -236,10 +239,10 @@ public class SimpleBinaryProtocol {
 
                     data[4] = (byte) brightness;
 
-                    ((DimmerItem) config.item).setState(new PercentType(brightness));
+                    ((DimmerItem) itemConfig.item).setState(new PercentType(brightness));
                 } else {
                     logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
-                            config.getDataType());
+                            itemConfig.getDataType());
                     return null;
                 }
                 break;
@@ -264,7 +267,7 @@ public class SimpleBinaryProtocol {
                     data[5] = (byte) (cmd.equals(UpDownType.UP) ? 0x4 : 0x8);
                 } else {
                     logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
-                            config.getDataType());
+                            itemConfig.getDataType());
                     return null;
                 }
                 break;
@@ -277,7 +280,7 @@ public class SimpleBinaryProtocol {
                     data[7] = (byte) ((cmd.intValue() >> 24) & 0xFF);
                 } else {
                     logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
-                            config.getDataType());
+                            itemConfig.getDataType());
                     return null;
                 }
                 break;
@@ -293,7 +296,7 @@ public class SimpleBinaryProtocol {
                     data[7] = (byte) ((bits >> 24) & 0xFF);
                 } else {
                     logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
-                            config.getDataType());
+                            itemConfig.getDataType());
                     return null;
                 }
                 break;
@@ -302,7 +305,7 @@ public class SimpleBinaryProtocol {
             case RGBW:
 
                 HSBType hsbVal;
-                Item item = config.item;
+                Item item = itemConfig.item;
 
                 if (logger.isDebugEnabled()) {
                     logger.debug(item.toString());
@@ -360,7 +363,7 @@ public class SimpleBinaryProtocol {
                     hsbVal = ((HSBType) item.getStateAs(HSBType.class));
                 } else {
                     logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
-                            config.getDataType());
+                            itemConfig.getDataType());
                     return null;
                 }
 
@@ -374,12 +377,12 @@ public class SimpleBinaryProtocol {
 
                     HSBType cmd = hsbVal;
 
-                    if (config.getDataType() == SimpleBinaryTypes.HSB) {
+                    if (itemConfig.getDataType() == SimpleBinaryTypes.HSB) {
                         data[4] = cmd.getHue().byteValue();
                         data[5] = cmd.getSaturation().byteValue();
                         data[6] = cmd.getBrightness().byteValue();
                         data[7] = 0x0;
-                    } else if (config.getDataType() == SimpleBinaryTypes.RGB) {
+                    } else if (itemConfig.getDataType() == SimpleBinaryTypes.RGB) {
                         long red = Math.round((cmd.getRed().doubleValue() * 2.55));
                         long green = Math.round((cmd.getGreen().doubleValue() * 2.55));
                         long blue = Math.round((cmd.getBlue().doubleValue() * 2.55));
@@ -402,7 +405,7 @@ public class SimpleBinaryProtocol {
                         data[5] = (byte) (green & 0xFF);
                         data[6] = (byte) (blue & 0xFF);
                         data[7] = 0x0;
-                    } else if (config.getDataType() == SimpleBinaryTypes.RGBW) {
+                    } else if (itemConfig.getDataType() == SimpleBinaryTypes.RGBW) {
                         long red = Math.round((cmd.getRed().doubleValue() * 2.55));
                         long green = Math.round((cmd.getGreen().doubleValue() * 2.55));
                         long blue = Math.round((cmd.getBlue().doubleValue() * 2.55));
@@ -446,8 +449,8 @@ public class SimpleBinaryProtocol {
                     StringType cmd = (StringType) command;
                     String str = cmd.toString();
 
-                    for (int i = 0; i < config.getDataLenght(); i++) {
-                        if (str.length() <= config.getDataLenght()) {
+                    for (int i = 0; i < itemConfig.getDataLenght(); i++) {
+                        if (str.length() <= itemConfig.getDataLenght()) {
                             data[6 + i] = (byte) str.charAt(i);
                         } else {
                             data[6 + i] = 0x0;
@@ -455,7 +458,7 @@ public class SimpleBinaryProtocol {
                     }
                 } else {
                     logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
-                            config.getDataType());
+                            itemConfig.getDataType());
                     return null;
                 }
                 break;
@@ -713,9 +716,12 @@ public class SimpleBinaryProtocol {
     public static Map.Entry<String, SimpleBinaryBindingConfig> findItem(
             Map<String, SimpleBinaryBindingConfig> itemsConfig, String deviceName, int devId, int address) {
         for (Map.Entry<String, SimpleBinaryBindingConfig> item : itemsConfig.entrySet()) {
-            if (item.getValue().device.equals(deviceName) && item.getValue().busAddress == devId
-                    && item.getValue().address == address) {
-                return item;
+            SimpleBinaryBindingConfig cfg = item.getValue();
+            for (DeviceConfig d : cfg.devices) {
+                if (d.getPortName().equals(deviceName) && d.getDeviceAddress() == devId
+                        && d.getItemAddress() == address) {
+                    return item;
+                }
             }
         }
 

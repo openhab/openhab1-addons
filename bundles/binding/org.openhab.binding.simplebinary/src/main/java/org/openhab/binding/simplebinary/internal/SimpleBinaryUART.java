@@ -271,6 +271,12 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
      */
     @Override
     protected boolean sendDataOut(SimpleBinaryItemData data) {
+        if (!this.connected) {
+            logger.warn("Port {} - Port is closed. Unable to send data to device {}.", this.deviceID,
+                    data.getDeviceId());
+            return false;
+        }
+
         // data line stabilization
         if (LINE_STABILIZATION_TIME > 0) {
             while (Math.abs(System.currentTimeMillis() - receiveTime) <= LINE_STABILIZATION_TIME) {
@@ -308,7 +314,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                 outputStream.flush();
 
                 setLastSentData(data);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error("Port {} - Error while writing", this.deviceID);
 
                 reconnect();

@@ -25,13 +25,12 @@ public class SimpleBinaryActivator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        logger.debug("SimpleBinary binding has been started.");
-
+        logger.info("SimpleBinary binding has been started.");
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        logger.debug("SimpleBinary binding has been stopped.");
+        logger.info("SimpleBinary binding has been stopped.");
 
     }
 }
