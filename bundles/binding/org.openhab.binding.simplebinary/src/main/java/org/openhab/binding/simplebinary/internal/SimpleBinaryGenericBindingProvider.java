@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.simplebinary.internal;
 
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -120,11 +119,11 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
 
         public Item item;
         Class<? extends Item> itemType;
-        LinkedList<DeviceConfig> devices;
+        SimpleBinaryDeviceConfigCollection devices;
         private String datatype = "word";
 
         public SimpleBinaryBindingConfig(DeviceConfig device) {
-            devices = new LinkedList<DeviceConfig>();
+            devices = new SimpleBinaryDeviceConfigCollection();
             devices.add(device);
         }
 

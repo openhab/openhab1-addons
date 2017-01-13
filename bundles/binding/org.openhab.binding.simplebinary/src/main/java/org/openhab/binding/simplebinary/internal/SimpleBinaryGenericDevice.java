@@ -63,6 +63,8 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
     public SimpleBinaryDeviceStateCollection devicesStates;
     /** Lock for process commands to prevent run it twice **/
     protected final Lock lock = new ReentrantLock();
+    /** All configured device map **/
+    Map<String, SimpleBinaryGenericDevice> configuredDevices;
 
     public class ProcessDataResult {
         public static final int DATA_NOT_COMPLETED = -1;
@@ -97,12 +99,15 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
      */
     @Override
     public void setBindingData(EventPublisher eventPublisher, Map<String, SimpleBinaryBindingConfig> itemsConfig,
-            Map<String, SimpleBinaryInfoBindingConfig> itemsInfoConfig) {
+            Map<String, SimpleBinaryInfoBindingConfig> itemsInfoConfig,
+            Map<String, SimpleBinaryGenericDevice> configuredDevices) {
         this.eventPublisher = eventPublisher;
         this.itemsConfig = itemsConfig;
 
         this.portState.setBindingData(eventPublisher, itemsInfoConfig, this.deviceName);
         this.devicesStates = new SimpleBinaryDeviceStateCollection(deviceName, itemsInfoConfig, eventPublisher);
+
+        this.configuredDevices = configuredDevices;
     }
 
     /**
@@ -887,11 +892,15 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
 
                 // send data to other binded devices
                 if (((SimpleBinaryItem) itemData).getConfig().devices.size() > 1) {
+                    logger.debug("Resend received data to other devices(count={})",
+                            ((SimpleBinaryItem) itemData).getConfig().devices.size());
                     SimpleBinaryBindingConfig cfg = ((SimpleBinaryItem) itemData).getConfig();
                     for (DeviceConfig d : cfg.devices) {
                         if (d.getDeviceAddress() != deviceId && d.dataDirection != DataDirectionFlow.INPUT) {
+                            logger.debug("Resend to device {}", d);
+                            SimpleBinaryGenericDevice device = this.configuredDevices.get(d.deviceName);
                             try {
-                                this.sendData(cfg.item.getName(), state, cfg, d);
+                                device.sendData(cfg.item.getName(), state, cfg, d);
                             } catch (Exception ex) {
                                 logger.error("Resend received data to other devices failed: line:{}|method:{}",
                                         ex.getStackTrace()[0].getLineNumber(), ex.getStackTrace()[0].getMethodName());

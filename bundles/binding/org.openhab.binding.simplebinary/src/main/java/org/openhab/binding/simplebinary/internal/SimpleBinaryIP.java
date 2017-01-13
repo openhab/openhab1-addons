@@ -85,8 +85,9 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
 
     @Override
     public void setBindingData(EventPublisher eventPublisher, Map<String, SimpleBinaryBindingConfig> itemsConfig,
-            Map<String, SimpleBinaryInfoBindingConfig> itemsInfoConfig) {
-        super.setBindingData(eventPublisher, itemsConfig, itemsInfoConfig);
+            Map<String, SimpleBinaryInfoBindingConfig> itemsInfoConfig,
+            Map<String, SimpleBinaryGenericDevice> configuredDevices) {
+        super.setBindingData(eventPublisher, itemsConfig, itemsInfoConfig, configuredDevices);
 
         this.channels = new SimpleBinaryIPChannelInfoCollection(devicesStates, deviceName);
     }

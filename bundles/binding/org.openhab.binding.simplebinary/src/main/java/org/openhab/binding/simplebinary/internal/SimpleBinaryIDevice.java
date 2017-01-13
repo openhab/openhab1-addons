@@ -66,7 +66,8 @@ public interface SimpleBinaryIDevice {
      * @param itemsInfoConfig
      */
     public void setBindingData(EventPublisher eventPublisher, Map<String, SimpleBinaryBindingConfig> itemsConfig,
-            Map<String, SimpleBinaryInfoBindingConfig> itemsInfoConfig);
+            Map<String, SimpleBinaryInfoBindingConfig> itemsInfoConfig,
+            Map<String, SimpleBinaryGenericDevice> configuredDevices);
 
     /**
      * Method to clear inner binding configuration

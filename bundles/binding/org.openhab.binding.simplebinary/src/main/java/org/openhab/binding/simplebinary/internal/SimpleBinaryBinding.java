@@ -165,7 +165,7 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
 
                     SimpleBinaryUART uartDevice = new SimpleBinaryUART(item.getKey(), portString, speed,
                             simpleBinaryPoolControl, forceRTS, RTSInversion);
-                    uartDevice.setBindingData(eventPublisher, items, infoItems);
+                    uartDevice.setBindingData(eventPublisher, items, infoItems, devices);
 
                     devices.put(item.getKey(), uartDevice);
                 } else {
@@ -215,7 +215,7 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
 
                     SimpleBinaryIP ipDevice = new SimpleBinaryIP(item.getKey(), portString, port,
                             simpleBinaryPoolControl);
-                    ipDevice.setBindingData(eventPublisher, items, infoItems);
+                    ipDevice.setBindingData(eventPublisher, items, infoItems, devices);
                     devices.put(item.getKey(), ipDevice);
                 } else {
                     logger.error("Blank TCP server configuration");
