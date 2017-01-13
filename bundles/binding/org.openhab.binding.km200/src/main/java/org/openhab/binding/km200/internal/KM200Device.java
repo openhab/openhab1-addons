@@ -186,7 +186,7 @@ class KM200Device {
                         type = new String();
                     }
                     if (!type.equals("refEnum") && !type.equals("") && !type.equals("switchProgram")
-                            && !type.equals("yRecording")) {
+                            && !type.equals("yRecording") && !type.equals("errorList")) {
                         val = object.getValue().toString();
                         if (object.getValueParameter() != null) {
                             if (type.equals("stringValue")) {
