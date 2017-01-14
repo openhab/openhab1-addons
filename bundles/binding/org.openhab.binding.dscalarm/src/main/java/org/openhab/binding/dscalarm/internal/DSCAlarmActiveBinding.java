@@ -20,7 +20,6 @@ import org.openhab.binding.dscalarm.DSCAlarmBindingConfig;
 import org.openhab.binding.dscalarm.DSCAlarmBindingProvider;
 import org.openhab.binding.dscalarm.internal.connector.DSCAlarmConnectorType;
 import org.openhab.binding.dscalarm.internal.connector.DSCAlarmInterfaceType;
-import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties;
 import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceType;
 import org.openhab.binding.dscalarm.internal.protocol.API;
 import org.openhab.binding.dscalarm.internal.protocol.APICode;
@@ -30,6 +29,7 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -208,10 +208,8 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
         DSCAlarmBindingConfig dscAlarmBindingConfig = null;
-        Item item = null;
         for (DSCAlarmBindingProvider prov : providers) {
             dscAlarmBindingConfig = prov.getDSCAlarmBindingConfig(itemName);
-            item = prov.getItem(itemName);
             if (dscAlarmBindingConfig != null) {
                 DSCAlarmDeviceType dscAlarmDeviceType = dscAlarmBindingConfig.getDeviceType();
                 int partitionId;
@@ -229,7 +227,6 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
                                         closeConnection();
                                         if (!connected) {
                                             dscAlarmItemUpdate.setConnected(false);
-                                            dscAlarmItemUpdate.updateDeviceProperties(item, dscAlarmBindingConfig, 0, "Disconnected");
                                         }
                                     }
                                     break;
@@ -259,25 +256,22 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
                                     }
 
                                     itemName = getItemName(DSCAlarmItemType.PANEL_COMMAND, 0, 0);
-                                    if (itemName != "") {
-                                        updateDeviceProperties(itemName, -1, "");
-                                        updateItem(itemName);
+                                    if (StringUtils.isNotEmpty(itemName)) {
+                                        updateItem(itemName, -1, "");
                                     }
                                     break;
                                 case PANEL_TIME_STAMP:
                                     if (command instanceof OnOffType) {
                                         cmd = command == OnOffType.ON ? 1 : 0;
                                         api.sendCommand(APICode.TimeStampControl, String.valueOf(cmd));
-                                        updateDeviceProperties(itemName, cmd, "");
-                                        updateItem(itemName);
+                                        updateItem(itemName, cmd, "");
                                     }
                                     break;
                                 case PANEL_TIME_BROADCAST:
                                     if (command instanceof OnOffType) {
                                         cmd = command == OnOffType.ON ? 1 : 0;
                                         api.sendCommand(APICode.TimeDateBroadcastControl, String.valueOf(cmd));
-                                        updateDeviceProperties(itemName, cmd, "");
-                                        updateItem(itemName);
+                                        updateItem(itemName, cmd, "");
                                     }
                                     break;
                                 default:
@@ -313,14 +307,10 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
                                 case ZONE_BYPASS_MODE:
                                     if (command.toString().equals("0")) {
                                         String data = String.valueOf(partitionId) + "*1" + String.format("%02d", zoneId) + "#";
-                                        if (api.sendCommand(APICode.KeySequence, data)) {
-                                            dscAlarmItemUpdate.updateDeviceProperties(item, dscAlarmBindingConfig, 0, "Zone Armed");
-                                        }
+                                        api.sendCommand(APICode.KeySequence, data);
                                     } else if (command.toString().equals("1")) {
                                         String data = String.valueOf(partitionId) + "*1" + String.format("%02d", zoneId) + "#";
-                                        if (api.sendCommand(APICode.KeySequence, data)) {
-                                            dscAlarmItemUpdate.updateDeviceProperties(item, dscAlarmBindingConfig, 1, "Zone Bypassed");
-                                        }
+                                        api.sendCommand(APICode.KeySequence, data);
                                     }
                                     break;
 
@@ -341,17 +331,12 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
                                     openConnection();
                                     if (connected) {
                                         dscAlarmItemUpdate.setConnected(true);
-                                        dscAlarmItemUpdate.updateDeviceProperties(item, dscAlarmBindingConfig, 1, "Connected");
                                     }
                                 }
                             }
                         }
                     }
                 }
-                /*
-                 * dscAlarmUpdateMap.put(itemName, dscAlarmBindingConfig);
-                 * itemHasChanged = true;
-                 */
             }
         }
     }
@@ -554,7 +539,12 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
                 item = provider.getItem(itemName);
             }
 
-            dscAlarmItemUpdate.updateDeviceItem(item, dscAlarmBindingConfig, eventPublisher, null);
+            if (dscAlarmBindingConfig.getDSCAlarmItemType().equals(DSCAlarmItemType.PANEL_COMMAND)) {
+                dscAlarmItemUpdate.updateDeviceItem(item, dscAlarmBindingConfig, eventPublisher, null, -1, "");
+            } else {
+                dscAlarmItemUpdate.updateDeviceItem(item, dscAlarmBindingConfig, eventPublisher, null, 0, "");
+            }
+
             logger.debug("processUpdateMap(): Updated item: {}", itemName);
         }
     }
@@ -600,8 +590,8 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
         if (connected) {
             dscAlarmItemUpdate.setConnected(true);
             itemName = getItemName(DSCAlarmItemType.PANEL_CONNECTION, 0, 0);
-            if (itemName != "") {
-                updateItem(itemName);
+            if (StringUtils.isNotEmpty(itemName)) {
+                updateItem(itemName, 1, "Panel Connected");
             }
 
             buildUpdateMap();
@@ -625,8 +615,8 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 
         dscAlarmItemUpdate.setConnected(false);
         itemName = getItemName(DSCAlarmItemType.PANEL_CONNECTION, 0, 0);
-        if (itemName != "") {
-            updateItem(itemName);
+        if (StringUtils.isNotEmpty(itemName)) {
+            updateItem(itemName, 0, "Panel Disconnected");
         }
 
         logger.debug("closeConnection(): {} Connection Closed!", connectorType);
@@ -716,7 +706,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
      *
      * @param itemName
      */
-    private void updateItem(String itemName) {
+    private void updateItem(String itemName, int state, String description) {
         DSCAlarmBindingConfig config = null;
         Item item = null;
 
@@ -726,7 +716,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
                     config = prov.getDSCAlarmBindingConfig(iName);
                     if (config != null) {
                         item = prov.getItem(itemName);
-                        dscAlarmItemUpdate.updateDeviceItem(item, config, eventPublisher, null);
+                        dscAlarmItemUpdate.updateDeviceItem(item, config, eventPublisher, null, state, description);
                         break;
                     }
                 }
@@ -740,39 +730,13 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
      * @param dscAlarmItemType
      * @param trigger
      */
-    private void updateItemType(DSCAlarmItemType dscAlarmItemType, int partitionId, int zoneId, int propertyState) {
+    private void updateItemByItemType(DSCAlarmItemType dscAlarmItemType, int partitionId, int zoneId, int propertyState) {
         String itemName = "";
         itemName = getItemName(dscAlarmItemType, partitionId, zoneId);
-        logger.debug("updateItemType(): Item Name: {} Partition: {} Zone: {}", itemName, partitionId, zoneId);
+        logger.debug("updateItemByItemType(): Item Name: {} Partition: {} Zone: {}", itemName, partitionId, zoneId);
 
-        if (itemName != "") {
-            updateDeviceProperties(itemName, propertyState, "");
-            updateItem(itemName);
-        }
-    }
-
-    /**
-     * Update a DSC Alarm device Properties
-     *
-     * @param itemName
-     * @param state
-     * @param description
-     */
-    private void updateDeviceProperties(String itemName, int state, String description) {
-        DSCAlarmBindingConfig config = null;
-        Item item = null;
-
-        for (DSCAlarmBindingProvider prov : providers) {
-            for (String iName : prov.getItemNames()) {
-                if (itemName == iName) {
-                    config = prov.getDSCAlarmBindingConfig(iName);
-                    if (config != null) {
-                        item = prov.getItem(itemName);
-                        dscAlarmItemUpdate.updateDeviceProperties(item, config, state, description);
-                        break;
-                    }
-                }
-            }
+        if (StringUtils.isNotEmpty(itemName)) {
+            updateItem(itemName, propertyState, "");
         }
     }
 
@@ -786,8 +750,8 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 
         dscAlarmItemUpdate.setSysMessage(message);
         itemName = getItemName(DSCAlarmItemType.PANEL_MESSAGE, 0, 0);
-        if (itemName != "") {
-            updateItem(itemName);
+        if (StringUtils.isNotEmpty(itemName)) {
+            updateItem(itemName, 0, message);
         }
     }
 
@@ -802,9 +766,8 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
         String itemName;
 
         itemName = getItemName(DSCAlarmItemType.PARTITION_STATUS, partitionID, 0);
-        updateDeviceProperties(itemName, state, description);
-        if (itemName != "") {
-            updateItem(itemName);
+        if (StringUtils.isNotEmpty(itemName)) {
+            updateItem(itemName, state, description);
         }
     }
 
@@ -819,9 +782,8 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
         String itemName;
 
         itemName = getItemName(DSCAlarmItemType.PANEL_SYSTEM_ERROR, 0, 0);
-        updateDeviceProperties(itemName, state, description);
-        if (itemName != "") {
-            updateItem(itemName);
+        if (StringUtils.isNotEmpty(itemName)) {
+            updateItem(itemName, state, description);
         }
     }
 
@@ -859,22 +821,23 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 
         itemName = getItemName(DSCAlarmItemType.PANEL_TIME_STAMP, 0, 0);
 
-        if (itemName != "") {
+        if (StringUtils.isNotEmpty(itemName)) {
             DSCAlarmBindingConfig config = getItemConfig(itemName);
 
             if (config != null) {
                 Item item = getItem(itemName);
                 if (item != null) {
-                    DSCAlarmDeviceProperties dsclarmDeviceProperties = dscAlarmItemUpdate.getDeviceProperties(item, config);
 
-                    if (dsclarmDeviceProperties != null) {
+                    State onOffState = item.getState();
 
-                        boolean isTimeStamp = dsclarmDeviceProperties.getSystemTimeStamp();
+                    if (onOffState instanceof OnOffType) {
+                        OnOffType value = (OnOffType) onOffState;
 
-                        if ((timeStamp == "" && isTimeStamp == false) || (timeStamp != "" && isTimeStamp == true)) {
+                        if ((StringUtils.isEmpty(timeStamp) && value.equals(OnOffType.OFF)) || (StringUtils.isNotEmpty(timeStamp) && value.equals(OnOffType.ON))) {
                             logger.debug("setTimeStampState(): Already Set!", timeStamp);
                             return;
-                        } else if (timeStamp != "") {
+
+                        } else if (StringUtils.isNotEmpty(timeStamp)) {
                             state = 1;
                         }
                     }
@@ -882,7 +845,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
             }
         }
 
-        updateItemType(DSCAlarmItemType.PANEL_TIME_STAMP, 0, 0, state);
+        updateItemByItemType(DSCAlarmItemType.PANEL_TIME_STAMP, 0, 0, state);
 
         logger.debug("setTimeStampState(): Changed state to '{}'.", state == 1 ? OnOffType.ON : OnOffType.OFF);
     }
@@ -909,22 +872,20 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 
             itemName = getItemName(dscAlarmItemTypes[i], 0, 0);
 
-            if (itemName != "") {
+            if (StringUtils.isNotEmpty(itemName)) {
 
                 switch (apiCode) {
                     case KeypadLEDState: /* 510 */
-                        updateDeviceProperties(itemName, bits[i] != 0 ? 1 : 0, "");
+                        updateItem(itemName, bits[i] != 0 ? 1 : 0, "");
                         break;
                     case KeypadLEDFlashState: /* 511 */
                         if (bits[i] != 0) {
-                            updateDeviceProperties(itemName, 2, "");
+                            updateItem(itemName, 2, "");
                         }
                         break;
                     default:
                         break;
                 }
-
-                updateItem(itemName);
             }
         }
     }
@@ -950,15 +911,14 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 
             itemName = getItemName(dscAlarmItemTypes[i], 0, 0);
 
-            if (itemName != "") {
-                updateDeviceProperties(itemName, bits[i] != 0 ? 1 : 0, "");
-                updateItem(itemName);
+            if (StringUtils.isNotEmpty(itemName)) {
+                updateItem(itemName, bits[i] != 0 ? 1 : 0, "");
             }
         }
     }
 
     /**
-     * DSC Alarm incoming message event handler
+     * Receives incoming DSC Alarm events
      *
      * @param event
      */
@@ -966,20 +926,12 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
     public void dscAlarmEventRecieved(EventObject event) {
         DSCAlarmEvent dscAlarmEvent = (DSCAlarmEvent) event;
         APIMessage apiMessage = dscAlarmEvent.getAPIMessage();
-        APIMessage.APIMessageType apiMessageType = apiMessage.getAPIMessageType();
 
-        DSCAlarmItemType dscAlarmItemType = null;
         APICode apiCode = APICode.getAPICodeValue(apiMessage.getAPICode());
         String apiData = apiMessage.getAPIData();
-        DSCAlarmBindingConfig config = null;
-        Item item = null;
-        String itemName = "";
 
-        boolean found = false;
         boolean suppressPanelMsg = false;
         int state = 0;
-        int partitionId = apiMessage.getPartition();
-        int zoneId = apiMessage.getZone();
 
         setTimeStampState(apiMessage.getTimeStamp());
 
@@ -987,7 +939,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
             case CommandAcknowledge: /* 500 */
                 dscAlarmItemUpdate.setConnected(true);
                 if (apiData.equals("000")) {
-                    dscAlarmItemType = DSCAlarmItemType.PANEL_CONNECTION;
+                    handleDSCAlarmEvent(DSCAlarmItemType.PANEL_CONNECTION, dscAlarmEvent, apiMessage);
                 }
 
                 if (suppressAcknowledgementMsgs) {
@@ -1000,130 +952,130 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 
                 if (errorCode == 23 || errorCode == 24) {
                     for (int i = 1; i < 9; i++) {
-                        updateItemType(DSCAlarmItemType.PARTITION_ARM_MODE, i, 0, 0);
+                        updateItemByItemType(DSCAlarmItemType.PARTITION_ARM_MODE, i, 0, 0);
                     }
                 }
 
-                dscAlarmItemType = DSCAlarmItemType.PANEL_SYSTEM_ERROR;
+                handleDSCAlarmEvent(DSCAlarmItemType.PANEL_SYSTEM_ERROR, dscAlarmEvent, apiMessage);
                 break;
             case KeypadLEDState: /* 510 */
             case KeypadLEDFlashState: /* 511 */
                 keypadLEDStateEventHandler(event);
                 break;
             case TimeDateBroadcast: /* 550 */
-                dscAlarmItemType = DSCAlarmItemType.PANEL_TIME;
-                updateItemType(DSCAlarmItemType.PANEL_TIME_BROADCAST, 0, 0, 1);
+                updateItemByItemType(DSCAlarmItemType.PANEL_TIME_BROADCAST, 0, 0, 1);
 
                 if (suppressAcknowledgementMsgs) {
                     suppressPanelMsg = true;
                 }
 
+                handleDSCAlarmEvent(DSCAlarmItemType.PANEL_TIME, dscAlarmEvent, apiMessage);
                 break;
             case PartitionReady: /* 650 */
             case PartitionNotReady: /* 651 */
             case PartitionReadyForceArming: /* 653 */
             case SystemArmingInProgress: /* 674 */
-                dscAlarmItemType = DSCAlarmItemType.PARTITION_STATUS;
+                handleDSCAlarmEvent(DSCAlarmItemType.PARTITION_STATUS, dscAlarmEvent, apiMessage);
                 break;
             case PartitionArmed: /* 652 */
-                updateItemType(DSCAlarmItemType.PARTITION_ARMED, apiMessage.getPartition(), -1, 1);
+                updateItemByItemType(DSCAlarmItemType.PARTITION_ARMED, apiMessage.getPartition(), -1, 1);
 
-                updateItemType(DSCAlarmItemType.PARTITION_ENTRY_DELAY, apiMessage.getPartition(), -1, 0);
-                updateItemType(DSCAlarmItemType.PARTITION_EXIT_DELAY, apiMessage.getPartition(), -1, 0);
+                updateItemByItemType(DSCAlarmItemType.PARTITION_ENTRY_DELAY, apiMessage.getPartition(), -1, 0);
+                updateItemByItemType(DSCAlarmItemType.PARTITION_EXIT_DELAY, apiMessage.getPartition(), -1, 0);
 
-                dscAlarmItemType = DSCAlarmItemType.PARTITION_ARM_MODE;
-                setPartitionStatus(partitionId, 0, apiMessage.getAPIName());
+                setPartitionStatus(apiMessage.getPartition(), 0, apiMessage.getAPIName());
                 setSystemErrorCode(0, "No Error");
+                handleDSCAlarmEvent(DSCAlarmItemType.PARTITION_ARM_MODE, dscAlarmEvent, apiMessage);
                 break;
             case PartitionDisarmed: /* 655 */
-                updateItemType(DSCAlarmItemType.PARTITION_ARMED, apiMessage.getPartition(), -1, 0);
+                updateItemByItemType(DSCAlarmItemType.PARTITION_ARMED, apiMessage.getPartition(), -1, 0);
 
-                updateItemType(DSCAlarmItemType.PARTITION_ENTRY_DELAY, apiMessage.getPartition(), -1, 0);
-                updateItemType(DSCAlarmItemType.PARTITION_EXIT_DELAY, apiMessage.getPartition(), -1, 0);
-                updateItemType(DSCAlarmItemType.PARTITION_IN_ALARM, apiMessage.getPartition(), -1, 0);
+                updateItemByItemType(DSCAlarmItemType.PARTITION_ENTRY_DELAY, apiMessage.getPartition(), -1, 0);
+                updateItemByItemType(DSCAlarmItemType.PARTITION_EXIT_DELAY, apiMessage.getPartition(), -1, 0);
+                updateItemByItemType(DSCAlarmItemType.PARTITION_IN_ALARM, apiMessage.getPartition(), -1, 0);
 
-                dscAlarmItemType = DSCAlarmItemType.PARTITION_ARM_MODE;
-                setPartitionStatus(partitionId, 0, apiMessage.getAPIName());
+                setPartitionStatus(apiMessage.getPartition(), 0, apiMessage.getAPIName());
                 setSystemErrorCode(0, "No Error");
+                handleDSCAlarmEvent(DSCAlarmItemType.PARTITION_ARM_MODE, dscAlarmEvent, apiMessage);
                 break;
             case PartitionInAlarm: /* 654 */
-                updateItemType(DSCAlarmItemType.PARTITION_IN_ALARM, apiMessage.getPartition(), -1, 1);
-                dscAlarmItemType = DSCAlarmItemType.PARTITION_STATUS;
+                updateItemByItemType(DSCAlarmItemType.PARTITION_IN_ALARM, apiMessage.getPartition(), -1, 1);
+                handleDSCAlarmEvent(DSCAlarmItemType.PARTITION_STATUS, dscAlarmEvent, apiMessage);
                 break;
             case ZoneAlarm: /* 601 */
                 state = 1;
             case ZoneAlarmRestore: /* 602 */
-                updateItemType(DSCAlarmItemType.ZONE_IN_ALARM, apiMessage.getPartition(), apiMessage.getZone(), state);
-                dscAlarmItemType = DSCAlarmItemType.ZONE_ALARM_STATUS;
+                updateItemByItemType(DSCAlarmItemType.ZONE_IN_ALARM, apiMessage.getPartition(), apiMessage.getZone(), state);
+                handleDSCAlarmEvent(DSCAlarmItemType.ZONE_ALARM_STATUS, dscAlarmEvent, apiMessage);
                 break;
             case ZoneTamper: /* 603 */
                 state = 1;
             case ZoneTamperRestore: /* 604 */
-                updateItemType(DSCAlarmItemType.ZONE_TAMPER, apiMessage.getPartition(), apiMessage.getZone(), state);
-                dscAlarmItemType = DSCAlarmItemType.ZONE_TAMPER_STATUS;
+                updateItemByItemType(DSCAlarmItemType.ZONE_TAMPER, apiMessage.getPartition(), apiMessage.getZone(), state);
+                handleDSCAlarmEvent(DSCAlarmItemType.ZONE_TAMPER_STATUS, dscAlarmEvent, apiMessage);
                 break;
             case ZoneFault: /* 605 */
                 state = 1;
             case ZoneFaultRestore: /* 606 */
-                updateItemType(DSCAlarmItemType.ZONE_FAULT, apiMessage.getPartition(), apiMessage.getZone(), state);
-                dscAlarmItemType = DSCAlarmItemType.ZONE_FAULT_STATUS;
+                updateItemByItemType(DSCAlarmItemType.ZONE_FAULT, apiMessage.getPartition(), apiMessage.getZone(), state);
+                handleDSCAlarmEvent(DSCAlarmItemType.ZONE_FAULT_STATUS, dscAlarmEvent, apiMessage);
                 break;
             case ZoneOpen: /* 609 */
                 state = 1;
             case ZoneRestored: /* 610 */
-                updateItemType(DSCAlarmItemType.ZONE_TRIPPED, apiMessage.getPartition(), apiMessage.getZone(), state);
-                dscAlarmItemType = DSCAlarmItemType.ZONE_GENERAL_STATUS;
+                updateItemByItemType(DSCAlarmItemType.ZONE_TRIPPED, apiMessage.getPartition(), apiMessage.getZone(), state);
+                handleDSCAlarmEvent(DSCAlarmItemType.ZONE_GENERAL_STATUS, dscAlarmEvent, apiMessage);
                 break;
             case FireKeyAlarm: /* 621 */
                 state = 1;
             case FireKeyRestored: /* 622 */
-                updateItemType(DSCAlarmItemType.PANEL_FIRE_KEY_ALARM, apiMessage.getPartition(), apiMessage.getZone(), state);
+                updateItemByItemType(DSCAlarmItemType.PANEL_FIRE_KEY_ALARM, apiMessage.getPartition(), apiMessage.getZone(), state);
                 break;
             case PanicKeyAlarm: /* 625 */
                 state = 1;
             case PanicKeyRestored: /* 626 */
-                updateItemType(DSCAlarmItemType.PANEL_PANIC_KEY_ALARM, apiMessage.getPartition(), apiMessage.getZone(), state);
+                updateItemByItemType(DSCAlarmItemType.PANEL_PANIC_KEY_ALARM, apiMessage.getPartition(), apiMessage.getZone(), state);
                 break;
             case AuxiliaryKeyAlarm: /* 625 */
                 state = 1;
             case AuxiliaryKeyRestored: /* 626 */
-                updateItemType(DSCAlarmItemType.PANEL_AUX_KEY_ALARM, apiMessage.getPartition(), apiMessage.getZone(), state);
+                updateItemByItemType(DSCAlarmItemType.PANEL_AUX_KEY_ALARM, apiMessage.getPartition(), apiMessage.getZone(), state);
                 break;
             case AuxiliaryInputAlarm: /* 625 */
                 state = 1;
             case AuxiliaryInputAlarmRestored: /* 631 */
-                updateItemType(DSCAlarmItemType.PANEL_AUX_INPUT_ALARM, apiMessage.getPartition(), apiMessage.getZone(), state);
+                updateItemByItemType(DSCAlarmItemType.PANEL_AUX_INPUT_ALARM, apiMessage.getPartition(), apiMessage.getZone(), state);
                 break;
             case EntryDelayInProgress: /* 656 */
-                updateItemType(DSCAlarmItemType.PARTITION_ENTRY_DELAY, apiMessage.getPartition(), -1, 1);
+                updateItemByItemType(DSCAlarmItemType.PARTITION_ENTRY_DELAY, apiMessage.getPartition(), -1, 1);
                 break;
             case ExitDelayInProgress: /* 656 */
-                updateItemType(DSCAlarmItemType.PARTITION_EXIT_DELAY, apiMessage.getPartition(), -1, 1);
+                updateItemByItemType(DSCAlarmItemType.PARTITION_EXIT_DELAY, apiMessage.getPartition(), -1, 1);
                 break;
             case FailureToArm: /* 672 */
-                updateItemType(DSCAlarmItemType.PARTITION_ARM_MODE, partitionId, 0, 0);
-                dscAlarmItemType = DSCAlarmItemType.PARTITION_STATUS;
+                updateItemByItemType(DSCAlarmItemType.PARTITION_ARM_MODE, apiMessage.getPartition(), 0, 0);
+                handleDSCAlarmEvent(DSCAlarmItemType.PARTITION_STATUS, dscAlarmEvent, apiMessage);
                 break;
             case UserClosing: /* 700 */
             case SpecialClosing: /* 701 */
             case PartialClosing: /* 702 */
             case UserOpening: /* 750 */
             case SpecialOpening: /* 751 */
-                dscAlarmItemType = DSCAlarmItemType.PARTITION_OPENING_CLOSING_MODE;
+                handleDSCAlarmEvent(DSCAlarmItemType.PARTITION_OPENING_CLOSING_MODE, dscAlarmEvent, apiMessage);
                 break;
             case TroubleLEDOn: /* 840 */
-                dscAlarmItemType = DSCAlarmItemType.PANEL_TROUBLE_LED;
+                handleDSCAlarmEvent(DSCAlarmItemType.PANEL_TROUBLE_LED, dscAlarmEvent, apiMessage);
                 break;
             case TroubleLEDOff: /* 841 */
-                updateItemType(DSCAlarmItemType.PANEL_SERVICE_REQUIRED, 0, 0, 0);
-                updateItemType(DSCAlarmItemType.PANEL_AC_TROUBLE, 0, 0, 0);
-                updateItemType(DSCAlarmItemType.PANEL_TELEPHONE_TROUBLE, 0, 0, 0);
-                updateItemType(DSCAlarmItemType.PANEL_FTC_TROUBLE, 0, 0, 0);
-                updateItemType(DSCAlarmItemType.PANEL_ZONE_FAULT, 0, 0, 0);
-                updateItemType(DSCAlarmItemType.PANEL_ZONE_TAMPER, 0, 0, 0);
-                updateItemType(DSCAlarmItemType.PANEL_ZONE_LOW_BATTERY, 0, 0, 0);
-                updateItemType(DSCAlarmItemType.PANEL_TIME_LOSS, 0, 0, 0);
-                dscAlarmItemType = DSCAlarmItemType.PANEL_TROUBLE_LED;
+                updateItemByItemType(DSCAlarmItemType.PANEL_SERVICE_REQUIRED, 0, 0, 0);
+                updateItemByItemType(DSCAlarmItemType.PANEL_AC_TROUBLE, 0, 0, 0);
+                updateItemByItemType(DSCAlarmItemType.PANEL_TELEPHONE_TROUBLE, 0, 0, 0);
+                updateItemByItemType(DSCAlarmItemType.PANEL_FTC_TROUBLE, 0, 0, 0);
+                updateItemByItemType(DSCAlarmItemType.PANEL_ZONE_FAULT, 0, 0, 0);
+                updateItemByItemType(DSCAlarmItemType.PANEL_ZONE_TAMPER, 0, 0, 0);
+                updateItemByItemType(DSCAlarmItemType.PANEL_ZONE_LOW_BATTERY, 0, 0, 0);
+                updateItemByItemType(DSCAlarmItemType.PANEL_TIME_LOSS, 0, 0, 0);
+                handleDSCAlarmEvent(DSCAlarmItemType.PANEL_TROUBLE_LED, dscAlarmEvent, apiMessage);
                 break;
             case PanelBatteryTrouble: /* 800 */
             case PanelACTrouble: /* 802 */
@@ -1137,7 +1089,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
             case GeneralSystemTamper: /* 829 */
             case HomeAutomationTrouble: /* 831 */
             case KeybusFault: /* 896 */
-                dscAlarmItemType = DSCAlarmItemType.PANEL_TROUBLE_MESSAGE;
+                handleDSCAlarmEvent(DSCAlarmItemType.PANEL_TROUBLE_MESSAGE, dscAlarmEvent, apiMessage);
                 break;
             case PanelBatteryTroubleRestore: /* 801 */
             case PanelACRestore: /* 803 */
@@ -1150,7 +1102,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
             case GeneralSystemTamperRestore: /* 830 */
             case HomeAutomationTroubleRestore: /* 832 */
             case KeybusFaultRestore: /* 897 */
-                updateItemType(DSCAlarmItemType.PANEL_TROUBLE_MESSAGE, 0, 0, 0);
+                updateItemByItemType(DSCAlarmItemType.PANEL_TROUBLE_MESSAGE, 0, 0, 0);
                 break;
             case VerboseTroubleStatus: /* 849 */
                 verboseTroubleStatusHandler(event);
@@ -1158,35 +1110,41 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
             case CodeRequired: /* 900 */
                 api.sendCommand(APICode.CodeSend);
                 break;
+            case LCDUpdate: /* 901 */
+                handleDSCAlarmEvent(DSCAlarmItemType.KEYPAD_LCD_UPDATE, dscAlarmEvent, apiMessage);
+                break;
+            case LCDCursor: /* 902 */
+                handleDSCAlarmEvent(DSCAlarmItemType.KEYPAD_LCD_CURSOR, dscAlarmEvent, apiMessage);
+                break;
             case LEDStatus: /* 903 */
                 int aData = Integer.parseInt(apiData.substring(0, 1));
                 switch (aData) {
                     case 1:
-                        dscAlarmItemType = DSCAlarmItemType.KEYPAD_READY_LED;
+                        handleDSCAlarmEvent(DSCAlarmItemType.KEYPAD_READY_LED, dscAlarmEvent, apiMessage);
                         break;
                     case 2:
-                        dscAlarmItemType = DSCAlarmItemType.KEYPAD_ARMED_LED;
+                        handleDSCAlarmEvent(DSCAlarmItemType.KEYPAD_ARMED_LED, dscAlarmEvent, apiMessage);
                         break;
                     case 3:
-                        dscAlarmItemType = DSCAlarmItemType.KEYPAD_MEMORY_LED;
+                        handleDSCAlarmEvent(DSCAlarmItemType.KEYPAD_MEMORY_LED, dscAlarmEvent, apiMessage);
                         break;
                     case 4:
-                        dscAlarmItemType = DSCAlarmItemType.KEYPAD_BYPASS_LED;
+                        handleDSCAlarmEvent(DSCAlarmItemType.KEYPAD_BYPASS_LED, dscAlarmEvent, apiMessage);
                         break;
                     case 5:
-                        dscAlarmItemType = DSCAlarmItemType.KEYPAD_TROUBLE_LED;
+                        handleDSCAlarmEvent(DSCAlarmItemType.KEYPAD_TROUBLE_LED, dscAlarmEvent, apiMessage);
                         break;
                     case 6:
-                        dscAlarmItemType = DSCAlarmItemType.KEYPAD_PROGRAM_LED;
+                        handleDSCAlarmEvent(DSCAlarmItemType.KEYPAD_PROGRAM_LED, dscAlarmEvent, apiMessage);
                         break;
                     case 7:
-                        dscAlarmItemType = DSCAlarmItemType.KEYPAD_FIRE_LED;
+                        handleDSCAlarmEvent(DSCAlarmItemType.KEYPAD_FIRE_LED, dscAlarmEvent, apiMessage);
                         break;
                     case 8:
-                        dscAlarmItemType = DSCAlarmItemType.KEYPAD_BACKLIGHT_LED;
+                        handleDSCAlarmEvent(DSCAlarmItemType.KEYPAD_BACKLIGHT_LED, dscAlarmEvent, apiMessage);
                         break;
                     case 9:
-                        dscAlarmItemType = DSCAlarmItemType.KEYPAD_AC_LED;
+                        handleDSCAlarmEvent(DSCAlarmItemType.KEYPAD_AC_LED, dscAlarmEvent, apiMessage);
                         break;
                 }
             default:
@@ -1197,8 +1155,25 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
         if (!suppressPanelMsg) {
             setPanelMessage(apiMessage.getAPIDescription());
         }
+    }
 
-        logger.debug("dscAlarmEventRecieved(): Event received! Looking for item: {}", dscAlarmItemType);
+    /**
+     * Handle incoming DSC Alarm events
+     *
+     * @param dscAlarmItemType
+     * @param dscAlarmEvent
+     * @param apiMessage
+     */
+    private void handleDSCAlarmEvent(DSCAlarmItemType dscAlarmItemType, DSCAlarmEvent dscAlarmEvent, APIMessage apiMessage) {
+        logger.debug("handleDSCAlarmEvent(): Event received! Looking for item: {}", dscAlarmItemType);
+
+        DSCAlarmBindingConfig config = null;
+        APIMessage.APIMessageType apiMessageType = apiMessage.getAPIMessageType();
+
+        Item item = null;
+        String itemName = "";
+        int partitionId = apiMessage.getPartition();
+        int zoneId = apiMessage.getZone();
 
         if (dscAlarmItemType != null) {
             for (DSCAlarmBindingProvider prov : providers) {
@@ -1209,44 +1184,35 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
                             case PANEL_EVENT:
                                 if (dscAlarmItemType == config.getDSCAlarmItemType()) {
                                     itemName = iName;
-                                    found = true;
                                 }
                                 break;
                             case PARTITION_EVENT:
                                 if (partitionId == config.getPartitionId() && dscAlarmItemType == config.getDSCAlarmItemType()) {
                                     itemName = iName;
-                                    found = true;
                                 }
                                 break;
                             case ZONE_EVENT:
                                 if (zoneId == config.getZoneId() && dscAlarmItemType == config.getDSCAlarmItemType()) {
                                     itemName = iName;
-                                    found = true;
                                 }
                                 break;
                             case KEYPAD_EVENT:
                                 if (dscAlarmItemType == config.getDSCAlarmItemType()) {
                                     itemName = iName;
-                                    found = true;
                                 }
                                 break;
                             default:
-                                found = false;
                                 break;
                         }
 
                     }
 
-                    if (found) {
+                    if (StringUtils.isNotEmpty(itemName)) {
                         item = prov.getItem(itemName);
-                        dscAlarmItemUpdate.updateDeviceItem(item, config, eventPublisher, dscAlarmEvent);
+                        dscAlarmItemUpdate.updateDeviceItem(item, config, eventPublisher, dscAlarmEvent, 0, "");
                         pollTimeStart = 0;
-                        break;
+                        return;
                     }
-                }
-
-                if (found) {
-                    break;
                 }
             }
         }

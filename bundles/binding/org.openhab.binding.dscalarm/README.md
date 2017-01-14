@@ -155,7 +155,9 @@ The DSCAlarmItemType maps the binding to an openHAB item type.  Here are the sup
 <br/>
 0=OFF<br/>
 1=ON<br/>
-2=Flashing<br/></td></tr>    
+2=Flashing<br/></td></tr>
+    <tr><td>keypad_lcd_update</td><td>String</td><td>LCD Update string for the IT100</td></tr>
+    <tr><td>keypad_lcd_cursor</td><td>String</td><td>LCD Cursor change string for the IT100</td></tr>
 </table>
 
 The following is an example of an item file:
