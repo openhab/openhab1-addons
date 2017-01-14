@@ -23,27 +23,28 @@ import org.openhab.core.items.Item;
  * @since 0.9.0
  */
 public interface AsteriskBindingProvider extends BindingProvider {
-	
-	/**
-	 * Returns the Type of the Item identified by {@code itemName}
-	 * 
-	 * @param itemName the name of the item to find the type for
-	 * @return the type of the Item identified by {@code itemName}
-	 */
-	Class<? extends Item> getItemType(String itemName);
-	
-	/** 
-	 * Returns the binding type for an item name
-	 * 
-	 * @param itemName the name of the item
-	 * @return the items binding type
-	 */
-	String getType(String itemName);
 
-	/**
-	 * Provides the binding configuration for a given item
-	 * @param itemName name of the item you're requesting the binding configuration
-	 * @return binding configuration
-	 */	
-	AsteriskBindingConfig getConfig(String itemName);	
+    /**
+     * Returns the Type of the Item identified by {@code itemName}
+     * 
+     * @param itemName the name of the item to find the type for
+     * @return the type of the Item identified by {@code itemName}
+     */
+    Class<? extends Item> getItemType(String itemName);
+
+    /**
+     * Returns the binding type for an item name
+     * 
+     * @param itemName the name of the item
+     * @return the items binding type
+     */
+    String getType(String itemName);
+
+    /**
+     * Provides the binding configuration for a given item
+     * 
+     * @param itemName name of the item you're requesting the binding configuration
+     * @return binding configuration
+     */
+    AsteriskBindingConfig getConfig(String itemName);
 }
