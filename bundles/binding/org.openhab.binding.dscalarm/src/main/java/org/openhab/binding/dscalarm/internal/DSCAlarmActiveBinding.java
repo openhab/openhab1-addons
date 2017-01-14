@@ -590,7 +590,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
         if (connected) {
             dscAlarmItemUpdate.setConnected(true);
             itemName = getItemName(DSCAlarmItemType.PANEL_CONNECTION, 0, 0);
-            if (itemName != "") {
+            if (StringUtils.isNotEmpty(itemName)) {
                 updateItem(itemName, 1, "Panel Connected");
             }
 
@@ -615,7 +615,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 
         dscAlarmItemUpdate.setConnected(false);
         itemName = getItemName(DSCAlarmItemType.PANEL_CONNECTION, 0, 0);
-        if (itemName != "") {
+        if (StringUtils.isNotEmpty(itemName)) {
             updateItem(itemName, 0, "Panel Disconnected");
         }
 
@@ -735,7 +735,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
         itemName = getItemName(dscAlarmItemType, partitionId, zoneId);
         logger.debug("updateItemByItemType(): Item Name: {} Partition: {} Zone: {}", itemName, partitionId, zoneId);
 
-        if (itemName != "") {
+        if (StringUtils.isNotEmpty(itemName)) {
             updateItem(itemName, propertyState, "");
         }
     }
@@ -750,7 +750,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 
         dscAlarmItemUpdate.setSysMessage(message);
         itemName = getItemName(DSCAlarmItemType.PANEL_MESSAGE, 0, 0);
-        if (itemName != "") {
+        if (StringUtils.isNotEmpty(itemName)) {
             updateItem(itemName, 0, message);
         }
     }
@@ -766,7 +766,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
         String itemName;
 
         itemName = getItemName(DSCAlarmItemType.PARTITION_STATUS, partitionID, 0);
-        if (itemName != "") {
+        if (StringUtils.isNotEmpty(itemName)) {
             updateItem(itemName, state, description);
         }
     }
@@ -833,11 +833,11 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
                     if (onOffState instanceof OnOffType) {
                         OnOffType value = (OnOffType) onOffState;
 
-                        if ((timeStamp == "" && value.equals(OnOffType.OFF)) || (timeStamp != "" && value.equals(OnOffType.ON))) {
+                        if ((StringUtils.isEmpty(timeStamp) && value.equals(OnOffType.OFF)) || (StringUtils.isNotEmpty(timeStamp) && value.equals(OnOffType.ON))) {
                             logger.debug("setTimeStampState(): Already Set!", timeStamp);
                             return;
 
-                        } else if (timeStamp != "") {
+                        } else if (StringUtils.isNotEmpty(timeStamp)) {
                             state = 1;
                         }
                     }
@@ -872,7 +872,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 
             itemName = getItemName(dscAlarmItemTypes[i], 0, 0);
 
-            if (itemName != "") {
+            if (StringUtils.isNotEmpty(itemName)) {
 
                 switch (apiCode) {
                     case KeypadLEDState: /* 510 */
