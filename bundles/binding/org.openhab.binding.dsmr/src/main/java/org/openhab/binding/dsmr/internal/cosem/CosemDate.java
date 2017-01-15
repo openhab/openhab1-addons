@@ -48,7 +48,7 @@ public class CosemDate extends CosemValue<DateTimeType> {
 
         /**
          * Constructs a new CosemDateFormat
-         * 
+         *
          * @param regex
          *            String containing the regular expression to check the
          *            value against (the date format should at least contain 1
@@ -64,7 +64,7 @@ public class CosemDate extends CosemValue<DateTimeType> {
 
     /**
      * Creates a new CosemDate
-     * 
+     *
      * @param unit
      *            the unit of the value
      * @param bindingSuffix
@@ -86,7 +86,7 @@ public class CosemDate extends CosemValue<DateTimeType> {
      * <li>'S'. Specifies a summer time (DST = 1) datetime
      * <li>'W'. Specifies a winter time (DST = 0) datetime
      * </ul>
-     * 
+     *
      * @param cosemValue
      *            the value to parse
      * @return {@link DateTimeType} on success
@@ -96,12 +96,12 @@ public class CosemDate extends CosemValue<DateTimeType> {
     @Override
     protected DateTimeType parse(String cosemValue) throws ParseException {
         for (CosemDateFormat cosemDateFormat : CosemDateFormat.values()) {
-            logger.debug("Trying pattern:" + cosemDateFormat.pattern);
+            logger.debug("Trying pattern: {}", cosemDateFormat.pattern);
 
             Matcher m = cosemDateFormat.pattern.matcher(cosemValue);
 
             if (m.matches()) {
-                logger.debug(cosemValue + " matches pattern:" + cosemDateFormat.pattern);
+                logger.debug("{} matches pattern: {}", cosemValue, cosemDateFormat.pattern);
 
                 Date date = cosemDateFormat.formatter.parse(m.group(1));
 
@@ -110,7 +110,7 @@ public class CosemDate extends CosemValue<DateTimeType> {
 
                 return new DateTimeType(c);
             }
-            logger.debug(cosemValue + " does not match pattern:" + cosemDateFormat.pattern);
+            logger.debug("{} does not match pattern: {}", cosemValue, cosemDateFormat.pattern);
         }
         throw new ParseException("value: " + cosemValue + " is not a known CosemDate string", 0);
     }
