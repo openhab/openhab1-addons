@@ -104,5 +104,4 @@ public class VDRMonitor extends AbstractActiveService {
     private Boolean checkRecording(VDRConfig vdrConfig) {
         return vdrConfig.getVDRConnection().isRecording();
     }
-
 }

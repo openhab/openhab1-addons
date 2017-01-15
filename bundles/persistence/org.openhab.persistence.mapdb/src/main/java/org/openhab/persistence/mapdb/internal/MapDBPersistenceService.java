@@ -210,7 +210,7 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
             Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(SCHEDULER_GROUP));
             if (jobKeys.size() > 0) {
                 sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
-                logger.debug("Found {} MapDB-Jobs to delete from DefaulScheduler (keys={})", jobKeys.size(), jobKeys);
+                logger.debug("Found {} MapDB-Jobs to delete from DefaultScheduler (keys={})", jobKeys.size(), jobKeys);
             }
         } catch (SchedulerException e) {
             logger.warn("Couldn't remove Commit-Job: {}", e.getMessage());
