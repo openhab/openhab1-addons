@@ -33,6 +33,7 @@
                                 <artifact><file>src/main/resources/conf/alarmdecoder.cfg</file><type>cfg</type><classifier>alarmdecoder</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/anel.cfg</file><type>cfg</type><classifier>anel</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/astro.cfg</file><type>cfg</type><classifier>astro</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/bticino.cfg</file><type>cfg</type><classifier>bticino</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/caldavCommand.cfg</file><type>cfg</type><classifier>caldavCommand</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/caldavio.cfg</file><type>cfg</type><classifier>caldavio</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/caldavPersonal.cfg</file><type>cfg</type><classifier>caldavPersonal</classifier></artifact>
@@ -53,9 +54,12 @@
                                 <artifact><file>src/main/resources/conf/fritzboxtr064.cfg</file><type>cfg</type><classifier>fritzboxtr064</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/garadget.cfg</file><type>cfg</type><classifier>garadget</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/gc100ir.cfg</file><type>cfg</type><classifier>gc100ir</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/gcal.cfg</file><type>cfg</type><classifier>gcal</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/gcal-persistence.cfg</file><type>cfg</type><classifier>gcal-persistence</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/gpio.cfg</file><type>cfg</type><classifier>gpio</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/heatmiser.cfg</file><type>cfg</type><classifier>heatmiser</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/homematic.cfg</file><type>cfg</type><classifier>homematic</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/horizon.cfg</file><type>cfg</type><classifier>horizon</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/http.cfg</file><type>cfg</type><classifier>http</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ihc.cfg</file><type>cfg</type><classifier>ihc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/influxdb.cfg</file><type>cfg</type><classifier>influxdb</classifier></artifact>
@@ -96,7 +100,9 @@
                                 <artifact><file>src/main/resources/conf/onkyo.cfg</file><type>cfg</type><classifier>onkyo</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/openenergymonitor.cfg</file><type>cfg</type><classifier>openenergymonitor</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/owserver.cfg</file><type>cfg</type><classifier>owserver</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/panasonictv.cfg</file><type>cfg</type><classifier>panasonictv</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pebble.cfg</file><type>cfg</type><classifier>pebble</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/plex.cfg</file><type>cfg</type><classifier>plex</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/plugwise.cfg</file><type>cfg</type><classifier>plugwise</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/powermax.cfg</file><type>cfg</type><classifier>powermax</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/prowl.cfg</file><type>cfg</type><classifier>prowl</classifier></artifact>

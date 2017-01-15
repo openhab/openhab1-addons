@@ -10,8 +10,6 @@ package org.openhab.binding.dscalarm.internal.model;
 
 import org.openhab.binding.dscalarm.DSCAlarmBindingConfig;
 import org.openhab.binding.dscalarm.internal.DSCAlarmEvent;
-import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties.StateType;
-import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties.TriggerType;
 import org.openhab.binding.dscalarm.internal.protocol.APIMessage;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
@@ -32,18 +30,18 @@ import org.slf4j.LoggerFactory;
 public class Partition extends DSCAlarmDevice {
     private static final Logger logger = LoggerFactory.getLogger(Partition.class);
 
-    public DSCAlarmDeviceProperties partitionProperties = new DSCAlarmDeviceProperties();
+    private int partitionID;
 
     /**
      * Constructor
-     * 
-     * @param partitionId
+     *
+     * @param partitionID
      */
-    public Partition(int partitionId) {
-        if (partitionId >= 1 && partitionId <= 8) {
-            partitionProperties.setPartitionId(partitionId);
+    public Partition(int partitionID) {
+        if (partitionID >= 1 && partitionID <= 8) {
+            this.partitionID = partitionID;
         } else {
-            partitionProperties.setPartitionId(1);
+            this.partitionID = 1;
         }
     }
 
@@ -51,55 +49,36 @@ public class Partition extends DSCAlarmDevice {
      * {@inheritDoc}
      */
     @Override
-    public void refreshItem(Item item, DSCAlarmBindingConfig config, EventPublisher publisher) {
+    public void refreshItem(Item item, DSCAlarmBindingConfig config, EventPublisher publisher, int state, String description) {
         logger.debug("refreshItem(): Partition Item Name: {}", item.getName());
-
-        int state;
-        String strStatus = "";
-        boolean trigger;
-        OnOffType onOffType;
 
         if (config != null) {
             if (config.getDSCAlarmItemType() != null) {
                 switch (config.getDSCAlarmItemType()) {
                     case PARTITION_STATUS:
-                        state = partitionProperties.getState(StateType.GENERAL_STATE);
-                        strStatus = partitionProperties.getStateDescription(StateType.GENERAL_STATE);
-                        publisher.postUpdate(item.getName(), new StringType(strStatus));
+                        publisher.postUpdate(item.getName(), new StringType(description));
                         break;
                     case PARTITION_ARM_MODE:
-                        state = partitionProperties.getState(StateType.ARM_STATE);
-                        strStatus = partitionProperties.getStateDescription(StateType.ARM_STATE);
                         publisher.postUpdate(item.getName(), new DecimalType(state));
                         break;
                     case PARTITION_ARMED:
-                        trigger = partitionProperties.getTrigger(TriggerType.ARMED);
-                        onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
-                        publisher.postUpdate(item.getName(), onOffType);
+                        publisher.postUpdate(item.getName(), (state == 1) ? OnOffType.ON : OnOffType.OFF);
                         break;
                     case PARTITION_ENTRY_DELAY:
-                        trigger = partitionProperties.getTrigger(TriggerType.ENTRY_DELAY);
-                        onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
-                        publisher.postUpdate(item.getName(), onOffType);
+                        publisher.postUpdate(item.getName(), (state == 1) ? OnOffType.ON : OnOffType.OFF);
                         break;
                     case PARTITION_EXIT_DELAY:
-                        trigger = partitionProperties.getTrigger(TriggerType.EXIT_DELAY);
-                        onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
-                        publisher.postUpdate(item.getName(), onOffType);
+                        publisher.postUpdate(item.getName(), (state == 1) ? OnOffType.ON : OnOffType.OFF);
                         break;
                     case PARTITION_IN_ALARM:
-                        trigger = partitionProperties.getTrigger(TriggerType.ALARMED);
-                        onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
-                        publisher.postUpdate(item.getName(), onOffType);
+                        publisher.postUpdate(item.getName(), (state == 1) ? OnOffType.ON : OnOffType.OFF);
                         break;
                     case PARTITION_OPENING_CLOSING_MODE:
-                        state = partitionProperties.getState(StateType.OPENING_CLOSING_STATE);
-                        strStatus = partitionProperties.getStateDescription(StateType.OPENING_CLOSING_STATE);
                         if (item instanceof NumberItem) {
                             publisher.postUpdate(item.getName(), new DecimalType(state));
                         }
                         if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(strStatus));
+                            publisher.postUpdate(item.getName(), new StringType(description));
                         }
                         break;
                     default:
@@ -118,12 +97,12 @@ public class Partition extends DSCAlarmDevice {
         int state = 0;
         int apiCode = -1;
         APIMessage apiMessage = null;
-        String strStatus = "";
+        String str = "";
 
         if (event != null) {
             apiMessage = event.getAPIMessage();
             apiCode = Integer.parseInt(apiMessage.getAPICode());
-            strStatus = apiMessage.getAPIName();
+            str = apiMessage.getAPIName();
             logger.debug("handleEvent(): Partition Item Name: {}", item.getName());
 
             if (config != null) {
@@ -133,6 +112,7 @@ public class Partition extends DSCAlarmDevice {
                             switch (apiCode) {
                                 case 650:
                                 case 653:
+                                case 654:
                                     state = 1;
                                     break;
                                 case 651:
@@ -140,27 +120,20 @@ public class Partition extends DSCAlarmDevice {
                                 case 673:
                                     state = 0;
                                     break;
-                                case 654:
-                                    partitionProperties.setState(StateType.ALARM_STATE, 1, strStatus);
-                                    break;
                                 default:
                                     break;
                             }
-                            partitionProperties.setState(StateType.GENERAL_STATE, state, strStatus);
-                            strStatus = partitionProperties.getStateDescription(StateType.GENERAL_STATE);
-                            publisher.postUpdate(item.getName(), new StringType(strStatus));
+                            publisher.postUpdate(item.getName(), new StringType(str));
                             break;
                         case PARTITION_ARM_MODE:
                             if (apiCode == 652) {
                                 state = Integer.parseInt(apiMessage.getMode()) + 1;
                             }
-                            partitionProperties.setState(StateType.ARM_STATE, state, strStatus);
-                            strStatus = partitionProperties.getStateDescription(StateType.ARM_STATE);
                             if (item instanceof NumberItem) {
                                 publisher.postUpdate(item.getName(), new DecimalType(state));
                             }
                             if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(strStatus));
+                                publisher.postUpdate(item.getName(), new StringType(str));
                             }
                             break;
                         case PARTITION_OPENING_CLOSING_MODE:
@@ -182,63 +155,20 @@ public class Partition extends DSCAlarmDevice {
                                     break;
                                 default:
                                     state = 0;
-                                    strStatus = "";
+                                    str = "";
                                     break;
                             }
-                            partitionProperties.setState(StateType.OPENING_CLOSING_STATE, state, strStatus);
-                            strStatus = partitionProperties.getStateDescription(StateType.OPENING_CLOSING_STATE);
                             if (item instanceof NumberItem) {
                                 publisher.postUpdate(item.getName(), new DecimalType(state));
                             }
                             if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(strStatus));
+                                publisher.postUpdate(item.getName(), new StringType(str));
                             }
                             break;
                         default:
                             logger.debug("handleEvent(): Partition item not updated.");
                             break;
                     }
-                }
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void updateProperties(Item item, DSCAlarmBindingConfig config, int state, String description) {
-        logger.debug("updateProperties(): Partition Item Name: {}", item.getName());
-
-        boolean trigger = state != 0 ? true : false;
-
-        if (config != null) {
-            if (config.getDSCAlarmItemType() != null) {
-                switch (config.getDSCAlarmItemType()) {
-                    case PARTITION_STATUS:
-                        partitionProperties.setState(StateType.GENERAL_STATE, state, description);
-                        break;
-                    case PARTITION_ARM_MODE:
-                        partitionProperties.setState(StateType.ARM_STATE, state, description);
-                        break;
-                    case PARTITION_ARMED:
-                        partitionProperties.setTrigger(TriggerType.ARMED, trigger);
-                        break;
-                    case PARTITION_ENTRY_DELAY:
-                        partitionProperties.setTrigger(TriggerType.ENTRY_DELAY, trigger);
-                        break;
-                    case PARTITION_EXIT_DELAY:
-                        partitionProperties.setTrigger(TriggerType.EXIT_DELAY, trigger);
-                        break;
-                    case PARTITION_IN_ALARM:
-                        partitionProperties.setTrigger(TriggerType.ALARMED, trigger);
-                        break;
-                    case PARTITION_OPENING_CLOSING_MODE:
-                        partitionProperties.setState(StateType.OPENING_CLOSING_STATE, state, description);
-                        break;
-                    default:
-                        logger.debug("updateProperties(): Partition property not updated.");
-                        break;
                 }
             }
         }

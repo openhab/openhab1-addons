@@ -45,26 +45,26 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getLogger <em>Logger</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getEnabledA
- *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getSubId <em>Sub Id</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getMbrick <em>Mbrick</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getSensorValue
- *        <em>Sensor Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getSubId <em>Sub
+ *        Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getMbrick
+ *        <em>Mbrick</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getSensorValue <em>Sensor
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getPin <em>Pin</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getDisableElectrode
  *        <em>Disable Electrode</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -291,10 +291,9 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -318,9 +317,8 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -344,10 +342,9 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -371,10 +368,9 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -398,10 +394,9 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__SUB_ID, oldSubId,
                     subId));
-        }
     }
 
     /**
@@ -412,10 +407,21 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public MBrickletMultiTouch getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MULTI_TOUCH_DEVICE__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.MULTI_TOUCH_DEVICE__MBRICK)
             return null;
-        }
         return (MBrickletMultiTouch) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletMultiTouch basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.MULTI_TOUCH_DEVICE__MBRICK)
+            return null;
+        return (MBrickletMultiTouch) eInternalContainer();
     }
 
     /**
@@ -439,25 +445,20 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     public void setMbrick(MBrickletMultiTouch newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MULTI_TOUCH_DEVICE__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
@@ -481,10 +482,9 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     public void setSensorValue(HighLowValue newSensorValue) {
         HighLowValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
-        }
     }
 
     /**
@@ -510,11 +510,10 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -529,22 +528,18 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     public void setTfConfig(MultiTouchDeviceConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -568,9 +563,8 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     public void setPin(int newPin) {
         int oldPin = pin;
         pin = newPin;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__PIN, oldPin, pin));
-        }
     }
 
     /**
@@ -594,10 +588,9 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     public void setDisableElectrode(Boolean newDisableElectrode) {
         Boolean oldDisableElectrode = disableElectrode;
         disableElectrode = newDisableElectrode;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__DISABLE_ELECTRODE,
                     oldDisableElectrode, disableElectrode));
-        }
     }
 
     /**
@@ -727,9 +720,8 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MULTI_TOUCH_DEVICE__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletMultiTouch) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -788,7 +780,9 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
             case ModelPackage.MULTI_TOUCH_DEVICE__SUB_ID:
                 return getSubId();
             case ModelPackage.MULTI_TOUCH_DEVICE__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.MULTI_TOUCH_DEVICE__SENSOR_VALUE:
                 return getSensorValue();
             case ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG:
@@ -907,7 +901,7 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
             case ModelPackage.MULTI_TOUCH_DEVICE__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.MULTI_TOUCH_DEVICE__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.MULTI_TOUCH_DEVICE__SENSOR_VALUE:
                 return sensorValue != null;
             case ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG:
@@ -1033,9 +1027,8 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

@@ -916,6 +916,8 @@ public enum IO16SubIds implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param literal the literal.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static IO16SubIds get(String literal) {
@@ -933,6 +935,8 @@ public enum IO16SubIds implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param name the name.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static IO16SubIds getByName(String name) {
@@ -950,6 +954,8 @@ public enum IO16SubIds implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param value the integer value.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static IO16SubIds get(int value) {

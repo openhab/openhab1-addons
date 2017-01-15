@@ -32,13 +32,13 @@ import org.openhab.core.types.UnDefType;
 public class RFXComWindMessage extends RFXComBaseMessage {
 
     public enum SubType {
-        UNDEF(0),
         WTGR800(1),
         WGR800(2),
         STR918_WGR918_WGR928(3),
         TFA(4),
         UPM_WDS500(5),
         WS2300(6),
+        WS4500_ET_AL(7),
 
         UNKNOWN(255);
 
@@ -55,6 +55,16 @@ public class RFXComWindMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
@@ -62,7 +72,7 @@ public class RFXComWindMessage extends RFXComBaseMessage {
             RFXComValueSelector.WIND_AVSPEED, RFXComValueSelector.WIND_SPEED, RFXComValueSelector.TEMPERATURE,
             RFXComValueSelector.CHILL_FACTOR);
 
-    public SubType subType = SubType.WTGR800;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public double windDirection = 0;
     public double windSpeed = 0;
@@ -82,22 +92,21 @@ public class RFXComWindMessage extends RFXComBaseMessage {
 
     @Override
     public String toString() {
-        String str = "";
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("\n - Sub type = ").append(subType);
+        sb.append("\n - Id = ").append(sensorId);
+        sb.append("\n - Wind direction = ").append(windDirection);
+        sb.append("\n - Wind speed = ").append(windSpeed);
+        sb.append("\n - Average Wind speed = ").append(windAvSpeed);
 
-        str += super.toString();
-        str += "\n - Sub type = " + subType;
-        str += "\n - Id = " + sensorId;
-        str += "\n - Wind direction = " + windDirection;
-        str += "\n - Wind speed = " + windSpeed;
-        str += "\n - Average Wind speed = " + windAvSpeed;
         if (subType == SubType.TFA) {
-            str += "\n - Temperature = " + temperature;
-            str += "\n - Chill Factor = " + chillFactor;
+            sb.append("\n - Temperature = ").append(temperature);
+            sb.append("\n - Chill Factor = ").append(chillFactor);
         }
-        str += "\n - Signal level = " + signalLevel;
-        str += "\n - Battery level = " + batteryLevel;
+        sb.append("\n - Signal level = ").append(signalLevel);
+        sb.append("\n - Battery level = ").append(batteryLevel);
 
-        return str;
+        return sb.toString();
     }
 
     @Override
@@ -105,11 +114,7 @@ public class RFXComWindMessage extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 
         windDirection = (short) ((data[6] & 0xFF) << 8 | (data[7] & 0xFF));
@@ -139,7 +144,7 @@ public class RFXComWindMessage extends RFXComBaseMessage {
         byte[] data = new byte[17];
 
         data[0] = 0x10;
-        data[1] = RFXComBaseMessage.PacketType.RAIN.toByte();
+        data[1] = PacketType.WIND.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
         data[4] = (byte) ((sensorId & 0xFF00) >> 8);

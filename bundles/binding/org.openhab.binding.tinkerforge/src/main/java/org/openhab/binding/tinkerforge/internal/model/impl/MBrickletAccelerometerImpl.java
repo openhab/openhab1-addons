@@ -53,17 +53,18 @@ import com.tinkerforge.TimeoutException;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getLogger <em>Logger</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getEnabledA
- * <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getIpConnection
- * <em>Ip Connection</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getIpConnection <em>Ip
+ * Connection</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getConnectedUid
  * <em>Connected Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getPosition
@@ -75,18 +76,17 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getMsubdevices
  * <em>Msubdevices</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getTfConfig
- * <em>Tf Config</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getDeviceType
- * <em>Device Type</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getDataRate
- * <em>Data Rate</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getFullScale
- * <em>Full Scale</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getDeviceType <em>Device
+ * Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getDataRate <em>Data
+ * Rate</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getFullScale <em>Full
+ * Scale</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl#getFilterBandwidth
  * <em>Filter Bandwidth</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -452,10 +452,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ACCELEROMETER__LOGGER,
                     oldLogger, logger));
-        }
     }
 
     /**
@@ -479,10 +478,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ACCELEROMETER__UID, oldUid,
                     uid));
-        }
     }
 
     /**
@@ -506,10 +504,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ACCELEROMETER__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -533,10 +530,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ACCELEROMETER__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -560,10 +556,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setTinkerforgeDevice(BrickletAccelerometer newTinkerforgeDevice) {
         BrickletAccelerometer oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_ACCELEROMETER__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
-        }
     }
 
     /**
@@ -587,10 +582,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ACCELEROMETER__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -614,10 +608,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ACCELEROMETER__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -641,10 +634,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ACCELEROMETER__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -668,10 +660,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_ACCELEROMETER__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
@@ -695,10 +686,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ACCELEROMETER__NAME, oldName,
                     name));
-        }
     }
 
     /**
@@ -709,10 +699,21 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_ACCELEROMETER__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_ACCELEROMETER__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_ACCELEROMETER__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -736,25 +737,20 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_ACCELEROMETER__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ACCELEROMETER__BRICKD,
                     newBrickd, newBrickd));
-        }
     }
 
     /**
@@ -766,8 +762,15 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     @Override
     public EList<AccelerometerDevice> getMsubdevices() {
         if (msubdevices == null) {
-            msubdevices = new EObjectContainmentWithInverseEList<AccelerometerDevice>(MSubDevice.class, this,
-                    ModelPackage.MBRICKLET_ACCELEROMETER__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+            msubdevices = new EObjectContainmentWithInverseEList<AccelerometerDevice>(AccelerometerDevice.class, this,
+                    ModelPackage.MBRICKLET_ACCELEROMETER__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK) {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public Class<?> getInverseFeatureClass() {
+                    return MSubDevice.class;
+                }
+            };
         }
         return msubdevices;
     }
@@ -795,11 +798,10 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_ACCELEROMETER__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -814,22 +816,18 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setTfConfig(BrickletAccelerometerConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_ACCELEROMETER__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_ACCELEROMETER__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ACCELEROMETER__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -864,10 +862,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setDataRate(Short newDataRate) {
         Short oldDataRate = dataRate;
         dataRate = newDataRate;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ACCELEROMETER__DATA_RATE,
                     oldDataRate, dataRate));
-        }
     }
 
     /**
@@ -891,10 +888,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setFullScale(Short newFullScale) {
         Short oldFullScale = fullScale;
         fullScale = newFullScale;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ACCELEROMETER__FULL_SCALE,
                     oldFullScale, fullScale));
-        }
     }
 
     /**
@@ -918,10 +914,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public void setFilterBandwidth(Short newFilterBandwidth) {
         Short oldFilterBandwidth = filterBandwidth;
         filterBandwidth = newFilterBandwidth;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_ACCELEROMETER__FILTER_BANDWIDTH, oldFilterBandwidth, filterBandwidth));
-        }
     }
 
     /**
@@ -1047,9 +1042,8 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_ACCELEROMETER__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
             case ModelPackage.MBRICKLET_ACCELEROMETER__MSUBDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMsubdevices()).basicAdd(otherEnd, msgs);
@@ -1121,7 +1115,9 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
             case ModelPackage.MBRICKLET_ACCELEROMETER__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_ACCELEROMETER__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_ACCELEROMETER__MSUBDEVICES:
                 return getMsubdevices();
             case ModelPackage.MBRICKLET_ACCELEROMETER__TF_CONFIG:
@@ -1294,7 +1290,7 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
             case ModelPackage.MBRICKLET_ACCELEROMETER__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_ACCELEROMETER__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_ACCELEROMETER__MSUBDEVICES:
                 return msubdevices != null && !msubdevices.isEmpty();
             case ModelPackage.MBRICKLET_ACCELEROMETER__TF_CONFIG:
@@ -1424,9 +1420,8 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

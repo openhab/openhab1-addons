@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.onewire.internal.deviceproperties;
 
-import org.openhab.binding.onewire.internal.deviceproperties.modifier.InterfaceOneWireTypeModifier;
+import org.openhab.binding.onewire.internal.deviceproperties.modifier.OneWireTypeModifier;
 import org.openhab.core.types.Type;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -50,7 +50,7 @@ public abstract class AbstractOneWireDevicePropertyWritableBindingConfig
 
     /**
      * Abstract method, which must be implemented by specialized Classes
-     * 
+     *
      * @param pvType
      * @return the converted given openHab Type <code>pvType</code> into a unmodified String
      */

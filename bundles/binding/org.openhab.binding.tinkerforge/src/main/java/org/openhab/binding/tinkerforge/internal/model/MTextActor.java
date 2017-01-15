@@ -20,10 +20,10 @@ import org.eclipse.emf.ecore.EObject;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MTextActor#getText <em>Text</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMTextActor()
  * @model interface="true" abstract="true"
@@ -58,5 +58,14 @@ public interface MTextActor extends EObject {
      * @generated
      */
     void setText(String value);
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @model textUnique="false"
+     * @generated
+     */
+    void write(String text);
 
 } // MTextActor

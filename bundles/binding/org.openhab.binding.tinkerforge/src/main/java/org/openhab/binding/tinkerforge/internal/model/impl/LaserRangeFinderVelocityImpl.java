@@ -47,30 +47,30 @@ import com.tinkerforge.TimeoutException;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getLogger <em>Logger</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#isPoll <em>Poll</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getEnabledA
- * <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getSubId <em>Sub Id</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getMbrick <em>Mbrick</em>
- * }</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getTfConfig
- * <em>Tf Config</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getMbrick
+ * <em>Mbrick</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getCallbackPeriod
  * <em>Callback Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getThreshold
  * <em>Threshold</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -319,10 +319,9 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_VELOCITY__LOGGER,
                     oldLogger, logger));
-        }
     }
 
     /**
@@ -346,10 +345,9 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_VELOCITY__UID, oldUid,
                     uid));
-        }
     }
 
     /**
@@ -373,10 +371,9 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_VELOCITY__POLL,
                     oldPoll, poll));
-        }
     }
 
     /**
@@ -400,10 +397,9 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_VELOCITY__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -427,10 +423,9 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_VELOCITY__SUB_ID,
                     oldSubId, subId));
-        }
     }
 
     /**
@@ -441,10 +436,21 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
      */
     @Override
     public MBrickletLaserRangeFinder getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.LASER_RANGE_FINDER_VELOCITY__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.LASER_RANGE_FINDER_VELOCITY__MBRICK)
             return null;
-        }
         return (MBrickletLaserRangeFinder) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletLaserRangeFinder basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.LASER_RANGE_FINDER_VELOCITY__MBRICK)
+            return null;
+        return (MBrickletLaserRangeFinder) eInternalContainer();
     }
 
     /**
@@ -468,25 +474,20 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
     public void setMbrick(MBrickletLaserRangeFinder newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.LASER_RANGE_FINDER_VELOCITY__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_VELOCITY__MBRICK,
                     newMbrick, newMbrick));
-        }
     }
 
     /**
@@ -510,10 +511,9 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
     public void setSensorValue(DecimalValue newSensorValue) {
         DecimalValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE, oldSensorValue, sensorValue));
-        }
     }
 
     /**
@@ -539,11 +539,10 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.LASER_RANGE_FINDER_VELOCITY__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -558,22 +557,18 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
     public void setTfConfig(TFBaseConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.LASER_RANGE_FINDER_VELOCITY__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.LASER_RANGE_FINDER_VELOCITY__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_VELOCITY__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -597,10 +592,9 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
     public void setCallbackPeriod(long newCallbackPeriod) {
         long oldCallbackPeriod = callbackPeriod;
         callbackPeriod = newCallbackPeriod;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.LASER_RANGE_FINDER_VELOCITY__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
-        }
     }
 
     /**
@@ -635,10 +629,9 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
     public void setThreshold(BigDecimal newThreshold) {
         BigDecimal oldThreshold = threshold;
         threshold = newThreshold;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_VELOCITY__THRESHOLD,
                     oldThreshold, threshold));
-        }
     }
 
     /**
@@ -743,9 +736,8 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.LASER_RANGE_FINDER_VELOCITY__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletLaserRangeFinder) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -804,7 +796,9 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
             case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SUB_ID:
                 return getSubId();
             case ModelPackage.LASER_RANGE_FINDER_VELOCITY__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.LASER_RANGE_FINDER_VELOCITY__TF_CONFIG:
                 return getTfConfig();
             case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE:
@@ -925,7 +919,7 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
             case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.LASER_RANGE_FINDER_VELOCITY__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.LASER_RANGE_FINDER_VELOCITY__TF_CONFIG:
                 return tfConfig != null;
             case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE:
@@ -1074,9 +1068,8 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

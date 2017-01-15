@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+  <Model>ZSE40</Model>
+  <Label lang="en">4-in-1 Sensor</Label>
+
+  <CommandClasses>
+    <Class>
+      <id>0x00</id>
+      <!-- NO_OPERATION -->
+    </Class>
+    <Class>
+      <id>0x20</id>
+      <!-- BASIC -->
+    </Class>
+    <Class>
+      <id>0x30</id>
+      <!-- SENSOR_BINARY -->
+    </Class>
+    <Class>
+      <id>0x31</id>
+      <!-- SENSOR_MULTILEVEL -->
+    </Class>
+    <Class>
+      <id>0x59</id>
+      <!-- ASSOCIATION_GROUP_INFO -->
+    </Class>
+    <Class>
+      <id>0x5A</id>
+      <!-- DEVICE_RESET_LOCALLY -->
+    </Class>
+    <Class>
+      <id>0x5E</id>
+      <!-- ZWAVE_PLUS_INFO -->
+    </Class>
+    <Class>
+      <id>0x70</id>
+      <!-- CONFIGURATION -->
+    </Class>
+    <Class>
+      <id>0x71</id>
+      <!-- ALARM -->
+    </Class>
+    <Class>
+      <id>0x72</id>
+      <!-- MANUFACTURER_SPECIFIC -->
+    </Class>
+    <Class>
+      <id>0x73</id>
+      <!-- POWERLEVEL -->
+    </Class>
+    <Class>
+      <id>0x7A</id>
+      <!-- FIRMWARE_UPDATE_MD -->
+    </Class>
+    <Class>
+      <id>0x80</id>
+      <!-- BATTERY -->
+    </Class>
+    <Class>
+      <id>0x84</id>
+      <!-- WAKE_UP -->
+    </Class>
+    <Class>
+      <id>0x85</id>
+      <!-- ASSOCIATION -->
+    </Class>
+    <Class>
+      <id>0x86</id>
+      <!-- VERSION -->
+    </Class>
+  </CommandClasses>
+
+  <Configuration>
+
+    <Parameter>
+      <Index>1</Index>
+      <Label lang="en">Temperature Scale</Label>
+      <Type>list</Type>
+      <Default>0</Default>
+      <Minimum>0</Minimum>
+      <Maximum>1</Maximum>
+      <Size>1</Size>
+      <Item>
+        <Value>0</Value>
+        <Label lang="en">Celsius</Label>
+      </Item>
+      <Item>
+        <Value>1</Value>
+        <Label lang="en">Fahrenheit</Label>
+      </Item>
+      <Help>
+        <![CDATA[Set the temperature scale
+            ]]>
+      </Help>
+    </Parameter>
+
+    <Parameter>
+      <Index>2</Index>
+      <Label lang="en">Temperature offset</Label>
+      <Type>short</Type>
+      <Default>1</Default>
+      <Minimum>0</Minimum>
+      <Maximum>50</Maximum>
+      <Size>1</Size>
+    </Parameter>
+
+    <Parameter>
+      <Index>3</Index>
+      <Label lang="en">Humidity</Label>
+      <Type>short</Type>
+      <Default>10</Default>
+      <Minimum>1</Minimum>
+      <Maximum>50</Maximum>
+      <Size>1</Size>
+      <Help>
+        <![CDATA[Configure Relative Humidity
+            ]]>
+      </Help>
+    </Parameter>
+
+    <Parameter>
+      <Index>4</Index>
+      <Label lang="en">Light Sensor</Label>
+      <Type>short</Type>
+      <Default>10</Default>
+      <Minimum>1</Minimum>
+      <Maximum>50</Maximum>
+      <Size>1</Size>
+      <Help>
+        <![CDATA[Configure Light Sensor
+            ]]>
+      </Help>
+    </Parameter>
+
+    <Parameter>
+      <Index>5</Index>
+      <Label lang="en">Trigger Interval</Label>
+      <Type>short</Type>
+      <Default>180</Default>
+      <Minimum>1</Minimum>
+      <Maximum>255</Maximum>
+      <Size>1</Size>
+      <Help>
+        <![CDATA[Set the trigger interval for motion sensor re-activation.
+            ]]>
+      </Help>
+    </Parameter>
+
+    <Parameter>
+      <Index>6</Index>
+      <Label lang="en">Motion Sensor Sensitivity</Label>
+      <Type>list</Type>
+      <Default>4</Default>
+      <Minimum>1</Minimum>
+      <Maximum>7</Maximum>
+      <Size>1</Size>
+      <Item>
+        <Value>1</Value>
+        <Label lang="en">highest</Label>
+      </Item>
+      <Item>
+        <Value>2</Value>
+        <Label lang="en">higher</Label>
+      </Item>
+      <Item>
+        <Value>3</Value>
+        <Label lang="en">high</Label>
+      </Item>
+      <Item>
+        <Value>4</Value>
+        <Label lang="en">normal</Label>
+      </Item>
+      <Item>
+        <Value>5</Value>
+        <Label lang="en">low</Label>
+      </Item>
+      <Item>
+        <Value>6</Value>
+        <Label lang="en">lower</Label>
+      </Item>
+      <Item>
+        <Value>7</Value>
+        <Label lang="en">lowest</Label>
+      </Item>
+      <Help>
+        <![CDATA[Adjust sensitivity of the motion sensor.
+            ]]>
+      </Help>
+    </Parameter>
+
+    <Parameter>
+      <Index>7</Index>
+      <Label lang="en">LED indicator mode</Label>
+      <Type>list</Type>
+      <Default>3</Default>
+      <Minimum>1</Minimum>
+      <Maximum>3</Maximum>
+      <Size>1</Size>
+      <Item>
+        <Value>1</Value>
+        <Label lang="en">Off</Label>
+      </Item>
+      <Item>
+        <Value>2</Value>
+        <Label lang="en">Pulsing Temperature, Flashing Motion</Label>
+      </Item>
+      <Item>
+        <Value>3</Value>
+        <Label lang="en">Flashing Temperature and Motion</Label>
+      </Item>
+      <Help>
+        <![CDATA[Select the LED indicator mode
+            ]]>
+      </Help>
+    </Parameter>
+
+  </Configuration>
+
+  <Associations>
+
+    <Group>
+      <Index>1</Index>
+      <Label lang="en">Receive updates</Label>
+      <Maximum>5</Maximum>
+      <SetToController>true</SetToController>
+    </Group>
+
+  </Associations>
+
+</Product>

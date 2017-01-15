@@ -44,30 +44,30 @@ import com.tinkerforge.IPConnection;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getLogger <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getEnabledA <em>Enabled A</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getTinkerforgeDevice
  *        <em>Tinkerforge Device</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getIpConnection
- *        <em>Ip Connection</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getConnectedUid
- *        <em>Connected Uid</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getPosition <em>Position</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getDeviceIdentifier
- *        <em>Device Identifier</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getIpConnection <em>Ip
+ *        Connection</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getConnectedUid <em>Connected
+ *        Uid</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getPosition
+ *        <em>Position</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getDeviceIdentifier <em>Device
+ *        Identifier</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getName <em>Name</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getBrickd <em>Brickd</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getMsubdevices
  *        <em>Msubdevices</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickServoImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -356,10 +356,9 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_SERVO__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -383,9 +382,8 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_SERVO__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -409,9 +407,8 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_SERVO__POLL, oldPoll, poll));
-        }
     }
 
     /**
@@ -435,10 +432,9 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_SERVO__ENABLED_A, oldEnabledA,
                     enabledA));
-        }
     }
 
     /**
@@ -462,10 +458,9 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
     public void setTinkerforgeDevice(BrickServo newTinkerforgeDevice) {
         BrickServo oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_SERVO__TINKERFORGE_DEVICE,
                     oldTinkerforgeDevice, tinkerforgeDevice));
-        }
     }
 
     /**
@@ -489,10 +484,9 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_SERVO__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -516,10 +510,9 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_SERVO__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -543,10 +536,9 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_SERVO__POSITION, oldPosition,
                     position));
-        }
     }
 
     /**
@@ -570,10 +562,9 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_SERVO__DEVICE_IDENTIFIER,
                     oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
@@ -597,9 +588,8 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_SERVO__NAME, oldName, name));
-        }
     }
 
     /**
@@ -610,10 +600,21 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICK_SERVO__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICK_SERVO__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICK_SERVO__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -637,25 +638,20 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICK_SERVO__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_SERVO__BRICKD, newBrickd,
                     newBrickd));
-        }
     }
 
     /**
@@ -667,8 +663,15 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
     @Override
     public EList<MServo> getMsubdevices() {
         if (msubdevices == null) {
-            msubdevices = new EObjectContainmentWithInverseEList<MServo>(MSubDevice.class, this,
-                    ModelPackage.MBRICK_SERVO__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+            msubdevices = new EObjectContainmentWithInverseEList<MServo>(MServo.class, this,
+                    ModelPackage.MBRICK_SERVO__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK) {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public Class<?> getInverseFeatureClass() {
+                    return MSubDevice.class;
+                }
+            };
         }
         return msubdevices;
     }
@@ -751,9 +754,8 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICK_SERVO__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
             case ModelPackage.MBRICK_SERVO__MSUBDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMsubdevices()).basicAdd(otherEnd, msgs);
@@ -823,7 +825,9 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
             case ModelPackage.MBRICK_SERVO__NAME:
                 return getName();
             case ModelPackage.MBRICK_SERVO__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICK_SERVO__MSUBDEVICES:
                 return getMsubdevices();
             case ModelPackage.MBRICK_SERVO__DEVICE_TYPE:
@@ -964,7 +968,7 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
             case ModelPackage.MBRICK_SERVO__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICK_SERVO__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICK_SERVO__MSUBDEVICES:
                 return msubdevices != null && !msubdevices.isEmpty();
             case ModelPackage.MBRICK_SERVO__DEVICE_TYPE:
@@ -1063,9 +1067,8 @@ public class MBrickServoImpl extends MinimalEObjectImpl.Container implements MBr
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

@@ -19,7 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.openhab.binding.onewire.internal.listener.InterfaceOneWireDevicePropertyWantsUpdateListener;
+import org.openhab.binding.onewire.internal.listener.OneWireDevicePropertyWantsUpdateListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +71,7 @@ public class OneWireUpdateScheduler {
     /**
      * @param pvWantsUpdateListener
      */
-    public OneWireUpdateScheduler(InterfaceOneWireDevicePropertyWantsUpdateListener pvWantsUpdateListener) {
+    public OneWireUpdateScheduler(OneWireDevicePropertyWantsUpdateListener pvWantsUpdateListener) {
         super();
         ivOneWireUpdateTask = new OneWireUpdateTask(ivUpdateQueue, pvWantsUpdateListener);
     }

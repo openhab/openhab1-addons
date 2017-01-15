@@ -73,7 +73,9 @@ public enum DSCAlarmItemType {
     KEYPAD_PROGRAM_LED("keypad_program_led"),
     KEYPAD_FIRE_LED("keypad_fire_led"),
     KEYPAD_BACKLIGHT_LED("keypad_backlight_led"),
-    KEYPAD_AC_LED("keypad_ac_led");
+    KEYPAD_AC_LED("keypad_ac_led"),
+    KEYPAD_LCD_UPDATE("keypad_lcd_update"),
+    KEYPAD_LCD_CURSOR("keypad_lcd_cursor");
 
     /**
      * The string found in a binding configuration
@@ -87,7 +89,7 @@ public enum DSCAlarmItemType {
 
     /**
      * Constructor
-     * 
+     *
      * @param label
      */
     private DSCAlarmItemType(String label) {
@@ -106,7 +108,7 @@ public enum DSCAlarmItemType {
 
     /**
      * Returns the label of the DSCAlarmItemType Values enumeration
-     * 
+     *
      * @return the label
      */
     public String getLabel() {
@@ -116,7 +118,7 @@ public enum DSCAlarmItemType {
     /**
      * Lookup function based on the binding type label
      * Returns null if the binding type is not found
-     * 
+     *
      * @param label
      * @return enum value
      */

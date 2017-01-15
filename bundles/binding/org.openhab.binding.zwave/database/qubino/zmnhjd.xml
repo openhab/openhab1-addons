@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZMNHJD</Model>
+    <Label lang="en">Flush Pilot</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x26</id>             <!-- SWITCH_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x60</id>             <!-- MULTI_INSTANCE -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Input 1 switch type</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">mono-stable switch type (push button)</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">bi-stable switch type</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Input 2 switch type</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">mono-stable switch type (push button)</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">bi-stable switch type</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Input 3 switch type</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">mono-stable switch type (push button)</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">bi-stable switch type</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Input 1 contact type</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">NO (normally open) input type</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">NC (normally close) input type</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">Input 2 contact type</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">NO (normally open) input type</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">NC (normally close) input type</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>6</Index>
+            <Label lang="en">Input 3 contact type</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">NO (normally open) input type</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">NC (normally close) input type</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>11</Index>
+            <Label lang="en">Input 1 operation mode selection</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>6</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Button does not influence on selected mode</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Comfort</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Comfort-1°C</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Comfort-2°C</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Eco Mode</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Frost Protection</Label>
+            </Item>
+            <Item>
+                <Value>6</Value>
+                <Label lang="en"> Stop</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>12</Index>
+            <Label lang="en">Input 2 operation mode selection</Label>
+            <Type>list</Type>
+            <Default>4</Default>
+            <Minimum>0</Minimum>
+            <Maximum>6</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Button does not influence on selected mode</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Comfort</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Comfort-1°C</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Comfort-2°C</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Eco Mode</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Frost Protection</Label>
+            </Item>
+            <Item>
+                <Value>6</Value>
+                <Label lang="en">Stop</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>13</Index>
+            <Label lang="en">Input 3 operation mode selection</Label>
+            <Type>list</Type>
+            <Default>5</Default>
+            <Minimum>0</Minimum>
+            <Maximum>6</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Button does not influence on selected mode</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Comfort</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Comfort-1°C</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Comfort-2°C</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Eco Mode</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Frost Protection</Label>
+            </Item>
+            <Item>
+                <Value>6</Value>
+                <Label lang="en">Stop</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>30</Index>
+            <Label lang="en">Saving the state of the device after a power failure</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">The module saves its state before power failure</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">The module does not save the state</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline group</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Multilevel</Label>
+            <Maximum>99</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Basic on/off </Label>
+            <Maximum>99</Maximum>
+        </Group>
+
+        <Group>
+            <Index>4</Index>
+            <Label lang="en">Basic on/off</Label>
+            <Maximum>99</Maximum>
+        </Group>
+
+        <Group>
+            <Index>5</Index>
+            <Label lang="en">Basic on/off</Label>
+            <Maximum>99</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

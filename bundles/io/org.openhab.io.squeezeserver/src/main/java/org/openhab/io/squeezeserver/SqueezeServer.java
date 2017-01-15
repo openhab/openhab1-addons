@@ -51,13 +51,15 @@ public class SqueezeServer implements ManagedService {
     // configuration defaults for optional properties
     private static final int DEFAULT_CLI_PORT = 9090;
     private static final int DEFAULT_WEB_PORT = 9000;
+    private static final int DEFAULT_RETRIES = 3;
+    private static final int DEFAULT_RETRY_TIMEOUT = 60;
 
     private static final String DEFAULT_TTS_URL = "http://translate.google.com/translate_tts?tl=en&ie=UTF-8&client=openhab&q=%s";
     private static final int DEFAULT_TTS_MAX_SENTENCE_LENGTH = 100;
 
     // / regEx to validate SqueezeServer config
     // <code>'^(squeeze:)(host|cliport|webport)=.+$'</code>
-    private static final Pattern SERVER_CONFIG_PATTERN = Pattern.compile("^(server)\\.(host|cliport|webport)$");
+    private static final Pattern SERVER_CONFIG_PATTERN = Pattern.compile("^(server)\\.(host|cliport|webport|retries|retryTimeout)$");
 
     // regEx to validate a mpdPlayer config <code>'^(.*?)\\.(id)$'</code>
     private static final Pattern PLAYER_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(id)$");
@@ -80,6 +82,8 @@ public class SqueezeServer implements ManagedService {
     private String host;
     private int cliPort;
     private int webPort;
+    private int retries;
+    private int retryTimeout;
 
     // client socket and listener thread
     private Socket clientSocket;
@@ -96,6 +100,8 @@ public class SqueezeServer implements ManagedService {
     // tts properties
     private String ttsUrl;
     private int ttsMaxSentenceLength;
+
+    private String _mutex = "wait";
 
     public synchronized boolean isConnected() {
         if (clientSocket == null) {
@@ -436,7 +442,8 @@ public class SqueezeServer implements ManagedService {
         host = null;
         cliPort = DEFAULT_CLI_PORT;
         webPort = DEFAULT_WEB_PORT;
-
+        retries = DEFAULT_RETRIES;
+        retryTimeout = DEFAULT_RETRY_TIMEOUT;
         ttsUrl = DEFAULT_TTS_URL;
         ttsMaxSentenceLength = DEFAULT_TTS_MAX_SENTENCE_LENGTH;
 
@@ -474,6 +481,10 @@ public class SqueezeServer implements ManagedService {
                     cliPort = Integer.valueOf(value);
                 } else if (serverConfig.equals("webport") && StringUtils.isNotBlank(value)) {
                     webPort = Integer.valueOf(value);
+                } else if (serverConfig.equals("retries") && StringUtils.isNotBlank(value)) {
+                    retries = Integer.valueOf(value);
+                } else if (serverConfig.equals("retryTimeout") && StringUtils.isNotBlank(value)) {
+                    retryTimeout = Integer.valueOf(value);
                 }
             } else if (playerMatcher.matches()) {
                 String playerId = playerMatcher.group(1);
@@ -487,7 +498,7 @@ public class SqueezeServer implements ManagedService {
             } else if (ttsMaxSentenceLengthMatcher.matches() && StringUtils.isNotBlank(value)) {
                 ttsMaxSentenceLength = Integer.valueOf(value);
             } else {
-                logger.warn("Unexpected or unsupported configuration: " + key + ". Ignoring.");
+                logger.warn("Ignored unexpected or unsupported configuration: {}", key);
             }
         }
 
@@ -500,15 +511,17 @@ public class SqueezeServer implements ManagedService {
         }
 
         // attempt to connect using our new config
-        connect();
+        if (!connect()) {
+            retryConnect();
+        }
     }
 
-    private void connect() {
+    private boolean connect() {
         try {
             clientSocket = new Socket(host, cliPort);
         } catch (IOException e) {
             logger.error("Failed to connect to the Squeeze Server at " + host + ":" + cliPort, e);
-            return;
+            return false;
         }
 
         try {
@@ -516,10 +529,35 @@ public class SqueezeServer implements ManagedService {
             listener.start();
         } catch (IllegalThreadStateException e) {
             logger.error("Failed to start the Squeeze Server listener thread", e);
-            return;
+            return false;
         }
 
         logger.info("Squeeze Server connection started.");
+        return true;
+    }
+
+    private boolean retryConnect() {
+        int retriesRemaining = retries;
+        boolean lastResult = false;
+
+        while (retriesRemaining > 0) {
+            synchronized (_mutex) {
+                logger.info("Waiting {} seconds before retrying failed connection.", retryTimeout);
+                try {
+                    _mutex.wait(retryTimeout*1000);
+                }catch(InterruptedException e) {
+                    logger.warn("Timeout was interrupted.");
+                 }
+                logger.info("Retrying failed connection (attempt {}/{}).", retries-retriesRemaining+1, retries);
+                if (connect()) {
+                    return true;
+                }
+                retriesRemaining--;
+            }
+        }
+
+        logger.error("All retries exhausted.  Giving up on connecting to server.");
+        return false;
     }
 
     private void disconnect() {

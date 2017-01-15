@@ -15,18 +15,18 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getChiptype <em>Chiptype</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getFrameduration
  * <em>Frameduration</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getClockfrequency
  * <em>Clockfrequency</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getColorMapping
- * <em>Color Mapping</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getColorMapping <em>Color
+ * Mapping</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getSubDevices <em>Sub Devices</em>}
  * </li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLEDStripConfiguration()
  * @model
@@ -80,8 +80,8 @@ public interface LEDStripConfiguration extends TFConfig {
     Integer getFrameduration();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getFrameduration
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getFrameduration
      * <em>Frameduration</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -110,8 +110,8 @@ public interface LEDStripConfiguration extends TFConfig {
     Long getClockfrequency();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getClockfrequency
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getClockfrequency
      * <em>Clockfrequency</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -140,9 +140,9 @@ public interface LEDStripConfiguration extends TFConfig {
     String getColorMapping();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getColorMapping
-     * <em>Color Mapping</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getColorMapping <em>Color
+     * Mapping</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

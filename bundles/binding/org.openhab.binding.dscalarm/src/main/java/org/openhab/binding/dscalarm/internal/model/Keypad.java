@@ -10,7 +10,6 @@ package org.openhab.binding.dscalarm.internal.model;
 
 import org.openhab.binding.dscalarm.DSCAlarmBindingConfig;
 import org.openhab.binding.dscalarm.internal.DSCAlarmEvent;
-import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties.LEDStateType;
 import org.openhab.binding.dscalarm.internal.protocol.APIMessage;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
@@ -30,118 +29,47 @@ import org.slf4j.LoggerFactory;
 public class Keypad extends DSCAlarmDevice {
     private static final Logger logger = LoggerFactory.getLogger(Keypad.class);
 
-    public DSCAlarmDeviceProperties keypadProperties = new DSCAlarmDeviceProperties();
+    private int keypadID;
+    private String ledStates[] = { "Off", "On", "Flashing" };
 
     /**
      * Constructor
-     * 
+     *
      * @param keypadId
      */
-    public Keypad(int keypadId) {
-        keypadProperties.setKeypadId(keypadId);
+    public Keypad(int keypadID) {
+        this.keypadID = keypadID;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void refreshItem(Item item, DSCAlarmBindingConfig config, EventPublisher publisher) {
-        int state;
-        String str = "";
+    public void refreshItem(Item item, DSCAlarmBindingConfig config, EventPublisher publisher, int state, String description) {
         logger.debug("refreshItem(): Keypad Item Name: {}", item.getName());
 
         if (config != null) {
             if (config.getDSCAlarmItemType() != null) {
                 switch (config.getDSCAlarmItemType()) {
                     case KEYPAD_READY_LED:
-                        state = keypadProperties.getLEDState(LEDStateType.READY_LED_STATE);
-                        str = keypadProperties.getLEDStateDescription(LEDStateType.READY_LED_STATE);
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(str));
-                        }
-                        break;
                     case KEYPAD_ARMED_LED:
-                        state = keypadProperties.getLEDState(LEDStateType.ARMED_LED_STATE);
-                        str = keypadProperties.getLEDStateDescription(LEDStateType.ARMED_LED_STATE);
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(str));
-                        }
-                        break;
                     case KEYPAD_MEMORY_LED:
-                        state = keypadProperties.getLEDState(LEDStateType.MEMORY_LED_STATE);
-                        str = keypadProperties.getLEDStateDescription(LEDStateType.MEMORY_LED_STATE);
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(str));
-                        }
-                        break;
                     case KEYPAD_BYPASS_LED:
-                        state = keypadProperties.getLEDState(LEDStateType.BYPASS_LED_STATE);
-                        str = keypadProperties.getLEDStateDescription(LEDStateType.BYPASS_LED_STATE);
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(str));
-                        }
-                        break;
                     case KEYPAD_TROUBLE_LED:
-                        state = keypadProperties.getLEDState(LEDStateType.TROUBLE_LED_STATE);
-                        str = keypadProperties.getLEDStateDescription(LEDStateType.TROUBLE_LED_STATE);
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(str));
-                        }
-                        break;
                     case KEYPAD_PROGRAM_LED:
-                        state = keypadProperties.getLEDState(LEDStateType.PROGRAM_LED_STATE);
-                        str = keypadProperties.getLEDStateDescription(LEDStateType.PROGRAM_LED_STATE);
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(str));
-                        }
-                        break;
                     case KEYPAD_FIRE_LED:
-                        state = keypadProperties.getLEDState(LEDStateType.FIRE_LED_STATE);
-                        str = keypadProperties.getLEDStateDescription(LEDStateType.FIRE_LED_STATE);
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(str));
-                        }
-                        break;
                     case KEYPAD_BACKLIGHT_LED:
-                        state = keypadProperties.getLEDState(LEDStateType.BACKLIGHT_LED_STATE);
-                        str = keypadProperties.getLEDStateDescription(LEDStateType.BACKLIGHT_LED_STATE);
+                    case KEYPAD_AC_LED:
                         if (item instanceof NumberItem) {
                             publisher.postUpdate(item.getName(), new DecimalType(state));
                         }
                         if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(str));
+                            publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
                         }
                         break;
-                    case KEYPAD_AC_LED:
-                        state = keypadProperties.getLEDState(LEDStateType.AC_LED_STATE);
-                        str = keypadProperties.getLEDStateDescription(LEDStateType.AC_LED_STATE);
-                        if (item instanceof NumberItem) {
-                            publisher.postUpdate(item.getName(), new DecimalType(state));
-                        }
-                        if (item instanceof StringItem) {
-                            publisher.postUpdate(item.getName(), new StringType(str));
-                        }
+                    case KEYPAD_LCD_UPDATE:
+                    case KEYPAD_LCD_CURSOR:
+                        publisher.postUpdate(item.getName(), new StringType(description));
                         break;
                     default:
                         logger.debug("refreshItem(): Keypad item not updated.");
@@ -161,151 +89,36 @@ public class Keypad extends DSCAlarmDevice {
 
         if (event != null) {
             apiMessage = event.getAPIMessage();
-            state = Integer.parseInt(apiMessage.getAPIData().substring(1));
-            String str = "";
             logger.debug("handleEvent(): Keypad Item Name: {}", item.getName());
 
             if (config != null) {
                 if (config.getDSCAlarmItemType() != null) {
                     switch (config.getDSCAlarmItemType()) {
                         case KEYPAD_READY_LED:
-                            keypadProperties.setLEDState(LEDStateType.READY_LED_STATE, state);
-                            str = keypadProperties.getLEDStateDescription(LEDStateType.READY_LED_STATE);
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(str));
-                            }
-                            break;
                         case KEYPAD_ARMED_LED:
-                            keypadProperties.setLEDState(LEDStateType.ARMED_LED_STATE, state);
-                            str = keypadProperties.getLEDStateDescription(LEDStateType.ARMED_LED_STATE);
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(str));
-                            }
-                            break;
                         case KEYPAD_MEMORY_LED:
-                            keypadProperties.setLEDState(LEDStateType.MEMORY_LED_STATE, state);
-                            str = keypadProperties.getLEDStateDescription(LEDStateType.MEMORY_LED_STATE);
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(str));
-                            }
-                            break;
                         case KEYPAD_BYPASS_LED:
-                            keypadProperties.setLEDState(LEDStateType.BYPASS_LED_STATE, state);
-                            str = keypadProperties.getLEDStateDescription(LEDStateType.BYPASS_LED_STATE);
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(str));
-                            }
-                            break;
                         case KEYPAD_TROUBLE_LED:
-                            keypadProperties.setLEDState(LEDStateType.TROUBLE_LED_STATE, state);
-                            str = keypadProperties.getLEDStateDescription(LEDStateType.TROUBLE_LED_STATE);
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(str));
-                            }
-                            break;
                         case KEYPAD_PROGRAM_LED:
-                            keypadProperties.setLEDState(LEDStateType.PROGRAM_LED_STATE, state);
-                            str = keypadProperties.getLEDStateDescription(LEDStateType.PROGRAM_LED_STATE);
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(str));
-                            }
-                            break;
                         case KEYPAD_FIRE_LED:
-                            keypadProperties.setLEDState(LEDStateType.FIRE_LED_STATE, state);
-                            str = keypadProperties.getLEDStateDescription(LEDStateType.FIRE_LED_STATE);
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(str));
-                            }
-                            break;
                         case KEYPAD_BACKLIGHT_LED:
-                            keypadProperties.setLEDState(LEDStateType.BACKLIGHT_LED_STATE, state);
-                            str = keypadProperties.getLEDStateDescription(LEDStateType.BACKLIGHT_LED_STATE);
+                        case KEYPAD_AC_LED:
+                            state = Integer.parseInt(apiMessage.getAPIData().substring(1));
                             if (item instanceof NumberItem) {
                                 publisher.postUpdate(item.getName(), new DecimalType(state));
                             }
                             if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(str));
+                                publisher.postUpdate(item.getName(), new StringType(ledStates[state]));
                             }
                             break;
-                        case KEYPAD_AC_LED:
-                            keypadProperties.setLEDState(LEDStateType.AC_LED_STATE, state);
-                            str = keypadProperties.getLEDStateDescription(LEDStateType.AC_LED_STATE);
-                            if (item instanceof NumberItem) {
-                                publisher.postUpdate(item.getName(), new DecimalType(state));
-                            }
-                            if (item instanceof StringItem) {
-                                publisher.postUpdate(item.getName(), new StringType(str));
-                            }
+                        case KEYPAD_LCD_UPDATE:
+                        case KEYPAD_LCD_CURSOR:
+                            publisher.postUpdate(item.getName(), new StringType(apiMessage.getAPIData()));
                             break;
                         default:
                             logger.debug("handleEvent(): Keypad item not updated.");
                             break;
                     }
-                }
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void updateProperties(Item item, DSCAlarmBindingConfig config, int state, String description) {
-        logger.debug("updateProperties(): Panel Item Name: {}", item.getName());
-        if (config != null) {
-            if (config.getDSCAlarmItemType() != null) {
-                switch (config.getDSCAlarmItemType()) {
-                    case KEYPAD_READY_LED:
-                        keypadProperties.setLEDState(LEDStateType.READY_LED_STATE, state);
-                        break;
-                    case KEYPAD_ARMED_LED:
-                        keypadProperties.setLEDState(LEDStateType.ARMED_LED_STATE, state);
-                        break;
-                    case KEYPAD_MEMORY_LED:
-                        keypadProperties.setLEDState(LEDStateType.MEMORY_LED_STATE, state);
-                        break;
-                    case KEYPAD_BYPASS_LED:
-                        keypadProperties.setLEDState(LEDStateType.BYPASS_LED_STATE, state);
-                        break;
-                    case KEYPAD_TROUBLE_LED:
-                        keypadProperties.setLEDState(LEDStateType.TROUBLE_LED_STATE, state);
-                        break;
-                    case KEYPAD_PROGRAM_LED:
-                        keypadProperties.setLEDState(LEDStateType.PROGRAM_LED_STATE, state);
-                        break;
-                    case KEYPAD_FIRE_LED:
-                        keypadProperties.setLEDState(LEDStateType.FIRE_LED_STATE, state);
-                        break;
-                    case KEYPAD_BACKLIGHT_LED:
-                        keypadProperties.setLEDState(LEDStateType.BACKLIGHT_LED_STATE, state);
-                        break;
-                    case KEYPAD_AC_LED:
-                        keypadProperties.setLEDState(LEDStateType.AC_LED_STATE, state);
-                        break;
-                    default:
-                        logger.debug("updateProperties(): Keypad property not updated.");
-                        break;
                 }
             }
         }

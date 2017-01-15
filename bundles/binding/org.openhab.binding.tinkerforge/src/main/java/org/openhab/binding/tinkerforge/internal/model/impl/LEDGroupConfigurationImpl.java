@@ -21,10 +21,10 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDGroupConfigurationImpl#getLeds <em>Leds</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -92,10 +92,9 @@ public class LEDGroupConfigurationImpl extends MinimalEObjectImpl.Container impl
     public void setLeds(String newLeds) {
         String oldLeds = leds;
         leds = newLeds;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_GROUP_CONFIGURATION__LEDS, oldLeds,
                     leds));
-        }
     }
 
     /**
@@ -168,9 +167,8 @@ public class LEDGroupConfigurationImpl extends MinimalEObjectImpl.Container impl
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (leds: ");

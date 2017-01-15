@@ -37,7 +37,7 @@
     <description>This is the open Home Automation Bus (openHAB)</description>
 
     <properties>
-        <ohdr.version>1.0.0</ohdr.version>
+        <ohdr.version>1.0.10</ohdr.version>
         <ohc.version>2.0.0.x</ohc.version>
         <jdeb-version>1.4</jdeb-version>
 

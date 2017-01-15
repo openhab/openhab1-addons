@@ -17,8 +17,10 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,19 +37,21 @@ import javax.xml.bind.JAXBException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.netty.handler.timeout.TimeoutException;
 import org.openhab.binding.plex.internal.communication.AbstractSessionItem;
-import org.openhab.binding.plex.internal.communication.Child;
 import org.openhab.binding.plex.internal.communication.Connection;
 import org.openhab.binding.plex.internal.communication.Device;
 import org.openhab.binding.plex.internal.communication.MediaContainer;
 import org.openhab.binding.plex.internal.communication.Player;
 import org.openhab.binding.plex.internal.communication.Server;
+import org.openhab.binding.plex.internal.communication.SessionUpdate;
 import org.openhab.binding.plex.internal.communication.Track;
-import org.openhab.binding.plex.internal.communication.Update;
 import org.openhab.binding.plex.internal.communication.User;
+import org.openhab.binding.plex.internal.communication.websocket.NotificationContainer;
+import org.openhab.binding.plex.internal.communication.websocket.Update;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
@@ -90,6 +94,8 @@ public class PlexConnector extends Thread {
     private static final String SIGN_IN_URL = "https://plex.tv/users/sign_in.xml";
 
     private static final String API_RESOURCES_URL = "https://plex.tv/api/resources?includeHttps=1";
+
+    private static final String TOKEN_HEADER = "X-Plex-Token";
 
     private final AsyncHttpClient client;
 
@@ -138,8 +144,11 @@ public class PlexConnector extends Thread {
      *            Connection properties
      * @param callback
      *            Called when a state update is received
+     * @throws UnknownHostException
+     *             If hostname is not resolvable.
      */
-    public PlexConnector(PlexConnectionProperties connection, PlexUpdateReceivedCallback callback) {
+    public PlexConnector(PlexConnectionProperties connection, PlexUpdateReceivedCallback callback)
+            throws UnknownHostException {
         this.connection = connection;
         this.callback = callback;
 
@@ -186,7 +195,7 @@ public class PlexConnector extends Thread {
      */
     private void open() throws IOException, InterruptedException, ExecutionException {
         close();
-        webSocket = client.prepareGet(wsUri).execute(handler).get();
+        webSocket = client.prepareGet(addDefaultQueryParameters(wsUri)).execute(handler).get();
     }
 
     /**
@@ -391,11 +400,7 @@ public class PlexConnector extends Thread {
         }
 
         if (!isBlank(cover)) {
-            cover = String.format("%s%s", connection.getUri().toString(), cover);
-
-            if (connection.hasToken()) {
-                cover = cover + "?X-Plex-Token=" + connection.getToken();
-            }
+            cover = addDefaultQueryParameters(String.format("%s%s", connection.getUri().toString(), cover));
         }
 
         return cover;
@@ -495,24 +500,25 @@ public class PlexConnector extends Thread {
 
         @Override
         public void onOpen(WebSocket webSocket) {
-            logger.info("Plex websocket connected to {}:{}", connection.getHost(), connection.getPort());
+            logger.info("Plex websocket connected to {}:{}", connection.getUri().getHost(),
+                    connection.getUri().getPort());
             connected = true;
         }
 
         @Override
         public void onError(Throwable e) {
             if (e instanceof ConnectException) {
-                logger.debug("[{}]: Websocket connection error", connection.getHost());
+                logger.debug("[{}]: Websocket connection error", connection.getUri().getHost());
             } else if (e instanceof TimeoutException) {
-                logger.debug("[{}]: Websocket timeout error", connection.getHost());
+                logger.debug("[{}]: Websocket timeout error", connection.getUri().getHost());
             } else {
-                logger.debug("[{}]: Websocket error: {}", connection.getHost(), e.getMessage());
+                logger.debug("[{}]: Websocket error: {}", connection.getUri().getHost(), e.getMessage());
             }
         }
 
         @Override
         public void onClose(WebSocket webSocket) {
-            logger.warn("[{}]: Websocket closed", connection.getHost());
+            logger.warn("[{}]: Websocket closed", connection.getUri().getHost());
             webSocket = null;
             connected = false;
 
@@ -523,50 +529,58 @@ public class PlexConnector extends Thread {
 
         @Override
         public void onMessage(String message) {
-            logger.debug("[{}]: Message received: {}", connection.getHost(), message);
-            Update update;
+            logger.debug("[{}]: Message received: {}", connection.getUri().getHost(), message);
+            SessionUpdate update = getSessionUpdateFrom(message);
+
+            if (update != null && isNotBlank(update.getSessionKey())) {
+                String sessionKey = update.getSessionKey();
+                String key = update.getKey();
+                String state = update.getState();
+                PlexSession session = getSession(sessionKey, key);
+
+                if (!isBlank(state) && session != null) {
+                    PlexPlayerState playerState = PlexPlayerState.of(state);
+                    session.setState(playerState);
+                    session.setViewOffset(update.getViewOffset());
+                    callback.updateReceived(session);
+                }
+            }
+        }
+
+        private SessionUpdate getSessionUpdateFrom(String message) {
             try {
-                update = mapper.readValue(message, Update.class);
+                switch (connection.getApiLevel()) {
+                    case v1:
+                        mapper.configure(Feature.UNWRAP_ROOT_VALUE, false);
+                        Update update = mapper.readValue(message, Update.class);
+                        if (update.getType().equals("playing") && update.getChildren().size() > 0) {
+                            return update.getChildren().get(0);
+                        }
+                        break;
+                    case v2:
+                        mapper.configure(Feature.UNWRAP_ROOT_VALUE, true);
+                        NotificationContainer notificationContainer = mapper.readValue(message,
+                                NotificationContainer.class);
+                        if (notificationContainer.getStateNotifications().size() > 0) {
+                            return notificationContainer.getStateNotifications().get(0);
+                        }
+                        break;
+                }
             } catch (JsonParseException e) {
                 logger.error("Error parsing JSON", e);
-                return;
             } catch (JsonMappingException e) {
                 logger.error("Error mapping JSON", e);
-                return;
             } catch (IOException e) {
                 logger.error("An I/O error occured while decoding JSON", e);
-                return;
             }
 
-            try {
-                /*
-                 * Plex sends different kinds of status updates. We're only interested in 'now playing' updates.
-                 */
-                String type = update.getType();
-                if (type.equals("playing") && update.getChildren().size() == 1) {
-                    Child child = update.getChildren().get(0);
-                    if (!isBlank(child.getSessionKey())) {
-                        String sessionKey = child.getSessionKey();
-                        String key = child.getKey();
-                        String state = child.getState();
-                        PlexSession session = getSession(sessionKey, key);
-
-                        if (!isEmpty(state) && session != null) {
-                            PlexPlayerState playerState = PlexPlayerState.of(state);
-                            session.setState(playerState);
-                            session.setViewOffset(child.getViewOffset());
-                            callback.updateReceived(session);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                logger.error("Error handling player state change message", e);
-            }
+            return null;
         }
 
         @Override
         public void onFragment(String fragment, boolean last) {
         }
+
     }
 
     public void refresh() {
@@ -618,25 +632,35 @@ public class PlexConnector extends Thread {
         return null;
     }
 
-    private void resolveServer() {
+    private void resolveServer() throws UnknownHostException {
         MediaContainer container = getDocument(API_RESOURCES_URL, MediaContainer.class);
 
-        if (container != null) {
-            for (Device devices : container.getDevices()) {
-                for (Connection deviceConnection : devices.getConnections()) {
-                    boolean uriSet = (connection.getUri() != null);
-                    boolean portEqual = String.valueOf(connection.getPort()).equals(deviceConnection.getPort());
-                    boolean hostEqual = connection.getHost().equals(deviceConnection.getAddress());
+        // We need the IP-address to find this server in the server list on plex.tv
+        String ip = resolveHostname(connection.getHost());
 
-                    if (!uriSet && portEqual && hostEqual) {
-                        connection.setUri(deviceConnection.getUri());
+        if (container != null) {
+            for (Device device : container.getDevices()) {
+                if (contains(device.getProvides(), "server")) {
+                    for (Connection deviceConnection : device.getConnections()) {
+                        boolean uriSet = (connection.getUri() != null);
+                        boolean portEqual = String.valueOf(connection.getPort()).equals(deviceConnection.getPort());
+                        boolean hostEqual = ip.equals(deviceConnection.getAddress());
+
+                        if (!uriSet && portEqual && hostEqual) {
+                            connection.setUri(deviceConnection.getUri());
+                            connection.setApiLevel(PlexApiLevel.getApiLevel(device.getProductVersion()));
+                            logger.debug("Server found, version {}, api level {}", device.getProductVersion(),
+                                    connection.getApiLevel());
+                        }
                     }
                 }
             }
         }
 
         if (connection.getUri() == null) {
-            connection.setUri(String.format("http://%s:%d", connection.getHost(), connection.getPort()));
+            logger.warn(
+                    "Server not found in plex.tv device list, setting URI from configured data. Try configuring IP-address of host.");
+            connection.setUri(String.format("http://%s:%d", ip, connection.getPort()));
         }
 
     }
@@ -695,9 +719,22 @@ public class PlexConnector extends Thread {
         headers.put("X-Plex-Platform-Version", Arrays.asList(SystemUtils.JAVA_VERSION));
 
         if (connection.hasToken()) {
-            headers.put("X-Plex-Token", Arrays.asList(connection.getToken()));
+            headers.put(TOKEN_HEADER, Arrays.asList(connection.getToken()));
         }
 
         return headers;
+    }
+
+    private String addDefaultQueryParameters(String uri) {
+        if (connection.hasToken()) {
+            uri += "?" + TOKEN_HEADER + "=" + connection.getToken();
+        }
+
+        return uri;
+    }
+
+    private String resolveHostname(String host) throws UnknownHostException {
+        InetAddress address = InetAddress.getByName(host);
+        return address.getHostAddress();
     }
 }

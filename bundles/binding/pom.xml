@@ -56,7 +56,7 @@
     <module>org.openhab.binding.dmx.test</module>
     <module>org.openhab.binding.dsmr</module>
     <module>org.openhab.binding.rfxcom</module>
-    <!--module>org.openhab.binding.rfxcom.test</module-->
+    <module>org.openhab.binding.rfxcom.test</module>
     <module>org.openhab.binding.samsungac</module>
     <module>org.openhab.binding.samsungac.test</module>
     <module>org.openhab.binding.samsungtv</module>
@@ -153,6 +153,7 @@
     <module>org.openhab.binding.ecobee</module>
     <module>org.openhab.binding.autelis</module>
     <module>org.openhab.binding.nest</module>
+    <module>org.openhab.binding.powerdoglocalapi</module>
     <module>org.openhab.binding.satel</module>
     <module>org.openhab.binding.harmonyhub</module>
     <module>org.openhab.binding.plex</module>
@@ -188,5 +189,10 @@
     <module>org.openhab.binding.gc100ir</module>
     <module>org.openhab.binding.powermax</module>
     <module>org.openhab.binding.upb</module>
+	  <module>org.openhab.binding.horizon</module>
+    <module>org.openhab.binding.mcp23017</module>
+    <module>org.openhab.binding.mcp3424</module>
+    <module>org.openhab.binding.plclogo</module>
+    <module>org.openhab.binding.km200</module>
   </modules>
 </project>

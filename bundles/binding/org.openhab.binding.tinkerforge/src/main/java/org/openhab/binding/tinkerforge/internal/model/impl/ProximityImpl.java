@@ -21,11 +21,11 @@ import org.openhab.binding.tinkerforge.internal.model.Proximity;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
- *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ProximityImpl#getDeviceType
- *        <em>Device Type</em>}</li>
- *        </ul>
  *        </p>
+ *        <ul>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ProximityImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        </ul>
  *
  * @generated
  */
@@ -122,9 +122,8 @@ public class ProximityImpl extends MultiTouchDeviceImpl implements Proximity {
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (deviceType: ");
