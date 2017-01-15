@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.asterisk;
 
-import org.openhab.binding.asterisk.internal.AsteriskBindingTypes;
+import org.openhab.binding.asterisk.internal.AsteriskGenericBindingProvider.AsteriskBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
@@ -38,14 +38,13 @@ public interface AsteriskBindingProvider extends BindingProvider {
      * @param itemName the name of the item
      * @return the items binding type
      */
-    AsteriskBindingTypes getType(String itemName);
+    String getType(String itemName);
 
     /**
-     * Provides an array of all item names of this provider for a given binding type
+     * Provides the binding configuration for a given item
      * 
-     * @param bindingType the binding type of the items
-     * @return an array of all item names of this provider for the given binding type
+     * @param itemName name of the item you're requesting the binding configuration
+     * @return binding configuration
      */
-    String[] getItemNamesByType(AsteriskBindingTypes bindingType);
-
+    AsteriskBindingConfig getConfig(String itemName);
 }

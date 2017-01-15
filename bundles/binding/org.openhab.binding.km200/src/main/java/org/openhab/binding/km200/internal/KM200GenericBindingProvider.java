@@ -82,7 +82,7 @@ public class KM200GenericBindingProvider extends AbstractGenericBindingProvider 
      */
     protected KM200BindingConfig parseBindingConfig(Item item, String bindingConfig)
             throws BindingConfigParseException {
-        String service = null;
+        String service = null, current = null;
         HashMap<String, String> parameterMap = new HashMap<String, String>();
         /* Check whether some defined services are used */
         logger.info("Bind Config: {}", bindingConfig);
@@ -142,6 +142,14 @@ public class KM200GenericBindingProvider extends AbstractGenericBindingProvider 
                     throw new BindingConfigParseException(
                             "Wrong service string without / in configuration string '" + bindingConfig + "'");
                 }
+            } else if (key.equals("current")) {
+                current = value;
+                if (!current.contains("/")) {
+                    logger.error("Wrong current string without / in configuration string '{}'", bindingConfig);
+                    throw new BindingConfigParseException(
+                            "Wrong current string without / in configuration string '" + bindingConfig + "'");
+                }
+                parameterMap.put(key, current);
             } else if (key.equals("on") || key.equals("off")) {
                 parameterMap.put(key, value);
             } else {
@@ -182,7 +190,6 @@ public class KM200GenericBindingProvider extends AbstractGenericBindingProvider 
     @Override
     public HashMap<String, String> getParameter(String itemName) {
         KM200BindingConfig config = (KM200BindingConfig) bindingConfigs.get(itemName);
-        // TODO Auto-generated method stub
         return config != null ? config.getParameter() : null;
     }
 

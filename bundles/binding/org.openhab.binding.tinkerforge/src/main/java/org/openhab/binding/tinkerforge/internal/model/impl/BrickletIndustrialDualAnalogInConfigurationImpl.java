@@ -22,12 +22,12 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>
  * {@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletIndustrialDualAnalogInConfigurationImpl#getSampleRate
  * <em>Sample Rate</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -97,11 +97,10 @@ public class BrickletIndustrialDualAnalogInConfigurationImpl extends TFBaseConfi
     public void setSampleRate(Short newSampleRate) {
         Short oldSampleRate = sampleRate;
         sampleRate = newSampleRate;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN_CONFIGURATION__SAMPLE_RATE, oldSampleRate,
                     sampleRate));
-        }
     }
 
     /**
@@ -174,9 +173,8 @@ public class BrickletIndustrialDualAnalogInConfigurationImpl extends TFBaseConfi
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (sampleRate: ");

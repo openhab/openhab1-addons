@@ -21,6 +21,7 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getChiptype
  * <em>Chiptype</em>}</li>
@@ -28,12 +29,11 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * <em>Frameduration</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getClockfrequency
  * <em>Clockfrequency</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getColorMapping
- * <em>Color Mapping</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getSubDevices
- * <em>Sub Devices</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getColorMapping <em>Color
+ * Mapping</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getSubDevices <em>Sub
+ * Devices</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -190,10 +190,9 @@ public class LEDStripConfigurationImpl extends MinimalEObjectImpl.Container impl
     public void setChiptype(String newChiptype) {
         String oldChiptype = chiptype;
         chiptype = newChiptype;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_STRIP_CONFIGURATION__CHIPTYPE,
                     oldChiptype, chiptype));
-        }
     }
 
     /**
@@ -217,10 +216,9 @@ public class LEDStripConfigurationImpl extends MinimalEObjectImpl.Container impl
     public void setFrameduration(Integer newFrameduration) {
         Integer oldFrameduration = frameduration;
         frameduration = newFrameduration;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_STRIP_CONFIGURATION__FRAMEDURATION,
                     oldFrameduration, frameduration));
-        }
     }
 
     /**
@@ -244,10 +242,9 @@ public class LEDStripConfigurationImpl extends MinimalEObjectImpl.Container impl
     public void setClockfrequency(Long newClockfrequency) {
         Long oldClockfrequency = clockfrequency;
         clockfrequency = newClockfrequency;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_STRIP_CONFIGURATION__CLOCKFREQUENCY,
                     oldClockfrequency, clockfrequency));
-        }
     }
 
     /**
@@ -271,10 +268,9 @@ public class LEDStripConfigurationImpl extends MinimalEObjectImpl.Container impl
     public void setColorMapping(String newColorMapping) {
         String oldColorMapping = colorMapping;
         colorMapping = newColorMapping;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_STRIP_CONFIGURATION__COLOR_MAPPING,
                     oldColorMapping, colorMapping));
-        }
     }
 
     /**
@@ -298,10 +294,9 @@ public class LEDStripConfigurationImpl extends MinimalEObjectImpl.Container impl
     public void setSubDevices(String newSubDevices) {
         String oldSubDevices = subDevices;
         subDevices = newSubDevices;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_STRIP_CONFIGURATION__SUB_DEVICES,
                     oldSubDevices, subDevices));
-        }
     }
 
     /**
@@ -417,9 +412,8 @@ public class LEDStripConfigurationImpl extends MinimalEObjectImpl.Container impl
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (chiptype: ");

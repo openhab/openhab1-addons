@@ -46,6 +46,7 @@ import com.tinkerforge.TimeoutException;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getUid <em>Uid</em>}</li>
@@ -56,12 +57,11 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getSensorValue <em>Sensor Value</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getTfConfig <em>Tf Config</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getCallbackPeriod
- * <em>Callback Period</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getCallbackPeriod <em>Callback
+ * Period</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getDeviceType <em>Device Type</em>}
  * </li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -288,9 +288,8 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_COLOR__LOGGER, oldLogger, logger));
-        }
     }
 
     /**
@@ -314,9 +313,8 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_COLOR__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -340,9 +338,8 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_COLOR__POLL, oldPoll, poll));
-        }
     }
 
     /**
@@ -366,10 +363,9 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_COLOR__ENABLED_A, oldEnabledA,
                     enabledA));
-        }
     }
 
     /**
@@ -393,9 +389,8 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_COLOR__SUB_ID, oldSubId, subId));
-        }
     }
 
     /**
@@ -406,10 +401,21 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
      */
     @Override
     public MBrickletColor getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.COLOR_COLOR__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.COLOR_COLOR__MBRICK)
             return null;
-        }
         return (MBrickletColor) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletColor basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.COLOR_COLOR__MBRICK)
+            return null;
+        return (MBrickletColor) eInternalContainer();
     }
 
     /**
@@ -433,25 +439,20 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
     public void setMbrick(MBrickletColor newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.COLOR_COLOR__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_COLOR__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
@@ -475,10 +476,9 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
     public void setSensorValue(HSBValue newSensorValue) {
         HSBValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_COLOR__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
-        }
     }
 
     /**
@@ -504,11 +504,10 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.COLOR_COLOR__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -523,22 +522,18 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
     public void setTfConfig(TFBaseConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.COLOR_COLOR__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.COLOR_COLOR__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_COLOR__TF_CONFIG, newTfConfig,
                     newTfConfig));
-        }
     }
 
     /**
@@ -562,10 +557,9 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
     public void setCallbackPeriod(long newCallbackPeriod) {
         long oldCallbackPeriod = callbackPeriod;
         callbackPeriod = newCallbackPeriod;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_COLOR__CALLBACK_PERIOD,
                     oldCallbackPeriod, callbackPeriod));
-        }
     }
 
     /**
@@ -675,9 +669,8 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.COLOR_COLOR__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletColor) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -736,7 +729,9 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
             case ModelPackage.COLOR_COLOR__SUB_ID:
                 return getSubId();
             case ModelPackage.COLOR_COLOR__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.COLOR_COLOR__SENSOR_VALUE:
                 return getSensorValue();
             case ModelPackage.COLOR_COLOR__TF_CONFIG:
@@ -849,7 +844,7 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
             case ModelPackage.COLOR_COLOR__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.COLOR_COLOR__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.COLOR_COLOR__SENSOR_VALUE:
                 return sensorValue != null;
             case ModelPackage.COLOR_COLOR__TF_CONFIG:
@@ -996,9 +991,8 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

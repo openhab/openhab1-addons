@@ -18,7 +18,7 @@ import org.openhab.core.types.Type;
  * @since 1.7.0
  *
  */
-abstract public class AbstractOneWireOpenClosedTypeModifier implements InterfaceOneWireTypeModifier {
+abstract public class AbstractOneWireOpenClosedTypeModifier implements OneWireTypeModifier {
 
     /*
      * (non-Javadoc)

@@ -46,7 +46,7 @@ public class OBISMessage {
 
     /**
      * Construct a new OBISMessage with the specified OBIS Message Type
-     * 
+     *
      * @param msgType
      *            {@link OBISMsgType}
      */
@@ -58,7 +58,7 @@ public class OBISMessage {
 
     /**
      * Return the {@link OBISMsgType} for this OBIS message
-     * 
+     *
      * @return the {@link OBISMsgType} for this OBIS message
      */
     public OBISMsgType getMsgType() {
@@ -67,7 +67,7 @@ public class OBISMessage {
 
     /**
      * Returns string representation of this OBISMessage
-     * 
+     *
      * @return string representation of this OBISMessage
      */
     @Override
@@ -78,7 +78,7 @@ public class OBISMessage {
 
     /**
      * Returns the openHAB values that are part of this OBIS message
-     * 
+     *
      * @return List of {@link CosemValue} that are part of this OBIS message
      */
     public List<? extends CosemValue<? extends Object>> getOpenHABValues() {
@@ -91,21 +91,21 @@ public class OBISMessage {
      * When the parser has problems it throws an {@link ParseException}. The
      * already parsed values will still be available. It is up to the caller how
      * to handle a partially parsed message.
-     * 
+     *
      * @param cosemStringValues
      *            the List of COSEM String values
      * @throws ParseException
      *             if parsing fails
      */
     public void parseCosemValues(List<String> cosemStringValues) throws ParseException {
-        logger.debug("Received items:" + cosemStringValues.size() + ", Needed items:"
-                + msgType.cosemValueDescriptors.size());
+        logger.debug("Received items: {}, Needed items: {}", cosemStringValues.size(),
+                msgType.cosemValueDescriptors.size());
 
         /*
          * It is not necessarily a problem if 'Needed items' > 'Received items'.
          * Since some items have a dynamic number of values (e.g. Power Failure
          * Log).
-         * 
+         *
          * Since the minority of the messages has such features, differences
          * between received and needed could indicate problems
          */
@@ -117,7 +117,7 @@ public class OBISMessage {
                     cosemValue.setValue(cosemStringValues.get(i));
                     cosemValues.add(cosemValue);
                 } else {
-                    logger.error("Failed to parse:" + cosemStringValues.get(i), " for OBISMsgType:" + msgType);
+                    logger.error("Failed to parse: {} for OBISMsgType: {}", cosemStringValues.get(i), msgType);
                 }
             }
         } else {
@@ -139,7 +139,7 @@ public class OBISMessage {
 
     /**
      * Creates an empty CosemValue object
-     * 
+     *
      * @param cosemValueDescriptor
      *            the CosemValueDescriptor object that describes the CosemValue
      * @return the instantiated CosemValue based on the specified
@@ -157,7 +157,7 @@ public class OBISMessage {
 
             return c.newInstance(unit, dsmrItemId);
         } catch (ReflectiveOperationException roe) {
-            logger.error("Failed to create " + msgType.obisId + " message", roe);
+            logger.error("Failed to create {} message", msgType.obisId, roe);
         }
         return null;
     }
@@ -165,7 +165,7 @@ public class OBISMessage {
     /**
      * On the Kaifa E0003 we have seen power failure entries that occurred at
      * 1-1-1970 and have a 2^32 - 1 duration
-     * 
+     *
      * This method filters the values belonging to this entry
      */
     private void postProcessKaifaE0003() {

@@ -35,12 +35,15 @@ import org.slf4j.Logger;
 
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
+import com.tinkerforge.BrickStepper;
 import com.tinkerforge.BrickletAccelerometer;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletAnalogIn;
 import com.tinkerforge.BrickletAnalogInV2;
+import com.tinkerforge.BrickletAnalogOutV2;
 import com.tinkerforge.BrickletBarometer;
+import com.tinkerforge.BrickletCO2;
 import com.tinkerforge.BrickletColor;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
@@ -65,6 +68,8 @@ import com.tinkerforge.BrickletLoadCell;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
+import com.tinkerforge.BrickletOLED128x64;
+import com.tinkerforge.BrickletOLED64x48;
 import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletPiezoSpeaker;
 import com.tinkerforge.BrickletRemoteSwitch;
@@ -74,7 +79,9 @@ import com.tinkerforge.BrickletSolidStateRelay;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
+import com.tinkerforge.BrickletThermocouple;
 import com.tinkerforge.BrickletTilt;
+import com.tinkerforge.BrickletUVLight;
 import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
@@ -96,8 +103,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public static ModelFactory init() {
         try {
-            ModelFactory theModelFactory = (ModelFactory) EPackage.Registry.INSTANCE
-                    .getEFactory("org.openhab.binding.tinkerforge.internal.model");
+            ModelFactory theModelFactory = (ModelFactory) EPackage.Registry.INSTANCE.getEFactory(ModelPackage.eNS_URI);
             if (theModelFactory != null) {
                 return theModelFactory;
             }
@@ -187,12 +193,42 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createJoystickYPosition();
             case ModelPackage.JOYSTICK_BUTTON:
                 return createJoystickButton();
+            case ModelPackage.MBRICKLET_ANALOG_OUT_V2:
+                return createMBrickletAnalogOutV2();
             case ModelPackage.MBRICK_SERVO:
                 return createMBrickServo();
             case ModelPackage.MSERVO:
                 return createMServo();
             case ModelPackage.MBRICK_DC:
                 return createMBrickDC();
+            case ModelPackage.MBRICK_STEPPER:
+                return createMBrickStepper();
+            case ModelPackage.TF_BRICK_STEPPER_CONFIGURATION:
+                return createTFBrickStepperConfiguration();
+            case ModelPackage.MSTEPPER_DRIVE:
+                return createMStepperDrive();
+            case ModelPackage.MSTEPPER_VELOCITY:
+                return createMStepperVelocity();
+            case ModelPackage.MSTEPPER_CURRENT:
+                return createMStepperCurrent();
+            case ModelPackage.MSTEPPER_POSITION:
+                return createMStepperPosition();
+            case ModelPackage.MSTEPPER_STEPS:
+                return createMStepperSteps();
+            case ModelPackage.MSTEPPER_STACK_VOLTAGE:
+                return createMStepperStackVoltage();
+            case ModelPackage.MSTEPPER_EXTERNAL_VOLTAGE:
+                return createMStepperExternalVoltage();
+            case ModelPackage.MSTEPPER_CONSUMPTION:
+                return createMStepperConsumption();
+            case ModelPackage.MSTEPPER_UNDER_VOLTAGE:
+                return createMStepperUnderVoltage();
+            case ModelPackage.MSTEPPER_STATE:
+                return createMStepperState();
+            case ModelPackage.MSTEPPER_CHIP_TEMPERATURE:
+                return createMStepperChipTemperature();
+            case ModelPackage.MSTEPPER_STATUS_LED:
+                return createMStepperStatusLed();
             case ModelPackage.MDUAL_RELAY_BRICKLET:
                 return createMDualRelayBricklet();
             case ModelPackage.MINDUSTRIAL_QUAD_RELAY_BRICKLET:
@@ -267,6 +303,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createPTCConnected();
             case ModelPackage.MBRICKLET_TEMPERATURE:
                 return createMBrickletTemperature();
+            case ModelPackage.MBRICKLET_THERMOCOUPLE:
+                return createMBrickletThermocouple();
+            case ModelPackage.MBRICKLET_UV_LIGHT:
+                return createMBrickletUVLight();
+            case ModelPackage.MBRICKLET_CO2:
+                return createMBrickletCO2();
             case ModelPackage.MBRICKLET_TEMPERATURE_IR:
                 return createMBrickletTemperatureIR();
             case ModelPackage.OBJECT_TEMPERATURE:
@@ -309,6 +351,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMBrickletDistanceUS();
             case ModelPackage.MBRICKLET_LCD2_0X4:
                 return createMBrickletLCD20x4();
+            case ModelPackage.MBRICKLET_OLED12_8X64:
+                return createMBrickletOLED128x64();
+            case ModelPackage.MBRICKLET_OLE6_4X48:
+                return createMBrickletOLE64x48();
             case ModelPackage.MLCD2_0X4_BACKLIGHT:
                 return createMLCD20x4Backlight();
             case ModelPackage.MLCD2_0X4_BUTTON:
@@ -337,6 +383,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createBrickletIndustrialDualAnalogInConfiguration();
             case ModelPackage.TF_TEMPERATURE_CONFIGURATION:
                 return createTFTemperatureConfiguration();
+            case ModelPackage.TF_THERMOCOUPLE_CONFIGURATION:
+                return createTFThermocoupleConfiguration();
             case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION:
                 return createTFObjectTemperatureConfiguration();
             case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION:
@@ -385,6 +433,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createBrickletColorConfiguration();
             case ModelPackage.BRICKLET_ACCELEROMETER_CONFIGURATION:
                 return createBrickletAccelerometerConfiguration();
+            case ModelPackage.BRICKLET_OLED_CONFIGURATION:
+                return createBrickletOLEDConfiguration();
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
         }
@@ -401,6 +451,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
         switch (eDataType.getClassifierID()) {
             case ModelPackage.ACCELEROMETER_COORDINATE:
                 return createAccelerometerCoordinateFromString(eDataType, initialValue);
+            case ModelPackage.BRICK_STEPPER_SUB_IDS:
+                return createBrickStepperSubIdsFromString(eDataType, initialValue);
             case ModelPackage.NO_SUB_IDS:
                 return createNoSubIdsFromString(eDataType, initialValue);
             case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
@@ -477,6 +529,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMTinkerforgeDeviceFromString(eDataType, initialValue);
             case ModelPackage.MTINKER_BRICK_DC:
                 return createMTinkerBrickDCFromString(eDataType, initialValue);
+            case ModelPackage.MTINKER_BRICK_STEPPER:
+                return createMTinkerBrickStepperFromString(eDataType, initialValue);
             case ModelPackage.MTINKER_BRICKLET_DUAL_RELAY:
                 return createMTinkerBrickletDualRelayFromString(eDataType, initialValue);
             case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY:
@@ -571,6 +625,18 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createTinkerBrickletLaserRangeFinderFromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_ACCELEROMETER:
                 return createTinkerBrickletAccelerometerFromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_OLED12_8X64:
+                return createTinkerBrickletOLED128x64FromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_OLED6_4X48:
+                return createTinkerBrickletOLED64x48FromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_THERMOCOUPLE:
+                return createTinkerBrickletThermocoupleFromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_UV_LIGHT:
+                return createTinkerBrickletUVLightFromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_CO2:
+                return createTinkerBrickletCO2FromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_ANALOG_OUT_V2:
+                return createTinkerBrickletAnalogOutV2FromString(eDataType, initialValue);
             case ModelPackage.HSB_TYPE:
                 return createHSBTypeFromString(eDataType, initialValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -604,6 +670,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
         switch (eDataType.getClassifierID()) {
             case ModelPackage.ACCELEROMETER_COORDINATE:
                 return convertAccelerometerCoordinateToString(eDataType, instanceValue);
+            case ModelPackage.BRICK_STEPPER_SUB_IDS:
+                return convertBrickStepperSubIdsToString(eDataType, instanceValue);
             case ModelPackage.NO_SUB_IDS:
                 return convertNoSubIdsToString(eDataType, instanceValue);
             case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
@@ -680,6 +748,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertMTinkerforgeDeviceToString(eDataType, instanceValue);
             case ModelPackage.MTINKER_BRICK_DC:
                 return convertMTinkerBrickDCToString(eDataType, instanceValue);
+            case ModelPackage.MTINKER_BRICK_STEPPER:
+                return convertMTinkerBrickStepperToString(eDataType, instanceValue);
             case ModelPackage.MTINKER_BRICKLET_DUAL_RELAY:
                 return convertMTinkerBrickletDualRelayToString(eDataType, instanceValue);
             case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY:
@@ -774,6 +844,18 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertTinkerBrickletLaserRangeFinderToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_ACCELEROMETER:
                 return convertTinkerBrickletAccelerometerToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_OLED12_8X64:
+                return convertTinkerBrickletOLED128x64ToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_OLED6_4X48:
+                return convertTinkerBrickletOLED64x48ToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_THERMOCOUPLE:
+                return convertTinkerBrickletThermocoupleToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_UV_LIGHT:
+                return convertTinkerBrickletUVLightToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_CO2:
+                return convertTinkerBrickletCO2ToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_ANALOG_OUT_V2:
+                return convertTinkerBrickletAnalogOutV2ToString(eDataType, instanceValue);
             case ModelPackage.HSB_TYPE:
                 return convertHSBTypeToString(eDataType, instanceValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -1163,6 +1245,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
+    public MBrickletAnalogOutV2 createMBrickletAnalogOutV2() {
+        MBrickletAnalogOutV2Impl mBrickletAnalogOutV2 = new MBrickletAnalogOutV2Impl();
+        return mBrickletAnalogOutV2;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public MBrickServo createMBrickServo() {
         MBrickServoImpl mBrickServo = new MBrickServoImpl();
@@ -1191,6 +1284,160 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public MBrickDC createMBrickDC() {
         MBrickDCImpl mBrickDC = new MBrickDCImpl();
         return mBrickDC;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickStepper createMBrickStepper() {
+        MBrickStepperImpl mBrickStepper = new MBrickStepperImpl();
+        return mBrickStepper;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFBrickStepperConfiguration createTFBrickStepperConfiguration() {
+        TFBrickStepperConfigurationImpl tfBrickStepperConfiguration = new TFBrickStepperConfigurationImpl();
+        return tfBrickStepperConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperDrive createMStepperDrive() {
+        MStepperDriveImpl mStepperDrive = new MStepperDriveImpl();
+        return mStepperDrive;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperVelocity createMStepperVelocity() {
+        MStepperVelocityImpl mStepperVelocity = new MStepperVelocityImpl();
+        return mStepperVelocity;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperCurrent createMStepperCurrent() {
+        MStepperCurrentImpl mStepperCurrent = new MStepperCurrentImpl();
+        return mStepperCurrent;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperPosition createMStepperPosition() {
+        MStepperPositionImpl mStepperPosition = new MStepperPositionImpl();
+        return mStepperPosition;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperSteps createMStepperSteps() {
+        MStepperStepsImpl mStepperSteps = new MStepperStepsImpl();
+        return mStepperSteps;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperStackVoltage createMStepperStackVoltage() {
+        MStepperStackVoltageImpl mStepperStackVoltage = new MStepperStackVoltageImpl();
+        return mStepperStackVoltage;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperExternalVoltage createMStepperExternalVoltage() {
+        MStepperExternalVoltageImpl mStepperExternalVoltage = new MStepperExternalVoltageImpl();
+        return mStepperExternalVoltage;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperConsumption createMStepperConsumption() {
+        MStepperConsumptionImpl mStepperConsumption = new MStepperConsumptionImpl();
+        return mStepperConsumption;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperUnderVoltage createMStepperUnderVoltage() {
+        MStepperUnderVoltageImpl mStepperUnderVoltage = new MStepperUnderVoltageImpl();
+        return mStepperUnderVoltage;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperState createMStepperState() {
+        MStepperStateImpl mStepperState = new MStepperStateImpl();
+        return mStepperState;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperChipTemperature createMStepperChipTemperature() {
+        MStepperChipTemperatureImpl mStepperChipTemperature = new MStepperChipTemperatureImpl();
+        return mStepperChipTemperature;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MStepperStatusLed createMStepperStatusLed() {
+        MStepperStatusLedImpl mStepperStatusLed = new MStepperStatusLedImpl();
+        return mStepperStatusLed;
     }
 
     /**
@@ -1763,12 +2010,22 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
+    public BrickletOLEDConfiguration createBrickletOLEDConfiguration() {
+        BrickletOLEDConfigurationImpl brickletOLEDConfiguration = new BrickletOLEDConfigurationImpl();
+        return brickletOLEDConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public AccelerometerCoordinate createAccelerometerCoordinateFromString(EDataType eDataType, String initialValue) {
         AccelerometerCoordinate result = AccelerometerCoordinate.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -1779,6 +2036,30 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertAccelerometerCoordinateToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickStepperSubIds createBrickStepperSubIdsFromString(EDataType eDataType, String initialValue) {
+        BrickStepperSubIds result = BrickStepperSubIds.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertBrickStepperSubIdsToString(EDataType eDataType, Object instanceValue) {
         return instanceValue == null ? null : instanceValue.toString();
     }
 
@@ -1912,6 +2193,39 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public MBrickletTemperature createMBrickletTemperature() {
         MBrickletTemperatureImpl mBrickletTemperature = new MBrickletTemperatureImpl();
         return mBrickletTemperature;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletThermocouple createMBrickletThermocouple() {
+        MBrickletThermocoupleImpl mBrickletThermocouple = new MBrickletThermocoupleImpl();
+        return mBrickletThermocouple;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletUVLight createMBrickletUVLight() {
+        MBrickletUVLightImpl mBrickletUVLight = new MBrickletUVLightImpl();
+        return mBrickletUVLight;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletCO2 createMBrickletCO2() {
+        MBrickletCO2Impl mBrickletCO2 = new MBrickletCO2Impl();
+        return mBrickletCO2;
     }
 
     /**
@@ -2080,6 +2394,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public TFTemperatureConfiguration createTFTemperatureConfiguration() {
         TFTemperatureConfigurationImpl tfTemperatureConfiguration = new TFTemperatureConfigurationImpl();
         return tfTemperatureConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFThermocoupleConfiguration createTFThermocoupleConfiguration() {
+        TFThermocoupleConfigurationImpl tfThermocoupleConfiguration = new TFThermocoupleConfigurationImpl();
+        return tfThermocoupleConfiguration;
     }
 
     /**
@@ -2352,6 +2677,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
+    public MBrickletOLED128x64 createMBrickletOLED128x64() {
+        MBrickletOLED128x64Impl mBrickletOLED128x64 = new MBrickletOLED128x64Impl();
+        return mBrickletOLED128x64;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletOLE64x48 createMBrickletOLE64x48() {
+        MBrickletOLE64x48Impl mBrickletOLE64x48 = new MBrickletOLE64x48Impl();
+        return mBrickletOLE64x48;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public MLCD20x4Backlight createMLCD20x4Backlight() {
         MLCD20x4BacklightImpl mlcd20x4Backlight = new MLCD20x4BacklightImpl();
@@ -2458,10 +2805,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public DCDriveMode createDCDriveModeFromString(EDataType eDataType, String initialValue) {
         DCDriveMode result = DCDriveMode.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2483,10 +2829,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ConfigOptsServo createConfigOptsServoFromString(EDataType eDataType, String initialValue) {
         ConfigOptsServo result = ConfigOptsServo.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2508,10 +2853,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public DualButtonDevicePosition createDualButtonDevicePositionFromString(EDataType eDataType, String initialValue) {
         DualButtonDevicePosition result = DualButtonDevicePosition.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2533,10 +2877,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public DualButtonLedSubIds createDualButtonLedSubIdsFromString(EDataType eDataType, String initialValue) {
         DualButtonLedSubIds result = DualButtonLedSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2558,10 +2901,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public DualButtonButtonSubIds createDualButtonButtonSubIdsFromString(EDataType eDataType, String initialValue) {
         DualButtonButtonSubIds result = DualButtonButtonSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2583,10 +2925,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public JoystickSubIds createJoystickSubIdsFromString(EDataType eDataType, String initialValue) {
         JoystickSubIds result = JoystickSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2608,10 +2949,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public PTCSubIds createPTCSubIdsFromString(EDataType eDataType, String initialValue) {
         PTCSubIds result = PTCSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2634,10 +2974,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public IndustrialDual020mASubIds createIndustrialDual020mASubIdsFromString(EDataType eDataType,
             String initialValue) {
         IndustrialDual020mASubIds result = IndustrialDual020mASubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2659,10 +2998,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public RotaryEncoderSubIds createRotaryEncoderSubIdsFromString(EDataType eDataType, String initialValue) {
         RotaryEncoderSubIds result = RotaryEncoderSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2684,10 +3022,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ColorBrickletSubIds createColorBrickletSubIdsFromString(EDataType eDataType, String initialValue) {
         ColorBrickletSubIds result = ColorBrickletSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2709,10 +3046,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public LoadCellSubIds createLoadCellSubIdsFromString(EDataType eDataType, String initialValue) {
         LoadCellSubIds result = LoadCellSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2735,10 +3071,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public IndustrialDualAnalogInSubIds createIndustrialDualAnalogInSubIdsFromString(EDataType eDataType,
             String initialValue) {
         IndustrialDualAnalogInSubIds result = IndustrialDualAnalogInSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2760,10 +3095,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public LaserRangeFinderSubIds createLaserRangeFinderSubIdsFromString(EDataType eDataType, String initialValue) {
         LaserRangeFinderSubIds result = LaserRangeFinderSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2785,10 +3119,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public AccelerometerSubIds createAccelerometerSubIdsFromString(EDataType eDataType, String initialValue) {
         AccelerometerSubIds result = AccelerometerSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2810,10 +3143,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public NoSubIds createNoSubIdsFromString(EDataType eDataType, String initialValue) {
         NoSubIds result = NoSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2836,10 +3168,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public IndustrialDigitalInSubIDs createIndustrialDigitalInSubIDsFromString(EDataType eDataType,
             String initialValue) {
         IndustrialDigitalInSubIDs result = IndustrialDigitalInSubIDs.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2862,10 +3193,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public IndustrialDigitalOutSubIDs createIndustrialDigitalOutSubIDsFromString(EDataType eDataType,
             String initialValue) {
         IndustrialDigitalOutSubIDs result = IndustrialDigitalOutSubIDs.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2887,10 +3217,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public IndustrialQuadRelayIDs createIndustrialQuadRelayIDsFromString(EDataType eDataType, String initialValue) {
         IndustrialQuadRelayIDs result = IndustrialQuadRelayIDs.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2912,10 +3241,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ServoSubIDs createServoSubIDsFromString(EDataType eDataType, String initialValue) {
         ServoSubIDs result = ServoSubIDs.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2937,10 +3265,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public BarometerSubIDs createBarometerSubIDsFromString(EDataType eDataType, String initialValue) {
         BarometerSubIDs result = BarometerSubIDs.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2962,10 +3289,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public IO16SubIds createIO16SubIdsFromString(EDataType eDataType, String initialValue) {
         IO16SubIds result = IO16SubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2987,10 +3313,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public IO4SubIds createIO4SubIdsFromString(EDataType eDataType, String initialValue) {
         IO4SubIds result = IO4SubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3012,10 +3337,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public DualRelaySubIds createDualRelaySubIdsFromString(EDataType eDataType, String initialValue) {
         DualRelaySubIds result = DualRelaySubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3037,10 +3361,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public LCDButtonSubIds createLCDButtonSubIdsFromString(EDataType eDataType, String initialValue) {
         LCDButtonSubIds result = LCDButtonSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3062,10 +3385,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public LCDBacklightSubIds createLCDBacklightSubIdsFromString(EDataType eDataType, String initialValue) {
         LCDBacklightSubIds result = LCDBacklightSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3087,10 +3409,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public MultiTouchSubIds createMultiTouchSubIdsFromString(EDataType eDataType, String initialValue) {
         MultiTouchSubIds result = MultiTouchSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3112,10 +3433,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public TemperatureIRSubIds createTemperatureIRSubIdsFromString(EDataType eDataType, String initialValue) {
         TemperatureIRSubIds result = TemperatureIRSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3137,10 +3457,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public VoltageCurrentSubIds createVoltageCurrentSubIdsFromString(EDataType eDataType, String initialValue) {
         VoltageCurrentSubIds result = VoltageCurrentSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3162,10 +3481,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ConfigOptsMove createConfigOptsMoveFromString(EDataType eDataType, String initialValue) {
         ConfigOptsMove result = ConfigOptsMove.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3187,10 +3505,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ConfigOptsDimmable createConfigOptsDimmableFromString(EDataType eDataType, String initialValue) {
         ConfigOptsDimmable result = ConfigOptsDimmable.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3212,10 +3529,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ConfigOptsSetPoint createConfigOptsSetPointFromString(EDataType eDataType, String initialValue) {
         ConfigOptsSetPoint result = ConfigOptsSetPoint.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3237,10 +3553,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ConfigOptsSwitchSpeed createConfigOptsSwitchSpeedFromString(EDataType eDataType, String initialValue) {
         ConfigOptsSwitchSpeed result = ConfigOptsSwitchSpeed.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3371,6 +3686,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertMTinkerBrickDCToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickStepper createMTinkerBrickStepperFromString(EDataType eDataType, String initialValue) {
+        return (BrickStepper) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertMTinkerBrickStepperToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -4160,6 +4495,126 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertTinkerBrickletAccelerometerToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletOLED128x64 createTinkerBrickletOLED128x64FromString(EDataType eDataType, String initialValue) {
+        return (BrickletOLED128x64) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletOLED128x64ToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletOLED64x48 createTinkerBrickletOLED64x48FromString(EDataType eDataType, String initialValue) {
+        return (BrickletOLED64x48) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletOLED64x48ToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletThermocouple createTinkerBrickletThermocoupleFromString(EDataType eDataType, String initialValue) {
+        return (BrickletThermocouple) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletThermocoupleToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletUVLight createTinkerBrickletUVLightFromString(EDataType eDataType, String initialValue) {
+        return (BrickletUVLight) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletUVLightToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletCO2 createTinkerBrickletCO2FromString(EDataType eDataType, String initialValue) {
+        return (BrickletCO2) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletCO2ToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletAnalogOutV2 createTinkerBrickletAnalogOutV2FromString(EDataType eDataType, String initialValue) {
+        return (BrickletAnalogOutV2) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletAnalogOutV2ToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 

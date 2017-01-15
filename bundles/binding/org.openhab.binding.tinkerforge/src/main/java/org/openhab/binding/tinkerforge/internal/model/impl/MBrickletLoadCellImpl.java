@@ -46,6 +46,7 @@ import com.tinkerforge.IPConnection;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getUid <em>Uid</em>}</li>
@@ -54,22 +55,21 @@ import com.tinkerforge.IPConnection;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getIpConnection
- * <em>Ip Connection</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getConnectedUid
- * <em>Connected Uid</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getIpConnection <em>Ip
+ * Connection</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getConnectedUid <em>Connected
+ * Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getPosition <em>Position</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getDeviceIdentifier
- * <em>Device Identifier</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getDeviceIdentifier <em>Device
+ * Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getName <em>Name</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getBrickd <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getMsubdevices
  * <em>Msubdevices</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -358,10 +358,9 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -385,9 +384,8 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -411,10 +409,9 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -438,10 +435,9 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -465,10 +461,9 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     public void setTinkerforgeDevice(BrickletLoadCell newTinkerforgeDevice) {
         BrickletLoadCell oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__TINKERFORGE_DEVICE,
                     oldTinkerforgeDevice, tinkerforgeDevice));
-        }
     }
 
     /**
@@ -492,10 +487,9 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -519,10 +513,9 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -546,10 +539,9 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -573,10 +565,9 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__DEVICE_IDENTIFIER,
                     oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
@@ -600,10 +591,9 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__NAME, oldName,
                     name));
-        }
     }
 
     /**
@@ -614,10 +604,21 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LOAD_CELL__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LOAD_CELL__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LOAD_CELL__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -641,25 +642,20 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_LOAD_CELL__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__BRICKD, newBrickd,
                     newBrickd));
-        }
     }
 
     /**
@@ -671,8 +667,15 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     @Override
     public EList<LoadCellDevice> getMsubdevices() {
         if (msubdevices == null) {
-            msubdevices = new EObjectContainmentWithInverseEList<LoadCellDevice>(MSubDevice.class, this,
-                    ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+            msubdevices = new EObjectContainmentWithInverseEList<LoadCellDevice>(LoadCellDevice.class, this,
+                    ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK) {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public Class<?> getInverseFeatureClass() {
+                    return MSubDevice.class;
+                }
+            };
         }
         return msubdevices;
     }
@@ -756,9 +759,8 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
             case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMsubdevices()).basicAdd(otherEnd, msgs);
@@ -828,7 +830,9 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
             case ModelPackage.MBRICKLET_LOAD_CELL__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
                 return getMsubdevices();
             case ModelPackage.MBRICKLET_LOAD_CELL__DEVICE_TYPE:
@@ -969,7 +973,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
             case ModelPackage.MBRICKLET_LOAD_CELL__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
                 return msubdevices != null && !msubdevices.isEmpty();
             case ModelPackage.MBRICKLET_LOAD_CELL__DEVICE_TYPE:
@@ -1068,9 +1072,8 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");
