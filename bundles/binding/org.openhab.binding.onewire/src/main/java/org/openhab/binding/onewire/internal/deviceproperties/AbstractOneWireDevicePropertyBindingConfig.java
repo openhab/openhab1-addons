@@ -209,7 +209,7 @@ public abstract class AbstractOneWireDevicePropertyBindingConfig implements OneW
     public Type convertReadValueToType(String pvReadValue) {
         Type lvType = convertReadValueToUnmodifiedType(pvReadValue);
 
-        for (InterfaceOneWireTypeModifier lvTypeModifier : getTypeModifieryList()) {
+        for (OneWireTypeModifier lvTypeModifier : getTypeModifieryList()) {
             logger.debug("type of {} before modifier:{} type={}", getDevicePropertyPath(),
                     lvTypeModifier.getModifierName(), lvType);
             lvType = lvTypeModifier.modify4Read(lvType);
