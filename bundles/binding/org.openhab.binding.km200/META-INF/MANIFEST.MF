@@ -27,12 +27,12 @@ Import-Package: com.google.common.net;version="10.0.1",
  org.osgi.framework,
  org.osgi.service.cm,
  org.osgi.service.component,
- org.osgi.service.event
+ org.osgi.service.event,
+ org.slf4j
 Export-Package: org.openhab.binding.km200
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/km200binding.xml
 Require-Bundle: org.apache.commons.codec,
- com.google.guava,
- org.slf4j.api
+ com.google.guava
 Bundle-ClassPath: .,
  lib/json-20160810.jar
 Bundle-ActivationPolicy: lazy
