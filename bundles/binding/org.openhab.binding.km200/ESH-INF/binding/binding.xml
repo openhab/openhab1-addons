@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="km200"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>km200 Binding</name>
+    <description>The KM200 Binding is communicating with a Buderus Logamatic web KM200 / KM100 / KM50. It is possible to recive and send parameters like string or float values.</description>
+    <author>Markus Eckhardt</author>
+    
+    <service-id>org.openhab.binding.km200</service-id>
+
+    <config-description>
+        <parameter name="ip4_address" type="text">
+            <label>IP4 Address</label>
+            <description>IP4 Address of the KMXXX device</description>
+            <default>"192.168.XXX.XXX"</default>
+        </parameter>
+        <parameter name="PrivKey" type="text">
+           <label>Private Key</label>
+           <description>Option 1:Private en-/decryption key built from MD5Salt, GatewayPassword and PrivatePassword</description>
+           <default></default>
+        </parameter>
+        <parameter name="MD5Salt" type="text">
+            <label>MD5Salt</label>
+            <description>Option 2: MD5Salt for the building of the private key</description>
+            <default></default>
+        </parameter>
+        <parameter name="GatewayPassword" type="text">
+           <label>Gateway Password</label>
+           <description>Option 2: GatewayPassword for the building of the private key (Sticker on the device without '-')</description>
+           <default></default>
+        </parameter>
+        <parameter name="PrivatePassword" type="text">
+           <label>Private Password</label>
+           <description>Option 2: Private Password for the building of the private key (Set in the App)</description>
+           <default></default>
+        </parameter>
+    </config-description>
+
+</binding:binding>
