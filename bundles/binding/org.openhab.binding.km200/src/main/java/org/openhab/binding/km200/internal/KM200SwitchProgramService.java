@@ -93,9 +93,11 @@ public class KM200SwitchProgramService {
     void addSwitch(String day, String setpoint, int time) {
         logger.debug("Adding day: {} setpoint: {} time: {}", day, setpoint, time);
         if (!days.contains(day)) {
+            logger.error("This type of weekday is not supported, get day: {}", day);
             throw new IllegalArgumentException("This type of weekday is not supported, get day: " + day);
         }
         if (!setpoints.contains(setpoint)) {
+            logger.error("This type of setpoint is not supported, get setpoint: {}", setpoint);
             throw new IllegalArgumentException("This type of setpoint is not supported, get setpoint: " + setpoint);
         }
         HashMap<String, ArrayList<Integer>> weekMap = switchMap.get(setpoint);
@@ -146,6 +148,7 @@ public class KM200SwitchProgramService {
      */
     void setActiveDay(String day) {
         if (!days.contains(day)) {
+            logger.error("This type of weekday is not supported, get day: {}", day);
             throw new IllegalArgumentException("This type of weekday is not supported, get day: " + day);
         }
         activeDay = day;
@@ -157,6 +160,7 @@ public class KM200SwitchProgramService {
      */
     void setActiveCycle(Integer cycle) {
         if (cycle > this.getMaxNbOfSwitchPoints() / 2 || cycle > this.getMaxNbOfSwitchPointsPerDay() / 2 || cycle < 1) {
+            logger.error("The value of cycle is not valid, get cycle: {}", cycle.toString());
             throw new IllegalArgumentException("The value of cycle is not valid, get cycle: " + cycle.toString());
         }
         /* limit the cycle to the next one after last (for creating a new one) */
