@@ -321,6 +321,7 @@ public class KM200SwitchProgramService {
             /* Update the list of switching points */
             removeAllSwitches();
             JSONArray sPoints = nodeRoot.getJSONArray("switchPoints");
+            logger.debug("sPoints: {}", nodeRoot.toString());
             for (int i = 0; i < sPoints.length(); i++) {
                 JSONObject subJSON = sPoints.getJSONObject(i);
                 String day = subJSON.getString("dayOfWeek");
@@ -329,11 +330,13 @@ public class KM200SwitchProgramService {
                 if (positiveSwitch == null) {
                     /* The first switchpoint is always positive */
                     positiveSwitch = setpoint;
+                    logger.debug("positiveSwitch: {}", positiveSwitch);
                     setpoints.add(positiveSwitch);
 
-                } else if (negativeSwitch == null) {
+                } else if (negativeSwitch == null && !setpoint.equals(positiveSwitch)) {
                     /* The second switchpoint is always negative */
                     negativeSwitch = setpoint;
+                    logger.debug("negativeSwitch: {}", negativeSwitch);
                     setpoints.add(negativeSwitch);
                 }
                 addSwitch(day, setpoint, time);

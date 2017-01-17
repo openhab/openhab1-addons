@@ -138,6 +138,8 @@ class KM200Comm {
      */
     public byte[] getDataFromService(String service) {
         byte[] responseBodyB64 = null;
+        int maxNbrGets = 3;
+        int statusCode = 0;
         // Create an instance of HttpClient.
         if (client == null) {
             client = new HttpClient();
@@ -155,17 +157,23 @@ class KM200Comm {
             method.addRequestHeader("User-Agent", "TeleHeater/2.2.3");
 
             try {
-                // Execute the method.
-                int statusCode = client.executeMethod(method);
-                // Check the status and the forbidden 403 Error.
-                if (statusCode != HttpStatus.SC_OK) {
-                    String statusLine = method.getStatusLine().toString();
-                    if (statusLine.contains(" 403 ")) {
-                        byte[] test = new byte[1];
-                        return test;
-                    } else {
-                        logger.error("HTTP GET failed: {}", method.getStatusLine());
-                        return null;
+                for (int i = 0; i < maxNbrGets && statusCode != HttpStatus.SC_OK; i++) {
+                    // Execute the method.
+                    statusCode = client.executeMethod(method);
+                    // Check the status and the forbidden 403 Error.
+                    if (statusCode != HttpStatus.SC_OK) {
+                        String statusLine = method.getStatusLine().toString();
+                        if (statusLine.contains(" 500 ")) { /* Unknown problem with the device, wait and try again */
+                            logger.warn("HTTP GET failed mit error 500, try Again");
+                            Thread.sleep(2000L);
+                            continue;
+                        } else if (statusLine.contains(" 403 ")) {
+                            byte[] test = new byte[1];
+                            return test;
+                        } else {
+                            logger.error("HTTP GET failed: {}", method.getStatusLine());
+                            return null;
+                        }
                     }
                 }
                 device.setCharSet(method.getResponseCharSet());
@@ -174,6 +182,9 @@ class KM200Comm {
 
             } catch (HttpException e) {
                 logger.error("Fatal protocol violation: {}", e);
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                logger.error("Sleep was interrupted: {}", e);
                 e.printStackTrace();
             } catch (IOException e) {
                 logger.error("Fatal transport error: {}", e);
@@ -368,12 +379,12 @@ class KM200Comm {
 
                 case "floatValue": /* Check whether the type is a single value containing a float value */
                     logger.debug("initDevice: type float value: {}", decodedData);
-                    valObject = new Float(nodeRoot.getDouble("value"));
+                    valObject = Float.parseFloat(nodeRoot.get("value").toString());
                     newObject.setValue(valObject);
                     if (nodeRoot.has("minValue") && nodeRoot.has("maxValue")) {
                         List<Float> valParas = new ArrayList<Float>();
-                        valParas.add(new Float(nodeRoot.getDouble("minValue")));
-                        valParas.add(new Float(nodeRoot.getDouble("maxValue")));
+                        valParas.add(Float.parseFloat(nodeRoot.get("minValue").toString()));
+                        valParas.add(Float.parseFloat(nodeRoot.get("maxValue").toString()));
                         newObject.setValueParameter(valParas);
                     }
                     device.serviceMap.put(id, newObject);
@@ -666,7 +677,7 @@ class KM200Comm {
 
                 case "floatValue": /* Check whether the type is a single value containing a float value */
                     logger.debug("state of type float value: {}", decodedData);
-                    Float fVal = new Float(nodeRoot.getDouble("value"));
+                    Float fVal = Float.parseFloat(nodeRoot.get("value").toString());
                     device.serviceMap.get(service).setValue(fVal);
                     /* NumberItem Binding */
                     if (itemType.isAssignableFrom(NumberItem.class)) {
