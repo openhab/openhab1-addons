@@ -51,6 +51,9 @@ public class Mail {
     static boolean popBeforeSmtp = false;
     static String charset;
 
+    static Integer socketConnectionTimeout;
+    static Integer socketTimeout;
+
     /**
      * Sends an email via SMTP
      *
@@ -127,9 +130,21 @@ public class Mail {
             }
 
             email.setHostName(hostname);
-            email.setSmtpPort(port);
+            if (port != null) {
+                email.setSmtpPort(port);
+                if (sslOnConnect) {
+                    email.setSslSmtpPort(port.toString());
+                }
+            }
             email.setStartTLSEnabled(startTLSEnabled);
             email.setSSLOnConnect(sslOnConnect);
+
+            if (socketConnectionTimeout != null) {
+                email.setSocketConnectionTimeout(socketConnectionTimeout);
+            }
+            if (socketTimeout != null) {
+                email.setSocketTimeout(socketTimeout);
+            }
 
             if (isNotBlank(username)) {
                 if (popBeforeSmtp) {

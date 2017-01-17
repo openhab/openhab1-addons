@@ -8,9 +8,11 @@
  */
 package org.openhab.action.mail.internal;
 
-import java.util.Dictionary;
+import static org.apache.commons.lang.StringUtils.*;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.Dictionary;
+import java.util.Objects;
+
 import org.openhab.core.scriptengine.action.ActionService;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -19,6 +21,7 @@ import org.osgi.service.cm.ManagedService;
  * This class registers an OSGi service for the Mail action.
  *
  * @author Kai Kreuzer
+ * @author John Cocula - added connectiontimeout and timeout properties, replaced String casting
  * @since 1.3.0
  */
 public class MailActionService implements ActionService, ManagedService {
@@ -55,36 +58,46 @@ public class MailActionService implements ActionService, ManagedService {
     @SuppressWarnings("rawtypes")
     public void updated(Dictionary config) throws ConfigurationException {
         if (config != null) {
-            Mail.hostname = (String) config.get("hostname");
+            Mail.hostname = Objects.toString(config.get("hostname"), null);
 
-            String portString = (String) config.get("port");
+            String portString = Objects.toString(config.get("port"), null);
             if (portString != null) {
                 Mail.port = Integer.valueOf(portString);
             }
 
-            Mail.username = (String) config.get("username");
-            Mail.password = (String) config.get("password");
-            Mail.from = (String) config.get("from");
+            Mail.username = Objects.toString(config.get("username"), null);
+            Mail.password = Objects.toString(config.get("password"), null);
+            Mail.from = Objects.toString(config.get("from"), null);
 
-            String tlsString = (String) config.get("tls");
-            if (StringUtils.isNotBlank(tlsString)) {
+            String tlsString = Objects.toString(config.get("tls"), null);
+            if (isNotBlank(tlsString)) {
                 Mail.startTLSEnabled = tlsString.equalsIgnoreCase("true");
             }
-            String sslString = (String) config.get("ssl");
-            if (StringUtils.isNotBlank(sslString)) {
+            String sslString = Objects.toString(config.get("ssl"), null);
+            if (isNotBlank(sslString)) {
                 Mail.sslOnConnect = sslString.equalsIgnoreCase("true");
             }
-            String popBeforeSmtpString = (String) config.get("popbeforesmtp");
-            if (StringUtils.isNotBlank(popBeforeSmtpString)) {
+            String popBeforeSmtpString = Objects.toString(config.get("popbeforesmtp"), null);
+            if (isNotBlank(popBeforeSmtpString)) {
                 Mail.popBeforeSmtp = popBeforeSmtpString.equalsIgnoreCase("true");
             }
 
-            Mail.charset = (String) config.get("charset");
+            Mail.charset = Objects.toString(config.get("charset"), null);
+
+            String socketConnectionTimeoutString = Objects.toString(config.get("connectiontimeout"), null);
+            if (isNotBlank(socketConnectionTimeoutString)) {
+                Mail.socketConnectionTimeout = Integer.valueOf(socketConnectionTimeoutString);
+            }
+
+            String socketTimeoutString = Objects.toString(config.get("timeout"), null);
+            if (isNotBlank(socketTimeoutString)) {
+                Mail.socketTimeout = Integer.valueOf(socketTimeoutString);
+            }
 
             // check mandatory settings
-            if (StringUtils.isBlank(Mail.hostname) || StringUtils.isBlank(Mail.from)) {
+            if (isBlank(Mail.hostname) || isBlank(Mail.from)) {
                 throw new ConfigurationException("mail",
-                        "Parameters mail:hostname and mail:from are mandatory and must be configured. Please check your openhab.cfg!");
+                        "Parameters 'hostname' and 'from' are mandatory and must be configured.");
             }
 
             // set defaults for optional settings
