@@ -775,91 +775,83 @@ class KM200Comm {
                         .get(object.getParent()).getValueParameter());
                 String[] servicePath = service.split("/");
                 String virtService = servicePath[servicePath.length - 1];
-                switch (virtService) {
-                    case "weekday":
-                        if (itemType.isAssignableFrom(StringItem.class)) {
-                            String val = sPService.getActiveDay();
-                            if (val == null) {
-                                return null;
-                            }
-                            state = new StringType(val);
-                        } else {
-                            logger.error("Bindingtype not supported for day service: {}", itemType.getClass());
+                if (virtService.equals("weekday")) {
+                    if (itemType.isAssignableFrom(StringItem.class)) {
+                        String val = sPService.getActiveDay();
+                        if (val == null) {
                             return null;
                         }
-                        break;
-                    case "nbrCycles":
-                        if (itemType.isAssignableFrom(NumberItem.class)) {
-                            Integer val = sPService.getNbrCycles();
-                            if (val == null) {
-                                return null;
-                            }
-                            state = new DecimalType(val);
-                        } else {
-                            logger.error("Bindingtype not supported for nbrCycles service: {}", itemType.getClass());
+                        state = new StringType(val);
+                    } else {
+                        logger.error("Bindingtype not supported for day service: {}", itemType.getClass());
+                        return null;
+                    }
+                } else if (virtService.equals("nbrCycles")) {
+                    if (itemType.isAssignableFrom(NumberItem.class)) {
+                        Integer val = sPService.getNbrCycles();
+                        if (val == null) {
                             return null;
                         }
-                        break;
-                    case "cycle":
-                        if (itemType.isAssignableFrom(NumberItem.class)) {
-                            Integer val = sPService.getActiveCycle();
-                            if (val == null) {
-                                return null;
-                            }
-                            state = new DecimalType(val);
-                        } else {
-                            logger.error("Bindingtype not supported for cycle service: {}", itemType.getClass());
+                        state = new DecimalType(val);
+                    } else {
+                        logger.error("Bindingtype not supported for nbrCycles service: {}", itemType.getClass());
+                        return null;
+                    }
+                } else if (virtService.equals("cycle")) {
+                    if (itemType.isAssignableFrom(NumberItem.class)) {
+                        Integer val = sPService.getActiveCycle();
+                        if (val == null) {
                             return null;
                         }
-                        break;
-                    case "on":
-                    case "day":
-                        if (itemType.isAssignableFrom(NumberItem.class)) {
-                            Integer val = sPService.getActivePositiveSwitch();
-                            if (val == null) {
-                                return null;
-                            }
-                            state = new DecimalType(val);
-                        } else if (itemType.isAssignableFrom(DateTimeItem.class)) {
-                            Integer val = sPService.getActivePositiveSwitch();
-                            if (val == null) {
-                                return null;
-                            }
-                            Calendar rightNow = Calendar.getInstance();
-                            Integer hour = val % 60;
-                            Integer minute = val - (hour * 60);
-                            rightNow.set(Calendar.HOUR_OF_DAY, hour);
-                            rightNow.set(Calendar.MINUTE, minute);
-                            state = new DateTimeType(rightNow);
-                        } else {
-                            logger.error("Bindingtype not supported for cycle service: {}", itemType.getClass());
+                        state = new DecimalType(val);
+                    } else {
+                        logger.error("Bindingtype not supported for cycle service: {}", itemType.getClass());
+                        return null;
+                    }
+                } else if (virtService.equals(sPService.getPositiveSwitch())) {
+                    if (itemType.isAssignableFrom(NumberItem.class)) {
+                        Integer val = sPService.getActivePositiveSwitch();
+                        if (val == null) {
                             return null;
                         }
-                        break;
-                    case "off":
-                    case "night":
-                        if (itemType.isAssignableFrom(NumberItem.class)) {
-                            Integer val = sPService.getActiveNegativeSwitch();
-                            if (val == null) {
-                                return null;
-                            }
-                            state = new DecimalType(val);
-                        } else if (itemType.isAssignableFrom(DateTimeItem.class)) {
-                            Integer val = sPService.getActiveNegativeSwitch();
-                            if (val == null) {
-                                return null;
-                            }
-                            Calendar rightNow = Calendar.getInstance();
-                            Integer hour = val % 60;
-                            Integer minute = val - (hour * 60);
-                            rightNow.set(Calendar.HOUR_OF_DAY, hour);
-                            rightNow.set(Calendar.MINUTE, minute);
-                            state = new DateTimeType(rightNow);
-                        } else {
-                            logger.error("Bindingtype not supported for cycle service: {}", itemType.getClass());
+                        state = new DecimalType(val);
+                    } else if (itemType.isAssignableFrom(DateTimeItem.class)) {
+                        Integer val = sPService.getActivePositiveSwitch();
+                        if (val == null) {
                             return null;
                         }
-                        break;
+                        Calendar rightNow = Calendar.getInstance();
+                        Integer hour = val % 60;
+                        Integer minute = val - (hour * 60);
+                        rightNow.set(Calendar.HOUR_OF_DAY, hour);
+                        rightNow.set(Calendar.MINUTE, minute);
+                        state = new DateTimeType(rightNow);
+                    } else {
+                        logger.error("Bindingtype not supported for cycle service: {}", itemType.getClass());
+                        return null;
+                    }
+                } else if (virtService.equals(sPService.getNegativeSwitch())) {
+                    if (itemType.isAssignableFrom(NumberItem.class)) {
+                        Integer val = sPService.getActiveNegativeSwitch();
+                        if (val == null) {
+                            return null;
+                        }
+                        state = new DecimalType(val);
+                    } else if (itemType.isAssignableFrom(DateTimeItem.class)) {
+                        Integer val = sPService.getActiveNegativeSwitch();
+                        if (val == null) {
+                            return null;
+                        }
+                        Calendar rightNow = Calendar.getInstance();
+                        Integer hour = val % 60;
+                        Integer minute = val - (hour * 60);
+                        rightNow.set(Calendar.HOUR_OF_DAY, hour);
+                        rightNow.set(Calendar.MINUTE, minute);
+                        state = new DateTimeType(rightNow);
+                    } else {
+                        logger.error("Bindingtype not supported for cycle service: {}", itemType.getClass());
+                        return null;
+                    }
                 }
                 break;
             case "errorList":
@@ -1118,23 +1110,19 @@ class KM200Comm {
             String[] servicePath = service.split("/");
             String virtService = servicePath[servicePath.length - 1];
             Integer minutes;
-            switch (virtService) {
-                case "on":
-                case "day":
-                    minutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
-                    minutes = (minutes % sPService.getSwitchPointTimeRaster()) * sPService.getSwitchPointTimeRaster();
-                    sPService.setActivePositiveSwitch(minutes);
-                    /* Create a JSON Array from current switch configuration */
-                    dataToSend = sPService.getUpdatedJSONData(parObject);
-                    break;
-                case "off":
-                case "night":
-                    minutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
-                    minutes = (minutes % sPService.getSwitchPointTimeRaster()) * sPService.getSwitchPointTimeRaster();
-                    sPService.setActiveNegativeSwitch(minutes);
-                    /* Create a JSON Array from current switch configuration */
-                    dataToSend = sPService.getUpdatedJSONData(parObject);
-                    break;
+            if (virtService.equals(sPService.getPositiveSwitch())) {
+                minutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
+                minutes = (minutes % sPService.getSwitchPointTimeRaster()) * sPService.getSwitchPointTimeRaster();
+                sPService.setActivePositiveSwitch(minutes);
+                /* Create a JSON Array from current switch configuration */
+                dataToSend = sPService.getUpdatedJSONData(parObject);
+            }
+            if (virtService.equals(sPService.getNegativeSwitch())) {
+                minutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
+                minutes = (minutes % sPService.getSwitchPointTimeRaster()) * sPService.getSwitchPointTimeRaster();
+                sPService.setActiveNegativeSwitch(minutes);
+                /* Create a JSON Array from current switch configuration */
+                dataToSend = sPService.getUpdatedJSONData(parObject);
             }
         }
         return dataToSend;
