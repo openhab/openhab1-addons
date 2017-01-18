@@ -69,6 +69,7 @@
                                 <artifact><file>src/main/resources/conf/jdbc.cfg</file><type>cfg</type><classifier>jdbc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jpa.cfg</file><type>cfg</type><classifier>jpa</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jointspace.cfg</file><type>cfg</type><classifier>jointspace</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/km200.cfg</file><type>cfg</type><classifier>km200</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/knx.cfg</file><type>cfg</type><classifier>knx</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/koubachi.cfg</file><type>cfg</type><classifier>koubachi</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/lgtv.cfg</file><type>cfg</type><classifier>lgtv</classifier></artifact>
