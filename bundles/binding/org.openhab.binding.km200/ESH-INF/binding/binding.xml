@@ -4,38 +4,36 @@
         xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
         xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
 
-    <name>km200 Binding</name>
-    <description>The KM200 Binding is communicating with a Buderus Logamatic web KM200 / KM100 / KM50. It is possible to recive and send parameters like string or float values.</description>
+    <name>KM200 Binding</name>
+    <description>The KM200 binding is communicating with a Buderus Logamatic web KM200 / KM100 / KM50. It is possible to receive and send parameters like string or float values.</description>
     <author>Markus Eckhardt</author>
     
-    <service-id>org.openhab.binding.km200</service-id>
+    <service-id>org.openhab.km200</service-id>
 
     <config-description>
-        <parameter name="ip4_address" type="text">
+        <parameter name="ip4_address" type="text" required="true">
             <label>IP4 Address</label>
+            <context>network-address</context>
             <description>IP4 Address of the KMXXX device</description>
-            <default>"192.168.XXX.XXX"</default>
         </parameter>
-        <parameter name="PrivKey" type="text">
+        <parameter name="PrivKey" type="text" required="false">
            <label>Private Key</label>
            <description>Option 1:Private en-/decryption key built from MD5Salt, GatewayPassword and PrivatePassword</description>
-           <default></default>
-        </parameter>
-        <parameter name="MD5Salt" type="text">
+         </parameter>
+        <parameter name="MD5Salt" type="text" required="false">
             <label>MD5Salt</label>
             <description>Option 2: MD5Salt for the building of the private key</description>
-            <default></default>
         </parameter>
-        <parameter name="GatewayPassword" type="text">
+        <parameter name="GatewayPassword" type="text" required="false">
            <label>Gateway Password</label>
+           <context>password</context>
            <description>Option 2: GatewayPassword for the building of the private key (Sticker on the device without '-')</description>
-           <default></default>
         </parameter>
-        <parameter name="PrivatePassword" type="text">
+        <parameter name="PrivatePassword" type="text" required="false">
            <label>Private Password</label>
+           <context>password</context>
            <description>Option 2: Private Password for the building of the private key (Set in the App)</description>
-           <default></default>
-        </parameter>
+         </parameter>
     </config-description>
 
 </binding:binding>

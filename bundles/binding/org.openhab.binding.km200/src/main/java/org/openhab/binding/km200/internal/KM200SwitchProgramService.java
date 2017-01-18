@@ -160,7 +160,7 @@ public class KM200SwitchProgramService {
      */
     void setActiveCycle(Integer cycle) {
         if (cycle > this.getMaxNbOfSwitchPoints() / 2 || cycle > this.getMaxNbOfSwitchPointsPerDay() / 2 || cycle < 1) {
-            logger.error("The value of cycle is not valid, get cycle: {}", cycle.toString());
+            logger.error("The value of cycle is not valid, get cycle: {}", cycle);
             throw new IllegalArgumentException("The value of cycle is not valid, get cycle: " + cycle.toString());
         }
         /* limit the cycle to the next one after last (for creating a new one) */
@@ -321,7 +321,7 @@ public class KM200SwitchProgramService {
             /* Update the list of switching points */
             removeAllSwitches();
             JSONArray sPoints = nodeRoot.getJSONArray("switchPoints");
-            logger.debug("sPoints: {}", nodeRoot.toString());
+            logger.debug("sPoints: {}", nodeRoot);
             for (int i = 0; i < sPoints.length(); i++) {
                 JSONObject subJSON = sPoints.getJSONObject(i);
                 String day = subJSON.getString("dayOfWeek");
@@ -389,7 +389,7 @@ public class KM200SwitchProgramService {
                     }
                 }
             }
-            logger.debug("New switching points: {}", sPoints.toString());
+            logger.debug("New switching points: {}", sPoints);
             JSONObject switchRoot = new JSONObject(parObject.getJSONData());
             switchRoot.remove("switchPoints");
             switchRoot.put("switchPoints", sPoints);
