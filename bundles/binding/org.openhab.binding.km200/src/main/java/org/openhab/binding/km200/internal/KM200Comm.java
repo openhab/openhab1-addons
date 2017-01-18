@@ -377,12 +377,12 @@ class KM200Comm {
 
                 case "floatValue": /* Check whether the type is a single value containing a float value */
                     logger.debug("initDevice: type float value: {}", decodedData);
-                    valObject = BigDecimal.valueOf(nodeRoot.getDouble("value"));
+                    valObject = nodeRoot.getBigDecimal("value");
                     newObject.setValue(valObject);
                     if (nodeRoot.has("minValue") && nodeRoot.has("maxValue")) {
                         List<BigDecimal> valParas = new ArrayList<BigDecimal>();
-                        valParas.add(BigDecimal.valueOf(nodeRoot.getDouble("minValue")));
-                        valParas.add(BigDecimal.valueOf(nodeRoot.getDouble("maxValue")));
+                        valParas.add(nodeRoot.getBigDecimal("minValue"));
+                        valParas.add(nodeRoot.getBigDecimal("maxValue"));
                         newObject.setValueParameter(valParas);
                     }
                     device.serviceMap.put(id, newObject);
@@ -674,7 +674,7 @@ class KM200Comm {
 
                 case "floatValue": /* Check whether the type is a single value containing a float value */
                     logger.debug("state of type float value: {}", decodedData);
-                    BigDecimal bdVal = BigDecimal.valueOf(nodeRoot.getDouble("value"));
+                    BigDecimal bdVal = nodeRoot.getBigDecimal("value");
                     device.serviceMap.get(service).setValue(bdVal);
                     /* NumberItem Binding */
                     if (itemType.isAssignableFrom(NumberItem.class)) {
