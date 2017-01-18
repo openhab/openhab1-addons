@@ -22,9 +22,9 @@ public class Energy {
 
     private DateTime time;
     private long pulses;
-    private int interval;
+    private double interval;
 
-    public Energy(String logdate, long l, int interval) {
+    public Energy(String logdate, long l, double interval) {
 
         if (logdate.length() == 8) {
 
@@ -56,7 +56,7 @@ public class Energy {
 
     }
 
-    public Energy(DateTime logdate, long pulses, int interval) {
+    public Energy(DateTime logdate, long pulses, double interval) {
         time = logdate;
         this.interval = interval;
         this.pulses = pulses;
@@ -64,7 +64,7 @@ public class Energy {
 
     @Override
     public String toString() {
-        return time.toString() + "-" + Integer.toString(interval) + "-" + Long.toString(pulses);
+        return time.toString() + "-" + Double.toString(interval) + "-" + Long.toString(pulses);
     }
 
     public DateTime getTime() {
@@ -75,7 +75,7 @@ public class Energy {
         return pulses;
     }
 
-    public int getInterval() {
+    public double getInterval() {
         return interval;
     }
 
