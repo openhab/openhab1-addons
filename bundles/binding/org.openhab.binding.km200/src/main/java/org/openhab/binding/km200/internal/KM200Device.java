@@ -53,7 +53,8 @@ public class KM200Device {
     protected byte[] MD5Salt = null;
 
     /* Device services */
-    HashMap<String, KM200CommObject> serviceMap = null;
+    HashMap<String, KM200CommObject> serviceTreeMap = null;
+
     /* Device services blacklist */
     List<String> blacklistMap = null;
     /* List of virtual services */
@@ -63,7 +64,7 @@ public class KM200Device {
     protected Boolean inited = false;
 
     public KM200Device() {
-        serviceMap = new HashMap<String, KM200CommObject>();
+        serviceTreeMap = new HashMap<String, KM200CommObject>();
         blacklistMap = new ArrayList<String>();
         blacklistMap.add("/gateway/firmware");
         virtualList = new ArrayList<KM200CommObject>();
@@ -166,15 +167,28 @@ public class KM200Device {
     }
 
     /**
-     * This function outputs a ";" separated list of all on the device available services with its capabilities
+     * This function prepares a list of all on the device available services with its capabilities
      *
      */
     public void listAllServices() {
-        if (serviceMap != null) {
+        if (serviceTreeMap != null) {
             logger.info("##################################################################");
             logger.info("List of avalible services");
             logger.info("readable;writeable;recordable;virtual;type;service;value;allowed;min;max");
-            for (KM200CommObject object : serviceMap.values()) {
+            printAllServices(serviceTreeMap);
+            logger.info("##################################################################");
+        }
+
+    }
+
+    /**
+     * This function outputs a ";" separated list of all on the device available services with its capabilities
+     *
+     */
+
+    public void printAllServices(HashMap<String, KM200CommObject> actTreeMap) {
+        if (actTreeMap != null) {
+            for (KM200CommObject object : actTreeMap.values()) {
                 if (object != null) {
                     String val = "", type, valPara = "";
                     logger.debug("List type: {} service: {}", object.getServiceType(), object.getFullServiceName());
@@ -220,8 +234,8 @@ public class KM200Device {
                             object.getWriteable().toString(), object.getRecordable().toString(),
                             object.getVirtual().toString(), type, object.getFullServiceName(), val, valPara);
                 }
+                printAllServices(object.serviceTreeMap);
             }
-            logger.info("##################################################################");
         }
     }
 
@@ -229,14 +243,75 @@ public class KM200Device {
      * This function resets the update state on all service objects
      *
      */
-    public void resetAllUpdates() {
-        if (serviceMap != null) {
-            for (KM200CommObject object : serviceMap.values()) {
-                if (object != null) {
-                    object.setUpdated(false);
+    public void resetAllUpdates(HashMap<String, KM200CommObject> actTreeMap) {
+        if (actTreeMap != null) {
+            for (KM200CommObject stmObject : actTreeMap.values()) {
+                if (stmObject != null) {
+                    stmObject.setUpdated(false);
+                    resetAllUpdates(stmObject.serviceTreeMap);
                 }
             }
         }
+    }
+
+    /**
+     * This function checks whether a service is available
+     *
+     */
+    public Boolean containsService(String service) {
+        String[] servicePath = service.split("/");
+        KM200CommObject object = null;
+        int len = servicePath.length;
+        if (len == 0) {
+            return false;
+        }
+        if (!serviceTreeMap.containsKey(servicePath[1])) {
+            return false;
+        } else {
+            if (len == 2) {
+                return true;
+            }
+            object = serviceTreeMap.get(servicePath[1]);
+        }
+        for (int i = 2; i < len; i++) {
+            if (object.serviceTreeMap.containsKey(servicePath[i])) {
+                object = object.serviceTreeMap.get(servicePath[i]);
+                continue;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * This function return the KM200CommObject of a service
+     *
+     */
+    public KM200CommObject getServiceObject(String service) {
+        String[] servicePath = service.split("/");
+        KM200CommObject object = null;
+        int len = servicePath.length;
+        if (len == 0) {
+            return null;
+        }
+        if (!serviceTreeMap.containsKey(servicePath[1])) {
+            return null;
+        } else {
+            object = serviceTreeMap.get(servicePath[1]);
+            if (len == 2) {
+                return object;
+            }
+        }
+        for (int i = 2; i < len; i++) {
+            if (object.serviceTreeMap.containsKey(servicePath[i])) {
+                object = object.serviceTreeMap.get(servicePath[i]);
+                continue;
+            } else {
+                return null;
+            }
+        }
+        return object;
     }
 
     // setter

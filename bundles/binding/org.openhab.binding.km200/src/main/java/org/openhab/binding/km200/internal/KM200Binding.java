@@ -185,11 +185,11 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
             }
             logger.info("Init services..");
             /* communication is working */
-            /* Checking of the devicespecific services and creating of a service list */
+            /* Checking of the device specific services and creating of a service list */
             for (KM200ServiceTypes service : KM200ServiceTypes.values()) {
                 try {
                     logger.debug(service.getDescription());
-                    comm.initObjects(service.getDescription());
+                    comm.initObjects(service.getDescription(), null);
                 } catch (Exception e) {
                     logger.error("Couldn't init service: {} error: {}", service, e.getMessage());
                 }
@@ -201,7 +201,7 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
             } catch (Exception e) {
                 logger.error("Couldn't init virtual services: {}", e.getMessage());
             }
-            /* Output all availible services in the log file */
+            /* Output all available services in the log file */
             /* Now init the virtual services */
             logger.debug("list All Services");
             device.listAllServices();
@@ -258,12 +258,12 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
                 service = comm.checkParameterReplacement(provider, item);
                 if (sendData != null) {
                     sendMap.put(item, sendData);
-                } else if (device.serviceMap.get(service).getVirtual() == 1) {
-                    String parent = device.serviceMap.get(service).getParent();
+                } else if (device.getServiceObject(service).getVirtual() == 1) {
+                    String parent = device.getServiceObject(service).getParent();
                     for (KM200BindingProvider tmpProvider : providers) {
                         for (String tmpItem : tmpProvider.getItemNames()) {
                             service = comm.checkParameterReplacement(tmpProvider, tmpItem);
-                            if (parent.equals(device.serviceMap.get(service).getParent())) {
+                            if (parent.equals(device.getServiceObject(service).getParent())) {
                                 try {
                                     State state = comm.getProvidersState(tmpProvider, tmpItem);
                                     if (state != null) {
@@ -310,7 +310,7 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
                 logger.debug("GetKM200Runnable");
                 org.openhab.core.types.State state = null;
                 synchronized (device) {
-                    device.resetAllUpdates();
+                    device.resetAllUpdates(device.serviceTreeMap);
                     for (KM200BindingProvider provider : providers) {
                         for (String item : provider.getItemNames()) {
                             try {
@@ -395,7 +395,7 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
                             continue;
                         }
                         String service = comm.checkParameterReplacement(provider, item);
-                        KM200CommObject object = device.serviceMap.get(service);
+                        KM200CommObject object = device.getServiceObject(service);
 
                         logger.debug("Sending: {}", provider.getService(item));
 
@@ -412,12 +412,12 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
                         /* Now update the set values and for all virtual values depending on same parent */
                         if (object.getVirtual() == 1) {
                             String parent = object.getParent();
-                            device.serviceMap.get(parent).setUpdated(false);
+                            device.getServiceObject(parent).setUpdated(false);
 
                             for (KM200BindingProvider tmpProvider : providers) {
                                 for (String tmpItem : tmpProvider.getItemNames()) {
                                     String tmpService = comm.checkParameterReplacement(tmpProvider, tmpItem);
-                                    if (parent.equals(device.serviceMap.get(tmpService).getParent())) {
+                                    if (parent.equals(device.getServiceObject(tmpService).getParent())) {
                                         try {
                                             state = comm.getProvidersState(tmpProvider, tmpItem);
                                             if (state != null) {

@@ -306,10 +306,11 @@ public class KM200Comm {
      * This function checks the capabilities of a service on the device
      *
      */
-    public void initObjects(String service) {
+    public void initObjects(String service, KM200CommObject parent) {
         String id = null, type = null, decodedData = null;
         Integer writeable = 0;
         Integer recordable = 0;
+        Integer readable = 1;
         JSONObject nodeRoot = null;
         KM200CommObject newObject = null;
         logger.debug("Init: {}", service);
@@ -327,37 +328,40 @@ public class KM200Comm {
             }
             /* Look whether the communication was forbidden */
             if (recData.length == 1) {
-                newObject = new KM200CommObject(service, "", 0, 0, 0);
-                device.serviceMap.put(service, newObject);
-                return;
+                readable = 0;
+                id = service;
+                type = "$$PROTECTED$$";
             }
-            decodedData = decodeMessage(recData);
-            if (decodedData == null) {
-                throw new RuntimeException("Decoding of the KM200 message is not possible!");
-            }
-            if (decodedData.length() > 0) {
-                nodeRoot = new JSONObject(decodedData);
-                type = nodeRoot.getString("type");
-                id = nodeRoot.getString("id");
-            } else {
-                logger.warn("Get empty reply");
-                return;
+            if (readable == 1) {
+                decodedData = decodeMessage(recData);
+
+                if (decodedData == null) {
+                    throw new RuntimeException("Decoding of the KM200 message is not possible!");
+                }
+                if (decodedData.length() > 0) {
+                    nodeRoot = new JSONObject(decodedData);
+                    type = nodeRoot.getString("type");
+                    id = nodeRoot.getString("id");
+                } else {
+                    logger.warn("Get empty reply");
+                    return;
+                }
+
+                /* Check the service features and set the flags */
+                if (nodeRoot.has("writeable")) {
+                    Integer val = nodeRoot.getInt("writeable");
+                    logger.debug(val.toString());
+                    writeable = val;
+                }
+                if (nodeRoot.has("recordable")) {
+                    Integer val = nodeRoot.getInt("recordable");
+                    logger.debug(val.toString());
+                    recordable = val;
+                }
+                logger.debug("Typ: {}", type);
             }
 
-            /* Check the service features and set the flags */
-            if (nodeRoot.has("writeable")) {
-                Integer val = nodeRoot.getInt("writeable");
-                logger.debug(val.toString());
-                writeable = val;
-            }
-            if (nodeRoot.has("recordable")) {
-                Integer val = nodeRoot.getInt("recordable");
-                logger.debug(val.toString());
-                recordable = val;
-            }
-            logger.debug("Typ: {}", type);
-
-            newObject = new KM200CommObject(id, type, writeable, recordable);
+            newObject = new KM200CommObject(id, type, readable, writeable, recordable, parent);
             newObject.setJSONData(decodedData);
 
             Object valObject = null;
@@ -375,7 +379,6 @@ public class KM200Comm {
                         }
                         newObject.setValueParameter(valParas);
                     }
-                    device.serviceMap.put(id, newObject);
                     break;
 
                 case "floatValue": /* Check whether the type is a single value containing a float value */
@@ -388,7 +391,6 @@ public class KM200Comm {
                         valParas.add(nodeRoot.getBigDecimal("maxValue"));
                         newObject.setValueParameter(valParas);
                     }
-                    device.serviceMap.put(id, newObject);
                     break;
 
                 case "switchProgram": /* Check whether the type is a switchProgram */
@@ -402,7 +404,6 @@ public class KM200Comm {
                     sPService.updateSwitches(nodeRoot);
                     newObject.setValueParameter(sPService);
                     newObject.setJSONData(decodedData);
-                    device.serviceMap.put(id, newObject);
                     device.virtualList.add(newObject);
                     break;
 
@@ -412,35 +413,32 @@ public class KM200Comm {
                     eService.updateErrors(nodeRoot);
                     newObject.setValueParameter(eService);
                     newObject.setJSONData(decodedData);
-                    device.serviceMap.put(id, newObject);
                     device.virtualList.add(newObject);
                     break;
 
                 case "refEnum": /* Check whether the type is a refEnum */
                     logger.debug("initDevice: type refEnum: {}", decodedData);
-                    device.serviceMap.put(id, newObject);
                     JSONArray refers = nodeRoot.getJSONArray("references");
                     for (int i = 0; i < refers.length(); i++) {
                         JSONObject subJSON = refers.getJSONObject(i);
                         id = subJSON.getString("id");
-                        initObjects(id);
+                        initObjects(id, newObject);
                     }
                     break;
 
                 case "moduleList": /* Check whether the type is a moduleList */
                     logger.debug("initDevice: type moduleList: {}", decodedData);
-                    device.serviceMap.put(id, newObject);
                     JSONArray vals = nodeRoot.getJSONArray("values");
                     for (int i = 0; i < vals.length(); i++) {
                         JSONObject subJSON = vals.getJSONObject(i);
                         id = subJSON.getString("id");
-                        initObjects(id);
+
+                        initObjects(id, newObject);
                     }
                     break;
 
                 case "yRecording": /* Check whether the type is a yRecording */
                     logger.debug("initDevice: type yRecording: {}", decodedData);
-                    device.serviceMap.put(id, newObject);
                     /* have to be completed */
                     break;
 
@@ -448,24 +446,32 @@ public class KM200Comm {
                     logger.debug("initDevice: type systeminfo: {}", decodedData);
                     JSONArray sInfo = nodeRoot.getJSONArray("values");
                     newObject.setValue(sInfo);
-                    device.serviceMap.put(id, newObject);
                     /* have to be completed */
                     break;
                 case "arrayData":
                     logger.debug("initDevice: type arrayData: {}", decodedData);
                     newObject.setJSONData(decodedData);
-                    device.serviceMap.put(id, newObject);
                     /* have to be completed */
+                    break;
+
+                case "$$PROTECTED$$":
+                    logger.debug("initDevice: readonly");
+                    newObject.setJSONData(decodedData);
                     break;
 
                 default: /* Unknown type */
                     logger.info("initDevice: type unknown for service: {} Data: {}", service, decodedData);
-                    device.serviceMap.put(id, newObject);
             }
         } catch (
 
         JSONException e) {
             logger.error("Parsingexception in JSON: {} data: {}", e.getMessage(), decodedData);
+        }
+        String[] servicePath = service.split("/");
+        if (parent == null) {
+            device.serviceTreeMap.put(servicePath[servicePath.length - 1], newObject);
+        } else {
+            parent.serviceTreeMap.put(servicePath[servicePath.length - 1], newObject);
         }
     }
 
@@ -483,29 +489,29 @@ public class KM200Comm {
                 case "switchProgram":
                     KM200SwitchProgramService sPService = ((KM200SwitchProgramService) object.getValueParameter());
                     sPService.determineSwitchNames(device);
-                    newObject = new KM200CommObject(id + "/weekday", type, 1, 0, 1, id);
-                    device.serviceMap.put(id + "/weekday", newObject);
-                    newObject = new KM200CommObject(id + "/nbrCycles", type, 0, 0, 1, id);
-                    device.serviceMap.put(id + "/nbrCycles", newObject);
-                    newObject = new KM200CommObject(id + "/cycle", type, 1, 0, 1, id);
-                    device.serviceMap.put(id + "/cycle", newObject);
+                    newObject = new KM200CommObject(id + "/weekday", type, 1, 0, 1, id, object);
+                    object.serviceTreeMap.put("weekday", newObject);
+                    newObject = new KM200CommObject(id + "/nbrCycles", type, 0, 0, 1, id, object);
+                    object.serviceTreeMap.put("nbrCycles", newObject);
+                    newObject = new KM200CommObject(id + "/cycle", type, 1, 0, 1, id, object);
+                    object.serviceTreeMap.put("cycle", newObject);
                     logger.debug("On: {}  Of: {}", id + "/" + sPService.getPositiveSwitch(),
                             id + "/" + sPService.getNegativeSwitch());
                     newObject = new KM200CommObject(id + "/" + sPService.getPositiveSwitch(), type,
-                            object.getWriteable(), object.getRecordable(), 1, id);
-                    device.serviceMap.put(id + "/" + sPService.getPositiveSwitch(), newObject);
+                            object.getWriteable(), object.getRecordable(), 1, id, object);
+                    object.serviceTreeMap.put(sPService.getPositiveSwitch(), newObject);
                     newObject = new KM200CommObject(id + "/" + sPService.getNegativeSwitch(), type,
-                            object.getWriteable(), object.getRecordable(), 1, id);
-                    device.serviceMap.put(id + "/" + sPService.getNegativeSwitch(), newObject);
+                            object.getWriteable(), object.getRecordable(), 1, id, object);
+                    object.serviceTreeMap.put(sPService.getNegativeSwitch(), newObject);
 
                     break;
                 case "errorList":
-                    newObject = new KM200CommObject(id + "/nbrErrors", type, 0, 0, 1, id);
-                    device.serviceMap.put(id + "/nbrErrors", newObject);
-                    newObject = new KM200CommObject(id + "/error", type, 1, 0, 1, id);
-                    device.serviceMap.put(id + "/error", newObject);
-                    newObject = new KM200CommObject(id + "/errorString", type, 0, 0, 1, id);
-                    device.serviceMap.put(id + "/errorString", newObject);
+                    newObject = new KM200CommObject(id + "/nbrErrors", type, 0, 0, 1, id, object);
+                    object.serviceTreeMap.put("nbrErrors", newObject);
+                    newObject = new KM200CommObject(id + "/error", type, 1, 0, 1, id, object);
+                    object.serviceTreeMap.put("error", newObject);
+                    newObject = new KM200CommObject(id + "/errorString", type, 0, 0, 1, id, object);
+                    object.serviceTreeMap.put("errorString", newObject);
                     break;
             }
         }
@@ -519,9 +525,9 @@ public class KM200Comm {
         String service = provider.getService(item);
         if (provider.getParameter(item).containsKey("current")) {
             String currentService = provider.getParameter(item).get("current");
-            if (device.serviceMap.containsKey(currentService)) {
-                if (device.serviceMap.get(currentService).getServiceType().equals("stringValue")) {
-                    String val = (String) device.serviceMap.get(currentService).getValue();
+            if (device.containsService(currentService)) {
+                if (device.getServiceObject(currentService).getServiceType().equals("stringValue")) {
+                    String val = (String) device.getServiceObject(currentService).getValue();
                     return (service.replace("__current__", val));
                 }
             }
@@ -547,8 +553,8 @@ public class KM200Comm {
                 logger.debug("Service on blacklist: {}", service);
                 return null;
             }
-            if (device.serviceMap.containsKey(service)) {
-                object = device.serviceMap.get(service);
+            if (device.containsService(service)) {
+                object = device.getServiceObject(service);
                 if (object.getReadable() == 0) {
                     logger.warn("Service is listed as protected (reading is not possible): {}", service);
                     return null;
@@ -560,7 +566,7 @@ public class KM200Comm {
             }
             /* For using of virtual services only one receive on the parent service is needed */
             if (!object.getUpdated()
-                    || (object.getVirtual() == 1 && !device.serviceMap.get(object.getParent()).getUpdated())) {
+                    || (object.getVirtual() == 1 && !device.getServiceObject(object.getParent()).getUpdated())) {
 
                 if (object.getVirtual() == 1) {
                     /* If it's a virtual service then receive the data from parent service */
@@ -586,8 +592,8 @@ public class KM200Comm {
                     throw new RuntimeException("Decoding of the KM200 message is not possible!");
                 }
                 if (object.getVirtual() == 1) {
-                    device.serviceMap.get(object.getParent()).setJSONData(decodedData);
-                    device.serviceMap.get(object.getParent()).setUpdated(true);
+                    device.getServiceObject(object.getParent()).setJSONData(decodedData);
+                    device.getServiceObject(object.getParent()).setUpdated(true);
                 } else {
                     object.setJSONData(decodedData);
                 }
@@ -596,7 +602,7 @@ public class KM200Comm {
             } else {
                 /* If already updated then use the saved data */
                 if (object.getVirtual() == 1) {
-                    decodedData = device.serviceMap.get(object.getParent()).getJSONData();
+                    decodedData = device.getServiceObject(object.getParent()).getJSONData();
                 } else {
                     decodedData = object.getJSONData();
                 }
@@ -615,7 +621,7 @@ public class KM200Comm {
         State state = null;
         Class<? extends Item> itemType = provider.getItemType(item);
         String service = checkParameterReplacement(provider, item);
-        KM200CommObject object = device.serviceMap.get(service);
+        KM200CommObject object = device.getServiceObject(service);
         logger.debug("parseJSONData service: {}, data: {}", service, decodedData);
         /* Now parsing of the JSON String depending on its type and the type of binding item */
         try {
@@ -630,7 +636,7 @@ public class KM200Comm {
                 case "stringValue": /* Check whether the type is a single value containing a string value */
                     logger.debug("initDevice: type string value: {}", decodedData);
                     String sVal = nodeRoot.getString("value");
-                    device.serviceMap.get(service).setValue(sVal);
+                    device.getServiceObject(service).setValue(sVal);
                     /* SwitchItem Binding */
                     if (itemType.isAssignableFrom(SwitchItem.class)) {
                         if (provider.getParameter(item).containsKey("on")) {
@@ -678,7 +684,7 @@ public class KM200Comm {
                 case "floatValue": /* Check whether the type is a single value containing a float value */
                     logger.debug("state of type float value: {}", decodedData);
                     BigDecimal bdVal = nodeRoot.getBigDecimal("value");
-                    device.serviceMap.get(service).setValue(bdVal);
+                    device.getServiceObject(service).setValue(bdVal);
                     /* NumberItem Binding */
                     if (itemType.isAssignableFrom(NumberItem.class)) {
                         state = new DecimalType(bdVal.floatValue());
@@ -699,7 +705,7 @@ public class KM200Comm {
                     if (object.getVirtual() == 0) {
                         sPService = ((KM200SwitchProgramService) object.getValueParameter());
                     } else {
-                        sPService = ((KM200SwitchProgramService) device.serviceMap.get(object.getParent())
+                        sPService = ((KM200SwitchProgramService) device.getServiceObject(object.getParent())
                                 .getValueParameter());
                     }
                     /* Update the switches insode the KM200SwitchProgramService */
@@ -728,7 +734,8 @@ public class KM200Comm {
                     if (object.getVirtual() == 0) {
                         eService = ((KM200ErrorService) object.getValueParameter());
                     } else {
-                        eService = ((KM200ErrorService) device.serviceMap.get(object.getParent()).getValueParameter());
+                        eService = ((KM200ErrorService) device.getServiceObject(object.getParent())
+                                .getValueParameter());
                     }
                     /* Update the switches insode the KM200SwitchProgramService */
                     eService.updateErrors(nodeRoot);
@@ -781,8 +788,8 @@ public class KM200Comm {
 
         switch (type) {
             case "switchProgram":
-                KM200SwitchProgramService sPService = ((KM200SwitchProgramService) device.serviceMap
-                        .get(object.getParent()).getValueParameter());
+                KM200SwitchProgramService sPService = ((KM200SwitchProgramService) device
+                        .getServiceObject(object.getParent()).getValueParameter());
                 String[] servicePath = service.split("/");
                 String virtService = servicePath[servicePath.length - 1];
                 if (virtService.equals("weekday")) {
@@ -865,7 +872,7 @@ public class KM200Comm {
                 }
                 break;
             case "errorList":
-                KM200ErrorService eService = ((KM200ErrorService) device.serviceMap.get(object.getParent())
+                KM200ErrorService eService = ((KM200ErrorService) device.getServiceObject(object.getParent())
                         .getValueParameter());
                 String[] nServicePath = service.split("/");
                 String nVirtService = nServicePath[nServicePath.length - 1];
@@ -931,12 +938,12 @@ public class KM200Comm {
                 logger.debug("Service on blacklist: {}", service);
                 return null;
             }
-            if (device.serviceMap.containsKey(service)) {
-                if (device.serviceMap.get(service).getWriteable() == 0) {
+            if (device.containsService(service)) {
+                if (device.getServiceObject(service).getWriteable() == 0) {
                     logger.error("Service is listed as read-only: {}", service);
                     return null;
                 }
-                object = device.serviceMap.get(service);
+                object = device.getServiceObject(service);
                 type = object.getServiceType();
             } else {
                 logger.error("Service is not in the determined device service list: {}", service);
@@ -1067,8 +1074,8 @@ public class KM200Comm {
         String dataToSend = null;
         String type = null;
         logger.debug("Check virtual state of: {} type: {} item: {}", service, type, itemType.getName());
-        object = device.serviceMap.get(service);
-        KM200CommObject parObject = device.serviceMap.get(object.getParent());
+        object = device.getServiceObject(service);
+        KM200CommObject parObject = device.getServiceObject(object.getParent());
         type = object.getServiceType();
         /* Binding is a StringItem */
         if (itemType.isAssignableFrom(StringItem.class)) {
@@ -1106,7 +1113,7 @@ public class KM200Comm {
                     }
                     break;
                 case "errorList":
-                    KM200ErrorService eService = ((KM200ErrorService) device.serviceMap.get(object.getParent())
+                    KM200ErrorService eService = ((KM200ErrorService) device.getServiceObject(object.getParent())
                             .getValueParameter());
                     String[] nServicePath = service.split("/");
                     String nVirtService = nServicePath[nServicePath.length - 1];

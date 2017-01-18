@@ -9,6 +9,8 @@
 
 package org.openhab.binding.km200.internal;
 
+import java.util.HashMap;
+
 /**
  * The KM200CommObject representing a service on a device with its all capabilities
  *
@@ -30,7 +32,13 @@ public class KM200CommObject {
     private Object value = null;
     private Object valueParameter = null;
 
-    public KM200CommObject(String serviceName, String type, Integer read, Integer write, Integer record) {
+    /* Device services */
+    HashMap<String, KM200CommObject> serviceTreeMap = null;
+    KM200CommObject parentObject = null;
+
+    public KM200CommObject(String serviceName, String type, Integer read, Integer write, Integer record,
+            KM200CommObject parentObject) {
+        serviceTreeMap = new HashMap<String, KM200CommObject>();
         fullServiceName = serviceName;
         serviceType = type;
         readable = read;
@@ -38,10 +46,12 @@ public class KM200CommObject {
         recordable = record;
         virtual = 0;
         parent = null;
+        this.parentObject = parentObject;
     }
 
     public KM200CommObject(String serviceName, String type, Integer write, Integer record, Integer virtual,
-            String parent) {
+            String parent, KM200CommObject parentObject) {
+        serviceTreeMap = new HashMap<String, KM200CommObject>();
         fullServiceName = serviceName;
         serviceType = type;
         readable = 1;
@@ -49,9 +59,12 @@ public class KM200CommObject {
         recordable = record;
         this.virtual = virtual;
         this.parent = parent;
+        this.parentObject = parentObject;
     }
 
-    public KM200CommObject(String serviceName, String type, Integer write, Integer record) {
+    public KM200CommObject(String serviceName, String type, Integer write, Integer record,
+            KM200CommObject parentObject) {
+        serviceTreeMap = new HashMap<String, KM200CommObject>();
         fullServiceName = serviceName;
         serviceType = type;
         readable = 1;
@@ -59,6 +72,7 @@ public class KM200CommObject {
         recordable = record;
         virtual = 0;
         parent = null;
+        this.parentObject = parentObject;
     }
 
     /* Sets */
