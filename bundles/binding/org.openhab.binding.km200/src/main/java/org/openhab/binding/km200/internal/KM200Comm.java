@@ -58,7 +58,7 @@ import com.google.common.io.ByteStreams;
  * @since 1.9.0
  */
 
-class KM200Comm {
+public class KM200Comm {
 
     private static final Logger logger = LoggerFactory.getLogger(KM200Comm.class);
     private HttpClient client = null;
@@ -174,6 +174,9 @@ class KM200Comm {
                             /* Service is available but not readable */
                             byte[] test = new byte[1];
                             return test;
+                        case HttpStatus.SC_NOT_FOUND:
+                            /* Should only happen on discovery */
+                            return null;
                         default:
                             logger.error("HTTP GET failed: {}", method.getStatusLine());
                             return null;

@@ -8,9 +8,11 @@
  */
 package org.openhab.binding.km200.internal;
 
+import java.net.InetAddress;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,6 +23,7 @@ import java.util.concurrent.Executors;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.km200.KM200BindingProvider;
+import org.openhab.binding.km200.internal.discovery.KM200DeviceDiscovery;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
@@ -113,10 +116,22 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
                 }
                 device.setIP4Address(ip);
             } else {
-                logger.error("No ip4_address in openhab.cfg set!");
-                throw new ConfigurationException("ip4_address", "No ip4_address in openhab.cfg set!");
+                logger.info("No ip4_address in openhab.cfg set, auto detection activated..");
+                KM200DeviceDiscovery kmDevDis = new KM200DeviceDiscovery();
+                HashSet<InetAddress> listOfKNDevices = kmDevDis.getKNDevices();
+                if (listOfKNDevices.size() > 0) {
+                    for (InetAddress knIP : listOfKNDevices) {
+                        logger.info("Found KMXXX device: {}", knIP.getHostAddress());
+                        device.setIP4Address(knIP.getHostAddress());
+                        /* Only the first one is supported, yet */
+                        break;
+                    }
+                } else {
+                    throw new ConfigurationException("ip4_address",
+                            "No ip4_address in openhab.cfg and no devices detected!");
+                }
             }
-            /* There a two possibilities of configuratiom */
+            /* There a two possibilities of configuration */
             /* 1. With a private key */
             String PrivKey = Objects.toString(config.get("PrivKey"), null);
             if (StringUtils.isNotBlank(PrivKey)) {

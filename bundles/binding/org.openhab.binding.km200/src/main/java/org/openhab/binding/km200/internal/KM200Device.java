@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.9.0
  */
 
-class KM200Device {
+public class KM200Device {
 
     private static final Logger logger = LoggerFactory.getLogger(KM200Device.class);
 

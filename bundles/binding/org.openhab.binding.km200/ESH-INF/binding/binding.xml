@@ -11,7 +11,7 @@
     <service-id>org.openhab.km200</service-id>
 
     <config-description>
-        <parameter name="ip4_address" type="text" required="true">
+        <parameter name="ip4_address" type="text" required="false">
             <label>IP4 Address</label>
             <context>network-address</context>
             <description>IP4 Address of the KMXXX device</description>
