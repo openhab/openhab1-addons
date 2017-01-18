@@ -96,16 +96,14 @@ class KM200Device {
             try {
                 md = MessageDigest.getInstance("MD5");
             } catch (NoSuchAlgorithmException e) {
-                logger.error("No such algorithm, MD5");
-                e.printStackTrace();
+                logger.error("No such algorithm, MD5: {}", e.getMessage());
             }
 
             /* First half of the key: MD5 of (GatewayPassword . Salt) */
             try {
                 bytesOfGatewayPassword = gatewayPassword.getBytes("UTF-8");
             } catch (UnsupportedEncodingException e) {
-                logger.error("No such encoding, UTF-8");
-                e.printStackTrace();
+                logger.error("No such encoding, UTF-8: {}", e.getMessage());
             }
             byte[] CombParts1 = new byte[bytesOfGatewayPassword.length + MD5Salt.length];
             System.arraycopy(bytesOfGatewayPassword, 0, CombParts1, 0, bytesOfGatewayPassword.length);
@@ -119,8 +117,7 @@ class KM200Device {
             try {
                 bytesOfPrivatePassword = privatePassword.getBytes("UTF-8");
             } catch (UnsupportedEncodingException e) {
-                logger.error("No such encoding, UTF-8");
-                e.printStackTrace();
+                logger.error("No such encoding, UTF-8: {}", e.getMessage());
             }
             byte[] CombParts2 = new byte[bytesOfPrivatePassword.length + MD5Salt.length];
             System.arraycopy(MD5Salt, 0, CombParts2, 0, MD5Salt.length);
@@ -185,8 +182,7 @@ class KM200Device {
                     if (type == null) {
                         type = new String();
                     }
-                    if (!type.equals("refEnum") && !type.equals("") && !type.equals("switchProgram")
-                            && !type.equals("yRecording") && !type.equals("errorList")) {
+                    if (type.equals("stringValue") || type.equals("floatValue")) {
                         val = object.getValue().toString();
                         if (object.getValueParameter() != null) {
                             if (type.equals("stringValue")) {
