@@ -91,33 +91,30 @@ public class KM200DeviceDiscovery {
         Enumeration<NetworkInterface> interfaces = null;
         try {
             interfaces = NetworkInterface.getNetworkInterfaces();
-        } catch (SocketException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        while (interfaces.hasMoreElements()) {
-            NetworkInterface networkInterface = interfaces.nextElement();
-            try {
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = interfaces.nextElement();
                 if (networkInterface.isLoopback()) {
                     continue; // Don't want to broadcast to the loopback interface
                 }
                 if (!networkInterface.isUp()) {
                     continue; // Don't want to broadcast a offline interface
                 }
-            } catch (SocketException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-                if (!isPrivateV4Address(interfaceAddress.getAddress())) {
-                    continue;
+                for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+                    if (!isPrivateV4Address(interfaceAddress.getAddress())) {
+                        continue;
+                    }
+                    if (interfaceAddress.getNetworkPrefixLength() < 24) {
+                        continue;
+                    }
+                    broadcast = interfaceAddress.getBroadcast();
+                    if (broadcast == null) {
+                        continue;
+                    }
+                    listOfBroadcasts.add(broadcast);
                 }
-                broadcast = interfaceAddress.getBroadcast();
-                if (broadcast == null) {
-                    continue;
-                }
-                listOfBroadcasts.add(broadcast);
             }
+        } catch (SocketException e) {
+            logger.error("Device autodetection fails, error: {}", e.getMessage());
         }
     }
 
