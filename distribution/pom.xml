@@ -1495,7 +1495,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openhab.io</groupId>
-			<artifactId>org.openhab.io.myopenhab</artifactId>
+			<artifactId>org.openhab.io.openhabcloud</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
