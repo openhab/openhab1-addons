@@ -62,22 +62,22 @@ public class PowerBufferResponseMessage extends Message {
                 datapoints[0] = null;
             }
             if (!matcher.group(4).equals("FFFFFFFF")) {
-                datapoints[1] = new Energy(matcher.group(2), Long.parseLong(matcher.group(5), 16), 3600);
+                datapoints[1] = new Energy(matcher.group(4), Long.parseLong(matcher.group(5), 16), 3600);
             } else {
                 datapoints[1] = null;
             }
             if (!matcher.group(6).equals("FFFFFFFF")) {
-                datapoints[2] = new Energy(matcher.group(2), Long.parseLong(matcher.group(7), 16), 3600);
+                datapoints[2] = new Energy(matcher.group(6), Long.parseLong(matcher.group(7), 16), 3600);
             } else {
                 datapoints[2] = null;
             }
             if (!matcher.group(8).equals("FFFFFFFF")) {
-                datapoints[3] = new Energy(matcher.group(2), Long.parseLong(matcher.group(9), 16), 3600);
+                datapoints[3] = new Energy(matcher.group(8), Long.parseLong(matcher.group(9), 16), 3600);
             } else {
                 datapoints[3] = null;
             }
 
-            logAddress = (Integer.parseInt(matcher.group(10), 16) - 278528) / 8;
+            logAddress = (Integer.parseInt(matcher.group(10), 16) - 278528) / 32;
         } else {
             logger.debug("Plugwise protocol PowerBufferResponseMessage error: {} does not match", payLoad);
         }
