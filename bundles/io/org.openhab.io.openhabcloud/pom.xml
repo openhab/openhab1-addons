@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>io</artifactId>
+		<version>1.8.3-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+	</properties>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.io</groupId>
+	<artifactId>org.openhab.io.openhabcloud</artifactId>
+
+	<name>openHAB Cloud Connector</name>
+
+	<packaging>eclipse-plugin</packaging>
+
+</project>
