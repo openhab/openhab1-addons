@@ -40,7 +40,7 @@ public interface MStepperConsumption extends MStepperDevice, MSensor<DecimalValu
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMStepperConsumption_DeviceType()
      * @model default="stepper_consumption" unique="false" changeable="false"

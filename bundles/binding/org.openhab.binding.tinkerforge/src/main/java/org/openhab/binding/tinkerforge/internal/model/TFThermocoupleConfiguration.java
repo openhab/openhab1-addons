@@ -37,7 +37,7 @@ public interface TFThermocoupleConfiguration extends TFBaseConfiguration {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Averaging</em>' attribute.
      * @see #setAveraging(Short)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFThermocoupleConfiguration_Averaging()
@@ -52,7 +52,7 @@ public interface TFThermocoupleConfiguration extends TFBaseConfiguration {
      * <em>Averaging</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @param value the new value of the '<em>Averaging</em>' attribute.
      * @see #getAveraging()
      * @generated
@@ -67,7 +67,7 @@ public interface TFThermocoupleConfiguration extends TFBaseConfiguration {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Thermocouple Type</em>' attribute.
      * @see #setThermocoupleType(String)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFThermocoupleConfiguration_ThermocoupleType()
@@ -82,7 +82,7 @@ public interface TFThermocoupleConfiguration extends TFBaseConfiguration {
      * <em>Thermocouple Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @param value the new value of the '<em>Thermocouple Type</em>' attribute.
      * @see #getThermocoupleType()
      * @generated
@@ -97,7 +97,7 @@ public interface TFThermocoupleConfiguration extends TFBaseConfiguration {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Filter</em>' attribute.
      * @see #setFilter(String)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFThermocoupleConfiguration_Filter()
@@ -112,7 +112,7 @@ public interface TFThermocoupleConfiguration extends TFBaseConfiguration {
      * attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @param value the new value of the '<em>Filter</em>' attribute.
      * @see #getFilter()
      * @generated

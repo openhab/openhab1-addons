@@ -35,7 +35,7 @@ public interface MStepperStatusLed extends MStepperDevice, DigitalActor {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMStepperStatusLed_DeviceType()
      * @model default="stepper_led" unique="false" changeable="false"

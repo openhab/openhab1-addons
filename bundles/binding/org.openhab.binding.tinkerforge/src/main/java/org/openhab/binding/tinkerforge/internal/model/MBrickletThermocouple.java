@@ -49,7 +49,7 @@ public interface MBrickletThermocouple extends MDevice<BrickletThermocouple>, MS
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletThermocouple_DeviceType()
      * @model default="bricklet_thermocouple" unique="false" changeable="false"
@@ -66,7 +66,7 @@ public interface MBrickletThermocouple extends MDevice<BrickletThermocouple>, MS
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Threshold</em>' attribute.
      * @see #setThreshold(BigDecimal)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletThermocouple_Threshold()
@@ -80,7 +80,7 @@ public interface MBrickletThermocouple extends MDevice<BrickletThermocouple>, MS
      * <em>Threshold</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @param value the new value of the '<em>Threshold</em>' attribute.
      * @see #getThreshold()
      * @generated
@@ -90,7 +90,7 @@ public interface MBrickletThermocouple extends MDevice<BrickletThermocouple>, MS
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @model annotation="http://www.eclipse.org/emf/2002/GenModel body=''"
      * @generated
      */

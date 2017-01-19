@@ -42,7 +42,7 @@ public interface MBrickletOLE64x48
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletOLE64x48_DeviceType()
      * @model default="bricklet_oled64x48" unique="false" changeable="false"

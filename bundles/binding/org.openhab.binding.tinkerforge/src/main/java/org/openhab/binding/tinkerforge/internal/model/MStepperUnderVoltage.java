@@ -40,7 +40,7 @@ public interface MStepperUnderVoltage extends MStepperDevice, MSensor<DecimalVal
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMStepperUnderVoltage_DeviceType()
      * @model default="stepper_under_voltage" unique="false" changeable="false"

@@ -39,7 +39,7 @@ public interface MStepperSteps extends MStepperDevice, MSensor<DecimalValue> {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMStepperSteps_DeviceType()
      * @model default="stepper_steps" unique="false" changeable="false"

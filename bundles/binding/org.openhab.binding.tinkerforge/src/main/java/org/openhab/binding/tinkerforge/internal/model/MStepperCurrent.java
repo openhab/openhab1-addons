@@ -38,7 +38,7 @@ public interface MStepperCurrent extends MStepperDevice, MSensor<DecimalValue> {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMStepperCurrent_DeviceType()
      * @model default="stepper_current" unique="false" changeable="false"

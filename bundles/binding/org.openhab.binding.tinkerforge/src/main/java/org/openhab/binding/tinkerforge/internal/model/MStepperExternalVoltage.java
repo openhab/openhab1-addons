@@ -40,7 +40,7 @@ public interface MStepperExternalVoltage extends MStepperDevice, MSensor<Decimal
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * 
+     *
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMStepperExternalVoltage_DeviceType()
      * @model default="stepper_external_voltage" unique="false" changeable="false"
