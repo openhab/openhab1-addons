@@ -371,6 +371,8 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
                 logger.debug("Config: {}", config);
             }
 
+            config.setState(command);
+
             // through all devices
             for (DeviceConfig d : config.devices) {
                 // send to output devices only

@@ -22,6 +22,7 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.types.Type;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -118,13 +119,25 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
     class SimpleBinaryBindingConfig implements BindingConfig {
 
         public Item item;
-        Class<? extends Item> itemType;
         SimpleBinaryDeviceConfigCollection devices;
-        private String datatype = "word";
+        String datatype = "word";
+        Type state = null;
 
         public SimpleBinaryBindingConfig(DeviceConfig device) {
             devices = new SimpleBinaryDeviceConfigCollection();
             devices.add(device);
+        }
+
+        public Class<? extends Item> getItemType() {
+            return item.getClass();
+        };
+
+        public void setState(Type state) {
+            this.state = state;
+        }
+
+        public Type getState() {
+            return state;
         }
 
         /**
@@ -406,7 +419,6 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
                 // create new item with device config
                 SimpleBinaryBindingConfig config = new SimpleBinaryBindingConfig(d);
                 config.item = item;
-                config.itemType = item.getClass();
                 config.datatype = dataType;
 
                 if (logger.isDebugEnabled()) {

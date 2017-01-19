@@ -36,7 +36,7 @@ public class SimpleBinaryDeviceState {
          */
         CONNECTED,
         /**
-         * Device does not respond
+         * Device does not respond / disconnected
          */
         NOT_RESPONDING,
         /**

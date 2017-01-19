@@ -156,8 +156,8 @@ public class SimpleBinaryProtocol {
         // bus address
         data[0] = (byte) deviceConfig.getDeviceAddress();
         // item address / ID
-        data[2] = (byte) (deviceConfig.getDeviceAddress() & 0xFF);
-        data[3] = (byte) ((deviceConfig.getDeviceAddress() >> 8) & 0xFF);
+        data[2] = (byte) (deviceConfig.getItemAddress() & 0xFF);
+        data[3] = (byte) ((deviceConfig.getItemAddress() >> 8) & 0xFF);
 
         switch (itemConfig.getDataType()) {
             case BYTE:
@@ -165,9 +165,9 @@ public class SimpleBinaryProtocol {
                     PercentType cmd = (PercentType) command;
                     data[4] = cmd.byteValue();
 
-                    if (itemConfig.itemType.isAssignableFrom(DimmerItem.class)) {
+                    if (itemConfig.getItemType().isAssignableFrom(DimmerItem.class)) {
                         ((DimmerItem) itemConfig.item).setState(new PercentType(cmd.byteValue()));
-                    } else if (itemConfig.itemType.isAssignableFrom(RollershutterItem.class)) {
+                    } else if (itemConfig.getItemType().isAssignableFrom(RollershutterItem.class)) {
                         ((RollershutterItem) itemConfig.item).setState(new PercentType(cmd.byteValue()));
                     }
                 } else if (command instanceof DecimalType) {
@@ -183,13 +183,13 @@ public class SimpleBinaryProtocol {
                 } else if (command instanceof OnOffType) {
                     OnOffType cmd = (OnOffType) command;
 
-                    if (itemConfig.itemType.isAssignableFrom(SwitchItem.class)) {
+                    if (itemConfig.getItemType().isAssignableFrom(SwitchItem.class)) {
                         if (cmd == OnOffType.ON) {
                             data[4] = 1;
                         } else {
                             data[4] = 0;
                         }
-                    } else if (itemConfig.itemType.isAssignableFrom(DimmerItem.class)) {
+                    } else if (itemConfig.getItemType().isAssignableFrom(DimmerItem.class)) {
                         if (cmd == OnOffType.ON) {
                             PercentType val = ((PercentType) (itemConfig.item).getStateAs(PercentType.class));
                             if (val == null) {
@@ -208,7 +208,7 @@ public class SimpleBinaryProtocol {
                     }
 
                 } else if (command instanceof IncreaseDecreaseType
-                        && itemConfig.itemType.isAssignableFrom(DimmerItem.class)) {
+                        && itemConfig.getItemType().isAssignableFrom(DimmerItem.class)) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("IncreaseDecreaseType - DimmerItem");
                     }

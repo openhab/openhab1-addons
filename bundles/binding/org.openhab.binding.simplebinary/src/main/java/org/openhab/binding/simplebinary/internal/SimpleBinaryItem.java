@@ -75,7 +75,7 @@ public class SimpleBinaryItem extends SimpleBinaryItemData {
         logger.trace("Item {}, address={}, deviceID={}, messageID=0x{}, datalenght={}", this.name, this.itemAddress,
                 this.deviceId, Integer.toHexString(this.messageId & 0xFF), this.itemData.length);
 
-        if (itemConfig.itemType.isAssignableFrom(NumberItem.class)) {
+        if (itemConfig.getItemType().isAssignableFrom(NumberItem.class)) {
             if (itemConfig.getDataType() == SimpleBinaryTypes.FLOAT) {
                 if (itemData.length != 4) {
                     throw new Exception("getState(): cannot convert to item " + name + " to FLOAT. Wrong data length.");
@@ -104,20 +104,20 @@ public class SimpleBinaryItem extends SimpleBinaryItemData {
                             + ". Wrong data length.");
                 }
             }
-        } else if (itemConfig.itemType.isAssignableFrom(SwitchItem.class)) {
+        } else if (itemConfig.getItemType().isAssignableFrom(SwitchItem.class)) {
             if (itemData[0] == 1) {
                 return OnOffType.ON;
             } else {
                 return OnOffType.OFF;
             }
-        } else if (itemConfig.itemType.isAssignableFrom(DimmerItem.class)) {
+        } else if (itemConfig.getItemType().isAssignableFrom(DimmerItem.class)) {
             if (itemData.length < 3) {
                 return new PercentType(itemData[0]);
             } else {
                 throw new Exception("getState(): cannot convert to item " + name + " to " + itemConfig.getDataType()
                         + ". Data length > 2");
             }
-        } else if (itemConfig.itemType.isAssignableFrom(ColorItem.class)) {
+        } else if (itemConfig.getItemType().isAssignableFrom(ColorItem.class)) {
             if (itemConfig.getDataType() == SimpleBinaryTypes.HSB) {
                 return new HSBType(new DecimalType(itemData[0]), new PercentType(itemData[1]),
                         new PercentType(itemData[2]));
@@ -129,16 +129,16 @@ public class SimpleBinaryItem extends SimpleBinaryItemData {
                 throw new Exception(
                         "getState(): cannot convert to item " + name + " to " + itemConfig.getDataType() + ".");
             }
-        } else if (itemConfig.itemType.isAssignableFrom(StringItem.class)) {
+        } else if (itemConfig.getItemType().isAssignableFrom(StringItem.class)) {
             String str = new String(itemData);
             return new StringType(str);
-        } else if (itemConfig.itemType.isAssignableFrom(ContactItem.class)) {
+        } else if (itemConfig.getItemType().isAssignableFrom(ContactItem.class)) {
             if (itemData[0] == 1) {
                 return OpenClosedType.OPEN;
             } else {
                 return OpenClosedType.CLOSED;
             }
-        } else if (itemConfig.itemType.isAssignableFrom(RollershutterItem.class)) {
+        } else if (itemConfig.getItemType().isAssignableFrom(RollershutterItem.class)) {
             if (itemData.length < 3) {
                 return new PercentType(itemData[0]);
             } else {
@@ -147,7 +147,7 @@ public class SimpleBinaryItem extends SimpleBinaryItemData {
             }
         } else {
             throw new Exception("getState(): cannot convert to item " + name + " to " + itemConfig.getDataType()
-                    + ". Unsupported itemtype: " + itemConfig.itemType.toString());
+                    + ". Unsupported itemtype: " + itemConfig.getItemType().toString());
         }
     }
 

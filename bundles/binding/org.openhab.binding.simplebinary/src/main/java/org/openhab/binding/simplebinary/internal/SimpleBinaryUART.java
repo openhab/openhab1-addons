@@ -263,6 +263,14 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
         return !waitingForAnswer.get();
     }
 
+    /*
+     * Can send if we are not waiting for answer.
+     */
+    @Override
+    protected boolean canSend(int devId) {
+        return canSend();
+    }
+
     /**
      * Write data into device stream
      *

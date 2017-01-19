@@ -44,4 +44,23 @@ public class SimpleBinaryDeviceConfigCollection extends LinkedList<DeviceConfig>
 
         return false;
     }
+
+    public boolean contains(String deviceName) {
+        for (DeviceConfig d : this) {
+            if (d.deviceName.equals(deviceName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public DeviceConfig get(String deviceName) {
+        for (DeviceConfig d : this) {
+            if (d.deviceName.equals(deviceName)) {
+                return d;
+            }
+        }
+        return null;
+    }
 }
