@@ -39,18 +39,12 @@
     <properties>
         <ohdr.version>1.0.10</ohdr.version>
         <ohc.version>2.0.0.x</ohc.version>
-        <jdeb-version>1.4</jdeb-version>
 
         <tycho-version>0.24.0</tycho-version>
         <tycho-groupid>org.eclipse.tycho</tycho-groupid>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <wagon.version>1.0-beta-2</wagon.version>
-
-        <deb.maintainer>openHAB &lt;admin@openhab.org&gt;</deb.maintainer>
-        <deb.section>misc</deb.section>
-        <deb.distribution>development</deb.distribution>
-        <deb.depends>openhab-runtime</deb.depends>
 
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
@@ -73,6 +67,7 @@
     <modules>
         <module>bundles</module>
         <module>features</module>
+        <module>distribution</module>
     </modules>
 
     <build>
