@@ -8,7 +8,7 @@
 
     <groupId>org.openhab</groupId>
     <artifactId>openhab</artifactId>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>1.9.0</version>
     <name>openHAB</name>
 
     <organization>
@@ -34,11 +34,22 @@
         <system>Github</system>
     </issueManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>bintray</id>
+            <url>https://api.bintray.com/maven/openhab/mvn/openhab1-addons/;publish=1</url>
+        </repository>
+        <snapshotRepository>
+            <id>jfrog</id>
+            <url>http://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <description>This is the open Home Automation Bus (openHAB)</description>
 
     <properties>
         <ohdr.version>1.0.10</ohdr.version>
-        <ohc.version>2.0.0.x</ohc.version>
+        <ohc.version>2.0.0</ohc.version>
 
         <tycho-version>0.24.0</tycho-version>
         <tycho-groupid>org.eclipse.tycho</tycho-groupid>
