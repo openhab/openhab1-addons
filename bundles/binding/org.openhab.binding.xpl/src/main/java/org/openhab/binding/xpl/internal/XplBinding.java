@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,8 +20,10 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.io.transport.xpl.XplTransportService;
@@ -91,6 +93,17 @@ public class XplBinding extends AbstractBinding<XplBindingProvider> implements x
 						 }
 					   }						
 					} else 
+					if (item instanceof ContactItem) {
+						OpenClosedType status = (current.equalsIgnoreCase("on") || current.equalsIgnoreCase("true") ||
+				   				current.equalsIgnoreCase("1") || current.equalsIgnoreCase("open") || 
+				   				current.equalsIgnoreCase("high")) ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
+						   synchronized (item) {
+							 if (!item.getState().equals(status)) {
+								 eventPublisher.postUpdate(itemName, status);
+								 ((ContactItem) item).setState(status);
+							 }
+						}						
+					} else 
 					if (item instanceof NumberItem) {
 						DecimalType value = new DecimalType(current);
 						synchronized (item) {
@@ -99,7 +112,7 @@ public class XplBinding extends AbstractBinding<XplBindingProvider> implements x
 								((NumberItem) item).setState(value);
 							}
 						}
-					}
+					} else 
 					if (item instanceof StringItem) {
 						StringType value = new StringType(current);
 						synchronized (item) {
