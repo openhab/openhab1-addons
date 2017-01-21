@@ -321,10 +321,12 @@ public class KM200Comm {
         byte[] recData = getDataFromService(service.toString());
         try {
             if (recData == null) {
-                throw new RuntimeException("Communication is not possible!");
+                logger.error("Communication is not possible!");
+                return;
             }
             if (recData.length == 0) {
-                throw new RuntimeException("No reply from KM200!");
+                logger.error("No reply from KM200!");
+                return;
             }
             /* Look whether the communication was forbidden */
             if (recData.length == 1) {
@@ -336,7 +338,8 @@ public class KM200Comm {
                 decodedData = decodeMessage(recData);
 
                 if (decodedData == null) {
-                    throw new RuntimeException("Decoding of the KM200 message is not possible!");
+                    logger.error("Decoding of the KM200 message is not possible!");
+                    return;
                 }
                 if (decodedData.length() > 0) {
                     nodeRoot = new JSONObject(decodedData);
@@ -576,10 +579,12 @@ public class KM200Comm {
                 }
 
                 if (recData == null) {
-                    throw new RuntimeException("Communication is not possible!");
+                    logger.error("Communication is not possible!");
+                    return null;
                 }
                 if (recData.length == 0) {
-                    throw new RuntimeException("No reply from KM200!");
+                    logger.error("No reply from KM200!");
+                    return null;
                 }
                 /* Look whether the communication was forbidden */
                 if (recData.length == 1) {
@@ -589,7 +594,8 @@ public class KM200Comm {
                 decodedData = decodeMessage(recData);
                 logger.debug("Check state of data: {}", decodedData);
                 if (decodedData == null) {
-                    throw new RuntimeException("Decoding of the KM200 message is not possible!");
+                    logger.error("Decoding of the KM200 message is not possible!");
+                    return null;
                 }
                 if (object.getVirtual() == 1) {
                     device.getServiceObject(object.getParent()).setJSONData(decodedData);

@@ -20,6 +20,8 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.km200.KM200BindingProvider;
@@ -47,6 +49,9 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
     private static final Logger logger = LoggerFactory.getLogger(KM200Binding.class);
     private Map<String, byte[]> sendMap = Collections.synchronizedMap(new LinkedHashMap<String, byte[]>());
     ExecutorService threadPool = Executors.newSingleThreadExecutor();
+    Future<?> runResult = null;
+    int maxNbrFails = 3;
+    int actNbrFails = 0;
 
     private KM200Device device = null;
     private KM200Comm comm = null;
@@ -166,16 +171,19 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
             /* Get HTTP Data from device */
             byte[] recData = comm.getDataFromService("/gateway/DateTime");
             if (recData == null) {
-                throw new RuntimeException("Communication is not possible!");
+                logger.error("Communication is not possible!");
+                return;
             }
             if (recData.length == 0) {
-                throw new RuntimeException("No reply from KM200!");
+                logger.error("No reply from KM200!");
+                return;
             }
             logger.info("Received data..");
             /* Derypt the message */
             String decodedData = comm.decodeMessage(recData);
             if (decodedData == null) {
-                throw new RuntimeException("Decoding of the KM200 message is not possible!");
+                logger.error("Decoding of the KM200 message is not possible!");
+                return;
             }
 
             if (decodedData == "SERVICE NOT AVAILABLE") {
@@ -223,7 +231,27 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
             logger.error("Device is not configured, did you set the configuration?");
             return;
         }
-        threadPool.submit(new GetKM200Runnable(device, comm, providers, eventPublisher));
+        try {
+            logger.debug("Starting runnable");
+            if (runResult == null) {
+                runResult = threadPool.submit(new GetKM200Runnable(device, comm, providers, eventPublisher));
+            } else {
+                if (runResult.isDone()) {
+                    runResult = threadPool.submit(new GetKM200Runnable(device, comm, providers, eventPublisher));
+                } else {
+                    if (actNbrFails < maxNbrFails) {
+                        logger.info("Old runnable is still running");
+                        actNbrFails++;
+                    } else {
+                        logger.info("Old runnable has to be canceled");
+                        runResult.cancel(true);
+                        actNbrFails = 0;
+                    }
+                }
+            }
+        } catch (RejectedExecutionException | NullPointerException e) {
+            logger.error("Error in starting of the runnable: ", e.getMessage());
+        }
 
     }
 
@@ -306,31 +334,20 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
 
         @Override
         public void run() {
-            try {
-                logger.debug("GetKM200Runnable");
-                org.openhab.core.types.State state = null;
-                synchronized (device) {
-                    device.resetAllUpdates(device.serviceTreeMap);
-                    for (KM200BindingProvider provider : providers) {
-                        for (String item : provider.getItemNames()) {
-                            try {
-                                state = comm.getProvidersState(provider, item);
-                                if (state != null) {
-                                    eventPublisher.postUpdate(item, state);
-                                }
-                            } catch (Exception e) {
-                                logger.error("Could not get item state, Error: {}", e);
-                            }
+            logger.debug("GetKM200Runnable");
+            org.openhab.core.types.State state = null;
+            synchronized (device) {
+                device.resetAllUpdates(device.serviceTreeMap);
+                for (KM200BindingProvider provider : providers) {
+                    for (String item : provider.getItemNames()) {
+                        state = comm.getProvidersState(provider, item);
+                        if (state != null) {
+                            eventPublisher.postUpdate(item, state);
                         }
                     }
                 }
-            } catch (
-
-            Exception e) {
-                logger.warn("Error processing command", e);
             }
         }
-
     }
 
     /**
