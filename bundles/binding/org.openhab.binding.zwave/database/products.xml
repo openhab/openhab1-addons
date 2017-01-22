@@ -2897,6 +2897,15 @@
         </Product>
         <Product>
             <Reference>
+                <Type>802</Type>
+                <Id>261</Id>
+            </Reference>
+            <Model>VRCS4-M0Z</Model>
+            <Label lang="en">4-Zone Controller</Label>
+            <ConfigFile>leviton/vrcs4-m0z.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>1706</Type>
                 <Id>334</Id>
             </Reference>
