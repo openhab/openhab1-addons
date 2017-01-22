@@ -23,7 +23,7 @@ public enum ADMsgType {
     REL(3), // relay message
     LRR(4), // long range radio message
     INVALID(5), // invalid message
-    NUMTYPES(7); // total number of types
+    NUMTYPES(6); // total number of types
 
     private final int m_type;
 
