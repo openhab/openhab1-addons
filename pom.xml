@@ -8,7 +8,7 @@
 
     <groupId>org.openhab</groupId>
     <artifactId>openhab</artifactId>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>1.10.0-SNAPSHOT</version>
     <name>openHAB</name>
 
     <organization>
@@ -38,7 +38,7 @@
 
     <properties>
         <ohdr.version>1.0.10</ohdr.version>
-        <ohc.version>2.0.0.x</ohc.version>
+        <ohc.version>2.1.x</ohc.version>
 
         <tycho-version>0.24.0</tycho-version>
         <tycho-groupid>org.eclipse.tycho</tycho-groupid>
@@ -49,7 +49,7 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
 
-        <repo.url>https://api.bintray.com/maven/openhab/mvn/openhab</repo.url>
+        <repo.url>https://api.bintray.com/maven/openhab/mvn/openhab1-addons/;publish=1</repo.url>
 
 		<!-- JDBC Databasedriver Versions -->
 		<derby.version>10.12.1.1</derby.version>
