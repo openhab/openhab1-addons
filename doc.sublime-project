@@ -1,0 +1,1138 @@
+{
+    "folders":
+    [
+        {
+            "path": "bundles/action/org.openhab.action.astro",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.dscalarm",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.ecobee",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.harmonyhub",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.homematic",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.mail",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.mios",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.mqtt",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.nma",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.openwebif",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.pebble",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.prowl",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.pushover",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.pushsafer",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.satel",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.squeezebox",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.telegram",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.tinkerforge",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.twitter",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.weather",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.xbmc",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.xmpp",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/action/org.openhab.action.xpl",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.akm868",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.alarmdecoder",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.anel",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.asterisk",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.astro",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.autelis",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.benqprojector",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.bluetooth",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.bticino",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.caldav-command",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.caldav-personal",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.comfoair",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.configadmin",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.cups",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.daikin",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.davis",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.ddwrt",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.denon",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.digitalstrom",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.diyonxbee",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.dmx",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.dscalarm",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.dsmr",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.ebus",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.ecobee",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.ecotouch",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.ekey",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.energenie",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.enocean",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.enphaseenergy",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.epsonprojector",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.exec",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.expire",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.fatekplc",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.fht",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.freebox",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.freeswitch",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.fritzaha",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.fritzbox",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.fritzboxtr064",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.frontiersiliconradio",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.fs20",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.garadget",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.gc100ir",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.gpio",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.harmonyhub",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.hdanywhere",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.heatmiser",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.hms",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.homematic",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.horizon",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.http",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.hue",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.iec6205621meter",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.ihc",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.insteonhub",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.insteonplm",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.intertechno",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.ipx800",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.irtrans",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.jointspace",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.k8055",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.km200",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.knx",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.koubachi",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.lcn",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.lgtv",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.lightwaverf",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.mailcontrol",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.maxcube",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.maxcul",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.mcp23017",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.mcp3424",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.milight",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.mios",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.mochadx10",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.modbus",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.mpd",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.mqtt",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.mqttitude",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.myq",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.mystromecopower",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.neohub",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.nest",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.netatmo",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.networkhealth",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.networkupstools",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.nibeheatpump",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.nikobus",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.novelanheatpump",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.ntp",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.omnilink",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.onewire",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.onkyo",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.openenergymonitor",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.openpaths",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.opensprinkler",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.owserver",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.panasonictv",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.panstamp",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.piface",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.pilight",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.pioneeravr",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.plcbus",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.plclogo",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.plex",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.plugwise",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.powerdoglocalapi",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.powermax",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.primare",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.pulseaudio",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.rfxcom",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.rpircswitch",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.rwesmarthome",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.sagercaster",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.sallegra",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.samsungac",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.samsungtv",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.satel",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.serial",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.smarthomatic",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.snmp",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.sonance",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.sonos",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.souliss",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.squeezebox",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.stiebelheatpump",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.swegonventilation",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.systeminfo",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.tacmi",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.tcp",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.tellstick",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.tinkerforge",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.tivo",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.ucprelayboard",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.upb",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.urtsi",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.vdr",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.wago",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.weather",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.wemo",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.withings",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.wol",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.xbmc",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.xpl",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.yamahareceiver",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.zibase",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/binding/org.openhab.binding.zwave",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/io/org.openhab.io.dropbox",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/io/org.openhab.io.gcal",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.caldav",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.cosm",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.db4o",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.dynamodb",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.exec",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.influxdb",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.jdbc",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.jpa",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.mapdb",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.mongodb",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.mqtt",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.mysql",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.rrd4j",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.sense",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
+        }
+    ],
+    "settings":
+    {
+        "tab_size": 4
+    },
+    "build_systems":
+    [
+        {
+            "name": "List",
+            "shell_cmd": "ls -l"
+        }
+    ]
+}
