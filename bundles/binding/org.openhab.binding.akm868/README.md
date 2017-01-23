@@ -22,6 +22,7 @@ The syntax of the binding configuration strings accepted is the following:
 
 ```
 { akm868="id=x,channel=y" }
+```
 
 The `id` represents the ID of your OVO-Tracker.
 
