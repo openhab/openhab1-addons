@@ -53,8 +53,8 @@ faulting a given zone by e.g. opening a window or door.
 
 The binding is configured in the file `services/alarmdecoder.cfg`.
 
-| Key | Default | Required | Description |
-|-----|---------|:--------:|-------------|
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
 | connect | | Yes | You can configure either a TCP connect with a value in the format `tcp:<ad2pihostname.mydomain.com>:<port>` or a serial connection similar to `serial:/dev/ttyUSB0`. Warning: using an Alarm Decoder via serial port has not been debugged yet! |
 | send_commands_and_compromise_security | false | | To send commands from openHAB to the alarm panel, set this to `true`.  Once this option is set to true, the alarm system can potentially be disabled from openHAB. You have been warned! |
 

@@ -10,8 +10,8 @@
 
 The XMPP Action service must be configured in `services/xmpp.cfg`.
 
-| Key | Default | Required | Description |
-|-----|---------|----------|-------------|
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
 | username | | | The username of the XMPP account used by openHAB. Most services will require that you use only the localpart of the accounts JID. For example if your accounts JID is `myuser@example.org`, then only configure `myuser`. |
 | password | | | The password of the XMPP account used by openHAB |
 | servername | | | The XMPP service to use, e.g. `jabber.de`. A list of public XMPP services can be found at https://xmpp.net/directory.php |

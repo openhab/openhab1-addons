@@ -10,8 +10,8 @@ This binding is for users coming from the proprietary homeautomation-system "IP-
 
 The binding must be configured in the file `services/akm868.cfg`.
 
-| Key | Default | Required | Description |
-|-----|---------|----------|-------------|
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
 | host | | Yes | IP address of the adapter LAN-T 868 |
 | port | 10001 | | Port of the adapter LAN-T 868 |
 | timeout | | | Timeout in milliseconds. If the AKM-Controller does not send an update within that timeframe, the switch item is changing to OFF |

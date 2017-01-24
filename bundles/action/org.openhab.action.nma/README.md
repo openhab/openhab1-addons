@@ -12,8 +12,8 @@ Sends push messages to your Android devices.
 
 This action service can be configured via the `services/nma.cfg` file.
 
-| Key | Default | Required | Description |
-|-----|---------|----------|-------------|
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
 | timeout | 10000 | | Timeout for the communication with the NMA service |
 | developerKey | | | An optional developer key from NMA |
 | apiKey | | | Default API key to send messages to. API keys can be created in your account's dashboard. |

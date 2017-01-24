@@ -8,8 +8,8 @@ You'll need to install the openHAB app on your Pebble watch and lookup the Timel
 
 You can either configure the required Pebble token in `services/pebble.cfg` and refer to it by name, or provide it explicitly in your action calls.
 
-| Key | Default | Required | Description |
-|-----|---------|----------|-------------|
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
 | `<name>.token` | | | A token to use in action calls by name |
 
 ### Configuration Example

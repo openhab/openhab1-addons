@@ -18,11 +18,11 @@ As described in the Telegram Bot API, this is the manual procedure needed in ord
 
 The action must be configured in `services/telegram.cfg`.
 
-| Key | Required | Value |
-|-----|----------|-------|
-| bots | Yes | Comma-separated list of `<bot-name>`s |
-| `<bot name>.chatId` | Yes | chat id |
-| `<bot name>.token` | Yes | authentication token |
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| bots | | Yes | Comma-separated list of `<bot-name>`s |
+| `<bot name>.chatId` | | Yes | chat id |
+| `<bot name>.token` | | Yes | authentication token |
 
 
 ### Configuration example

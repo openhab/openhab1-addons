@@ -11,8 +11,8 @@ The binding is fairly complete and supports the following functionality.
 
 The binding must be configured in the file `services/autelis.cfg`.
 
-| Key | Default | Required | Description |
-|-----|---------|----------|-------------|
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
 | refresh | 5000 | | Refresh rate in milliseconds |
 | host | | Yes | Host (name or ip) to connect to |
 | port | 80 | | Port on which to connect to the host |

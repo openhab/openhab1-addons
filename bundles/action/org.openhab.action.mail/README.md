@@ -12,8 +12,8 @@ This add-on provides SMTP services. The `to` paremeter can contain a semicolon-s
 
 This action service can be configured via the `services/mail.cfg` file.
 
-| Key | Default | Required | Description |
-|-----|---------|----------|-------------|
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
 | hostname |    | Yes      | SMTP server hostname, e.g. "smtp.gmail.com" |
 | port | 25 (resp. 587 for TLS/SSL) | | SMTP port to use |
 | username | | | user name if the SMTP server requires authentication |
