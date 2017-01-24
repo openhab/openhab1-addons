@@ -1,61 +1,36 @@
-## Table of Contents
-
-* [Introduction](#introduction)
-* [Binding Configuration](#binding-configuration)
-* [Item configuration](#item-configuration)
- * [Handling special characters](#handling-special-characters)
-* [Binding Examples](#binding-examples)
-* [Logging](#logging)
-* [Known Issues](#known-issues)
-* [Change Log](#change-log)
-
-## Introduction
+## Nest Binding
 
 [Nest Labs](https://nest.com/) developed/acquired the Wi-Fi enabled Nest Learning Thermostat, the Nest Protect Smoke+CO detector, and the Nest Cam.  These devices are supported by this binding, which communicates with the Nest API over a secure, RESTful API to Nest's servers. Monitoring ambient temperature and humidity, changing HVAC mode, changing heat or cool setpoints, monitoring and changing your "home/away" status, and monitoring your Nest Protects and Nest Cams can be accomplished through this binding.
 
-> For installation of the binding JAR on your system, please see the Wiki page [Bindings](Bindings).  You can locate the nightly build of this binding [here](https://openhab.ci.cloudbees.com/job/openHAB1-Addons/lastSuccessfulBuild/artifact/bundles/binding/org.openhab.binding.nest/target/org.openhab.binding.nest-1.9.0-SNAPSHOT.jar).
+## Prerequisites
 
-## Binding Configuration
-
-In order to use this binding, you will have to register as a [Nest Developer](https://developer.nest.com/) and [register a new Product](https://developer.nest.com/products/new).
+In order to use this binding, you will have to register as a [Nest Developer](https://developer.nest.com/) and [register a new Product](https://developer.nest.com/products/new) (free and instant).
 
 > Make sure to grant [all the permissions](https://developers.nest.com/documentation/cloud/permissions-overview#available-permissions) you intend to use.  **When in doubt, enable the permission,** because you will otherwise have to reauthorize the binding if you later have to change the permissions.  
 
-Leave the **Redirect URI** field **blank** for PIN-based authorization. At this point, you will have your `nest:client_id` (**Product ID**) and `nest:client_secret` (**Product Secret**).
+Leave the **Redirect URI** field **blank** for PIN-based authorization. At this point, you will have your `client_id` (**Product ID**) and `client_secret` (**Product Secret**).
 
-Once you've created your [product](https://developer.nest.com/products) as above, paste the **Authorization URL** into a new tab in your browser.  This will have you login to your normal Nest account, and will then present the `nest:pin_code`.  Prepare to copy and paste your values for `nest:client_id`, `nest:client_secret` and `nest:pin_code` in order to configure the binding.
+Once you've created your [product](https://developer.nest.com/products) as above, paste the **Authorization URL** into a new tab in your browser.  This will have you login to your normal Nest account (if not already logged in), and will then present the PIN.  Prepare to copy and paste your values for `client_id`, `client_secret` and `pin_code` in order to configure the binding.
 
-*openHAB 1.x:* Edit the file `openhab.cfg` located in `${openhab_home}/configurations/`.  Paste all three of these values into your `openhab.cfg` file like so (using _your_ values):
+## Binding Configuration
 
-    ############################## Nest binding ########################################
-    #
-    # Data refresh interval in ms (optional, defaults to 60000)
-    #nest:refresh=60000
+This binding must be configured in the file `services/nest.cfg`.
 
-    # HTTP request timeout in ms (as of 1.8, optional, defaults to 10000)
-    #nest:timeout=10000
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| refresh  | 60000   |          | Data refresh interval in milliseconds |
+| timeout  | 10000   |          | HTTP request timeout in milliseconds |
+| client_id |        |   Yes    | the Product ID for the product](https://developer.nest.com/products) you created |
+| client_secret |    |   Yes    | the Product Secret for the product you created |
+| pin_code |         |   Yes    | the PIN code that was generated when you authorized your account to allow this product |
 
-    # the Product ID for the product you created (required, replace with your own)
-    nest:client_id=e5cc5558-ec55-4c55-8555-4b95555f4979
-
-    # the Product Secret for the product you created (required, replace with your own)
-    nest:client_secret=ZZo28toiuoiurok4WjUya1Bnc
-
-    # the PIN code that was generated when you authorized your account to allow
-    # this product (required, replace with your own)
-    nest:pin_code=2JTXXXJL
-
-An optional _refresh interval_ setting may also be specified, via the `nest:refresh` parameter, and defaults to a polling rate of one call per every 60000ms (one minute).
-
-:warning: Setting the _refresh interval_ aggressively may cause you to hit [data rate limits](https://developer.nest.com/documentation/cloud/data-rate-limits).  Nest documentation recommends the `nest:refresh` not be set lower than 60000.
+:warning: Setting the `refresh` aggressively may cause you to hit [data rate limits](https://developer.nest.com/documentation/cloud/data-rate-limits).  Nest documentation recommends the `refresh` not be set lower than 60000 (the default value).
 
  > To avoid errors, we recommend you limit requests to one call per minute, maximum.
 
-    nest:refresh=60000
-
 ## Item configuration
 
-In order to bind an Item to a supported Nest product's properties, you need to provide configuration settings by adding some binding information in your .item file (in  `conf[igurations]/items/`). The syntax for the Nest binding configuration string is explained below.
+The syntax for the Nest item configuration string is explained below.
 
 Nest bindings start with a `<`, `>` or `=`, to indicate if the Item receives values from the API (in binding), sends values to the API (out binding), or both (bidirectional binding), respectively.
 
@@ -95,7 +70,7 @@ String NestTStat_hvac_mode "HVAC Mode [%s]" {nest="=[thermostats(Living Room).hv
 
 When you update or send a command to the item with one of the five possible valid strings, you will change the HVAC mode.
 
-Below are some examples of valid binding configuration strings, as you would define in the your .items file.  The examples represent the current set of available properties, and for each property, the example shows if it is an in-binding (`<`) only (read-only), an out-binding (`>`) only (write-only), or a bidirectional (`=`) (read/write) binding only.  Note, however, that if a read/write property is only authorized for read-only access in the Nest Product you authorized, an attempt to change its value will fail.
+Below are some examples of valid binding configuration strings, as you would define in the your items file.  The examples represent the current set of available properties, and for each property, the example shows if it is an in-binding (`<`) only (read-only), an out-binding (`>`) only (write-only), or a bidirectional (`=`) (read/write) binding only.  Note, however, that if a read/write property is only authorized for read-only access in the Nest Product you authorized, an attempt to change its value will fail.
 
 In this example, there is a Nest structure called `Home`, a Thermostat called `Upstairs`, a Smoke/CO Sensor called `Master Bedroom` and a Nest Cam called `Dining Room`.
 
@@ -227,80 +202,18 @@ Number NestHome_temp "Home temperature [%.1f °F]"   {nest="<[structures(Home).t
 Number NestCondo_temp "Condo temperature [%.1f °F]" {nest="<[structures(Condo).thermostats(Dining Room).ambient_temperature_f]"}
 ```
 
-## Binding Examples
+## Examples
 
-* [[Nest Binding Example (new)|Nest-Binding-Example]]
-
-  ![sample](http://watou.github.io/images/nest-binding-example.jpg)
-
-## Logging (openHAB 1.x)
-
-In order to configure logging for this binding to be generated in a separate file add the following to your /configuration/logback.xml file;
-```xml
-<appender name="NESTFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-   <file>logs/nest.log</file>
-   <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <!-- weekly rollover and archiving -->
-      <fileNamePattern>logs/nest-%d{yyyy-ww}.log.zip</fileNamePattern>
-      <!-- keep 30 days' worth of history -->
-      <maxHistory>30</maxHistory>
-   </rollingPolicy>
-   <encoder>
-     <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{30}[:%line]- %msg%n%ex{5}</pattern>
-   </encoder>
-</appender>
-    
-<!-- Choose level ERROR, WARN, INFO, DEBUG or TRACE for detailed logging -->
-<logger name="org.openhab.binding.nest" level="TRACE" additivity="false">
-   <appender-ref ref="NESTFILE" />
-</logger>
-```
-
-## Known Issues
-
-1. The binding initiates outbound TCP connections to the Nest infrastructure on port 9553 (however, which outbound ports are used is determined dynamically by the Nest cloud service and may be different from 9553). If the log shows "Connection timed out" or "Exception reading from Nest: Could not get data model", ensure that outbound connections are not being blocked by a firewall.
-2. Multiple instance support (allowing the binding to access multiple Nest accounts at once) conflicts with Prohibition 3 of the [Nest Developer Terms of Service](https://developer.nest.com/documentation/cloud/tos), and so is not implemented.
-3. The Nest API rounds humidity to 5%, degrees Fahrenheit to whole degrees, and degrees Celsius to 0.5 degrees, so your Nest app will likely show slightly different values from what is available from the API.
-4. There is currently a bug where attempting to update an Item with a binding configuration of this form will not work:
-```
-Number NestCondo_temp "Condo Temperature [%.1f °F]" {nest="=[structures(Condo).thermostats(Dining Room).target_temperature_f]"}
-```
-While this form should work:
-```
-Number NestCondo_temp "Condo Temperature [%.1f °F]" {nest="=[thermostats(Dining Room).target_temperature_f]"}
-```
-
-## Change Log
-### openHAB 1.7.1
-
-* Added the property `hvac_state` that was [added to the Nest API in May 2015](https://developer.nest.com/documentation/cloud/release-notes).  Please note that if you created your Nest client before the addition of this property to the API, your client's permissions may be set to "Thermostat read/write v2," which does not have access to this new property.  To access it, you will have to edit your [client](https://developer.nest.com/clients) to update the permission to v3.  Click the little gear icon to edit your client, click the Change Permissions button, and generate a new `nest:pin_code` for your nest.com account to put into `openhab.cfg` to replace the older `nest:pin_code`. ([#2659](https://github.com/openhab/openhab/pull/2659))
-* Very rarely, some updates to DateTime items would attempt to echo back as changes to the Nest API, generating log errors. ([#2930](https://github.com/openhab/openhab/pull/2930))
-
-### openHAB 1.8.0
-
-* Quiesce logging on status poll ([#3111](https://github.com/openhab/openhab/pull/3111))
-* Added support for monitoring and turning on or off streaming from your Nest Cams. ([#3232](https://github.com/openhab/openhab/pull/3232))
-* Added optional `nest:timeout` config parameter ([#3692](https://github.com/openhab/openhab/pull/3692))
-
-### openHAB 1.8.1
-
-* Allow setting setpoints with decimals ([#3950](https://github.com/openhab/openhab/pull/3950))
-
-### openHAB 1.x addons 1.9.0
-
-* May 2016 API updates ([#4383](https://github.com/openhab/openhab/pull/4383))
-* Silently skip referenced devices that weren't provided, presumably owing to incomplete Product permissions set at nest.com ([#4649](https://github.com/openhab/openhab/pull/4649))
-* October 2016 API updates ([#4716](https://github.com/openhab/openhab/pull/4716))
-* November 2016 API updates ([#4873](https://github.com/openhab/openhab/pull/4873))
-## [[Nest Binding|Nest-Binding]] Example
+### Basic Example
 
 The contents of `nest.items` and `nest.sitemap` demonstrate a possible user interface that's backed by the Nest binding.
 
 ![sample](http://watou.github.io/images/nest-binding-example.jpg)
 
-### nest.items
+#### nest.items
 
 The items file assumes your structure is called "Home," your thermostat is called "Dining Room," and you have two Nest Protects called "Upstairs" and "Basement."  Change these to match how your devices are named at nest.com. 
+
 ```xtend
 String home_away "Home/Away [%s]" <present> { nest="=[structures(Home).away]" }
 DateTime dining_room_last_connection "Last Connection [%1$tm/%1$td/%1$tY %1$tH:%1$tM:%1$tS]" <calendar> {nest="<[thermostats(Dining Room).last_connection]"}
@@ -324,9 +237,10 @@ String upstairs_state "Status Color [%s]" { nest="<[smoke_co_alarms(Upstairs).ui
 DateTime upstairs_last_connection "Last Connection [%1$tm/%1$td/%1$tY %1$tH:%1$tM:%1$tS]" <calendar> {nest="<[smoke_co_alarms(Upstairs).last_connection]"}
 ```
 
-### nest.sitemap
+#### nest.sitemap
 
 The sitemap will show the ambient temperature in the same scale (C or F) that the thermostat is set to.  It will only show the away temperature range if the structure is currently in away mode.  It will show the single setpoint if the thermostat is either in "heat" or "cool" mode, or will show the low and high setpoints if the thermostat is in "heat-cool" (auto) mode.  The smoke+CO detectors show their status colors in the same color as the Nest Protect's light ring.
+
 ```xtend
 sitemap nest label="Nest"
 {
@@ -358,9 +272,10 @@ sitemap nest label="Nest"
 }
 ```
 
-### ${openhabhome}/webapps/images/
+#### images
 
 I also created co*.png, smoke*.png, humidity.png and other icons by copying existing icons:
+
 ```shell
 cp shield.png co.png
 cp shield-1.png co-ok.png
@@ -376,14 +291,13 @@ cp present-off.png present-away.png
 cp present-off.png present-auto-away.png
 ```
 
-### Rules
+### Opening Windows, set the Thermostat to away-mode to save Energy
 
-#### Opening Windows, set the Thermostat to away-mode to save Energy
 This rule assumes that the windows are all `Contact` Items, are all in a Group called `GWindow`, and that the members are `Bedroom2ZoneTripped` ... `StairsWindowsZoneTripped` per the list below.
 
 ```xtend
 rule "Windows Opened (any)"
-  when
+when
     Item Bedroom2ZoneTripped changed from CLOSED to OPEN or
     Item Bedroom3ZoneTripped changed from CLOSED to OPEN or
     Item FamilyRoomZoneTripped changed from CLOSED to OPEN or
@@ -395,20 +309,20 @@ rule "Windows Opened (any)"
     Item MasterBath3ZoneTripped changed from CLOSED to OPEN or
     Item MasterBedroomZoneTripped changed from CLOSED to OPEN or
     Item StairsWindowsZoneTripped changed from CLOSED to OPEN
-  then
+then
     if (GWindow.members.filter(s|s.state==OPEN).size == 1) {
       home_away.sendCommand("away")
     }
 end
 ```
 
-#### Closing Windows, set the Thermostat to home-mode when all windows are closed
+### Closing Windows, set the Thermostat to home-mode when all windows are closed
 
 As the counterpart of the above rule, set the Thermostat to `home` once all the windows are closed.
 
 ```xtend
 rule "Windows Closed (all)"
-  when
+when
     Item Bedroom2ZoneTripped changed from OPEN to CLOSED or
     Item Bedroom3ZoneTripped changed from OPEN to CLOSED or
     Item FamilyRoomZoneTripped changed from OPEN to CLOSED or
@@ -420,9 +334,26 @@ rule "Windows Closed (all)"
     Item MasterBath3ZoneTripped changed from OPEN to CLOSED or
     Item MasterBedroomZoneTripped changed from OPEN to CLOSED or
     Item StairsWindowsZoneTripped changed from OPEN to CLOSED
-  then
+then
     if (GWindow.members.filter(s|s.state==OPEN).size == 0) {
       home_away.sendCommand("home")
     }
 end
+```
+
+## Known Issues
+
+1. The binding initiates outbound TCP connections to the Nest infrastructure on port 9553 (however, which outbound ports are used is determined dynamically by the Nest cloud service and may be different from 9553). If the log shows "Connection timed out" or "Exception reading from Nest: Could not get data model", ensure that outbound connections are not being blocked by a firewall.
+2. Multiple instance support (allowing the binding to access multiple Nest accounts at once) conflicts with Prohibition 3 of the [Nest Developer Terms of Service](https://developer.nest.com/documentation/cloud/tos), and so is not implemented.
+3. The Nest API rounds humidity to 5%, degrees Fahrenheit to whole degrees, and degrees Celsius to 0.5 degrees, so your Nest app will likely show slightly different values from what is available from the API.
+4. There is currently a bug where attempting to update an Item with a binding configuration of this form will not work:
+
+```
+Number NestCondo_temp "Condo Temperature [%.1f °F]" {nest="=[structures(Condo).thermostats(Dining Room).target_temperature_f]"}
+```
+
+While this form should work:
+
+```
+Number NestCondo_temp "Condo Temperature [%.1f °F]" {nest="=[thermostats(Dining Room).target_temperature_f]"}
 ```
