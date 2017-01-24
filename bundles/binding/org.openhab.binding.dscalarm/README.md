@@ -74,14 +74,7 @@ The DSCAlarmItemType maps the binding to an openHAB item type.  Here are the sup
 | panel_time_loss | Switch | Loss of time on the panel. |
 | panel_trouble_message | String | Displays any trouble messages the panel might send. |
 | partition_status | String | A partitions current status. |
-| partition_arm_mode | Number | A partitions current arm mode. The possible values are:
-<br/>
-0=disarmed<br/>
-1=armed away<br/>
-2=armed stay<br/>
-3=away no delay<br/>
-4=stay no delay<br/>
- |
+| partition_arm_mode | Number | A partitions current arm mode. The possible values are:<br/>0=disarmed<br/>1=armed away<br/>2=armed stay<br/>3=away no delay<br/>4=stay no delay |
 | partition_armed | Switch | A partition has been armed. |
 | partition_entry_delay | Switch | A partition is in entry delay mode. |
 | partition_exit_delay | Switch | A partition is in exit delay mode. |
@@ -96,52 +89,15 @@ The DSCAlarmItemType maps the binding to an openHAB item type.  Here are the sup
 | zone_tamper | Switch | A zone tamper condition has happened. |
 | zone_fault | Switch | A zone fault condition has happened. |
 | zone_tripped | Switch | A zone has tripped. |
-| keypad_ready_led | Number | Keypad Ready LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/>
- |
-| keypad_armed_led | Number | Keypad Armed LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/> |
-| keypad_memory_led | Number | Keypad Memory LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/> |
-| keypad_bypass_led | Number | Keypad Bypass LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/> |
-| keypad_trouble_led | Number | Keypad Trouble LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/> |
-| keypad_program_led | Number | Keypad Program LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/> |
-| keypad_fire_led | Number | Keypad Fire LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/> |
-| keypad_backlight_led | Number | Keypad Backlight LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/> |
-| keypad_ac_led | Number | Keypad AC LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/> |
+| keypad_ready_led | Number | Keypad Ready LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_armed_led | Number | Keypad Armed LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_memory_led | Number | Keypad Memory LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_bypass_led | Number | Keypad Bypass LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_trouble_led | Number | Keypad Trouble LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_program_led | Number | Keypad Program LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_fire_led | Number | Keypad Fire LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_backlight_led | Number | Keypad Backlight LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_ac_led | Number | Keypad AC LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
 
 The following is an example of an item file:
 
