@@ -1,6 +1,8 @@
-## Introduction
+# MailControl Binding
 
-MailControl binding provides possibility to receive commands sent via email in JSON format.
+This binding provides possibility to receive commands sent via email in JSON format.  
+
+> NOTE: This binding needs close review; please use caution.
 
 Commands of the following types can be sent:
 
@@ -14,7 +16,7 @@ Commands of the following types can be sent:
 * string
 * up - down
 
-Commands are parsed, converted into instances of classes from org.openhab.core.library.types package and published by event publisher.
+Commands are parse and published by event publisher.
 
 MailControl binding is getting use of the following libraries:
 
@@ -23,27 +25,29 @@ MailControl binding is getting use of the following libraries:
 
 MailControl binding allows to send commands to the OpenHAB home server remotely without any additional server running somewhere else (for example, in a cloud).
 
-## Configuration
+## Binding Configuration
+
+This binding must be configured in `services/mailcontrol.cfg`.
 
 Example of configuration properties for the Message Control binding:
 
 ```
-mailcontrol:username=email.address@some.com
-mailcontrol:password=XXXXXXXXXX
-mailcontrol:smtphost=smtp.mail.some.com
-mailcontrol:smtpport=587
-mailcontrol:smtpauth=true
-mailcontrol:smtpstarttls=true
-mailcontrol:smtpsocketfactoryport=995
-mailcontrol:pop3host=pop.mail.some.com
-mailcontrol:pop3port=995
-mailcontrol:pop3socketfactoryport=995
-mailcontrol:pop3socketfactoryclass=javax.net.ssl.SSLSocketFactory
+username=email.address@some.com
+password=XXXXXXXXXX
+smtphost=smtp.mail.some.com
+smtpport=587
+smtpauth=true
+smtpstarttls=true
+smtpsocketfactoryport=995
+pop3host=pop.mail.some.com
+pop3port=995
+pop3socketfactoryport=995
+pop3socketfactoryclass=javax.net.ssl.SSLSocketFactory
 ```
 
 ## Examples of Messages
 
-The subject of an email message must be OpenHAB.
+The subject of an email message must be OpenHAB. (using the incorrect case of letters)
 
 Examples of messages for different types of commands:
 

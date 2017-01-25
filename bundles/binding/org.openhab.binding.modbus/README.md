@@ -1,10 +1,19 @@
+# Modbus Binding
+
+The binding supports both TCP and Serial slaves. RTU, ASCII and BIN variants of Serial Modbus are supported.
+
+The binding can act as 
+
+- Modbus TCP Client (that is, as modbus master), querying data from Modbus TCP servers (that is, modbus slaves).
+- Modbus serial master, querying data from modbus serial slaves
+
+The Modbus binding polls the slaves with an configurable poll period. openHAB commands are translated to write requests.
+
+
 <!-- Using MarkdownTOC plugin for Sublime Text to update the table of contents (TOC) -->
 <!-- MarkdownTOC depth=2 autolink=true bracket=round -->
 
-- [Introduction](#introduction)
-- [Installation](#installation)
-- [Binding Configuration](#binding-configuration)
-  - [Global configuration](#global-configuration)
+  - [Binding Configuration](#binding-configuration)
   - [Configuration parameters specific to each slave](#configuration-parameters-specific-to-each-slave)
   - [Item Configuration](#item-configuration)
 - [Details](#details)
@@ -13,60 +22,31 @@
   - [Many modbus binding slaves for single physical slave](#many-modbus-binding-slaves-for-single-physical-slave)
   - [Read and write functions \(modbus slave type\)](#read-and-write-functions-modbus-slave-type)
   - [Register interpretation \(valuetype\) on read & write](#register-interpretation-valuetype-on-read--write)
-  - [Modbus RTU over TCP](#modbus-rtu-over-tcp) 
-- [Config Examples](#config-examples)
 - [Troubleshooting](#troubleshooting)
-  - [Enable verbose \(debug\) logging](#enable-verbose-debug-logging)
+  - [Enable verbose logging](#enable-verbose-logging)
 - [For developers](#for-developers)
   - [Testing serial implementation](#testing-serial-implementation)
   - [Testing TCP implementation](#testing-tcp-implementation)
   - [Writing data](#writing-data)
   - [Troubleshooting](#troubleshooting-1)
+  - [Table of Contents](#table-of-contents)
+  - [Rollershutter Items](#rollershutter-items)
+
 <!-- /MarkdownTOC -->
 
 
+## Binding Configuration
 
+This binding must be configured in the file `services/modbus.cfg`.
 
-# Introduction
-
-Documentation of the Modbus binding Bundle. The binding supports both TCP and Serial slaves. RTU, ASCII and BIN variants of Serial Modbus are supported.
-
-The binding can act as 
-- Modbus TCP Client (that is, as modbus master), querying data from Modbus TCP servers (that is, modbus slaves).
-- Modbus serial master, querying data from modbus serial slaves
-
-The Modbus binding polls the slaves with an configurable poll period. openHAB commands are translated to write requests.
-
-
-# Installation
-
-For installation of the binding, please see Wiki page [[Bindings]].
-
-# Binding Configuration
-
-add to `${openhab_home}/configuration/`
-
-Entries in the `openhab.cfg` file should look like below.
-
-## Global configuration
+### Global configuration
 
 Most of config parameters are related to specific slaves, but some are global and thus affect all slaves.
 
-**Poll period (optional)**
-
-Frequency of polling Modbus slaves can be configured using `poll` keyword:
-```ini
-modbus:poll=<value>
-```
-This is optional and default is `200`. Note that the value is in milliseconds! For example, `modbus:poll=1000` makes the binding poll Modbus slaves once per second.
-
-**Function code to use when writing holding registers (optional)**
-
-Binding can be configured to use FC 16 (*Write Multiple Holding Registers*) over FC 6 (*Write Single Holding Register*) when writing holding register items (see above)
-```ini
-modbus:writemultipleregisters=<value>
-```
-This is optional and default is `false`. For example, `modbus:writemultipleregisters=true` makes the binding to use FC16 when writing holding registers.
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| poll     | 200     |          | **Poll period (optional)**<br/> Frequency of polling Modbus slaves. Note that the value is in milliseconds! For example, `poll=1000` makes the binding poll Modbus slaves once per second. |
+| writemultipleregisters | false | | **Function code to use when writing holding registers (optional)**<br/>Binding can be configured to use FC 16 (*Write Multiple Holding Registers*) over FC 6 (*Write Single Holding Register*) when writing holding register items (see above).  This is optional and default is `false`. For example, `writemultipleregisters=true` makes the binding to use FC16 when writing holding registers. |
 
 ## Configuration parameters specific to each slave
 
@@ -75,7 +55,7 @@ The slaves are configured using key value pairs in openHAB config file. Each sla
 The configuration parameters have the following pattern:
 
 ```ini
-modbus:<slave-type>.<slave-name>.<slave-parameter-name>=<slave-parameter-value>
+<slave-type>.<slave-name>.<slave-parameter-name>=<slave-parameter-value>
 ```
 where
 - `<slave-type>` can be either "tcp" or "serial" depending on the type of this Modbus slave
@@ -85,8 +65,9 @@ where
 
 Valid slave parameters are
 
+
 <table>
-  <tr><td>parameter name</td><td>mandatory / optional?</td><td>parameter value</td></tr>
+  <tr><td>Property</td><td>Required</td><td>Description</td></tr>
   <tr><td>connection</td><td>mandatory</td>
        <td><p>Connection string for the slave.</p>
            <p><b>TCP slaves</b> use the form <i>host_ip[:port]</i> e.g. <i>192.168.1.55</i> or <i>192.168.1.55:511</i>. If you omit port, default <i>502</i> will be used. </p>
@@ -135,6 +116,7 @@ Since 1.9.0 `connection` parameter can take additional colon (:) separated param
 - For the serial slaves the new format is: <i>port[:baud[:dataBits[:parity[:stopBits[:encoding[:interTransactionDelayMillis[:receiveTimeoutMillis[:flowControlIn[:flowControlOut]]]]]]]]</i>
 
 Explanation of these new parameters
+
 - `interTransactionDelayMillis`: : Time to wait between consecutive modbus transactions (to the same host or serial device), in milliseconds. Each modbus transaction corresponds to read or write operation. Default 35 for serial slaves and 60 for tcp slaves.
 - `reconnectAfterMillis`: Time after which connection is disconnected and re-established, in milliseconds. Default 0 (closes connection after every transaction).
 - `interConnectDelayMillis`: Time to wait between consecutive connection attempts (to the same host or ip), in milliseconds. Default 0.
@@ -152,8 +134,8 @@ With low baud rates and/or long read requests (that is, large `length` parameter
 
 Examples:
 
-- `modbus:serial.serialslave1.connection=/dev/ttyS0:38400:8:none:1:rtu:150` connect to serial slave using with `interTransactionDelayMillis` of 150ms
-- `modbus:tcp.tcpslave1.connection=192.168.1.100:502:0` connect to tcp slave with no `interTransactionDelayMillis`
+- `serial.serialslave1.connection=/dev/ttyS0:38400:8:none:1:rtu:150` connect to serial slave using with `interTransactionDelayMillis` of 150ms
+- `tcp.tcpslave1.connection=192.168.1.100:502:0` connect to tcp slave with no `interTransactionDelayMillis`
 
 ## Item Configuration
 
@@ -166,7 +148,7 @@ There are three ways to bind an item to modbus coils/registers.
 ```ini
 Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}
 ```
-- This binds MySwitch to modbus slave defined as "slave1" in openhab.cfg reading/writing to the coil (5 + slave's `start` index). The `5` is called item read index.
+- This binds MySwitch to modbus slave defined as "slave1" in `modbus.cfg` reading/writing to the coil (5 + slave's `start` index). The `5` is called item read index.
 - If the slave is read-only, that is the `type` is `input` or `discrete`, the binding ignores any write commands. 
 - if the slave1 refers to registers, and after parsing using the registers as rules defined by the `valuetype`, zero value is considered as `OFF`, everything else as `ON`.
 
@@ -277,16 +259,16 @@ The openhab modbus binding uses data frame entity addresses when referring to mo
 
 ## Many modbus binding slaves for single physical slave
 
-One needs to configure as many modbus slaves to openhab as there are corresponding modbus requests. For example, in order to poll status of `coil` and `holding` items from a single [physical] modbus slave, two separate modbus slave definitions need to be configured in the ``openhab.cfg``. For example:
+One needs to configure as many modbus slaves to openhab as there are corresponding modbus requests. For example, in order to poll status of `coil` and `holding` items from a single [physical] modbus slave, two separate modbus slave definitions need to be configured in the `modbus.cfg`. For example:
 
 ```ini
-modbus:serial.slave1.connection=/dev/pts/8:38400:8:none:1:rtu
-modbus:serial.slave1.type=coil
-modbus:serial.slave1.length=3
+serial.slave1.connection=/dev/pts/8:38400:8:none:1:rtu
+serial.slave1.type=coil
+serial.slave1.length=3
 
-modbus:serial.slave2.connection=/dev/pts/8:38400:8:none:1:rtu
-modbus:serial.slave2.type=holding
-modbus:serial.slave2.length=5
+serial.slave2.connection=/dev/pts/8:38400:8:none:1:rtu
+serial.slave2.type=holding
+serial.slave2.length=5
 ```
 
 Please note that the binding requires that all slaves connecting to the same serial port share the same connection parameters (e.g. baud-rate, parity, ..). In particular are different parameter settings considered bad practice, because they can confuse the instances (slaves) on the modbus.  For additional information, see [this discussion](https://community.openhab.org/t/connection-pooling-in-modbus-binding/5246/161?u=ssalonen) in the community forums.
@@ -417,38 +399,38 @@ Some devices uses modbus RTU over TCP. This is usually Modbus RTU encapsulation 
 
 Please take a look at [Samples-Binding-Config page](https://github.com/openhab/openhab/wiki/Samples-Binding-Config) or examine to the following examples.
 
-- Minimal construction in openhab.cfg for TCP connections will look like:
+- Minimal construction in modbus.cfg for TCP connections will look like:
 
 ```ini
 # read 10 coils starting from address 0
-modbus:tcp.slave1.connection=192.168.1.50
-modbus:tcp.slave1.length=10
-modbus:tcp.slave1.type=coil
+tcp.slave1.connection=192.168.1.50
+tcp.slave1.length=10
+tcp.slave1.type=coil
 ```
  
-- Minimal construction in openhab.cfg for serial connections will look like:
+- Minimal construction in modbus.cfg for serial connections will look like:
 
 ```ini
 # read 10 coils starting from address 0
-modbus:serial.slave1.connection=/dev/ttyUSB0
-modbus:tcp.slave1.length=10
-modbus:tcp.slave1.type=coil
+serial.slave1.connection=/dev/ttyUSB0
+tcp.slave1.length=10
+tcp.slave1.type=coil
 ```
 
 - More complex setup could look like
 
 ```ini
 # Poll values very 300ms = 0.3 seconds
-modbus:poll=300
+poll=300
 
 # Connect to modbus slave at 192.168.1.50, port 502
-modbus:tcp.slave1.connection=192.168.1.50:502
+tcp.slave1.connection=192.168.1.50:502
 # use slave id 41 in requests
-modbus:tcp.slave1.id=41
+tcp.slave1.id=41
 # read 32 coils (digital outputs) starting from address 0
-modbus:tcp.slave1.start=0
-modbus:tcp.slave1.length=32
-modbus:tcp.slave1.type=coil
+tcp.slave1.start=0
+tcp.slave1.length=32
+tcp.slave1.type=coil
 ```
 
 - Another example where coils, discrete inputs (`discrete`) and input registers (`input`) are polled from modbus tcp slave at `192.168.6.180`.
@@ -461,45 +443,45 @@ modbus:tcp.slave1.type=coil
 > the moxa manual ist not right clear in this case 
 
 ```ini
-modbus:poll=300
+poll=300
 
 # Query coils from 192.168.6.180
-modbus:tcp.slave1.connection=192.168.6.180:502
-modbus:tcp.slave1.id=1
-modbus:tcp.slave1.start=0
-modbus:tcp.slave1.length=6
-modbus:tcp.slave1.type=coil
+tcp.slave1.connection=192.168.6.180:502
+tcp.slave1.id=1
+tcp.slave1.start=0
+tcp.slave1.length=6
+tcp.slave1.type=coil
 
 # Query discrete inputs from 192.168.6.180
-modbus:tcp.slave2.connection=192.168.6.180:502
-modbus:tcp.slave2.id=1
-modbus:tcp.slave2.start=0
-modbus:tcp.slave2.length=6
-modbus:tcp.slave2.type=discrete
+tcp.slave2.connection=192.168.6.180:502
+tcp.slave2.id=1
+tcp.slave2.start=0
+tcp.slave2.length=6
+tcp.slave2.type=discrete
 
 # Query input registers from 192.168.6.180
-modbus:tcp.slave3.connection=192.168.6.180:502
-modbus:tcp.slave3.id=1
-modbus:tcp.slave3.start=17
-modbus:tcp.slave3.length=2
-modbus:tcp.slave3.type=input
+tcp.slave3.connection=192.168.6.180:502
+tcp.slave3.id=1
+tcp.slave3.start=17
+tcp.slave3.length=2
+tcp.slave3.type=input
 
 # Query holding registers from 192.168.6.181
 # Holding registers matching addresses 33 and 34 are read
-modbus:tcp.slave4.connection=192.168.6.181:502
-modbus:tcp.slave4.id=1
-modbus:tcp.slave4.start=33
-modbus:tcp.slave4.length=2
-modbus:tcp.slave4.type=holding
+tcp.slave4.connection=192.168.6.181:502
+tcp.slave4.id=1
+tcp.slave4.start=33
+tcp.slave4.length=2
+tcp.slave4.type=holding
 
 # Query 2 input registers from 192.168.6.181. 
 # Interpret the two registers as single 32bit floating point number
-modbus:tcp.slave5.connection=192.168.6.181:502
-modbus:tcp.slave5.id=1
-modbus:tcp.slave5.start=10
-modbus:tcp.slave5.length=2
-modbus:tcp.slave5.type=input
-modbus:tcp.slave5.valuetype=float32
+tcp.slave5.connection=192.168.6.181:502
+tcp.slave5.id=1
+tcp.slave5.start=10
+tcp.slave5.length=2
+tcp.slave5.type=input
+tcp.slave5.valuetype=float32
 ```
 
 Above we used the same modbus gateway with ip 192.168.6.180 multiple times 
@@ -508,17 +490,12 @@ on different modbus address ranges and modbus functions.
 
 # Troubleshooting
 
-## Enable verbose (debug) logging 
+## Enable verbose logging 
 
-Add the following to the `logback_debug.xml`:
-```xml
-    <logger name="net.wimpi.modbus" level="TRACE" />
-    <logger name="org.openhab.binding.modbus" level="TRACE" />
-```
+Enable `DEBUG` or `TRACE` (even more verbose) logging for the loggers named:
 
-Make sure that you do not have any other loggers defined for `net.wimpi.modbus` or `org.openhab.binding.modbus`.
-
-Start the openhab with `start_debug`.
+* `net.wimpi.modbus`
+* `org.openhab.binding.modbus`
 
 # For developers
 
@@ -550,7 +527,7 @@ Naturally this is not the same thing as the real thing but helps to identify sim
 ```
 2. Configure openhab's modbus slave to connect to `127.0.0.1:55502`: 
 ```ini
-modbus:tcp.slave1.connection=127.0.0.1:55502
+tcp.slave1.connection=127.0.0.1:55502
 ```
 
 ## Writing data
@@ -563,7 +540,7 @@ To troubleshoot, you might be asked to update to latest development version. You
 
 With modbus binding before 1.9.0, it strongly recommended to try out with the latest development version since many bugs were fixed in 1.9.0. Furthermore, error logging is enhanced in this new version.
 
-If the problem persists in the new version, it is recommended to try to isolate to issue using minimal configuration. Easiest would be to have a fresh openhab installation, and configure it minimally (if possible, single modbus slave in `openhab.cfg`, single item, no rules etc.). This helps the developers and community to debug the issue.
+If the problem persists in the new version, it is recommended to try to isolate to issue using minimal configuration. Easiest would be to have a fresh openhab installation, and configure it minimally (if possible, single modbus slave in `modbus.cfg`, single item, no rules etc.). This helps the developers and community to debug the issue.
 
 Problems can be communicated via [community.openhab.org](https://community.openhab.org). Please use the search function to find out existing reports of the same issue. 
 
@@ -571,7 +548,7 @@ It helps greatly to document the issue in detail (especially how to reproduce th
 
 For attaching the logs to a community post, [pastebin.com](http://pastebin.com/) service is strongly recommended to keep the thread readable. It is useful to store the logs from openhab startup, and let it run for a while.
 
-Remember to attach ``modbus``  configuration lines from openhab.cfg, item definitions related to modbus binding, and any relevant rules (if any). You can use [pastebin.com](http://pastebin.com/) for this purpose as well.
+Remember to attach configuration lines from modbus.cfg, item definitions related to modbus binding, and any relevant rules (if any). You can use [pastebin.com](http://pastebin.com/) for this purpose as well.
 
 To summarize, here are the recommended steps in case of errors
 
@@ -661,16 +638,7 @@ Starting up modbus tcp server (i.e. modbus slave)
 ./diagslave -m tcp -p 55502
 ```
 
-openhab.cfg (openHAB 1.x)
-
-```
-modbus:tcp.slave1.connection=localhost:55502:0:0:0:1
-modbus:tcp.slave1.type=holding
-modbus:tcp.slave1.length=20
-modbus:tcp.slave1.postundefinedonreaderror=true
-```
-
-modbus.cfg (openHAB 2+)
+services/modbus.cfg
 
 ```
 tcp.slave1.connection=localhost:55502:0:0:0:1
