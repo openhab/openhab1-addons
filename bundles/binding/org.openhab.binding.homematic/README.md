@@ -1,4 +1,4 @@
-## Introduction
+# Homematic Binding
 
 - RF and WIRED devices are supported
 - CCU/Homegear variables with synchronisation
@@ -9,29 +9,22 @@
 - local cache of all metadata and values to prevent unnecessary CCU/Homegear calls.
 - alive validation, if no event is received within a specified time, the binding restarts.
 - action to send messages to a Homematic remote control with a display
+- HomematicIP support.  HomematicIP is disabled by default, because if you don't have HM-IP devices, the binding still communicates with BIN-RPC. If you enable HM-IP support, the binding uses XML-RPC. In the binding configuration, set `homematicIP.enabled=true`.
+- [Homegear](https://www.homegear.eu) support including variables and programs (Homegear scripts). With Homegear you can control HomeMatic devices without a CCU, [MAX! devices](http://www.eq-3.de/max-heizungssteuerung.html) without a cube and Philips hue devices, more to come!  **Note:** You need at least 0.5.8 of Homegear.
+- BATTERY_TYPE datapoint. Show the type of the battery for every battery-powered Homematic device.
 
-### New in 1.9 ([with this pull request](https://github.com/openhab/openhab/pull/4267))
-- HomematicIP support.  
-HomematicIP is disabled by default, because if you don't have HM-IP devices, the binding still communicates with BIN-RPC. If you enable HM-IP support, the binding uses XML-RPC. Configuration in openhab.cfg:
 ```
-homematic:homematicIP.enabled=true
-```
-
-
-### New in 1.6
-1.) [Homegear](https://www.homegear.eu) support including variables and programs (Homegear scripts). With Homegear you can control HomeMatic devices without a CCU, [MAX! devices](http://www.eq-3.de/max-heizungssteuerung.html) without a cube and Philips hue devices, more to come!  
-**Note:** You need at least 0.5.8 of Homegear.
-
-2.) BATTERY_TYPE datapoint. Show the type of the battery for every battery-powered Homematic device.
-```
-String ... {homematic="address=KEQxxxxxxxx, channel=0, parameter=BATTERY_TYPE"}
+String ... { homematic="address=KEQxxxxxxxx, channel=0, parameter=BATTERY_TYPE" }
 ```
 
-3.) CCU group support. You can group together for example some thermostats and call group datapoints.
+* CCU group support. You can group together for example some thermostats and call group datapoints.
+
 ```
 Number ... {homematic="address=INT0000001, channel=1, parameter=SET_TEMPERATURE“}
 ```  
+
 **Note:** The CCU does not send updates to a group! If you change the temperature manually, you have to write a rule to update the group:
+
 ```
 var Timer thermostatChangedTimer = null
 
@@ -53,70 +46,55 @@ then
 end
 ```
 
-4.) Remote control display is now driven via RPC (formerly TclRega script)  
-5.) Many small optimizations  
-6.) [CUxD](http://www.homematic-inside.de/software/cuxdaemon) Support  
-7.) XML-RPC removed  
-8.) Stand alone actions, use reload_datapoints, reload_variables and reload_rssi without a device binding  
-9.) RSSI_DEVICE and RSSI_PEER datapoint. Show the [RSSI](http://en.wikipedia.org/wiki/Received_signal_strength_indication) values from RF devices.
+* Remote control display is now driven via RPC (formerly TclRega script)  
+* Many small optimizations  
+* [CUxD](http://www.homematic-inside.de/software/cuxdaemon) Support  
+* XML-RPC removed  
+* Stand alone actions, use reload_datapoints, reload_variables and reload_rssi without a device binding  
+* RSSI_DEVICE and RSSI_PEER datapoint. Show the [RSSI](http://en.wikipedia.org/wiki/Received_signal_strength_indication) values from RF devices.
+
 ```
-Number RSSI_Livingroom_Device   "RSSI device light livingroom [%d dbm]"   {homematic="address=xxxxxxxx, channel=0, parameter=RSSI_DEVICE"}
-Number RSSI_Livingroom_Peer     "RSSI peer light livingroom [%d dbm]"     {homematic="address=xxxxxxxx, channel=0, parameter=RSSI_PEER"}
+Number RSSI_Livingroom_Device   "RSSI device light livingroom [%d dbm]"   { homematic="address=xxxxxxxx, channel=0, parameter=RSSI_DEVICE" }
+Number RSSI_Livingroom_Peer     "RSSI peer light livingroom [%d dbm]"     { homematic="address=xxxxxxxx, channel=0, parameter=RSSI_PEER" }
 ```
+
 If you are using Homegear, the values are always up to date. The values from a CCU are fetched during startup. If you want to refresh the CCU values, you need the RELOAD_RSSI action:
+
 ```
-Switch Reload_Rssi   {homematic="action=reload_rssi"}
+Switch Reload_Rssi   { homematic="action=reload_rssi" }
 ```
+
 Just send a ON command to the Switch and the RSSI values are updated.
 
 ### Requirements
+
 CCU1, CCU2, [Homegear](http://homegear.eu) or [lxccu](http://www.lxccu.com)  
+
 These ports are used by the binding:  
-TclRegaScript (required): 8181  
-RF components (required): 2001  
-WIRED components (optional): 2000  
+
+* TclRegaScript (required): 8181  
+* RF components (required): 2001  
+* WIRED components (optional): 2000  
 
 The CCU firewall must be configured to 'full access' for the Remote Homematic-Script API.
 
-## HomeMatic Binding Configuration
+## Binding Configuration
 
-### openhab.cfg
+This binding must be configured in the file `services/homematic.cfg`.
 
-These config params are used for the HomeMatic binding.
-```
-############################## Homematic Binding ##############################
-#
-# Hostname / IP address of the Homematic CCU
-homematic:host=
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| host     |         |          | Hostname / IP address of the Homematic CCU |
+| callback.host |    |          | Hostname / IP address for the callback server (optional, default is auto-discovery). This is normally the IP / hostname of the local host (but not "localhost" or "127.0.0.1"). |
+| callback.port | 9123 |        | Port number for the callback server. |
+| alive.interval | 300 |        | the interval in seconds to check if the communication with the CCU is still alive. If no message receives from the CCU, the binding restarts. |
+| reconnect.interval | |        | the interval in seconds to reconnect to the Homematic server (optional, default is disabled). If you have no sensors which sends messages in regular intervals and/or you have low communication, the `alive.interval` may restart the connection to the Homematic server too often.  The `reconnect.interval` disables the `alive.interval` and reconnects after a fixed period of time. Think in hours when configuring (one hour = 3600) |
+| homematicIP.enabled | false | | Enables CCU2 HomematicIP support.  HomematicIP does currently not support BIN-RPC. Therefore it's disabled by default, because if you don't have HM-IP devices, the binding still communicates with BIN-RPC. If you enable HM-IP support, the binding uses XML-RPC. |
 
-# Hostname / IP address for the callback server (optional, default is auto-discovery)
-# This is normally the IP / hostname of the local host (but not "localhost" or "127.0.0.1"). 
-# homematic:callback.host=
-
-# Port number for the callback server. (optional, default is 9123)
-# homematic:callback.port=
-
-# The interval in seconds to check if the communication with the CCU is still alive.
-# If no message receives from the CCU, the binding restarts. (optional, default is 300)
-# homematic:alive.interval=
-
-# The interval in seconds to reconnect to the Homematic server (optional, default is disabled)
-# If you have no sensors which sends messages in regular intervals and/or you have low communication, 
-# the alive.interval may restart the connection to the Homematic server to often.
-# The reconnect.interval disables the alive.interval and reconnects after a fixed period of time. 
-# Think in hours when configuring (one hour = 3600)
-# homematic:reconnect.interval=
-
-# Enables CCU2 HomematicIP support (optional, default is disabled)
-# HomematicIP does currently not support BIN-RPC. Therefore it's disabled by default, because if you don't
-# have HM-IP devices, the binding still communicates with BIN-RPC. If you enable HM-IP support, the binding
-# uses XML-RPC.
-# homematic:homematicIP.enabled=
-```
-**Note:** homematic:reconnect.interval is available with PR https://github.com/openhab/openhab/pull/2332
-## Item Binding
+## Item Configuration
 
 Available parameters:
+
 - address: (datapoint) formerly id, the address of the datapoint, e.g KEQ0048285
 - channel: (datapoint) the channel number, e.g. 5
 - parameter: (datapoint) the name of the datapoint, e.g. PRESS_SHORT, LEVEL, ...
@@ -127,24 +105,27 @@ Available parameters:
 - [delay](#delay): (datapoint, variable) delays transmission of a command to the Homematic server (in seconds), eg. 3.5
 
 
-### Datapoint examples
+### Datapoint Examples
+
 ```
 Dimmer Light_Livingroom "Livingroom [%d %%]" <slider> {homematic="address=JEQ0123456, channel=1, parameter=LEVEL"}
-
 Switch Remote_Key_01 "Remote Key 01" {homematic="address=KEQ0012345, channel=1, parameter=PRESS_SHORT"}
-
 Rollershutter Kitchen_Window  "Kitchen Window [%d %%]" <rollershutter> {homematic="address=KEQ0012345, channel=1, parameter=LEVEL"}
 ```
+
 For a window contact, you need a map too:
+
 ```
 String Bath_Window "Bath_Window [MAP(window.map):%s]"      <contact>   {homematic="address=KEQ0123456, channel=1, parameter=STATE"}
 ```
+
 ```
 CLOSED=closed
 OPEN=open
 TILTED=tilted
 undefined=unknown
 ```
+
 A documentation which device is proving which datapoint, please check the documentation from EQ3:
 [Datapoints for CCU1](http://www.eq-3.de/Downloads/eq3/download%20bereich/hm_web_ui_doku/HM_Script_Teil_4_Datenpunkte_1_503.pdf), [Datapoints for CCU2](http://www.eq-3.de/Downloads/eq3/download%20bereich/hm_web_ui_doku/hm_devices_Endkunden.pdf)
 
@@ -167,12 +148,15 @@ Suitable combinations of channel and parameter name for your device connected vi
 
 
 ### Program examples
+
 ```
 // binds to the Homematic program 'Testprogram'. 
 // if you send a ON Command to the Switch, the program starts on the CCU
 Switch Prog_Testprogram {homematic="program=Testprogram"}
 ```
-### Variable examples
+
+### Variable Examples
+
 ```
 // binds to a boolean variable named Holidaymode on the CCU
 Switch Var_Holidaymode {homematic="variable=Holidaymode"}
@@ -185,9 +169,11 @@ Number Var_Autoshade_height "Autoshade height index [%d]" {homematic="variable=A
 // shows 10, 20 ...
 String Var_Autoshade_height "Autoshade height [%s %%]" {homematic="variable=Autoshade Height"}
 ```
+
 ![](https://farm8.staticflickr.com/7387/13816901335_29ff085daa_z.jpg)
 
-**Sitemap for valuelist variables:**
+#### Sitemap for valuelist variables
+
 ```
 // if you bound the item to the INDEX with a Number Item
 Selection item= Var_Autoshade_height mappings=[0="10", 1="20", 2="30", 3="40", 4="50"]
@@ -197,17 +183,21 @@ Selection item= Var_Autoshade_height mappings=[10="10", 20="20", 30="30", 40="40
 ```
 
 ### Variable/Datapoint sync
+
 The CCU only sends a message if a datapoint of a device has changed. There is (currently) no way to receive a event automatically when a variable has changed. But there is a solution ... variable sync.
 This is done with the help of the 'Virtual remote control' feature of the CCU. The CCU supports 50 virtual remote control channels and you can use one of them for variable sync. 
 
-Here is a example:
+Here is an example:
+
 Connect to the CCU WebGui, go to devices, search a free 'Virtual remote control (wireless)' and name it as you want. In my example i use channel 1 with the name 'VK_Reload_Variable':
 ![](https://farm4.staticflickr.com/3707/13817224654_64b980399a_z.jpg)
 
-Now you need a item:
+Now you need an item:
+
 ```
 Switch Reload_Variables {homematic="address=BidCoS-RF, channel=1, parameter=PRESS_SHORT, action=RELOAD_VARIABLES"}
 ```
+
 The key is the action attribute. The binding reloads all variables and publishes only changes to openHAB if the Switch receives ON. You can do this for example in a rule with a cron trigger to sync the variables in certain intervals. Or you do a manual reload from an App, GreenT, ...
 
 If you want to do a reload immediately when a variable changes, you have to write (click together) a program on the CCU. The if condition checks all the variables you want if they have changed, the Activity is only one: send 'Button press short' to the previously bound 'Virtual remote control', in my example 'VK_Reload_Variable'.
@@ -216,102 +206,68 @@ If you want to do a reload immediately when a variable changes, you have to writ
 Thats it ... if a variable (in my example Holidaymode) changes, the program starts and sends the 'button press short' to the 'Virtual remote control'. This event is published from the CCU to the binding and sends ON to the item with the action attribute. The binding reloads all variables and publishes the changes to openHAB.
 
 The same you can do with the action RELOAD_DATAPOINTS to reload all datapoints. This is normally not necessary but recommended from time to time. The binding has a local cache of all metadata and values of the CCU. In case openHAB misses an event (event not received correctly, network problem, ...), this local cache and of course your items get stale and needs to be updated. With the action RELOAD_DATAPOINTS you can do this.
+
 In this example i use channel 2 of the 'Virtual remote control'
+
 ```
 Switch Reload_Datapoints {homematic="address=BidCoS-RF, channel=2, parameter=PRESS_SHORT, action=RELOAD_DATAPOINTS"}
 ```
+
 Just send ON to this Switch and all datapoints refreshes. Only changes are published to openHAB!  
 
 You can also use a standalone action without a device binding
+
 ```
 Switch Reload_Datapoints {homematic="action=RELOAD_DATAPOINTS"}
 ```
 
 Example: reload all datapoints every 6 hours 
-```
-import org.openhab.core.library.types.*
 
+```
 rule "Reload datapoints"
 when 
     Time cron "0 0 0/6 * * ?"   // every 6 hours
 then
 	sendCommand(Reload_Datapoints, ON)
 end
+
 ```
 
 ### forceUpdate
+
 As mentioned earlier, the binding manages a local cache of all metadata and values of the CCU. Lets say you have a rule which is doing something and updates an item bound to a Homematic device. The value is send to the CCU, the CCU sends it to the device and sends back an event to the binding which updates the item. If the new value (State) of an item is the same as the previous value, all this is unnecessary! The default behavior of the binding is to check if a value has changed and only send changed values to the CCU. 
+
 Example:
+
 ```
 Rollershutter Kitchen_Window  "Kitchen Window [%d %%]" <rollershutter> {homematic="address=KEQ0012345, channel=1, parameter=LEVEL"}
 ```
+
 If the Rollershutter is down and you send a DOWN to this item, the binding recognize this and does nothing. You can override this with the attribute forceUpdate in the binding.
+
 ```
 Rollershutter Kitchen_Window  "Kitchen Window [%d %%]" <rollershutter> {homematic="address=KEQ0012345, channel=1, parameter=LEVEL, forceUpdate=true"}
 ```
+
 Now, if the Rollershutter is down and you send a DOWN to this item, the binding sends the value to the CCU. You hear the click of the relay in the Homematic device and nothing happens, because the Rollershutter is already down.
 In some situations it may be useful to always send the value to the CCU.
 
 ### Delay
+
 You can delay the transmission of a command to the Homematic server for a datapoint or variable. If a command is executed, the command is delayed for the configured time and then executed. If a new command is executed within the delay of the previous command, the previous command is deleted and the new is delayed. This is useful to filter many commands and send only the last to the Homematic server. 
 
 ```
 Switch Light "Light"  {homematic="address=KEQxxxxxx, channel=1, parameter=STATE, delay=3.5"}
 ```
+
 If you send a ON to the Switch, the command is delayed for 3.5 seconds. If you send ON, OFF, ON, OFF and each command is within the delay, only the last OFF is sent.  
-Requires this pull request: https://github.com/openhab/openhab/pull/1952
-
-## Homematic Action
-With the Homematic action you can send messages to a Homematic remote control with a display, currently the HM-RC-19-B (Radio remote control 19 button).
- 
-### Installation
-Put the file org.openhab.action.homematic-x.x.x.jar into the addons folder. The Homematic binding 1.5.0 (at least pb-04) or higher is also required.
-
-### Usage
-Commands available:
-```
-sendHomematicDisplay(REMOTE_CONTROL_ADDRESS, TEXT);
-sendHomematicDisplay(REMOTE_CONTROL_ADDRESS, TEXT, OPTIONS);
-```
-The remote control display is limited to five characters, a longer text is truncated.
- 
-You have several additional options to control the display.
-* BEEP _(TONE1, TONE2, TONE3)_ - let the remote control beep
-* BACKLIGHT _(BACKLIGHT_ON, BLINK_SLOW, BLINK_FAST)_ - control the display backlight
-* UNIT _(PERCENT, WATT, CELSIUS, FAHRENHEIT)_ - display one of these units
-* SYMBOL _(BULB, SWITCH, WINDOW, DOOR, BLIND, SCENE, PHONE, BELL, CLOCK, ARROW_UP, ARROW_DOWN)_ - display symbols, multiple symbols possible
- 
-You can combine any option, they must be separated by a comma. If you specify more than one option for BEEP, BACKLIGHT and UNIT, only the first one is taken into account and all others are ignored. For SYMBOL you can specify multiple options.
- 
-**Examples:**  
-show message TEST:
-```
-sendHomematicDisplay("KEQ0012345", "TEST");
-```
-show message TEXT, beep once and turn backlight on:
-```
-sendHomematicDisplay("KEQ0012345", "TEXT", "TONE1, BACKLIGHT_ON");
-```
- 
-show message 15, beep once, turn backlight on and shows the celsius unit:
-```
-sendHomematicDisplay("KEQ0012345", "15", "TONE1, BACKLIGHT_ON, CELSIUS");
-```
- 
-show message ALARM, beep three times, let the backlight blink fast and shows a bell symbol:
-```
-sendHomematicDisplay("KEQ0012345", "ALARM", "TONE3, BLINK_FAST, BELL");
-```
- 
-Duplicate options: TONE3 is ignored, because TONE1 is specified previously.
-```
-sendHomematicDisplay("KEQ0012345", "TEXT", "TONE1, BLINK_FAST, TONE3");
-```
 
 ## Service alerts
+
 Homematic has two service alerts, unreach and config_pending. For every device, these two datapoints are available at channel 0 and you can bind it to an item. So here is a example which displays the number of unreach devices. But only those which are really unreached. The same you can do with config pending (also in the example) and if the device is battery powered, you can also bind LOWBAT to see if the battery is low.
 
-**Item:**
+#### Items
+
 ```
 Group:Number:SUM Unreached     "Unreached devices [%d]"
 Group:Number:SUM ConfigPending "Devices with config pending [%d]"
@@ -322,7 +278,9 @@ Number Light_Livingroom_Unreach      "Light Livingroom unreached"      (Unreache
 Number Rollershutter_Kitchen_Pending "Rollershutter Kitchen config pending" (ConfigPending) {homematic="address=KEQxxxxx, channel=0, parameter=CONFIG_PENDING"}
 Number Light_Livingroom_Pending      "Light Livingroom config pending"      (ConfigPending) {homematic="address=JEQxxxxx, channel=0, parameter=CONFIG_PENDING"}
 ```
-**Sitemap:**
+
+#### Sitemap
+
 ```
 sitemap homematic label="Example" {  
   Frame label="Status" {
@@ -336,10 +294,13 @@ sitemap homematic label="Example" {
   }
 }
 ```
+
 ## Device Confirmation List
 
 These devices have been tested so far and confirmed as working:  
+
 ### RF
+
 * HM-CC-RT-DN (Electronic Wireless Radiator Thermostat)
 * HM-CC-TC (Electronic Wireless Radiator Thermostat)
 * HM-TC-IT-WM-W-EU (Wireless Room Thermostat)
@@ -389,6 +350,7 @@ These devices have been tested so far and confirmed as working:
 * HM-Sec-SCo (Radio-controlled shutter contact optical)
 
 ### Wired
+
 * HMW-Sen-SC-12-FM (RS485 12-channel shutter contact for flush mounting)
 * HMW-Sen-SC-12-DR (RS485 12-channel shutter contact for mounting on DIN rails)
 * HMW-IO-12-Sw7-DR (RS485 I/O module 12 inputs 7 switch outputs for mounting on DIN rails)
@@ -396,6 +358,7 @@ These devices have been tested so far and confirmed as working:
 * HMW-IO-12-Sw14-DR (RS485 I/O-Modul 12 inputs 14 switch output for mounting on DIN rails)
 
 ### [MAX! devices](http://www.eq-3.de/max-heizungssteuerung.html) (via [Homegear](https://www.homegear.eu))
+
 * BC-SC-Rd-WM (Radio-controlled shutter contact)
 * BC-SC-Rd-WM-2 (Radio-controlled shutter contact)
 * BC-RT-TRX-CyG-3 (Electronic Wireless Radiator Thermostat)
@@ -404,40 +367,44 @@ These devices have been tested so far and confirmed as working:
 
 ### SHORT & LONG_PRESS events of push buttons do not occur on the event bus
 
-It seems buttons like the HM-PB-2-WM55 do just send these kind of events to the CCU if they are mentioned in a CCU program. A simple workaround to make them send these events is, to create a program (rule inside the CCU) that does just have a "When" part and no "Then" part, in this "When" part each channel needs to be mentioned at least once. 
+It seems buttons like the HM-PB-2-WM55 do just send these kind of events to the CCU if they are mentioned in a CCU program. A simple workaround to make them send these events is, to create a program (rule inside the CCU) that does just have a "When" part and no "Then" part, in this "When" part each channel needs to be mentioned at least once.
+
 As the  HM-PB-2-WM55 for instance has two channels, it is enough to mention the SHORT_PRESS event of channel 1 & 2. The LONG_PRESS events will work automatically as they are part of the same channels.
+
 After the creation of this program, the button device will receive configuration data from the CCU which have to be accepted by pressing the config-button at the back of the device.
 
 ### INSTALL_TEST
+
 If a button is still not working and you do not see any PRESS_LONG / SHORT in your log file (loglevel DEBUG), it could be because of enabled security. Try to disable security of your buttons in the HomeMatic Web GUI and try again. If you can't disable security try to use key INSTALL_TEST which gets updated to ON for each key press
 
 ### No BinX signature / BadRequestException Binsystem.multicall
 
-If you change the communication mode in openhab.cfg (homematic:rpc=), one of these exceptions may appear if you restart openHAB:
+If you change the communication mode in services/homematic.cfg (`rpc` property), one of these exceptions may appear if you restart openHAB:
+
 ```
-homematic:rpc=bin -> No BinX signature
-homematic:rpc=xml -> BadRequestException: Binsystem.multicall
+rpc=bin -> No BinX signature
+rpc=xml -> BadRequestException: Binsystem.multicall
 ```
+
 The binding registers itself with the CCU at startup with the specified communication mode. If you shutdown openHAB (or kill it) and the binding can not unregister successfully from the CCU, the CCU still sends messages. It does this for about three minutes, if there is no answer, it gives up. If you start openHAB in this period of time with another communication mode, these exceptions occur.
 
 Just wait untill the exceptions disappear and restart openHAB. This happens only after switching the communication mode.
 
 ### Debugging and Tracing
-If you want to see what's going on in the binding, switch the loglevel in logback.xml to DEBUG.
-```
-<logger name="org.openhab.binding.homematic" level="DEBUG" />
-```
-If you want to see even more, switch to TRACE to also see the CCU request/response data.
-```
-<logger name="org.openhab.binding.homematic" level="TRACE" />
-```
+
+Enable `DEBUG` or `TRACE` for the logger named `org.openhab.binding.homematic`.
 
 ### Can't find DatapointConfig
 
-I assume, the binding is in your addons folder.
+I assume, the binding is installed.
 
-* In the openHab logfile there must be a entry like this: `HomematicConfig[host=...,callbackHost=...,callbackPort=...,aliveInterval=...,rpc=bin]`  
-If this entry does not exist, there is a problem in your openhab.cfg. A common problem is a space in front of the config properties.
+* In the openHab logfile there must be a entry like this: 
+
+```
+HomematicConfig[host=...,callbackHost=...,callbackPort=...,aliveInterval=...,rpc=bin]
+```
+
+If this entry does not exist, there is a problem in your `services/homematic.cfg` file. A common problem is a space in front of the config properties.
 
 * If 'Can't find DatapointConfig' still exists, switch the binding to DEBUG mode, start openHab and wait for or trigger an event from the device. Now you see the datapoints for every event. Compare your binding in your item file with the datapoint config from the event.
 
@@ -445,7 +412,11 @@ If this entry does not exist, there is a problem in your openhab.cfg. A common p
 
 
 ### Video
-[![HomeMatic Binding](http://img.youtube.com/vi/F0ImuuIPjYk/0.jpg)](http://www.youtube.com/watch?v=F0ImuuIPjYk)* [How to use homematic door contact sensors](Homematic-Binding-Examples#howto-use-homematic-door-contact-sensors)
+
+[![HomeMatic Binding](http://img.youtube.com/vi/F0ImuuIPjYk/0.jpg)](http://www.youtube.com/watch?v=F0ImuuIPjYk)
+
+* [How to use homematic door contact sensors](Homematic-Binding-Examples#howto-use-homematic-door-contact-sensors)
+
 * [How to use homematic window contact sensors](Homematic-Binding-Examples#howto-use-homematic-window-contact-sensors)
 * [How to read Homematic heater valve state](Homematic-Binding-Examples#howto-read-homematic-heater-valve-state)
 * [How to configure Homematic light switch](Homematic-Binding-Examples#howto-configure-homematic-light-switch)
@@ -456,93 +427,120 @@ If this entry does not exist, there is a problem in your openhab.cfg. A common p
 
 
 ### How to use homematic door contact sensors
-    /* OLD Configuration */
-    Contact corFrontDoor "Front Door [%s]" <frontdoor> (gRCor, gLock) { homematic="HEQ0358465:1#STATE" }
-    /* New Configuration */
-    Contact corFrontDoor "Front Door [%s]" <frontdoor> (gRCor, gLock) {homematic="address=HEQ0358465, channel=1, parameter=STATE" }
-    Text item=corFrontDoor
-    
+
+```
+/* OLD Configuration */
+Contact corFrontDoor "Front Door [%s]" <frontdoor> (gRCor, gLock) { homematic="HEQ0358465:1#STATE" }
+
+/* New Configuration */
+Contact corFrontDoor "Front Door [%s]" <frontdoor> (gRCor, gLock) {homematic="address=HEQ0358465, channel=1, parameter=STATE" }
+
+Text item=corFrontDoor
+```
+
 ### How to use homematic window contact sensors
 
-    Number lrWindowRight "Window Right [MAP(contact.map):%d]" <contact> (gRLvng) { homematic="IEQ0203214:1#STATE" }
-    Text item=lrWindowRight
+```
+Number lrWindowRight "Window Right [MAP(contact.map):%d]" <contact> (gRLvng) { homematic="IEQ0203214:1#STATE" }
+Text item=lrWindowRight
+```
 
-`transform/contact.map`:
+transform/contact.map:
 
-    0=CLOSED
-    1=TILTED
-    2=OPEN
-    -=UNKNOWN
+```
+0=CLOSED
+1=TILTED
+2=OPEN
+-=UNKNOWN
+```
 
 ### How to read Homematic heater valve state
 
-    Dimmer lrHeaterRight "Heater Right [%d %%]" <heating> (gRLvng)  { homematic="IEQ0537568:1#VALVE_STATE" }
-    Text item=lrHeaterRight
+```
+Dimmer lrHeaterRight "Heater Right [%d %%]" <heating> (gRLvng)  { homematic="IEQ0537568:1#VALVE_STATE" }
+Text item=lrHeaterRight
+```
 
 ### How to use Homematic temperature regulator
 
-    Number lrTempSet "Target Temperature [%d °C]" <temperature> (gRLvng, gRBed) { homematic="IEQ0053616:2#SETPOINT" }
-    Setpoint item=lrTempSet step=0.5 minValue=15 maxValue=30
+```
+Number lrTempSet "Target Temperature [%d °C]" <temperature> (gRLvng, gRBed) { homematic="IEQ0053616:2#SETPOINT" }
+Setpoint item=lrTempSet step=0.5 minValue=15 maxValue=30
+```
 
 ### How to configure Homematic light switch
 
-    Switch brLightCeil "Ceiling" (gRBed, gLight) { homematic="IEQ0001542:1#STATE" }
-    Switch item=brLightCeil
+```
+Switch brLightCeil "Ceiling" (gRBed, gLight) { homematic="IEQ0001542:1#STATE" }
+Switch item=brLightCeil
+```
 
 ### How to configure Homematic temperature and humidity sensor
 
-    Number lrTemp "Current Temp [%.1f °C]" <temperature> (gRLvng, gWthrDta) { homematic="IEQ0053616:1#TEMPERATURE" }
-    Number lrHumid "Humidity [%d %%]" <waterdrop> (gRLvng, gWthrDta) { homematic="IEQ0053616:1#HUMIDITY" }
-    
-    Text item=lrTemp
-    Text item=lrHumid
+```
+Number lrTemp "Current Temp [%.1f °C]" <temperature> (gRLvng, gWthrDta) { homematic="IEQ0053616:1#TEMPERATURE" }
+Number lrHumid "Humidity [%d %%]" <waterdrop> (gRLvng, gWthrDta) { homematic="IEQ0053616:1#HUMIDITY" }
+
+Text item=lrTemp
+Text item=lrHumid
+```
 
 ### How to configure Homematic motion and brightness sensors
-    
-    /* OLD Configuration */
-    Switch corMotion "Motion Detected" (gRCor) { homematic="GEQ0128171:1#MOTION" }
-    Number corBright "Brightness [%.1f %%]" (gRCor) { homematic="GEQ0128171:1#BRIGHTNESS" }
 
-    /* New Configuration */
-    Switch corMotion "Motion Detected" (gRCor) {homematic="address=GEQ0128171, channel=1, parameter=MOTION" }
-    Number corBright "Brightness [%.1f %%]" (gRCor) {homematic="address=GEQ0128171, channel=1, parameter=BRIGHTNESS" }
-    
-    Switch item=corMotion
-    Text item=corBright
+```
+/* OLD Configuration */
+Switch corMotion "Motion Detected" (gRCor) { homematic="GEQ0128171:1#MOTION" }
+Number corBright "Brightness [%.1f %%]" (gRCor) { homematic="GEQ0128171:1#BRIGHTNESS" }
+
+/* New Configuration */
+Switch corMotion "Motion Detected" (gRCor) {homematic="address=GEQ0128171, channel=1, parameter=MOTION" }
+Number corBright "Brightness [%.1f %%]" (gRCor) {homematic="address=GEQ0128171, channel=1, parameter=BRIGHTNESS" }
+
+Switch item=corMotion
+Text item=corBright
+```
 
 I don't like that the motion switch is "writeable". Maybe someone can post a proper rendering object for the motion detector.
 
 
 ### How to control a homematic roller shutter with an EnOcean Rocker
 
-Item:
+Item
 
-    Rollershutter Blinds_Left <rollershutter> (Shutters) {homematic="id=JEQXXXXXX, channel=1, parameter=LEVEL", enocean="{id=00:00:00:00, eep=F6:02:01}"}
+```
+Rollershutter Blinds_Left <rollershutter> (Shutters) {homematic="id=JEQXXXXXX, channel=1, parameter=LEVEL", enocean="{id=00:00:00:00, eep=F6:02:01}"}
+```
 
 ### How to control a homematic dimmer with an EnOcean Rocker (OnOff Profile)
 
 Item:
 
-    Dimmer Lights_Left <lights> (Lights) {homematic="id=GEQXXXXXX, channel=2, parameter=LEVEL", enocean="{id=00:00:00:00, channel=A, eep=F6:02:01}"}}
-# Homematic Configuration XML File 
+```
+Dimmer Lights_Left <lights> (Lights) {homematic="id=GEQXXXXXX, channel=2, parameter=LEVEL", enocean="{id=00:00:00:00, channel=A, eep=F6:02:01}"}}
+```
 
-## Introduction
+## Homematic Configuration XML File 
 
 To be able to configure the converter and available parameter of a homematic device, xml files are used. They are optional, not necessary. Some devices don't work properly without (rollershutter).
+
 There is one device per file. 
 
 The config file have to be included inside the distribution (org.openhab.binding.homematic/src/main/resources/devices) and they have to be instatiated at the HomematicBinding constructor. 
+
 A better and easier way of adding these files is always welcome!
 
-## Structure
+### Structure
 
 Each file has one device element. Each device has several channel elements (the channel name is ignored at the moment).
+
 Each channel contains multiple parameters, which are the same value as you would configure in your item config (e.g. LEVEL, STATE, TEMPERATURE etc). 
+
 The parameter of a device can be found in the http://www.eq-3.de/Downloads/PDFs/Dokumentation_und_Tutorials/HM_Script_Teil_4_Datenpunkte_1_503.pdf (or newer versions of that file).
 
 For each parameter there can be a number of converters for a homematic type (like PercentType, OpenClosedType, etc). The converter is given by FQN (full qualified name).
 
 ## Available Converter
+
 * BooleanOnOffConverter.java
 * BooleanOpenCloseConverter.java
 * BrightnessConverter.java
@@ -569,6 +567,7 @@ These converters can also be given at the item config with parameter "converter"
 
 ### XML Schema
 
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/device" xmlns:tns="http://www.example.org/device" elementFormDefault="qualified">
 
@@ -607,36 +606,42 @@ These converters can also be given at the item config with parameter "converter"
         <attribute name="forType" type="string"></attribute>
     </complexType>
 </schema>
-`
+```
+
 ## Example
-        <?xml version="1.0" encoding="UTF-8"?>
-        <device name="HM-LC-Bl1PBU-FM" type="rollershutter">
-            <channel name="0">
-                <parameter name="UNREACH">
-                    <converter forType="OnOffType">
-                        <className>org.openhab.binding.homematic.internal.converter.state.BooleanOnOffConverter</className>
-                    </converter>
-                </parameter>
-            </channel>
-            <channel name="1">
-                <parameter name="LEVEL">
-                    <converter forType="PercentType">
-                        <className>org.openhab.binding.homematic.internal.converter.state.InvertedDoublePercentageConverter</className>
-                    </converter>
-                    <converter forType="OpenClosedType">
-                        <className>org.openhab.binding.homematic.internal.converter.state.InvertedDoubleOpenClosedConverter</className>
-                    </converter>
-                    <converter forType="UpDownType">
-                        <className>org.openhab.binding.homematic.internal.converter.state.InvertedDoubleUpDownConverter</className>
-                    </converter>
-                </parameter>
-                <parameter name="STOP">
-                    <converter forType="OnOffType">
-                        <className>org.openhab.binding.homematic.internal.converter.state.NegativeBooleanOnOffConverter</className>
-                    </converter>
-                </parameter>
-            </channel>
-        </device>## Hardware
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<device name="HM-LC-Bl1PBU-FM" type="rollershutter">
+    <channel name="0">
+        <parameter name="UNREACH">
+            <converter forType="OnOffType">
+                <className>org.openhab.binding.homematic.internal.converter.state.BooleanOnOffConverter</className>
+            </converter>
+        </parameter>
+    </channel>
+    <channel name="1">
+        <parameter name="LEVEL">
+            <converter forType="PercentType">
+                <className>org.openhab.binding.homematic.internal.converter.state.InvertedDoublePercentageConverter</className>
+            </converter>
+            <converter forType="OpenClosedType">
+                <className>org.openhab.binding.homematic.internal.converter.state.InvertedDoubleOpenClosedConverter</className>
+            </converter>
+            <converter forType="UpDownType">
+                <className>org.openhab.binding.homematic.internal.converter.state.InvertedDoubleUpDownConverter</className>
+            </converter>
+        </parameter>
+        <parameter name="STOP">
+            <converter forType="OnOffType">
+                <className>org.openhab.binding.homematic.internal.converter.state.NegativeBooleanOnOffConverter</className>
+            </converter>
+        </parameter>
+    </channel>
+</device>
+```
+
+## Hardware
 
 ### Controller
 
@@ -654,63 +659,78 @@ We need testers here: If you own a CCU2, please try out the latest 1.4.0 nightly
 #### LAN Adapter
 
 One of the cheaper alternatives is to use the [HomeMatic LAN Adapter](http://www.eq-3.de/produkt-detail-zentralen-und-gateways/items/hm-cfg-lan.html).
+
 The LAN Adapter _**requires**_ the BidCos-Service running and listening on a specific port in your LAN. As of this writing the BidCos-Service is only available for Microsoft Windows. If you want to run the BidCos-Service '_natively_' (through Qemu) on Linux without messing around with [Wine](http://www.winehq.org) follow these step by step instructions.
 
 1. Install QEMU (If you are running OpenHAB on i386/amd64)
 
     In order to run the BidCos-Service daemon 'rfd' under linux you need to install the QEMU arm emulation. If you are using Debian you have to install at least the package qemu-system-arm.
+
     ```
     apt-get install qemu
     ```
 2. Download the latest CCU 2 firmware from [eQ-3 homepage](http://www.eq-3.de/software.html)
+
 3. Extract the downloaded firmware e.g. HM-CCU2-2.7.8.tar.gz
-    ```Shell
+
+    ```shell
     mkdir /tmp/firmware
     tar xvzf HM-CCU2-2.7.8.tar.gz -C /tmp/firmware
     ```
 
     You should now have three files under the directory /tmp/firmware
-    ```Shell
+
+    ```shell
     rootfs.ubi    (<-- this is the firmware inside a UBIFS iamge)
     uImage
     update_script
     ```
+
 4. Create an 256 MiB emulated NAND flash with 2KiB NAND page size
-    ```Shell
+
+    ```shell
     modprobe nandsim first_id_byte=0x20 second_id_byte=0xaa third_id_byte=0x00 fourth_id_byte=0x15
     ```
 
     You should see a newly created MTD device _/dev/mtd0_ (assume that you do not have other MTD devices)
+
 5. Copy the contents of the UBIFS image _rootfs.ubi_ to the emulated MTD device
 
-    ```Shell
+    ```shell
     dd if=rootfs.ubi of=/dev/mtd0 bs=2048
     ```
+
 6. Load UBI kernel module and attach the MTD device mtd0
 
-    ```Shell
+    ```shell
     modprobe ubi mtd=0,2048
     ```
+
 7. Mount the UBIFS image
 
-    ```Shell
+    ```shell
     mkdir /mnt/ubifs
     mount -t ubifs /dev/ubi0_0 /mnt/ubifs
     ```
+
 8. Copy the required files to run the BidCos-Service from the UBIFS image
 
-    ```Shell
+    ```shell
     mkdir -p /etc/eq3-rfd /opt/eq3-rfd/bin /opt/eq3-rfd/firmware
     cd /mnt/ubifs
     cp /mnt/ubifs/bin/rfd /opt/eq3-rfd/bin
     cp /mnt/ubifs/etc/config_templates/rfd.conf /etc/eq3-rfd/bidcos.conf
     cp -r /mnt/ubifs/firmware/* /opt/eq3-rfd/firmware/
     ```
+
     List the dependencies for rfd binary
+
     ```
     qemu-arm -L /mnt/ubifs /mnt/ubifs/lib/ld-linux.so.3 --list /mnt/ubifs/bin/rfd
     ```
+
     You should see an output like this
+
     ```
 	libpthread.so.0 => /lib/libpthread.so.0 (0xf67a7000)
 	libelvutils.so => /lib/libelvutils.so (0xf6786000)
@@ -725,13 +745,16 @@ The LAN Adapter _**requires**_ the BidCos-Service running and listening on a spe
 	libgcc_s.so.1 => /lib/libgcc_s.so.1 (0xf63ce000)
 	/lib/ld-linux.so.3 => /mnt/ubifs/lib/ld-linux.so.3 (0xf6fd7000)
     ```
+
     Copy all the listed libs from /mnt/ubifs to there respective folder at /opt/eq3-rfd
+
 9. Create a system user and adjust permissions
 
     ```
     adduser --system --home /opt/eq3-rfd --shell /bin/false --no-create-home --group bidcos
     chown -R bidcos:bidcos /opt/eq3-rfd
     ```
+
 10. Edit and adjust the BidCos-Service configuration bidcos.conf
 
     ```
@@ -762,9 +785,11 @@ The LAN Adapter _**requires**_ the BidCos-Service running and listening on a spe
     Serial Number = <HomeMatic ID e.g. JEQ0707164>
     Encryption Key = <your encryption key>
     ```
+
 11. Start the BidCos-Service daemon 'rfd'
 
     The BidCos-Service daemon 'rfd' can now be started with the following command
+
     ```
     qemu-arm -L /opt/eq3-rfd /opt/eq3-rfd/bin/rfd -f /etc/eq3-rfd/bidcos.conf
     ```
@@ -775,6 +800,7 @@ The other cheaper alternative is the CUL stick. The CUL is an USB stick that can
 Since the CUL is not natively supported by the binding, you need a program to translate the CUL data to the CCU XML RPC interface: [Homegear](http://www.homegear.eu)
 
 We have reports from users that succesfully use both for their homemtic devices. Apparently security is still not supported.
+
 # There are two admin items available to gather more information about devices in the CCU
 
 # Introduction

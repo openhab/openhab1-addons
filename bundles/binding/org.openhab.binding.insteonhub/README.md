@@ -1,4 +1,6 @@
-## Note: DO NOT USE THIS BINDING. The InsteonHub binding is outdated and no longer supported. Use the InsteonPLM binding instead.
+# Insteon Hub Binding
+
+DO NOT USE THIS BINDING. The InsteonHub binding is outdated and no longer supported. Use the InsteonPLM binding instead.
 
 ## Introduction
 

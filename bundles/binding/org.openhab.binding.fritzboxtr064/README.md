@@ -70,7 +70,7 @@ Number  fboxMissedCalls     "Missed Calls [%s]"         {fritzboxtr064="missedCa
 
 ## Known issues
 
-See issues [here] (https://github.com/gitbock/fritzboxtr064/issues?q=is%3Aissue+is%3Aclosed).
+See issues [here](https://github.com/gitbock/fritzboxtr064/issues?q=is%3Aissue+is%3Aclosed).
  
 
 ## Examples and Hints
