@@ -1,20 +1,34 @@
-# Introduction
-The WAGO Binding provides a interface to ethernet-enabled Modbus-Controllers from WAGO.<br>
-It polls the controller in a configurable interval.<br>
+# WAGO Binding
+
+The WAGO Binding provides an interface to Ethernet-enabled Modbus-Controllers from WAGO.
+
+It polls the controller in a configurable interval.
+
 It fetches the configuration xml-file from the WAGO-Controller and derives the used modules, their position and their type from it.
 
-# Details
 ## Binding Configuration
 
-### setting the poll interval
-     wago:refresh=<value>
+This binding must be configured in the file `services/wago.cfg`.
 
-### configure a slave
-     wago:<slave-name>.ip=<slave-address>
-     wago:<slave-name>.username=<username>
-     wago:<slave-name>.password=<password>
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| refresh  |  ???    |          | poll interval in milliseconds |
+| `<slave-name>`.ip | |   Yes   | Modbus slave IP address |
+| `<slave-name>`.username | | Yes | Modbus slave username |
+| `<slave-name>`.password | | Yes | Modbus slave password |
 
-## Item Binding Configuration
-     <item-type> <item-name> <item-descriptor> (<group>) {wago="<slave-name>:<module>:<coil>"}
-Example for a simple switch item bound to coil 3 of module 1 of "slave2":<br>
-     `Switch MySwitch "My WAGO Switch" (ALL) {wago="slave2:1:3"}`
+
+## Item Configuration
+
+```
+{wago="<slave-name>:<module>:<coil>"}
+```
+
+## Example
+
+Example for a simple switch item bound to coil 3 of module 1 of "slave2":<
+
+```
+Switch MySwitch "My WAGO Switch" (ALL) {wago="slave2:1:3"}
+```
+
