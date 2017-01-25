@@ -141,7 +141,7 @@ Map an item to a Chacon roller shutter:
 Rollershutter KitchenShutter	<rollershutter>	{ zibase="RCV,G9,CHACON"}
 ```
 
-Order Shutter to open depending on a light sensor in a rule :
+Order Shutter to open depending on a light sensor in a rule:
 
 ```
 rule "open kitchen shutter if it is the morning"
@@ -150,6 +150,7 @@ when
 then   
     sendCommand(KitchenShutter,ON)
 end
+```
 
 ### Scenarios
 
