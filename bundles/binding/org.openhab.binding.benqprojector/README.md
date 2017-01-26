@@ -1,6 +1,14 @@
-This binding is designed to interface with BenQ projectors that have an RS232 interface on them that accepts the commands documented by BenQ in [\[1\]](ftp://ftp.benq-eu.com/projector/benq_rs232_commands.pdf).
+# BenQ Projector Binding
 
-# Status
+This binding is designed to interface with BenQ projectors that have an RS232 interface on them that accepts the commands documented by BenQ [here](ftp://ftp.benq-eu.com/projector/benq_rs232_commands.pdf).
+
+The binding has been tested with the following models:
+
+* BenQ W1070
+* BenQ W1080
+
+## Status
+
 This binding is current in Beta state with the following commands implemented:
 
 | Command               | Query | Set  |Comments                                    |
@@ -11,40 +19,26 @@ This binding is current in Beta state with the following commands implemented:
 | Source                |Y      | Y    | Can be returned as either a string or number |
 | Lamp Time             |Y      | N    | |
 
-Tested Devices:
-
-* BenQ W1070
-* BenQ W1080
-
 ## Transports
 
 The binding support transport using a TCP/IP to RS232 converter or via a direct RS232 interface.
 
 [USR-TCP232-2](http://en.usr.cn/Ethernet-Module-T24/RS232-to-Ethernet-module.html) is a known working TCP/IP to RS232 converter.
 
-# Binding Configuration
-```
-############################# BenqProjector Binding  ########################################
+## Binding Configuration
 
-# mode controls how the projector can be reached. 'serial' is for a directly
-# connected RS232 serial interface while 'network' is for using a TCP/IP to
-# serial converter
-#benqprojector:mode=network
+This binding can be configured in the file `services/benqprojector.cfg`.
 
-# For mode=network, define the Serial to Ethernet device location
-#benqprojector:deviceId=<hostname>:<port>
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| mode     |         |   Yes    | controls how the projector can be reached. `serial` is for a directly connected RS232 serial interface while `network` is for using a TCP/IP to serial converter |
+| deviceId |         |   Yes    | if `mode` is `network`, value should be set to the `<hostname>:<port>` of the CP/IP to serial converter<br/>if `mode` is `serial`, value should be `<device>:<speed>`, where `<device>` is the name of the serial port device and `<speed>` is the bitrate (defaults to 57600 if not given) |
+| refresh  |         |    ?     | Polling interval in milliseconds, for example 15000 (15 seconds) |
 
-# For mode=serial, define the serial device (e.g. /dev/ttyUSB0) and speed
-# (defaults to 57600 bps)
-#benqprojector:deviceId=<device>:<speed>
 
-# Define polling interval in milliseconds
-#benqprojector:refresh=15000
-```
+## Examples
 
-# Item Configuration
-
-Example of Item bindings:
+items/yourbenq.items
 
 ```
 Switch gf_lounge_multimedia_projectorPower "Projector Power" (gf_lounge, gf_multimedia) {benqprojector="power"}
@@ -55,7 +49,8 @@ String gf_lounge_multimedia_projectorSourceString "Projector Source [%s]" (gf_lo
 Number gf_lounge_multimedia_projectorLamp "Projector Lamp [%d hours]" (gf_lounge, gf_multimedia) {benqprojector="lamp_hours"}
 ```
 
-Example source mapping:
+transform/ProjSourceNum.map
+
 ```
 0=Computer
 1=Computer 2
@@ -73,19 +68,16 @@ Example source mapping:
 undefined=Unknown
 ```
 
-Example sitemap:
+sitemap/yourbenq.sitemap
 
 ```
-	Frame label="Media" {
-		Switch item=gf_lounge_multimedia_projectorPower
-	}
-			
-	Frame label="Projector" visibility=[gf_lounge_multimedia_projectorPower==ON] {
-		Selection item=gf_lounge_multimedia_projectorSourceNum label="Projector Source" mappings=[5="Sky TV", 6="Chromecast"]  visibility=[gf_lounge_multimedia_projectorPower==ON]
-		Switch item=gf_lounge_multimedia_projectorMute visibility=[gf_lounge_multimedia_projectorPower==ON]
-		Setpoint item=gf_lounge_multimedia_projectorVol step=1 minValue=0 maxValue=10 visibility=[gf_lounge_multimedia_projectorPower==ON]				
-	}
+Frame label="Media" {
+	Switch item=gf_lounge_multimedia_projectorPower
+}
+		
+Frame label="Projector" visibility=[gf_lounge_multimedia_projectorPower==ON] {
+	Selection item=gf_lounge_multimedia_projectorSourceNum label="Projector Source" mappings=[5="Sky TV", 6="Chromecast"]  visibility=[gf_lounge_multimedia_projectorPower==ON]
+	Switch item=gf_lounge_multimedia_projectorMute visibility=[gf_lounge_multimedia_projectorPower==ON]
+	Setpoint item=gf_lounge_multimedia_projectorVol step=1 minValue=0 maxValue=10 visibility=[gf_lounge_multimedia_projectorPower==ON]				
+}
 ```
-
-# References
-[\[1\]](ftp://ftp.benq-eu.com/projector/benq_rs232_commands.pdf) ftp://ftp.benq-eu.com/projector/benq_rs232_commands.pdf
