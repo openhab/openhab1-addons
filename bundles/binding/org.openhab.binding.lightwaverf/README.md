@@ -9,11 +9,11 @@ This binding must be configured in the file `services/lightwaverf.cfg`.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | ip       |         |   Yes    | The IP Address of the LightwaveRf Wifi Link. you can use the broadcast address 255.255.255.255 |
-| receiveport | 9760 |          | The port to monitor for messages, you shouldn't need to change this |
-| sendport | 9761    |          | The port to send messages on, it will also be monitored for incoming messages, you shouldn't need to change this |
-| registeronstartup | false |   | For a new computer you will need to register it with the wifi link to be allowed to send messages.  Setting this to `true` we will send a registration message on startup. You will need to confirm registration on the wifi link. There is no harm leaving this as true but you can set to `false` once you have registerd for the first time. |
-| senddelay |  2000 (?TBD) |    | Delay between sending messages in ms to avoid swapming Wifi Link |
-| okTimeout | 1000 (?TBD) |     | Timeout for OK Messages in ms, we will retry messages we don't receive an ok for in the timeout |
+| receiveport | 9760 |   No     | The port to monitor for messages, you shouldn't need to change this |
+| sendport | 9761    |   No     | The port to send messages on, it will also be monitored for incoming messages, you shouldn't need to change this |
+| registeronstartup | false | No | For a new computer you will need to register it with the wifi link to be allowed to send messages.  Setting this to `true` we will send a registration message on startup. You will need to confirm registration on the wifi link. There is no harm leaving this as true but you can set to `false` once you have registerd for the first time. |
+| senddelay |  2000 (?TBD) | ?  | Delay between sending messages in ms to avoid swapming Wifi Link |
+| okTimeout | 1000 (?TBD) |  ?  | Timeout for OK Messages in ms, we will retry messages we don't receive an ok for in the timeout |
 
 ## Item Configuration
 

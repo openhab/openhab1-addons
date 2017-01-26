@@ -4,7 +4,7 @@ This bundle exposes openHAB rule extensions to be used with the DSC Alarm Bindin
 
 ## Prerequisites
 
-The DSC Alarm Action bundle relies on the DSC Alarm 1.x binding being installed and configured.
+The DSC Alarm Action bundle relies on the DSC Alarm Binding (1.x) being installed and configured.
 
 ## Actions
 
@@ -17,7 +17,7 @@ The `command` parameter is a string numeric code.  The following table shows whi
 |------------------------|-------------|------|---------------------|
 | `000` | Poll | NONE | Envisalink, IT100 |
 | `001` | Status Report | NONE | Envisalink, IT100 |
-| `002` | Labels Request</td<td>NONE | IT100 |
+| `002` | Labels Request | NONE | IT100 |
 | `005` | Network Login | 1-6 Character - [Password] | Envisalink |
 | `008` | Dump Zone Timers | NONE | Envisalink |
 | `010` | Set Time and Date | NONE | Envisalink, IT100 |

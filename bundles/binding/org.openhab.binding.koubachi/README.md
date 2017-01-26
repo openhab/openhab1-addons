@@ -14,7 +14,7 @@ This binding must be configured in the file `services/koubachi.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| refresh  | 900000  |          | The refresh interval in milliseconds. Default is 900000, the same as 15 minutes. |
+| refresh  | 900000  |   No     | The refresh interval in milliseconds. Default is 900000, the same as 15 minutes. |
 | deviceurl | `https://api.koubachi.com/v2/user/smart_devices?user_credentials=%1$s&app_key=%2$s` | | The Koubachi API URL of the device list. |
 | planturl | `https://api.koubachi.com/v2/plants?user_credentials=%1$s&app_key=%2$s` | | The Koubachi API URL of the plant list. |
 | credentials |      |   Yes    | The single access token configured obtained from `http://labs.koubachi.com` (see [Prerequisites](#prerequisites)) |

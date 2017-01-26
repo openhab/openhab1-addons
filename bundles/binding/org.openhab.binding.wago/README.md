@@ -12,7 +12,7 @@ This binding must be configured in the file `services/wago.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| refresh  |  ???    |          | poll interval in milliseconds |
+| refresh  |  ???    |    No    | poll interval in milliseconds |
 | `<slave-name>`.ip | |   Yes   | Modbus slave IP address |
 | `<slave-name>`.username | | Yes | Modbus slave username |
 | `<slave-name>`.password | | Yes | Modbus slave password |

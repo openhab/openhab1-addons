@@ -4,7 +4,7 @@ The TinkerForge Action service provides direct interaction with some of the Tink
 
 ## Prerequisites
 
-The action service depends on the TinkerForge binding (1.x) being installed and configured. Add at least a hosts configuration value in the binding's configuration.
+The action service depends on the TinkerForge Binding (1.x) being installed and configured. Add at least a hosts configuration value in the binding's configuration.
 
 ## Actions
 

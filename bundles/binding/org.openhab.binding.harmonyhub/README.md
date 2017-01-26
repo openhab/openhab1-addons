@@ -9,7 +9,7 @@ The binding must be configured in the file `services/harmonyhub.cfg`.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | discoveryName |    |   Yes    | Name given to your hub when setup |
-| `<qualifier>`.discoveryName | | | Optionally you may add a unique qualifier to your configuration to support multiple hubs |
+| `<qualifier>`.discoveryName | | No | Optionally you may add a unique qualifier to your configuration to support multiple hubs |
 
 ### Examples
 

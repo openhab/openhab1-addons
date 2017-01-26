@@ -8,9 +8,9 @@ The binding must be configured in the file `services/asterisk.cfg`.
 
 | Key | Default | Required | Description |
 |-----|---------|:--------:|-------------|
-| host | | Yes | hostname of the AMI |
-| username | | | username for login to AMI |
-| password | | | password for login to AMI |
+| host |        |   Yes    | hostname of the AMI |
+| username |    |          | username for login to AMI |
+| password |    |          | password for login to AMI |
 
 
 ## Item Configuration

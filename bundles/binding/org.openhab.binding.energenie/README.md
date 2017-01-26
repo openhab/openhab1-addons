@@ -9,15 +9,15 @@ This binding must be configured in the file `services/energenie.cfg`.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | `<pmsId1>`.host |  |   Yes    | IP address of the first PMS-LAN to control |
-| `<pmsId1>`.password | |       | Password to login to the first PMS-LAN |
+| `<pmsId1>`.password | 1 |   No    | Password to login to the first PMS-LAN |
 | `<pmsId2>`.host |  |   Yes    | Host of the second PMS-LAN to control |
-| `<pmsId2>`.password | |       | Password to login to the second PMS-LAN |
+| `<pmsId2>`.password | |   No  | Password to login to the second PMS-LAN |
 
 ### Example
 
 ```
 pms1.host=192.168.1.100
-bridge1.password=1  (default)
+bridge1.password=1
 ```
 
 ## Item Configuration

@@ -23,13 +23,13 @@ The binding must be configured in the file `services/anel.cfg`.  In the table be
 
 | Key | Default | Required | Description |
 |-----|---------|:--------:|-------------|
-| `<name>.host` | net-control | | IP or network address (recommended) |
-| `<name>.udpReceivePort` | 77 | | UDP receive port |
-| `<name>.udpSendPort` | 75 | | UDP send port |
-| `<name>.user` | user7 | | User name |
-| `<name>.password` | anel | | Password |
-| `refresh` | 60000 | | Global refresh interval in milliseconds |
-| `cachePeriod` | 0 | | Cache the state for `cachePeriod` minutes so only changes are posted (optional, defaults to 0 = disabled).  Example: if period is 60, once per hour all states are posted to the event bus; changes are always and immediately posted to the event bus. |
+| `<name>.host` | net-control | recommended | IP or network address |
+| `<name>.udpReceivePort` | 77 | No | UDP receive port |
+| `<name>.udpSendPort` | 75 | No | UDP send port |
+| `<name>.user` | user7 | No | User name |
+| `<name>.password` | anel | No | Password |
+| `refresh` | 60000 | No | Global refresh interval in milliseconds |
+| `cachePeriod` | 0 | No | Cache the state for `cachePeriod` minutes so only changes are posted (optional, defaults to 0 = disabled).  Example: if period is 60, once per hour all states are posted to the event bus; changes are always and immediately posted to the event bus. |
 
 
 ### Notes

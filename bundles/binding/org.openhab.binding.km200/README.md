@@ -12,10 +12,10 @@ This binding must be configured in the file `services/km200.cfg`.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | ip4_address |      |   Yes    | IP address of KN200 to connect to |
-| PrivKey  |         |          | a complete private key, for example `0000FFFFEEEEDDDDCCCCBBBBAAAA999988887777666655554444333322221111`.  If you do not have one, use the following three configuration properties |
-| MD5Salt  |         |          | the md5salt value, for example `111122223333444455556666777788889999aaaabbbbccccddddeeeeffff0000` |
-| GatewayPassword |  |          | the device password, for example `AAAABBBBCCCCDDDD` |
-| PrivatePassword |  |          | the private password, for example `MYPASSWORD` |
+| PrivKey  |         |   No     | a complete private key, for example `0000FFFFEEEEDDDDCCCCBBBBAAAA999988887777666655554444333322221111`.  If you do not have one, use the following three configuration properties |
+| MD5Salt  |         | if you do not have `PrivKey` | the md5salt value, for example `111122223333444455556666777788889999aaaabbbbccccddddeeeeffff0000` |
+| GatewayPassword |  | if you do not have `PrivKey` | the device password, for example `AAAABBBBCCCCDDDD` |
+| PrivatePassword |  | if you do not have `PrivKey` | the private password, for example `MYPASSWORD` |
 
 ## Item Configuration
 

@@ -43,7 +43,7 @@ Group=root
  
 ## Binding Configuration
 
-This binding must be configured in the file `services/gpio.cfg`.
+This binding can be configured in the file `services/gpio.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

@@ -14,7 +14,7 @@ Furthermore, in openhab.cfg the
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| ports    | 4       |          | number of input ports/output ports if different from 4 (e.g. 8 for the 8x8 matrix) |
+| ports    | 4       |    No    | number of input ports/output ports if different from 4 (e.g. 8 for the 8x8 matrix) |
 
 
 ## Item Configuration

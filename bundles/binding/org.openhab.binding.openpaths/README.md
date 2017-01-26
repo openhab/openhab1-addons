@@ -16,14 +16,14 @@ Finally, you need to add entries for each OpenPaths account you wish to track.  
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| home.lat | | Yes | Latitude of home in decimal degrees |
-| home.long | | Yes | Longitude of home in decimal degrees |
-| home.geofence | Value of `geofence` |  | Size of the geofence around home |
+| home.lat |         |   Yes    | Latitude of home in decimal degrees |
+| home.long |        |   Yes    | Longitude of home in decimal degrees |
+| home.geofence | Value of `geofence` | No | Size of the geofence around home |
 | `<location>`.lat | | | Latitude of `<location>` in decimal degrees. You may define any number of additional locations. |
 | `<location>`.long | | | Longitude of `<location>` in decimal degrees |
 | `<location>`.geofence | | | Geofence around `<location>` in decimal degrees |
-| geofence | 100 | | Distance in metres a user must be from 'home' to be considered inside the geofence |
-| refresh | 300000 | | Interval in milliseconds to poll for user location (defaults to 5mins) |
+| geofence | 100 | No | Distance in metres a user must be from 'home' to be considered inside the geofence |
+| refresh | 300000 | No | Interval in milliseconds to poll for user location (defaults to 5mins) |
 | `<user>`.accesskey | | Yes | OpenPaths access key for `<user>` |
 | `<user>`.secretkey | | Yes | OpenPaths secret key for `<user>` |
 

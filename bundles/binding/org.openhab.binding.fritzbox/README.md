@@ -8,7 +8,7 @@ This binding must be configured in the `services/fritzbox.cfg` file.
 |----------|---------|:--------:|-------------|
 | ip       |         |   Yes    | IP address of your Fritz!Box |
 | password |         |   Yes    | Password to your Fritz!Box |
-| user     |         |          | User of your Fritz!Box, when user management is enabled. It is a good practice to create an additional user for openHAB. |
+| user     |         | when user management is enabled | User of your Fritz!Box. It is a good practice to create an additional user for openHAB. |
 
 ## Prepare your Fritzbox
 

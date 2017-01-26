@@ -14,29 +14,25 @@ The binding uses the openHAB _Transformation Service_ extensively to "map" the D
 
 Original code was used from the XBMC Binding, and then heavily modified. Snippets included from the HTTP Binding for the various datatype mapping functions.
 
+<!-- MarkdownTOC -->
+
+- [Configuration](#configuration)
+    - [MiOS Unit Configuration](#mios-unit-configuration)
+    - [Transformations](#transformations)
+    - [Item Configuration](#item-configuration)
+    - [Item : MiOS System Binding](#item--mios-system-binding)
+- [Item Commands \(Reacting\)](#item-commands-reacting)
+    - [Item : MiOS Device Binding - Commands \(Reacting\)](#item--mios-device-binding---commands-reacting)
+    - [Item : MiOS Scene Binding - Commands \(Reacting\)](#item--mios-scene-binding---commands-reacting)
+- [MiOS Binding and MiOS Action Examples](#mios-binding-and-mios-action-examples)
+    - [Examples for Augmenting](#examples-for-augmenting)
+    - [Examples for Co-existing](#examples-for-co-existing)
+    - [Examples for Replacing](#examples-for-replacing)
+
+<!-- /MarkdownTOC -->
+
+
 ## Configuration
-
- * [MiOS Unit configuration](#mios-unit-configuration)
- * [Transformations](#transformations)
- * [Item configuration (Reading)](#item-configuration)
-    * [MiOS - Item Generator](#item-generation--mios-item-generator)
-    * [MiOS - Device Binding](#item--mios-device-binding---values-reading)
-    * [MiOS - Scene Binding](#item--mios-scene-binding---values-reading)
-    * [MiOS - System Binding](#item--mios-system-binding)
-    * [Transformations (Use)](#transformations)
- * [Item Commands (Reacting)](#item-commands-reacting)
-     * [MiOS - Device Binding - Commands (Reacting)] (#item--mios-device-binding---commands-reacting)
-        * [Device Command Binding Examples (Parameterless)] (#device-command-binding-examples-parameterless)
-            * [A Switch ...](#a-switch)
-            * [An Armed Sensor ...](#an-armed-sensor)
-            * [A Lock ...] (#a-lock)
-        * [Device Command Binding Examples (Parameterized)](#device-command-binding-examples-parameterized)
-            * [A Dimmer, Volume Control, Speed controlled Fan ...](#a-dimmer-volume-control-speed-controlled-fan)
-            * [A Thermostat ...] (#a-thermostat)
-     * [MiOS Scene Binding - Commands (Reacting)] (#item--mios-scene-binding---commands-reacting)
-        * [Scene Command Binding Examples] (#scene-command-binding-examples)
-
-***
 
 ### MiOS Unit Configuration
 

@@ -16,10 +16,10 @@ This binding must be configured in the file `services/ecobee.cfg`.
 |----------|---------|:--------:|-------------|
 | appkey   |         |   Yes    | You must generate your own `appkey` on the Ecobee developer dashboard (see [Prerequisites](#prerequesities)) |
 | scope    |         |   Yes    | Typically, `scope` will be set to `smartWrite`, but if you have an EMS thermostat, set `scope` to `ems`. |
-| refresh  | 180000  |          | Data refresh interval in ms (optional, defaults to 180000) |
-| quickpoll | 6000   |          | Time in ms to wait after successful update, command or action before refresh |
-| timeout  | 20000   |          | Time in ms to allow an API request to complete |
-| tempscale | F      |          | temperature scale to use when sending or receiving temperatures.  Can be `C` or `F` |
+| refresh  | 180000  |   No     | Data refresh interval in milliseconds |
+| quickpoll | 6000   |   No     | Time in milliseconds to wait after successful update, command or action before refresh |
+| timeout  | 20000   |   No     | Time in milliseconds to allow an API request to complete |
+| tempscale | F      |   No     | temperature scale to use when sending or receiving temperatures.  Can be `C` or `F` |
 
 ### Example
 

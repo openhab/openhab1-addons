@@ -4,7 +4,7 @@ The Homematic action lets you send messages to a Homematic remote control with a
  
 ## Prerequisites
 
-The Homematic binding (1.x) must be installed and configured.
+The Homematic Binding (1.x) must be installed and configured.
 
 ## Actions
 

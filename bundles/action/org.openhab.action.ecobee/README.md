@@ -4,7 +4,7 @@ The Ecobee Action bundle provides actions such as setting and clearing program h
 
 ## Prerequisites
 
-The Action bundle requires that the Ecobee Binding (1.x) is also installed.  Read the [Ecobee function API documentation](https://www.ecobee.com/home/developer/api/documentation/v1/functions/using-functions.shtml) to be sure you know the rules for calling these actions.
+The Ecboee Action bundle requires that the Ecobee Binding (1.x) is also installed.  Read the [Ecobee function API documentation](https://www.ecobee.com/home/developer/api/documentation/v1/functions/using-functions.shtml) to be sure you know the rules for calling these actions.
 
 ## Actions
 

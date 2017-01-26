@@ -11,9 +11,9 @@ This binding must be configured in the file `services/milight.cfg`.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | `<MilightId1>`.host | | Yes   | the IP address of the first Milight bridge to control |
-| `<MilightId1>`.port | 50000 | | UDP port address of the first bridge to control. Has to be changed for the V3.0 version of milight bridge to 8899 |
+| `<MilightId1>`.port | 50000 | No | UDP port address of the first bridge to control. Has to be changed for the V3.0 version of milight bridge to 8899 |
 | `<MilightId2>`.host | | Yes   | the IP address of the second Milight bridge to control |
-| `<MilightId2>`.port | 50000 | | UDP port address of the second bridge to control. Has to be changed for the V3.0 version of milight bridge to 8899 |
+| `<MilightId2>`.port | 50000 | No | UDP port address of the second bridge to control. Has to be changed for the V3.0 version of milight bridge to 8899 |
 
 Examples, how to configure your receiver device:
 

@@ -31,8 +31,8 @@ The binding must be configured in the file `services/ipx800.cfg`.
 | Property  | Default | Required | Description |
 |-----------|---------|:--------:|-------------|
 | `<name>`.host | | Yes | IP address or hostname |
-| `<name>`.port | 9870 | | TCP client connection port |
-| `<name>.<extension>.<address>` | | | Needed to declare extensions and give them aliases.  `<extension>` can be `x880` or `x400`.  `<address>` is a sequential number starting at `1`.  Assign this property to alias you want to use. |
+| `<name>`.port | 9870 | No | TCP client connection port |
+| `<name>.<extension>.<address>` | | No | Needed to declare extensions and give them aliases.  `<extension>` can be `x880` or `x400`.  `<address>` is a sequential number starting at `1`.  Assign this property to alias you want to use. |
 
 ## Item Configuration
 

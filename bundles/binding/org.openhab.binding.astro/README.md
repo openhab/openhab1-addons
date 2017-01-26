@@ -8,9 +8,9 @@ The binding must be configured in the file `services/astro.cfg`.
 
 | Key | Default | Required | Description |
 |-----|---------|:--------:|-------------|
-| latitude | | Yes | Your latitude in decimal degrees format |
-| longitude | | Yes | Your longitude in decimal degrees format |
-| interval | | | Refresh interval for azimuth and elevation calculation in seconds, default is disabled |
+| latitude |    |   Yes    | Your latitude in decimal degrees format |
+| longitude |   |   Yes    | Your longitude in decimal degrees format |
+| interval |    |   No     | Refresh interval for azimuth and elevation calculation in seconds, default is disabled |
 
 
 ## Available Items

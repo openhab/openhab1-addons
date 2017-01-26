@@ -22,9 +22,9 @@ This binding must be configured in the file `services/jointspace.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| refreshInterval | 60000 | | refresh interval, in milliseconds, of the worker thread. Polling interval for Source, Volume, Ambilight Color, ... |
+| refreshInterval | 60000 | No  | refresh interval, in milliseconds, of the worker thread. Polling interval for Source, Volume, Ambilight Color, ... |
 | ip       |         |   Yes    | IP address of the jointspace enabled device |
-| port     | 1925    |          | Port of the jointspace API. |
+| port     | 1925    |   No     | Port of the jointspace API. |
 
 
 ## Item Configuration

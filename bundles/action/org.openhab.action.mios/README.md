@@ -9,7 +9,7 @@ It exposes the ability to do the following things in the MiOS HA Controller from
 
 ## Prerequisites
 
-The MiOS Action Binding relies upon the MiOS Binding (1.x) being installed and configured.  Once these are done, you're ready to use the rule extensions this bundle provides.
+The MiOS Action bundle relies upon the MiOS Binding (1.x) being installed and configured.  Once these are done, you're ready to use the rule extensions this bundle provides.
 
 ## Actions
 
@@ -34,7 +34,7 @@ where _ServiceURN_, _ServiceAlias_ and _ServiceAction_ have the same form as des
 You can use the MiOS `invoke` URL to discover the _Actions_, and _Action-parameters_, your particular MiOS device supports:
  
 ```
-http://<mios:host>:3480/data_request?id=invoke
+http://<host>:3480/data_request?id=invoke
 ```
 
 The available _ServiceAction_'s are described in the [MiOS Luup UPnP Variables and Actions](http://wiki.micasaverde.com/index.php/Luup_UPnP_Variables_and_Actions) documentation.
@@ -44,33 +44,33 @@ The available _ServiceAction_'s are described in the [MiOS Luup UPnP Variables a
 * Invoking a Device Action and calling a Scene to turn off the AV.
 
 ```
-    rule "Test action rules Off"
-        when 
-            Time cron "0 45 23 * * ?"
-        then
-            sendMiosAction(FamilyMainLightsId, "Dimmer/SetLoadLevelTarget", newArrayList('newLoadlevelTarget' -> 0))
-            sendMiosScene(SceneGoodNight)
-    end
+rule "Test action rules Off"
+    when 
+        Time cron "0 45 23 * * ?"
+    then
+        sendMiosAction(FamilyMainLightsId, "Dimmer/SetLoadLevelTarget", newArrayList('newLoadlevelTarget' -> 0))
+        sendMiosScene(SceneGoodNight)
+end
 ```
 
 * Invoking a Sonos Device on MiOS to _say_ something
 
 ```
-    rule "Test action say"
-        when
-            Item HallGarageDoorZoneTripped changed to OPEN
-        then
-            sendMiosAction(OfficeSonosId, "Sonos/Say", newArrayList('Text' -> 'Warning! Garage door opened', 'Volume' -> 50))
-    end
+rule "Test action say"
+    when
+        Item HallGarageDoorZoneTripped changed to OPEN
+    then
+        sendMiosAction(OfficeSonosId, "Sonos/Say", newArrayList('Text' -> 'Warning! Garage door opened', 'Volume' -> 50))
+end
 ```
 
 * Disarm your Alarm Panel (Paradox, GE, Ademco/Vista, DSC, etc)
 
 ```
-    rule "Test action Disarm"
-        when
-            ...
-        then
-            sendMiosAction(EVL3VistaPartition1ArmMode, 'Alarm/RequestArmMode', newArrayList('State' -> 'Disarmed', PINCode' -> 1234)
-    end
+rule "Test action Disarm"
+    when
+        ...
+    then
+        sendMiosAction(EVL3VistaPartition1ArmMode, 'Alarm/RequestArmMode', newArrayList('State' -> 'Disarmed', PINCode' -> 1234)
+end
 ```

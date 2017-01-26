@@ -18,8 +18,8 @@ This binding must be configured in the file `services/nest.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| refresh  | 60000   |          | Data refresh interval in milliseconds |
-| timeout  | 10000   |          | HTTP request timeout in milliseconds |
+| refresh  | 60000   |   No     | Data refresh interval in milliseconds |
+| timeout  | 10000   |   No     | HTTP request timeout in milliseconds |
 | client_id |        |   Yes    | the Product ID for the product](https://developer.nest.com/products) you created |
 | client_secret |    |   Yes    | the Product Secret for the product you created |
 | pin_code |         |   Yes    | the PIN code that was generated when you authorized your account to allow this product |

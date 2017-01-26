@@ -8,7 +8,7 @@ This binding must be configured in the file `services/heatmiser.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| refresh  | 2000    |          | frequency in milliseconds to poll each thermostat that is configured in your items. It automatically detects the type of thermostats; this is not set in the items. |
+| refresh  | 2000    |    No    | frequency in milliseconds to poll each thermostat that is configured in your items. It automatically detects the type of thermostats; this is not set in the items. |
 | address  |         |    Yes   | IP address for the Heatmiser interface |
 | port     |         |    Yes   | port number for the Heatmiser interface |
 

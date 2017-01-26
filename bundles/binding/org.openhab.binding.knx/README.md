@@ -14,20 +14,20 @@ This binding must be configured in the file `services/knx.cfg`.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | ip |  | optional if serialPort or connection type 'ROUTER' is specified | KNX gateway IP address |
-| busaddr | 0.0.0 |  | Local KNX Binding bus address. Use it when two or more openHAB Instances are connected to the same KNX bus. |
-| ignorelocalevents | false |  | Ignore local KNX Events, prevents internal events coming from 'openHAB event bus' a second time to be sent back to the 'openHAB event bus'. Note: To send back events second time is a Bug, but for backward compatibility, the behavior is not changed. For new installations, its recommend to set to `true` |
-| type | TUNNEL |  | KNX IP connection type. Could be either `TUNNEL` or `ROUTER`. Note: If you cannot get the ROUTER mode working (even if it claims it is connected), use `TUNNEL` mode instead, with setting both the ip of the KNX gateway and the localIp. |
-| port | 3671 |  | KNX gateway port.  Note: If you use eibd, setting to 6720 |
+| busaddr | 0.0.0 |  No | Local KNX Binding bus address. Use it when two or more openHAB Instances are connected to the same KNX bus. |
+| ignorelocalevents | false | No | Ignore local KNX Events, prevents internal events coming from 'openHAB event bus' a second time to be sent back to the 'openHAB event bus'. Note: To send back events second time is a Bug, but for backward compatibility, the behavior is not changed. For new installations, its recommend to set to `true` |
+| type | TUNNEL | No | KNX IP connection type. Could be either `TUNNEL` or `ROUTER`. Note: If you cannot get the ROUTER mode working (even if it claims it is connected), use `TUNNEL` mode instead, with setting both the ip of the KNX gateway and the localIp. |
+| port | 3671 | No | KNX gateway port.  Note: If you use eibd, setting to 6720 |
 | localIp |  |  | Local endpoint to specify the multicast interface, no port is used |
-| serialPort |  |  | Serial port of FT1.2 KNX interface (ignored if `ip` is specified). Valid values are e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux |
-| pause | 50 |  | Pause in milliseconds between two read requests on the KNX bus during initialization |
-| timeout | 10000 |  | Timeout in milliseconds to wait for a response from the KNX bus |
-| readRetries | 3 |  | Number of read retries while initialization items from the KNX bus |
-| autoReconnectPeriod | 0 |  | Seconds between connect retries when KNX link has been lost 0 means never retry, it will only reconnect on next write or read request. Note: without periodic retries all events will be lost up to the next read/write request |
-| maxRefreshQueueEntries | 10000 |  | Number of entries permissible in the item refresher queue.  |
-| numberOfThreads | 5 |  | Number of parallel threads for refreshing items. |
-| scheduledExecutor ServiceShutdown TimeoutString | 5 |  | Seconds to wait for an orderly shutdown of the auto refresher's ScheduledExecutorServicw |
-| useNAT | false |  | Use NAT (Network Address Translation) |
+| serialPort |  | if connecting via serial port | Serial port of FT1.2 KNX interface (ignored if `ip` is specified). Valid values are e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux |
+| pause | 50 |  No | Pause in milliseconds between two read requests on the KNX bus during initialization |
+| timeout | 10000 | No | Timeout in milliseconds to wait for a response from the KNX bus |
+| readRetries | 3 | No | Number of read retries while initialization items from the KNX bus |
+| autoReconnectPeriod | 0 | No | Seconds between connect retries when KNX link has been lost 0 means never retry, it will only reconnect on next write or read request. Note: without periodic retries all events will be lost up to the next read/write request |
+| maxRefreshQueueEntries | 10000 | No | Number of entries permissible in the item refresher queue.  |
+| numberOfThreads | 5 | No | Number of parallel threads for refreshing items. |
+| scheduledExecutor ServiceShutdown TimeoutString | 5 | No | Seconds to wait for an orderly shutdown of the auto refresher's ScheduledExecutorServicw |
+| useNAT | false | No | Use NAT (Network Address Translation) |
 
 ### Example
 

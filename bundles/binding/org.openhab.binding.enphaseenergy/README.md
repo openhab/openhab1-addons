@@ -22,7 +22,7 @@ This binding must be configured in the file `services/enphaseenergy.cfg`.
 |----------|---------|:--------:|-------------|
 | key      |         |   Yes    | The API Key for the application you created earlier. |
 | user_id  |         |   Yes    | Your user ID |
-| refresh  | 900000  |          | How often to poll the API.  Default of 900000 is 15 minutes |
+| refresh  | 900000  |   No     | How often to poll the API.  Default of 900000 is 15 minutes |
 
 
 ## Item Configuration

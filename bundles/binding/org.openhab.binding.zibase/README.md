@@ -22,9 +22,9 @@ This binding must be configured in the file `services/zibase.cfg`.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | ip       |         |   Yes    | IP address of the Zibase on your LAN |
-| listenerHost | 127.0.0.1 |    | IP address sent to Zibase to register to as a listener |
-| listenerPort | 9876 |         | TCP port to use for data exchange with the Zibase |
-| refresh  | 60000   |          | refresh interval in milliseconds for reading `sensors.xml`  |
+| listenerHost | 127.0.0.1 | No | IP address sent to Zibase to register to as a listener |
+| listenerPort | 9876 |  No     | TCP port to use for data exchange with the Zibase |
+| refresh  | 60000   |   No     | refresh interval in milliseconds for reading `sensors.xml`  |
 
 ## Item Configuration
 

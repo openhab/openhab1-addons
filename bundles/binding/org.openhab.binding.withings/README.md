@@ -8,7 +8,7 @@ The binding must be configured in the file `services/withings.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| refresh  | 360000  |          | The rate, in milliseconds, at which the binding requests Withings data. By default the Withings data is requested every 60 minutes (360000 milliseconds). |
+| refresh  | 360000  |    No    | The rate, in milliseconds, at which the binding requests Withings data. By default the Withings data is requested every 60 minutes (360000 milliseconds). |
 | consumerKey |      |    Yes   | your consumer key |
 | consumerSecret |   |    Yes   | your consumer secret |
 | redirectUrl |      |    Yes   | your redirect url |

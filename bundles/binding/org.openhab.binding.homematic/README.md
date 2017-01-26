@@ -84,12 +84,12 @@ This binding must be configured in the file `services/homematic.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| host     |         |          | Hostname / IP address of the Homematic CCU |
-| callback.host |    |          | Hostname / IP address for the callback server (optional, default is auto-discovery). This is normally the IP / hostname of the local host (but not "localhost" or "127.0.0.1"). |
-| callback.port | 9123 |        | Port number for the callback server. |
-| alive.interval | 300 |        | the interval in seconds to check if the communication with the CCU is still alive. If no message receives from the CCU, the binding restarts. |
-| reconnect.interval | |        | the interval in seconds to reconnect to the Homematic server (optional, default is disabled). If you have no sensors which sends messages in regular intervals and/or you have low communication, the `alive.interval` may restart the connection to the Homematic server too often.  The `reconnect.interval` disables the `alive.interval` and reconnects after a fixed period of time. Think in hours when configuring (one hour = 3600) |
-| homematicIP.enabled | false | | Enables CCU2 HomematicIP support.  HomematicIP does currently not support BIN-RPC. Therefore it's disabled by default, because if you don't have HM-IP devices, the binding still communicates with BIN-RPC. If you enable HM-IP support, the binding uses XML-RPC. |
+| host     |         |    Yes   | Hostname / IP address of the Homematic CCU |
+| callback.host |    |    No    | Hostname / IP address for the callback server (optional, default is auto-discovery). This is normally the IP / hostname of the local host (but not "localhost" or "127.0.0.1"). |
+| callback.port | 9123 |   No   | Port number for the callback server. |
+| alive.interval | 300 |   No   | the interval in seconds to check if the communication with the CCU is still alive. If no message receives from the CCU, the binding restarts. |
+| reconnect.interval | |   No   | the interval in seconds to reconnect to the Homematic server (optional, default is disabled). If you have no sensors which sends messages in regular intervals and/or you have low communication, the `alive.interval` may restart the connection to the Homematic server too often.  The `reconnect.interval` disables the `alive.interval` and reconnects after a fixed period of time. Think in hours when configuring (one hour = 3600) |
+| homematicIP.enabled | false | No | Enables CCU2 HomematicIP support.  HomematicIP does currently not support BIN-RPC. Therefore it's disabled by default, because if you don't have HM-IP devices, the binding still communicates with BIN-RPC. If you enable HM-IP support, the binding uses XML-RPC. |
 
 ## Item Configuration
 

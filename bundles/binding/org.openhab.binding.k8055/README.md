@@ -17,7 +17,7 @@ This binding must be configured in the file `services/k8055.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| refresh  | 1000    |          | how often the binding should read the state of the hardware inputs, in milliseconds |
+| refresh  | 1000    |   No     | how often the binding should read the state of the hardware inputs, in milliseconds |
 | boardno  |         |   Yes    | which board openhab should connect to. This must be specified to enable the binding.  Currently the binding only supports connecting to a single board. |
 
 ## Item Configuration

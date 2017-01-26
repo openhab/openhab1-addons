@@ -10,9 +10,9 @@ The binding polls each thermostat that is configured in your items, at the _refr
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| refresh  | 60000   |          | Refresh interval in milliseconds |
+| refresh  | 60000   |   No     | Refresh interval in milliseconds |
 | hostname |         |   Yes    | the NeoHub network address |
-| port     | 4242    |          | the port number for the NeoHub interface |
+| port     | 4242    |   No     | the port number for the NeoHub interface |
 
 ## Item Configuration
 

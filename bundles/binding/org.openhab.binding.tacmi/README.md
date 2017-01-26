@@ -24,8 +24,8 @@ The binding must be configured in the file `services/tacmi.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| refresh | 300000 | | Refresh interval in milliseconds |
-| cmiAddress | | Yes | IP or hostname of the CMI device |
+| refresh  | 300000  |   No     | Refresh interval in milliseconds |
+| cmiAddress |       |   Yes    | IP or hostname of the CMI device |
 
 The refresh interval should be very small. The execute method of the binding blocks waits for new messages coming in for 10 seconds. If nothing has been received then the method is being restarted after the refresh interval has passed. If new data has been received then the first message is processed and the method is being restarted after the interval has passed. Messages are being processed one by one. Therefore, if you receive multiple message from the CMI, which is most likely the case, it always waits for the time configured in the refresh interval, before it processes the next one.
 

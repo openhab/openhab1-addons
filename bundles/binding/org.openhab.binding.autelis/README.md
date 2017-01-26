@@ -13,11 +13,11 @@ The binding must be configured in the file `services/autelis.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| refresh | 5000 | | Refresh rate in milliseconds |
-| host | | Yes | Host (name or ip) to connect to |
-| port | 80 | | Port on which to connect to the host |
-| username | | | User name if required, for example `admin` |
-| password | | | Password if reqreuied, for example `admin` |
+| refresh  | 5000    |   No     | Refresh rate in milliseconds |
+| host     |         |   Yes    | Host (name or ip) to connect to |
+| port     | 80      |   No     | Port on which to connect to the host |
+| username |         |   if configured | User name for example `admin` |
+| password |         |   if configured | Password, for example `admin` |
 
 
 ## Item Configuration

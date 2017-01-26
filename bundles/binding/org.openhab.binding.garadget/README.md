@@ -10,11 +10,11 @@ This binding must be configured in the file `services/garadget.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| refresh  | 180000  |          | refresh interval (defaults to three minutes) |
+| refresh  | 180000  |   No     | refresh interval (defaults to three minutes) |
 | username |         |   Yes    | username for accessing your account |
 | password |         |   Yes    | password for accessing your account. it is your responsbility to ensure that no one can access your username or password |
-| granularity | 5000 |          | rate at which to check if poll is to run, in milliseconds |
-| timeout  | 5000    |          | time in milliseonds to allow an API request to complete |
+| granularity | 5000 |   No     | rate at which to check if poll is to run, in milliseconds |
+| timeout  | 5000    |   No     | time in milliseonds to allow an API request to complete |
 
 
 ## Item Configuration

@@ -1,6 +1,6 @@
 ## Satel Actions
 
-The Satel action bundle provides actions to read the event log of the connected alarm system, check current connection status and override configured user code.
+The Satel Action bundle provides actions to read the event log of the connected alarm system, check current connection status and override configured user code.
 
 ## Prerequisites
 

@@ -8,15 +8,15 @@ You may define default values for parameters to action calls in the file `servic
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| defaultTimeout | | | The timeout for the communication with the Pushover service. |
-| defaultToken | | | Pushover API token to send to devices. |
-| defaultUser | | | Pushover User or Group key to send to devices. |
-| defaultTitle | | | Application title for the notification. |
-| defaultPriority | | | Priority of the notification. Default is 0. |
-| defaultUrl | | | A URL to send with the notification. |
-| defaultUrlTitle | | | Title of the URL to send with the notification. |
-| defaultRetry | | | When priority is 2, how often in seconds should messages be resent. |
-| defaultExpire | | | When priority is 2, how long to continue resending messages until acknowledged. |
+| defaultTimeout | 10000 | No   | Timeout in milliseconds for the connection to pushover.net |
+| defaultToken | | if using action call without `apiToken` parameter | Pushover [API token](https://pushover.net/api) to send to devices |
+| defaultUser | | if using action call without `userKey` parameter | Pushover User or Group key (not e-mail address) of your user (or you) to send to devices. |
+| defaultTitle | openHAB | No | Application title for the notification |
+| defaultPriority | 0 | No | Priority of the notification, from -2 (low priority) to 2 (high priority) |
+| defaultUrl | | No | URL to attach to the message if not specified in the command. This can be used to trigger actions on the device. |
+| defaultUrlTitle | | No | URL title to attach to the message if not specified in the command. This can be used to trigger actions on the device. |
+| defaultRetry | 300 | No | When priority is 2 (high priority), how often (in seconds) should messages be resent |
+| defaultExpire | 3600 | No | When priority is 2 (high priority), how long (in seconds) to continue resending messages until acknowledged |
 
 ## Actions
 

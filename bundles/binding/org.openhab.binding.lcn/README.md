@@ -93,9 +93,9 @@ The binding must be configured in the file `services/lcn.cfg`.
 | address1  |         |   Yes    | address:port - **address** can be any IP or host name. The **port** (:4114) is optional. |
 | username1 |         |   Yes    | username used to authenticate the connection |
 | password1 |         |   Yes    | password used to authenticate the connection |
-| mode1     |         | Yes      | LCN busses with **solely** modules with firmware 170206 (feb. 2013) or newer use `native200` (means: output-ports have 200 dimming steps).  All other LCN busses use `native50` (means: output-ports have 50 dimming steps). This is an important setting as the operation mode is programmed into the LCN modules by LCN-PRO.  If you experience unexpected behavior while dimming output-ports, the connection is probably in the wrong operation mode! **For older versions than LCN-PCHK 2.8: Use `percent50` and `percent200` instead (loses some precision).** |
-| timeout1  | 3500    |          | Timeout for requests in milliseconds |
-| id2       |        | Yes       | More connections are defined by incrementing the appended counter (`2` in the example) for all properties. **Do not skip any numbers! GOOD: 1,2,3,4 BAD: 1,3,4** |
+| mode1     |         |   Yes    | LCN busses with **solely** modules with firmware 170206 (feb. 2013) or newer use `native200` (means: output-ports have 200 dimming steps).  All other LCN busses use `native50` (means: output-ports have 50 dimming steps). This is an important setting as the operation mode is programmed into the LCN modules by LCN-PRO.  If you experience unexpected behavior while dimming output-ports, the connection is probably in the wrong operation mode! **For older versions than LCN-PCHK 2.8: Use `percent50` and `percent200` instead (loses some precision).** |
+| timeout1  | 3500    |   No     | Timeout for requests in milliseconds |
+| id2       |         |   Yes    | More connections are defined by incrementing the appended counter (`2` in the example) for all properties. **Do not skip any numbers! GOOD: 1,2,3,4 BAD: 1,3,4** |
 
 ### Example configuration for a connection
 

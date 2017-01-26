@@ -13,10 +13,10 @@ You will normally need some basic configuration for accessing a PowerDog. The fo
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| `refresh` | 300000 |          | the globally fastest refresh rate for all PowerDog servers configured. If you configure lower values for the single PowerDog servers or items, this value will override it. By default the value is set to 5 minutes - be aware that lower values mean more communication, which might result in too much load of your PowerDog. |
-| `<serverId>.host` | powerdog | PowerDog IP or host name. |
-| `<serverId>.port` | 20000    | PowerDog port for local API via XML-RPC. You might need configure this if changed or port redirection is used. | `<serverId>.refresh` | value of `refresh` | You can set different refresh rates per PowerDog unit. The `powerdoglocalapi:<serverId>.refresh=` value should be the same or a multiple of `refresh` |
-| `<serverId>.password` | empty string | | Password set for PowerDog PowerAPI. Normally you will need to set this value. On a PowerDog it is set to the unlock key by default. |
+| refresh  | 300000 |    No    | the globally fastest refresh rate for all PowerDog servers configured. If you configure lower values for the single PowerDog servers or items, this value will override it. By default the value is set to 5 minutes - be aware that lower values mean more communication, which might result in too much load of your PowerDog. |
+| `<serverId>`.host | powerdog | No | PowerDog IP or host name. |
+| `<serverId>`.port | 20000    | No | PowerDog port for local API via XML-RPC. You might need configure this if changed or port redirection is used. | `<serverId>.refresh` | value of `refresh` | You can set different refresh rates per PowerDog unit. The `powerdoglocalapi:<serverId>.refresh=` value should be the same or a multiple of `refresh` |
+| `<serverId>`.password | empty string | usually | Password set for PowerDog PowerAPI. Normally you will need to set this value. On a PowerDog it is set to the unlock key by default. |
 
 Using different `<serverId>`s, you can configure several PowerDog servers at a time.
 

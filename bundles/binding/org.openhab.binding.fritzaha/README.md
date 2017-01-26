@@ -14,10 +14,10 @@ To take advantage of SSL encryption, you need to add the SSL certificate to your
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| refresh  | 10000   |          | refresh interval in milliseconds |
-| `<hostID>`.host | fritz.box | | host name of the FritzBox |
-| `<hostID>`.port | 80        | | port number on which to reach the FritzBox |
-| `<hostID>`.protocol | http  | | protocol with which to communicate |
+| refresh  | 10000   |    No    | refresh interval in milliseconds |
+| `<hostID>`.host | fritz.box | No | host name of the FritzBox |
+| `<hostID>`.port | 80        | No | port number on which to reach the FritzBox |
+| `<hostID>`.protocol | http  | No | protocol with which to communicate |
 | `<hostID>`.password| |  Yes   | your FritzBox password |
 
 Where `<hostID>` is up to user choice.

@@ -58,10 +58,10 @@ This binding must be configured in the `services/maxcul.cfg` file.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | device   |         |   Yes    | in the form `serial:<device>`, where `<device>` is a local serial port, or<br/> `network:<host>:<port>`, where `<host>` is the host name or IP address and `<port>` is the port number.  The `network` option works with ser2net from a tuxnet device |
-| baudrate |         |          | one of 75, 110, 300, 1200, 2400, 4800, 9600, 19200, **38400**, 57600, 115200 |
-| parity   |         |          | one of EVEN, ODD, MARK, NONE, SPACE or **0** |
-| refreshInterval | |           | refresh interval in milliseconds |
-| timezone | Europe/London |    | set timezone you want the units to be set to |
+| baudrate |         |   No     | one of 75, 110, 300, 1200, 2400, 4800, 9600, 19200, **38400**, 57600, 115200 |
+| parity   |         |   No     | one of EVEN, ODD, MARK, NONE, SPACE or **0** |
+| refreshInterval | |    No     | refresh interval in milliseconds |
+| timezone | Europe/London | No | set timezone you want the units to be set to |
 
 When using a serial port, you may need to add `-Dgnu.io.rxtx.SerialPorts=/dev/ttyACM0` in your server startup.  Please consult the [forum](https://community.openhab.org) for the latest information.
 

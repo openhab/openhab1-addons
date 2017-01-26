@@ -11,7 +11,7 @@ This binding must be configured in the file `services/mochadx10.cfg`.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | hostIp   |         |   Yes    | the IP address of the server on which the Mochad X10 daemon is running. |
-| hostPort | 1099    |          | the port number on which the Mochad X10 daemon is communicating. |
+| hostPort | 1099    |   No     | the port number on which the Mochad X10 daemon is communicating. |
 
 ## Item configuration
 

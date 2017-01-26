@@ -8,7 +8,7 @@ There are some configuration settings that must be set in the file `services/fat
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| refresh  | 60000   |          | refresh interval in milliseconds which is used to poll values from the Fatek PLC server |
+| refresh  | 60000   |    No    | refresh interval in milliseconds which is used to poll values from the Fatek PLC server |
 | `<plcName>`.connectionUri | | Yes    | connection URI for the `<plcName>` you provide, so multiple Fatek PLCs can be addressed. Supports either `tcp://` or `udp://` protocol.  For example, `udp://192.168.1.100?plcId=1` |
 
 ## Item Configuration

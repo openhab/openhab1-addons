@@ -45,8 +45,8 @@ Most of config parameters are related to specific slaves, but some are global an
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| poll     | 200     |          | **Poll period (optional)**<br/> Frequency of polling Modbus slaves. Note that the value is in milliseconds! For example, `poll=1000` makes the binding poll Modbus slaves once per second. |
-| writemultipleregisters | false | | **Function code to use when writing holding registers (optional)**<br/>Binding can be configured to use FC 16 (*Write Multiple Holding Registers*) over FC 6 (*Write Single Holding Register*) when writing holding register items (see above).  This is optional and default is `false`. For example, `writemultipleregisters=true` makes the binding to use FC16 when writing holding registers. |
+| poll     | 200     |   No     | **Poll period (optional)**<br/> Frequency of polling Modbus slaves. Note that the value is in milliseconds! For example, `poll=1000` makes the binding poll Modbus slaves once per second. |
+| writemultipleregisters | false | No | **Function code to use when writing holding registers (optional)**<br/>Binding can be configured to use FC 16 (*Write Multiple Holding Registers*) over FC 6 (*Write Single Holding Register*) when writing holding register items (see above).  This is optional and default is `false`. For example, `writemultipleregisters=true` makes the binding to use FC16 when writing holding registers. |
 
 ## Configuration parameters specific to each slave
 

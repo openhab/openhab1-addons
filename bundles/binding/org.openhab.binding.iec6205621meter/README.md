@@ -14,9 +14,9 @@ This binding must be configured in the file `services/iec6205621meter.cfg`.  The
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | `<meter-id1>`.serialPort | | Yes | the serial port to use for connecting to the metering device e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux |
-| `<meter-id1>`.baudRateChangeDelay | 0 | | Delay of baud rate change in ms. Default is 0. USB to serial converters often require a delay of up to 250ms |
-| `<meter-id1>`.echoHandling | true | | Enable handling of echos caused by some optical tranceivers |
-| refresh | 600 | | Perform a module status query every `refresh` seconds |
+| `<meter-id1>`.baudRateChangeDelay | 0 | No | Delay of baud rate change in ms. Default is 0. USB to serial converters often require a delay of up to 250ms |
+| `<meter-id1>`.echoHandling | true | No | Enable handling of echos caused by some optical tranceivers |
+| refresh | 600 | No | Perform a module status query every `refresh` seconds |
 
 NOTE: the `<meter-id1>` will be used in both the binding item configs and the action calls to defined which of your meter devices is connected to the item.
 

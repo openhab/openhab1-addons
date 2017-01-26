@@ -12,9 +12,9 @@ The Chamberlain MyQ Binding only requires your Chamberlain MyQ Username and Pass
 |----------|---------|:--------:|-------------|
 | username |         |   Yes    | Chamberlain MyQ Username |
 | password |         |   Yes    | Chamberlain MyQ Password |
-| refresh  | 60000   |          | Data refresh interval in milliseconds (60000 is one minute) |
-| timeout  | 5000    |          | Timeout for HTTP requests in milliseconds |
-| appId    | see description | | Application ID for the MyQ API (only recommended if existing id ceases to work). It is recommended you do not supply your own appId unless you understand how the binding internal logic works and how/what could stop working. | 
+| refresh  | 60000   |   No     | Data refresh interval in milliseconds (60000 is one minute) |
+| timeout  | 5000    |   No     | Timeout for HTTP requests in milliseconds |
+| appId    | see description | No | Application ID for the MyQ API (only recommended if existing id ceases to work). It is recommended you do not supply your own appId unless you understand how the binding internal logic works and how/what could stop working. | 
 
 ## Item configuration
 

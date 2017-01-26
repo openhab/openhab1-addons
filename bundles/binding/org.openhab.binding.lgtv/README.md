@@ -12,18 +12,17 @@ This binding must be configured in the file `services/lgtv.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| `<lgtvId1>`.host | | Yes | host name or IP address of the LG TV to control |
-| `<lgtvId1>`.port | 60128 | | TCP port number of the LG TV to control |
-| `<lgtvId1>`.serverport | | | TCP port address of the openHAB system to receive LG TV status messages.  Only the first occurance is used for all TVs and is usually 8080. |
+| `<lgtvId1>`.host | |   Yes   | host name or IP address of the LG TV to control |
+| `<lgtvId1>`.port | 60128 | No | TCP port number of the LG TV to control |
+| `<lgtvId1>`.serverport | | Yes | TCP port address of the openHAB system to receive LG TV status messages.  Only the first occurance is used for all TVs and is usually 8080. |
 | `<lgtvId1>`.xmldatafiles | | | location to put xml files with the information of availiable channels and apps |
 | `<lgtvId1>`.checkalive | | | check if TV is availiable every in seconds.  Common value is 60 |
 | `<lgtvId1>`.pairkey | | Yes | if it's wrong the device shows the right pairkey at every connection attempt |
 | `<lgtvId2>`.host | | Yes | host name or IP address of the LG TV to control |
-| `<lgtvId2>`.port | 60128 | | TCP port number of the LG TV to control |
+| `<lgtvId2>`.port | 60128 | No | TCP port number of the LG TV to control |
 | `<lgtvId2>`.xmldatafiles | | | location to put xml files with the information of availiable channels and apps |
 | `<lgtvId2>`.checkalive | | | check if TV is availiable every in seconds.  Common value is 60 |
 | `<lgtvId2>`.pairkey | | Yes | if it's wrong the device shows the right pairkey at every connection attempt |
-
 
 Where `<lgtvIdN>` is a name you can use to reference the device from your item configuration (see below).
 

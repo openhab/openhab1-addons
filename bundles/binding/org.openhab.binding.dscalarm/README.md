@@ -16,15 +16,15 @@ This binding must be configured in the file `services/dscalarm.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| deviceType | `it100` (default for serial connection) or `envisalink` (default for tcp connection) | | DSC Alarm interface device type |
-| serialPort | | | Valid values are e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux. Leave undefined if not connecting by serial port. |
-| baud | | | DSC Alarm baud rate for serial connections. Valid values are 9600 (default), 19200, 38400, 57600, and 115200. Leave undefined if using default. |
-| ip | | | DSC Alarm IP address for a TCP connection. Leave undefined if not connecting by network connection. |
-| tcpPort | 4025 | | DSC Alarm TCP port for a TCP connection to either an EyezOn Envisalink on 4025 (default) or a TCP serial server to IT-100. Leave undefined if not connecting by network connection. |
-| password | | | DSC Alarm password for logging into the EyezOn Envisalink 3/2DS interface. |
-| usercode | | | DSC Alarm user code for logging certain DSC Alarm commands. |
-| pollPeriod | 1 | | DSC Alarm poll period. Amount of time elapsed in minutes between poll commands sent to the DSC Alarm. Valid values are 1-15. |
-| suppressAcknowledgementMsgs | false | | Suppress Acknowledgement Messages. Set to `true` to suppress the display of Acknowledgement messages, such as the Command Acknowledge message after a poll command is sent. |
+| deviceType | `it100` (default for serial connection) or `envisalink` (default for tcp connection) | No | DSC Alarm interface device type |
+| serialPort | | if connecting via serial port | Valid values are e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux. Leave undefined if not connecting by serial port. |
+| baud     |         |   No     | DSC Alarm baud rate for serial connections. Valid values are 9600 (default), 19200, 38400, 57600, and 115200. Leave undefined if using default. |
+| ip       |         | if connecting via network | DSC Alarm IP address for a TCP connection. Leave undefined if not connecting by network connection. |
+| tcpPort  | 4025    |   No     | DSC Alarm TCP port for a TCP connection to either an EyezOn Envisalink on 4025 (default) or a TCP serial server to IT-100. Leave undefined if not connecting by network connection. |
+| password |         |          | DSC Alarm password for logging into the EyezOn Envisalink 3/2DS interface. |
+| usercode |         |          | DSC Alarm user code for logging certain DSC Alarm commands. |
+| pollPeriod | 1     |   No     | DSC Alarm poll period. Amount of time elapsed in minutes between poll commands sent to the DSC Alarm. Valid values are 1-15. |
+| suppressAcknowledgementMsgs | false | No | Suppress Acknowledgement Messages. Set to `true` to suppress the display of Acknowledgement messages, such as the Command Acknowledge message after a poll command is sent. |
 
 The primary setting will be the IP address of the EyezOn Envisalink 3/2DS interface or the serial port name of the DSC IT-100.  The *password*, *usercode*, *baud*, *pollPeriod*, and *suppressAcknowledgementMsgs* settings are optional.  The *deviceType* and *tcpPort* settings are used to connect to an IT-100 interface through a TCP/IP serial server.  If these settings are not set, the binding will resort to the system defaults.
 

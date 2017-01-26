@@ -47,11 +47,11 @@ The binding must be configured in the file `services/omnilink.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| port | 4369 | | TCP/IP port number of the Omni panel |
-| host | | Yes | IP address or host name of the Omni panel |
-| key1 | | Yes | crypto key 1 for your omni panel.  The key may be found in the installer menu on a HAI keypad or touchscreen. Each key is 16 hex characters in pairs separated by colons (aa:bb:cc) |
-| key2 | | Yes | crypto key 2 for your omni panel.  The key may be found in the installer menu on a HAI keypad or touchscreen. Each key is 16 hex characters in pairs separated by colons (aa:bb:cc) |
-| generateItems | true | | if set to true, the binding will print all known items and a sample sitemap to the log file (INFO).  Useful when setting up for the first time. Adds a little time to the binding startup. |
+| port     | 4369    |   No     | TCP/IP port number of the Omni panel |
+| host     |         | Yes      | IP address or host name of the Omni panel |
+| key1     |         | Yes      | crypto key 1 for your omni panel.  The key may be found in the installer menu on a HAI keypad or touchscreen. Each key is 16 hex characters in pairs separated by colons (aa:bb:cc) |
+| key2     |         | Yes      | crypto key 2 for your omni panel.  The key may be found in the installer menu on a HAI keypad or touchscreen. Each key is 16 hex characters in pairs separated by colons (aa:bb:cc) |
+| generateItems | true | No     | if set to true, the binding will print all known items and a sample sitemap to the log file (INFO).  Useful when setting up for the first time. Adds a little time to the binding startup. |
 
 ## Item Configuration
 

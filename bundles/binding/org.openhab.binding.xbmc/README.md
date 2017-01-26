@@ -37,11 +37,11 @@ This binding must be configured in the file `services/xbmc.cfg`.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | `<instance>`.host | |   Yes   | Hostname / IP address of your XBMC host |
-| `<instance>`.rsPort | 8080 |  | Port number for the JSON RPC service |
-| `<instance>`.wsPort | 9090 |  | Port number for the websocket service |
-| `<instance>`.username | xbmc | | Username to connect to XBMC |
-| `<instance>`.password| xbmc | | Password to connect to XBMC |
-| refreshInterval  | 60000 |    | Refresh interval, in milliseconds (60000 is one minute) |
+| `<instance>`.rsPort | 8080 | No | Port number for the JSON RPC service |
+| `<instance>`.wsPort | 9090 | No | Port number for the websocket service |
+| `<instance>`.username | xbmc | No | Username to connect to XBMC |
+| `<instance>`.password| xbmc | No | Password to connect to XBMC |
+| refreshInterval  | 60000 | No | Refresh interval, in milliseconds (60000 is one minute) |
 
 where `<instance>` is a name you choose for the instance of XBMC you want to control, `livingroom` for instance.  When defining your items, you can use the `<instance>` name to refer to your instances. In doing so, you can easily change the address by which you XBMC instance can be reached without having to reconfigure all of your items. 
 

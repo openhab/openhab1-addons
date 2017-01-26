@@ -17,13 +17,13 @@ The binding must be configured in the file `services/ebus.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| serialPort |       |          | Serial port of eBUS interface.  Do not use as well as hostname/port. |
-| hostname |         |          | TCP host name or IP address of eBUS interface.  Do not use as well as serialPort. |
-| port     |         |          | TCP port of eBUS interface, 5000 for example |
+| serialPort |       |  if connecing via serial port | Serial port of eBUS interface.  Do not use as well as hostname/port. |
+| hostname |         |  if connecting via network | TCP host name or IP address of eBUS interface.  Do not use as well as serialPort. |
+| port     |         |  if connecting via network | TCP port of eBUS interface, 5000 for example |
 | parseUrl |         |          | Custom parser configuration file |
 | parsers  |         |          | One or more parsers for you eBUS device, separated by commas. You can find the latest devices below or on the wiki page.  List of productive parsers as of this writing: common, vaillant-bai00, vaillant-vrc430, vaillant-vrc470, vaillant-vrc630, vaillant-vr90, wolf-cgb2_hc, wolf-cgb2, wolf-sm1, custom |
 | record   |         |          | Comma-separated list of telegram types (all,debug,unknown) to write to a CSV file in folder {openhab}/etc/ebus |
-| senderId | FF      |          | Set the sender id of this binding |
+| senderId | FF      |   No     | Set the sender id of this binding |
 
 ### Example
 

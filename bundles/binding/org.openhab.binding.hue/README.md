@@ -60,9 +60,9 @@ This binding must be configured with the file `services/hue.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| ip       |         |          | IP address of the Hue bridge. If it is not provided, the binding tries to find the bridge on its own. This may not always work perfectly. The preferred way should be a defined IP. |
+| ip       |         | preferred | IP address of the Hue bridge. If it is not provided, the binding tries to find the bridge on its own. This may not always work perfectly. The preferred way should be a defined IP. |
 | secret   |         |   Yes    | a string that gets stored in the hue bridge when pairing it with openHAB. That way the bridge 'knows' openHAB and allows it to send commands. It is kind of a password. Be aware that it is not encrypted in the communication. You may change this value to anything you like using characters and numbers. It must be between 10 and 40 characters long. |
-| refresh  |         |          | defines the polling interval in milliseconds (1000 milliseconds = 1 second) to retrieve Philips bulb status. olling is enabled if refresh is specified. Be aware that polling will consume resources, so a small refresh interval will increase CPU load. |
+| refresh  |         |   No     | defines the polling interval in milliseconds (1000 milliseconds = 1 second) to retrieve Philips bulb status. Polling is enabled if refresh is specified. Be aware that polling will consume resources, so a small refresh interval will increase CPU load. |
 
 Other apps can change Hue status or a physical switch can turn on / off lamp status. If this happens the status of hue lamps within OpenHAB won't reflect the real status.
 

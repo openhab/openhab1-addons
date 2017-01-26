@@ -31,10 +31,10 @@ This binding must be configured in the `services/frontiersiliconradio.cfg` file.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | radio.host |       |   Yes    | Hostname/IP of the radio to control |
-| radio.pin | 1234   |          | PIN access code of the radio |
-| radio.port | 80    |          | Port number of the radio to control |
-| refreshInterval | 60000 |     | The number of milliseconds between checks of the radio |
-| cachePeriod | 0    |          | Cache the state for `cachePeriod` minutes so only changes are posted (0 = disabled, 60 = recommended) |
+| radio.pin | 1234   |   No     | PIN access code of the radio |
+| radio.port | 80    |   No     | Port number of the radio to control |
+| refreshInterval | 60000 | No  | The number of milliseconds between checks of the radio |
+| cachePeriod | 0    |   No     | Cache the state for `cachePeriod` minutes so only changes are posted (0 = disabled, 60 = recommended) |
 
 
 ### Notes
