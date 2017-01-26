@@ -12,7 +12,7 @@ Additionally there is a DSC Alarm action bundle that can be installed along with
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/dscalarm.cfg`.
+This binding can be configured in the file `services/dscalarm.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

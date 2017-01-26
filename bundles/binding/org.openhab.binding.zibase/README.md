@@ -17,7 +17,7 @@ Communication is done both in realtime throught network socket connection and vi
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/zibase.cfg`.
+This binding can be configured in the file `services/zibase.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

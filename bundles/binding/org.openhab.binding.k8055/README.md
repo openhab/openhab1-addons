@@ -13,7 +13,7 @@ For the binding to access the native library correctly, the following conditions
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/k8055.cfg`.
+This binding can be configured in the file `services/k8055.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

@@ -15,7 +15,7 @@ The OwnTracks (formerly Mqttitude) binding is also available, which is an extens
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/mqtt.cfg`.
+This binding can be configured in the file `services/mqtt.cfg`.
 
 ### Transport Configuration
 

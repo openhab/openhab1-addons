@@ -6,7 +6,7 @@ By help of the openHAB MPD binding, you can e.g. start/stop playing music in spe
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/mpd.cfg`.
+This binding can be configured in the file `services/mpd.cfg`.
 
 
 | Property | Default | Required | Description |

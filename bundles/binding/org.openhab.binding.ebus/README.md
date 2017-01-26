@@ -13,7 +13,7 @@ To access your heating system you either need an eBUS interface. You can buy a r
 
 ## Binding Configuration
 
-The binding must be configured in the file `services/ebus.cfg`.
+The binding can be configured in the file `services/ebus.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

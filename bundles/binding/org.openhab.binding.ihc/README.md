@@ -4,7 +4,7 @@ This binding is for the "Intelligent Home Control" building automation system or
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/ihc.cfg`.
+This binding can be configured in the file `services/ihc.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

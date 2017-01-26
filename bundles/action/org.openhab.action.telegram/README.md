@@ -16,7 +16,7 @@ As described in the Telegram Bot API, this is the manual procedure needed in ord
 
 ## Configuration
 
-The action must be configured in `services/telegram.cfg`.
+The action can be configured in `services/telegram.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

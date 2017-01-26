@@ -27,7 +27,7 @@ MailControl binding allows to send commands to the OpenHAB home server remotely 
 
 ## Binding Configuration
 
-This binding must be configured in `services/mailcontrol.cfg`.
+This binding can be configured in `services/mailcontrol.cfg`.
 
 Example of configuration properties for the Message Control binding:
 

@@ -4,7 +4,7 @@
 
 ## Binding Configuration
 
-There are some configuration settings that must be set in the file `services/fatekplc.cfg`.
+The binding can be configured in the file `services/fatekplc.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

@@ -2,7 +2,7 @@
 
 ## Binding Configuration
 
-This binding must be configured in the `services/fritzbox.cfg` file.
+This binding can be configured in the `services/fritzbox.cfg` file.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

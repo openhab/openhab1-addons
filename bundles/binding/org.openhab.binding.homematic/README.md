@@ -80,7 +80,7 @@ The CCU firewall must be configured to 'full access' for the Remote Homematic-Sc
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/homematic.cfg`.
+This binding can be configured in the file `services/homematic.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

@@ -10,7 +10,7 @@ Before using the Koubachi services one has to register free of charge at [Koubac
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/koubachi.cfg`.
+This binding can be configured in the file `services/koubachi.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

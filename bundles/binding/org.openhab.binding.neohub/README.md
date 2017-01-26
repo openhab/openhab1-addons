@@ -4,7 +4,7 @@ The NeoHub binding allows you to connect openhab via TCP/IP to Heatmiser's NeoHu
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/neohub.cfg`.
+This binding can be configured in the file `services/neohub.cfg`.
 
 The binding polls each thermostat that is configured in your items, at the _refresh_ rate as set in the configuration. 
 

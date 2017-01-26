@@ -6,7 +6,7 @@ The openHAB Milight binding allows to send commands to multiple Milight bridges.
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/milight.cfg`.
+This binding can be configured in the file `services/milight.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

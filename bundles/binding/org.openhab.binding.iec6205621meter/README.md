@@ -8,7 +8,7 @@ Information received from the meter device are structured according IEC 62056-6-
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/iec6205621meter.cfg`.  The configuration allows the definition of multiple meter devices.
+This binding can be configured in the file `services/iec6205621meter.cfg`.  The configuration allows the definition of multiple meter devices.
 
 
 | Property | Default | Required | Description |

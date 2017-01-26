@@ -4,7 +4,7 @@ The Astro binding (1.x) is used for calculating many `DateTime` and positional v
 
 ### Binding Configuration
 
-The binding must be configured in the file `services/astro.cfg`.
+The binding can be configured in the file `services/astro.cfg`.
 
 | Key | Default | Required | Description |
 |-----|---------|:--------:|-------------|

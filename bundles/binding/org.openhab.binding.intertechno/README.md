@@ -4,7 +4,7 @@ You can send intertechno in every mode. I.e., if you are using the CUL in slow R
 
 ## Binding Configuration
 
-This binding must be configured in the `services/culintertechno.cfg` file.
+This binding can be configured in the `services/culintertechno.cfg` file.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

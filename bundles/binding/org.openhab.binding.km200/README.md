@@ -7,7 +7,7 @@ The KM200 Binding is communicating with a [Buderus Logamatic web KM200 / KM100 /
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/km200.cfg`.
+This binding can be configured in the file `services/km200.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

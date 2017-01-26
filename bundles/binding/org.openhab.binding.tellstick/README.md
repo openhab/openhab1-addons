@@ -18,7 +18,7 @@ You will have to use Telldus Center to add all your devices. It is also easiest 
 
 ## Binding Configuration
 
-The binding must be configured in the file `services/tellstick.cfg`.
+The binding can be configured in the file `services/tellstick.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

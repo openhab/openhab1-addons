@@ -22,7 +22,7 @@ Make sure you have the FreeSWITCH ESL module listing on a public port, your even
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/freeswitch.cfg`.
+This binding can be configured in the file `services/freeswitch.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

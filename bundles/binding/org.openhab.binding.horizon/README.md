@@ -4,7 +4,7 @@ This binding supports the horizon mediabox used by cable companies in the Nether
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/horizon.cfg`.
+This binding can be configured in the file `services/horizon.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

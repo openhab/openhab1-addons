@@ -9,7 +9,7 @@ To access your KNX bus you either need an KNX IP gateway (like e.g. the [Gira KN
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/knx.cfg`.
+This binding can be configured in the file `services/knx.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

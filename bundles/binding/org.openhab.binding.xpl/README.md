@@ -11,7 +11,7 @@ The xPL Bundle relies on Gerry Duprey's [xPL4Java](http://www.xpl4java.org/) Lib
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/xpl.cfg`.
+This binding can be configured in the file `services/xpl.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

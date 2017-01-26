@@ -18,7 +18,7 @@ It allows you to:
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/jointspace.cfg`.
+This binding can be configured in the file `services/jointspace.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

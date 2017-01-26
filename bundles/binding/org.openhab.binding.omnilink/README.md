@@ -43,7 +43,7 @@ More information about the Leviton line of controllers can be found at their [si
 
 ## Binding Configuration
 
-The binding must be configured in the file `services/omnilink.cfg`.
+The binding can be configured in the file `services/omnilink.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

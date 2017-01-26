@@ -53,7 +53,7 @@ Aside from understanding what the binding does do which is documented here there
 
 ## Binding Configuration
 
-This binding must be configured in the `services/maxcul.cfg` file.
+This binding can be configured in the `services/maxcul.cfg` file.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

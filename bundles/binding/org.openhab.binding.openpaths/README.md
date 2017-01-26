@@ -8,7 +8,7 @@ First you will need to install the OpenPaths app on your mobile device. You will
 
 ## Binding Configuration
 
-You need to let the binding know exactly where 'home' is and what size the [geofence](http://en.wikipedia.org/wiki/Geo-fence) is. You can also optionally specify the refresh interval which determines how often openHAB will poll the OpenPaths servers.  This information must be entered in the file `services/openpaths.cfg`.
+You need to let the binding know exactly where 'home' is and what size the [geofence](http://en.wikipedia.org/wiki/Geo-fence) is. You can also optionally specify the refresh interval which determines how often openHAB will poll the OpenPaths servers.  This information can be entered in the file `services/openpaths.cfg`.
 
 Beside a location named 'home' (mandatory) you may specify any number of additional locations, each of it optionally having its own geofence.
 

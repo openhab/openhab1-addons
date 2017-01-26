@@ -9,7 +9,7 @@ The binding is fairly complete and supports the following functionality.
 
 ## Binding Configuration
 
-The binding must be configured in the file `services/autelis.cfg`.
+The binding can be configured in the file `services/autelis.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

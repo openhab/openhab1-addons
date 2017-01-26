@@ -8,7 +8,7 @@ Author: Martin Fluch 25.1.2014
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/lgtv.cfg`.
+This binding can be configured in the file `services/lgtv.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

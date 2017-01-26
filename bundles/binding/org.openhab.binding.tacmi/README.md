@@ -20,7 +20,7 @@ Now follow the User Guide of the CMI on how to setup CAN over Ethernet (COE). He
 
 ## Binding Configuration
 
-The binding must be configured in the file `services/tacmi.cfg`.
+The binding can be configured in the file `services/tacmi.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

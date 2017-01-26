@@ -6,7 +6,7 @@ With the current version of the binding items of type Switch, Dimmer, and Roller
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/mochadx10.cfg`.
+This binding can be configured in the file `services/mochadx10.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

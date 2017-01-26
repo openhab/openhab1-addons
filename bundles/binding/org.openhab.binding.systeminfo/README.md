@@ -27,7 +27,7 @@ The binding uses the Hyperic SIGAR API to access system information regardless o
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/systeminfo.cfg`.
+This binding can be configured in the file `services/systeminfo.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

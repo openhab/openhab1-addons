@@ -4,7 +4,7 @@ The Heatmiser binding allows you to control Heatmiser RS-422 network thermostats
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/heatmiser.cfg`.
+This binding can be configured in the file `services/heatmiser.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

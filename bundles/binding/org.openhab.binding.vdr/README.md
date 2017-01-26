@@ -6,7 +6,7 @@ If you have any suggestions or questions don't hesitate to contact me ([iwow](ht
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/vdr.cfg`.
+This binding can be configured in the file `services/vdr.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

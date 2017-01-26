@@ -8,6 +8,8 @@ The binding may not be compatible with Windows.  Please report if you find this 
 
 ## Binding Configuration
 
+This binding can be configured in the file `services/upb.cfg`.
+
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | port     |         |   Yes    | Name of the serial device to which the UPB device is connected.  For example, COM1 on Windows or /dev/ttyUSB0 on Linux |

@@ -85,7 +85,7 @@ Each key has 3 command types: HIT(press), MAKE(long press), BREAK(long press rel
 
 ## Binding Configuration
 
-The binding must be configured in the file `services/lcn.cfg`.
+The binding can be configured in the file `services/lcn.cfg`.
 
 | Property  | Default | Required | Description |
 |-----------|---------|:--------:|-------------|

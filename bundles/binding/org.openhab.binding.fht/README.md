@@ -10,7 +10,7 @@ FHT is a range of devices produced by busware.de which allows to interact with v
 
 ## Binding Configuration
 
-This binding must be configured in the `services/fht.cfg` file.
+This binding can be configured in the `services/fht.cfg` file.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

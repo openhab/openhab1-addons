@@ -4,7 +4,7 @@ The openHAB Energenie binding allows you to send commands to multiple Gembird en
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/energenie.cfg`.
+This binding can be configured in the file `services/energenie.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

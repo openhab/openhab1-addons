@@ -10,7 +10,7 @@ In order to use this binding, you must have already registered your thermostat(s
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/ecobee.cfg`.
+This binding can be configured in the file `services/ecobee.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

@@ -37,7 +37,7 @@ The Modbus binding polls the slaves with an configurable poll period. openHAB co
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/modbus.cfg`.
+This binding can be configured in the file `services/modbus.cfg`.
 
 ### Global configuration
 

@@ -6,7 +6,7 @@ This page describes the Global Cache IR binding (1.x), which allows openHAB item
 
 ## Binding Configuration
 
-This binding must be configured in the `services/gc100ir.cfg` file.
+This binding can be configured in the `services/gc100ir.cfg` file.
 
 The Global Cache IR binding allows you to define named instances of Global Cache device in your configuration. When defining your item configuration, you can use the name to refer to your instances.  In doing so, you can easily change the address by which your Global Cache instance can be reached without having to reconfigure all of your items.
 

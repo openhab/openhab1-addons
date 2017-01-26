@@ -32,7 +32,7 @@ The binding uses XBMCs JSON-RPC API v6, both the HTTP and the websocket transpor
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/xbmc.cfg`.
+This binding can be configured in the file `services/xbmc.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

@@ -82,7 +82,7 @@ For some of the more sophisticated devices the complete linking process can no l
 The binding does not support linking new devices on the fly, i.e. all devices must be linked with the modem *before* starting the InsteonPLM
 binding.
 
-The binding must be configured with the file `services/insteonplm.cfg`.
+The binding can be configured with the file `services/insteonplm.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

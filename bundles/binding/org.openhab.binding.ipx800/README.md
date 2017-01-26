@@ -26,7 +26,7 @@ Features of the binding:
 
 ## Binding Configuration
 
-The binding must be configured in the file `services/ipx800.cfg`.
+The binding can be configured in the file `services/ipx800.cfg`.
 
 | Property  | Default | Required | Description |
 |-----------|---------|:--------:|-------------|

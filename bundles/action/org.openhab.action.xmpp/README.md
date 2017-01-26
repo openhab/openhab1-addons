@@ -8,7 +8,7 @@
 
 ## Configuration
 
-The XMPP Action service must be configured in `services/xmpp.cfg`.
+The XMPP Action service can be configured in `services/xmpp.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

@@ -30,7 +30,7 @@ The Weather binding collects current and forecast weather data from different pr
 
 ## Binding Configuration
 
-The binding must be configured in the file `services/weather.cfg` with the following information:
+The binding can be configured in the file `services/weather.cfg`.
 
 ### API Keys for Weather Providers
 

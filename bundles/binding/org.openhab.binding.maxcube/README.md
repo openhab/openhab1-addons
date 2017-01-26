@@ -8,7 +8,7 @@ To communicate with MAX! devices, an already setup MAX! environment including a 
 
 ## Binding Configuration
 
-The MAX!Cube is automatically discovered from the network, so no configuration is required in basic setting. Otherwise, the binding must be configured in the file `services/maxcube.cfg`.
+The MAX!Cube is automatically discovered from the network, so no configuration is required in basic setting. Otherwise, the binding can be configured in the file `services/maxcube.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

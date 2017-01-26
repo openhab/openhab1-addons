@@ -51,7 +51,7 @@ faulting a given zone by e.g. opening a window or door.
 
 ## Binding Configuration
 
-The binding is configured in the file `services/alarmdecoder.cfg`.
+The binding can be configured in the file `services/alarmdecoder.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

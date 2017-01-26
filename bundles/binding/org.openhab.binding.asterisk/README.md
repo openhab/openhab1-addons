@@ -4,7 +4,7 @@ The Asterisk binding is used to enable communication between openhab and the fre
 
 ## Binding Configuration
 
-The binding must be configured in the file `services/asterisk.cfg`.
+The binding can be configured in the file `services/asterisk.cfg`.
 
 | Key | Default | Required | Description |
 |-----|---------|:--------:|-------------|

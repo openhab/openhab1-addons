@@ -14,7 +14,7 @@ Once you've created your [product](https://developer.nest.com/products) as above
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/nest.cfg`.
+This binding can be configured in the file `services/nest.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

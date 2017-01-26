@@ -4,7 +4,7 @@
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/myq.cfg`.
+This binding can be configured in the file `services/myq.cfg`.
 
 The Chamberlain MyQ Binding only requires your Chamberlain MyQ Username and Password.
 

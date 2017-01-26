@@ -35,7 +35,7 @@ Please add your own successfully tested receiver to this list!
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/yamahareceiver.cfg`.
+This binding can be configured in the file `services/yamahareceiver.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

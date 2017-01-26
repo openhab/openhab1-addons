@@ -8,7 +8,7 @@ It fetches the configuration xml-file from the WAGO-Controller and derives the u
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/wago.cfg`.
+This binding can be configured in the file `services/wago.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

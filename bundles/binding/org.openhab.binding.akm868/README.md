@@ -8,7 +8,7 @@ This binding is for users coming from the proprietary homeautomation-system "IP-
 
 ## Binding Configuration
 
-The binding must be configured in the file `services/akm868.cfg`.
+The binding can be configured in the file `services/akm868.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

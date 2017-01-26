@@ -56,7 +56,7 @@ This issue is/will be fixed in Openhab 1.8.4 or 1.9-SNAPSHOT.
 
 # Binding Configuration
 
-This binding must be configured with the file `services/hue.cfg`.
+This binding can be configured with the file `services/hue.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

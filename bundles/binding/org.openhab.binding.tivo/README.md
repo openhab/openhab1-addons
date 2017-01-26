@@ -8,7 +8,7 @@ Enable [Network Remote Control](http://support.tivo.com/app/answers/detail/a_id/
 
 ## Binding Configuration
 
-This binding must be configured with the file `services/tivo.cfg`.
+This binding can be configured with the file `services/tivo.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

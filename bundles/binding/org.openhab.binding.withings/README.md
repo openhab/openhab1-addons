@@ -4,7 +4,7 @@ The Withings binding allows openHAB to synchronize data from the official Within
 
 ## Binding Configuration
 
-The binding must be configured in the file `services/withings.cfg`.
+The binding can be configured in the file `services/withings.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

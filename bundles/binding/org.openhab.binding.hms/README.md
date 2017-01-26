@@ -4,7 +4,7 @@ This binding enables support of receiving HMS messages via the CUL transport.
 
 ## Binding Configuration
 
-This binding must be configured in the `services/hms.cfg` file.
+This binding can be configured in the `services/hms.cfg` file.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

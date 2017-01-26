@@ -4,7 +4,7 @@ This binding enables support of sending and receiving FS20 messages via the CUL 
 
 ## Binding Configuration
 
-This binding must be configured in the `services/fs20.cfg` file.
+This binding can be configured in the `services/fs20.cfg` file.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

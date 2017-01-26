@@ -4,7 +4,7 @@ This binding supports the LightwaveRF products using the LightwaveRF Wifi Link t
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/lightwaverf.cfg`.
+This binding can be configured in the file `services/lightwaverf.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

@@ -4,7 +4,7 @@ This binding communicates with Somfy URTSI II devices over a serial connection.
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/urtsi.cfg`.
+This binding can be configured in the file `services/urtsi.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

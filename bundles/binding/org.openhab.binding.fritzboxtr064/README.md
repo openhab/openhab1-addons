@@ -29,7 +29,7 @@ This is a binding for communication with AVM Fritz!Box using SOAP requests (TR06
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/fritzboxtr064.cfg`.
+This binding can be configured in the file `services/fritzboxtr064.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

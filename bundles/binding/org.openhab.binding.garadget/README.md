@@ -6,7 +6,7 @@ The [Garadget](http://garadget.com) is cloud-based device that "futurizes" your 
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/garadget.cfg`.
+This binding can be configured in the file `services/garadget.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

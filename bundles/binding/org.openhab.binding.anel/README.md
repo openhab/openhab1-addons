@@ -18,7 +18,7 @@ Here is a video demonstrating a switch and a dimmer (voice is German), explanati
 
 ## Binding Configuration
 
-The binding must be configured in the file `services/anel.cfg`.  In the table below, `<name>` must be an identifier that is also used for the item bindings.
+The binding can be configured in the file `services/anel.cfg`.  In the table below, `<name>` must be an identifier that is also used for the item bindings.
 
 
 | Key | Default | Required | Description |

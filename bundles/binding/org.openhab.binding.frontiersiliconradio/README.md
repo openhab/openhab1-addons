@@ -26,7 +26,7 @@ You can easily check if your IP radio is supported:
 
 ## Binding Configuration
 
-This binding must be configured in the `services/frontiersiliconradio.cfg` file.
+This binding can be configured in the `services/frontiersiliconradio.cfg` file.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|

@@ -6,7 +6,7 @@ The matrixes can be controlled by either UDP/IP and/or Serial connections, but d
 
 ## Binding Configuration
 
-This binding must be configured in the file `services/hdanywhere.cfg`.
+This binding can be configured in the file `services/hdanywhere.cfg`.
 
 A binding configuration with multiple configuration parts would typically be used to control multiple output ports at the same time, e.g. have the switch together to the same HDMI source port.
 

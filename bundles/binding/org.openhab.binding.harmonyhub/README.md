@@ -4,7 +4,7 @@ The Harmony Hub binding is used to enable communication between openHAB and one 
 
 ## Binding Configuration
 
-The binding must be configured in the file `services/harmonyhub.cfg`.
+The binding can be configured in the file `services/harmonyhub.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
