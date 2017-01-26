@@ -21,8 +21,7 @@ This binding must be configured in the file `services/nest.cfg`.
 | client_id |        |   Yes    | the Product ID for the [product](https://developer.nest.com/products) you created |
 | client_secret |    |   Yes    | the Product Secret for the [product](https://developer.nest.com/products) you created |
 | pin_code |         |   Yes    | the PIN code that was generated when you authorized your account to allow this product |
-| refresh  | 60000   |   No     | Data refresh interval in milliseconds (60000ms is one minute)<br/><br/>:warning: Setting the `refresh` aggressively may cause you to hit [data rate limits](https://developer.nest.com/documentation/cloud/data-rate-limits).  Nest documentation recommends the `refresh` not be set lower than 60000 (the default value): "To avoid errors, we recommend you limit requests to one call per minute, maximum."
-|
+| refresh  | 60000   |   No     | Data refresh interval in milliseconds (60000ms is one minute)<br/><br/>:warning: Setting the `refresh` aggressively may cause you to hit [data rate limits](https://developer.nest.com/documentation/cloud/data-rate-limits).  Nest documentation recommends the `refresh` not be set lower than 60000 (the default value): "To avoid errors, we recommend you limit requests to one call per minute, maximum." |
 | timeout  | 10000   |   No     | HTTP request timeout in milliseconds |
 
 ## Item configuration

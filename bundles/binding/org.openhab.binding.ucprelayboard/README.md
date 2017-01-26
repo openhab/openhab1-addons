@@ -1,37 +1,31 @@
-## Introduction
+## UCProjects.eu Relay Board Binding
 
-This binding provides support for relay board available from [ucprojects.eu](http://ucprojects.eu) (site in polish)
+This binding provides support for relay board available from [ucprojects.eu](http://ucprojects.eu) (site in Polish)
 
-For installation of the binding, please see Wiki page [[Bindings]].
+## Binding Configuration
 
-## Configuration in openhab.cfg
+This binding must be configured in the file `services/ucprelayboard.cfg`.
 
-    ################################ UCProjects.eu Relay Board Binding ###################################
-    #
-    # Port and baud rate (optional, defaults to 57600) for every device
-    # ucprelayboard:board.<name>.port=/dev/tyUSB0
-    # ucprelayboard:board.<name>.baud=
-    #
-    # Refresh of relay board state interval in miliseconds (optional, defaults to 60000)
-    # ucprelayboard:refresh=
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| board.`<name>`.port | | Yes   | Name of the serial device to which the board is connected |
+| board.`<name>`.baud | 57600 | No | Baud rate for the serial device |
+| refresh  | 60000    |   No    | Refresh of relay board state interval in miliseconds (60000 is one minute) |
 
-You can define more than one board.
+where:
 
-## Items
+* `<name>` is a name you choose, and you can specify more than one board.
 
-Only Switch item is supported. In order to bind relay board to the switch, you need to provide configuration settings in your item file (in the folder configurations/items).
+## Item Configuration
 
+Only Switch items are supported.
 
 ```
-{ucprelayboard="board=<name>;relay=<number>[;inverted=true]"}
+ucprelayboard="board=<name>;relay=<number>[;inverted=true]"
 ```
 
-| Property | Description | Mandatory |
-| :------------- | :-----| :--------- |
-| board | name of the board, as defined in openhab.cfg | Yes |
-| relay | index of the relay on the board | Yes |
-| inverted | if set to true, inverts value of the relay | No |
+where:
 
-## Notes
-
-see [[Serial Binding]] notes for serial port configuration and troubleshooting.
+* `<name>` is a name you configured in the binding configuration
+* `<number>` is the index of the relay on the board you wish to switch
+* `[;inverted=true]` an optional section that inverts the meaning of ON and OFF
