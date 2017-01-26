@@ -344,7 +344,7 @@ end
 ## Known Issues
 
 1. The binding initiates outbound TCP connections to the Nest infrastructure on port 9553 (however, which outbound ports are used is determined dynamically by the Nest cloud service and may be different from 9553). If the log shows "Connection timed out" or "Exception reading from Nest: Could not get data model", ensure that outbound connections are not being blocked by a firewall.
-2. Multiple instance support (allowing the binding to access multiple Nest accounts at once) conflicts with Prohibition 3 of the [Nest Developer Terms of Service](https://developer.nest.com/documentation/cloud/tos), and so is not implemented.
+2. Multiple instance support (allowing the binding to access multiple Nest accounts at once) is not implemented because doing so might conflict with Prohibition 4 of the [Nest Developer Terms of Service](https://developer.nest.com/documentation/cloud/tos): "Aggregate control of Nest products, services, or Customer Data across multiple households except to the extent Nest permits control of multiple homes in a single Nest account."
 3. The Nest API rounds humidity to 5%, degrees Fahrenheit to whole degrees, and degrees Celsius to 0.5 degrees, so your Nest app will likely show slightly different values from what is available from the API.
 4. There is currently a bug where attempting to update an Item with a binding configuration of this form will not work:
 
