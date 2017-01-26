@@ -521,23 +521,23 @@ Switch MoveServo "MoveServo" {autoupdate="false"}
 sitemap tf_weather label="Brick Servo"
 {
   Frame {
-	Slider item=Servo0
-	Switch item=Servo0Rollershutter
-	Switch item=Servo0Switch
-	Text item=Servo0Postion
-	Setpoint item=Servo0Postion minValue=-9000 maxValue=6000 step=2000
-	Slider item=Servo0Rule
+    Slider item=Servo0
+    Switch item=Servo0Rollershutter
+    Switch item=Servo0Switch
+    Text item=Servo0Postion
+    Setpoint item=Servo0Postion minValue=-9000 maxValue=6000 step=2000
+    Slider item=Servo0Rule
 
-	Switch item=ClearLCD
-	Switch item=MoveServo
+    Switch item=ClearLCD
+    Switch item=MoveServo
 
-	Switch item=Servo1
-	Switch item=Servo2
-	Switch item=Servo3
-	Switch item=Servo4
-	Switch item=Servo5
-	Switch item=Servo6
-	}
+    Switch item=Servo1
+    Switch item=Servo2
+    Switch item=Servo3
+    Switch item=Servo4
+    Switch item=Servo5
+    Switch item=Servo6
+    }
 }
 
 ```
@@ -850,10 +850,10 @@ Dimmer ADIMMERPERCENT "Dimmerpercent" {tinkerforge="uid=<your_uid"}
 ```
 sitemap aout label="AnalogOutV2"
 {
-	Frame {
-	Slider item=ADIMMER
-	Setpoint item=ADIMMERPERCENT step=10
-	}
+    Frame {
+    Slider item=ADIMMER
+    Setpoint item=ADIMMERPERCENT step=10
+    }
 }
 
 ```
@@ -943,9 +943,9 @@ Number C02 "C02 Concentration [%.1f]"  { tinkerforge="uid=<your_uid>" }
 ```
 sitemap co2 label="C02"
 {
-	Frame {
-		Text item=C02
-	}
+    Frame {
+        Text item=C02
+    }
 }
 
 ```
@@ -1017,7 +1017,7 @@ Switch led "Color Led"  {tinkerforge="uid=<your_uid>, subid=led"}
 sitemap tf label="Color"
 {
     Frame label="Color" {
-    	Colorpicker item=color
+        Colorpicker item=color
         Text item=temperature
         Text item=illuminance
         Switch item=led
@@ -1117,10 +1117,10 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 The Dual Button Bricklet has four sub devices: two leds and two buttons.
 The subids are:
- * dualbutton_leftled
- * dualbutton_rightled
- * dualbutton_leftbutton
- * dualbutton_rightbutton
+* dualbutton_leftled
+* dualbutton_rightled
+* dualbutton_leftbutton
+* dualbutton_rightbutton
 
 ##### Leds
 There are two operating modes for the leds: with the autotoggle=True the leds are
@@ -1224,8 +1224,8 @@ An entry in /services/tinkerforge.cfg is only needed if you want to adjust [thre
 
 The Dual Relay Bricklet has two sub devices.
 The subids are:
- * relay1
- * relay2
+* relay1
+* relay2
 
 | property | description | values |
 |----------|--------------|--------|
@@ -1321,9 +1321,9 @@ Number Dust              "Dust [%.0f]" { tinkerforge="uid=<your_uid>"}
 ```
 sitemap tf label="Dust Detector"
 {
-  Frame {
-	Text item=Dust
-	}
+    Frame {
+        Text item=Dust
+    }
 }
 
 ```
@@ -1513,10 +1513,10 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 ##### tinkerforge.cfg configuration options for the Bricklet
 sampleRate: possible values 0, 1, 2, 3. Setting the sample rate is optional
 it defaults to 3 (4 samples per second).
- * 0 means: 240 samples per second
- * 1 means: 60 samples per second
- * 2 means: 15 samples per second
- * 3 means: 4 samples per second
+* 0 means: 240 samples per second
+* 1 means: 60 samples per second
+* 2 means: 15 samples per second
+* 3 means: 4 samples per second
 
 ##### tinkerforge.cfg configuration options for the sensors
 callbackPeriod: Setting the callback period is optional, the default is 1000 milli seconds.
@@ -1746,7 +1746,7 @@ io1.pullUpResistorEnabled=true
 ```
 ##### Items file entry (e.g. tinkerforge.items):
 ```
-Switch out0		"out0 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=out0"}
+Switch out0 "out0 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=out0"}
 Contact in1 "in1 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=in1"}
 
 ```
@@ -1754,10 +1754,10 @@ Contact in1 "in1 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=in1"}
 ```
 sitemap io4 label="IO4"
 {
-	Frame {
-		Switch item=out0
-		Text item=in1
-	}
+    Frame {
+        Switch item=out0
+        Text item=in1
+    }
 }
 
 ```
@@ -1887,47 +1887,47 @@ io16inb7.pullUpResistorEnabled=true
 
 ##### Items file entry (e.g. tinkerforge.items):
 ```
-Contact ina0		"ina0 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina0"}
-Contact ina1		"ina1 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina1"}
-Switch outa2		"outa2" {tinkerforge="uid=<your_uid>, subid=outa2"}
-Switch outa3		"outa3" {tinkerforge="uid=<your_uid>, subid=outa3"}
-Contact ina4		"ina4 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina4"}
-Contact ina5		"ina5 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina5"}
-Contact ina6		"ina6 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina6"}
-Contact ina7		"ina7 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina7"}
+Contact ina0        "ina0 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina0"}
+Contact ina1        "ina1 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina1"}
+Switch outa2        "outa2" {tinkerforge="uid=<your_uid>, subid=outa2"}
+Switch outa3        "outa3" {tinkerforge="uid=<your_uid>, subid=outa3"}
+Contact ina4        "ina4 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina4"}
+Contact ina5        "ina5 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina5"}
+Contact ina6        "ina6 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina6"}
+Contact ina7        "ina7 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina7"}
 
-Switch outb0		"outb0" {tinkerforge="uid=<your_uid>, subid=outb0"}
-Contact inb1		"inb1 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb1"}
-Contact inb2		"inb2 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb2"}
-Contact inb3		"inb3 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb3"}
-Contact inb4		"inb4 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb4"}
-Contact inb5		"inb5 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb5"}
-Contact inb6		"inb6 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb6"}
-Contact inb7		"inb7 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb7"}
+Switch outb0        "outb0" {tinkerforge="uid=<your_uid>, subid=outb0"}
+Contact inb1        "inb1 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb1"}
+Contact inb2        "inb2 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb2"}
+Contact inb3        "inb3 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb3"}
+Contact inb4        "inb4 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb4"}
+Contact inb5        "inb5 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb5"}
+Contact inb6        "inb6 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb6"}
+Contact inb7        "inb7 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb7"}
 ```
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
 ```
 sitemap io16 label="Main Menu"
 {
-	Frame {
-		Text item=ina0
-		Text item=ina1
-		Switch item=outa2
-		Switch item=outa3
-		Text item=ina4
-		Text item=ina5
-		Text item=ina6
-		Text item=ina7
+    Frame {
+        Text item=ina0
+        Text item=ina1
+        Switch item=outa2
+        Switch item=outa3
+        Text item=ina4
+        Text item=ina5
+        Text item=ina6
+        Text item=ina7
 
-		Switch item=outb0
-		Text item=inb1
-		Text item=inb2
-		Text item=inb3
-		Text item=inb4
-		Text item=inb5
-		Text item=inb6
-		Text item=inb7
-	  }
+        Switch item=outb0
+        Text item=inb1
+        Text item=inb2
+        Text item=inb3
+        Text item=inb4
+        Text item=inb5
+        Text item=inb6
+        Text item=inb7
+      }
 }
 ```
 
@@ -1946,7 +1946,7 @@ different callback periods.
 
 ##### Button
 Two operating modes for the button. The button can behave like a switch or
-like a tactile switch.  
+like a tactile switch.
 * Switch mode
 The switch mode operates like this: pressing the button toggles the
 switch state, if state was ON it goes to OFF and vice versa. Releasing the button doesn't
@@ -1989,10 +1989,10 @@ Contact JoystickButton       "Button" { tinkerforge="uid=<your_uid>, subid=joyst
 sitemap tf_weather label="Joystick"
 {
   Frame {
-	Text item=XPostion
-	Text item=YPostion
-	Text item=JoystickButton
-	}
+    Text item=XPostion
+    Text item=YPostion
+    Text item=JoystickButton
+    }
 }
 ```
 
@@ -2106,8 +2106,7 @@ achieve this, you have to configure the device as String item.
 
 What’s the meaning of this magic string?
 ```
-sendCommand(TF_LCD, String::format("TFNUM<213>%4s"Barometer.state.format("%d")
-                      ))
+sendCommand(TF_LCD, String::format("TFNUM<213>%4s"Barometer.state.format("%d")))
 ```
 TFNUM is just a flag to signal the binding that some position information is passed. The first
 number is the line number, starting from 0. The second and third number are interpreted as the
@@ -2171,17 +2170,13 @@ then
         sendCommand(TF_LCD, "TFNUM<30>Luminance  :     Lux")
         sendCommand(TF_LCDBacklight, ON)
         sendCommand(TF_LCD, String::format("TFNUM<013>%4s",
-                                TF_Barometer_Temperature.state.format("%.1f")
-                        ))
+                                TF_Barometer_Temperature.state.format("%.1f")))
         sendCommand(TF_LCD, String::format("TFNUM<113>%4s",
-                                TF_Humdity.state.format("%.1f")
-                            ))
+                                TF_Humdity.state.format("%.1f")))
         sendCommand(TF_LCD, String::format("TFNUM<213>%4s",
-                                  TF_Barometer.state.format("%.0f")
-                                  ))
+                                  TF_Barometer.state.format("%.0f")))
         sendCommand(TF_LCD, String::format("TFNUM<313>%4s",
-                                TF_AmbientLight.state.format("%.0f")
-                                ))
+                                TF_AmbientLight.state.format("%.0f")))
     ]
 
 end
@@ -2349,9 +2344,9 @@ Number Poti   "Poti [%.0f]" { tinkerforge="uid=<your_uid>"}
 ```
 sitemap tflabel="Linear Poti"
 {
-  Frame {
-	Text item=Poti
-	}
+    Frame {
+        Text item=Poti
+    }
 }
 ```
 
@@ -2374,7 +2369,7 @@ tfLoadCellTare(String uid) sets tare on the load cell bricklet with the given ui
 Example:
 ```
 rule "Tare"
-   when 
+   when
            Item Tare changed to ON
    then
            postUpdate(TareValue, Weight.state)
@@ -2428,12 +2423,12 @@ Number TareValue "Tare Value [%.0f]"
 ```
 sitemap tf label="Load Cell"
 {
-  Frame {
-	Text item=Weight
-	Switch item=Led
-	Switch item=Tare
-	Text item=TareValue
-	}
+    Frame {
+        Text item=Weight
+        Switch item=Led
+        Switch item=Tare
+        Text item=TareValue
+    }
 }
 ```
 
@@ -2442,7 +2437,7 @@ sitemap tf label="Load Cell"
 import org.openhab.core.library.types.*
 
 rule "Tare"
-        when 
+        when
                 Item Tare changed to ON
         then
                 postUpdate(TareValue, Weight.state)
@@ -2641,8 +2636,8 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 #### Binding properties:
 
 The Piezo Speaker Bricklet supports two modes:
-  * sending morse codes with configurable frequency
-  * sending tones with configurable duration and frequency
+* sending morse codes with configurable frequency
+* sending tones with configurable duration and frequency
 
 Configuration is done through item definition. In order to use different tone sequences you need to use one item per tone sequence.
 
@@ -2814,28 +2809,26 @@ Switch r1    "r1" <socket> (Lights)      {tinkerforge="uid=<your_uid>, subid=rsl
 Switch rb    "rb" <socket> (Lights)      {tinkerforge="uid=<your_uid>, subid=kitchen"}
 Switch rc    "rc" <socket> (Lights)      {tinkerforge="uid=<your_uid>, subid=floor"}
 
-Group:Switch:OR(ON,OFF)	Lights	"All Lights [(%d)]"
+Group:Switch:OR(ON,OFF)    Lights    "All Lights [(%d)]"
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
 ```
 sitemap tf label="RemoteSwitch"
 {
-	Frame label="Group" {
-		         Text label="Group Demo" icon="1stfloor" {
-                Switch item=Lights mappings=[OFF="All Off",ON="All On"]
-         }
-		
-	}
+    Frame label="Group" {
+        Text label="Group Demo" icon="1stfloor" {
+        Switch item=Lights mappings=[OFF="All Off",ON="All On"]
+        }
+    }
   Frame label="Remote" {
-			Switch item=r0
-			Switch item=r1
-			Switch item=rb
-			Slider item=dimmb switchSupport
-			Switch item=rc
-                  }
+            Switch item=r0
+            Switch item=r1
+            Switch item=rb
+            Slider item=dimmb switchSupport
+            Switch item=rc
+    }
 }
-
 ```
 
 ---
@@ -2862,11 +2855,11 @@ rule "Clear"
 then 
    tfRotaryEncoderClear("<your_uid>")
 end
-```    
+```
 
 ##### Button
 Two operating modes for the button. The button can behave like a switch or
-like a tactile switch.  
+like a tactile switch.
 * Switch mode
 The switch mode operates like this: pressing the button toggles the
 switch state, if state was ON it goes to OFF and vice versa. Releasing the button doesn't
@@ -2907,7 +2900,7 @@ import org.openhab.core.library.types.*
 rule "Clear"
 when Item Clear changed
 then
-	tfRotaryEncoderClear("<your_id>")
+    tfRotaryEncoderClear("<your_id>")
 end
 ```
 
@@ -2916,10 +2909,10 @@ end
 sitemap tf label="RotaryEncoder"
 {
   Frame {
-	Text item=Counter
-	Text item=Button
-	Switch item=Clear
-	}
+    Text item=Counter
+    Text item=Button
+    Switch item=Clear
+    }
 }
 ```
 
@@ -2965,8 +2958,8 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
- * no sub devices
- * no configuration needed for tinkerforge.cfg
+* no sub devices
+* no configuration needed for tinkerforge.cfg
 
 ##### Items file entry (e.g. tinkerforge.items):
 ```
@@ -3250,9 +3243,9 @@ Number Temp "Temperature (Thermocouple) [%.1f]" { tinkerforge="uid=<your_uid>" }
 ```
 sitemap thermocouple label="Thermocouple"
 {
-	Frame {
-		Text item=Temp
-	}
+    Frame {
+        Text item=Temp
+    }
 }
 
 ```
@@ -3292,9 +3285,9 @@ Number UV "UV Light [%.1f]" { tinkerforge="uid=<your_uid>" }
 ```
 sitemap uv label="UV Light"
 {
-	Frame {
-		Text item=UV
-	}
+    Frame {
+        Text item=UV
+    }
 }
 
 ```
@@ -3463,71 +3456,62 @@ then
         sendCommand(TF_LCD, "TFNUM<30>Luminance  :")
         sendCommand(TF_LCD, "TFNUM<317>Lux")
         sendCommand(TF_LCD, String::format("TFNUM<013>%4s", 
-                                TF_Barometer_Temperature.state.format("%.1f")
-                        ))
+                                TF_Barometer_Temperature.state.format("%.1f")))
         sendCommand(TF_LCD, String::format("TFNUM<113>%4s", 
-                                TF_Humdity.state.format("%.1f")
-                            ))
+                                TF_Humdity.state.format("%.1f")))
         sendCommand(TF_LCD, String::format("TFNUM<213>%4s",
-                                  TF_Barometer.state.format("%.0f")
-                                  ))
+                                  TF_Barometer.state.format("%.0f")))
         sendCommand(TF_LCD, String::format("TFNUM<313>%4s", 
-                                TF_AmbientLight.state.format("%.0f")
-                                ))
+                                TF_AmbientLight.state.format("%.0f")))
     ]
- 
+
 end
 
 rule "Goodbye"
-when 
-        System shuts down
+when
+    System shuts down
 then
-        sendCommand(TF_LCDBacklight, OFF)
+    sendCommand(TF_LCDBacklight, OFF)
 end
 
 rule "Weatherstation LCD Backlight"
-        when 
-                Item TF_Button0 changed
-        then
+    when
+        Item TF_Button0 changed
+    then
         if (TF_LCDBacklight.state == ON)
             sendCommand(TF_LCDBacklight, OFF)
         else
             sendCommand(TF_LCDBacklight, ON)
-
 end
 
 rule "Weatherstation LCD update temperature"
-        when 
-                Item TF_Barometer_Temperature received update 
-        then
-                sendCommand(TF_LCD, String::format("TFNUM<013>%4s", 
-                                TF_Barometer_Temperature.state.format("%.1f")
-                        ))
+    when
+        Item TF_Barometer_Temperature received update
+    then
+        sendCommand(TF_LCD, String::format("TFNUM<013>%4s",
+            TF_Barometer_Temperature.state.format("%.1f")))
 end
 
 rule "Weatherstation LCD update humidity"
-        when 
-                Item TF_Humdity received update
-        then
-                sendCommand(TF_LCD, String::format("TFNUM<113>%4s", 
-                                TF_Humdity.state.format("%.1f")
-                            ))
+    when
+        Item TF_Humdity received update
+    then
+        sendCommand(TF_LCD, String::format("TFNUM<113>%4s",
+            TF_Humdity.state.format("%.1f")))
 end
 rule "Weatherstation LCD update airpressure"
-        when 
-                Item TF_Barometer received update
-        then
-                sendCommand(TF_LCD, String::format("TFNUM<213>%4s",
-                                  TF_Barometer.state.format("%.0f")
-                                  ))
+    when
+        Item TF_Barometer received update
+    then
+        sendCommand(TF_LCD, String::format("TFNUM<213>%4s",
+            TF_Barometer.state.format("%.0f")))
 end
 rule "Weatherstation LCD update ambientLight"
-        when 
-                Item TF_AmbientLight received update
-        then
-                sendCommand(TF_LCD, String::format("TFNUM<313>%4s", 
-                                TF_AmbientLight.state.format("%.0f")
-                                ))
+    when
+        Item TF_AmbientLight received update
+    then
+        sendCommand(TF_LCD, String::format("TFNUM<313>%4s",
+            TF_AmbientLight.state.format("%.0f")))
 end
 ```
 
@@ -3535,19 +3519,19 @@ end
 ```
 sitemap tf_weather label="Tinkerforge Weather Station"
 {
-	  Frame {
-	  			Text item=TF_Humdity 
-				Text item=TF_Barometer
-				Text item=TF_Barometer_Temperature
-				Text item=TF_AmbientLight
-				Switch item=TF_LCDBacklight
-				Switch item=TF_Button0
-				Switch item=TF_Button1
-				Switch item=TF_Button2
-				Switch item=TF_Button3
-				Text item=ConnectionStatus
-				Text item=Reconnects
-			}
+    Frame {
+        Text item=TF_Humdity 
+        Text item=TF_Barometer
+        Text item=TF_Barometer_Temperature
+        Text item=TF_AmbientLight
+        Switch item=TF_LCDBacklight
+        Switch item=TF_Button0
+        Switch item=TF_Button1
+        Switch item=TF_Button2
+        Switch item=TF_Button3
+        Text item=ConnectionStatus
+        Text item=Reconnects
+    }
 }
 ```
 
@@ -3598,43 +3582,42 @@ openHAB is preinstalled on the RED Brick image and can be configured with the Ti
 
 # 1.7.1
 ## New Devices
- * [Accelerometer Bricklet](#accelerometer-bricklet)
- * [Ambient Light Bricklet 2.0](#ambient-light-bricklet-v2)
- * [Analog In Bricklet](#analog-in-bricklet)
- * [Analog In Bricklet 2.0](#analog-in-bricklet-20)
- * [Color Bricklet](#color-bricklet)
- * [Dust Detector Bricklet](#dust-detector-bricklet)
- * [Hall Effect Bricklet](#hall-effect-bricklet)
- * [Industrial Dual Analog In Bricklet](#industrial-dual-analog-in-bricklet)
- * [Laser Range Finder Bricklet](#laser-range-finder-bricklet)
- * [Load Cell Bricklet](#load-cell-bricklet)
- * [Piezo Speaker Bricklet](#piezo-speaker-bricklet)
- * [Rotary Encoder Bricklet](#rotary-encoder-bricklet)
- 
+* [Accelerometer Bricklet](#accelerometer-bricklet)
+* [Ambient Light Bricklet 2.0](#ambient-light-bricklet-v2)
+* [Analog In Bricklet](#analog-in-bricklet)
+* [Analog In Bricklet 2.0](#analog-in-bricklet-20)
+* [Color Bricklet](#color-bricklet)
+* [Dust Detector Bricklet](#dust-detector-bricklet)
+* [Hall Effect Bricklet](#hall-effect-bricklet)
+* [Industrial Dual Analog In Bricklet](#industrial-dual-analog-in-bricklet)
+* [Laser Range Finder Bricklet](#laser-range-finder-bricklet)
+* [Load Cell Bricklet](#load-cell-bricklet)
+* [Piezo Speaker Bricklet](#piezo-speaker-bricklet)
+* [Rotary Encoder Bricklet](#rotary-encoder-bricklet)
+
 # 1.7.0
 ## New Devices
- * [Joystick Bricklet](#joystick-bricklet)
- * [Linear Poti Bricklet](#linear-poti-bricklet)
- * [Dual Button Bricklet](#dual-button-bricklet)
- * [PTC Bricklet](#ptc-bricklet)
- * [Industrial Dual 0-20mA Bricklet](#industrial-dual-0-20ma-bricklet)
- * [Solid State Relay Bricklet](#solid-state-relay-bricklet)
- * [Remote Switch dimmer](#remote-switch-bricklet)
+* [Joystick Bricklet](#joystick-bricklet)
+* [Linear Poti Bricklet](#linear-poti-bricklet)
+* [Dual Button Bricklet](#dual-button-bricklet)
+* [PTC Bricklet](#ptc-bricklet)
+* [Industrial Dual 0-20mA Bricklet](#industrial-dual-0-20ma-bricklet)
+* [Solid State Relay Bricklet](#solid-state-relay-bricklet)
+* [Remote Switch dimmer](#remote-switch-bricklet)
 
 ## New Features
- * Tinkerforge Action Addon
- * [Brick DC](#dc-brick) fully supported
- * [Brick Servo](#servo-brick) fully supported
- * Authentication support for brickd
- * Tactile feature for [Dualbutton](#dual-button-bricklet), [LCD Buttons](#lcd-20x4-display-bricklet), [Joystick Button](#joystick-bricklet)
- * [LED Strip](#led-strip-bricklet): sub devices and switching capabilities, configurable Frameduration, ChipType and Clockfrequency
- 
- 
+* Tinkerforge Action Addon
+* [Brick DC](#dc-brick) fully supported
+* [Brick Servo](#servo-brick) fully supported
+* Authentication support for brickd
+* Tactile feature for [Dualbutton](#dual-button-bricklet), [LCD Buttons](#lcd-20x4-display-bricklet), [Joystick Button](#joystick-bricklet)
+* [LED Strip](#led-strip-bricklet): sub devices and switching capabilities, configurable Frameduration, ChipType and Clockfrequency
+
 ## Other changes
- * updated Tinkerforge API to 2.1.4
- 
+* updated Tinkerforge API to 2.1.4
+
 ## Bugfixes
- * Fix for configuration handling of device aliases
+* Fix for configuration handling of device aliases
 
 ## Brick DC
 ### Incompatible changes
@@ -3710,48 +3693,48 @@ tfServoSetposition("6Crt5W", "servo0", "-9000", "65535", "65535")
 
 # 1.5.0
 ## Bugfixes
-  * Reconnect support for IO16 Bricklet
-  * polled values now are only send once to the eventbus
+* Reconnect support for IO16 Bricklet
+* polled values now are only send once to the eventbus
 
 ## New Devices
- * [Remote Switch Bricklet](#remote-switch-bricklet)
- * [Motion Detector Bricklet](#motion-detector-bricklet)
- * [Multi Touch Bricklet](#multi-touch-bricklet)
- * [Temperature IR Bricklet](#temperature-ir-bricklet)
- * [Sound Intensity Bricklet](#sound-intensity-bricklet)
- * [Moisture Bricklet](#moisture-bricklet)
- * [Distance US Bricklet](#distance-us-bricklet)
- * [Voltage/Current Bricklet](#voltagecurrent-bricklet)
- * [Tilt Bricklet](#tilt-bricklet)
+* [Remote Switch Bricklet](#remote-switch-bricklet)
+* [Motion Detector Bricklet](#motion-detector-bricklet)
+* [Multi Touch Bricklet](#multi-touch-bricklet)
+* [Temperature IR Bricklet](#temperature-ir-bricklet)
+* [Sound Intensity Bricklet](#sound-intensity-bricklet)
+* [Moisture Bricklet](#moisture-bricklet)
+* [Distance US Bricklet](#distance-us-bricklet)
+* [Voltage/Current Bricklet](#voltagecurrent-bricklet)
+* [Tilt Bricklet](#tilt-bricklet)
 
 ## Other changes
- * updated Tinkerforge API to 2.1.0
- * Threshold values now have the unit as the sensor value (incompatible change, you have to update your services/tinkerforge.cfg)
- * polling is only done for devices which don't support CallbackListeners / InterruptListeners
+* updated Tinkerforge API to 2.1.0
+* Threshold values now have the unit as the sensor value (incompatible change, you have to update your services/tinkerforge.cfg)
+* polling is only done for devices which don't support CallbackListeners / InterruptListeners
 
 # 1.4.0
 ## Bugfixes
-  * Missing updates of Items if a Tinkerforge Device is referenced in several Items
+* Missing updates of Items if a Tinkerforge Device is referenced in several Items
 
 ## Incompatible Changes
-  * LCDBacklight is a sub device of LCD20x4 Bricklet (items file must be changed)
-  * LCD20x4Button posts an update not a command anymore (rules must be changed)
-  * IndustrialQuadRelay sub id numbering now starts from zero (items file must be changed)
+* LCDBacklight is a sub device of LCD20x4 Bricklet (items file must be changed)
+* LCD20x4Button posts an update not a command anymore (rules must be changed)
+* IndustrialQuadRelay sub id numbering now starts from zero (items file must be changed)
 
 ## New Devices
- * [Industrial Quad Relay Bricklet](#industrial-quad-relay-bricklet)
- * [Industrial Digital In 4 Bricklet](#industrial-digital-in-4-bricklet)
- * [IO 16 Bricklet](#io-16-bricklet)
+* [Industrial Quad Relay Bricklet](#industrial-quad-relay-bricklet)
+* [Industrial Digital In 4 Bricklet](#industrial-digital-in-4-bricklet)
+* [IO 16 Bricklet](#io-16-bricklet)
 
 ## Other changes
- * updated Tinkerforge API to 2.0.12
- * support for serveral Item types
-   * NumberItem
-   * SwitchItem
-   * ContactItem
- * handle disconnected brickds
-   * on binding startup make retries every second
-   * when binding is running use the Tinkerforge autoreconnect feature
-   
+* updated Tinkerforge API to 2.0.12
+* support for serveral Item types
+    * NumberItem
+    * SwitchItem
+    * ContactItem
+* handle disconnected brickds
+    * on binding startup make retries every second
+    * when binding is running use the Tinkerforge autoreconnect feature
+
 ---
 [Table of Contents](#table-of-contents)
