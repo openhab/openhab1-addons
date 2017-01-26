@@ -20,7 +20,9 @@
     - [Ambient Light Bricklet 2.0](#ambient-light-bricklet-v2)
     - [Analog In Bricklet](#analog-in-bricklet)
     - [Analog In Bricklet 2.0](#analog-in-bricklet-20)
+    - [Analog Out Bricklet 2.0](#analog-out-bricklet-20)
     - [Barometer Bricklet, barometer and temperature device](#barometer-bricklet)
+    - [CO2 Bricklet](#co2-bricklet)
     - [Color Bricklet](#color-bricklet)
     - [Distance IR Bricklet](#distance-ir-bricklet)
     - [Distance US Bricklet](#distance-us-bricklet)
@@ -34,6 +36,7 @@
     - [Industrial Dual 0-20mA Bricklet](#industrial-dual-0-20ma-bricklet)
     - [Industrial Dual Analog In Bricklet](#industrial-dual-analog-in-bricklet)
     - [Industrial Quad Relay Bricklet](#industrial-quad-relay-bricklet)
+    - [IO 4 Bricklet](#io-4-bricklet)
     - [IO 16 Bricklet](#io-16-bricklet)
     - [Joystick Bricklet](#joystick-bricklet)
     - [Laser Range Finder Bricklet](#laser-range-finder-bricklet)
@@ -54,26 +57,19 @@
     - [Temperature Bricklet](#temperature-bricklet)
     - [Temperature IR Bricklet](#temperature-ir-bricklet)
     - [Tilt Bricklet](#tilt-bricklet)
+    - [Thermocouple Bricklet](#thermocouple-bricklet)
+    - [UV Light Bricklet](#uv-light-bricklet)
     - [Voltage/Current Bricklet](#voltagecurrent-bricklet)
   - Kits
     - [Weatherstation Kit](#weatherstation-kit)
   - Deamon
     - [Brick Daemon](#brick-daemon)
-- [News](#news)
 - [Red Brick](#red-brick)
-- [Tinkerforge Actions](#tinkerforge-actions)
-- [Upgrading](#upgrading)
-  - [from Version 1.3](#upgrading-from-13)
-  - [from Version 1.4](#upgrading-from-14)
-  - [from Version 1.7.0](#upgrading-from-170)
-  - [from Version 1.7.1](#upgrading-from-171)
-  - [from Version 1.8.0](#upgrading-from-180)
 - [Developer Notes](#developer-notes)
 
 ---
 
 ## Introduction
-
 [TinkerForge](http://www.tinkerforge.com) is a system of open source hardware building blocks that
 allows you to combine sensor and actuator blocks by plug and play. You can create your individual
 hardware system by choosing the necessary building blocks for your project and combine it with other
@@ -88,30 +84,25 @@ openHAB.
 The binding supports the connection to several brickd instances.
 The TinkerForge auto reconnect feature is supported. Furthermore even if the initial connect failed the binding will make retries to get connected to the brickd.
 
-The TinkerForge binding bundle is available as a separate (optional) download. For installation of
-the binding, please see Wiki page [[Bindings]].
-
 ---
+[Table of Contents](#table-of-contents)
 
 ## Generic Item Binding Configuration
 
 ### Basic Configuration
-
 In order to connect openHAB to TinkerForge devices you need to define all the brickd hosts and ports in the services/tinkerforge.cfg file.
 The following properties must be configured to define a brickd connection:
-
 ```
 hosts=<IP address>[:port][:<secret>] ...
 ```
-
 The properties indicated by '<...>' need to be replaced with an actual value. Properties surrounded
 by square brackets are optional. Several brickd configurations are delimited by a space.
 
 *port* and secret are optional values. You must specify the port if your brickd doesn't use the default port 4223.
 *secret* must be specified if you use a brickd connection **with authentication**:  (see also [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Software/Brickd.html#brickd-authentication))
 
-| Property | Description< |
-|----------|--------------|
+| <b>Property</b> | <b>Description</b> |
+| --------------- | ------------------ |
 | IP address | IP address of the brickd |
 | port | The listening port of of the brickd (optional, default 4223) |
 | secret | password used for authentication |
@@ -119,7 +110,6 @@ by square brackets are optional. Several brickd configurations are delimited by 
 #### Example configuration
 
 Authenticate with password 1234 and default port
-
 ```
 hosts=127.0.0.1::1234
 ```
@@ -131,7 +121,6 @@ hosts=127.0.0.1:4224:1234
 
 You may also configure several different hosts.
 For connecting several brickds, use multiple &lt;IP address&gt; statements delimited by a space.
-
 ```
 hosts=127.0.0.1:4224:1234 192.168.1.100::secret
 ```
@@ -140,51 +129,47 @@ hosts=127.0.0.1:4224:1234 192.168.1.100::secret
 #### Item Binding Configuration
 
 In order to bind an item to a device, you need to provide configuration settings. The easiest way
-to do so is to add binding information in your item file (in the folder '${openhab_home}/configurations/items').
+to do so is to add binding information in your item file.
+For location of the item file on a Linux based system see [File locations](http://docs.openhab.org/installation/linux.html#file-locations)
 
 
 The configuration of the TinkerForge binding item looks like this:
-
 ```
 tinkerforge="(uid=<your_id> [, subid=<your_subid>] | name=<your_name>)"
 ```
-
 The configuration is quite simple. You either have to set a value for the uid and optionally for the
-subid of the device, or - if the device is configured in services/tinkerforge.cfg - the "symbolic name" of the device.
+subid of the device, or - if the device is configured in /services/tinkerforge.cfg - the "symbolic name" of the device.
 
 | Property | Description |
-|----------|-------------|
+| -------- | ----------- |
 | uid      | TinkerForge uid of the device (Use the Brick Viewer to get this value) |
 | subid    | optional subid of the device|
-| name     | _symbolic name_ of the device. The name is only available if there is some configuration for the device in services/tinkerforge.cfg. |
+| name     | _symbolic name_ of the device. The name is only available if there is some configuration for the device in /services/tinkerforge.cfg. |
 
 For additional configuration options see the appropriate device section.
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Advanced Configuration
-
 There are several configuration parameters to control the behavior of the devices. The available
 parameters depend on the device type.
 
 #### Overview
-
-For most of the devices **no configuration** is needed in services/tinkerforge.cfg, they can be used with reasonable defaults.
+For most of the devices **no configuration** is needed in /services/tinkerforge.cfg, they can be used with reasonable defaults.
 
 <a name="sym_name"></a>
-If you want to get rid of _uid_ and _subid_ statements in the items or rule file, you can use services/tinkerforge.cfg to get a _symbolic name_.
+If you want to get rid of _uid_ and _subid_ statements in the items or rule file, you can use tinkerforge.cfg to get a _symbolic name_.
 
-A configuration line for a TinkerForge Device looks like this in services/tinkerforge.cfg:
-
+A configuration line for a TinkerForge Device looks like this in /services/tinkerforge.cfg:
 ```
 <symbolic name>.<property>=<value>
 ```
-
 The *symbolic name* string can be used in the items configuration as an alternative for the uid and subid values.
 
 The following table lists the general available properties.
 
-| Property | Description | Device |
+|<b>Property</b>|<b>Description</b>|<b>Device</b>|
 |---------------|------------------|-------------|
 |uid|TinkerForge uid of the device (use the Brick Viewer to get this value)|mandatory for all devices|
 |type|the device type|mandatory for all devices|
@@ -192,7 +177,8 @@ The following table lists the general available properties.
 
 The following table shows the TinkerForge device, its device type, its subid and if callback is supported.
 
-| device | type name | subid(s) | Callback |
+
+|<b>device</b>|<b>type name</b>|<b>subid(s)</b>|<b>Callback</b>|
 |-------------|----------------|---------------|---------------|
 |DC Brick|brick_dc|||
 |Servo Brick sub devices|servo|servo[0-6]||
@@ -206,8 +192,10 @@ The following table shows the TinkerForge device, its device type, its subid and
 |Ambient Light Bricklet 2.0|bricklet_ambient_lightv2||x|
 |Analog In Bricklet|bricklet_analogin||x|
 |Analog In Bricklet 2.0|bricklet_analoginv2||x|
+|Analog Out Bricklet 2.0|bricklet_analog_out_v2||x|
 |Barometer Bricklet|bricklet_barometer||x|
 |Barometer Bricklet temperature sensor sub device|barometer_temperature|temperature||
+|CO2 Bricklet|bricklet_co2||x|
 |Color Bricklet|bricklet_color|||
 |Color Bricklet subdevice|color|color-color|x|
 |Color Bricklet subdevice|temperature|color_temperature|x|
@@ -274,18 +262,20 @@ The following table shows the TinkerForge device, its device type, its subid and
 |TemperatureIR Bricklet sub device object temperature|object_temperature||x|
 |TemperatureIR Bricklet sub device ambient temperature|ambient_temperature||x|
 |Tilt Bricklet|bricklet_tilt|||
+|Thermocouple Bricklet|thermocouple||x|
+|UV Light Bricklet|bricklet_uv_light||x|
 |Voltage Current Bricklet|bricklet_voltageCurrent|||
 
 ---
+[Table of Contents](#table-of-contents)
 
 <a name="call_thresh"></a>
-
 #### Callback and Threshold
 
 The TinkerForge CallbackListeners - if available - are used to observe the sensor values of the
 devices. These listeners are configured to update sensor values at a given time period
 (callbackPeriod). The default configuration sets the **callbackPeriod** to 1 second. This value can
-be changed in services/tinkerforge.cfg. The values must be given in milliseconds.
+be changed in /services/tinkerforge.cfg. The values must be given in milliseconds.
 
 The callbackPeriod controls the amount of traffic from the TF hardware to the binding.
 
@@ -302,12 +292,14 @@ Threshold values have the same unit as sensor values, no conversion is needed.
 #### Refresh of Sensor Values
 
 Devices which do not support callbacks will be polled with a configurable interval, the default
- is 60000 milliseconds. This value can be changed in services/tinkerforge.cfg:
+ is 60000 milliseconds. This value can be changed in /services/tinkerforge.cfg:
  
 ```
 refresh=<value in milliseconds>
 ```
+
 ---
+[Table of Contents](#table-of-contents)
 
 ## Supported Devices
 
@@ -319,7 +311,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 The device supports Dimmer, Rollershutter and Number items.  Besides that the speed
 can be set using a percent value.
 The number items show the current velocity. The values are reported using the VelocityListener.
-"[callbackPeriod](#call_thresh)" and "[threshold](#call_thresh)" for the listener can be configured in services/tinkerforge.cfg.
+"[callbackPeriod](#call_thresh)" and "[threshold](#call_thresh)" for the listener can be configured in /services/tinkerforge.cfg.
 
 * callbackPeriod: milliseconds
 * threshold: numeric value
@@ -331,10 +323,10 @@ The item configuration options are:
 * step: the step value for increasing decreasing speed (Dimmer)
 * leftspeed: the speed when the left rollershutter controller is pressed or command "DOWN" was send
 * rightspeed: the speed when the right rollershutter controller is pressed or command "UP" was send
-* acceleration: acceleration overrides value from services/tinkerforge.cfg
-* drivemode: drivemode overrides value from services/tinkerforge.cfg
+* acceleration: acceleration overrides value from tinkerforge.cfg
+* drivemode: drivemode overrides value from tinkerforge.cfg
 
-##### services/tinkerforge.cfg:
+##### tinkerforge.cfg:
 Values for acceleration and drivmode are default values and may be overridden by item definition.
 
 ```
@@ -345,9 +337,7 @@ dc_garage.driveMode=break
 dc_garage.acceleration=10000
 dc_garage.callbackPeriod=100
 ```
-
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Dimmer  DCDIMMER  "Dimmer" {tinkerforge="uid=<your_uid>, max=20000, min=-15000, acceleration=10000, drivemode=brake, step=2500"}
 Dimmer  DIMMERPERCENT  "Dimmerpercent" {tinkerforge="uid=<your_uid>, max=20000, min=0, acceleration=10000, drivemode=brake, step=2500"}
@@ -357,7 +347,6 @@ Number DCSPEED "DC Speed [%.0f]"  {tinkerforge="uid=<your_uid>, max=20000, min=-
 Dimmer  RULEDIMMER  "RuleDimmer"
 Switch  DCMOVE  "Action Move"
 ```
-
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
 
 ```
@@ -373,10 +362,10 @@ sitemap tf_weather label="Brick DC"
         }
 }
 ```
-
 ##### Rules file (e.g. tinkerforge.rules):
-
 ```
+import org.openhab.core.library.types.*
+
 rule "percentdimmer"
     when
         Item RULEDIMMER received command INCREASE
@@ -410,6 +399,7 @@ end
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Servo Brick
 
@@ -422,7 +412,6 @@ can be set using a percent value.
 Number items will show the current position.
 
 The item configuration options are:
-
 * velocity: the velocity used to reach the new position
 * max: the maximum position (Dimmer, Rollershutter)
 * min: the minimum position (Dimmer, Rollershutter)
@@ -432,26 +421,24 @@ The item configuration options are:
 * acceleration: the acceleration
 
 ##### TinkerForge Action
-
 The openHAB action [TinkerforgeAction](#tinkerforge-actions) comes up with the action tfServoSetposition.
 tfServoSetposition(uid, num, position, velocity, acceleration) can be used to control the servo.
 
 ###### Example
-
 ```
 tfServoSetposition("<your_uid>", "servo0", "-9000", "65535", "65535")
 ```
 
 ##### Brick:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | brick_servo |
 
 ##### Servo sub devices:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as brick |
 | subid | openHAB subid of the device | servo0, servo1, servo2, servo3, servo4, servo5, servo6 |
@@ -464,8 +451,7 @@ tfServoSetposition("<your_uid>", "servo0", "-9000", "65535", "65535")
 | period | | default=19500 |
 | outputVoltage | output voltage can only be set once (will be used for all servos) | default=5000 |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 servo0.uid=<your_uid>
 servo0.type=servo
@@ -508,10 +494,9 @@ servo6.type=servo
 servo6.subid=servo6
 servo6.velocity=65530
 servo6.acceleration=65530
+
 ```
-
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Dimmer Servo0              "Servo0" { tinkerforge="uid=<your_uid>, subid=servo0, max=9000, min=-9000, step=500, acceleration=3000, velocity=3000" }
 Dimmer Servo0Percent              "Servo0Percent" { tinkerforge="uid=<your_uid>, subid=servo0, max=9000, min=-9000, step=500, acceleration=3000, velocity=3000" }
@@ -531,9 +516,7 @@ Switch ClearLCD            "ClearLCD"
 
 Switch MoveServo "MoveServo" {autoupdate="false"}
 ```
-
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf_weather label="Brick Servo"
 {
@@ -560,6 +543,7 @@ sitemap tf_weather label="Brick Servo"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Accelerometer Bricklet
 
@@ -573,7 +557,7 @@ Decreasing data rate or full scale range will also decrease the noise on the dat
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_accelerometer |
@@ -583,7 +567,7 @@ Decreasing data rate or full scale range will also decrease the noise on the dat
 
 ##### Accelerometer Bricklet sub devices:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | subid | openHAB subid of the device | x, y, z, temperature, led |
@@ -593,8 +577,7 @@ Decreasing data rate or full scale range will also decrease the noise on the dat
 Note: Subdevices accelerometer_temperature and accelerometer_led don't support callbackPeriod!
 
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 accelerometer.uid=<your_uid>
 accelerometer.type=bricklet_accelerometer
@@ -630,7 +613,6 @@ a_led.type=accelerometer_led
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number X "X [%.3f]" {tinkerforge="uid=<your_uid>, subid=x"}
 Number Y "Y [%.3f]" {tinkerforge="uid=<your_uid>, subid=y"}
@@ -640,7 +622,6 @@ Switch led "Led"  {tinkerforge="uid=<your_uid>, subid=led"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="Accelerometer"
 {
@@ -656,42 +637,37 @@ sitemap tf label="Accelerometer"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Ambient Light Bricklet
 
 Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/Ambient_Light.html)
 
 #### Binding properties:
-
-An entry in `services/tinkerforge.cfg` is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh).
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh).
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | descripition | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_ambient_light |
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 ambientlight.uid=<your_uid>
 ambientlight.type=bricklet_ambient_light
 ambientlight.callbackPeriod=10
 ambientlight.threshold=0
 ```
-
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number TF_AmbientLight "Luminance [%.1f Lux]" { tinkerforge="uid=<your_uid>" }
 
 ```
-
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="TinkerForge AmbientLight"
 {
@@ -701,7 +677,6 @@ sitemap tf label="TinkerForge AmbientLight"
 }
 
 ```
-
 ---
 
 ### Ambient Light Bricklet V2
@@ -709,12 +684,11 @@ sitemap tf label="TinkerForge AmbientLight"
 Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/Ambient_Light_V2.html)
 
 #### Binding properties:
-
-An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_ambient_lightv2 |
@@ -723,8 +697,7 @@ An entry in services/tinkerforge.cfg is only needed if you want to adjust [thres
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 ambientlightv2.uid=<your_uid>
 ambientlightv2.type=bricklet_ambient_lightv2
@@ -733,15 +706,11 @@ ambientlightv2.integrationTime=3
 ambientlightv2.callbackPeriod=10
 ambientlightv2.threshold=0
 ```
-
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number illuminance "Illuminance [%.2f]" {tinkerforge="uid=<your_uid>"}
 ```
-
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="TinkerForge AmbientLightV2"
 {
@@ -753,6 +722,7 @@ sitemap tf label="TinkerForge AmbientLightV2"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Analog In Bricklet
 
@@ -764,7 +734,7 @@ If property $range is set to 0, the device switches between the measurement rang
 
 #### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_analogin |
@@ -773,8 +743,7 @@ If property $range is set to 0, the device switches between the measurement rang
 | callbackPeriod | | see "Callback and Threshold" |
 
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 ain.uid=<your_uid>
 ain.type=bricklet_analogin
@@ -784,13 +753,11 @@ ain.threshold=0
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number voltage "Voltage [%.0f mV]" {tinkerforge="uid=<your_uid>"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="Analog In"
 {
@@ -799,7 +766,9 @@ sitemap tf label="Analog In"
     }
 }
 ```
+
 ---
+[Table of Contents](#table-of-contents)
 
 ### Analog In Bricklet 2.0
 
@@ -812,7 +781,7 @@ Property $movingAverage sets the length of a moving averaging for the measured v
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_analoginv2 |
@@ -820,8 +789,7 @@ Property $movingAverage sets the length of a moving averaging for the measured v
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 ainv2.uid=<your_uid>
 ainv2.type=bricklet_analoginv2
@@ -831,13 +799,11 @@ ainv2.threshold=0
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number voltage "Voltage [%.0f mV]" {tinkerforge="uid=<your_uid>"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="Analog In V2"
 {
@@ -848,6 +814,52 @@ sitemap tf label="Analog In V2"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
+
+### Analog Out Bricklet 2.0
+
+Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/Analog_Out_V2.html)
+
+#### Binding properties:
+
+The device supports Dimmer and Setpoint Items. For Dimmer you have to add a "step=" in your items definition.
+
+##### Bricklet:
+
+| property | descripition | values |
+|----------|--------------|--------|
+| uid | tinkerforge uid | get value from brickv |
+| type | openHAB type name | bricklet_analog_out_v2 |
+| minValue | 0-12000 | 0V - 12V in 1mV steps, 12bit resolution |
+| maxValue | 0-12000 | 0V - 12V in 1mV steps, 12bit resolution |
+
+##### tinkerforge.cfg:
+```
+aout.uid=<your_uid>
+aout.type=bricklet_analog_out_v2
+aout.minValue=0
+aout.maxValue=12000
+```
+##### Items file entry (e.g. tinkerforge.items):
+```
+Dimmer  ADIMMER  "Dimmer" {tinkerforge="uid=<your_uid>, step=1000"}
+Dimmer ADIMMERPERCENT "Dimmerpercent" {tinkerforge="uid=<your_uid"}
+
+```
+##### Sitemap file entry (e.g tinkerforge.sitemap):
+```
+sitemap aout label="AnalogOutV2"
+{
+	Frame {
+	Slider item=ADIMMER
+	Setpoint item=ADIMMERPERCENT step=10
+	}
+}
+
+```
+
+---
+[Table of Contents](#table-of-contents)
 
 ### Barometer Bricklet
 
@@ -856,11 +868,11 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 #### Binding properties:
 
 Bricklet measures air pressure in range of 10 to 1200mbar with a resolution of 0.012mbar.  
-An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_barometer |
@@ -872,14 +884,13 @@ An entry in services/tinkerforge.cfg is only needed if you want to adjust [thres
 Subdevice property $barometer_temperature returns the temperature of the air pressure sensor which is internally used for temperature compensation of the air pressure measurement.
 The temperature sub device does not support callbackPeriod, it will be polled. The polling interval can be configured using refresh property.
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | subid | openHAB subid of the device | temperature |
 | type | openHAB type name | barometer_temperature |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 barometer_balcony.uid=<your_uid>
 barometer_balcony.type=bricklet_barometer
@@ -888,21 +899,61 @@ barometer_balcony.threshold=1000
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number Barometer "Air Pressure [%.1f hPa]"  { tinkerforge="uid=<your_uid>" }
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 Text item=Barometer
 ```
 
 ---
+[Table of Contents](#table-of-contents)
+
+### CO2 Bricklet
+
+Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/CO2.html)
+
+#### Binding properties:
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh).
+
+##### Bricklet:
+
+| property | descripition | values |
+|----------|--------------|--------|
+| uid | tinkerforge uid | get value from brickv |
+| type | openHAB type name | bricklet_co2 |
+| threshold | | see "Callback and Threshold" |
+| callbackPeriod | | see "Callback and Threshold" |
+
+##### tinkerforge.cfg:
+```
+co2.uid=<your_uid>
+co2.type=bricklet_co2
+co2.callbackPeriod=10
+co2.threshold=0
+```
+##### Items file entry (e.g. tinkerforge.items):
+```
+Number C02 "C02 Concentration [%.1f]"  { tinkerforge="uid=<your_uid>" }
+
+```
+##### Sitemap file entry (e.g tinkerforge.sitemap):
+```
+sitemap co2 label="C02"
+{
+	Frame {
+		Text item=C02
+	}
+}
+
+```
+
+---
+[Table of Contents](#table-of-contents)
 
 ### Color Bricklet
-
 Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/Color.html)
 
 #### Binding properties:
@@ -912,7 +963,7 @@ The integration time provides a trade-off between conversion time and accuracy. 
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_color |
@@ -921,7 +972,7 @@ The integration time provides a trade-off between conversion time and accuracy. 
 
 ##### Color Bricklet sub device:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | color, temperature, illuminance |
@@ -930,8 +981,7 @@ The integration time provides a trade-off between conversion time and accuracy. 
 
 Note: It is not possible to set the property $threshold for the Color Bricklet subdevices! 
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 brickletcolor.uid=<your_uid>
 brickletcolor.type=bricklet_color
@@ -955,7 +1005,6 @@ color_illuminance.callbackPeriod=1000
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Color color "Color" {tinkerforge="uid=<your_uid>, subid=color"}
 Number temperature "ColorTemperature [%.2f]" {tinkerforge="uid=<your_uid>, subid=temperature"}
@@ -964,7 +1013,6 @@ Switch led "Color Led"  {tinkerforge="uid=<your_uid>, subid=led"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="Color"
 {
@@ -978,6 +1026,7 @@ sitemap tf label="Color"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Distance IR Bricklet
 
@@ -985,7 +1034,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
@@ -996,7 +1045,7 @@ An entry in services/tinkerforge.cfg is only needed if you want to adjust [thres
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
+##### tinkerforge.cfg:
 
 ```
 distance_door.uid=<your_uid>
@@ -1004,20 +1053,17 @@ distance_door.type=bricklet_distance_ir
 distance_door.threshold=1
 distance_door.callbackPeriod=10
 ```
-
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number Distance                 "Distance [%.1f mm]"  { tinkerforge="uid=<your_uid>" }
 ```
-
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 Text item=Distance
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Distance US Bricklet
 
@@ -1025,7 +1071,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
 
 Distance is reported as unitless value, not in mm.
 
@@ -1033,7 +1079,7 @@ Moving average is a calculation to analyze data points by creating series of ave
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_distanceUS |
@@ -1041,8 +1087,7 @@ Moving average is a calculation to analyze data points by creating series of ave
 | callbackPeriod | | see "Callback and Threshold" |
 | movingAverage | sets the moving average, default=20 | 0-100 |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 distanceUS.uid=<your_uid>
 distanceUS.type=bricklet_distanceUS
@@ -1052,18 +1097,17 @@ distanceUS.movingAverage=20
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number DistanceUS                 "DistanceUS [%.1f]"  { tinkerforge="uid=<your_uid>" }
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 Text item=DistanceUS
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Dual Button Bricklet
 
@@ -1079,14 +1123,12 @@ The subids are:
  * dualbutton_rightbutton
 
 ##### Leds
-
 There are two operating modes for the leds: with the autotoggle=True the leds are
 automatically toggled whenever the corresponding button is pressed. With the autotoggle=False
 mode the leds are fully controlled with openHAB UIs or rules. The default autotoggle mode is
-autotoggle=False. The autotoggle mode can be configured using services/tinkerforge.cfg.
+autotoggle=False. The autotoggle mode can be configured using tinkerforge.cfg.
 
 ##### Buttons
-
 There are also two operating modes for the buttons. The buttons can behave like a switch or
 like a tactile switch.  
 * Switch mode
@@ -1099,7 +1141,7 @@ state back to OFF again.
 
 ##### Dual Button Bricklet sub devices:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | dualbutton_leftled, dualbutton_rightled, dualbutton_leftbutton, dualbutton_rightbutton |
@@ -1107,8 +1149,7 @@ state back to OFF again.
 | autotoggle | sets button autotoggle mode | True, False |
 | tactile | sets switch mode | True, False |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 led1.uid=<your_uid>
 led1.subid=dualbutton_leftled
@@ -1132,7 +1173,6 @@ button2.tactile=True
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Contact LeftButton              "LeftButton" { tinkerforge="uid=<your_uid>, subid=dualbutton_leftbutton"}
 Contact RightButton             "RightButton" { tinkerforge="uid=<your_uid>, subid=dualbutton_rightbutton"}
@@ -1141,7 +1181,6 @@ Switch RightLed                 "RightLed" { tinkerforge="uid=<your_uid>, subid=
 ```
 
 ##### Rules (e.g. tinkerforge.rules):
-
 ```
 import org.openhab.core.library.types.*
 
@@ -1158,7 +1197,6 @@ end
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="DualButton"
 {
@@ -1172,6 +1210,7 @@ sitemap tf label="DualButton"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Dual Relay Bricklet
 
@@ -1179,7 +1218,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
@@ -1188,21 +1227,20 @@ The subids are:
  * relay1
  * relay2
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_dual_relay |
 
 ##### Relay sub devices:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | relay1, relay2 |
 | type | openHAB type name | dual_relay |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 relay_coffee_machine.uid=<your_uid>
 relay_coffee_machine.type=dual_relay
@@ -1214,7 +1252,6 @@ relay_garage_door.subid=relay2
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Switch DualRelay1   "DualRelay1" { tinkerforge="name=relay_coffee_machine" }
 Switch DualRelay2   "DualRelay2" { tinkerforge="uid=<your_uid>, subid=relay2" }
@@ -1222,8 +1259,8 @@ Switch Garage       "Garage"    <garagedoor>    // creates a virtual switch with
 ```
 
 ##### Rules (e.g. tinkerforge.rules):
-
 ```
+import org.openhab.core.library.types.*
 
 rule "open or close garage door"
     when
@@ -1235,9 +1272,7 @@ rule "open or close garage door"
 end
 ```
 
-
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="DualRelay"
 {
@@ -1246,9 +1281,11 @@ sitemap tf label="DualRelay"
         Switch item=Garage mappings=[ON="Garage open/close"]    // displays the virtual switch with the given text
     }
 }
+
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Dust Detector Bricklet
 
@@ -1260,15 +1297,14 @@ The measured dust density can be read out in µg/m³
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_dustdetector |
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 dust.uid=<your_uid>
 dust.type=bricklet_dustdetector
@@ -1277,13 +1313,11 @@ dust.threshold=0
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number Dust              "Dust [%.0f]" { tinkerforge="uid=<your_uid>"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="Dust Detector"
 {
@@ -1295,6 +1329,7 @@ sitemap tf label="Dust Detector"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Hall Effect Bricklet
 
@@ -1306,14 +1341,13 @@ Bricklet can detect the presence of magnetic fields. It counts the (dis-)appeara
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_halleffect |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 # really optional settings
 hall.uid=<your_uid>
@@ -1323,13 +1357,11 @@ hall.callbackPeriod=1000
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Contact HallEffect       "Hall" { tinkerforge="uid=<your_uid>"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="TinkerForge Halleffect"
 {
@@ -1341,26 +1373,27 @@ sitemap tf label="TinkerForge Halleffect"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Humidity Bricklet
 
 Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/Humidity.html)
 
 #### Binding properties:
-An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
 
 The measured humidity can be read out directly in percent, no conversions are necessary.
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_humidity |
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
+##### tinkerforge.cfg:
 
 ```
 humidity_balcony.uid=<your_uid>
@@ -1370,22 +1403,20 @@ humidity_balcony.callbackPeriod=10
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number Humidity "Humidity [%.1f %%]"  { tinkerforge="uid=<your_uid>" }
 ```
-
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 Text item=Humidity
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Industrial Digital IN 4 Bricklet
 
-Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/Industrial_Quad_Relay.html)
+Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/Industrial_Digital_In_4.html)
 
 #### Binding properties:
 
@@ -1393,7 +1424,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | subid | openHAB subid of the device | in0, in2, in3, in4 |
@@ -1402,38 +1433,35 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 ##### Input port sub devices:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | in0, in2, in3, in4 |
 | type | openHAB type name |  |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 inddi4.uid=<your_uid>
 inddi4.type=bricklet_industrial_digital_4in
 inddi4.debouncePeriod=100
 ```
-
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Contact ID1 "ID1 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=in0"}
 Contact ID2 "ID2 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=in1"}
 Contact ID3 "ID3 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=in2"}
 Contact ID4 "ID4 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=in3"}
 ```
-
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 Text item=ID1
 Text item=ID2
 Text item=ID3
 Text item=ID4
 ```
+
 ---
+[Table of Contents](#table-of-contents)
 
 ### Industrial Digital Out 4 Bricklet
 
@@ -1443,13 +1471,13 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 ##### Output port sub devices:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | out0, out2, out3, out4 |
 | type | openHAB type name |  |
 
-##### services/tinkerforge.cfg:
+##### tinkerforge.cfg:
 
 no configuration needed
 
@@ -1463,14 +1491,12 @@ Switch di4out3      {tinkerforge="uid=<your_uid>, subid=out3"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 Switch item=di4out0
 Switch item=di4out1
 Switch item=di4out2
 Switch item=di4out3
 ```
-
 ---
 
 ### Industrial Dual 0-20mA Bricklet
@@ -1484,7 +1510,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 * device type sensors: industrial020ma_sensor
 * sensor values are reported as milli ampere
 
-##### services/tinkerforge.cfg configuration options for the Bricklet
+##### tinkerforge.cfg configuration options for the Bricklet
 sampleRate: possible values 0, 1, 2, 3. Setting the sample rate is optional
 it defaults to 3 (4 samples per second).
  * 0 means: 240 samples per second
@@ -1492,11 +1518,10 @@ it defaults to 3 (4 samples per second).
  * 2 means: 15 samples per second
  * 3 means: 4 samples per second
 
-##### services/tinkerforge.cfg configuration options for the sensors
+##### tinkerforge.cfg configuration options for the sensors
 callbackPeriod: Setting the callback period is optional, the default is 1000 milli seconds.
 
-##### services/tinkerforge.cfg
-
+##### tinkerforge.cfg
 ```
 brickletid020ma.uid=<your_uid>
 brickletid020ma.type=bricklet_industrialdual020ma
@@ -1513,14 +1538,12 @@ temperature1.callbackPeriod=1000
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number temperature0 "Temperature0 [%.2f]" {tinkerforge="uid=<your_uid>, subid=sensor0"}
 Number temperature1 "Temperature1 [%.2f]" {tinkerforge="uid=<your_uid>, subid=sensor1"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="TinkerForge 020"
 {
@@ -1532,6 +1555,7 @@ sitemap tf label="TinkerForge 020"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Industrial Dual Analog In Bricklet
 
@@ -1543,7 +1567,7 @@ The property $sampleRate can be between 1 sample per second (SPS) and 976 sample
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_industrial_dual_analogin |
@@ -1551,7 +1575,7 @@ The property $sampleRate can be between 1 sample per second (SPS) and 976 sample
 
 ##### Dual Analog In sub devices:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | channel0, channel1 |
@@ -1559,8 +1583,7 @@ The property $sampleRate can be between 1 sample per second (SPS) and 976 sample
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 diai.uid=<your_uid>
 diai.type=bricklet_industrial_dual_analogin
@@ -1580,14 +1603,12 @@ channel1.threshold=0
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number channel0 "Channel0 [%.0f mV]" {tinkerforge="uid=<your_uid>, subid=channel0"}
 Number channel1 "Channel1 [%.0f mV]" {tinkerforge="uid=<your_uid>, subid=channel1"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="Industrial Dual Analog In"
 {
@@ -1599,6 +1620,7 @@ sitemap tf label="Industrial Dual Analog In"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Industrial Quad Relay Bricklet
 
@@ -1615,21 +1637,20 @@ The subids are:
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_industrial_quad_relay|
 
 ##### Relay sub devices:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | relay0, relay2, relay3, relay4 |
 | type | openHAB type name | industrial_quad_relay |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 relay0.uid=<your_uid>
 relay0.type=quad_relay
@@ -1649,7 +1670,6 @@ relay3.subid=relay3
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Switch QR1 "QR1" {tinkerforge="uid=<your_uid>, subid=relay0"}
 Switch QR2 "QR2" {tinkerforge="uid=<your_uid>, subid=relay1"}
@@ -1658,7 +1678,6 @@ Switch QR4 "QR4" {tinkerforge="uid=<your_uid>, subid=relay3"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="QuadRelay"
 {
@@ -1673,6 +1692,78 @@ sitemap tf label="QuadRelay"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
+
+### IO4 Bricklet
+
+Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/IO4.html)
+
+#### Binding properties:
+
+If you set the property $debouncePeriod to 100, you will get the interrupt maximal every 100ms. This is necessary if something that bounces is connected to the IO-4 Bricklet, such as a button.
+
+##### Bricklet:
+
+| property | descripition | values |
+|----------|--------------|--------|
+| uid | tinkerforge uid | get value from brickv |
+| type | openHAB type name | bricklet_io4 |
+| debouncePeriod | debounce time in ms | default=100 |
+
+##### IO-Sensor sub device:
+
+| property | description | values |
+|----------|--------------|--------|
+| uid | tinkerforge uid | same as bricklet |
+| subid | openHAB subid of the device | in1 |
+| type | openHAB type name | io4sensor |
+| pullUpResistorEnabled | enable the pull-up resistor |  true, false |
+
+##### IO-Actor sub device:
+
+| property | description | values |
+|----------|--------------|--------|
+| uid | tinkerforge uid | same as bricklet |
+| subid | openHAB subid of the device | out0 |
+| type | openHAB type name | io4_actuator |
+| defaultState | default state of the port, true = HIGH, false=LOW | true, false |
+
+##### tinkerforge.cfg:
+```
+io4.uid=<your_uid>
+io4.type=bricklet_io4
+io4.debouncePeriod=200
+
+io0.uid=<your_uid>
+io0.type=io4_actuator
+io0.subid=out0
+io0.defaultState=true
+
+io1.uid=<your_uid>
+io1.type=io4sensor
+io1.subid=in1
+io1.pullUpResistorEnabled=true
+```
+##### Items file entry (e.g. tinkerforge.items):
+```
+Switch out0		"out0 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=out0"}
+Contact in1 "in1 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=in1"}
+
+```
+##### Sitemap file entry (e.g tinkerforge.sitemap):
+```
+sitemap io4 label="IO4"
+{
+	Frame {
+		Switch item=out0
+		Text item=in1
+	}
+}
+
+```
+
+---
+[Table of Contents](#table-of-contents)
 
 ### IO 16 Bricklet
 
@@ -1684,7 +1775,7 @@ If you set the property $debouncePeriod to 100, you will get the interrupt maxim
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_io16 |
@@ -1692,7 +1783,7 @@ If you set the property $debouncePeriod to 100, you will get the interrupt maxim
 
 ##### IO-Sensor sub device:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | ina0, ina1, ina2, ina3, ina4, ina5, ina6, ina7, inb0, inb1, inb2, inb3, inb4, inb5, inb6, inb7 |
@@ -1701,15 +1792,14 @@ If you set the property $debouncePeriod to 100, you will get the interrupt maxim
 
 ##### IO-Actor sub device:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | outa0, outa1, outa2, outa3, outa4, outa5, outa6, outa7, outb1, outb2, outb3, outb4, outb5, outb6, outb7 |
 | type | openHAB type name | io_actuator |
 | defaultState | default state of the port, true = HIGH, false=LOW | true, false |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 io16.uid=<your_uid>
 io16.type=bricklet_io16
@@ -1796,7 +1886,6 @@ io16inb7.pullUpResistorEnabled=true
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Contact ina0		"ina0 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina0"}
 Contact ina1		"ina1 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=ina1"}
@@ -1816,9 +1905,7 @@ Contact inb5		"inb5 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb5"}
 Contact inb6		"inb6 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb6"}
 Contact inb7		"inb7 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=inb7"}
 ```
-
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap io16 label="Main Menu"
 {
@@ -1845,6 +1932,7 @@ sitemap io16 label="Main Menu"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Joystick Bricklet
 
@@ -1868,14 +1956,12 @@ Pressing the button changes the switch state to ON and releasing the button chan
 state back to OFF again.
 
 Switch Mode is the default mode you can change the mode to tactile by adding a line like this
-to your services/tinkerforge.cfg:
-
+to your tinkerforge.cfg:
 ```
 joystickbutton.tactile=True
 ```
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 joystick.uid=<your_uid>
 joystick.type=bricklet_joystick
@@ -1892,7 +1978,6 @@ yposition.type=joystick_yposition
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number XPostion              "XPostion [%.0f]" { tinkerforge="uid=<your_uid>, subid=joystick_xposition"}
 Number YPostion              "YPostion [%.0f]" { tinkerforge="name=yposition"}
@@ -1900,7 +1985,6 @@ Contact JoystickButton       "Button" { tinkerforge="uid=<your_uid>, subid=joyst
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf_weather label="Joystick"
 {
@@ -1913,6 +1997,7 @@ sitemap tf_weather label="Joystick"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Laser Range Finder Bricklet
 
@@ -1921,7 +2006,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 #### Binding properties:
 
 The laser will be enabled by default on system start. This can be changed by 
-setting enableLaserOnStartup to false on the bricklet_laser_range_finder type in services/tinkerforge.cfg.
+setting enableLaserOnStartup to false on the bricklet_laser_range_finder type in /services/tinkerforge.cfg.
 If the laser is already enabled it will never be disabled on openHAB startup.
 
 Moving average is a calculation to analyze data points by creating series of averages of different subsets of the full data set.
@@ -1938,7 +2023,7 @@ Property $mode sets the mode for measurements, five modes are available, one mod
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_laser_range_finder |
@@ -1953,7 +2038,7 @@ Property $mode sets the mode for measurements, five modes are available, one mod
 
 ##### Laser Range Finder sub devices:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | distance, velocity, laser |
@@ -1961,8 +2046,7 @@ Property $mode sets the mode for measurements, five modes are available, one mod
 | callbackPeriod | | see "Callback and Threshold" |
 | threshold | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 lrf.uid=<your_uid>
 lrf.type=bricklet_laser_range_finder
@@ -1990,7 +2074,6 @@ laser.type=laser_range_finder_laser
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number distance "Distance [%.0f]" {tinkerforge="uid=<your_uid>, subid=distance"}
 Number velocity "Velocity [%.4f]" {tinkerforge="uid=<your_uid>, subid=velocity"}
@@ -1998,7 +2081,6 @@ Switch laser "Enable Laser" {tinkerforge="uid=<your_uid>, subid=laser"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="Laser Range Finder"
 {
@@ -2011,6 +2093,7 @@ sitemap tf label="Laser Range Finder"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### LCD 20x4 Display Bricklet
 
@@ -2022,12 +2105,10 @@ The LCD20x4 is a bit special as it acts as actuator which can receive text messa
 achieve this, you have to configure the device as String item.
 
 What’s the meaning of this magic string?
-
 ```
 sendCommand(TF_LCD, String::format("TFNUM<213>%4s"Barometer.state.format("%d")
                       ))
 ```
-
 TFNUM is just a flag to signal the binding that some position information is passed. The first
 number is the line number, starting from 0. The second and third number are interpreted as the
 position in the line, starting from 0.
@@ -2037,14 +2118,14 @@ position 14, with a fixed width of 4 (this is because of %4s).
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_LCD20x4 |
 
 ##### Backlight sub device:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | backlight |
@@ -2052,7 +2133,7 @@ position 14, with a fixed width of 4 (this is because of %4s).
 
 ##### Button sub devices:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | button0, button1, button2, button3 |
@@ -2060,7 +2141,6 @@ position 14, with a fixed width of 4 (this is because of %4s).
 
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 String LCD         "LCD" { tinkerforge="uid=<your_uid>"}
 Switch LCDBacklight        "LCDBacklight" { tinkerforge="uid=<your_uid>, subid=backlight"}
@@ -2069,15 +2149,11 @@ Switch Button1         "Button1" { tinkerforge="uid=<your_uid>, subid=button1"}
 Switch Button2         "Button2" { tinkerforge="uid=<your_uid>, subid=button2"}
 Switch Button3         "Button3" { tinkerforge="uid=<your_uid>, subid=button3"}
 ```
-
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 Switch item=LCDBacklight
 ```
-
 ##### Rules file (e.g. tinkerforge.rules):
-
 ```
 import org.openhab.core.library.types.*
 
@@ -2164,20 +2240,21 @@ end
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### LED Strip Bricklet
 
 Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/LED_Strip.html)
 
 #### Binding properties:
-Supported chip types are WS2801, WS2811 and WS2812 (also called "NeoPixel").
-An entry in services/tinkerforge.cfg is *mandatory*. $type, $frameduration, $chiptype, $clockfrequency and $colorMapping have to be set. The available configuration variables depend on the chip type of the LED strip.  
+Supported chip types are WS2801, WS2811, WS2812/SK6812 (NeoPixel RGB), SK6812RGBW (NeoPixel RGBW), LPD8806 or APA102 (DotStar) LED driver.
+An entry in /services/tinkerforge.cfg is *mandatory*. $type, $frameduration, $chiptype, $clockfrequency and $colorMapping have to be set. The available configuration variables depend on the chip type of the LED strip.  
 All LEDs can be switched independently. A subdevice $ledgroup can be set to group LED's together.  
-The colormapping of the LED chip types are not standardized, therefore the sequence of the letters "rgb" can be changed individually to match the the color of your LED Stripswitch. 
+The colormapping of the LED chip types are not standardized, therefore the sequence of the letters "rgb" can be changed individually to match the the color of your LED Strip. 
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_ledstrip |
@@ -2189,21 +2266,21 @@ The colormapping of the LED chip types are not standardized, therefore the seque
 
 ##### LED Strip sub device (optional):
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | ledgroup1 |
 | leds | configures a group of led's | depends on the number of led's used |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 ledstrip.uid=<your_uid>
 ledstrip.type=bricklet_ledstrip
 ledstrip.frameduration=100
 ledstrip.chiptype=ws2801
 ledstrip.clockfrequency=1000000
-ledstrip.colorMapping=rbg
+#ledstrip.colorMapping=rbg
+ledstrip.colorMapping=brg
 ledstrip.subDevices=ledgroup1 ledgroup2
 
 ledgroup1.uid=<your_uid>
@@ -2219,14 +2296,12 @@ ledgroup2.leds=0|7-14
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Color  tfled1   <slider> {tinkerforge="uid=<your_uid>, subid=ledgroup1"}
 Color  tfled2   <slider> {tinkerforge="uid=<your_uid>, subid=ledgroup2"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="TinkerForge LED"
 {
@@ -2239,6 +2314,7 @@ sitemap tf label="TinkerForge LED"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Linear Poti Bricklet
 
@@ -2247,18 +2323,17 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 #### Binding properties:
 
 You can expect values from 0 - 100 %.
-The default callback period is 10 millis, you can change this within services/tinkerforge.cfg.
+The default callback period is 10 millis, you can change this within /services/tinkerforge.cfg.
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_linear_poti |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 linearpoti.uid=<your_uid>
 linearpoti.type=bricklet_linear_poti
@@ -2266,13 +2341,11 @@ linearpoti.callbackPeriod=1000
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number Poti   "Poti [%.0f]" { tinkerforge="uid=<your_uid>"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tflabel="Linear Poti"
 {
@@ -2283,6 +2356,7 @@ sitemap tflabel="Linear Poti"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Load Cell Bricklet
 Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/Load_Cell.html)
@@ -2298,7 +2372,6 @@ The openHAB action [TinkerforgeAction](#tinkerforge-actions) comes up with the a
 tfLoadCellTare(String uid) sets tare on the load cell bricklet with the given uid.
 
 Example:
-
 ```
 rule "Tare"
    when 
@@ -2311,7 +2384,7 @@ end
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_loadcell |
@@ -2319,7 +2392,7 @@ end
 
 ##### Load Cell sub device:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | weight, led |
@@ -2327,8 +2400,7 @@ end
 | movingAverage | sets the value for moving average, default=4 | 1-40 |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 loadcell.uid=<your_uid>
 loadcell.type=bricklet_loadcell
@@ -2345,7 +2417,6 @@ led.type=loadcell_led
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number Weight "Weight [%.0f]" { tinkerforge="uid=<your_uid>, subid=weight"}
 Switch Led "Led"  {tinkerforge="uid=<your_uid>, subid=led"}
@@ -2354,7 +2425,6 @@ Number TareValue "Tare Value [%.0f]"
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="Load Cell"
 {
@@ -2368,7 +2438,6 @@ sitemap tf label="Load Cell"
 ```
 
 ##### Rules (e.g tinkerforge.rules):
-
 ```
 import org.openhab.core.library.types.*
 
@@ -2382,6 +2451,7 @@ end
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Motion Detector Bricklet
 
@@ -2391,42 +2461,39 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 Senses movement of people and animals with a detection range of 3m to 7m and a sensing angle of 100°.
 
-An entry in services/tinkerforge.cfg is only needed if you want to use a [_symbolic name_](#sym_name).
+An entry in /services/tinkerforge.cfg is only needed if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | motion_detector |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 motion.uid=<your_uid>
 motion.type=motion_detector
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Contact motion      "motion [MAP(en.map):MOTION%s]" {tinkerforge="uid=<your_uid>"}
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 Text item=motion
 ```
 
 ##### en.map file:
-
 ```
 MOTIONCLOSED=no motion
 MOTIONOPEN=montion detected
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Multi Touch Bricklet
 
@@ -2434,14 +2501,14 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in services/tinkerforge.cfg is only needed if you want to adjust sensitivity, recalibrate, disable
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust sensitivity, recalibrate, disable
 electrodes or use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
 ##### Device configuration:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_multitouch |
@@ -2457,13 +2524,13 @@ touch.recalibrate=true
 
 ##### Electrode sub device configuration:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | subid | openHAB subid of the device|electrode0 electrode1 electrode2 electrode3 electrode4 electrode5 electrode6 electrode7 electrode8 electrode9 electrode10 electrode11|
 | disableElectrode | disables the electrode | true or false|
 
-##### services/tinkerforge.cfg for electrodes:
+##### tinkerforge.cfg for electrodes:
 
 ```
 e1.uid=<your_uid>
@@ -2474,13 +2541,13 @@ e1.disableElectrode=true
 
 ##### Proximity sub device configuration:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | subid | openHAB subid of the device|proximity|
 | disableElectrode | disables the proximity detection | true or false|
 
-##### services/tinkerforge.cfg for proximity:
+##### tinkerforge.cfg for proximity:
 
 ```
 prox.uid=<your_uid>
@@ -2490,7 +2557,6 @@ prox.disableElectrode=true
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Contact electrode0      "electrode0 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=electrode0"}
 Contact electrode1      "electrode1 [MAP(en.map):%s]" {tinkerforge="uid=<your_uid>, subid=electrode1"}
@@ -2508,7 +2574,6 @@ Contact proximity       "proximity [MAP(en.map):%s]" {tinkerforge="uid=<your_uid
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 Text item=electrode0
 Text item=electrode1
@@ -2524,7 +2589,9 @@ Text item=electrode10
 Text item=electrode11
 Text item=proximity
 ```
+
 ---
+[Table of Contents](#table-of-contents)
 
 ### Moisture Bricklet
 
@@ -2532,13 +2599,13 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
 
 Moving average is a calculation to analyze data points by creating series of averages of different subsets of the full data set.
 
-##### services/tinkerforge.cfg:
+##### tinkerforge.cfg:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_moisture |
@@ -2555,18 +2622,17 @@ moisture.movingAverage=90
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number Moisture                 "Moisture [%.1f]"  { tinkerforge="uid=<your_uid>" }
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 Text item=Moisture
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Piezo Speaker Bricklet
 
@@ -2581,15 +2647,14 @@ The Piezo Speaker Bricklet supports two modes:
 Configuration is done through item definition. In order to use different tone sequences you need to use one item per tone sequence.
 
 Example:
-
 ```
 Switch Beep      "Beep" { autoupdate="false", tinkerforge="uid=<your_uid>, mode=beep, durations=500|100, frequencies=10|10000, repeat=2" }
 Switch Morse      "Morse" { autoupdate="false", tinkerforge="uid=<your_uid>, mode=morse, morsecodes=...---...|---, frequencies=10|10000, repeat=2" }
 ```
-
 With the *repeat* statement the tone sequence is repeated with the given number.
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### PTC Bricklet
 
@@ -2601,7 +2666,7 @@ Wire mode of the sensor has to be set. Possible values are 2, 3 and 4 which corr
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_ptc |
@@ -2609,15 +2674,14 @@ Wire mode of the sensor has to be set. Possible values are 2, 3 and 4 which corr
 
 ##### PTC sub device:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
 | subid | openHAB subid of the device | ptc_temperature |
 | type | openHAB type name | ptc_temperature |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 brickletptc.uid=<your_uid>
 brickletptc.type=bricklet_ptc
@@ -2630,7 +2694,6 @@ ptctemperature.callbackPeriod=1000
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Contact connected {tinkerforge="uid=<your_uid>, subid=ptc_connected"}
 Number temperature "Temperature [%.2f]" {tinkerforge="uid=<your_uid>, subid=ptc_temperature"}
@@ -2638,7 +2701,6 @@ Number resistance "Resistance [%.0f]" {tinkerforge="uid=<your_uid>, subid=ptc_re
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="TinkerForge PTC"
 {
@@ -2651,6 +2713,7 @@ sitemap tf label="TinkerForge PTC"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Remote Switch Bricklet
 
@@ -2658,16 +2721,16 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in services/tinkerforge.cfg is *mandatory*. You have to set sub device names $subdevice for your devices in the appropriate
+An entry in /services/tinkerforge.cfg is *mandatory*. You have to set sub device names $subdevice for your devices in the appropriate
 type$typeDevices variable as space separated list. $type depends on the device hardware type of your switching device.
 You must also add configuration for the $subdevice device. The available configuration variables depend
 on the device type.
 
-##### services/tinkerforge.cfg:
+##### tinkerforge.cfg:
 
 * Device configuration
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_remote_switch |
@@ -2685,7 +2748,7 @@ rs1.typeCDevices=floor
 
 * Sub device type A configuration:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | subid | must correspond to the device(A,B,C)Devices setting| e.b. kitchen|
@@ -2709,7 +2772,7 @@ rs_living_room2.receiverCode=9
 
 * Sub device type B configuration:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | subid | must correspond to the device(A,B,C)Devices setting| e.b. kitchen|
@@ -2727,7 +2790,7 @@ rs_kitchen.unit=9
 
 * Sub device type C configuration:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | subid | must correspond to the device(A,B,C)Devices setting| e.b. kitchen|
@@ -2755,7 +2818,6 @@ Group:Switch:OR(ON,OFF)	Lights	"All Lights [(%d)]"
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="RemoteSwitch"
 {
@@ -2777,6 +2839,7 @@ sitemap tf label="RemoteSwitch"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Rotary Encoder Bricklet
 
@@ -2793,7 +2856,6 @@ The openHAB action [TinkerforgeAction](#tinkerforge-actions) comes up with the a
 tfRotaryEncoderClear(String uid) clears the rotary encoder counter with the given uid.
 
 Example:
-
 ```
 rule "Clear"
    when Item Clear changed
@@ -2813,14 +2875,12 @@ change anything, only the next button press will change the state.
 Pressing the button changes the switch state to ON and releasing the button changes the
 state back to OFF again.
 
-Switch Mode is the default mode you can change the mode to tactile by adding a line like this to your services/tinkerforge.cfg:
-
+Switch Mode is the default mode you can change the mode to tactile by adding a line like this to your tinkerforge.cfg:
 ```
 button.tactile=True
 ```
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 encoder.uid=<your_uid>
 encoder.subid=encoder
@@ -2834,7 +2894,6 @@ button.tactile=False
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number Counter "Counter [%d]" { tinkerforge="uid=<your_uid>, subid=encoder"}
 Contact Button "Button" { tinkerforge="uid=<your_uid>, subid=button"}
@@ -2842,7 +2901,6 @@ Switch Clear "Clear"
 ```
 
 ##### Rules (e.g tinkerforge.rules):
-
 ```
 import org.openhab.core.library.types.*
 
@@ -2854,7 +2912,6 @@ end
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="RotaryEncoder"
 {
@@ -2867,6 +2924,7 @@ sitemap tf label="RotaryEncoder"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Segment Display 4x7 Bricklet
 
@@ -2877,10 +2935,9 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 The Segment Display 4x7 is a bit special as it acts as actuator which can receive number messages. To
 achieve this, you have to configure the device as Number item.
 
-An entry in services/tinkerforge.cfg is only needed if you want to use a [_symbolic name_](#sym_name).
+An entry in /services/tinkerforge.cfg is only needed if you want to use a [_symbolic name_](#sym_name).
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number Segment7         "Segment7" { tinkerforge="uid=<your_uid>"}
 ```
@@ -2900,6 +2957,7 @@ end
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Solid State Relay Bricklet
 
@@ -2908,17 +2966,15 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 #### Binding properties:
 
  * no sub devices
- * no configuration needed for services/tinkerforge.cfg
+ * no configuration needed for tinkerforge.cfg
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Switch relay "Relay" {tinkerforge="uid=<your_uid>"}
 Contact relaystatus "Relay Status"
 ```
 
 ##### Rules file (e.g. tinkerforge.rules):
-
 ```
 import org.openhab.core.library.types.*
 
@@ -2944,7 +3000,6 @@ end
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="TinkerForge SolidStateRelay"
 {
@@ -2955,44 +3010,44 @@ sitemap tf label="TinkerForge SolidStateRelay"
 }
 ```
 
+---
+[Table of Contents](#table-of-contents)
+
 ### Sound Intensity Bricklet
 
 Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/Sound_Intensity.html)
 
 #### Binding properties:
 
-An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_soundintensity |
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 sound.uid=<your_uid>
 sound.type=bricklet_soundintensity
 sound.threshold=1
 sound.callbackPeriod=5000
 ```
-
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number SoundIntensity                 "Sound [%.1f]"  { tinkerforge="uid=<your_uid>" }
 ```
-
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 Text item=SoundIntensity
 ```
+
 ---
+[Table of Contents](#table-of-contents)
 
 ### Temperature Bricklet
 
@@ -3000,7 +3055,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh) or if you want to use a [_symbolic name_](#sym_name).
 
 Since OH 1.8 there is a new option slowI2C which could be set to "True" or "False",
 the default value is "False". More information on this setting can be found here:
@@ -3008,15 +3063,14 @@ http://www.tinkerforge.com/en/doc/Software/Bricklets/Temperature_Bricklet_Java.h
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_temperature |
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 temperature.uid=<your_uid>
 temperature.type=bricklet_temperature
@@ -3024,13 +3078,10 @@ temperature.slowI2C=False
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number temperature "Temperature [%.2f]" {tinkerforge="uid=<your_uid>"}
 ```
-
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf label="TinkerForge Temperature"
 {
@@ -3041,6 +3092,7 @@ sitemap tf label="TinkerForge Temperature"
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Temperature IR Bricklet
 
@@ -3048,19 +3100,19 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh),
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh),
 if you want to use a [_symbolic name_](#sym_name) or adjust the emissivity of the object temperature device.
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_temperatureIR |
 
 ##### Object temperature sub device:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | subid | openHAB subid of the device | object_temperature |
@@ -3069,8 +3121,7 @@ if you want to use a [_symbolic name_](#sym_name) or adjust the emissivity of th
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 objIR.uid=<your_uid>
 objIR.subid=object_temperature
@@ -3081,7 +3132,7 @@ objIR.threshold=0
 
 ##### Ambient temperature sub device:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | subid | openHAB subid of the device | ambient_temperature |
@@ -3089,22 +3140,18 @@ objIR.threshold=0
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 ambIR.uid=<your_uid>
 ambIR.subid=ambient_temperature
 ambIR.type=ambient_temperature
 ambIR.threshold=0
 ```
-
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number AmbientTemperature "AmbientTemperature [%.1f C]"  { tinkerforge="uid=<your_uid>, subid=ambient_temperature" }
 Number ObjectTemperature "ObjectTemperature [%.1f C]"  { tinkerforge="uid=<your_uid>, subid=object_temperature" }
 ```
-
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
 ```
@@ -3113,6 +3160,7 @@ Text item=ObjectTemperature
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Tilt Bricklet
 
@@ -3122,24 +3170,22 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 You can use a contact, number or switch item.
 
-An entry in services/tinkerforge.cfg is only needed if you want to use a [_symbolic name_](#sym_name).
+An entry in /services/tinkerforge.cfg is only needed if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_tilt |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 tilt.uid=<your_uid>
 tilt.type=bricklet_tilt
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Contact tiltContact  "tilt [MAP(en.map):%s]" { tinkerforge="uid=<your_uid>" }
 Number tiltSensor    "tilt [MAP(en.map):%s]"  { tinkerforge="uid=<your_uid>" }
@@ -3155,7 +3201,6 @@ Switch item=tiltSwitch
 ```
 
 ##### en.map file entry (optional):
-
 ```
 0=closed
 1=open
@@ -3163,6 +3208,99 @@ Switch item=tiltSwitch
 ```
 
 ---
+[Table of Contents](#table-of-contents)
+
+### Thermocouple Bricklet
+
+Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/Thermocouple.html)
+
+#### Binding properties:
+
+The supported thermocouple types are B, E, J, K, N, R, S and T.
+
+##### Bricklet:
+
+| property | descripition | values |
+|----------|--------------|--------|
+| uid | tinkerforge uid | get value from brickv |
+| type | openHAB type name | bricklet_thermocouple |
+| threshold | | see "Callback and Threshold" |
+| callbackPeriod | | see "Callback and Threshold" |
+| averaging | averaging sizes, default=16 | 1, 2, 4, 8 and 16 samples |
+| thermocoupleType | type of sensor used, default=K | B, E, J, K, N, R, S and T |
+| filter | frequency filter, 50Hz or 60Hz, default=50Hz| 0 (=50Hz), 1 (=60Hz) |
+
+##### tinkerforge.cfg:
+```
+thermocouple.uid=<your_uid>
+thermocouple.type=bricklet_thermocouple
+thermocouple.callbackPeriod=10
+thermocouple.threshold=0
+
+thermocouple:averaging=16
+thermocouple:thermocoupleType=K
+thermocouple:filter=0
+```
+##### Items file entry (e.g. tinkerforge.items):
+```
+Number Temp "Temperature (Thermocouple) [%.1f]" { tinkerforge="uid=<your_uid>" }
+
+```
+##### Sitemap file entry (e.g tinkerforge.sitemap):
+```
+sitemap thermocouple label="Thermocouple"
+{
+	Frame {
+		Text item=Temp
+	}
+}
+
+```
+
+---
+[Table of Contents](#table-of-contents)
+
+### UV Light Bricklet
+
+Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/UV_Light.html)
+
+#### Binding properties:
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh).
+
+##### Bricklet:
+
+| property | descripition | values |
+|----------|--------------|--------|
+| uid | tinkerforge uid | get value from brickv |
+| type | openHAB type name | bricklet_uv_light |
+| threshold | | see "Callback and Threshold" |
+| callbackPeriod | | see "Callback and Threshold" |
+
+##### tinkerforge.cfg:
+```
+uv.uid=<your_uid>
+uv.type=bricklet_uv_light
+uv.callbackPeriod=10
+uv.threshold=0
+```
+##### Items file entry (e.g. tinkerforge.items):
+```
+Number UV "UV Light [%.1f]" { tinkerforge="uid=<your_uid>" }
+
+```
+##### Sitemap file entry (e.g tinkerforge.sitemap):
+```
+sitemap uv label="UV Light"
+{
+	Frame {
+		Text item=UV
+	}
+}
+
+```
+
+---
+[Table of Contents](#table-of-contents)
 
 ### Voltage/Current Bricklet
 
@@ -3170,20 +3308,19 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh),
+An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#call_thresh),
 if you want to use a [_symbolic name_](#sym_name) or adjust the averaging, voltage conversion time,
 current conversion time of the device.
 
 ##### Bricklet:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | type | openHAB type name | bricklet_voltageCurrent |
 |averaging|number of averages|0-7|
 |voltageConversionTime|voltage conversion time|0-7|
 |currentConversionTime|current conversion time|0-7|
-
 ```
 voltageCurrent.uid=<your_uid>
 voltageCurrent.type=bricklet_voltageCurrent
@@ -3194,7 +3331,7 @@ voltageCurrent.currentConversionTime=4
 
 ##### Voltage sub device:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | subid | openHAB subid of the device | voltageCurrent_voltage |
@@ -3202,8 +3339,7 @@ voltageCurrent.currentConversionTime=4
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 vc_voltage.uid=<your_uid>
 vc_voltage.subid=voltageCurrent_voltage
@@ -3214,7 +3350,7 @@ vc_voltage.callbackPeriod=100
 
 ##### Current sub device:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | subid | openHAB subid of the device | voltageCurrent_current |
@@ -3222,8 +3358,7 @@ vc_voltage.callbackPeriod=100
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 vc_current.uid=<your_uid>
 vc_current.subid=voltageCurrent_current
@@ -3234,7 +3369,7 @@ vc_current.callbackPeriod=100
 
 ##### Power sub device:
 
-| property | description  | values |
+| property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | get value from brickv |
 | subid | openHAB subid of the device | voltageCurrent_power |
@@ -3242,8 +3377,7 @@ vc_current.callbackPeriod=100
 | threshold | | see "Callback and Threshold" |
 | callbackPeriod | | see "Callback and Threshold" |
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 vc_power.uid=<your_uid>
 vc_power.subid=voltageCurrent_power
@@ -3253,7 +3387,6 @@ vc_power.callbackPeriod=100
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number Voltage       "Voltage [%d mV]"  { tinkerforge="uid=<your_uid>, subid=voltageCurrent_voltage" }
 Number Current       "Current [%d mA]"  { tinkerforge="uid=<your_uid>, subid=voltageCurrent_current" }
@@ -3261,7 +3394,6 @@ Number Power         "Power [%d mW]"  { tinkerforge="uid=<your_uid>, subid=volta
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 Text item=Voltage
 Text item=Current
@@ -3269,15 +3401,17 @@ Text item=Power
 ```
 
 ---
+[Table of Contents](#table-of-contents)
 
 ### Weatherstation Kit
 
 Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Kits/WeatherStation/WeatherStation.html#starter-kit-weather-station)
 
+This hardware and config example makes use of Humidity, Pressure, Temperature, Ambient Light and LCD 20x4 Display Bricklets.
+
 #### Configuration examples:
 
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 lcdbutton2.uid=<your_uid>
 lcdbutton2.subid=button2
@@ -3288,26 +3422,28 @@ lcdbutton3.uid=<your_uid>
 lcdbutton3.subid=button3
 lcdbutton3.type=lcd_button
 lcdbutton3.tactile=True
+
 ```
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Number TF_Humdity                 "Humidity [%.1f %%]"  { tinkerforge="uid=<your_uid>" }
 Number TF_Barometer               "Pressure [%.1f mBar]" { tinkerforge="uid=<your_uid>" }
 Number TF_Barometer_Temperature   "Temperature [%.1f °C]" { tinkerforge="uid=<your_uid>, subid=temperature" }
 Number TF_AmbientLight            "Luminance [%.1f Lux]" { tinkerforge="uid=<your_uid>" }
-
-String TF_LCD         "LCD" { tinkerforge="uid=<your_uid>"}
-Switch TF_LCDBacklight        "LCDBacklight" { tinkerforge="uid=<your_uid>, subid=backlight"}
+ 
+String TF_LCD             "LCD" { tinkerforge="uid=<your_uid>"}
+Switch TF_LCDBacklight    "LCDBacklight" { tinkerforge="uid=<your_uid>, subid=backlight"}
 Switch TF_Button0         "Button0" { tinkerforge="uid=<your_uid>, subid=button0"}
 Switch TF_Button1         "Button1" { tinkerforge="uid=<your_uid>, subid=button1"}
 Switch TF_Button2         "Button2" { tinkerforge="uid=<your_uid>, subid=button2"}
 Switch TF_Button3         "Button3" { tinkerforge="uid=<your_uid>, subid=button3"}
+
+Contact ConnectionStatus "ConnectionStatus [%]" {tinkerforge="uid=<your_server_ip>:<your_port>, subid=isconnected"}
+Number Reconnects "Reconnects [%]" {tinkerforge="uid=<your_server_ip>:<your_port>, subid=connected_counter"}
 ```
 
 ##### Rules (e.g tinkerforge.rules):
-
 ```
 import org.openhab.core.library.types.*
 
@@ -3326,31 +3462,31 @@ then
         sendCommand(TF_LCD, "TFNUM<217>hPa")
         sendCommand(TF_LCD, "TFNUM<30>Luminance  :")
         sendCommand(TF_LCD, "TFNUM<317>Lux")
-        sendCommand(TF_LCD, String::format("TFNUM<013>%4s",
+        sendCommand(TF_LCD, String::format("TFNUM<013>%4s", 
                                 TF_Barometer_Temperature.state.format("%.1f")
                         ))
-        sendCommand(TF_LCD, String::format("TFNUM<113>%4s",
+        sendCommand(TF_LCD, String::format("TFNUM<113>%4s", 
                                 TF_Humdity.state.format("%.1f")
                             ))
         sendCommand(TF_LCD, String::format("TFNUM<213>%4s",
                                   TF_Barometer.state.format("%.0f")
                                   ))
-        sendCommand(TF_LCD, String::format("TFNUM<313>%4s",
+        sendCommand(TF_LCD, String::format("TFNUM<313>%4s", 
                                 TF_AmbientLight.state.format("%.0f")
                                 ))
     ]
-
+ 
 end
 
 rule "Goodbye"
-when
+when 
         System shuts down
 then
         sendCommand(TF_LCDBacklight, OFF)
 end
 
 rule "Weatherstation LCD Backlight"
-        when
+        when 
                 Item TF_Button0 changed
         then
         if (TF_LCDBacklight.state == ON)
@@ -3361,24 +3497,24 @@ rule "Weatherstation LCD Backlight"
 end
 
 rule "Weatherstation LCD update temperature"
-        when
-                Item TF_Barometer_Temperature received update
+        when 
+                Item TF_Barometer_Temperature received update 
         then
-                sendCommand(TF_LCD, String::format("TFNUM<013>%4s",
+                sendCommand(TF_LCD, String::format("TFNUM<013>%4s", 
                                 TF_Barometer_Temperature.state.format("%.1f")
                         ))
 end
 
 rule "Weatherstation LCD update humidity"
-        when
+        when 
                 Item TF_Humdity received update
         then
-                sendCommand(TF_LCD, String::format("TFNUM<113>%4s",
+                sendCommand(TF_LCD, String::format("TFNUM<113>%4s", 
                                 TF_Humdity.state.format("%.1f")
                             ))
 end
 rule "Weatherstation LCD update airpressure"
-        when
+        when 
                 Item TF_Barometer received update
         then
                 sendCommand(TF_LCD, String::format("TFNUM<213>%4s",
@@ -3386,22 +3522,21 @@ rule "Weatherstation LCD update airpressure"
                                   ))
 end
 rule "Weatherstation LCD update ambientLight"
-        when
+        when 
                 Item TF_AmbientLight received update
         then
-                sendCommand(TF_LCD, String::format("TFNUM<313>%4s",
+                sendCommand(TF_LCD, String::format("TFNUM<313>%4s", 
                                 TF_AmbientLight.state.format("%.0f")
                                 ))
 end
 ```
 
 ##### Sitemap file entry (e.g tinkerforge.sitemap):
-
 ```
 sitemap tf_weather label="Tinkerforge Weather Station"
 {
 	  Frame {
-	  		Text item=TF_Humdity
+	  			Text item=TF_Humdity 
 				Text item=TF_Barometer
 				Text item=TF_Barometer_Temperature
 				Text item=TF_AmbientLight
@@ -3410,10 +3545,14 @@ sitemap tf_weather label="Tinkerforge Weather Station"
 				Switch item=TF_Button1
 				Switch item=TF_Button2
 				Switch item=TF_Button3
+				Text item=ConnectionStatus
+				Text item=Reconnects
 			}
 }
 ```
+
 ---
+[Table of Contents](#table-of-contents)
 
 ### Brick Daemon
 
@@ -3422,14 +3561,12 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 #### Binding properties:
 
 ##### Items file entry (e.g. tinkerforge.items):
-
 ```
 Contact brickd1connected {tinkerforge="<uid=<your_ip>:<your_port>, subid=connected"}
 Number brickd1counter "Brickd1 [%d]" {tinkerforge="uid=<your_ip>:<your_port>, subid=connected_counter"}
 ```
 
 ##### Sitemap file entry (e.g. tinkerforge.sitemap):
-
 ```
 sitemap tf label="TinkerForge Brickd"
 {
@@ -3439,17 +3576,11 @@ sitemap tf label="TinkerForge Brickd"
     }
 }
 ```
-
-##### services/tinkerforge.cfg:
-
+##### tinkerforge.cfg:
 ```
 hosts=<your_ip>:<your_port>
 refresh=1000
 ```
-
----
-
-## News
 
 ---
 
@@ -3461,218 +3592,49 @@ openHAB is preinstalled on the RED Brick image and can be configured with the Ti
 
 ---
 
-## TinkerForge Actions
-
-The TinkerForge Action plugin provides direct interaction with some of the TinkerForge devices (since 1.7.0). The action depends on the TinkerForge binding. In order to use these actions you must install the TinkerForge Action bundle and the [TinkerForge Binding](https://github.com/openhab/openhab/wiki/Tinkerforge-Binding) and add at least a hosts configuration value for the binding in services/tinkerforge.cfg.
-These action functions are available:
-
-1. `tfClearLCD(String uid)`
-
-    Clears the display of the LCD with the given uid.
-
-    Example:
-   
-    ```
-    rule "clear lcd"
-        when
-            Item ClearLCD received command ON
-        then
-           tfClearLCD("<your_uid>")
-    end
-    ```
-
-2. `tfServoSetposition(String uid, String num, String position, String velocity, String acceleration)`
-
-    Sets the position of a TinkerForge servo with the uid $uid and servo number to the position $position using the speed $speed and acceleration $acceleration.
-
-    Example:
-
-    ```
-    rule "move servo"
-      when
-          Item MoveServo received command ON
-      then
-         tfServoSetposition("<your_uid>", "servo0", "0", "65535", "65535")
-         Thread::sleep(1000)
-         tfServoSetposition("<your_uid>", "servo0", "-9000", "65535", "65535")
-         Thread::sleep(1000)
-        tfServoSetposition("<your_uid>", "servo0", "9000", "65535", "65535")
-    end
-    ```
-
-3. `tfDCMotorSetspeed(String uid, String speed, String acceleration, String drivemode)`
-
-    Sets the speed of a TinkerForge DC motor with the given uid to $speed using the acceleration $acceleration and the drivemode $drivemode.
-    * speed: value between -32767 - 32767
-    * drivemode is either "break" or "coast"
-
-    Example:
-
-    ```
-    rule "move motor"
-      when
-          Item DCMOVE received command ON
-      then
-         var String acceleration = "10000"
-         var String speed = "15000"
-         tfDCMotorSetspeed("<your_uid>", speed, acceleration, "break")
-         Thread::sleep(1000)
-         tfDCMotorSetspeed("<your_uid>", speed, acceleration, "break")
-         Thread::sleep(1000)
-         tfDCMotorSetspeed("<your_uid>", speed, acceleration, "break")
-         Thread::sleep(1000)
-         tfDCMotorSetspeed("<your_uid>", speed, acceleration, "break")
-    end
-    ```
-
-4. `tfDCMotorSetspeed(String uid, Short speed, Integer acceleration, String drivemode)`
-
-    Sets the speed of a TinkerForge DC motor with the given uid to $speed using the acceleration $acceleration and the drivemode $drivemode.
-    * speed: value between -32767 - 32767
-    * drivemode is either "break" or "coast"
-
-    Example:
-
-    ```
-    rule "move motor"
-      when
-          Item DCMOVE received command ON
-      then
-         var Integer acceleration = 10000
-         var Short speed = 15000
-         tfDCMotorSetspeed("<your_uid>", speed, acceleration, "break")
-         Thread::sleep(1000)
-         tfDCMotorSetspeed("<your_uid>", speed, acceleration, "break")
-         Thread::sleep(1000)
-         tfDCMotorSetspeed("<your_uid>", speed, acceleration, "break")
-         Thread::sleep(1000)
-         tfDCMotorSetspeed("<your_uid>", speed, acceleration, "break")
-    end
-    ```
-
-5. `tfRotaryEncoderClear(String uid)`
-
-	Clears the rotary encoder counter with the given uid.
-
-    Example:
-
-    ```
-    rule "Clear"
-        when Item Clear changed
-    then 
-	   tfRotaryEncoderClear("kHv")
-    end
-    ```
- 
-6. `tfLoadCellTare(String uid)`
- 	
-    Sets tare on the load cell bricklet with the given uid.
-    
-    Example:
-    ```
-    rule "Tare"
-        when 
-                Item Tare changed to ON
-        then
-                postUpdate(TareValue, Weight.state)
-                tfLoadCellTare("<your_uid>")
-    end
-    ```
-
----
-
-## Upgrading
-### Upgrading from 1.3
-- LCDBacklight now is a sub device of [LCD 20×4 Bricklet](#lcd-20x4-display-bricklet) (items file has to be changed)
-- [LCD20×4Button](#lcd-20x4-display-bricklet) now posts an update not a command anymore (rules has to be changed)
-- [IndustrialQuadRelay](#industrial-quad-relay-bricklet) sub id numbering now starts from zero (items file has to be changed)
-
----
-
-### Upgrading from 1.4
-- Threshold values now have the same unit as the sensor value (incompatible change, you may have to update your services/tinkerforge.cfg).
- - Background:
-   Some getters for sensor values of the TinkerForge API return higher precision values by using short values with fractions of the common units, e.g. the Temperature Bricklet returns hundredths of a celsius degree. The binding converts these values to common units using a BigDecimal. Until now the threshold values were applied to the sensor value before this conversion. Because of that the threshold values had to be given as the appropriate fraction. With the drawback that the openHAB users need some knowledge about the behavior of the TinkerForge API. Now the threshold is applied after converting the original values. Therefore the units used for the sensor values and the threshold values are equal.
-- [Humidity Bricklet](#humidity-bricklet)
- - calculate new threshold values from values of your current configuration: divide by 10
- - unity: relative humidity in percent
-- [Distance IR Bricklet](#distance-ir-bricklet)
- - calculate new threshold values from values of your current configuration: nothing changed
- -  unity: millimeter
-- [Temperature Bricklet](#temperature-bricklet)
- - calculate new threshold values from values of your current configuration: divide by 100
- - unity: degree Celsius
-- [Barometer Bricklet](#barometer-bricklet)
- - calculate new threshold values from values of your current configuration: divide by 1000
- - unity: mbar
-- [Ambient Light Bricklet](#ambient-light-bricklet-v2)
- - calculate new threshold values from values of your current configuration: divide 10
- - unity: Lux
-
----
-
-### Upgrading from 1.7.0
-- New Devices
- - [Joystick Bricklet](#joystick-bricklet)
- - [Linear Poti Bricklet](#linear-poti-bricklet)
- - [Dual Button Bricklet](#dual-button-bricklet)
- - [PTC Bricklet](#ptc-bricklet)
- - [Industrial Dual 0-20mA Bricklet](#industrial-dual-0-20ma-bricklet)
- - [Solid State Relay Bricklet](#solid-state-relay-bricklet)
-
-- New Features
- - [Tinkerforge Action](#tinkerforge-actions) Addon
- - [Brick DC](#dc-brick) fully supported
- - [Brick Servo](#servo-brick) fully supported
- - Authentication support for brickd
- - Tactile feature for [Dualbutton](#dual-button-bricklet), [LCD Buttons](#lcd-20x4-display-bricklet), [Joystick Button](#joystick-bricklet).
- - [LED Strip](#led-strip-bricklet): sub devices and switching capabilities, configurable Frameduration, ChipType and Clockfrequency
- - [Remote Switch dimmer](#remote-switch-bricklet)
-
-- Bugfixes
- - Fix for configuration handling of device aliases
-
-- Other changes
- - Updated Tinkerforge API to 2.1.4
- - [Example configurations](https://github.com/theoweiss/openhab-tinkerforge-configuration-examples) available on github
-
----
-
-### Upgrading from 1.7.1
-- New Devices
- - [Accelerometer Bricklet](#accelerometer-bricklet)
- - [Ambient Light Bricklet 2.0](#ambient-light-bricklet-v2)
- - [Analog In Bricklet](#analog-in-bricklet)
- - [Analog In Bricklet 2.0](#analog-in-bricklet-20)
- - [Color Bricklet](#color-bricklet)
- - [Dust Detector Bricklet](#dust-detector-bricklet)
- - [Hall Effect Bricklet](#hall-effect-bricklet)
- - [Industrial Dual Analog In Bricklet](#industrial-dual-analog-in-bricklet)
- - [Laser Range Finder Bricklet](#laser-range-finder-bricklet)
- - [Load Cell Bricklet](#load-cell-bricklet)
- - [Piezo Speaker Bricklet](#piezo-speaker-bricklet)
- - [Rotary Encoder Bricklet](#rotary-encoder-bricklet)
- - [Temperature IR Bricklet](#temperature-ir-bricklet)
-  
-### Upgrading from 1.8.0
-
-more to come ...
+[Table of Contents](#table-of-contents)
 
 ## Developer Notes
 
+# 1.7.1
+## New Devices
+ * [Accelerometer Bricklet](#accelerometer-bricklet)
+ * [Ambient Light Bricklet 2.0](#ambient-light-bricklet-v2)
+ * [Analog In Bricklet](#analog-in-bricklet)
+ * [Analog In Bricklet 2.0](#analog-in-bricklet-20)
+ * [Color Bricklet](#color-bricklet)
+ * [Dust Detector Bricklet](#dust-detector-bricklet)
+ * [Hall Effect Bricklet](#hall-effect-bricklet)
+ * [Industrial Dual Analog In Bricklet](#industrial-dual-analog-in-bricklet)
+ * [Laser Range Finder Bricklet](#laser-range-finder-bricklet)
+ * [Load Cell Bricklet](#load-cell-bricklet)
+ * [Piezo Speaker Bricklet](#piezo-speaker-bricklet)
+ * [Rotary Encoder Bricklet](#rotary-encoder-bricklet)
+ 
 # 1.7.0
 ## New Devices
- * Joystick Bricklet
- * Linear Poti Bricklet
- * Dual Button Bricklet
+ * [Joystick Bricklet](#joystick-bricklet)
+ * [Linear Poti Bricklet](#linear-poti-bricklet)
+ * [Dual Button Bricklet](#dual-button-bricklet)
+ * [PTC Bricklet](#ptc-bricklet)
+ * [Industrial Dual 0-20mA Bricklet](#industrial-dual-0-20ma-bricklet)
+ * [Solid State Relay Bricklet](#solid-state-relay-bricklet)
+ * [Remote Switch dimmer](#remote-switch-bricklet)
 
 ## New Features
  * Tinkerforge Action Addon
- * Brick DC fully supported
- * Brick Servo fully supported
-
+ * [Brick DC](#dc-brick) fully supported
+ * [Brick Servo](#servo-brick) fully supported
+ * Authentication support for brickd
+ * Tactile feature for [Dualbutton](#dual-button-bricklet), [LCD Buttons](#lcd-20x4-display-bricklet), [Joystick Button](#joystick-bricklet)
+ * [LED Strip](#led-strip-bricklet): sub devices and switching capabilities, configurable Frameduration, ChipType and Clockfrequency
+ 
+ 
 ## Other changes
  * updated Tinkerforge API to 2.1.4
+ 
+## Bugfixes
+ * Fix for configuration handling of device aliases
 
 ## Brick DC
 ### Incompatible changes
@@ -3688,7 +3650,7 @@ With the benefit that you can have serveral switch items with different speeds.
 ~~dc_garage.switchOnVelocity=10000~~
 
 ```
-Switch DCSWITCH "DC Switch" {tinkerforge="uid=62Zduj, speed=14000"}
+Switch DCSWITCH "DC Switch" {tinkerforge="uid=<your_uid>, speed=14000"}
 ```
 
 
@@ -3752,15 +3714,15 @@ tfServoSetposition("6Crt5W", "servo0", "-9000", "65535", "65535")
   * polled values now are only send once to the eventbus
 
 ## New Devices
- * Remote Switch Bricklet
- * Motion Detection Bricklet
- * Bricklet MultiTouch
- * Bricklet TemperatureIR
- * Bricklet SoundIntensity
- * Bricklet Moisture
- * Bricklet DistanceUS
- * Bricklet VoltageCurrent
- * Bricklet Tilt
+ * [Remote Switch Bricklet](#remote-switch-bricklet)
+ * [Motion Detector Bricklet](#motion-detector-bricklet)
+ * [Multi Touch Bricklet](#multi-touch-bricklet)
+ * [Temperature IR Bricklet](#temperature-ir-bricklet)
+ * [Sound Intensity Bricklet](#sound-intensity-bricklet)
+ * [Moisture Bricklet](#moisture-bricklet)
+ * [Distance US Bricklet](#distance-us-bricklet)
+ * [Voltage/Current Bricklet](#voltagecurrent-bricklet)
+ * [Tilt Bricklet](#tilt-bricklet)
 
 ## Other changes
  * updated Tinkerforge API to 2.1.0
@@ -3777,9 +3739,9 @@ tfServoSetposition("6Crt5W", "servo0", "-9000", "65535", "65535")
   * IndustrialQuadRelay sub id numbering now starts from zero (items file must be changed)
 
 ## New Devices
- * Bricklet Industrial Quad Relay
- * Bricklet Industrial Digital In 4
- * Bricklet IO-16
+ * [Industrial Quad Relay Bricklet](#industrial-quad-relay-bricklet)
+ * [Industrial Digital In 4 Bricklet](#industrial-digital-in-4-bricklet)
+ * [IO 16 Bricklet](#io-16-bricklet)
 
 ## Other changes
  * updated Tinkerforge API to 2.0.12
@@ -3790,4 +3752,6 @@ tfServoSetposition("6Crt5W", "servo0", "-9000", "65535", "65535")
  * handle disconnected brickds
    * on binding startup make retries every second
    * when binding is running use the Tinkerforge autoreconnect feature
+   
 ---
+[Table of Contents](#table-of-contents)
