@@ -344,8 +344,6 @@ ${param:iconset}
 
 **Unit conversion**  
 
-this PR required: https://github.com/openhab/openhab1-addons/pull/3385
-
 ```
 ${weather:temperature.current[fahrenheit]} 
 ${weather:temperature.current(%.1f)[fahrenheit]} 
