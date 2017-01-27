@@ -2989,6 +2989,15 @@
         </Product>
         <Product>
             <Reference>
+                <Type>0004</Type>
+                <Id>0052</Id>
+            </Reference>
+            <Model>ZMNHUD</Model>
+            <Label lang="en">Flush Pilot DIN</Label>
+            <ConfigFile>qubino/zmnhud.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>2</Type>
                 <Id>2</Id>
             </Reference>
