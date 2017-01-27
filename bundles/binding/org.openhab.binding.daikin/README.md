@@ -1,37 +1,55 @@
-Documentation of the Daikin binding bundle.
+# Daikin Binding
 
-## Introduction
+The openHAB Daikin binding allows monitoring and control of a Daikin air
+conditioner/heat pump.
 
-This binding allows you to monitor and control a Daikin air conditioner/heat pump via openHAB. In order for this to work a [KKRP01A](http://www.onlinecontroller.eu/) Online Controller must be installed in your Daikin unit and connected to your LAN. 
+<!-- MarkdownTOC depth=1 -->
 
-There is a list of units that are compatible with the KKRP01A [here](http://www.onlinecontroller.eu/media/downloads/List-of-compatible-INDOOR-and-OUTDOOR-units-4.pdf) and instructions on how to install and configure the controller [here](http://www.onlinecontroller.eu/en/download).
+- [Prerequisites](#prerequisites)
+- [Binding Configuration](#binding-configuration)
+- [Item Configuration](#item-configuration)
+- [Examples](#examples)
 
-The KKRP01A has a built in web server which allows you to poll the devices status (via GET requests) as well as send commands (via POST requests) to turn the unit on/off, change its mode, etc.
- 
+<!-- /MarkdownTOC -->
+
+
+## Prerequisites
+
+A [KKRP01A](http://www.onlinecontroller.eu/) Online Controller must be
+installed in the Daikin unit and connected to the LAN. 
+
+The user authentication feature is not supported by the Daikin binding.
+Therefore the Daikin unit must be configured with no security (ie. empty
+password for all logins).
+
+There is a list of units that are compatible with the KKRP01A
+[here](http://www.onlinecontroller.eu/media/downloads/List-of-compatible-INDOOR-and-OUTDOOR-units-4.pdf)
+and instructions on how to install and configure the controller [here](http://www.onlinecontroller.eu/en/download).
+
+
 ## Binding Configuration
 
-You need to let openHAB know where to find the KKRP01A web server and set how often you would like the binding to refresh any status items (send a GET request).
+The binding can be configured in the file `services/daikin.cfg`.
 
-The binding supports more than one KKRP01A if required.
+openHAB needs to know where to find the KKRP01A web server and how often the
+binding should refresh any status items.
 
-### openhab.cfg Config
+Multiple KKRP01A units can be configured by giving each a unique name.
 
-    ############################# Daikin Binding #############################
+| Property           | Default | Required | Description                                  |
+|--------------------|---------|----------|----------------------------------------------|
+| &lt;name>.host     |         | Yes      | &lt;name> is a unique name for the Daikin unit, also used in item bindings.<br/> The value of this setting must be formatted as &lt;which>@&lt;address>.<br/> &lt;which> refers to the Daikin Remote Control Device, and must be either WIRELESS or WIRED.<br/> &lt;address> is the IP address or hostname of the Daikin unit.                                                                      |
+| refresh            | 60000   | No       | The refresh interval (in milliseconds)       |
 
-    # the refresh interval (in ms)
-    daikin:refresh=60000
 
-    # where <name> is used in your item bindings
-    # where WIRELESS or WIRED is the type of your Daikin Remote Control Device (BRP069A42 is a WIRELESS Device)
-    daikin:<name>.host=<WIRELESS|WIRED>@<ipaddress|host>
-    #daikin:<name>.username=<not used>
-    #daikin:<name>.password=<not used>
+## Item Configuration
 
-### Item bindings
+Item bindings can be either inbound or outbound. 
 
-The binding supports both inbound and outbound bindings. 
 
-#### Inbound (readonly) bindings
+## Examples
+
+### Inbound (readonly) item bindings
 
     // the temperature/humidity at the indoor unit
     Number  DaikinTempIn      "Temp Inside [%.1f °C]"      { daikin="<name>:tempin" }
@@ -40,7 +58,7 @@ The binding supports both inbound and outbound bindings.
     // the temperature at the outdoor unit
     Number  DaikinTempOut     "Temp Outside [%.1f °C]"     { daikin="<name>:tempout" }
  
-#### Outbound (command) bindings
+### Outbound (command) item bindings
 
     // power
     Switch  DaikinPower  "Power"           { daikin="<name>:power" }
@@ -60,7 +78,7 @@ The binding supports both inbound and outbound bindings.
     // timer mode - one of Off-Off/Off-On/On-Off/On-On (start/end timers)
     Number DaikinTimer  "Timer [%.0f]"      { daikin="<name>:timer" }
 
-#### Sitemap Examples are
+### Sitemap Examples
 
     Text item=DaikinTempOut
     Switch item=DaikinPower
@@ -70,6 +88,3 @@ The binding supports both inbound and outbound bindings.
     Setpoint item=DaikinTemp minValue="16" maxValue="30" step="1"
     Switch item=DaikinFan mappings=[0="Auto", 1="F1", 2="F2", 3="F3", 4="F4", 5="F5"]
     Switch item=DaikinSwing mappings=[0="Off", 1="Vertical", 2="Horizontal", 3="Hor/Vert"]
-
-The KKRP01A supports user authentication however this is not currently supported by the binding. 
-

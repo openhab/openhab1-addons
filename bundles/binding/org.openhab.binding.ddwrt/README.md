@@ -1,45 +1,67 @@
-_**Note:** This Binding is available in 1.9.0 and later releases._
+# DD-WRT Binding
 
-Documentation of the DD-WRT binding bundle
+The openHAB DD-WRT Binding allows interaction with a DD-WRT device.
 
-## Introduction
+<!-- MarkdownTOC depth=1 -->
 
-For installation of the binding, please see Wiki page [[Bindings]], or you can add [this JAR](https://openhab.ci.cloudbees.com/job/openHAB1-Addons/lastSuccessfulBuild/artifact/bundles/binding/org.openhab.binding.ddwrt/target/org.openhab.binding.ddwrt-1.9.0-SNAPSHOT.jar) to your `addons` folder.
+- [Prerequisites](#prerequisites)
+- [Binding Configuration](#binding-configuration)
+- [Item Configuration](#item-configuration)
+- [Examples](#examples)
+- [Notes](#notes)
 
-Adapt your openhab.cfg to your configuration:
-* IP address of DD-WRT to connect to<BR>
-    ddwrt:ip=192.168.1.1<BR>
-    ddwrt:port=23<BR>
-
-* You need to configure the user and password of your DD-WRT<BR>
-    ddwrt:username=root<BR>
-    ddwrt:password=xxxxxxx<BR>
-
-* Interface for the 2.4 GHz wifi<BR>
-    ddwrt:interface_24=ath0<BR>
-* Interface for the 5 GHz wifi<BR>
-    ddwrt:interface_50=ath1<BR>
-* Virtuall-Interface for the guest wifi<BR>
-    ddwrt:interface_guest=ath0.1<BR>
+<!-- /MarkdownTOC -->
 
 
-## Prepare your DD-WRT device
-* You have to activate the telnet connection in the DD-WRT web interface.
-* The changing of the telnet port in the DD-WRT web interface is not always working. Test it with a telnet command shell.
+## Prerequisites
 
-## Generic Item Binding Configuration
+In order to use the binding with a DD-WRT device, the telnet connection must be activated in the DD-WRT web interface.
+This process does not always work. Test it with a telnet command shell.
 
-In order to bind an item to the DD-WRT device, you need to provide configuration settings. The easiest way to do so is to add some binding information in your item file (in the folder `configurations/items`). 
 
-## Switching WIFI
+## Binding Configuration
 
-The following items switch WIFI, GUEST_WIFI, and the NAME of the device as string:
+The binding can be configured in the file `services/ddwrt.cfg`.
+
+| Property        | Default | Required | Description                  |
+|-----------------|---------|----------|------------------------------|
+| ip              |         | No       | The IP address of the device |
+| port            | 23      | No       | The port to be used          |
+| username        |         | No       | The username for the device  |
+| password        |         | No       | The password for the device  |
+| interface_24    |         | No       | The 2.4 GHz wifi interface   |
+| interface_50    |         | No       | The 5 GHz wifi interface     |
+| interface_guest |         | No       | The guest wifi interface     |
+
+
+## Item Configuration
+
+Item bindings should conform to the following format:
+
+````
+    ddwrt="<key>"
+````
+
+Where &lt;key> may take any of these values:
+
+| Key        |
+|------------|
+| routertype |
+| wlan24     |
+| wlan50     |
+| wlanguest  |
+
+
+## Examples
 
     String DEVICE_NAME {ddwrt="routertype"}
     Switch WIFI_24     {ddwrt="wlan24"}
     Switch WIFI_50     {ddwrt="wlan50"}
     Switch WIFI_GUEST  {ddwrt="wlanguest"}
 
-The guest network is usually a virtual network device. There is a bug in the DD-WRT firmware. The activation of this interface needs a workaround so it takes some seconds more as the native devices.
 
-Tested with Archer V2 and DD-WRT v3.0-r30880 std (11/14/16)
+## Notes
+
+There is a bug in the DD-WRT firmware. The activation of this interface needs a workaround so it takes some seconds longer than the native devices.
+
+Tested with Archer V2 and DD-WRT v3.0-r30880 std (11/14/16).

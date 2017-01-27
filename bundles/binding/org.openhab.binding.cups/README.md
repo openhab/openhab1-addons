@@ -1,41 +1,66 @@
-Documentation of the CUPS binding Bundle
-## Introduction
+# CUPS Binding
 
-For installation of the binding, please see Wiki page [[Bindings]].
+The openHAB CUPS binding allows interaction with printers and their print queues via a CUPS server.
 
-## Generic Item Binding Configuration
+<!-- MarkdownTOC depth=1 -->
 
-In order to bind an item to a CUPS printer, you need to provide configuration settings. The easiest way to do so is to add some binding information in your item file (in the folder configurations/items`). The syntax for the CUPS binding configuration string is explained here: 
+- [Prerequisites](#prerequisites)
+- [Binding Configuration](#binding-configuration)
+- [Item Configuration](#item-configuration)
+- [Examples](#examples)
 
-    cups="<printerName>#<whichJobs>"
-Where `<printerName>` is the name or URL of the printer, as it is known by the CUPS-Server. And `<whichJobs>` is one the following
-- NOT_COMPLETED: Jobs that are not printed yet (default value)
-- COMPLETED: already printed jobs
-- ALL: all jobs
+<!-- /MarkdownTOC -->
 
-Here are some examples of valid binding configuration strings: 
+## Prerequisites
 
-    cups="MX-870#NOT_COMPLETED"
-    cups="http://127.0.0.1:631/printers/MX-870"
+To set up this binding, it is necessary to know the names of the printers registered with the CUPS server.
 
-As a result, your lines in the items file might look like the following: 
+One way to get this information is to download the current `cups4j.runnable-x.x.x.jar` file from http://www.cups4j.org/ and query the printers by using the following command
 
-    Number  Print_Jobs_Queued   "Unfinished print jobs"   (FF_Office)   { cups="MX-870#NOT_COMPLETED" }
+    java -jar cups4j.runnable-x.x.x.jar -h <CUPS server name> getPrinters
 
-In order to find out the name/url of your printer on the CUPS-Server you can download the current `cups4j.runnable-x.x.x.jar` file from http://www.cups4j.org/ and query the printers by using the following command
 
-    java -jar cups4j.runnable-x.x.x.jar -h <CUPS-Server name> getPrinters
+## Binding Configuration
 
-## Example Use Case
+The binding can be configured in the file `services/cups.cfg`.
+
+| Property | Default | Required | Description                                   |
+|----------|---------|:--------:|-----------------------------------------------|
+| host     |         | Yes      | The hostname or IP address of the CUPS server |
+| port     | 631     | No       | The port used to connect to the CUPS server   |
+| refresh  | 60000   | No       | The refresh interval (in milliseconds)        |
+
+
+## Item Configuration
+
+Each item binding should have this format: 
+````
+    cups="<printerName>[#whichJobs]"
+````
+
+`<printerName>` is the name or URL of the printer, as registered with the CUPS server.
+`whichJobs` has a default value of NOT_COMPLETED; possible values are:
+- NOT_COMPLETED
+- COMPLETED
+- ALL
+
+
+## Examples
+
+- Number  Print_Jobs_Queued   "Unfinished print jobs"   (FF_Office)   { cups="MX-870#NOT_COMPLETED" }
+
+- Number  Print_Jobs_Completed   "Completed print jobs"   (FF_Office)   { cups="http://127.0.0.1:631/printers/MX-870" }
+
+### Example Use Case
 
 The CUPS Binding can be used to switch on a printer if there are print jobs in the queue and switch it off if the queue is empty.
 
-### Items
+#### Items
 
     Number Print_Jobs_Queued  "Unfinished print jobs"  (FF_Office)   { cups="MX-870#NOT_COMPLETED" }
     Switch Printer            "Printer"
 
-### Rule
+#### Rules
 
     import org.openhab.model.script.actions.Timer
     
