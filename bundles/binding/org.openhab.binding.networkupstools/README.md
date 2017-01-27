@@ -1,66 +1,58 @@
+# Network UPS Tools Binding
 
-## Introduction
+The primary goal of the [Network UPS Tools](http://www.networkupstools.org/) (NUT) project is to provide support for power devices, such as uninterruptible power supplies (UPS), Power Distribution Units and Solar Controllers.
 
-The primary goal of the [Network UPS Tools](http://www.networkupstools.org/) (NUT) project is to provide support for Power Devices, such as Uninterruptible Power Supplies (UPS), Power Distribution Units and Solar Controllers.
-NUT provides many control and monitoring features, with a uniform control and management interface.
-More than 100 different manufacturers, and several thousands models are compatible.
+Network UPS Tools (NUT) provides many control and monitoring features, with a uniform control and management interface.
+More than 100 different manufacturers, and several thousands of models are compatible.
 
-This binding let's you integrate NUT servers with openHAB.
+This binding lets you integrate NUT servers with openHAB.
 
-For installation of the binding, please see Wiki page [[Bindings]].
+## Binding Configuration
 
-## Configuration
-### openhab.cfg
+This binding can be configured in the file `services/networkupstools.cfg`.
+
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| `<instance name>.<parameter>` |  | Yes | X |
+| refresh  |         |   No     | refresh interval for state updates in milliseconds |
+| `<name>`.device |  |   Yes    | UPS device name, `ups` for example |
+| `<name>`.host |    |   No     | UPS server hostname |
+| `<name>`.port |    |   No     | UPS server port, 3493 for example |
+| `<name>`.login |   |   No     | UPS server login |
+| `<name>`.pass |    |   No     | UPS server password |
+
+
+where `<name>` is a name you choose to identify a specific UPS device that is managed by NUT servers, `ups1` for instance.  You can configure any number of UPS devices managed by NUT servers. Every UPS is identified by instance name ("ups1" in the example above). You use instance name in the item definitions.
+
+### Item Configuration
+
+he syntax for the binding configuration string is explained here:
+
 ```
-############################### NetworkUpsTools Binding ###############################
-#
-# networkupstools:<instance name>.<parameter>=<value>
-#
-
-# Refresh interval for state updates in milliseconds (optional)
-networkupstools:refresh=60000
-
-# UPS device name 
-networkupstools:ups1.device=ups
-
-# UPS server hostname (optional)
-networkupstools:ups1.host=localhost
-
-# UPS server port (optional)
-networkupstools:ups1.port=3493
-
-# UPS server login (optional)
-#networkupstools:ups1.login=
-
-# UPS server pass (optional)
-#networkupstools:ups1.pass= 
+networkupstools="<name>:<property name>"
 ```
-
-In the openhab.cfg you can configure any number of UPS devices managed by NUT servers. Every UPS is identified by instance name ("ups1" in the example above). You use instance name in the item definitions.
-
-### Generic Item Binding Configuration
-
-In order to bind an item to a NetworkUpsTools property, you need to provide configuration settings. The syntax for the binding configuration string is explained here:
-
-    networkupstools="<instance name>:<property name>"
 
 Here are some examples of valid binding configuration strings:
 
-    networkupstools="ups1:input.voltage"
-    networkupstools="ups1:ups.load"
-    networkupstools="ups1:ups.status"
-
+```
+networkupstools="ups1:input.voltage"
+networkupstools="ups1:ups.load"
+networkupstools="ups1:ups.status"
+```
 
 As a result, your lines in the items file might look like the following:
 
-    Number Ups_Output_Voltage "UPS output voltage [%.1f V]" (Ups) {networkupstools="ups1:output.voltage"}
-    String Ups_Status "UPS status [%s]" (Ups) {networkupstools="ups1:ups.status"}
+```
+Number Ups_Output_Voltage "UPS output voltage [%.1f V]" (Ups) {networkupstools="ups1:output.voltage"}
+String Ups_Status "UPS status [%s]" (Ups) {networkupstools="ups1:ups.status"}
+```
 
 Supported item types are Number and String.
 
 Supported property names differs between UPSes. You can use upsc command to get a list of properties for your ups:
+
 ```
-jarek@nas ~ $ upsc ups1
+$ upsc ups1
 battery.charge: 100
 battery.voltage: 13.40
 battery.voltage.high: 13.00
