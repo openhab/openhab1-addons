@@ -2,14 +2,6 @@
 
 The openHAB CUPS binding allows interaction with printers and their print queues via a CUPS server.
 
-<!-- MarkdownTOC depth=1 -->
-
-- [Prerequisites](#prerequisites)
-- [Binding Configuration](#binding-configuration)
-- [Item Configuration](#item-configuration)
-- [Examples](#examples)
-
-<!-- /MarkdownTOC -->
 
 ## Prerequisites
 
@@ -34,12 +26,14 @@ The binding can be configured in the file `services/cups.cfg`.
 ## Item Configuration
 
 Each item binding should have this format: 
-````
+
+```
     cups="<printerName>[#whichJobs]"
-````
+```
 
 `<printerName>` is the name or URL of the printer, as registered with the CUPS server.
 `whichJobs` has a default value of NOT_COMPLETED; possible values are:
+
 - NOT_COMPLETED
 - COMPLETED
 - ALL

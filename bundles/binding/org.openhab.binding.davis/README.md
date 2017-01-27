@@ -4,14 +4,6 @@ The openHAB Davis binding supports reading data from Davis weather stations.  Mo
 
 The binding is based on the [Serial Communication Reference Manual](http://www.google.at/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0CCQQFjAA&url=http%3A%2F%2Fwww.davisnet.com%2Fsupport%2Fweather%2Fdownload%2FVantageSerialProtocolDocs_v261.pdf&ei=yns1VLO9B9Pe7Ab9hYDgDQ&usg=AFQjCNEUP_O6jjV3tHaxc7_faaLKWAtw2g&sig2=0YuJy45Qmk76RlffOqayuA&bvm=bv.76943099,d.ZGU) from Davis.
 
-<!-- MarkdownTOC depth=1 -->
-
-- [Binding Configuration](#binding-configuration)
-- [Item Configuration](#item-configuration)
-- [Examples](#examples)
-
-<!-- /MarkdownTOC -->
-
 
 ## Binding Configuration
 
@@ -29,7 +21,7 @@ Item bindings should conform to this format:
 
     davis="<value-key>"
 
-The following table defines the allowable values for &lt;value-key>.
+The following table defines the allowable values for `<value-key>`.
 
 | Value-Key                   |
 |-----------------------------|

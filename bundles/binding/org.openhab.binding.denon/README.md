@@ -4,26 +4,17 @@ The openHAB Denon Binding allows interaction with Denon AV receivers. It should 
 
 The binding also seems to work with some [Marantz receivers](https://groups.google.com/d/msg/openhab/bSTEfSRt0RU/rOI6uWUe7bIJ).
 
-<!-- MarkdownTOC depth=1 -->
-
-- [Binding Configuration](#binding-configuration)
-- [Item Configuration](#item-configuration)
-- [Examples](#examples)
-- [References](#references)
-
-<!-- /MarkdownTOC -->
-
 
 ## Binding Configuration
 
 The binding can be configured in the file `services/denon.cfg`.
 
-Multiple receivers may be defined. Each requires a unique <name> to be defined.
+Multiple receivers may be defined. Each requires a unique `<name>` to be defined.
 
 | Property         | Default | Required | Description                                                 |
-|------------------|---------|----------|-------------------------------------------------------------|
-| &lt;name>.host   |         | Yes      | The IP address of the receiver                              |
-| &lt;name>.update | telnet  | No       | Connection method. Allowed values are "telnet" or "http". Denon receivers only support one concurrent telnet connection, so use http if any other app is using the telnet connection. |
+|------------------|---------|:--------:|-------------------------------------------------------------|
+| `<name>`.host    |         | Yes      | The IP address of the receiver                              |
+| `<name>`.update  | telnet  | No       | Connection method. Allowed values are "telnet" or "http". Denon receivers only support one concurrent telnet connection, so use http if any other app is using the telnet connection. |
 | refresh          | 5000    | No       | The refresh interval (in milliseconds) for the http connection method. |
 
 
@@ -35,7 +26,7 @@ Item bindings must conform to the following format:
 {denon="<name>#<property>"}
 ```
 
-&lt;name> is the name of the receiver defined in the Binding Configuration, and &lt;property> is one of the following:
+`<name>` is the name of the receiver defined in the Binding Configuration, and `<property>` is one of the following:
 
 
 | Property     | Type          | Description                   | Accepts                    |
@@ -134,7 +125,7 @@ Switch DenonZoneTwoInputUSB	"Zone 2 Input USB"	{denon="avr2000#Z2USB/IPOD"}
 Switch DenonZoneTwoInputTuner	"Zone 2 Tuner"		{denon="avr2000#Z2TUNER"}
 ```
 
-###Sitemap
+### Sitemap
 
 ```
 Frame label="Main Zone" {

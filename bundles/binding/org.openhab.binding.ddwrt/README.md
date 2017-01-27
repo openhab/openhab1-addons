@@ -2,16 +2,6 @@
 
 The openHAB DD-WRT Binding allows interaction with a DD-WRT device.
 
-<!-- MarkdownTOC depth=1 -->
-
-- [Prerequisites](#prerequisites)
-- [Binding Configuration](#binding-configuration)
-- [Item Configuration](#item-configuration)
-- [Examples](#examples)
-- [Notes](#notes)
-
-<!-- /MarkdownTOC -->
-
 
 ## Prerequisites
 
@@ -24,7 +14,7 @@ This process does not always work. Test it with a telnet command shell.
 The binding can be configured in the file `services/ddwrt.cfg`.
 
 | Property        | Default | Required | Description                  |
-|-----------------|---------|----------|------------------------------|
+|-----------------|---------|:--------:|------------------------------|
 | ip              |         | No       | The IP address of the device |
 | port            | 23      | No       | The port to be used          |
 | username        |         | No       | The username for the device  |
@@ -38,11 +28,11 @@ The binding can be configured in the file `services/ddwrt.cfg`.
 
 Item bindings should conform to the following format:
 
-````
+```
     ddwrt="<key>"
-````
+```
 
-Where &lt;key> may take any of these values:
+Where `<key>` may take any of these values:
 
 | Key        |
 |------------|
