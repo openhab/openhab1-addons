@@ -1,64 +1,54 @@
-Documentation of the Onkyo AV Receiver Binding
+# Onkyo AV Receiver Binding
 
-## Introduction
-
-Binding should be compatible with Onkyo AV receivers which support ISCP (Integra Serial Control Protocol) over Ethernet (eISCP) and Serial port (since version 1.9).
-
-For installation of the binding, please see Wiki page [[Bindings]].
+This binding is compatible with Onkyo AV receivers which support ISCP (Integra Serial Control Protocol) over Ethernet (eISCP) and serial ports.
 
 ## Binding Configuration
 
-First of all you need to introduce your Onkyo AV receiver's in the openhab.cfg file (in the folder '${openhab_home}/configurations').
+This binding can be configured in the file `services/onkyo.cfg`.
 
-    ################################# Onkyo  Binding ######################################
-    
-    # Host of the first Onkyo device to control 
-    # onkyo:<OnkyoId1>.host=
-    # Port of the Onkyo to control (optional, defaults to 60128)
-    # onkyo:<OnkyoId1>.port=
-    
-    # Host of the second Onkyo device to control 
-    # onkyo:<OnkyoId2>.host=
-    # Port of the Onkyo to control (optional, defaults to 60128)
-    # onkyo:<OnkyoId2>.port=
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| `<id1>`.host | | if `<id1>`.serialPortName is not specified | IP address of the first Onkyo AV receiver to control |
+| `<id1>`.port | 60128 | No | TCP port address of the first Onkyo to control |
+| `<id1>`.serialPortName | | if `<id1>`.host is not specified | name of the serial port device through which to control the first Onkyo receiver |
+| `<id2>`.host | | if `<id2>`.serialPortName is not specified | IP address of the second Onkyo device to control |
+| `<id2>`.port | 60128 | No | TCP port address of the second Onkyo to control |
+| `<id2>`.serialPortName | | if `<id2>`.host is not specified | name of the serial port device through which to control the first Onkyo receiver |
 
-The `onkyo:<OnkyoId1>.host` value is the ip address of the Onkyo AV receiver. 
+where `<idN>` is a unique name you choose to identify the specific Onkyo receiver you wish to control (for example, `hometheater`).  This name will be used in item configurations.
 
-The `onkyo:<OnkyoId1>.port` value is TCP port address of the the receiver. Port value is optional parameter.
+### Examplea
 
-Since Version 1.9, you can also control receivers with Serial port
+```
+hometheater.host=192.168.1.100
+hometheater.port=60128
+```
 
-    # Serial Port of the third Onkyo device to control 
-    # onkyo:<OnkyoId3>.serialPortName=
- 
+```
+hometheater.serialPortName=/dev/ttyUSB0
+```
 
-Examples, how to configure your receiver device:
+## Item Configuration
 
-    onkyo:hometheater.host=192.168.1.100
-    onkyo:hometheater.port=60128
-    Or
-    onkyo:hometheater.serialPortName=/dev/ttyUSB0
+The syntax of the binding configuration strings accepted is the following:
 
-## Item Binding Configuration
+```
+onkyo="<openHAB-command>:<id>:<device-command>[,<openHAB-command>:<device-id>:<device-command>][,...]"
+```
 
-In order to bind an item to the device, you need to provide configuration settings. The easiest way to do so is to add some binding information in your item file (in the folder configurations/items`). The syntax of the binding configuration strings accepted is the following:
+where:
 
-    onkyo="<openHAB-command>:<device-id>:<device-command>[,<openHAB-command>:<device-id>:<device-command>][,...]"
-
-where parts in brackets [] signify an optional information.
-
-The **openHAB-command** corresponds OpenHAB command. 
-
-The **device-id** corresponds device which is introduced in openhab.cfg.
-
-The **device-command** corresponds Onkyo AV receiver command. See complite list below.
-
+* parts in brackets `[]` signify optional information.
+* `<openHAB-command>` corresponds to an openHAB command like `ON`, `OFF`, `DECREASE`, etc.
+* `<id>` corresponds to the unique name which you introduced in the binding configuration.
+* `<device-command>` corresponds to the Onkyo AV receiver command. See complete list below.
 
 Examples, how to configure your items:
 
-    Switch onkyoPower  {onkyo="ON:hometheater:POWER_ON, OFF:hometheater:POWER_OFF"}
-    Dimmer onkyoVolume {onkyo="INCREASE:hometheater:VOLUME_UP, DECREASE:hometheater:VOLUME_DOWN"}
-
+```
+Switch onkyoPower  {onkyo="ON:hometheater:POWER_ON, OFF:hometheater:POWER_OFF"}
+Dimmer onkyoVolume {onkyo="INCREASE:hometheater:VOLUME_UP, DECREASE:hometheater:VOLUME_DOWN"}
+```
 
 ### List of predefined Onkyo AV receiver commands
 
@@ -280,38 +270,43 @@ Examples, how to configure your items:
 
 ## Advanced commands
 
-If you want to use commands that are not predefined by the binding you can use them with a shape # as a prefix.
+If you want to use commands that are not predefined by the binding you can use them with `#` as a prefix.
 
-example 1:
-    Dimmer volume { onkyo="INCREASE:hometheater:VOLUME_UP, DECREASE:hometheater:VOLUME_DOWN, *:hometheater:#MVL%02X" }
+```
+Dimmer volume { onkyo="INCREASE:hometheater:VOLUME_UP, DECREASE:hometheater:VOLUME_DOWN, *:hometheater:#MVL%02X" }
+```
 
+openHAB sends volume INCREASE -> binding sends VOLUME_UP (eISCP command=MVLUP)
 
-openhab send volume INCREASE -> binding send VOLUME_UP (eISCP command=MVLUP)
+openHAB sends volume DECREASE -> binding sends VOLUME_DOWN (eISCP command=MVLDOWN)
 
-openhab send volume DECREASE -> binding send VOLUME_DOWN (eISCP command=MVLDOWN)
+openHAB sends volume 30 -> binding sends eISCP command `MVL1E` (set volume level to 30)
 
-openhab send volume 30 -> binding send eISCP command MVL1E (set volume level to 30)
+```
+Number zone4Selector { onkyo="*:hometheater:#SL4%02X" }
+```
 
-example 2:
+```
+Switch onkyoPower { onkyo="*:hometheater:#PWR%02X" }
+```
 
-    Number zone4Selector { onkyo="*:hometheater:#SL4%02X" }
+A list of all commands that are supported by Onkyo's eISCP can be found [here](http://blog.siewert.net/?cat=18).
 
-example 3:
+Be aware that openHAB uses decimal numbers but ISCP uses hex.
 
-    Switch onkyoPower { onkyo="*:hometheater:#PWR%02X" }
-
-A list of all commands that are supported by Onkyo's eISCP can be found here:
-http://blog.siewert.net/?cat=18
-
-Be aware that openhab uses decimal numbers but ISCP uses hex.
 For example: The documentation says "NET" (as a source) is the value "2B". You need to translate this from HEX to DEC for openhab. (2B = 43)
+
 items:
 
-    Number onkyoZ2Selector "Source [%d]" {onkyo="INIT:avr:#SLZQSTN, *:avr:#SLZ%02X"}
-    
+```
+Number onkyoZ2Selector "Source [%d]" {onkyo="INIT:avr:#SLZQSTN, *:avr:#SLZ%02X"}
+```
+
 sitemap:
 
-    Selection item=onkyoZ2Selector label="Source" mappings=[127=OFF, 43=NET, 1=SAT]
+```
+Selection item=onkyoZ2Selector label="Source" mappings=[127=OFF, 43=NET, 1=SAT]
+```
 
 ## Limitations
 
@@ -322,190 +317,180 @@ sitemap:
 - NJA - NET/USB Jacket Art
 - Album Cover cannot be processed yet.
 
-## Demo
+## Full Example
 
-onkyo.items:
+items/onkyo.items
 
-    //
-    // Main
-    //
-    // Power
-    Switch onkyoPower          "Power"                   {onkyo="INIT:hometheater:POWER_QUERY, ON:hometheater:POWER_ON, OFF:hometheater:POWER_OFF"}
-    // Sleep
-    Number onkyoSleep          "Sleep Timer [%d Min]"    {onkyo="INIT:hometheater:#SLPQSTN, 0:hometheater:#SLPOFF, *:hometheater:#SLP%02X, 0:hometheater:#SLPOFF"}
-    // Mute
-    Switch onkyoMute           "Mute"                    {onkyo="INIT:hometheater:MUTE_QUERY, ON:hometheater:MUTE, OFF:hometheater:UNMUTE"}
-    // Volume
-    Dimmer onkyoVolume         "Volume [%d]"             {onkyo="INIT:hometheater:VOLUME_QUERY, INCREASE:hometheater:VOLUME_UP, DECREASE:hometheater:VOLUME_DOWN, *:hometheater:VOLUME_SET"}
-    //Source
-    Number onkyoSource         "Source"                  {onkyo="INIT:hometheater:SOURCE_QUERY, INCREASE:hometheater:SOURCE_UP, DECREASE:hometheater:SOURCE_DOWN, *:hometheater:SOURCE_SET"}
-    //Video Modes
-    Number onkyoVideoWide      "Video Wide Mode"         {onkyo="INIT:hometheater:VIDEO_WIDE_QUERY, INCREASE:hometheater:VIDEO_WIDE_NEXT, *:hometheater:#VWM%02X"}
-    Number onkyoVideoPicture   "Video Picture Mode"      {onkyo="INIT:hometheater:#VPMQSTN, INCREASE:hometheater:#VPMUP, *:hometheater:#VPM%02X"}
-    //Audio Mode
-    Number onkyoListenMode     "Listen Mode"             {onkyo="INIT:hometheater:LISTEN_MODE_QUERY, INCREASE:hometheater:LISTEN_MODE_UP, DECREASE:hometheater:LISTEN_MODE_DOWN, *:hometheater:#LMD%02X"}
-    Switch onkyoAudysseyDynEQ  "Audysses Dynamic EQ"     {onkyo="INIT:hometheater:#ADQQSTN, OFF:hometheater:#ADQ00, ON:hometheater:#ADQ01"}
-    Number onkyoAudysseyDynVol "Audysses Dynamic Volume" {onkyo="INIT:hometheater:#ADVQSTN, INCREASE:hometheater:#ADVUP, *:hometheater:#ADV%02X"}
-    //Information
-    String onkyoAudio          "Audio [%s]"              {onkyo="INIT:hometheater:#IFAQSTN"}
-    String onkyoVideo          "Video [%s]"              {onkyo="INIT:hometheater:#IFVQSTN"}
-    // Display
-    Number onkyoDisplayMode    "Display Mode"            {onkyo="INIT:hometheater:#DIFQSTN, INCREASE:hometheater:#DIFTG, *:hometheater:#DIF%02X"}
-    Number onkyoDimmerLevel    "Display Dimmer Level"    {onkyo="INIT:hometheater:#DIMQSTN, INCREASE:hometheater:#DIMDIM, *:hometheater:#DIM%02X"}
-    
-    //
-    // Zone 2
-    //
-    // Power
-    Switch onkyoZ2Power   "Power"       {onkyo="INIT:hometheater:ZONE2_POWER_QUERY, ON:hometheater:ZONE2_POWER_ON, OFF:hometheater:ZONE2_POWER_OFF"}
-    // Mute
-    Switch onkyoZ2Mute    "Mute"        {onkyo="INIT:hometheater:ZONE2_MUTE_QUERY:, ON:hometheater:ZONE2_MUTE, OFF:hometheater:ZONE2_UNMUTE"}
-    // Volume
-    Dimmer onkyoZ2Volume  "Volume [%d]" {onkyo="INIT:hometheater:ZONE2_VOLUME_QUERY, INCREASE:hometheater:ZONE2_VOLUME_UP, DECREASE:hometheater:ZONE2_VOLUME_DOWN, *:hometheater:ZONE2_VOLUME_SET"}
-    //Source
-    Number onkyoZ2Source  "Source"      {onkyo="INIT:hometheater:ZONE2_SOURCE_QUERY, INCREASE:hometheater:ZONE2_SOURCE_UP, DECREASE:hometheater:ZONE2_SOURCE_DOWN, *:hometheater:ZONE2_SOURCE_SET"}
-    
-    //
-    // Zone 3
-    //
-    // Power
-    Switch onkyoZ3Power  "Power"       {onkyo="INIT:hometheater:ZONE3_POWER_QUERY, ON:hometheater:ZONE3_POWER_ON, OFF:hometheater:ZONE3_POWER_OFF"}
-    // Mute
-    Switch onkyoZ3Mute   "Mute"        {onkyo="INIT:hometheater:ZONE3_MUTE_QUERY:, ON:hometheater:ZONE3_MUTE, OFF:hometheater:ZONE3_UNMUTE"}
-    // Volume
-    Dimmer onkyoZ3Volume "Volume [%d]" {onkyo="INIT:hometheater:ZONE3_VOLUME_QUERY, INCREASE:hometheater:ZONE3_VOLUME_UP, DECREASE:hometheater:ZONE3_VOLUME_DOWN, *:hometheater:ZONE3_VOLUME_SET"}
-    //Source
-    Number onkyoZ3Source "Source"      {onkyo="INIT:hometheater:ZONE3_SOURCE_QUERY, INCREASE:hometheater:ZONE3_SOURCE_UP, DECREASE:hometheater:ZONE3_SOURCE_DOWN, *:hometheater:ZONE3_SOURCE_SET"}
-    
-    //
-    // NET/USB
-    //
-    // Controls
-    Switch onkyoNETPlay      "Play"             { onkyo="ON:hometheater:NETUSB_OP_PLAY", autoupdate="false"}
-    Switch onkyoNETPause     "Pause"            { onkyo="ON:hometheater:NETUSB_OP_PAUSE", autoupdate="false"}
-    Switch onkyoNETStop      "Stop"             { onkyo="ON:hometheater:NETUSB_OP_STOP", autoupdate="false"}
-    Switch onkyoNETTrackUp   "Track Up"         { onkyo="ON:hometheater:NETUSB_OP_TRACKUP", autoupdate="false"}
-    Switch onkyoNETTrackDown "Track Down"       { onkyo="ON:hometheater:NETUSB_OP_TRACKDWN", autoupdate="false"}
-    Switch onkyoNETFF        "Fast Forward"     { onkyo="ON:hometheater:NETUSB_OP_FF", autoupdate="false"}
-    Switch onkyoNETREW       "Rewind"           { onkyo="ON:hometheater:NETUSB_OP_REW", autoupdate="false"}
-    Number onkyoNETService   "Service"          { onkyo="INIT:hometheater:#NSVQST, *:hometheater:#NSV%02X0"}
-    Number onkyoNETList      "Select List Item" { onkyo="*:hometheater:#NLSL%01X"}
-    // Information
-    String onkyoNETArtist     "Artist [%s]"      {onkyo="INIT:hometheater:NETUSB_SONG_ARTIST_QUERY"}
-    String onkyoNETAlbum      "Album [%s]"       {onkyo="INIT:hometheater:NETUSB_SONG_ALBUM_QUERY"}
-    String onkyoNETTitle      "Title [%s]"       {onkyo="INIT:hometheater:NETUSB_SONG_TITLE_QUERY"}
-    String onkyoNETTrack      "Track [%s]"       {onkyo="INIT:hometheater:NETUSB_SONG_TRACK_QUERY"}
-    String onkyoNETTime       "Time [%s]"        {onkyo="INIT:hometheater:NETUSB_SONG_ELAPSEDTIME_QUERY"}
-    String onkyoNETPlayStatus "Play Status [%s]" {onkyo="INIT:hometheater:NETUSB_PLAY_STATUS_QUERY"}
+```
+//
+// Main
+//
+// Power
+Switch onkyoPower          "Power"                   {onkyo="INIT:hometheater:POWER_QUERY, ON:hometheater:POWER_ON, OFF:hometheater:POWER_OFF"}
+// Sleep
+Number onkyoSleep          "Sleep Timer [%d Min]"    {onkyo="INIT:hometheater:#SLPQSTN, 0:hometheater:#SLPOFF, *:hometheater:#SLP%02X, 0:hometheater:#SLPOFF"}
+// Mute
+Switch onkyoMute           "Mute"                    {onkyo="INIT:hometheater:MUTE_QUERY, ON:hometheater:MUTE, OFF:hometheater:UNMUTE"}
+// Volume
+Dimmer onkyoVolume         "Volume [%d]"             {onkyo="INIT:hometheater:VOLUME_QUERY, INCREASE:hometheater:VOLUME_UP, DECREASE:hometheater:VOLUME_DOWN, *:hometheater:VOLUME_SET"}
+//Source
+Number onkyoSource         "Source"                  {onkyo="INIT:hometheater:SOURCE_QUERY, INCREASE:hometheater:SOURCE_UP, DECREASE:hometheater:SOURCE_DOWN, *:hometheater:SOURCE_SET"}
+//Video Modes
+Number onkyoVideoWide      "Video Wide Mode"         {onkyo="INIT:hometheater:VIDEO_WIDE_QUERY, INCREASE:hometheater:VIDEO_WIDE_NEXT, *:hometheater:#VWM%02X"}
+Number onkyoVideoPicture   "Video Picture Mode"      {onkyo="INIT:hometheater:#VPMQSTN, INCREASE:hometheater:#VPMUP, *:hometheater:#VPM%02X"}
+//Audio Mode
+Number onkyoListenMode     "Listen Mode"             {onkyo="INIT:hometheater:LISTEN_MODE_QUERY, INCREASE:hometheater:LISTEN_MODE_UP, DECREASE:hometheater:LISTEN_MODE_DOWN, *:hometheater:#LMD%02X"}
+Switch onkyoAudysseyDynEQ  "Audysses Dynamic EQ"     {onkyo="INIT:hometheater:#ADQQSTN, OFF:hometheater:#ADQ00, ON:hometheater:#ADQ01"}
+Number onkyoAudysseyDynVol "Audysses Dynamic Volume" {onkyo="INIT:hometheater:#ADVQSTN, INCREASE:hometheater:#ADVUP, *:hometheater:#ADV%02X"}
+//Information
+String onkyoAudio          "Audio [%s]"              {onkyo="INIT:hometheater:#IFAQSTN"}
+String onkyoVideo          "Video [%s]"              {onkyo="INIT:hometheater:#IFVQSTN"}
+// Display
+Number onkyoDisplayMode    "Display Mode"            {onkyo="INIT:hometheater:#DIFQSTN, INCREASE:hometheater:#DIFTG, *:hometheater:#DIF%02X"}
+Number onkyoDimmerLevel    "Display Dimmer Level"    {onkyo="INIT:hometheater:#DIMQSTN, INCREASE:hometheater:#DIMDIM, *:hometheater:#DIM%02X"}
 
-onkyo.sitemap:
+//
+// Zone 2
+//
+// Power
+Switch onkyoZ2Power   "Power"       {onkyo="INIT:hometheater:ZONE2_POWER_QUERY, ON:hometheater:ZONE2_POWER_ON, OFF:hometheater:ZONE2_POWER_OFF"}
+// Mute
+Switch onkyoZ2Mute    "Mute"        {onkyo="INIT:hometheater:ZONE2_MUTE_QUERY:, ON:hometheater:ZONE2_MUTE, OFF:hometheater:ZONE2_UNMUTE"}
+// Volume
+Dimmer onkyoZ2Volume  "Volume [%d]" {onkyo="INIT:hometheater:ZONE2_VOLUME_QUERY, INCREASE:hometheater:ZONE2_VOLUME_UP, DECREASE:hometheater:ZONE2_VOLUME_DOWN, *:hometheater:ZONE2_VOLUME_SET"}
+//Source
+Number onkyoZ2Source  "Source"      {onkyo="INIT:hometheater:ZONE2_SOURCE_QUERY, INCREASE:hometheater:ZONE2_SOURCE_UP, DECREASE:hometheater:ZONE2_SOURCE_DOWN, *:hometheater:ZONE2_SOURCE_SET"}
 
-    sitemap onkyo label="Onkyo Demo"
-    {
-        Frame label="Zones" {
-            Text label="Main" icon="sofa" {
-                Frame label="Power" {
-                    Switch    item=onkyoPower
-                    Selection item=onkyoSleep mappings=[0=Off, 5="5 Min", 10="10 Min", 15="15 Min", 30="30 Min", 77="77 Min", 90="90 Min"]
-                }
-                Frame label="Volume" {
-                    Switch item=onkyoMute
-                    Slider item=onkyoVolume
-                }
-                Frame label="Source" {
-                    Selection item=onkyoSource mappings=[0="VCR/DVR", 1="CBL/SAT", 2=GAME, 5=PC, 16="BD/DVD", 35=CD, 43="NET/USB", 45=Airplay, 127=OFF]
-                }
-                Frame label="Video Modes" {
-                    Selection item=onkyoVideoWide label="Video Wide" mappings=[0=Auto, 1="4:3", 2=Full, 3=Zoom, 4="Wide Zoom", 5="Smart Zoom"]
-                    Selection item=onkyoVideoPicture label="Video Picture" mappings=[0=Trough, 1=Custom, 2=Cinema, 3=Game, 5="ISF Day", 6="ISF Night", 7="Streaming", 8=Direct]
-                }
-                Frame label="Audio Modes" {
-                    Selection item=onkyoListenMode mappings=[0=Stereo, 1=Direct, 2=Surround, 15=Mono, 31="Whole House Mode", 66="THX Cinema", 31="Whole House"]
-                    Switch    item=onkyoAudysseyDynEQ
-                    Selection item=onkyoAudysseyDynVol mappings=[0=OFF, 1=Low, 2=Mid, 3=High]
-                }
-                Frame label="Information" {
-                    Text item=onkyoAudio
-                    Text item=onkyoVideo
-                }
-                Frame label="Display" {
-                    Selection item=onkyoDisplayMode mappings=[0="Source + Vol", 2="Digital Format (temporary)", 3="Video Format (temporary)"]
-                    Selection item=onkyoDimmerLevel mappings=[0="Bright", 1="Dim", 2="Dark", 3="Shut-Off", 8="Bright & LED OFF"]
-                }
+//
+// Zone 3
+//
+// Power
+Switch onkyoZ3Power  "Power"       {onkyo="INIT:hometheater:ZONE3_POWER_QUERY, ON:hometheater:ZONE3_POWER_ON, OFF:hometheater:ZONE3_POWER_OFF"}
+// Mute
+Switch onkyoZ3Mute   "Mute"        {onkyo="INIT:hometheater:ZONE3_MUTE_QUERY:, ON:hometheater:ZONE3_MUTE, OFF:hometheater:ZONE3_UNMUTE"}
+// Volume
+Dimmer onkyoZ3Volume "Volume [%d]" {onkyo="INIT:hometheater:ZONE3_VOLUME_QUERY, INCREASE:hometheater:ZONE3_VOLUME_UP, DECREASE:hometheater:ZONE3_VOLUME_DOWN, *:hometheater:ZONE3_VOLUME_SET"}
+//Source
+Number onkyoZ3Source "Source"      {onkyo="INIT:hometheater:ZONE3_SOURCE_QUERY, INCREASE:hometheater:ZONE3_SOURCE_UP, DECREASE:hometheater:ZONE3_SOURCE_DOWN, *:hometheater:ZONE3_SOURCE_SET"}
+
+//
+// NET/USB
+//
+// Controls
+Switch onkyoNETPlay      "Play"             { onkyo="ON:hometheater:NETUSB_OP_PLAY", autoupdate="false"}
+Switch onkyoNETPause     "Pause"            { onkyo="ON:hometheater:NETUSB_OP_PAUSE", autoupdate="false"}
+Switch onkyoNETStop      "Stop"             { onkyo="ON:hometheater:NETUSB_OP_STOP", autoupdate="false"}
+Switch onkyoNETTrackUp   "Track Up"         { onkyo="ON:hometheater:NETUSB_OP_TRACKUP", autoupdate="false"}
+Switch onkyoNETTrackDown "Track Down"       { onkyo="ON:hometheater:NETUSB_OP_TRACKDWN", autoupdate="false"}
+Switch onkyoNETFF        "Fast Forward"     { onkyo="ON:hometheater:NETUSB_OP_FF", autoupdate="false"}
+Switch onkyoNETREW       "Rewind"           { onkyo="ON:hometheater:NETUSB_OP_REW", autoupdate="false"}
+Number onkyoNETService   "Service"          { onkyo="INIT:hometheater:#NSVQST, *:hometheater:#NSV%02X0"}
+Number onkyoNETList      "Select List Item" { onkyo="*:hometheater:#NLSL%01X"}
+// Information
+String onkyoNETArtist     "Artist [%s]"      {onkyo="INIT:hometheater:NETUSB_SONG_ARTIST_QUERY"}
+String onkyoNETAlbum      "Album [%s]"       {onkyo="INIT:hometheater:NETUSB_SONG_ALBUM_QUERY"}
+String onkyoNETTitle      "Title [%s]"       {onkyo="INIT:hometheater:NETUSB_SONG_TITLE_QUERY"}
+String onkyoNETTrack      "Track [%s]"       {onkyo="INIT:hometheater:NETUSB_SONG_TRACK_QUERY"}
+String onkyoNETTime       "Time [%s]"        {onkyo="INIT:hometheater:NETUSB_SONG_ELAPSEDTIME_QUERY"}
+String onkyoNETPlayStatus "Play Status [%s]" {onkyo="INIT:hometheater:NETUSB_PLAY_STATUS_QUERY"}
+```
+
+sitemaps/onkyo.sitemap
+
+```
+sitemap onkyo label="Onkyo Demo"
+{
+    Frame label="Zones" {
+        Text label="Main" icon="sofa" {
+            Frame label="Power" {
+                Switch    item=onkyoPower
+                Selection item=onkyoSleep mappings=[0=Off, 5="5 Min", 10="10 Min", 15="15 Min", 30="30 Min", 77="77 Min", 90="90 Min"]
             }
-            Text label="Zone 2" icon="bedroom" {
-                Frame label="Power" {
-                   Switch item=onkyoZ2Power
-                }
-                Frame label="Volume" {
-                    Switch item=onkyoZ2Mute
-                    Slider item=onkyoZ2Volume
-                }
-                Frame label="Source" {
-                    Selection  item=onkyoZ2Source label="Source Selection" mappings=[0="VCR/DVR", 1="CBL/SAT", 2=GAME, 5=PC, 16="BD/DVD", 35=CD, 43="NET/USB", 45=Airplay, 127=OFF]
-                }
+            Frame label="Volume" {
+                Switch item=onkyoMute
+                Slider item=onkyoVolume
             }
-    
-            Text label="Zone 3" icon="bath" {
-                Frame label="Power" {
-                   Switch item=onkyoZ3Power
-                }
-                Frame label="Volume" {
-                    Switch item=onkyoZ3Mute
-                    Slider item=onkyoZ3Volume
-                }
-                Frame label="Source" {
-                    Selection  item=onkyoZ3Source label="Source Selection" mappings=[0="VCR/DVR", 1="CBL/SAT", 2=GAME, 5=PC, 16="BD/DVD", 35=CD, 43="NET/USB", 45=Airplay, 127=OFF]
-                }
+            Frame label="Source" {
+                Selection item=onkyoSource mappings=[0="VCR/DVR", 1="CBL/SAT", 2=GAME, 5=PC, 16="BD/DVD", 35=CD, 43="NET/USB", 45=Airplay, 127=OFF]
             }
-            Text label="NET/USB" icon="video" {
-                Frame label="Controls" {
-                    Switch    item=onkyoNETPlay
-                    Switch    item=onkyoNETPause
-                    Switch    item=onkyoNETStop
-                    Switch    item=onkyoNETTrackUp
-                    Switch    item=onkyoNETTrackDown
-                    Switch    item=onkyoNETFF
-                    Switch    item=onkyoNETREW
-                    Selection item=onkyoNETService mappings=[0="Media Server (DLNA)", 1=Favorite, 2=vTuner, 3=SIRIUS, 6="Last.fm", 14=TuneIn Radio]
-                    Selection item=onkyoNETList    mappings=[0="1", 1="2", 2="3", 3="4", 4="5", 5="6", 6="7", 7="8", 8="9", 9="10"]
-                }
-                Frame label="Information" {
-                    Text item=onkyoNETArtist
-                    Text item=onkyoNETAlbum
-                    Text item=onkyoNETTitle
-                    Text item=onkyoNETTrack
-                    Text item=onkyoNETTime
-                }
+            Frame label="Video Modes" {
+                Selection item=onkyoVideoWide label="Video Wide" mappings=[0=Auto, 1="4:3", 2=Full, 3=Zoom, 4="Wide Zoom", 5="Smart Zoom"]
+                Selection item=onkyoVideoPicture label="Video Picture" mappings=[0=Trough, 1=Custom, 2=Cinema, 3=Game, 5="ISF Day", 6="ISF Night", 7="Streaming", 8=Direct]
             }
-    
-    
+            Frame label="Audio Modes" {
+                Selection item=onkyoListenMode mappings=[0=Stereo, 1=Direct, 2=Surround, 15=Mono, 31="Whole House Mode", 66="THX Cinema", 31="Whole House"]
+                Switch    item=onkyoAudysseyDynEQ
+                Selection item=onkyoAudysseyDynVol mappings=[0=OFF, 1=Low, 2=Mid, 3=High]
+            }
+            Frame label="Information" {
+                Text item=onkyoAudio
+                Text item=onkyoVideo
+            }
+            Frame label="Display" {
+                Selection item=onkyoDisplayMode mappings=[0="Source + Vol", 2="Digital Format (temporary)", 3="Video Format (temporary)"]
+                Selection item=onkyoDimmerLevel mappings=[0="Bright", 1="Dim", 2="Dark", 3="Shut-Off", 8="Bright & LED OFF"]
+            }
         }
+        Text label="Zone 2" icon="bedroom" {
+            Frame label="Power" {
+               Switch item=onkyoZ2Power
+            }
+            Frame label="Volume" {
+                Switch item=onkyoZ2Mute
+                Slider item=onkyoZ2Volume
+            }
+            Frame label="Source" {
+                Selection  item=onkyoZ2Source label="Source Selection" mappings=[0="VCR/DVR", 1="CBL/SAT", 2=GAME, 5=PC, 16="BD/DVD", 35=CD, 43="NET/USB", 45=Airplay, 127=OFF]
+            }
+        }
+
+        Text label="Zone 3" icon="bath" {
+            Frame label="Power" {
+               Switch item=onkyoZ3Power
+            }
+            Frame label="Volume" {
+                Switch item=onkyoZ3Mute
+                Slider item=onkyoZ3Volume
+            }
+            Frame label="Source" {
+                Selection  item=onkyoZ3Source label="Source Selection" mappings=[0="VCR/DVR", 1="CBL/SAT", 2=GAME, 5=PC, 16="BD/DVD", 35=CD, 43="NET/USB", 45=Airplay, 127=OFF]
+            }
+        }
+        Text label="NET/USB" icon="video" {
+            Frame label="Controls" {
+                Switch    item=onkyoNETPlay
+                Switch    item=onkyoNETPause
+                Switch    item=onkyoNETStop
+                Switch    item=onkyoNETTrackUp
+                Switch    item=onkyoNETTrackDown
+                Switch    item=onkyoNETFF
+                Switch    item=onkyoNETREW
+                Selection item=onkyoNETService mappings=[0="Media Server (DLNA)", 1=Favorite, 2=vTuner, 3=SIRIUS, 6="Last.fm", 14=TuneIn Radio]
+                Selection item=onkyoNETList    mappings=[0="1", 1="2", 2="3", 3="4", 4="5", 5="6", 6="7", 7="8", 8="9", 9="10"]
+            }
+            Frame label="Information" {
+                Text item=onkyoNETArtist
+                Text item=onkyoNETAlbum
+                Text item=onkyoNETTitle
+                Text item=onkyoNETTrack
+                Text item=onkyoNETTime
+            }
+        }
+
+
     }
+}
+```
 
-###Screenshots
-Main: 
-![alt text](http://wiki.openhab-samples.googlecode.com/hg/screenshots/onkyo_main.png "Onkyo Main")
+### NetUsb
 
-Zone: 
-![alt text](http://wiki.openhab-samples.googlecode.com/hg/screenshots/onkyo_zone2.PNG "Onkyo Zone")
-
-Net: 
-![alt text](http://wiki.openhab-samples.googlecode.com/hg/screenshots/onkyo_net.PNG "Onkyo Net")Here are some examples of configurations for various aspects of Onkyo receivers:
-
-* [NET/USB](Onkyo-Binding-Examples#NetUsb)
-
-***
-
-#NetUsb
-
-##Navigation
+#### Navigation
 
 When using openHAB, it may be desirable to be able to control your A/V receiver without being able to see the video output of the receiver. This may be the case when you are using extra zone outputs for whole house audio, etc.. Onkyo receivers implement a hierarchical menu structure where each page of menu can contain up to ten items. Older generation (circa 2010) and newer generation (circa 2014) were more Model View Control (MVC) friendly. Older units send menu pages one item at a time, but they send all ten items regardless of whether or not they are all used. Newer units will send the complete menu page in one status update. Units made in between are some what problematic as they send menu pages one item at a time, but they only send as many items as are on the page. This causes problems when one page has say ten items, and the next only has eight. There is no easy way to know that the last two menu items should be cleared as no end of menu indication is given.
 
 My first attempt at solving this problems was to clear all menu items when the first item was received. This didn't work as expected as openHAB executes rules in different threads and there is no guarantee that they will execute in the order they were invoked. This would result in random menu items missing as the rule for the first item executed after they had been updated. I wasn't able to find a good solution for this, but I was able to get things functional by delaying the execution of all rules except the one for the first item. Older receivers don't need this and don't need to clear menu items as all items are sent on menu page changes.
 
-###Menu List Display
+#### Menu List Display
 
 Onkyo receivers transmit menu items with a string matching the following REGEX:
 
@@ -523,11 +508,12 @@ For menu list display a string item is used for each item in the menu (ten strin
 
 Dynamic color is used to indicate the current cursor position. In order to do this an item is used to capture the raw cursor position from the receiver. A rule is run when it changes to strip out the cursor line and post it to another item that is used to control the dynamic color (this simplifies the color rules and is useful later).
   
-###Menu List Selection
+#### Menu List Selection
 
 I have included "NLSL[0-9]" commands on the displayed menu item strings in the hopes that openHAB will eventually support some type of selectable text that sends a command instead of going to a URL. Then the user can just select the menu item on receivers that support "NLSL[0-9]" commands. For older receivers, the NETUSB_OP_SELECT command is used. The user needs to navigate to the desired menu item before this command is sent. Setpoint elements are used for navigation as they provide a more compact arrangement.
 
-##Items
+### Items
+
 ```
 //
 // NET/USB
@@ -581,7 +567,8 @@ Number onkyoNETPage         "Page"              (gOnkyo1)
 Number onkyoNETCursorPos    "Cursor"            (gOnkyo1)
 ```
 
-##Sitemap
+#### Sitemap
+
 ```
             Text label="NET/USB" icon="sofa" {
                 Frame label="Information" {
@@ -627,17 +614,12 @@ Number onkyoNETCursorPos    "Cursor"            (gOnkyo1)
             }
 ```
 
-##Rules
-```java
-import org.openhab.core.library.types.*
-import org.openhab.core.library.items.*
-import org.openhab.core.persistence.*
-import org.openhab.model.script.actions.*
+#### Rules
 
+```java
 import java.util.concurrent.locks.ReentrantLock
 import java.util.List
 import java.util.ArrayList
-
 
 var ReentrantLock                       onkyoLock  = new java.util.concurrent.locks.ReentrantLock()
 var Integer                             onkyoCursorPos

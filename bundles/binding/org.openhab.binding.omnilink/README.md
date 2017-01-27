@@ -55,15 +55,15 @@ The binding can be configured in the file `services/omnilink.cfg`.
 
 ## Item Configuration
 
-If you want to manually add an item, the following types are supported:
-
 The format is 
 
 ```
-{ omnilink="type:number" }
+omnilink="<type>:<index>"
 ```
 
-### Types
+where `<type>` is from the list below.
+
+### Types and Supported Items
 
 Some types can be read (get) or read and set (get/set).
 
@@ -146,13 +146,13 @@ Some types can be read (get) or read and set (get/set).
   
 ## Examples
 
-Dimmer for unit 2:
+### Dimmer for unit 2
 
 ```
 Dimmer  Lights_Kitchen_Lights_Switch  "Lights [%d%%]" (Lights_Kitchen)  {omnilink="unit:2"}
 ```
 
-Thermostat 1:
+### Thermostat 1
 
 ```
 Number  Thermostats_MasterBed_Temp  "Temperature [%d °F]" (Thermostats_MasterBed) {omnilink="thermo_temp:1"}
@@ -163,7 +163,7 @@ Number  Thermostats_MasterBed_Fan "System Fan [%d]" (Thermostats_MasterBed) {omn
 Number  Thermostats_MasterBed_Hold  "System Hold [%d]"  (Thermostats_MasterBed) {omnilink="thermo_hold_mode:1"}
 ```
 
-Audio Zone 1:
+### Audio Zone 1
 
 ```
 Switch  AudioZones_Basement_Power "Power" (AudioZones_Basement) {omnilink="audiozone_power:1"}
@@ -177,7 +177,7 @@ String  AudioZones_Basement_Field3  "Field 3 [%s]"  (AudioZones_Basement) {omnil
 Number  AudioZones_Basement_Key "Key [%d]"  (AudioZones_Basement) {omnilink="audiozone_key:1",autoupdate="false"}
 ```
 
-Audio Source 1:
+### Audio Source 1
 
 ```
 String  AudioSources_XM_Text  "Now Playeing: [%s]"  (AudioSources_XM) {omnilink="audiosource_text:1"}
@@ -186,7 +186,7 @@ String  AudioSources_XM_Field2  "Field 2 [%s]"  (AudioSources_XM) {omnilink="aud
 String  AudioSources_XM_Field3  "Field 3 [%s]"  (AudioSources_XM) {omnilink="audiosource_field3:1"}
 ```
 
-Area (security) 1
+### Area (security) 1
 
 ```
 Number  Areas_Main_ExitDelay  "Exit Delay: [%d]"  (Areas_Main)  {omnilink="area_status_exit_delay:1"}
@@ -197,7 +197,7 @@ String  Areas_Main_Mode "Mode: [%s]"  (Areas_Main)  {omnilink="area_status_mode:
 String  Areas_Main_Alarm  "Alarm: [%s]" (Areas_Main)  {omnilink="area_status_alarm:1"}
 ```
 
-Contact zone number 17
+### Contact zone number 17
 
 ```
 Contact Zones_FrontDoor_Current "Current: [%s]" (Zones_FrontDoor) {omnilink="zone_status_current:17"}
@@ -206,7 +206,7 @@ String  Zones_FrontDoor_Arming  "Arming [%s]" (Zones_FrontDoor) {omnilink="zone_
 String  Zones_FrontDoor_All "Status  [%s]"  (Zones_FrontDoor) {omnilink="zone_status_all:17"}
 ```
 
-Button 1
+### Button 1
 
 ```
 String Buttons_MusicOn "Music On"  (Buttons) {omnilink="button:1",autoupdate="false"}
