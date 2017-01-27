@@ -3436,6 +3436,15 @@
             <Label lang="en">RGBW bulb</Label>
             <ConfigFile>zipato/rgbwe27.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>2001</Type>
+                <Id>0106</Id>
+            </Reference>
+            <Model>ZD2102</Model>
+            <Label lang="en">Door Window Sensor</Label>
+            <ConfigFile>vision/zd2102.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0138</Id>
