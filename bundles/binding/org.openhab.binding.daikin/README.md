@@ -3,15 +3,6 @@
 The openHAB Daikin binding allows monitoring and control of a Daikin air
 conditioner/heat pump.
 
-<!-- MarkdownTOC depth=1 -->
-
-- [Prerequisites](#prerequisites)
-- [Binding Configuration](#binding-configuration)
-- [Item Configuration](#item-configuration)
-- [Examples](#examples)
-
-<!-- /MarkdownTOC -->
-
 
 ## Prerequisites
 

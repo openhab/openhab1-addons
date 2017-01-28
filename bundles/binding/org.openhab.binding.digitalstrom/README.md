@@ -1,16 +1,19 @@
-Documentation of the digitalSTROM binding bundle
+# digitalSTROM Binding
 
-## Introduction
+The openHAB digitalSTROM binding allows interaction with digitalSTROM devices.
 
-digitalSTROM is the solution for intelligent living. The smart home system represents digital lifestyle and an integrated connectivity concept. Intuitive in use and simple to install, the technology communicates via the existing power lines thus integrating all the electrical appliances as well as broadband devices in a home.
+<!-- MarkdownTOC depth=1 -->
 
-This results in an infrastructure allowing connection of any applications, products and services via open interfaces. Successful miniaturization and digital intelligence make digitalSTROM suitable for both retrofitting and installation in new builds, without interfering in the existing room design. Analogous to the world of smartphones and app stores, digitalSTROM has open interfaces allowing unlimited creativity for solutions in smart living: In addition to apps for additional convenience at home, new marketing opportunities arise for suppliers of products and services. digitalSTROM AG is headquartered in Schlieren-Zurich (CH) and Wetzlar (D).
+- [Prerequisites](#prerequisites)
+- [Binding Configuration](#binding-configuration)
+- [Item Configuration](#item-configuration)
+- [Examples](#examples)
+- [Notes](#notes)
 
-digitalSTROM binding bundle is available as a separate (optional) download. If you want to let openHAB communicate with digitalSTROM DSS11 server, please place this bundle in the folder ${openhab_home}/addons and add binding information to your configuration.
+<!-- /MarkdownTOC -->
+
  
-For installation of the binding, please see Wiki page [[Bindings]].
-
-## Preliminaries
+## Prerequisites
 
 ### digitalSTROM server add-on
 
@@ -20,14 +23,13 @@ For installation of the binding, please see Wiki page [[Bindings]].
 
 ### digitalSTROM server certificate
 
-DigitalSTROM JSON service interface is limited to HTTPS protocol. 
-For security reason, we need to create a self signed cetificate with correct given hostname. To do so, follow these steps:
+The digitalSTROM JSON service interface is limited to the https protocol. 
+For security reasons, creating a self signed cetificate with correct given hostname is requird.
+Follow these steps:
 
-    1. openssl genrsa -out privkey.pem 1024
-    
-    2. chmod 400 privkey.pem
-    
-    3. openssl req -new -key privkey.pem -out certreq.csr
+1. openssl genrsa -out privkey.pem 1024
+1. chmod 400 privkey.pem
+1. openssl req -new -key privkey.pem -out certreq.csr
     
     Enter your details:
     
@@ -49,9 +51,9 @@ For security reason, we need to create a self signed cetificate with correct giv
     
     An optional company name []: // not important, press enter
     
-    4. openssl x509 -req -days 9000 -in certreq.csr -signkey privkey.pem -out dsscert.pem
+1. openssl x509 -req -days 9000 -in certreq.csr -signkey privkey.pem -out dsscert.pem 
+1. cat privkey.pem >> dsscert.pem
     
-    5. cat privkey.pem >> dsscert.pem
 Copy the newly generated certificate onto your digitalSTROM server and
 import it to java trusted store of your openHAB server by using java keytool.
 
@@ -63,129 +65,89 @@ Keytool usage example (OS X):
 
     sudo keytool -importcert -alias DSS -keystore /System/Library/Java/Support/CoreDeploy.bundle/Contents/Home/lib/security/cacerts -file dss.local.pem
 
+### loginToken
 
-## digitalSTROM Binding Configuration
-
-### openhab.cfg
-
-The following config params are used for the digitalSTROM binding.
-
-- (optional) digitalstrom:refreshinterval
-Refresh interval (defaults to 1000 ms)
-- digitalstrom:uri
-**Hostname** and port of the digitalSTROM server (dSS)
-- (optional) digitalstrom:connectTimeout
-Connect timeout (defaults to 4000 ms)
-- (optional) digitalstrom:readTimeout
-Connect timeout (defaults to 10000 ms)
-- digitalstrom:loginToken
-To login without a user and password; loginToken must be enabled once
-- digitalstrom:user
-- digitalstrom:password
-To login with username and password; default username and password is dssadmin
-If you have loginToken and username with password the loginToken will be prefered by default
-
-Obtaining loginToken
-
-Point your browser to
-https://dss.local:8080/json/system/requestApplicationToken?applicationName=openHAB
-
-Store the result in openhab.cfg file
-
-After receiving the application token you need to enable it in your digitalSTROM configurator under
-System -> Zugriffsberechtigung
-### Example
-
-    ################################ digitalSTROM Binding #################################
-    
-    # Refresh interval (defaults to 1000 ms)
-    digitalstrom:refreshinterval=1000
-    
-    # Hostname and port of the digitalSTROM server (dSS)
-    digitalstrom:uri=https://dss.local:8080
-    
-    # Connect timeout (defaults to 4000 ms)
-    digitalstrom:connectTimeout=4000
-    
-    # Connect timeout (defaults to 10000 ms)
-    digitalstrom:readTimeout=10000
-    
-    # to login without a user and password; loginToken must be enabled once
-    digitalstrom:loginToken=
-    
-    # to login with username and password; default user is dssadmin and default password is dssadmin
-    # if you have loginToken and username with password the loginToken will be prefered by default
-    digitalstrom:user=dssadmin
-    digitalstrom:password=dssadmin
+- To obtain a loginToken, point your browser to https://dss.local:8080/json/system/requestApplicationToken?applicationName=openHAB
+- Store the result in openhab.cfg file
+- After receiving the application token you need to enable it in your digitalSTROM configurator under System -> Zugriffsberechtigung
 
 
-## Generic Item Binding Configuration
+## Binding Configuration
 
-### Syntax
+The binding can be configured in the file `services/digitalstrom.cfg`.
 
-In order to bind an item to a digitalSTROM device you need to provide configuration settings. 
-The simplest way is:
+| Property        | Default | Required | Description |
+|-----------------|---------|:--------:|-------------|
+| uri             |         | Yes      | The hostname and port of the digitalSTROM server (dSS); eg. https://dss.local:8080
+| connectTimeout  | 4000    | No       | The connect timeout (in milliseconds)
+| loginToken      |         | No       | A token to allow login without a username and password; required if `user` and `password` settings are not specified
+| password        | dssadmin| No       | The username to use for login; required if `loginToken` setting is not specified
+| readTimeout     | 10000   | No       | The read timeout (in milliseconds)
+| refreshinterval | 1000    | No       | The refresh interval (in milliseconds)
+| user            | dssadmin| No       | The password to use for login; required if `loginToken` setting is not specified
 
-    digitalstrom="dsid:<digitalSTROM device id>" //device with example dsid (You can also use the shorter dsid, known as S.N: xxxxxxxx (8 letters) )
-Thats it! It's enough to control a device.
+Note: if the `loginToken`, `user`, and `password` settings are all specified, the `loginToken` will be used for login.
 
-### Example
+## Item Configuration
 
-    Switch Light_GF_Corridor_Ceiling    "Ceiling"       {digitalstrom="dsid:3504175fe000000000000001"}
-    Dimmer Light_GF_Living_Table        "Table"         {digitalstrom="dsid:3504175fe000000000000001"}
-    
-    Rollershutter Shutter_GF_Living     "Livingroom"    {digitalstrom="dsid:3504175fe000000000000001"}
+Item bindings must conform to the following format:
 
-All syntax keywords for the digitalSTROM are explained here:
+    digitalstrom="<key1>:<value1>[#<keyN>:<valueN>]"
 
-    symbols:	
-        :               // to refer a value to a key
-        #               // separator for the next key-value pair
-    
-    keys:	
-        dsid            // digitalSTROM device id
+See examples below.
+
+The following keys are supported:
+
+        dsid            // digitalSTROM device id; the shorter dsid, known as S.N: xxxxxxxx (8 letters), is also supported
         dsmid           // digitalSTROM meter id (dSM)
         consumption     // optional for metering
-        timeinterval	// timeinterval to initiate a metering job
+        timeinterval    // timeinterval to initiate a metering job
         context         // in some cases use context:
         zoneid          // only in combination with a NumberItem or StringItem for apartment or zone calls
         groupid         // only in combination with a NumberItem or StringItem for apartment or zone calls
-    
-    context:
-        slat            // important if it's a roller shutter: to have a item to control the slats
-        awning          // important for roller shutter: if it's a marquee/awning to show the right icon -> open-close
-        apartment       // in combination with a Number- or StringItem to make apartment calls
-        zone            // in combination with a Number- or StringItem to make zone calls
-    
-    consumption:	
+
+The following are the supported values for the `consumption` key:
+
         ACTIVE_POWER    // in use with a device or meter -> current power consumption (w)
         OUTPUT_CURRENT  // only in use with a device 	-> amperage (mA)
         ELECTRIC_METER  // only in use with a meter (wh)
 
-## Further examples
+The following are the supported values for the `context` key:
 
+        slat            // important if it's a roller shutter: to have a item to control the slats
+        awning          // important for roller shutter: if it's a marquee/awning to show the right icon -> open-close
+        apartment       // in combination with a NumberItem or StringItem to make apartment calls
+        zone            // in combination with a NumberItem or StringItem to make zone calls
+    
+
+## Examples
+
+### Items
+
+    Switch Light_GF_Corridor_Ceiling    "Ceiling"       {digitalstrom="dsid:3504175fe000000000000001"}
+    Dimmer Light_GF_Living_Table        "Table"         {digitalstrom="dsid:3504175fe000000000000001"}
+    
 ### Rollershutter
 
     Rollershutter Shutter_GF_Living     "Livingroom"    {digitalstrom="dsid:3504175fe000000000000001"}
 
-in case of marquee/awning add context param "awning"
+In case of marquee/awning add the `context` key with a value of `awning`:
 
     Rollershutter Shutter_GF_Living     "Livingroom"    {digitalstrom="dsid:3504175fe000000000000001#context:awning"}
 
 ### Jalousie
 
-for up and down use
+For up and down use:
 
     Rollershutter Shutter_GF_Living_UP_DOWN     "Livingroom UP/DOWN"    {digitalstrom="dsid:3504175fe000000000000001"}
 
-add second item to adjuste the slats (use the same dsid)
+Add the `context` key with a value of `slat` to adjust the slats:
 
     Rollershutter Shutter_GF_Living_UP_DOWN     "Livingroom UP/DOWN"    {digitalstrom="dsid:3504175fe000000000000001#context:slat"}
 
-
 ### Scenes
 
-To call apartment or zone scenes use number- or string item in the .items file:
+To call apartment or zone scenes use NumberItems or StringItems:
 
     Number|String Apartment_Scene       "Apartment Scene" {digitalstrom="context:apartment"}
     Number|String All_Apartment_Lights  "All lights"      {digitalstrom="context:apartment#groupid:1"}          //optional add groupid
@@ -193,42 +155,44 @@ To call apartment or zone scenes use number- or string item in the .items file:
     Number|String Zone_Scene            "Room Scene"      {digitalstrom="context:zone#zoneid:65535"}
     Number|String All_Zone_Lights       "All room lights" {digitalstrom="context:zone#zoneid:65535#groupid:1"}  //optional add groupid
 
-and in .sitemap add mappings:
-    Selection item=Apartment_Scene  label="Apartment Scene Selection"   mappings=[65=Panik, 72=Gehen]	// here you have to use the right (a valid) sceneID
-    
-    Switch item=Zone_Scene          label="Room Scene"                  mappings=[14=On, 13=Off]        // here you have to use the right (a valid) sceneID
+And add mappings in the .sitemap file:
+
+    Selection item=Apartment_Scene  label="Apartment Scene Selection"   mappings=[65=Panik, 72=Gehen]	// here you have to use a valid sceneID
+    Switch item=Zone_Scene          label="Room Scene"                  mappings=[14=On, 13=Off]      // here you have to use a valid sceneID
 
 ### Consumption
 
-To poll and e.g. persist/visualize the curent power consumption (ACTIVE_POWER) you should use string- or number items.
+To poll and/or persist/visualize the curent power consumption (ACTIVE_POWER), use StringItems or NumberItems.
 
-### = Device consumption =
+#### Device consumption
 
     Number Power_Consumption_TV	"TV [%d W]" {digitalstrom="dsid:3504175fe000000000000001#consumption:ACTIVE_POWER#timeinterval:60000"}	// read device power consumption every 60 seconds
-Be aware! Your system will work very slow on sensor reading!
+
+Be aware that the system will work very slow on sensor reading.
+
+The [digitalSTROM Basic Concepts document](http://developer.digitalstrom.org/Architecture/ds-basics.pdf) (p. 36) says:
 
 Rule 8 	"Application processes that do automatic cyclic reads or writes of
 		device parameters are subject to a request limit: at maximum one request
-		per minute and circuit is allowed."(digitalSTROM: [p.36)
+		per minute and circuit is allowed."
 
 Rule 9 	"Application processes that do automatic cyclic reads of measured
 		values are subject to a request limit: at maximum one request per minute
-		and circuit is allowed."(digitalSTROM: [http://developer.digitalstrom.org/Architecture/ds-basics.pdf](http://developer.digitalstrom.org/Architecture/ds-basics.pdf]) p.36)
+		and circuit is allowed."
 
-### = Circuit consumption =
+#### Circuit consumption
 
     Number Consumption_dSM "dSM [%d W]"	{digitalstrom="dsmid:3504175fe000001000000001#consumption:ACTIVE_POWER#timeinterval:3000"} // read power consumption every 3 seconds (it 'works' because here we read cached values)
 
-### = Apartment consumption =
+#### Apartment consumption
 
     Number Consumption_House "Total house consumption [%s W]"	{digitalstrom="dsmid:ALL#consumption:ACTIVE_POWER#timeinterval:3000"}
 
-### = General meterenig/consumption note =
+#### General metering/consumption note
 
-- The timeinterval only initiates a metering job, but you don't have the guarantee that the worker will start it in this time!
- 
-- You should better not read the consumption of a device, but of meters(dSMs).
+- The timeinterval only initiates a metering job; there is no guarantee that the worker will start it in this time!
+- It is better to read the consumption of meters (dSMs) instead of devices.
 
-### = Other important note =
+## Notes
 
-In the first time the system learns, how to react on specific scene calls (sensor reading). But after some time it will work fast!
+At first the system is slow while it learns how to react on specific scene calls (sensor reading). But after some time it will work fast!

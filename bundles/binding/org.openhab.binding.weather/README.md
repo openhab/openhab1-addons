@@ -68,6 +68,7 @@ You can specify multiple locations by repeating these properties with different 
 | location.`<locationId>`.provider       | reference to a provider name |
 | location.`<locationId>`.language       | the language of the weather condition text (see provider homepage for supported languages) |
 | location.`<locationId>`.updateInterval | the interval in minutes the weather is retrieved |
+| location.`<locationId>`.units          | whether to use metric (SI) or imperial (US) values; may not be supported by all providers
 
 **Important:** Each weather provider has a daily request limit for the free weather API. Also the weather does not change quickly, so please choose a moderate updateInterval. The request limit can be found on the weather provider website. 
 
@@ -181,6 +182,19 @@ String   Temperatur_MinMax   "Min/Max [%s °C]"   {weather="locationId=home, for
 String   Temperatur_MinMax   "Min/Max [%s °C]"   {weather="locationId=home, forecast=0, type=temperature, property=minMax, roundingMode=down, scale=0"}
 > Temperatur_MinMax state updated to 8/17
 ```
+
+### Units
+
+Some providers (eg. ForecastIO) allow passing a units parameter in method calls in order to specify which units (metric (SI) or imperial (US)) should be used by returned data.  Not all providers support this, however.
+
+Starting with the 1.10.0 release of the binding, the configuration contains a new setting to allow this to be user configurable:
+
+    #location.<locationId1>.units=
+
+The values used for this setting will depend on the provider being used. As an example, for ForecastIO, this allows retrieving the current conditions in either `si` (metric) or `us` (imperial) units:
+
+    Light rain on Sunday through Wednesday, with temperatures bottoming out at 29°C on Monday.
+    Light rain on Sunday through Wednesday, with temperatures bottoming out at 84°F on Monday.
 
 ### Unit conversion
 
