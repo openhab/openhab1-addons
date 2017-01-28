@@ -57,12 +57,12 @@ Before the binding can be used, the serial port of the Stick needs to be configu
 
 ### Device configuration
 
-The Plugwise device configuration is also stored in the (binding) configuration. The binding does not (yet) support automatic device type detection. When no devices are configured, the binding assumes each device to be a Circle. In version 1.9.0 support was added for other device types. These need to be configured as described below. The configuration file also allows you to assign names to MAC addresses of Plugwise devices. This makes item configurations easier to understand.
+The Plugwise device configuration is also stored in the (binding) configuration. The configuration file also allows you to assign names to MAC addresses of Plugwise devices. This makes item configurations easier to understand.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | `<id>`.mac |       |   Yes    | MAC address of the Plugwise device associated with the ID `<id>`. The MACs are stickered to the back of Plugwise devices. The binding uses full MACs i.e. also the fine print on the sticker. If you don't want to get off your chair, climb up ladders and unplug devices all across your home, causing all sorts of havoc; you can also find them in Source. Open `Settings > Appliances`. Then double click on an appliance. Click on the little Circle icon to the right of the short Address to see the details of a module and the full MAC (Address). Similarly the MACs of a Scan, Sense and Switch can also be obtained from the Appliances screen by double clicking them in the `Sensors and other modules` list. |
-| `<id>`.type | circle | see description | one of `circleplus`, `circle`, `scan`, `sense`, switch` |
+| `<id>`.type | circle | No | one of `circleplus`, `circle`, `scan`, `sense`, `switch` |
 
 where `<id>` is a name you choose to identify a specific Plugwise device.  You may not use `stick` as an `<id>`.  Repeat the configuration with a different value `<id>` to configure multiple devices.
 
