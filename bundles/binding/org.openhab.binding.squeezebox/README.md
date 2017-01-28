@@ -1,6 +1,5 @@
-Documentation of the Squeezebox binding Bundle
+# Squeezebox Binding
 
-## Introduction
 
 From the [Wikipedia entry](http://en.wikipedia.org/wiki/Squeezebox_%28network_music_player%29):
 
@@ -8,80 +7,78 @@ From the [Wikipedia entry](http://en.wikipedia.org/wiki/Squeezebox_%28network_mu
 
 > In 2006, Slim Devices was acquired by Logitech for $20 million USD. Logitech continued the development of the player until they announced in August 2012 that it would be discontinued. Given the cross-platform nature of the server and software client, some users have ensured the continued use of the platform by utilizing the Raspberry Pi as dedicated Squeezebox device (both client and server).
 
-For installation of the binding, please see Wiki page [[Bindings]].
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/squeezebox/readme.html).
 
-Please note there are two parts to the Squeezebox binding. You need to install both `org.openhab.io.squeezeserver` and `org.openhab.binding.squeezebox`. The `io.squeezeserver` bundle is a common library used by both this binding and the [[Squeezebox Action]] and handles all connections and messaging between openHAB and the Squeeze Server. This ensures you only need to specify one set of configuration in `openhab.cfg` (see below), which can be used by both the binding and the action.
+## Table of Contents
 
-## Example Configuration
+<!-- MarkdownTOC -->
 
-First you need to let openHAB know where to find your Squeeze Server and each of your Squeezebox devices. This configuration is entered in your `openhab.cfg` configuration file and is used by both the Squeezebox binding and the [[Squeezebox Action]]:
+- [Binding Configuration](#binding-configuration)
+	- [Example](#example)
+- [Item Configuration](#item-configuration)
+	- [Squeezebox commands](#squeezebox-commands)
+	- [Squeezebox variables](#squeezebox-variables)
+- [Examples](#examples)
+	- [Full Example](#full-example)
+	- [Additional Control of Logitech Media Server](#additional-control-of-logitech-media-server)
+	- [Example for adding playlists](#example-for-adding-playlists)
+	- [Example for displaying text](#example-for-displaying-text)
+	- [More Examples](#more-examples)
+- [Troubleshooting](#troubleshooting)
 
-    # Squeeze server
-    squeeze:server.host=192.168.1.129
-    # Bedroom Squeezebox
-    squeeze:bedroom.id=de:ad:be:ef:12:34
-    # Kitchen Squeezebox
-    squeeze:kitchen.id=ab:cd:ef:12:34:56
-    
-## Full Configuration
+<!-- /MarkdownTOC -->
 
-Please refer to the following example configuration (options included in the file `openhab_default.cfg` in openHAB 1.8.1 and earlier may be confusing):
+
+## Binding Configuration
+
+This binding can be configured in the file `services/squeeze.cfg`.
+
+| Key | Default | Required | Description |
+|-----|---------|:--------:|-------------|
+| server.host | |   Yes    | host (IP address) of your Logitech Media Server |
+| server.retries | 3 | No  | number of retries to allow for a failed connection. |
+| server.retryTimeout | 60 | No | timeout (in seconds) between retries of a failed connection to the Logitech Media Server |
+| server.cliport | 9090 | No | port of the CLI interface of your Logitech Media Server |
+| server.webport | 9000 | No | web port interface of the your Logitech Media Server |
+| squeeze:ttsurl | `http://translate.google.com/translate_tts?tl=en&ie=UTF-8&client=openhab&q=%s` | No | TTS URL to use for generating text-to-speech voice announcements. The URL should contain one '%s' parameter which will be substituted with the text to be translated<br/>Another TTS service is http://www.voicerss.org/api/ which requires an API key): `https://api.voicerss.org/?key=YOURAPIKEYHERE&hl=en-gb&src=%s` |
+| ttsmaxsentencelength | 100 | No | maximum TTS sentence length. For example, the Google TTS service only permits up to 100 characters (the default value). The Squeezebox speak action will break long strings into sentence chunks call the TTS service repeatedly |
+| `<boxId1>`.id | | Yes    | MAC address of your first Squeezebox.  MAC addresses of players are case-sensitive. Use small letters (a-f) if the address contains them. Example: `de:ad:be:ef:12:34` |
+| `<boxId1>`.id | | Yes    | MAC address of your nth Squeezebox.  MAC addresses of players are case-sensitive. Use small letters (a-f) if the address contains them. Example: `de:ad:be:ef:12:34` |
+
+where `<boxIdN>` is a name you choose (like `bedroom` and `kitchen`) that will be used in both items and the action calls to select with which of your Squeezebox devices to communicate.  Do not use special characters for `<boxIdN>`.
+
+### Example
+
+First you need to let openHAB know where to find your Squeeze Server and each of your Squeezebox devices. This configuration is entered in your binding configuration file, and is used by both the Squeezebox binding and the Squeezebox Action:
+
 ```
-############################ Squeezebox Action and Binding ############################
-#
-# Host (IP address) of your Logitech Media Server
-#squeeze:server.host=
-
-# Number of retries to allow for a failed connection. (optional; defaults to 3)
-#squeeze:server.retries=
-*NOTE: this setting will be available in 1.9.0 or later releases
-
-# Timeout (in seconds) between retries of a failed connection to the
-# Logitech Media Server. (optional; defaults to 60)
-#squeeze:server.retryTimeout=
-*NOTE: this setting will be available in 1.9.0 or later releases
-
-# Port of CLI interface of your Logitech Media Server (optional, defaults to 9090)
-#squeeze:server.cliport=
-
-# Webport interface of the your Logitech Media Server (optional, defaults to 9000)
-#squeeze:server.webport=
-
-# TTS URL to use for generating text-to-speech voice announcements
-# the URL should contain one '%s' parameter which will be substituted
-# with the text to be translated (new as of openHAB 1.8)
-# (defaults to Google TTS service using the URL below)
-#    http://translate.google.com/translate_tts?tl=en&ie=UTF-8&client=openhab&q=%s)
-# (another TTS service is http://www.voicerss.org/api/ which requires an API key)
-#    https://api.voicerss.org/?key=YOURAPIKEYHERE&hl=en-gb&src=%s
-#squeeze:ttsurl=
-
-# Maximum TTS sentence length - for example the Google TTS service only
-# permits up to 100 chars - the Squeezebox speak action will break long
-# strings into sentence chunks call the TTS service repeatedly
-# (defaults to 100)
-#squeeze:ttsmaxsentencelength=
-
-# Id (MAC address) of your first Squeezebox.  MAC addresses of players are case-sensitive. 
-# Use small letters (a-f) if the address contains them. Example:
-# squeeze:Kitchen.id=de:ad:be:ef:12:34
-#squeeze:<boxId1>.id=
-
-# Id (MAC address) of your nth Squeezebox
-#squeeze:<boxIdN>.id=
+server.host=192.168.1.129
+bedroom.id=de:ad:be:ef:12:34
+kitchen.id=ab:cd:ef:12:34:56
 ```
 
-**NOTE:** The `<boxId>`s above will be used in both the binding item configs and the action calls to select with which of your Squeezebox devices to communicate.
-
-## Item Binding Configuration
+## Item Configuration
 
 The syntax of an item configuration is shown in the following line in general:
 
-    squeeze="<boxId>:<command>[:<extra>]"
+```
+squeeze="<boxId>:<command>[:<extra>]"
+```
 
-Where `<boxId>` matches one of the ids defined in your `openhab.cfg` file.
+Where `<boxId>` matches one of the ids defined in your binding configuration, described above.
 
-## Squeezebox commands
+Examples:
+
+Here are some examples of valid binding configuration strings:
+
+```
+squeeze="player1:volume"
+squeeze="player1:title"
+squeeze="player1:play"
+```
+
+### Squeezebox commands
+
 Command           | Purpose
 ------------------|-------------------------
 `power`           | Power on/off your device
@@ -96,7 +93,9 @@ Command           | Purpose
 `file:file`       | Play the given file on your server (obsolete as there is now a new squeezeboxPlayUrl() action for handling this inside rules directly)
 `sync:player-id2` | Add `player-id2` to your device for synced playback
 
-## Squeezebox variables
+NOTE: when binding the 'play' command to a switch item you will trigger 'play' when the item receives the ON command. It will also trigger 'stop' when the item receives the OFF command. The same applies for 'stop' and 'pause' except ON=>stop/pause and OFF=>play. This is so you can setup a single item for controlling play/stop by defining mappings in your sitemap:
+
+### Squeezebox variables
 
 Variable      | Purpose
 --------------|--------
@@ -111,42 +110,45 @@ Variable      | Purpose
 
 ## Examples
 
-Here are some examples of valid binding configuration strings:
+### Full Example
 
-    squeeze="player1:volume"
-    squeeze="player1:title"
-    squeeze="player1:play"
+items/squeezedemo.items
 
-As a result, your lines in the items file might look like the following:
+```
+Dimmer sq_test_volume 	   "Volume [%.1f %%]"	{ squeeze="player1:volume" }
+String sq_test_title	   "Title [%s]"			{ squeeze="player1:title" }
+Switch sq_test_play	   	   "Play"				{ squeeze="player1:play" }
+String sq_test_ircode	   "IR-Code [%s]" 		{ squeeze="player1:ircode" }
+```
 
-    Dimmer sq_test_volume 	   "Volume [%.1f %%]"	{ squeeze="player1:volume" }
-    String sq_test_title	   "Title [%s]"		{ squeeze="player1:title" }
-    Switch sq_test_play	   	   "Play"		{ squeeze="player1:play" }
-    String sq_test_ircode	   "IR-Code [%s]" 	{ squeeze="player1:ircode" }
+sitemaps/squeezedemo.sitemap.fragment
 
-NOTE: when binding the 'play' command to a switch item you will trigger 'play' when the item receives the ON command. It will also trigger 'stop' when the item receives the OFF command. The same applies for 'stop' and 'pause' except ON=>stop/pause and OFF=>play. This is so you can setup a single item for controlling play/stop by defining mappings in your sitemap:
-
+```
     Switch item=sq_test_play mappings=[ON="Play", OFF="Stop"]
+```
 
 And whenever the player state is changed from outside of openHAB, these items will be updated accordingly, since there is now no longer a separate item for 'play' and 'isPlaying'.
 
-v1.4.0: Squeezebox binding can store the latest IR code (form the infrared remote) in a variable, which can be used to do some actions. Look at this rule:
+Squeezebox binding can store the latest IR code (form the infrared remote) in a variable, which can be used to do some actions. Look at this rule:
 
-    rule "IR Code catched"
-    when
-        Item sq_test_ircode received update
-    then
-        if (sq_test_ircode.state=="00ff32cd") {
-            sendCommand(Licht_Schlafzimmer, ON)
-            logInfo("IR Code rules", "schalte Schlafzimmerlicht ein")
-        } else if (sq_test_ircode.state=="00ff708f") {
-            sendCommand(Licht_Schlafzimmer, OFF)
-            logInfo("IR Code rules", "schalte Schlafzimmerlicht aus")
-        }
-    end
+rules/squeezeirdemo.rules
 
+```
+rule "IR Code catched"
+when
+    Item sq_test_ircode received update
+then
+    if (sq_test_ircode.state=="00ff32cd") {
+        sendCommand(Licht_Schlafzimmer, ON)
+        logInfo("IR Code rules", "schalte Schlafzimmerlicht ein")
+    } else if (sq_test_ircode.state=="00ff708f") {
+        sendCommand(Licht_Schlafzimmer, OFF)
+        logInfo("IR Code rules", "schalte Schlafzimmerlicht aus")
+    }
+end
+```
 
-##Additional Control of Logitech Media Server
+### Additional Control of Logitech Media Server
 
 Another method to gain some extra control of the LMS not provided by the binding is via HTTP GET requests. Using rules, a switch/number etc can be linked to the required HTTP GET request.
 
@@ -156,205 +158,209 @@ In any browser enter `<IP Address of LMS>:9000`
 Help button on the bottom left → Technical information → Logitech Media Server Web Interface
 For the multiple player variable either the IP address or the MAC address can be used.
 
-##Example for adding playlists
+### Example for adding playlists
 
 Item file:
 
-    Number Squeezebox_PlayList	"Playlists”
+```
+Number Squeezebox_PlayList	"Playlists”
+```
 
 Rule file:
 
-    rule "Squeezebox_PlayList"
-	when
-		Item Squeezebox_PlayList received command
-	then
-		switch(receivedCommand) {
-			case 0 : sendHttpGetRequest("http://<IP Address of LMS>:9000/?p0=playlist&p1=play&p2=<Name of Playlist>&player=<MAC Address of Player>")
-			case 1 : sendHttpGetRequest("http://<IP Address of LMS>:9000/?p0=playlist&p1=play&p2=<Name of Next Playlist >&player=<MAC Address of Player>")
-		}
-     end
+```
+rule "Squeezebox_PlayList"
+when
+	Item Squeezebox_PlayList received command
+then
+	switch(receivedCommand) {
+		case 0 : sendHttpGetRequest("http://<IP Address of LMS>:9000/?p0=playlist&p1=play&p2=<Name of Playlist>&player=<MAC Address of Player>")
+		case 1 : sendHttpGetRequest("http://<IP Address of LMS>:9000/?p0=playlist&p1=play&p2=<Name of Next Playlist >&player=<MAC Address of Player>")
+	}
+end
+```
 
-Sitemap file:
+Sitemap file fragment:
 
-    Selection item=Squeezebox_PlayList label="Start Playlist" mappings=[0="<Name of Playlist>", 1="<Name of Next Playlist >"] 
+```
+Selection item=Squeezebox_PlayList label="Start Playlist" mappings=[0="<Name of Playlist>", 1="<Name of Next Playlist >"] 
+```
 
-## Example for displaying text
+### Example for displaying text
 
 Rule file:
 
-    rule "SqueezeboxDisplay"
-	when
-		<any event>
-	then
-		var String text= "Das ist ein Text mit variablem Inhalt: " + Item1.state.toString + 
-		" und " + Item2.state.toString 
-		var String url = "http://192.168.2.5:9000/status?p0=display&p1=&p2=" + text.encode("UTF-8") + "&p3=300&player=00:04:20:06:21:6d" 
-                sendHttpGetRequest(url)
-     end
+```
+rule "SqueezeboxDisplay"
+when
+	<any event>
+then
+	var String text= "Das ist ein Text mit variablem Inhalt: " + Item1.state.toString + 
+	" und " + Item2.state.toString 
+	var String url = "http://192.168.2.5:9000/status?p0=display&p1=&p2=" + text.encode("UTF-8") + "&p3=300&player=00:04:20:06:21:6d" 
+            sendHttpGetRequest(url)
+end
+```
 
 The is UTF-8 encoded. The URL calls the squeezebox server at port 9000 with this parameters: p1=upper display line, p2=lower display line, p3=duration of display, player= MAC address of player
 
-## More Examples
-* [[Select Radio-Stations|SqueezeboxExample]]
-* [[Use local TTS instead of Google-Translator|Use-local-TTS-with-squeezebox]]Below you'll find an example configuration for the squeezebox binding to select different radio stations.
-
- - [Binding](SqueezeboxExample#openhabcfg)
- - [Items](SqueezeboxExample#squeezeitems)
- - [Rules](SqueezeboxExample#squeezerules)
- - [Sitemap](SqueezeboxExample#squeezesitemap) 
+### More Examples
 
 ![](https://dl.dropboxusercontent.com/u/1781347/wiki/2014-12-18%2017_13_05-openHAB.png)
 
-# openhab.cfg
-
 Here you'll need to configure your players; please make sure that the id's match the name of your logitech configuration. Do not use special characters for the player id.
 
-    ### Squeezebox
-    squeeze:server.host     = 192.168.10.59
+services/squeeze.cfg
 
-    squeeze:Bad.id          = 00:04:20:28:65:c7
-    squeeze:Bastelzimmer.id = 00:04:20:29:62:0e
-    squeeze:Buero.id        = 00:04:20:29:a7:27
-    squeeze:Kueche.id       = 00:04:20:28:65:91
-    squeeze:Schlafzimmer.id = 00:04:20:2a:37:4b
-    squeeze:TV.id           = 00:04:20:23:52:3c
-    squeeze:Wohnbereich.id  = 00:04:20:2a:3b:21
-
-# squeeze.items
-
-    /* SqueezeBox */
-    Number squeezeSelectedPlayer
-    Number squeezeSelectedStation
-    Switch squeezePlay
-
-    Switch squeezeBadPower           "Bad" <squeeze> (gPlayerPower, gPlayerPowerOG) { squeeze="Bad:power" }
-    Switch squeezeBadPlay            "Bad"                                          { squeeze="Bad:play" }
-    Dimmer squeezeBadVolume          "Bad [%.1f %%]" <volume> (gPlayerVolume)       { squeeze="Bad:volume" }
-
-    Switch squeezeBastelzimmerPower  "Gästezimmer" <squeeze> (gPlayerPower, gPlayerPowerOG) { squeeze="Bastelzimmer:power" }
-    Switch squeezeBastelzimmerPlay   "Gästezimmer"                                          { squeeze="Bastelzimmer:play" }
-    Dimmer squeezeBastelzimmerVolume "Gästezimmer [%.1f %%]" <volume> (gPlayerVolume)       { squeeze="Bastelzimmer:volume" }
-
-    Switch squeezeBueroPower         "Büro" <squeeze> (gPlayerPower, gPlayerPowerOG) { squeeze="Buero:power" }
-    Switch squeezeBueroPlay          "Büro"                                          { squeeze="Buero:play" }
-    Dimmer squeezeBueroVolume        "Büro [%.1f %%]" <volume> (gPlayerVolume)       { squeeze="Buero:volume" }
-
-    Switch squeezeSchlafzimmerPower  "Schlafzimmer" <squeeze> (gPlayerPower, gPlayerPowerOG) { squeeze="Schlafzimmer:power" }
-    Switch squeezeSchlafzimmerPlay   "Schlafzimmer"                                          { squeeze="Schlafzimmer:play" }
-    Dimmer squeezeSchlafzimmerVolume "Schlafzimmer [%.1f %%]" <volume> (gPlayerVolume)       { squeeze="Schlafzimmer:volume" }
-
-    Switch squeezeTVPower            "TV" <squeeze> (gPlayerPower, gPlayerPowerEG, gTV) { squeeze="TV:power" }
-    Switch squeezeTVPlay             "TV"                                               { squeeze="TV:play" }
-    Dimmer squeezeTVVolume           "TV [%.1f %%]" <volume> (gPlayerVolume)            { squeeze="TV:volume" }
-
-    Switch squeezeKuechePower        "Küche" <squeeze> (gPlayerPower, gPlayerPowerEG) { squeeze="Kueche:power" }
-    Switch squeezeKuechePlay         "Küche"                                          { squeeze="Kueche:play" }
-    Dimmer squeezeKuecheVolume       "Küche [%.1f %%]" <volume> (gPlayerVolume)       { squeeze="Kueche:volume" }
-
-    Switch squeezeWohnbereichPower   "Wohnbereich" <squeeze> (gPlayerPower, gPlayerPowerEG) { squeeze="Wohnbereich:power" }
-    Switch squeezeWohnbereichPlay    "Wohnbereich"                                          { squeeze="Wohnbereich:play" }
-    Dimmer squeezeWohnbereichVolume  "Wohnbereich [%.1f %%]" <volume> (gPlayerVolume)       { squeeze="Wohnbereich:volume" }
-
-#squeeze.rules
-```Xtend
-	import org.openhab.core.library.types.*
-	import org.openhab.model.script.actions.*
-	import org.openhab.action.squeezebox.*
-
-	// Handle squeezebox radio station UI
-	rule "SqueezePlayerRadioStation"
-	  when 
-		Item squeezePlay changed
-	  or
-		Item squeezeSelectedStation changed
-	  or
-		Item squeezeSelectedPlayer changed
-	  then
-		logInfo("squeeze.rules", "SqueezePlayerPlay")
-	   
-		var String [] players = newArrayList("Bad", "Bastelzimmer", "Buero", "Schlafzimmer", "TV", "Kueche", "Wohnbereich");
-		var String[] urls = newArrayList(
-		  "http://stream.srg-ssr.ch/drs1/mp3_128.m3u", // Radio SRF1
-		  "http://stream.srg-ssr.ch/drs2/mp3_128.m3u", // Radio SRF2
-		  "http://stream.srg-ssr.ch/drs3/mp3_128.m3u", // Radio SRF3
-		  "http://www.swissgroove.ch/listen.m3u",      // Swiss Groove
-		  "http://icecast.argovia.ch/argovia128.m3u",  // Radio Argovia
-		  "http://stream.srg-ssr.ch/rsj/mp3_128.m3u",  // Swiss Jazz
-		  "http://mp3-live.swr3.de/swr3_m.m3u"         // SWR 3
-		  )
-
-		logInfo("squeeze.rules", squeezeSelectedStation.toString)
-		
-		var stationIndex = ((squeezeSelectedStation.state as DecimalType).intValue - 1)
-		var station = urls.get(stationIndex) as String;
-		
-		var playerIndex = ((squeezeSelectedPlayer.state as DecimalType).intValue - 1) 
-		var player = players.get(playerIndex) as String
-		
-		logInfo("squeeze.rules", player)
-		logInfo("squeeze.rules", station)
-		 
-		if (squeezePlay.state == ON) {
-		  squeezeboxPlayUrl(player, station)
-		} else {
-		  squeezeboxStop(player)
-		}
-
-	  end
 ```
-#squeeze.sitemap
-	sitemap
-	{
-		Frame label="System"  {
-			Text label="Audio" icon="squeeze"  {
-				Frame label="Alle"  {
-					Switch item=gPlayerPowerAll label="EG & OG" 				
-					Switch item=gPlayerPowerEG label="EG" 				
-					Switch item=gPlayerPowerOG label="OG" 		
-					Group item=gPlayerPower label="Ein / Aus"  {
-						Switch item=squeezeBadPower           				
-						Switch item=squeezeBastelzimmerPower  
-						Switch item=squeezeBueroPower 	      
-						Switch item=squeezeSchlafzimmerPower  
-						Switch item=squeezeTVPower 			  
-						Switch item=squeezeKuechePower 		  
-						Switch item=squeezeWohnbereichPower   
-					}
-					Group item=gPlayerVolume label="Lautstärke"  {
-						Slider item=squeezeBadVolume switchSupport 		    
-						Slider item=squeezeBastelzimmerVolume switchSupport 
-						Slider item=squeezeBueroVolume switchSupport 		
-						Slider item=squeezeSchlafzimmerVolume switchSupport 
-						Slider item=squeezeTVVolume switchSupport 		    
-						Slider item=squeezeKuecheVolume switchSupport 		
-						Slider item=squeezeWohnbereichVolume switchSupport 	
-					}
-					Slider item=gPlayerVolume label="Lautstärke" 				
-				}			
-				Frame label="Einzeln"  {				
-					Selection item=squeezeSelectedPlayer label="Gerät" mappings=[1="Bad", 2="Gästezimmer", 3="Büro", 4="Schlafzimmer", 5="TV", 6="Küche", 7="Wohnbereich"]
-					Selection item=squeezeSelectedStation label="Sender" mappings=[1="SRF 1", 2="SRF 2", 3="SRF 3", 4="Swiss Groove", 5="Argovia", 6="Swiss Jazz", 7="SWR 3"]
-					Switch item=squeezePlay label="Stop / Play" mappings=[OFF="Stop", ON="Play"]
-					
-					Switch item=squeezeBadPower           visibility=[squeezeSelectedPlayer==1]				
-					Switch item=squeezeBastelzimmerPower  visibility=[squeezeSelectedPlayer==2]
-					Switch item=squeezeBueroPower 	      visibility=[squeezeSelectedPlayer==3]
-					Switch item=squeezeSchlafzimmerPower  visibility=[squeezeSelectedPlayer==4]
-					Switch item=squeezeTVPower 			  visibility=[squeezeSelectedPlayer==5]
-					Switch item=squeezeKuechePower 		  visibility=[squeezeSelectedPlayer==6]
-					Switch item=squeezeWohnbereichPower   visibility=[squeezeSelectedPlayer==7]
-					
-					Slider item=squeezeBadVolume switchSupport 		    visibility=[squeezeSelectedPlayer==1]
-					Slider item=squeezeBastelzimmerVolume switchSupport visibility=[squeezeSelectedPlayer==2]
-					Slider item=squeezeBueroVolume switchSupport 		visibility=[squeezeSelectedPlayer==3]
-					Slider item=squeezeSchlafzimmerVolume switchSupport visibility=[squeezeSelectedPlayer==4]
-					Slider item=squeezeTVVolume switchSupport 		    visibility=[squeezeSelectedPlayer==5]
-					Slider item=squeezeKuecheVolume switchSupport 		visibility=[squeezeSelectedPlayer==6]
-					Slider item=squeezeWohnbereichVolume switchSupport 	visibility=[squeezeSelectedPlayer==7] 			
-				}		
-			}		
-		}	
+server.host     = 192.168.10.59
+
+Bad.id          = 00:04:20:28:65:c7
+Bastelzimmer.id = 00:04:20:29:62:0e
+Buero.id        = 00:04:20:29:a7:27
+Kueche.id       = 00:04:20:28:65:91
+Schlafzimmer.id = 00:04:20:2a:37:4b
+TV.id           = 00:04:20:23:52:3c
+Wohnbereich.id  = 00:04:20:2a:3b:21
+```
+
+items/squeeze.items
+
+```
+/* SqueezeBox */
+Number squeezeSelectedPlayer
+Number squeezeSelectedStation
+Switch squeezePlay
+
+Switch squeezeBadPower           "Bad" <squeeze> (gPlayerPower, gPlayerPowerOG) { squeeze="Bad:power" }
+Switch squeezeBadPlay            "Bad"                                          { squeeze="Bad:play" }
+Dimmer squeezeBadVolume          "Bad [%.1f %%]" <volume> (gPlayerVolume)       { squeeze="Bad:volume" }
+
+Switch squeezeBastelzimmerPower  "Gästezimmer" <squeeze> (gPlayerPower, gPlayerPowerOG) { squeeze="Bastelzimmer:power" }
+Switch squeezeBastelzimmerPlay   "Gästezimmer"                                          { squeeze="Bastelzimmer:play" }
+Dimmer squeezeBastelzimmerVolume "Gästezimmer [%.1f %%]" <volume> (gPlayerVolume)       { squeeze="Bastelzimmer:volume" }
+
+Switch squeezeBueroPower         "Büro" <squeeze> (gPlayerPower, gPlayerPowerOG) { squeeze="Buero:power" }
+Switch squeezeBueroPlay          "Büro"                                          { squeeze="Buero:play" }
+Dimmer squeezeBueroVolume        "Büro [%.1f %%]" <volume> (gPlayerVolume)       { squeeze="Buero:volume" }
+
+Switch squeezeSchlafzimmerPower  "Schlafzimmer" <squeeze> (gPlayerPower, gPlayerPowerOG) { squeeze="Schlafzimmer:power" }
+Switch squeezeSchlafzimmerPlay   "Schlafzimmer"                                          { squeeze="Schlafzimmer:play" }
+Dimmer squeezeSchlafzimmerVolume "Schlafzimmer [%.1f %%]" <volume> (gPlayerVolume)       { squeeze="Schlafzimmer:volume" }
+
+Switch squeezeTVPower            "TV" <squeeze> (gPlayerPower, gPlayerPowerEG, gTV) { squeeze="TV:power" }
+Switch squeezeTVPlay             "TV"                                               { squeeze="TV:play" }
+Dimmer squeezeTVVolume           "TV [%.1f %%]" <volume> (gPlayerVolume)            { squeeze="TV:volume" }
+
+Switch squeezeKuechePower        "Küche" <squeeze> (gPlayerPower, gPlayerPowerEG) { squeeze="Kueche:power" }
+Switch squeezeKuechePlay         "Küche"                                          { squeeze="Kueche:play" }
+Dimmer squeezeKuecheVolume       "Küche [%.1f %%]" <volume> (gPlayerVolume)       { squeeze="Kueche:volume" }
+
+Switch squeezeWohnbereichPower   "Wohnbereich" <squeeze> (gPlayerPower, gPlayerPowerEG) { squeeze="Wohnbereich:power" }
+Switch squeezeWohnbereichPlay    "Wohnbereich"                                          { squeeze="Wohnbereich:play" }
+Dimmer squeezeWohnbereichVolume  "Wohnbereich [%.1f %%]" <volume> (gPlayerVolume)       { squeeze="Wohnbereich:volume" }
+```
+
+rules/squeeze.rules
+
+```Xtend
+// Handle squeezebox radio station UI
+rule "SqueezePlayerRadioStation"
+when 
+	Item squeezePlay changed or
+	Item squeezeSelectedStation changed or
+	Item squeezeSelectedPlayer changed
+then
+	logInfo("squeeze.rules", "SqueezePlayerPlay")
+  
+	var String [] players = newArrayList("Bad", "Bastelzimmer", "Buero", "Schlafzimmer", "TV", "Kueche", "Wohnbereich");
+	var String[] urls = newArrayList(
+	  "http://stream.srg-ssr.ch/drs1/mp3_128.m3u", // Radio SRF1
+	  "http://stream.srg-ssr.ch/drs2/mp3_128.m3u", // Radio SRF2
+	  "http://stream.srg-ssr.ch/drs3/mp3_128.m3u", // Radio SRF3
+	  "http://www.swissgroove.ch/listen.m3u",      // Swiss Groove
+	  "http://icecast.argovia.ch/argovia128.m3u",  // Radio Argovia
+	  "http://stream.srg-ssr.ch/rsj/mp3_128.m3u",  // Swiss Jazz
+	  "http://mp3-live.swr3.de/swr3_m.m3u"         // SWR 3
+	  )
+
+	logInfo("squeeze.rules", squeezeSelectedStation.toString)
+	
+	var stationIndex = ((squeezeSelectedStation.state as DecimalType).intValue - 1)
+	var station = urls.get(stationIndex) as String;
+	
+	var playerIndex = ((squeezeSelectedPlayer.state as DecimalType).intValue - 1) 
+	var player = players.get(playerIndex) as String
+	
+	logInfo("squeeze.rules", player)
+	logInfo("squeeze.rules", station)
+	 
+	if (squeezePlay.state == ON) {
+	  squeezeboxPlayUrl(player, station)
+	} else {
+	  squeezeboxStop(player)
 	}
-# Trouble shooting
-If you have also some issues with the example feel free to check the current discussion:
-https://community.openhab.org/t/wiki-squeezeboxexample-errors-cannot-cast-cannot-retrieve-item/5488
+
+end
+```
+
+sitemaps/squeeze.sitemap
+
+```
+sitemap
+{
+	Frame label="System"  {
+		Text label="Audio" icon="squeeze"  {
+			Frame label="Alle"  {
+				Switch item=gPlayerPowerAll label="EG & OG" 				
+				Switch item=gPlayerPowerEG label="EG" 				
+				Switch item=gPlayerPowerOG label="OG" 		
+				Group item=gPlayerPower label="Ein / Aus"  {
+					Switch item=squeezeBadPower           				
+					Switch item=squeezeBastelzimmerPower  
+					Switch item=squeezeBueroPower 	      
+					Switch item=squeezeSchlafzimmerPower  
+					Switch item=squeezeTVPower 			  
+					Switch item=squeezeKuechePower 		  
+					Switch item=squeezeWohnbereichPower   
+				}
+				Group item=gPlayerVolume label="Lautstärke"  {
+					Slider item=squeezeBadVolume switchSupport 		    
+					Slider item=squeezeBastelzimmerVolume switchSupport 
+					Slider item=squeezeBueroVolume switchSupport 		
+					Slider item=squeezeSchlafzimmerVolume switchSupport 
+					Slider item=squeezeTVVolume switchSupport 		    
+					Slider item=squeezeKuecheVolume switchSupport 		
+					Slider item=squeezeWohnbereichVolume switchSupport 	
+				}
+				Slider item=gPlayerVolume label="Lautstärke" 				
+			}			
+			Frame label="Einzeln"  {				
+				Selection item=squeezeSelectedPlayer label="Gerät" mappings=[1="Bad", 2="Gästezimmer", 3="Büro", 4="Schlafzimmer", 5="TV", 6="Küche", 7="Wohnbereich"]
+				Selection item=squeezeSelectedStation label="Sender" mappings=[1="SRF 1", 2="SRF 2", 3="SRF 3", 4="Swiss Groove", 5="Argovia", 6="Swiss Jazz", 7="SWR 3"]
+				Switch item=squeezePlay label="Stop / Play" mappings=[OFF="Stop", ON="Play"]
+				
+				Switch item=squeezeBadPower           visibility=[squeezeSelectedPlayer==1]				
+				Switch item=squeezeBastelzimmerPower  visibility=[squeezeSelectedPlayer==2]
+				Switch item=squeezeBueroPower 	      visibility=[squeezeSelectedPlayer==3]
+				Switch item=squeezeSchlafzimmerPower  visibility=[squeezeSelectedPlayer==4]
+				Switch item=squeezeTVPower 			  visibility=[squeezeSelectedPlayer==5]
+				Switch item=squeezeKuechePower 		  visibility=[squeezeSelectedPlayer==6]
+				Switch item=squeezeWohnbereichPower   visibility=[squeezeSelectedPlayer==7]
+				
+				Slider item=squeezeBadVolume switchSupport 		    visibility=[squeezeSelectedPlayer==1]
+				Slider item=squeezeBastelzimmerVolume switchSupport visibility=[squeezeSelectedPlayer==2]
+				Slider item=squeezeBueroVolume switchSupport 		visibility=[squeezeSelectedPlayer==3]
+				Slider item=squeezeSchlafzimmerVolume switchSupport visibility=[squeezeSelectedPlayer==4]
+				Slider item=squeezeTVVolume switchSupport 		    visibility=[squeezeSelectedPlayer==5]
+				Slider item=squeezeKuecheVolume switchSupport 		visibility=[squeezeSelectedPlayer==6]
+				Slider item=squeezeWohnbereichVolume switchSupport 	visibility=[squeezeSelectedPlayer==7] 			
+			}		
+		}		
+	}	
+}
+```
+
+## Troubleshooting
+
+If you have also some issues with the example feel free to check [this discussion](https://community.openhab.org/t/wiki-squeezeboxexample-errors-cannot-cast-cannot-retrieve-item/5488).
