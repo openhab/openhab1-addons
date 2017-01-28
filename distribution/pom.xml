@@ -1226,13 +1226,13 @@
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
-<!--    <dependency>
+    <dependency>
       <groupId>org.openhab.persistence</groupId>
       <artifactId>org.openhab.persistence.dynamodb</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
--->    <dependency>
+    <dependency>
       <groupId>org.openhab.persistence</groupId>
       <artifactId>org.openhab.persistence.exec</artifactId>
       <version>${project.version}</version>
