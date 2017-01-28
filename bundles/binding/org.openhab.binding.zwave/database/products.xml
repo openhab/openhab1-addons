@@ -3515,6 +3515,15 @@
             <Label lang="en">Touch Panel Switch (Single)</Label>
             <ConfigFile>mcohome/mhs411.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0905</Type>
+                <Id>0201</Id>
+            </Reference>
+            <Model>MH9-CO2-WD</Model>
+            <Label lang="en">CO2 Monitor Air quality detector</Label>
+            <ConfigFile>mcohome/mh9co2wd.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0010</Id>
