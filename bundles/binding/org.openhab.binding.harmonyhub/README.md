@@ -2,6 +2,8 @@
 
 The Harmony Hub binding is used to enable communication between openHAB and one or more Logitech Harmony Hub devices. The API exposed by the Harmony Hub is relatively limited, but it does allow for reading the current activity as well as setting the activity and sending device commands.
 
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/harmonyhub/readme.html).
+
 ## Binding Configuration
 
 The binding can be configured in the file `services/harmonyhub.cfg`.

@@ -1,12 +1,12 @@
-# Netatmo Binding (1.x)
+# Netatmo Binding
 
 The Netatmo binding integrates the Netatmo Personal Weather Station into openHAB. Its different modules allow you to measure temperature, humidity, air pressure, carbon dioxide concentration in the air, as well as the ambient noise level.
 
 The Netatmo Welcome Camera is also supported; it is a home camera with face recognition. It notifies you when it sees someone it knows, but also when it sees a stranger. See information below to obtain the necessary informations to setup your Netatmo Gear, also see [the Netatmo website](http://www.netatmo.com/) for details on their products.
 
-> Note for OpenHAB 2
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/netatmo/readme.html).
 
-> The Netatmo Binding (1.x) is considered a legacy binding and does not show up by default as an add-on in the OpenHAB 2 Paper UI. In order for the binding to show up as a add-on, you need to go to Configuration->System and enable both **Access Remote Repositories** and **Include Legacy 1.x Bindings** and save the setting. Once you have done this, you will see both **Netatmo Binding** and **Netatmo Binding (1.x)** in Add-ons, you will want to install **Netatmo Binding (1.x)**.
+> The Netatmo Binding (1.x) is considered a legacy binding and does not show up by default as an add-on in the OpenHAB 2 Paper UI. In order for the binding to show up as a add-on, you need to go to Configuration->System and enable both **Access Remote Repositories** and **Include Legacy 1.x Bindings** and save the setting. Once you have done this, you will see both **Netatmo Binding** and **Netatmo Binding (1.x)** in Add-ons, you will want to install **Netatmo Binding**.
 
 ## Prerequisites
 

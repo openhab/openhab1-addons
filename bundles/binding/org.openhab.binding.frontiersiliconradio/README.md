@@ -1,4 +1,4 @@
-# Frontier Silicon Radio Binding (1.x)
+# Frontier Silicon Radio Binding
 
 This binding is for internet radios based on the [Frontier Silicon chipset](http://www.frontier-silicon.com/digital-radio-solutions).
 
@@ -23,6 +23,8 @@ You can easily check if your IP radio is supported:
 3. Go to your web browser and enter: `http://<IP>/fsapi/CREATE_SESSION?pin=<PIN>`
 4. If the response is similar to `FS_OK 6836164442`, your radio is most likely compatible with this binding
 5. If you radio works with this binding, please add it to the list above by [Editing this page](Frontier-Silicon-Radio-Binding/_edit)!
+
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/fsinternetradio/readme.html)
 
 ## Binding Configuration
 

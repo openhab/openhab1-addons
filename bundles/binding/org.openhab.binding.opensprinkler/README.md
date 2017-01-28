@@ -6,6 +6,8 @@ This binding is compatible with with both the [OpenSprinkler](http://opensprinkl
 
 The binding will sync itself with the OpenSprinkler device at intervals. This allows state of the stations to be updated if they are manually controlled from the OpenSprinkler web application directly.
 
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/opensprinkler/readme.html).
+
 ## Prerequisites
 
 This binding appears to require you to run openHAB as the `root` user; otherwise you get the error `wiringPiSetup: Must be root.`  You might be able to add the `openhab` user to the `gpio` group, reboot, and try again.

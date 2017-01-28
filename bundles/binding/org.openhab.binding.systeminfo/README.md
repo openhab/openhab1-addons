@@ -1,4 +1,4 @@
-## System Information Binding (1.x)
+## System Information Binding
 
 The System Information binding provides operating system monitoring data, including:
 
@@ -8,6 +8,8 @@ The System Information binding provides operating system monitoring data, includ
 - Network interface metrics
 
 The binding uses the Hyperic SIGAR API to access system information regardless of the underlying platform (Windows, Linux, OS X...). 
+
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/systeminfo/readme.html).
 
 ## Table of Contents
 

@@ -2,6 +2,8 @@
 
 This binding is compatible with Onkyo AV receivers which support ISCP (Integra Serial Control Protocol) over Ethernet (eISCP) and serial ports.
 
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/onkyo/readme.html).
+
 ## Binding Configuration
 
 This binding can be configured in the file `services/onkyo.cfg`.

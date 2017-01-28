@@ -2,6 +2,8 @@
 
 The MAX!Cube binding allows openHAB to connect to [(ELV) MAX!Cube Lan Gateway](http://www.elv.de/max-cube-lan-gateway.html) installations. The binding allows openHAB to communicate with the MAX! devices through the MAX!Cube Lan Gateway.
 
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/max/readme.html).
+
 ## Prerequisites
 
 To communicate with MAX! devices, an already setup MAX! environment including a MAX!Cube Lan Gateway is required. In addition, the binding expects an already set up MAX environment.

@@ -1,4 +1,4 @@
-# Z-Wave Binding (1.x)
+# Z-Wave Binding
 
 The openHAB Z-Wave binding allows you to connect to your Z-Wave wireless mesh network.  A Z-Wave network typically consists of one primary controller “stick”, zero or more additional controllers and zero or more Z-Wave enabled devices, e.g. dimmers, switches, sensors etc.
 
@@ -15,6 +15,7 @@ The openHAB Z-Wave binding allows you to connect to your Z-Wave wireless mesh ne
 
 <!-- /MarkdownTOC -->
 
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/zwave/readme.html).
 
 ## Prerequisites
 

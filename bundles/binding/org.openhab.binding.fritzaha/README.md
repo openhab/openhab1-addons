@@ -6,6 +6,8 @@ This binding provides access to AVM Home Automation devices, such as the Fritz!D
 
 The binding interfaces with hosts using a choice of two different interfaces, the query script used in the Fritz!OS UI and a webservice designed for interfacing with external applications.
 
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/avmfritz/readme.html).
+
 ## Binding Configuration
 
 The Fritz AHA Binding supports multiple hosts. Each host must be assigned a Host ID in `services/fritzaha.cfg`. Furthermore, connection data must be provided. For a standard Fritz!Box home gateway setup, the default settings are sufficient and only a password needs to be supplied.

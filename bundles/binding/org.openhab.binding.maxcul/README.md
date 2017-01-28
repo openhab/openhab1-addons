@@ -4,6 +4,8 @@ The aim of this binding is to allow the connection from openHAB to MAX! devices 
 
 A lot of credit must go to the [FHEM project](http://fhem.de/fhem.html): without their implementation of the MAX interface with CUL this would be taking a lot longer to implement!
 
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/max/readme.html).
+
 ## Status
 
 The binding is currently in beta and it is recommended that you only use it expecting there to be bugs and issues. It is has enough features to be useful as a heating system, though lacks some of the finer features. This page will be updated as things progress.
