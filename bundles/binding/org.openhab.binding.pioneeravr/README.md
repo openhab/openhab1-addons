@@ -1,58 +1,45 @@
-This binding allows to remotely control a Pioneer AV receiver equipped with an ethernet interface. It enables OpenHAB to switch ON/OFF the receiver, adjust the volume, set the input source and configure most other parameters.
+# Pioneer AV Receiver Binding (1.x)
+
+This binding allows openHAB to remotely control a Pioneer AV receiver equipped with an Ethernet interface. It enables openHAB to switch ON/OFF the receiver, adjust the volume, set the input source and configure most other parameters.
 
 Most common commands are supported directly, special commands can be added manually using the "advanced command" mechanism described below.
 
 ## Binding configuration
 
-Before configuring single items, the global device configuration needs to be set up in the openhab.cfg file.
+This binding can be configured in the file `services/pioneeravr.cfg`.
 
-     ################################# Pioneer AVR Binding ######################################  
-     # Host of the first Pioneer device to control  
-     pioneeravr:<Pioneer1>.host=192.168.2.140  
-     
-     # Port of the Pioneer device to control (optional, defaults to 23)  
-     pioneeravr:<Pioneer1>.port=23
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| `<device-id>`.host | |  Yes    | IP address of the first Pioneer AV receiver to control |
+| `<device-id>`.port | 23 | No   | TCP port of the Pioneer device to control |
+| `<device-id>`.checkconn | 1 | No | controls whether the binding will check the TCP connection once every minute by polling the receivers power status. Set to 0 in order to disable the connection check. When the receiver is connected via a serial-to-ethernet converter, this polling was reported to wake up the receiver from standby mode. In most cases this option can be left away. |
 
-     # Switch for disabling the connection check (optional, defaults to 1)
-     pioneeravr:<Pioneer1>.checkconn=1
+where `<device-id>` is a name you choose, like `livingroom`, to identify one Pioneer AV receiver to control.  The configuration properties can be repeated with different instance names to control multiple receivers.
 
-The pioneeravr:Pioneer1.host value is the ip address of the Pioneer AV receiver.
+### Example
 
-The pioneeravr:Pioneer1.port value is TCP port address of the the receiver. Port value is an optional parameter.
+```
+livingroom.host=192.168.2.140
+bedroom.host=192.168.2.141
+bedroom.port=2300
+```
 
-The pioneeravr:Pioneer1.checkconn value controls wether the binding will check the TCP connection once every minute by polling the receivers power status. When the receiver is connected via a serial-to-ethernet converter, this polling was reported to wake up the receiver from standby mode. In most cases this option can be left away.
+## Item Configuration
 
-Example:
+The syntax accepted is:
 
-     pioneeravr:livingroom.host=192.168.2.140  
-     pioneeravr:livingroom.port=23
+```
+pioneeravr="<openHAB-command>:<device-id>:<device-command>[,<openHAB-command>:<device-id>:<device-command>][,...]"
+```
 
-## Item Binding Configuration
+where:
 
-In order to bind an item to the device, you need to provide configuration settings.
- The easiest way to do so is to add some binding information in your item file (in the folder configurations/items`). 
-The syntax of the binding configuration strings accepted is the following:
+* parts in brackets `[ ]` signify an optional information.
+* `<openHAB-command>` corresponds the openHAB command to respond to.
+* `<device-id>` corresponds the `<device-id>` that was introduced in the binding configuration.
+* `<device-command>` corresponds to the Pioneer AV receiver command. See complete list below.
 
-
-     pioneeravr="<openHAB-command>:<device-id>:<device-command>[,<openHAB-command>:<device-id>:<device-command>][,...]"
-
-
-where parts in brackets signify an optional information.
-
-* The **openHAB-command** corresponds OpenHAB command.
-* The **device-id** corresponds the deviceid that was introduced in openhab.cfg.
-* The **device-command** corresponds Pioneer AV receiver command. See complete list below.
-
-Examples, how to configure your items:
-
-
-     Switch  AV_Pwr { pioneeravr="INIT:livingroom:POWER_QUERY, OFF:livingroom:POWER_OFF, ON:livingroom:POWER_ON"}
-     Switch  AV_Mute  { pioneeravr="INIT:livingroom:MUTE_QUERY, ON:livingroom:MUTE, OFF:livingroom:UNMUTE" }
-     Dimmer  AV_Volume { pioneeravr="INIT:livingroom:VOLUME_QUERY, INCREASE:livingroom:VOLUME_UP, DECREASE:livingroom:VOLUME_DOWN, *:livingroom:VOLUME_SET" }
-
-_Note: The "INIT" action will be called once upon initialization of the binding. Its purpose is to query the current state of the receiver, so the item state represents the receiver state when the binding is running. Without that command, the initial values will be uninitialized until a corresponding command is performed to change the setting, or the receiver sends an update on his own._
-
-## Predefined commands 
+## Pioneer AV Receiver Commands 
 
 These command are supported out of the box by the binding.
 
@@ -269,9 +256,7 @@ These command are supported out of the box by the binding.
 * LCD status information text
     * DISPLAY_INFO_QUERY _(needs to be mapped to a string item)_
 
-
-
-## Advanced commands
+### Advanced commands
 
 If you want to use commands that are not predefined by the binding you can add them manually using a shape # as a prefix.
 
@@ -287,24 +272,38 @@ This will set the volume like the predefined VOLUME_SET command does.
 
 A list of all commands that are supported by the pioneer receiver can be found here: [http://www.pioneerelectronics.com/PUSA/Support/Home-Entertainment-Custom-Install/RS-232+&+IP+Codes](http://www.pioneerelectronics.com/PUSA/Support/Home-Entertainment-Custom-Install/RS-232+&+IP+Codes)
 
+## Examples
 
+### Items
 
-## Basic demo
+items/av.items
 
+```
+Switch  AV_Pwr { pioneeravr="INIT:livingroom:POWER_QUERY, OFF:livingroom:POWER_OFF, ON:livingroom:POWER_ON"}
+Switch  AV_Mute  { pioneeravr="INIT:livingroom:MUTE_QUERY, ON:livingroom:MUTE, OFF:livingroom:UNMUTE" }
+Dimmer  AV_Volume { pioneeravr="INIT:livingroom:VOLUME_QUERY, INCREASE:livingroom:VOLUME_UP, DECREASE:livingroom:VOLUME_DOWN, *:livingroom:VOLUME_SET" }
+```
 
-### av.items:
+_Note: The "INIT" action will be called once upon initialization of the binding. Its purpose is to query the current state of the receiver, so the item state represents the receiver state when the binding is running. Without that command, the initial values will be uninitialized until a corresponding command is performed to change the setting, or the receiver sends an update on his own._
 
-     Switch  AV_Pwr     "Power" { pioneeravr="INIT:livingroom:POWER_QUERY, OFF:livingroom:POWER_OFF, ON:livingroom:POWER_ON" }
-     Switch  AV_Mute    "Mute" { pioneeravr="INIT:livingroom:MUTE_QUERY, ON:livingroom:MUTE, OFF:livingroom:UNMUTE" }
-     Number  AV_Source  "Source [%.1f]" { pioneeravr="INCREASE:livingroom:SOURCE_UP, DECREASE:livingroom:SOURCE_DOWN, *:livingroom:SOURCE_SET" }
-     String  AV_Status  "Status [%s]" { pioneeravr="INIT:livingroom:DISPLAY_INFO_QUERY" }
-     Number  AV_Volume "Volume abs.[%.1f]" { pioneeravr="INIT:livingroom:VOLUME_QUERY, *:livingroom:VOLUME_SET" }
-     Dimmer  AV_Volume_perc "Volume perc. [%.1f]%" (gAV_Receiver) { pioneeravr="INIT:livingroom:VOLUME_QUERY,  INCREASE:livingroom:VOLUME_UP, DECREASE:livingroom:VOLUME_DOWN, *:livingroom:VOLUME_SET" }
-     Switch  AV_HMG_Class "HMG class" { pioneeravr="ON:livingroom:HMG_CLASS" }
-     Number  AV_HMG_Num "HMG Num" { pioneeravr="*:livingroom:HMG_NUMKEY" }
-     Switch  AV_AdvCmd_Test "Adv Cmd test" { pioneeravr="INIT:livingroom:POWER_QUERY, ON:livingroom:#PO, OFF:livingroom:#PF" }
+### Basic Demo
 
-### av.sitemap:
+items/av.items
+
+```
+Switch  AV_Pwr     "Power" { pioneeravr="INIT:livingroom:POWER_QUERY, OFF:livingroom:POWER_OFF, ON:livingroom:POWER_ON" }
+Switch  AV_Mute    "Mute" { pioneeravr="INIT:livingroom:MUTE_QUERY, ON:livingroom:MUTE, OFF:livingroom:UNMUTE" }
+Number  AV_Source  "Source [%.1f]" { pioneeravr="INCREASE:livingroom:SOURCE_UP, DECREASE:livingroom:SOURCE_DOWN, *:livingroom:SOURCE_SET" }
+String  AV_Status  "Status [%s]" { pioneeravr="INIT:livingroom:DISPLAY_INFO_QUERY" }
+Number  AV_Volume "Volume abs.[%.1f]" { pioneeravr="INIT:livingroom:VOLUME_QUERY, *:livingroom:VOLUME_SET" }
+Dimmer  AV_Volume_perc "Volume perc. [%.1f]%" (gAV_Receiver) { pioneeravr="INIT:livingroom:VOLUME_QUERY,  INCREASE:livingroom:VOLUME_UP, DECREASE:livingroom:VOLUME_DOWN, *:livingroom:VOLUME_SET" }
+Switch  AV_HMG_Class "HMG class" { pioneeravr="ON:livingroom:HMG_CLASS" }
+Number  AV_HMG_Num "HMG Num" { pioneeravr="*:livingroom:HMG_NUMKEY" }
+Switch  AV_AdvCmd_Test "Adv Cmd test" { pioneeravr="INIT:livingroom:POWER_QUERY, ON:livingroom:#PO, OFF:livingroom:#PF" }
+```
+
+sitemaps/av.sitemap
+
 ```
 sitemap av label="Main Menu"     
 Frame {
@@ -319,6 +318,7 @@ Frame {
      		}
      	}
 ```
+
 ## Additional protocol information:
 
 The mapping of the source channels (AV_Source) to enumation numbers is as follows:

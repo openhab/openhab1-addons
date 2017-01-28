@@ -1,29 +1,30 @@
-Documentation for the Panasonic TV binding
-
-## Introduction
+# Panasonic TV Binding
 
 This binding supports Panasonic TVs. It should be compatible with most up-to-date Panasonic Smart-TVs.
 
-## Configuration
+## Binding Configuration
+
+This binding can be configured in the file `services/panasonictv.cfg`.
+
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| `<instance>` |     |    Yes   | IP address of the Panasonic TV |
+
+### Example
 
 ```
-# panasonictv:<instance> = <ip>
-
-# IP address of a Panasonic TV, for example
-panasonictv:bedroom_tv = 192.168.1.171
-
-```
-## Items
-
-All items use the following format described below. Currently, only `switch`-items are allowed that work as toggles. The state of the switches thus do not correspond to the current state of the TV (e.g. power, input, mute etc.).
-
-```
-{panasonictv="<instance>:<command>"}
+bedroom_tv=192.168.1.171
 ```
 
-The <instance> in the items declaration has to be defined in openhab.cfg first.
+## Item Configuration
 
-The commands correspond to the commands on your remote control. The following commands are available:
+All items use the following format described below. Currently, only Switch items are allowed that work as toggles. The state of the switches thus do not correspond to the current state of the TV (e.g. power, input, mute etc.).
+
+```
+{ panasonictv="<instance>:<command>" }
+```
+
+where `<instance>` was introduced in your binding configuration, like `bedroom_tv` in the example above, and `<command>` is from the following table:
 
 | Command | Description |
 | :------------- |:-------------| 
@@ -88,16 +89,17 @@ The commands correspond to the commands on your remote control. The following co
 
 ## Examples
 
-openhab.cfg
-```
-panasonictv:bedroom_tv = 192.168.1.171
-```
-
-Items
+services/panasonictv.cfg
 
 ```
-Switch BedroomTVPower			"Power"					{panasonictv="bedroom_tv:POWER"}
-Switch BedroomVolumeUp			"Volume Up"			{panasonictv="bedroom_tv:VOLUP"}
-Switch BedroomVolumeDown		"Volume Down"			{panasonictv="bedroom_tv:VOLDOWN"}
-Switch BedroomTVInput			"TV input"				{panasonictv="bedroom_tv:TV"}
+bedroom_tv = 192.168.1.171
+```
+
+items/panasonictv.items
+
+```
+Switch BedroomTVPower           "Power"                 { panasonictv="bedroom_tv:POWER" }
+Switch BedroomVolumeUp          "Volume Up"             { panasonictv="bedroom_tv:VOLUP" }
+Switch BedroomVolumeDown        "Volume Down"           { panasonictv="bedroom_tv:VOLDOWN" }
+Switch BedroomTVInput           "TV input"              { panasonictv="bedroom_tv:TV" }
 ```
