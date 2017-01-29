@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Part of {@link MediaContainer}. This object contains information about a Plex device.
- * 
+ *
  * @author Jeroen Idserda
  * @since 1.8.0
  */
@@ -27,37 +27,59 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Device {
 
-	@XmlAttribute
-	private String name;
+    @XmlAttribute
+    private String name;
 
-	@XmlAttribute
-	private boolean httpsRequired;
+    @XmlAttribute
+    private String productVersion;
 
-	@XmlElement(name = "Connection")
-	private List<Connection> connections = new ArrayList<Connection>();
+    @XmlAttribute
+    private String provides;
 
-	public String getName() {
-		return name;
-	}
+    @XmlAttribute
+    private boolean httpsRequired;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @XmlElement(name = "Connection")
+    private List<Connection> connections = new ArrayList<Connection>();
 
-	public boolean isHttpsRequired() {
-		return httpsRequired;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setHttpsRequired(boolean httpsRequired) {
-		this.httpsRequired = httpsRequired;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public List<Connection> getConnections() {
-		return connections;
-	}
+    public String getProductVersion() {
+        return productVersion;
+    }
 
-	public void setConnections(List<Connection> connections) {
-		this.connections = connections;
-	}
+    public void setProductVersion(String productVersion) {
+        this.productVersion = productVersion;
+    }
+
+    public String getProvides() {
+        return provides;
+    }
+
+    public void setProvides(String provides) {
+        this.provides = provides;
+    }
+
+    public boolean isHttpsRequired() {
+        return httpsRequired;
+    }
+
+    public void setHttpsRequired(boolean httpsRequired) {
+        this.httpsRequired = httpsRequired;
+    }
+
+    public List<Connection> getConnections() {
+        return connections;
+    }
+
+    public void setConnections(List<Connection> connections) {
+        this.connections = connections;
+    }
 
 }

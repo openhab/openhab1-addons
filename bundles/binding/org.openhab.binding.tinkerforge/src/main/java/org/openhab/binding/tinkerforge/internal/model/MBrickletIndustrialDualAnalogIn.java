@@ -19,17 +19,21 @@ import com.tinkerforge.BrickletIndustrialDualAnalogIn;
  *
  * <p>
  * The following features are supported:
- * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn#getDeviceType
- * <em>Device Type</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn#getSampleRate
- * <em>Sample Rate</em>}</li>
- * </ul>
  * </p>
+ * <ul>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn#getDeviceType <em>Device
+ * Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn#getSampleRate <em>Sample
+ * Rate</em>}</li>
+ * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletIndustrialDualAnalogIn()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletIndustrialDualAnalogIn> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletIndustrialDualAnalogIn>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
+ *        <org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel>"
  * @generated
  */
 public interface MBrickletIndustrialDualAnalogIn
@@ -71,9 +75,9 @@ public interface MBrickletIndustrialDualAnalogIn
     short getSampleRate();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn#getSampleRate
-     * <em>Sample Rate</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn#getSampleRate <em>Sample
+     * Rate</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

@@ -2,17 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB GCal Persistence Bundle
 Bundle-SymbolicName: org.openhab.persistence.gcal
-Bundle-Version: 1.9.0.qualifier
+Bundle-Version: 1.10.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: ch.qos.logback.classic,
- ch.qos.logback.classic.encoder,
- ch.qos.logback.classic.spi,
- ch.qos.logback.core,
- ch.qos.logback.core.encoder,
- ch.qos.logback.core.pattern,
- ch.qos.logback.core.spi,
- com.google.api.client.auth.oauth2,
+Import-Package: com.google.api.client.auth.oauth2,
  com.google.api.client.googleapis.services,
  com.google.api.client.http,
  com.google.api.client.http.javanet,

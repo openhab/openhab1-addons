@@ -24,6 +24,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfigurat
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFVoltageCurrentConfigurationImpl#getAveraging
  *        <em>Averaging</em>}</li>
@@ -34,7 +35,6 @@ import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfigurat
  *        {@link org.openhab.binding.tinkerforge.internal.model.impl.TFVoltageCurrentConfigurationImpl#getCurrentConversionTime
  *        <em>Current Conversion Time</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -148,10 +148,9 @@ public class TFVoltageCurrentConfigurationImpl extends MinimalEObjectImpl.Contai
     public void setAveraging(Short newAveraging) {
         Short oldAveraging = averaging;
         averaging = newAveraging;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.TF_VOLTAGE_CURRENT_CONFIGURATION__AVERAGING, oldAveraging, averaging));
-        }
     }
 
     /**
@@ -175,11 +174,10 @@ public class TFVoltageCurrentConfigurationImpl extends MinimalEObjectImpl.Contai
     public void setVoltageConversionTime(Short newVoltageConversionTime) {
         Short oldVoltageConversionTime = voltageConversionTime;
         voltageConversionTime = newVoltageConversionTime;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.TF_VOLTAGE_CURRENT_CONFIGURATION__VOLTAGE_CONVERSION_TIME, oldVoltageConversionTime,
                     voltageConversionTime));
-        }
     }
 
     /**
@@ -203,11 +201,10 @@ public class TFVoltageCurrentConfigurationImpl extends MinimalEObjectImpl.Contai
     public void setCurrentConversionTime(Short newCurrentConversionTime) {
         Short oldCurrentConversionTime = currentConversionTime;
         currentConversionTime = newCurrentConversionTime;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.TF_VOLTAGE_CURRENT_CONFIGURATION__CURRENT_CONVERSION_TIME, oldCurrentConversionTime,
                     currentConversionTime));
-        }
     }
 
     /**
@@ -302,9 +299,8 @@ public class TFVoltageCurrentConfigurationImpl extends MinimalEObjectImpl.Contai
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (averaging: ");

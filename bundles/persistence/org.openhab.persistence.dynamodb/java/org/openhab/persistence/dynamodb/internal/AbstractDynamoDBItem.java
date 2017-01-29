@@ -78,9 +78,10 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
         itemClassToDynamoItemClass.put(ColorItem.class, DynamoDBStringItem.class); // inherited from DimmerItem
     }
 
-    public static final Class<? extends DynamoDBItem<?>> getDynamoItemClass(Class<? extends Item> itemClass)
+    public static final Class<DynamoDBItem<?>> getDynamoItemClass(Class<? extends Item> itemClass)
             throws NullPointerException {
-        Class<? extends DynamoDBItem<?>> dtoclass = itemClassToDynamoItemClass.get(itemClass);
+        @SuppressWarnings("unchecked")
+        Class<DynamoDBItem<?>> dtoclass = (Class<DynamoDBItem<?>>) itemClassToDynamoItemClass.get(itemClass);
         if (dtoclass == null) {
             throw new NullPointerException(String.format("Unknown item class %s", itemClass));
         }

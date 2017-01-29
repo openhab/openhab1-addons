@@ -23,21 +23,26 @@ import com.tinkerforge.BrickletAmbientLightV2;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getDeviceType <em>Device Type</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getThreshold <em>Threshold</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getIlluminanceRange
- * <em>Illuminance Range</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getIntegrationTime
- * <em>Integration Time</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getIlluminanceRange <em>Illuminance
+ * Range</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getIntegrationTime <em>Integration
+ * Time</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAmbientLightV2()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletAmbientLightV2> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletAmbientLightV2>
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration>
+ *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
 public interface MBrickletAmbientLightV2 extends MDevice<BrickletAmbientLightV2>, MSensor<DecimalValue>,
@@ -108,8 +113,8 @@ public interface MBrickletAmbientLightV2 extends MDevice<BrickletAmbientLightV2>
     short getIlluminanceRange();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getIlluminanceRange
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getIlluminanceRange
      * <em>Illuminance Range</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -139,9 +144,9 @@ public interface MBrickletAmbientLightV2 extends MDevice<BrickletAmbientLightV2>
     short getIntegrationTime();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getIntegrationTime
-     * <em>Integration Time</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getIntegrationTime <em>Integration
+     * Time</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

@@ -81,7 +81,7 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
     private static Map<String, MapDBItem> map;
 
     public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
-        logger.debug("mapdb persistence service activated");
+        logger.debug("mapdb persistence service is being activated");
 
         String commitIntervalString = (String) config.get("commitinterval");
         if (StringUtils.isNotBlank(commitIntervalString)) {
@@ -102,7 +102,11 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
 
         File folder = new File(DB_FOLDER_NAME);
         if (!folder.exists()) {
-            folder.mkdir();
+            if (!folder.mkdirs()) {
+              logger.error("Failed to create one or more directories in the path '{}'", DB_FOLDER_NAME);
+              logger.error("MapDB persistence service activation has failed.");
+              return;
+            }
         }
 
         File dbFile = new File(DB_FOLDER_NAME, DB_FILE_NAME);
@@ -110,6 +114,7 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
         Serializer<MapDBItem> serializer = new MapDBitemSerializer();
         map = db.createTreeMap("itemStore").valueSerializer(serializer).makeOrGet();
         scheduleJob();
+        logger.debug("mapdb persistence service is now activated");
     }
 
     public void deactivate(final int reason) {
@@ -205,7 +210,7 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
             Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(SCHEDULER_GROUP));
             if (jobKeys.size() > 0) {
                 sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
-                logger.debug("Found {} MapDB-Jobs to delete from DefaulScheduler (keys={})", jobKeys.size(), jobKeys);
+                logger.debug("Found {} MapDB-Jobs to delete from DefaultScheduler (keys={})", jobKeys.size(), jobKeys);
             }
         } catch (SchedulerException e) {
             logger.warn("Couldn't remove Commit-Job: {}", e.getMessage());

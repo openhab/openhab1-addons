@@ -32,7 +32,6 @@ import org.openhab.core.types.UnDefType;
 public class RFXComTemperatureMessage extends RFXComBaseMessage {
 
     public enum SubType {
-        UNDEF(0),
         THR128_138_THC138(1),
         THC238_268_THN122_132_THWR288_THRN122_AW129_131(2),
         THWR800(3),
@@ -43,6 +42,7 @@ public class RFXComTemperatureMessage extends RFXComBaseMessage {
         LACROSSE_WS2300(8),
         RUBICSON(9),
         TFA_30_3133(10),
+        WT0122(11),
 
         UNKNOWN(255);
 
@@ -59,12 +59,22 @@ public class RFXComTemperatureMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.TEMPERATURE);
 
-    public SubType subType = SubType.THR128_138_THC138;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public double temperature = 0;
     public byte signalLevel = 0;
@@ -97,12 +107,7 @@ public class RFXComTemperatureMessage extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 
         temperature = (short) ((data[6] & 0x7F) << 8 | (data[7] & 0xFF)) * 0.1;

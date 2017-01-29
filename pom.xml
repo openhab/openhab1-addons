@@ -8,7 +8,7 @@
 
     <groupId>org.openhab</groupId>
     <artifactId>openhab</artifactId>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>1.10.0-SNAPSHOT</version>
     <name>openHAB</name>
 
     <organization>
@@ -37,9 +37,8 @@
     <description>This is the open Home Automation Bus (openHAB)</description>
 
     <properties>
-        <ohdr.version>1.0.0</ohdr.version>
-        <ohc.version>2.0.0.x</ohc.version>
-        <jdeb-version>1.4</jdeb-version>
+        <ohdr.version>1.0.10</ohdr.version>
+        <ohc.version>2.1.x</ohc.version>
 
         <tycho-version>0.24.0</tycho-version>
         <tycho-groupid>org.eclipse.tycho</tycho-groupid>
@@ -47,15 +46,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <wagon.version>1.0-beta-2</wagon.version>
 
-        <deb.maintainer>openHAB &lt;admin@openhab.org&gt;</deb.maintainer>
-        <deb.section>misc</deb.section>
-        <deb.distribution>development</deb.distribution>
-        <deb.depends>openhab-runtime</deb.depends>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
 
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-
-        <repo.url>https://api.bintray.com/maven/openhab/mvn/openhab</repo.url>
+        <repo.url>https://api.bintray.com/maven/openhab/mvn/openhab1-addons/;publish=1</repo.url>
 
 		<!-- JDBC Databasedriver Versions -->
 		<derby.version>10.12.1.1</derby.version>
@@ -73,6 +67,7 @@
     <modules>
         <module>bundles</module>
         <module>features</module>
+        <module>distribution</module>
     </modules>
 
     <build>

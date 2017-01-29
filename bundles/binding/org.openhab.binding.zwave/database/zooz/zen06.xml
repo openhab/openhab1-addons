@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>Zooz Z-Wave Smart Plug (ZEN06)</Model>
+    <Label lang="en">Smart Plug with 2 USB ports</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x2B</id>             <!-- SCENE_ACTIVATION -->
+        </Class>
+        <Class>
+            <id>0x32</id>             <!-- METER -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>20</Index>
+            <Label lang="en">Overload Protection</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enabled</Label>
+            </Item>
+            <Help><![CDATA[turns relay off once voltage exceeds 16.5A for over 5 secs if enabled
+<p>We <strong>DO NOT</strong> recommend changing this parameter’s value as it may result in device damage and malfunction.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>21</Index>
+            <Label lang="en">On/Off Status Recovery After Power Failure</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Previous setting</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">ON</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">OFF</Label>
+            </Item>
+            <Help><![CDATA[Recovery state for power failure
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>24</Index>
+            <Label lang="en">On/Off Status Change Notifications </Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Send any change</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Send manual changes</Label>
+            </Item>
+            <Help><![CDATA[Send notifications to associated devices
+<p>Your Smart Plug will automatically send a notification to the controller and other associated devices if its status changes from on to off or the other way round. Choose when you want it to send the report.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>27</Index>
+            <Label lang="en">LED Indicator Control</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Display power consumption always</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Display power consumption at state change</Label>
+            </Item>
+            <Help><![CDATA[LED Indicator Control
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>151</Index>
+            <Label lang="en">Power Report Value Threshold</Label>
+            <Type>short</Type>
+            <Default>50</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Minimum change in watts to report
+<p>Choose how you want your Smart Plug to report power consumption to your controller and associated devices.</p> <p>The number entered as value corresponds to the number of Watts the appliance needs to go over for the change to be reported.</p> <p>So if 50 Watts are entered by default, the smart plug will report any change in power usage over 50 Watts (whether it’s at least 50 Watts more or 50 Watts less compared to previous report).</p> <p>Values: 0 – 65535;</p> <p>0 – disabled (it will not report power consumption based on value change);</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>152</Index>
+            <Label lang="en">Power Report Percentage Threshold</Label>
+            <Type>short</Type>
+            <Default>10</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[Minimum percentage change to report
+<p>Choose how you want your Smart Plug to report power consumption to your controller and associated devices by percentage rate.</p> <p>The number entered as value corresponds to the percentage in power usage change the appliance needs to go over for the event to be reported.</p> <p>So if 10% is entered by default, the Smart Plug will report any change in power consumption over 10% (whether it’s at least 10% more or 10% less power consumption compared to previous report).</p> <p>Values: 0 – 255;</p> <p>0 – disabled (it will not report power consumption based on percentage change);</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>171</Index>
+            <Label lang="en">Power Report Frequency</Label>
+            <Type>short</Type>
+            <Default>30</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2678400</Maximum>
+            <Size>4</Size>
+            <Help><![CDATA[How often to report power consumption (W) in secs
+<p>Choose how often you want your Smart Plug to report power consumption (W) to your controller and associated device.</p> <p>The number entered as value corresponds to the number of seconds.</p> <p>So if 30 is entered by default, the Smart Plug will report power consumption every 30 seconds.</p> <p>Values: 5 – 2678400;</p> <p>0 – disabled (it will not report power consumption);</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>172</Index>
+            <Label lang="en">Energy Report Frequency </Label>
+            <Type>short</Type>
+            <Default>300</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2678400</Maximum>
+            <Size>4</Size>
+            <Help><![CDATA[How often to report energy usage (KWH) in secs
+<p>Choose how often you want your Smart Plug to report energy usage (KWH) to your controller and associated device.</p> <p>The number entered as value corresponds to the number of seconds.</p> <p>So if 300 is entered by default, the smart plug will report energy usage every 300 seconds (5 minutes).</p> <p>Values: 5 – 2678400;</p> <p>0 – disabled (it will not report energy usage);</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>173</Index>
+            <Label lang="en">Voltage Report Frequency </Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2678400</Maximum>
+            <Size>4</Size>
+            <Help><![CDATA[How often to report voltage (V) in secs
+<p>Choose how often you want your Smart Plug to report voltage (V) to your controller and associated device.</p> <p>The number entered as value corresponds to the number of seconds.</p> <p>Values: 5 – 2678400;</p> <p>0 – disabled</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>174</Index>
+            <Label lang="en">Electricity Report Frequency</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2678400</Maximum>
+            <Size>4</Size>
+            <Help><![CDATA[How often to report electrical current (A) in secs
+<p>Choose how often you want your Smart Plug to report levels of electrical current (A) to your controller and associated device.</p> <p>The number entered as value corresponds to the number of seconds.</p> <p>Values: 5 – 2678400;</p> <p>0 – disabled</p>
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>

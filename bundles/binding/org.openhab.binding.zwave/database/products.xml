@@ -415,6 +415,15 @@
         </Product>
         <Product>
             <Reference>
+                <Type>0003</Type>
+                <Id>0003</Id>
+            </Reference>
+            <Model>AD147</Model>
+            <Label lang="en">Z-Wave Dimmer Plug</Label>
+            <ConfigFile>everspring/ad147.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0103</Type>
                 <Id>0001</Id>
             </Reference>
@@ -1013,10 +1022,14 @@
         </Product>
         <Product>
             <Reference>
-                <Type>102</Type>
-                <Id>78</Id>
+                <Type>0102</Type>
+                <Id>0078</Id>
             </Reference>
-            <Model>ZW120-a</Model>
+            <Reference>
+                <Type>0002</Type>
+                <Id>0078</Id>
+            </Reference>
+            <Model>ZW120</Model>
             <Label lang="en">Door/Window sensor Gen5</Label>
             <Label lang="de">Tür-Fenster-Sensor Gen5</Label>
             <ConfigFile>aeon/zw120.xml</ConfigFile>
@@ -1060,7 +1073,7 @@
                 <Type>0202</Type>
                 <Id>0064</Id>
             </Reference>
-            <Model>ZW100-A</Model>
+            <Model>ZW100</Model>
             <Label lang="en">MultiSensor 6</Label>
             <ConfigFile VersionMax="1.6">aeon/zw100-a.xml</ConfigFile>
             <ConfigFile VersionMin="1.7">aeon/zw100-17.xml</ConfigFile>
@@ -2070,6 +2083,15 @@
         <Name>ZWave.me</Name>
         <Product>
             <Reference>
+                <Type>0100</Type>
+                <Id>0400</Id>
+            </Reference>
+            <Model>Z-Weather</Model>
+            <Label lang="en">Z-Wave weather interface</Label>
+            <ConfigFile>zwaveme/zweather.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>1000</Type>
                 <Id>0002</Id>
             </Reference>
@@ -2240,6 +2262,15 @@
         <Name>Wenzhou TKB Control System</Name>
         <Product>
             <Reference>
+                <Type>0004</Type>
+                <Id>0002</Id>
+            </Reference>
+            <Model>TZ69</Model>
+            <Label lang="en">Smart meter switch</Label>
+            <ConfigFile>tkb/tz69.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0808</Type>
                 <Id>0808</Id>
             </Reference>
@@ -2319,6 +2350,15 @@
     <Manufacturer>
         <Id>0002</Id>
         <Name>Danfoss</Name>
+        <Product>
+            <Reference>
+                <Type>0115</Type>
+                <Id>A010</Id>
+            </Reference>
+            <Model>010101</Model>
+            <Label lang="en">Popp Wireless Thermostatic Valve TRV</Label>
+            <ConfigFile>danfoss/010101.xml</ConfigFile>
+        </Product>
         <Product>
             <Reference>
                 <Type>0005</Type>
@@ -2562,6 +2602,10 @@
                 <Type>0002</Type>
                 <Id>001f</Id>
             </Reference>
+            <Reference>
+                <Type>0002</Type>
+                <Id>0020</Id>
+            </Reference>
             <Model>PAT02-A/B/C</Model>
             <Label lang="en">Flood Multisensor (incl. humidty and temperature)</Label>
             <Label lang="de">Überschwemmungssensor inkl. Luftfeuchtigkeit und Temperatur</Label>
@@ -2697,6 +2741,15 @@
             <Model>ZWN-SC7</Model>
             <Label lang="en">Scene Controller</Label>
             <ConfigFile>enerwave/zwn-sc7.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>0101</Type>
+                <Id>5606</Id>
+            </Reference>
+            <Model>ZWN-RSM2</Model>
+            <Label lang="en">Smart Dual Relay Switch Module</Label>
+            <ConfigFile>enerwave/zwnrsm2.xml</ConfigFile>
         </Product>
     </Manufacturer>
     <Manufacturer>
@@ -2848,6 +2901,15 @@
         </Product>
         <Product>
             <Reference>
+                <Type>802</Type>
+                <Id>261</Id>
+            </Reference>
+            <Model>VRCS4-M0Z</Model>
+            <Label lang="en">4-Zone Controller</Label>
+            <ConfigFile>leviton/vrcs4-m0z.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>1706</Type>
                 <Id>334</Id>
             </Reference>
@@ -2928,6 +2990,24 @@
             <Model>ZMNHID</Model>
             <Label lang="en">Flush on/off thermostat</Label>
             <ConfigFile>qubino/zmnhid.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>0004</Type>
+                <Id>0051</Id>
+            </Reference>
+            <Model>ZMNHJD</Model>
+            <Label lang="en">Flush Pilot</Label>
+            <ConfigFile>qubino/zmnhjd.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>0004</Type>
+                <Id>0052</Id>
+            </Reference>
+            <Model>ZMNHUD</Model>
+            <Label lang="en">Flush Pilot DIN</Label>
+            <ConfigFile>qubino/zmnhud.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
@@ -3360,6 +3440,15 @@
             <Label lang="en">RGBW bulb</Label>
             <ConfigFile>zipato/rgbwe27.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>2001</Type>
+                <Id>0106</Id>
+            </Reference>
+            <Model>ZD2102</Model>
+            <Label lang="en">Door Window Sensor</Label>
+            <ConfigFile>vision/zd2102.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0138</Id>
@@ -3456,6 +3545,15 @@
             <Model>MH-S411</Model>
             <Label lang="en">Touch Panel Switch (Single)</Label>
             <ConfigFile>mcohome/mhs411.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>0905</Type>
+                <Id>0201</Id>
+            </Reference>
+            <Model>MH9-CO2-WD</Model>
+            <Label lang="en">CO2 Monitor Air quality detector</Label>
+            <ConfigFile>mcohome/mh9co2wd.xml</ConfigFile>
         </Product>
     </Manufacturer>
     <Manufacturer>
@@ -3634,6 +3732,10 @@
         <Id>020e</Id>
         <Name>Domitech</Name>
         <Product>
+			<Reference>
+				<Type>4c42</Type>
+				<Id>3134</Id>
+			</Reference>
             <Reference>
                 <Type>4c42</Type>
                 <Id>3135</Id>
@@ -3742,5 +3844,67 @@
             <Label lang="en">FUGA Wall 4-way Switch + Relay</Label>
             <ConfigFile>logic/zhc5010.xml</ConfigFile>
         </Product>
-    </Manufacturer> 
+    </Manufacturer>
+	<Manufacturer>
+		<Id>0258</Id>
+		<Name>Shenzhen Neo Electronics Co., Ltd</Name>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>1083</Id>
+			</Reference>
+			<Model>Motion Sensor</Model>
+			<Label lang="en">PIR Motion Sensor</Label>
+			<ConfigFile>shenzhen/motionsensor.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>1082</Id>
+			</Reference>
+			<Model>Door/Window Sensor</Model>
+			<Label lang="en">Door/Window Sensor</Label>
+			<ConfigFile>shenzhen/doorwindowsensor.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>1087</Id>
+			</Reference>
+			<Model>Power Plug</Model>
+			<Label lang="en">Metered Wall Plug Switch</Label>
+			<ConfigFile>shenzhen/powerplug.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>1085</Id>
+			</Reference>
+			<Model>Flood sensor</Model>
+			<Label lang="en">Coolcam flood/water sensor</Label>
+			<ConfigFile>shenzhen/floodsensor.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+  <Manufacturer>
+    <Id>027A</Id>
+    <Name>Zooz</Name>
+    <Product>
+      <Reference>
+        <Type>0101</Type>
+        <Id>000A</Id>
+      </Reference>
+      <Model>Zooz Z-Wave Smart Plug (ZEN06)</Model>
+      <Label lang="en">Smart Plug with 2 USB ports</Label>
+      <ConfigFile>zooz/zen06.xml</ConfigFile>
+    </Product>
+    <Product>
+      <Reference>
+        <Type>2021</Type>
+        <Id>2101</Id>
+      </Reference>
+      <Model>ZSE40</Model>
+      <Label lang="en">4-in-1 Sensor</Label>
+      <ConfigFile>zooz/zse40.xml</ConfigFile>
+    </Product>
+  </Manufacturer>
 </Manufacturers>

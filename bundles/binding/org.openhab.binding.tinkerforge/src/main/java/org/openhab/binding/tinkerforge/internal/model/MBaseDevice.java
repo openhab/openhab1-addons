@@ -23,13 +23,13 @@ import org.slf4j.Logger;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBaseDevice#getLogger <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBaseDevice#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBaseDevice#isPoll <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBaseDevice#getEnabledA <em>Enabled A</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBaseDevice()
  * @model interface="true" abstract="true"
@@ -142,8 +142,8 @@ public interface MBaseDevice extends EObject {
     AtomicBoolean getEnabledA();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBaseDevice#getEnabledA
-     * <em>Enabled A</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBaseDevice#getEnabledA <em>Enabled
+     * A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

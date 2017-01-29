@@ -35,31 +35,13 @@ import org.openhab.core.types.UnDefType;
  */
 public class RFXComRfyMessage extends RFXComBaseMessage {
 
-    public enum Commands {
-        STOP(0x00),
-        OPEN(0x01),
-        CLOSE(0x03),
-        UP_2SEC(0x11),
-        DOWN_2SEC(0x12);
-
-        private final int command;
-
-        Commands(int command) {
-            this.command = command;
-        }
-
-        Commands(byte command) {
-            this.command = command;
-        }
-
-        public byte toByte() {
-            return (byte) command;
-        }
-    }
-
     public enum SubType {
         RFY(0),
-        RFY_EXT(1);
+        RFY_EXT(1),
+        RESERVED(2),
+        ASA(3),
+
+        UNKNOWN(255);
 
         private final int subType;
 
@@ -74,18 +56,66 @@ public class RFXComRfyMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
+    }
+
+    public enum Commands {
+        STOP(0x00),
+        OPEN(0x01),
+        CLOSE(0x03),
+        UP_05SEC(0x0F),
+        DOWN_05SEC(0x10),
+        UP_2SEC(0x11),
+        DOWN_2SEC(0x12),
+        ENABLE_SUN_WIND_DETECTOR(0x13),
+        DISABLE_SUN_DETECTOR(0x14),
+
+        UNKNOWN(0xFF);
+
+        private final int command;
+
+        Commands(int command) {
+            this.command = command;
+        }
+
+        Commands(byte command) {
+            this.command = command;
+        }
+
+        public byte toByte() {
+            return (byte) command;
+        }
+
+        public static Commands fromByte(int input) {
+            for (Commands c : Commands.values()) {
+                if (c.command == input) {
+                    return c;
+                }
+            }
+
+            return UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.COMMAND);
 
-    public SubType subType = SubType.RFY;
+    public SubType subType = SubType.UNKNOWN;
     /**
      * valid numbers 0-4; 0 == all units
      */
     public byte unitCode = 0;
     public byte id3 = 0;
-    public Commands command = Commands.STOP;
+    public Commands command = Commands.UNKNOWN;
     public byte signalLevel = 0xF; // maximum
 
     public RFXComRfyMessage() {
@@ -119,19 +149,10 @@ public class RFXComRfyMessage extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        subType = SubType.values()[super.subType];
-
+        subType = SubType.fromByte(super.subType);
         id3 = data[6];
         unitCode = data[7];
-
-        command = Commands.STOP;
-
-        for (Commands loCmd : Commands.values()) {
-            if (loCmd.toByte() == data[8]) {
-                command = loCmd;
-                break;
-            }
-        }
+        command = Commands.fromByte(data[8]);
         signalLevel = (byte) ((data[12] & 0xF0) >> 4);
 
     }

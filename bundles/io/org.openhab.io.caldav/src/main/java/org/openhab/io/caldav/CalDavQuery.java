@@ -27,6 +27,7 @@ public class CalDavQuery {
     private Sort sort;
     private String filterName;
     private List<String> filterCategory;
+    private boolean filterCategoryMatchesAny = false;
 
     public CalDavQuery() {
         super();
@@ -90,6 +91,14 @@ public class CalDavQuery {
 
     public void setSort(Sort sort) {
         this.sort = sort;
+    }
+
+    public void setFilterCategoryMatchesAny(boolean filterCategoryMatchesAny) {
+        this.filterCategoryMatchesAny = filterCategoryMatchesAny;
+    }
+
+    public boolean getFilterCategoryMatchesAny() {
+        return filterCategoryMatchesAny;
     }
 
     public String getFilterName() {

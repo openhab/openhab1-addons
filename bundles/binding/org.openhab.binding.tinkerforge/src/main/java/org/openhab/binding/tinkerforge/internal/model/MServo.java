@@ -20,27 +20,33 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getDeviceType <em>Device Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getVelocity <em>Velocity</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getAcceleration <em>Acceleration</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getMaxPosition <em>Max Position</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getMinPosition <em>Min Position</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPulseWidthMin <em>Pulse Width Min</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPulseWidthMax <em>Pulse Width Max</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPulseWidthMin <em>Pulse Width
+ *        Min</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPulseWidthMax <em>Pulse Width
+ *        Max</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPeriod <em>Period</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getOutputVoltage <em>Output Voltage</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getTargetPosition <em>Target Position</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getOutputVoltage <em>Output
+ *        Voltage</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getTargetPosition <em>Target
+ *        Position</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMServo()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor org.openhab.binding.tinkerforge.internal.model.MSubDevice<org.openhab.binding.tinkerforge.internal.model.MBrickServo> org.openhab.binding.tinkerforge.internal.model.MoveActor org.openhab.binding.tinkerforge.internal.model.SetPointActor<org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MBrickServo>
+ *        org.openhab.binding.tinkerforge.internal.model.MoveActor
+ *        org.openhab.binding.tinkerforge.internal.model.SetPointActor
+ *        <org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration>"
  * @generated
  */
 public interface MServo extends MSensor<DecimalValue>, ProgrammableSwitchActor, MSubDevice<MBrickServo>, MoveActor,
@@ -81,8 +87,8 @@ public interface MServo extends MSensor<DecimalValue>, ProgrammableSwitchActor, 
     int getVelocity();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getVelocity <em>Velocity</em>
-     * }' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getVelocity
+     * <em>Velocity</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -141,8 +147,8 @@ public interface MServo extends MSensor<DecimalValue>, ProgrammableSwitchActor, 
     Short getMaxPosition();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getMaxPosition
-     * <em>Max Position</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getMaxPosition <em>Max
+     * Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -171,8 +177,8 @@ public interface MServo extends MSensor<DecimalValue>, ProgrammableSwitchActor, 
     Short getMinPosition();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getMinPosition
-     * <em>Min Position</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getMinPosition <em>Min
+     * Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -201,8 +207,8 @@ public interface MServo extends MSensor<DecimalValue>, ProgrammableSwitchActor, 
     int getPulseWidthMin();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPulseWidthMin
-     * <em>Pulse Width Min</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPulseWidthMin <em>Pulse
+     * Width Min</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -231,8 +237,8 @@ public interface MServo extends MSensor<DecimalValue>, ProgrammableSwitchActor, 
     int getPulseWidthMax();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPulseWidthMax
-     * <em>Pulse Width Max</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPulseWidthMax <em>Pulse
+     * Width Max</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -291,8 +297,8 @@ public interface MServo extends MSensor<DecimalValue>, ProgrammableSwitchActor, 
     int getOutputVoltage();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getOutputVoltage
-     * <em>Output Voltage</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getOutputVoltage <em>Output
+     * Voltage</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -320,8 +326,8 @@ public interface MServo extends MSensor<DecimalValue>, ProgrammableSwitchActor, 
     short getTargetPosition();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getTargetPosition
-     * <em>Target Position</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getTargetPosition <em>Target
+     * Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

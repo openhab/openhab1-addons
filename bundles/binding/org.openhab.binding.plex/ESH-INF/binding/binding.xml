@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="plex"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>Plex Binding</name>
+    <description>The Plex Binding connects to a Plex Media Server to track the state of multiple clients.</description>
+    <author>Jeroen Idserda</author>
+
+    <service-id>org.openhab.plex</service-id>
+
+    <config-description>
+        <parameter name="host" type="text" required="true">
+            <label>Host</label>
+            <description>IP address or hostname of the Plex server</description>
+        </parameter>
+        <parameter name="port" type="integer">
+            <label>Port</label>
+            <description>Port that the Plex server is running on</description>
+            <default>32400</default>
+        </parameter>
+        <parameter name="refresh" type="integer">
+            <label>Refresh</label>
+            <description>Refresh interval in ms, only used for polling online/offline status of clients.</description>
+            <default>5000</default>
+            <unitLabel>ms</unitLabel>
+        </parameter>
+        <parameter name="username" type="text">
+            <label>Username</label>
+            <description>If you're using Plex Home you need to supply the username and password of your Plex account here. If you don't want to enter your credentials you can also directly set your account token below instead.</description>
+        </parameter>
+        <parameter name="password" type="text">
+            <context>password</context>
+            <label>Password</label>
+            <description>Password</description>
+        </parameter>
+        <parameter name="token" type="text">
+            <label>Token</label>
+            <description>Account token, use instead of username/password when using Plex Home</description>
+        </parameter>
+    </config-description>
+</binding:binding>

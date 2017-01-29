@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.prefs.Preferences;
 
 import org.openhab.binding.nest.NestBindingProvider;
@@ -51,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * @author John Cocula
  * @since 1.7.0
  */
-public class NestBinding extends AbstractActiveBinding<NestBindingProvider>implements ManagedService {
+public class NestBinding extends AbstractActiveBinding<NestBindingProvider> implements ManagedService {
 
     private static final String DEFAULT_USER_ID = "DEFAULT_USER";
 
@@ -448,14 +449,14 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
 
             // to override the default refresh interval one has to add a
             // parameter to openhab.cfg like nest:refresh=120000
-            String refreshIntervalString = (String) config.get(CONFIG_REFRESH);
+            String refreshIntervalString = Objects.toString(config.get(CONFIG_REFRESH), null);
             if (isNotBlank(refreshIntervalString)) {
                 refreshInterval = Long.parseLong(refreshIntervalString);
             }
 
             // to override the default HTTP request timeout one has to add a
             // parameter to openhab.cfg like nest:timeout=20000
-            String timeoutString = (String) config.get(CONFIG_TIMEOUT);
+            String timeoutString = Objects.toString(config.get(CONFIG_TIMEOUT), null);
             if (isNotBlank(timeoutString)) {
                 AbstractRequest.setHttpRequestTimeout(Integer.parseInt(timeoutString));
             }
@@ -480,7 +481,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
                     credentialsCache.put(userid, credentials);
                 }
 
-                String value = (String) config.get(configKey);
+                String value = Objects.toString(config.get(configKey), null);
 
                 if (CONFIG_CLIENT_ID.equals(configKeyTail)) {
                     credentials.clientId = value;
