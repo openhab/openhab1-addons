@@ -308,7 +308,7 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
             return Collections.emptyList();
         }
 
-        Class<? extends DynamoDBItem<?>> dtoClass = AbstractDynamoDBItem.getDynamoItemClass(item.getClass());
+        Class<DynamoDBItem<?>> dtoClass = AbstractDynamoDBItem.getDynamoItemClass(item.getClass());
         String tableName = tableNameResolver.fromClass(dtoClass);
         DynamoDBMapper mapper = getDBMapper(tableName);
         logger.debug("item {} (class {}) will be tried to query using dto class {} from table {}", itemName,

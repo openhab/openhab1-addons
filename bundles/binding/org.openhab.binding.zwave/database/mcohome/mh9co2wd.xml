@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>MH9-CO2-WD</Model>
+    <Label lang="en">CO2 Monitor Air quality detector</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x9E</id>             <!-- SENSOR_CONFIGURATION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Notification Threshold</Label>
+            <Type>short</Type>
+            <Default>1000</Default>
+            <Minimum>1</Minimum>
+            <Maximum>2000</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[CO2 Notification Threshold
+<p>Sets the CO2 notification threshold for association group 1.</p> <p>When the detected CO2 value is higher than the setting value, the device will send a (CO2 Detected Event) report to the Group 1. And this report will keep sending every 30 sec until the detected value is lower than the setting value.</p>
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Notification</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Gateway report</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>

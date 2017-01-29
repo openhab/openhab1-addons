@@ -74,7 +74,6 @@ public class KM200ErrorService {
                 }
             } catch (Exception e) {
                 logger.error("Error in parsing of the errorlist: {}", e.getMessage());
-                e.printStackTrace();
             }
         }
     }
