@@ -1,80 +1,45 @@
-# Introduction
+# Visonic Powermax Binding
 
 Visonic produces the Powermax alarm panel series (PowerMax, PowerMax+, PowerMaxExpress, PowerMaxPro and PowerMaxComplete) and the Powermaster alarm series (PowerMaster 10 and PowerMaster 30). This binding allows you to control the alarm panel (arm/disarm) and allows you to use the Visonic sensors (movement, door contact, ...) within openHAB.
 
 The PowerMax provides support for a serial interface that can be connected to the machine running openHAB. The serial interface is not installed by default but can be ordered from any PowerMax vendor (called the Visonic RS-232 Adaptor Kit).
 
 Visonic does not provide a specification of the RS232 protocol and, thus, the binding uses the available protocol specification given at the [​domoticaforum](http://www.domoticaforum.eu/viewtopic.php?f=68&t=6581).
+
 The binding implemntation of this protocol is largely inspired by the [Vera plugin](http://code.mios.com/trac/mios_visonic-powermax).
 
-For installation of the binding, please see Wiki page [[Bindings]].
+## Binding Configuration
 
-# Binding configuration
+This binding can be configured in the file `services/powermax.cfg`.
 
-Configuration is done in the openhab.cfg file (in the folder `${openhab_home}/configurations`):
-
-    ################################### PowerMax Binding ##################################
-
-    # the serial port to use for connecting to the PowerMax alarm system
-    # e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux
-    # Required setting if using a serial connection
-    #powermax:serialPort=COM1
-
-    # the IP address and port to use for connecting to the PowerMax alarm system
-    # Required settings if using a TCP connection
-    #powermax:ip=
-    #powermax:tcpPort=
-
-    # The delay in minutes to reset a motion detection (optional, defaults to 3)
-    #powermax:motionOffDelay=3
-
-    # Enable or disable arming the PowerMax alarm system from openHAB
-    # For security reason, this feature is disabled by default
-    # (optional, defaults to false)
-    #powermax:allowArming=false
-
-    # Enable or disable disarming the PowerMax alarm system from openHAB
-    # For security reason, this feature is disabled by default
-    # (optional, defaults to false)
-    #powermax:allowDisarming=false
-
-    # The PIN code to use for arming/disarming the PowerMax alarm system from openHAB
-    # Not required except when Powerlink mode cannot be used
-    #powermax:pinCode=
-
-    # Force the standard mode rather than trying using the Powerlink mode
-    # (optional, defaults to false)
-    #powermax:forceStandardMode=false
-
-    # Define the panel type
-    # Value must be one of these values: PowerMax, PowerMax+, PowerMaxPro,
-    # PowerMaxComplete, PowerMaxProPart, PowerMaxCompletePart, PowerMaxExpress,
-    # PowerMaster10, PowerMaster30
-    # Only required when forcing the standard mode
-    # (optional, defaults to PowerMaxPro)
-    #powermax:panelType=PowerMaxPro
-
-    # Automatic sync time at openHAB startup (optional, defaults to false)
-    #powermax:autoSyncTime=false
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| serialPort |       | if connecting via serial port | serial port to use for connecting to the PowerMax alarm system; e.g. `COM1` for Windows and `/dev/ttyS0` or `/dev/ttyUSB0` for Linux |
+| ip       |         | if connecting using a network connection  | the IP address to use for connecting to the PowerMax alarm system |
+| tcpPort  |         | if connecting using a network connection  | the TCP port number to use for connecting to the PowerMax alarm system |
+| motionOffDelay |  3 |   No    | delay in minutes to reset a motion detection |
+| allowArming | false |   No    | enable (set to `true`) or disable (set to `false`) arming the PowerMax alarm system from openHAB. For security reason, this feature is disabled by default. |
+| allowDisarming | false | No   | enable (set to `true`) or disable (set to `false`) disarming the PowerMax alarm system from openHAB. For security reason, this feature is disabled by default. |
+| pinCode  |         | when Powerlink mode cannot be used | PIN code to use for arming/disarming the PowerMax alarm system from openHAB |
+| forceStandardMode | false | No  | force the standard mode rather than trying using the Powerlink mode.  In this mode, the binding will not download the alarm panel setup and so the binding will not know what zones you have setup or what is your PIN code for example. |
+| panelType | PowerMaxPro | when forcing the standard mode | must be one of PowerMax, PowerMax+, PowerMaxPro, PowerMaxComplete, PowerMaxProPart, PowerMaxCompletePart, PowerMaxExpress, PowerMaster10, PowerMaster30
+| autoSyncTime | false |   No    | automatic sync time at openHAB startup |
 
 Some notes:
-* at least you need to specify either a serial connection through the setting `powermax:serialPort` or a TCP connection through the settings `powermax:ip` and `powermax:tcpPort`.
+
 * On Linux, you may get an error stating the serial port cannot be opened when the Powermax plugin tries to load.  You can get around this by adding the `openhab` user to the `dialout` group like this: `usermod -a -G dialout openhab`.
-* Also on Linux you may have issues with the USB if using two serial USB devices e.g. Powermax and RFXcom . See the wiki page for more on symlinking the USB ports [[symlinks]]
-* For Powerlink mode to work the enrollment procedure has to be followed. If you don't enroll the Powerlink on the PowerMax the binding will operate in Standard mode, and if enrolled in Powerlink mode. On the newer software versions of the PowerMax the Powerlink enrollment is automatic, and the binding should only operate in 'Powerlink' mode (if enrollment is successful).
-* You can force the binding to use the Standard mode. In this mode, the binding will not download the alarm panel setup and so the binding will not know what zones you have setup or what is your PIN code for example.
+* Also on Linux you may have issues with the USB if using two serial USB devices e.g. Powermax and RFXcom. See the wiki page for more on symlinking the USB ports [](https://github.com/openhab/openhab1-addons/wiki/symlinks).
+* For Powerlink mode to work, the enrollment procedure has to be followed. If you don't enroll the Powerlink on the PowerMax the binding will operate in Standard mode, and if enrolled in Powerlink mode. On the newer software versions of the PowerMax the Powerlink enrollment is automatic, and the binding should only operate in 'Powerlink' mode (if enrollment is successful).
 
-# Item Binding Configuration
-
-In order to bind an item to the alarm system, you need to provide configuration settings. The easiest way to do so is to add some binding information in your item file (in the folder configurations/items`).
+## Item Configuration
 
 General format is:
 
-    powermax="<selector>[:<parameter>]"
+```
+powermax="<selector>[:<parameter>]"
+```
 
-A `<selector>` is required; the `<parmater>` is only required for few selectors.
-
-Full list of binding items:
+where `<selector>` is required and from the table below, and `<parmater>` is only required for a few selectors.
 
 | Selector | Parameter | item type | purpose | changeable |
 | --- | --- | --- | --- | --- |
@@ -101,15 +66,19 @@ Full list of binding items:
 | `PGM_status` | - | Switch | PGM switch ON or OFF | yes (ON or OFF)
 | `X10_status` | device number (first is 1) | String or Switch | X10 device ON or OFF | yes (possible values are ON, OFF, DIM and BRIGHT)
 
-# Binding actions
+### Actions
 
 Defining such an item
 
-    String Powermax_command "Command [%s]" {powermax="command", autoupdate="false"}
+```
+String Powermax_command "Command [%s]" {powermax="command", autoupdate="false"}
+```
 
 You can trigger an action through a call in a rule:
 
-    Powermax_command.sendCommand("<command>")
+```
+Powermax_command.sendCommand("<command>")
+```
 
 Here are the available actions:
 
@@ -120,9 +89,11 @@ Here are the available actions:
 | `log_setup` | Log information about the current panel setup
 | `help_items` | Log information about how to create items and sitemap
 
-# Items example
+## Examples
 
 Here is an example of what items you can define (only zone 1 and X10 device 1 are considered in this example):
+
+items/powermaxdemo.items
 
 ```
 Group GPowerMax "Alarm"
@@ -162,7 +133,7 @@ Switch Powermax_X10_1_status "X10 1 status" (GPowerMax) {powermax="X10_status:1"
 String Powermax_X10_1_status2 "X10 1 status [%s]" (GPowerMax) {powermax="X10_status:1", autoupdate="false"}
 ```
 
-And here is an example of what you could add in your sitemap:
+sitemaps/powermaxdemo.sitemap.fragment
 
 ```
 Text label="Security" icon="lock" {
@@ -174,8 +145,9 @@ Text label="Security" icon="lock" {
 }
 ```
 
-# Limitations
-- Visonic does not provide a specification of the RS232 protocol and, thus, use this binding at your own risk.
-- The binding is not able to arm/disarm a particular partition.
-- The compatibility of the binding with the Powermaster alarm panel series is probably only partial.
-- The TCP connection is implemented but was not tested.
+## Limitations
+
+* Visonic does not provide a specification of the RS232 protocol and, thus, use this binding at your own risk.
+* The binding is not able to arm/disarm a particular partition.
+* The compatibility of the binding with the Powermaster alarm panel series is probably only partial.
+* The TCP connection is implemented but was not tested.
