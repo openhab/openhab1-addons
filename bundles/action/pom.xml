@@ -39,6 +39,7 @@
     <module>org.openhab.action.telegram</module>
     <module>org.openhab.action.pebble</module>
     <module>org.openhab.action.satel</module>
+    <module>org.openhab.action.slack</module>
   </modules>
 
 </project>

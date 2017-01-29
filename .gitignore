@@ -18,6 +18,11 @@ distribution/openhabhome/etc/rrd4j/*.rrd
 features/*/src/main/history
 itemDump.txt
 
+#Eclipse files
+**/.classpath
+**/.project
+**/.settings
+
 # IntelliJ files
 **/.idea
 **/*.iml
