@@ -8,7 +8,12 @@
  */
 package org.openhab.binding.simplebinary.internal;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -25,6 +30,7 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +65,36 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
     private Map<String, SimpleBinaryBindingConfig> items = new HashMap<String, SimpleBinaryBindingConfig>();
     // info item configs
     private Map<String, SimpleBinaryInfoBindingConfig> infoItems = new HashMap<String, SimpleBinaryInfoBindingConfig>();
+
+    /**
+     * used to store events that we have sent ourselves; we need to remember them for not reacting to them
+     */
+    public static class Update {
+        private String itemName;
+        private State state;
+
+        Update(final String itemName, final State state) {
+            this.itemName = itemName;
+            this.state = state;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || !(o instanceof Update)) {
+                return false;
+            }
+            return (this.itemName == null ? ((Update) o).itemName == null : this.itemName.equals(((Update) o).itemName))
+                    && (this.state == null ? ((Update) o).state == null : this.state.equals(((Update) o).state));
+        }
+
+        @Override
+        public int hashCode() {
+            return (this.itemName == null ? 0 : this.itemName.hashCode())
+                    ^ (this.state == null ? 0 : this.state.hashCode());
+        }
+    }
+
+    public static List<Update> ignoreEventList = Collections.synchronizedList(new ArrayList<Update>());
 
     public SimpleBinaryBinding() {
     }
@@ -366,36 +402,16 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
         // retrieve item config
         SimpleBinaryBindingConfig config = items.get(itemName);
 
-        if (config != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Config: {}", config);
-            }
-
-            config.setState(command);
-
-            // through all devices
-            for (DeviceConfig d : config.devices) {
-                // send to output devices only
-                if (d.dataDirection == DataDirectionFlow.INPUT) {
-                    continue;
-                }
-
-                SimpleBinaryGenericDevice device = devices.get(d.deviceName);
-
-                if (device != null) {
-                    try {
-                        device.sendData(itemName, command, config, d);
-                    } catch (Exception ex) {
-                        logger.error("internalReceiveCommand(): line:{}|method:{}",
-                                ex.getStackTrace()[0].getLineNumber(), ex.getStackTrace()[0].getMethodName());
-                    }
-                } else {
-                    logger.warn("No device for item: {}", itemName);
-                }
-            }
-        } else {
+        if (config == null) {
             logger.warn("No config for item: {}", itemName);
+            return;
         }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Config: {}", config);
+        }
+
+        updateState(config, command);
     }
 
     /**
@@ -406,8 +422,78 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
         // the code being executed when a state was sent on the openHAB
         // event bus goes here. This method is only called if one of the
         // BindingProviders provide a binding for the given 'itemName'.
-        if (logger.isDebugEnabled()) {
-            logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
+        if (logger.isTraceEnabled()) {
+            logger.trace("internalReceiveUpdate({},{}) is called!", itemName, newState);
+        }
+
+        if (!isEcho(itemName, newState)) {
+            SimpleBinaryBindingConfig config = items.get(itemName);
+            if (config == null) {
+                return;
+            }
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("internalReceiveUpdate({},{}) - updating binding item!", itemName, newState);
+            }
+            updateState(config, newState);
+        }
+    }
+
+    /**
+     * Check if item update is not from this binding
+     *
+     * @param itemName
+     *            Item name
+     * @param state
+     *            Item state
+     * @return
+     *         True if update came from this binding
+     */
+    private boolean isEcho(String itemName, State state) {
+        if (ignoreEventList.remove(new Update(itemName, state))) {
+            logger.trace("This received event (item='{}', state='{}') was post by this binding -> ignore!", itemName,
+                    state.toString());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Update binding item value
+     *
+     * @param itemConfig
+     *            Item specific configuration
+     * @param state
+     *            Item state
+     */
+    private void updateState(SimpleBinaryBindingConfig itemConfig, Type state) {
+        itemConfig.setState(state);
+
+        // through all devices
+        for (DeviceConfig d : itemConfig.devices) {
+            // send to output devices only
+            if (d.dataDirection == DataDirectionFlow.INPUT) {
+                continue;
+            }
+
+            SimpleBinaryGenericDevice device = devices.get(d.deviceName);
+
+            if (device != null) {
+                try {
+                    device.sendData(itemConfig.item.getName(), state, itemConfig, d);
+                } catch (Exception ex) {
+                    logger.error("updateState(): file:{}|line:{}|method:{}|message:{}",
+                            ex.getStackTrace()[0].getFileName(), ex.getStackTrace()[0].getLineNumber(),
+                            ex.getStackTrace()[0].getMethodName(), ex.getMessage());
+                    StringWriter sw = new StringWriter();
+                    PrintWriter pw = new PrintWriter(sw);
+                    ex.printStackTrace(pw);
+                    logger.error(sw.toString());
+                }
+            } else {
+                logger.warn("No device for item: {}", itemConfig.item.getName());
+            }
         }
     }
 

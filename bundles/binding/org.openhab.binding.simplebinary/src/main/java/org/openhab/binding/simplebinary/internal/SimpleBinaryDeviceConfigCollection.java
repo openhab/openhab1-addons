@@ -19,6 +19,7 @@ import org.openhab.binding.simplebinary.internal.SimpleBinaryGenericBindingProvi
  * @since 1.9.0
  */
 public class SimpleBinaryDeviceConfigCollection extends LinkedList<DeviceConfig> {
+    private static final long serialVersionUID = -6827894112097302707L;
 
     @Override
     public boolean add(DeviceConfig e) {

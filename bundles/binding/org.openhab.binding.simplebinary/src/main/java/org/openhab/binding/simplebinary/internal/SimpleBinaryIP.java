@@ -14,6 +14,7 @@ import java.net.StandardSocketOptions;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
@@ -46,9 +47,6 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
     private AsynchronousServerSocketChannel listener;
     /** connected clients collection */
     private SimpleBinaryIPChannelInfoCollection channels;
-
-    // ** communication timeout **/
-    private static final int DEFAULT_COMMUNICATION_TIMEOUT = 30000;
 
     /**
      * Constructor
@@ -145,11 +143,6 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                         @Override
                         public void completed(AsynchronousSocketChannel channel,
                                 SimpleBinaryIPChannelInfoCollection a) {
-
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("New incoming connection. Thread={}", Thread.currentThread().getId());
-                            }
-
                             // get ready for next connection
                             listener.accept(a, this);
                             // allocate receive buffer
@@ -161,18 +154,17 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                                         @Override
                                         public void timeoutEvent(SimpleBinaryIPChannelInfo chInfo) {
 
-                                            logger.warn("Device{} - Receiving data timeouted. ", chInfo.getDeviceId());
+                                            logger.warn("TCP server - Device{} - Receiving data timeouted. Thread={}",
+                                                    chInfo.getDeviceId(), Thread.currentThread().getId());
 
-                                            devicesStates.setDeviceState(deviceName, chInfo.getDeviceId(),
-                                                    DeviceStates.NOT_RESPONDING);
-
-                                            processCommandQueue(chInfo.getDeviceId());
+                                            closeChannel(chInfo);
                                         }
                                     });
+                            // channel is ready to write
+                            chInfo.writeReady.set(true);
 
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("New Channel opened:{}", chInfo.getIp());
-                            }
+                            logger.info("TCP server - New device connected. IP={}. Thread={}", chInfo.getIp(),
+                                    Thread.currentThread().getId());
 
                             // callback read
                             channel.read(buffer, chInfo, new CompletionHandler<Integer, SimpleBinaryIPChannelInfo>() {
@@ -180,27 +172,16 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                                 public void completed(Integer result, final SimpleBinaryIPChannelInfo chInfo) {
 
                                     if (logger.isDebugEnabled()) {
-                                        logger.debug("Channel {} - read result = {}", chInfo.getIp(), result);
+                                        logger.debug("TCPserver - Channel {} - read result = {}", chInfo.getIp(),
+                                                result);
                                     }
 
                                     if (result < 0) {
                                         if (logger.isDebugEnabled()) {
-                                            logger.debug("Disconnected: {}", chInfo.getIp());
+                                            logger.debug("TCPserver - Channel {} disconnected", chInfo.getIp());
                                         }
 
-                                        try {
-                                            chInfo.getChannel().close();
-                                        } catch (IOException e) {
-                                            logger.error("Device {}/{} channel close exception: {}",
-                                                    chInfo.getDeviceId(), chInfo.getIp(), e.getMessage());
-                                        } finally {
-                                            chInfo.closed();
-                                            logger.warn("Device {}/{} was disconnected", chInfo.getDeviceId(),
-                                                    chInfo.getIp());
-                                        }
-
-                                        devicesStates.setDeviceState(deviceName, chInfo.getDeviceId(),
-                                                DeviceStates.NOT_RESPONDING);
+                                        closeChannel(chInfo);
 
                                         return;
                                     }
@@ -221,7 +202,7 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                                             int r = verifyDataOnly(inBuffer);
 
                                             if (logger.isDebugEnabled()) {
-                                                logger.debug("Verify incoming data result: {}", r);
+                                                logger.debug("TCPserver - Verify incoming data result: {}", r);
                                             }
 
                                             if (r >= 0) {
@@ -229,7 +210,7 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                                                 if (chInfo.hasIdConfigured() && !chInfo.isIpLocked()
                                                         && chInfo.getDeviceIdConfigured() != r) {
                                                     logger.error(
-                                                            "Device with IP {} has mismatch between configured({}) and connected({}) device ID's. "
+                                                            "TCPserver - Device with IP {} has mismatch between configured({}) and connected({}) device ID's. "
                                                                     + "Remove it from configuration, change device ID or mark it in configuration as locked.",
                                                             chInfo.getIp(), chInfo.getDeviceIdConfigured(), r);
 
@@ -241,16 +222,16 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                                                     return;
                                                 } else if (!chInfo.assignDeviceId(r)) {
                                                     logger.error(
-                                                            "DeviceID {} is already used by another connected device. This device will be ignored.",
+                                                            "TCPserver - DeviceID {} is already used by another connected device. This device will be ignored.",
                                                             r);
                                                     return;
                                                 } else if (chInfo.hasIpMismatch()) {
                                                     logger.warn(
-                                                            "DeviceID {} has mismatch between configured and connected IP addresses.",
+                                                            "TCPserver - DeviceID {} has mismatch between configured and connected IP addresses.",
                                                             r);
                                                 } else if (chInfo.isIpLocked() && chInfo.hasIdMismatch()) {
                                                     logger.warn(
-                                                            "Device with IP {} has mismatch between configured and connected device ID's.",
+                                                            "TCPserver - Device with IP {} has mismatch between configured and connected device ID's.",
                                                             chInfo.getIp());
                                                 }
                                             }
@@ -258,8 +239,6 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
 
                                         // look what is in income raw data
                                         int r = processData(inBuffer, chInfo.getLastSentData());
-                                        // clear last data
-                                        chInfo.setLastSentData(null);
 
                                         if (r >= 0 || r == ProcessDataResult.INVALID_CRC
                                                 || r == ProcessDataResult.BAD_CONFIG
@@ -277,32 +256,41 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                                     }
 
                                     if (logger.isDebugEnabled()) {
-                                        logger.debug("Channel {}/{} - read finished", chInfo.getDeviceId(),
+                                        logger.debug("TCPserver - Channel {}/{} - read finished", chInfo.getDeviceId(),
                                                 chInfo.getIp());
                                     }
 
                                     // ready for new data
                                     chInfo.getChannel().read(buffer, chInfo, this);
+
+                                    processCommandQueue(chInfo.getDeviceId());
                                 }
 
                                 @Override
                                 public void failed(Throwable t, SimpleBinaryIPChannelInfo chInfo) {
-                                    logger.warn(t.getMessage());
+                                    if (t instanceof AsynchronousCloseException) {
+                                        logger.debug("TCPserver - " + t.toString());
+                                    } else {
+                                        logger.warn("TCPserver - read exception: " + t.toString());
+                                        closeChannel(chInfo);
+                                    }
                                 }
                             });
 
-                            logger.debug("{} - Channel {}/{} - sendAllItemsStates()", this, chInfo.getDeviceId(),
-                                    chInfo.getIp());
-                            // send all items state now
-                            sendAllItemsStates();
-
-                            // look for data to send
-                            processCommandQueue(chInfo.getDeviceId());
+                            // "Hi" message to obtain device ID was not delivered?
+                            if (chInfo.getDeviceId() < 0) {
+                                logger.warn(
+                                        "{} - Channel IP={} - device does not have assigned ID. Configure device ID in binding configuration or implement sendHi() message into device. (sendHi must be called when device is connected) ",
+                                        this.toString(), chInfo.getIp());
+                            } else {
+                                // look for data to send
+                                processCommandQueue(chInfo.getDeviceId());
+                            }
                         }
 
                         @Override
                         public void failed(Throwable t, SimpleBinaryIPChannelInfoCollection a) {
-                            logger.warn(t.getMessage());
+                            logger.warn("TCPserver - " + t.getMessage());
                         }
                     });
 
@@ -359,13 +347,14 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
     }
 
     /*
-     * Can send if specific device does not wait for answer.
+     * Can send if specific device does not wait for answer or is ready to write.
      */
     @Override
     protected boolean canSend(int devId) {
         for (SimpleBinaryIPChannelInfo c : channels) {
             if (c.getDeviceId() == devId) {
-                return !(c.waitingForAnswer.get() || c.getChannel() == null || !c.getChannel().isOpen());
+                return !(c.waitingForAnswer.get() || c.getChannel() == null || !c.getChannel().isOpen()
+                        || !c.writeReady.get());
             }
         }
 
@@ -388,29 +377,25 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
         SimpleBinaryIPChannelInfo chInfo = channels.getById(data.getDeviceId());
 
         if (chInfo == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("{} - Device {}: No channel found.", this.toString(), data.getDeviceId());
-            }
+            logger.warn("{} - Device {}: No channel found.", this.toString(), data.getDeviceId());
             return false;
         }
 
         if (chInfo.getChannel() == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("{} - Device {}: Channel not ready.", this.toString(), data.getDeviceId());
-            }
+            logger.warn("{} - Device {}: Channel not ready.", this.toString(), data.getDeviceId());
             return false;
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("{} - data: {}", this.toString(),
-                    SimpleBinaryProtocol.arrayToString(data.getData(), data.getData().length));
+        if (!chInfo.writeReady.compareAndSet(true, false)) {
+            logger.warn("{} - Device {}: Write into channel is not ready.", this.toString(), data.getDeviceId());
+            return false;
         }
 
         if (!chInfo.compareAndSetWaitingForAnswer()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("{} - Sending data to device {} discarted. Another send/wait is processed.",
-                        this.toString(), data.getDeviceId());
-            }
+            // if (logger.isDebugEnabled()) {
+            logger.info("{} - Sending data to device {} discarted. Another send/wait is processed.", this.toString(),
+                    data.getDeviceId());
+            // }
             return false;
         } else {
             // write string to tcp channel
@@ -421,6 +406,7 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
             buffer.flip();
 
             chInfo.setWriteBuffer(buffer);
+            chInfo.setLastSentData(data);
 
             // write into device
             chInfo.getChannel().write(buffer, chInfo, new CompletionHandler<Integer, SimpleBinaryIPChannelInfo>() {
@@ -428,55 +414,56 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                 public void completed(Integer result, final SimpleBinaryIPChannelInfo chInfo) {
 
                     if (result < 0) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Disconnected:{}", chInfo.getIp());
-                        }
+                        // if (logger.isDebugEnabled()) {
+                        logger.info("TCPserver -  Channel {} disconnected", chInfo.getIp());
+                        // }
 
-                        try {
-                            chInfo.getChannel().close();
-                        } catch (IOException e) {
-                            logger.error("Device {}/{} channel close exception: {}", chInfo.getDeviceId(),
-                                    chInfo.getIp(), e.getMessage());
-                        } finally {
-                            chInfo.closed();
-                            logger.warn("Device {}/{} was disconnected", chInfo.getDeviceId(), chInfo.getIp());
-                        }
+                        closeChannel(chInfo);
 
                         return;
                     }
 
-                    if (chInfo.getBuffer().remaining() > 0) {
+                    if (chInfo.getWriteBuffer().remaining() > 0) {
+                        logger.info("TCPserver - Device {}/{} - Write rest {}/{}", chInfo.getDeviceId(), chInfo.getIp(),
+                                chInfo.getWriteBuffer().remaining(), chInfo.getWriteBuffer().limit());
                         chInfo.getChannel().write(chInfo.getWriteBuffer(), chInfo, this);
                     } else {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("{} - Write finished", this);
+                            logger.debug("TCPserver - Device {}/{} - Write finished", chInfo.getDeviceId(),
+                                    chInfo.getIp());
                         }
                         chInfo.clearWriteBuffer();
+
+                        chInfo.writeReady.set(true);
                     }
                 }
 
                 @Override
                 public void failed(Throwable t, SimpleBinaryIPChannelInfo chInfo) {
-                    logger.warn(t.getMessage());
+                    logger.warn("TCPserver - " + t.toString());
 
-                    try {
-                        chInfo.getChannel().close();
-                    } catch (IOException e) {
-                        logger.error("Device {}/{} channel close exception: {}", chInfo.getDeviceId(), chInfo.getIp(),
-                                e.getMessage());
-                    } finally {
-                        chInfo.closed();
-                        logger.warn("Device {}/{} was disconnected", chInfo.getDeviceId(), chInfo.getIp());
-
-                        devicesStates.setDeviceState(deviceName, chInfo.getDeviceId(), DeviceStates.NOT_RESPONDING);
-                    }
+                    closeChannel(chInfo);
                 }
             });
-
-            chInfo.setLastSentData(data);
         }
 
         return true;
+    }
+
+    private void closeChannel(final SimpleBinaryIPChannelInfo chInfo) {
+        try {
+            if (chInfo.getChannel() != null && chInfo.getChannel().isOpen()) {
+                chInfo.getChannel().close();
+            }
+        } catch (Exception e) {
+            logger.error("() - Device {}/{} channel close exception: {}", toString(), chInfo.getDeviceId(),
+                    chInfo.getIp(), e.getMessage());
+        } finally {
+            chInfo.closed();
+            logger.info("() -Device {}/{} was disconnected", toString(), chInfo.getDeviceId(), chInfo.getIp());
+        }
+
+        devicesStates.setDeviceState(deviceName, chInfo.getDeviceId(), DeviceStates.NOT_RESPONDING);
     }
 
     /**

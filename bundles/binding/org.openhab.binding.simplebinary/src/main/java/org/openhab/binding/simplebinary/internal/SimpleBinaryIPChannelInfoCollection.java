@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.9.0
  */
 public class SimpleBinaryIPChannelInfoCollection extends LinkedList<SimpleBinaryIPChannelInfo> {
+    private static final long serialVersionUID = 8037598025330106665L;
     private final SimpleBinaryDeviceStateCollection deviceStates;
     private final String deviceName;
 

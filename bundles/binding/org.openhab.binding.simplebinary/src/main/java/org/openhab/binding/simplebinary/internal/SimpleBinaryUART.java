@@ -79,6 +79,8 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
 
     /** flag waiting */
     protected AtomicBoolean waitingForAnswer = new AtomicBoolean(false);
+    /** flag reading **/
+    protected AtomicBoolean readingData = new AtomicBoolean(false);
 
     /**
      * Constructor
@@ -116,7 +118,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
     @Override
     public Boolean open() {
         if (logger.isDebugEnabled()) {
-            logger.debug("Port {} - Opening", this.deviceID);
+            logger.debug("{} - Opening", this.toString());
         }
 
         portState.setState(PortStates.CLOSED);
@@ -134,7 +136,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
         } catch (NoSuchPortException ex) {
             portState.setState(PortStates.NOT_EXIST);
 
-            logger.warn("Port {} not found", this.deviceID);
+            logger.warn("{} not found", this.toString());
             logger.warn("Available ports: " + getCommPortListString());
 
             return false;
@@ -147,7 +149,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
             } catch (PortInUseException e) {
                 portState.setState(PortStates.NOT_AVAILABLE);
 
-                logger.error("Port {} is in use", this.deviceID);
+                logger.error("{} is in use", this.toString());
 
                 this.close();
                 return false;
@@ -156,7 +158,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
             try {
                 inputStream = serialPort.getInputStream();
             } catch (IOException e) {
-                logger.error("Port {} exception: {}", this.deviceID, e.getMessage());
+                logger.error("{} exception: {}", this.toString(), e.getMessage());
 
                 this.close();
                 return false;
@@ -166,7 +168,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                 // get the output stream
                 outputStream = serialPort.getOutputStream();
             } catch (IOException e) {
-                logger.error("Port {} exception:{}", this.deviceID, e.getMessage());
+                logger.error("{} exception:{}", this.toString(), e.getMessage());
 
                 this.close();
                 return false;
@@ -175,7 +177,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
             try {
                 serialPort.addEventListener(this);
             } catch (TooManyListenersException e) {
-                logger.error("Port {} exception:{}", this.deviceID, e.getMessage());
+                logger.error("{} exception:{}", this.toString(), e.getMessage());
 
                 this.close();
                 return false;
@@ -194,7 +196,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                         SerialPort.PARITY_NONE);
                 serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
             } catch (UnsupportedCommOperationException e) {
-                logger.error("Port {} exception: {}", this.deviceID, e.getMessage());
+                logger.error("{} exception: {}", this.toString(), e.getMessage());
 
                 this.close();
                 return false;
@@ -202,7 +204,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Port {} - opened", this.deviceID);
+            logger.debug("{} - opened", this.toString());
         }
 
         portState.setState(PortStates.LISTENING);
@@ -249,7 +251,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
      * Reconnect device
      */
     private void reconnect() {
-        logger.info("Port {}: Trying to reconnect", this.deviceID);
+        logger.info("{}: Trying to reconnect", this.toString());
 
         close();
         open();
@@ -280,8 +282,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
     @Override
     protected boolean sendDataOut(SimpleBinaryItemData data) {
         if (!this.connected) {
-            logger.warn("Port {} - Port is closed. Unable to send data to device {}.", this.deviceID,
-                    data.getDeviceId());
+            logger.warn("{} - Port is closed. Unable to send data to device {}.", this.toString(), data.getDeviceId());
             return false;
         }
 
@@ -297,9 +298,9 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Port {} - Sending data to device {} with length {} bytes", this.deviceID, data.getDeviceId(),
+            logger.debug("{} - Sending data to device {} with length {} bytes", this.toString(), data.getDeviceId(),
                     data.getData().length);
-            logger.debug("Port {} - data: {}", this.deviceID,
+            logger.debug("{} - data: {}", this.toString(),
                     SimpleBinaryProtocol.arrayToString(data.getData(), data.getData().length));
         }
 
@@ -308,7 +309,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                 // set RTS
                 if (this.forceRTS) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Port {} - RTS set", this.deviceID);
+                        logger.debug("{} - RTS set", this.toString());
                     }
 
                     // calc minimum time for send + currentTime + 0ms
@@ -323,7 +324,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
 
                 setLastSentData(data);
             } catch (Exception e) {
-                logger.error("Port {} - Error while writing", this.deviceID);
+                logger.error("{} - Error while writing", this.toString());
 
                 reconnect();
 
@@ -333,8 +334,8 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
             return true;
         } else {
             if (logger.isDebugEnabled()) {
-                logger.debug("Port {} - Sending data to device {} discarted. Another send/wait is processed.",
-                        this.deviceID, data.getDeviceId());
+                logger.debug("{} - Sending data to device {} discarted. Another send/wait is processed.",
+                        this.toString(), data.getDeviceId());
             }
 
             return false;
@@ -384,12 +385,14 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                         serialPort.setRTS(invertedRTS);
 
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Port {} - RTS reset", this.deviceID);
+                            logger.debug("{} - RTS reset", this.toString());
                         }
                     }
                 }
                 break;
             case SerialPortEvent.DATA_AVAILABLE:
+                readingData.set(true);
+
                 try {
                     while (inputStream.available() > 0) {
                         if (!readIncomingData()) {
@@ -403,8 +406,8 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                         while (inBuffer.position() > 3) {
                             // check if received data has valid address (same as sent data)
                             if (lastSentData != null && !checkDeviceID(inBuffer, getLastSentData().getDeviceId())) {
-                                logger.error("{} - Address not valid: {}/{}", this.toString(), getDeviceID(inBuffer),
-                                        getLastSentData().getDeviceId());
+                                logger.error("{} - Address not valid: received/sent={}/{}", this.toString(),
+                                        getDeviceID(inBuffer), getLastSentData().getDeviceId());
                                 // print details
                                 printCommunicationInfo(inBuffer, lastSentData);
                                 // clear buffer
@@ -428,8 +431,6 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                                 if (waitingForAnswer.get()) {
                                     // stop block sent
                                     setWaitingForAnswer(false);
-                                    // look for data to send
-                                    processCommandQueue();
                                 }
                             } else if (r == ProcessDataResult.DATA_NOT_COMPLETED
                                     || r == ProcessDataResult.PROCESSING_ERROR) {
@@ -439,7 +440,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                             // check for new data
                             while (inputStream.available() > 0) {
                                 if (logger.isDebugEnabled()) {
-                                    logger.debug("Port {} - another new data - {}bytes", this.deviceID,
+                                    logger.debug("{} - another new data - {}bytes", this.toString(),
                                             inputStream.available());
                                 }
                                 if (!readIncomingData()) {
@@ -448,14 +449,20 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                             }
                         }
                     }
+                    if (!waitingForAnswer.get()) {
+                        // look for data to send
+                        processCommandQueue();
+                    }
                 } catch (IOException e) {
-                    logger.error("Port {} - Error receiving data: {}", deviceID, e.getMessage());
+                    logger.error("{} - Error receiving data: {}", toString(), e.getMessage());
                 } catch (Exception ex) {
-                    logger.error("Port {} - Exception receiving data: {}", deviceID, ex.toString());
+                    logger.error("{} - Exception receiving data: {}", toString(), ex.toString());
                     StringWriter sw = new StringWriter();
                     PrintWriter pw = new PrintWriter(sw);
                     ex.printStackTrace(pw);
                     logger.error(sw.toString());
+                } finally {
+                    readingData.set(false);
                 }
                 break;
         }
@@ -475,11 +482,11 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
         receiveTime = System.currentTimeMillis();
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Port {} - received: {}", deviceID, SimpleBinaryProtocol.arrayToString(readBuffer, bytes));
+            logger.debug("{} - received: {}", toString(), SimpleBinaryProtocol.arrayToString(readBuffer, bytes));
         }
 
         if (bytes + inBuffer.position() >= inBuffer.capacity()) {
-            logger.error("Port {} - Buffer overrun", deviceID);
+            logger.error("{} - Buffer overrun", toString());
             return false;
         } else {
             inBuffer.put(readBuffer, 0, bytes);
@@ -535,9 +542,6 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
                 public void run() {
                     timeoutTask = null;
                     dataTimeouted();
-                    setWaitingForAnswer(false);
-                    // new command will be sent if there is any
-                    processCommandQueue();
                 }
             };
 
@@ -552,13 +556,44 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
 
     /**
      * Method processed after waiting for answer is timeouted
+     * @throws
      */
     protected void dataTimeouted() {
         int address = this.getLastSentData().getDeviceId();
+        int timeout = 5;
+
+        while (readingData.get() && timeout-- > 0) {
+            logger.warn("{} - Device{} - Receiving data timeouted but reading still active. Thread={}", this.toString(),
+                    address, Thread.currentThread().getId());
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                logger.error("{} - dataTimeouted() Thread.sleep() error. Thread={}", this.toString(),
+                        Thread.currentThread().getId());
+            }
+        }
+
+        if (!waitingForAnswer.get()) {
+            return;
+        }
 
         logger.warn("{} - Device{} - Receiving data timeouted. Thread={}", this.toString(), address,
                 Thread.currentThread().getId());
 
+        /*
+         * for (Map.Entry<Thread, StackTraceElement[]> t : Thread.getAllStackTraces().entrySet()) {
+         * String s = "";
+         *
+         * for (int i = 0; i < t.getValue().length; i++) {
+         * s += "\n" + t.getValue()[i].getFileName() + "|" + t.getValue()[i].getMethodName() + "["
+         * + t.getValue()[i].getLineNumber() + "]...";
+         * if (i > 10) {
+         * break;
+         * }
+         * }
+         * logger.warn("{}-{}...", t.getKey(), s);
+         * }
+         */
         devicesStates.setDeviceState(this.deviceName, address, DeviceStates.NOT_RESPONDING);
 
         if (logger.isDebugEnabled()) {
@@ -566,5 +601,9 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
         }
 
         inBuffer.clear();
+
+        setWaitingForAnswer(false);
+        // new command will be sent if there is any
+        processCommandQueue();
     }
 }

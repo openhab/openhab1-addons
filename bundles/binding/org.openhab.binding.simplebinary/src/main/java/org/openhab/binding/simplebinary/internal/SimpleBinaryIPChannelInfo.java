@@ -48,6 +48,8 @@ public class SimpleBinaryIPChannelInfo {
     protected TimeoutTask timeoutTask = null;
     /** flag waiting */
     protected AtomicBoolean waitingForAnswer = new AtomicBoolean(false);
+    /** flag write ready */
+    protected AtomicBoolean writeReady = new AtomicBoolean(false);
 
     private SimpleBinaryIRequestTimeouted requestTimeouted;
 
@@ -207,6 +209,7 @@ public class SimpleBinaryIPChannelInfo {
         buffer = null;
         writeBuffer = null;
         requestTimeouted = null;
+        lastSentData = null;
         // TODO:
     }
 
@@ -305,10 +308,8 @@ public class SimpleBinaryIPChannelInfo {
     public boolean assignDeviceId(int devId) {
         receivedDeviceID = devId;
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Device {} (configured IP={},configured ID={}) assigned to ID={}", this.getIpReceived(),
-                    this.getIpConfigured(), this.getDeviceIdConfigured(), devId);
-        }
+        logger.info("Device {} (configured IP={},configured ID={}) assigned to ID={}", this.getIpReceived(),
+                this.getIpConfigured(), this.getDeviceIdConfigured(), devId);
 
         if (isIpLocked) {
             if (logger.isDebugEnabled()) {
@@ -319,7 +320,6 @@ public class SimpleBinaryIPChannelInfo {
 
         if (collection != null) {
 
-            // --------------- TODO remove this
             if (logger.isDebugEnabled()) {
                 logger.debug("collection size={}", collection.size());
 
@@ -330,12 +330,11 @@ public class SimpleBinaryIPChannelInfo {
                         collectioToString += ",";
                     }
                     collectioToString += i.getDeviceId() + "/" + i.getIp() + "/"
-                            + (i.getChannel() == null ? "no" : (i.getChannel().isOpen() ? "open" : "closed"));
+                            + (i.getChannel() == null ? "no channel" : (i.getChannel().isOpen() ? "open" : "closed"));
                 }
 
                 logger.debug("collection is={}", collectioToString);
             }
-            // ----------------------------
 
             // remove duplicate channels in collection and check for already used IDs
             for (Iterator<SimpleBinaryIPChannelInfo> itr = collection.iterator(); itr.hasNext();) {
@@ -395,18 +394,18 @@ public class SimpleBinaryIPChannelInfo {
             }
         }
 
-        // --------------- TODO remove this
-        String collectioToString = "";
+        if (logger.isDebugEnabled()) {
+            String collectioToString = "";
 
-        for (SimpleBinaryIPChannelInfo i : collection) {
-            if (collectioToString.length() > 0) {
-                collectioToString += ",";
+            for (SimpleBinaryIPChannelInfo i : collection) {
+                if (collectioToString.length() > 0) {
+                    collectioToString += ",";
+                }
+                collectioToString += i.getDeviceId() + "/" + i.getIp();
             }
-            collectioToString += i.getDeviceId() + "/" + i.getIp();
-        }
 
-        logger.debug("collection after remove is={}", collectioToString);
-        // ----------------------
+            logger.debug("collection after remove is={}", collectioToString);
+        }
 
         return true;
     }
