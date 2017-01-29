@@ -33,6 +33,7 @@ and not supported.
 
 
 ### Differences between DSMR versions
+
 The serial port settings for DSMR v4 and up (115200 8n1) differ from NTA8130,
 v2.1, v2.2 and v3.0 (9600 7e1). The DSMR binding will automatically detect the
 applicable serial port settings.
@@ -147,10 +148,11 @@ Number P1_Meter_DeliveryNormal "Meter reading normal tariff[%.3f kWh]" {dsmr="eD
 ## Notes
 
 ### Logging
-Use the following setting in logback.xml to increase verbosity of the logging
-```
-<logger name="org.openhab.binding.dsmr" level="DEBUG"/>
-```
+
+To increase verbosity of the logging for debugging purposes, set the
+`org.openhab.binding.dsmr` log level to DEBUG. Reduce back to INFO or DEFAULT
+after capturing the desired logs.
+
 
 ### Test results
 
@@ -165,4 +167,5 @@ Kamstrup 162JxC|3.0|OK|OK|Not tested|Not tested|Not tested|Not tested|N/A
 Landys + Gyr E350|3.0|OK|Not tested|Not tested|Not tested|Not tested|Not tested|N/A
 
 ### CRC
+
 A meter that conforms to DSMR v4 or higher includes a CRC on the complete message. The binding does not check the CRC yet.
