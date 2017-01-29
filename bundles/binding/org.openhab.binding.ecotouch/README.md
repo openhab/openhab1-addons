@@ -1,122 +1,132 @@
-Documentation of the Waterkotte EcoTouch heat pump binding bundle.
+# EcoTouch Binding
 
-## Introduction
+The openHAB EcoTouch binding allows interaction with a heat pump.
 
-For installation of the binding, please see Wiki page [[Bindings]].
 
-## Precondition
+## Prerequisites
 
-This bundle connects to your heat pump via network. Make sure the display unit of your heat pump is connected to your network and that the network settings are configured. By default, the heat pump uses DHCP.
+Make sure the display unit of the heat pump is connected to the network and
+that the network settings are configured. By default, the heat pump uses DHCP.
 
-login data for openhab.cfg:  
-(current / since Display-Software 1.6.xx):
-ecotouch:ip=<ip or DNS name od the heat pump>
-ecotouch:username=waterkotte
-ecotouch:password=waterkotte
-(previous, until Display-Software 1.5.xx):
-ecotouch:username=admin, ecotouch:password=wtkadmin  
 
-## Generic Item Binding Configuration
+## Binding Configuration
 
-The binding configurations format is simple and looks like this:
+The binding can be configured in the file `services/ecotouch.cfg`.
+
+| Property | Default    | Required | Description |
+|----------|------------|:--------:|-------------|
+| ip       |            | Yes      | ip or DNS name of the heat pump |
+| username | waterkotte | No       | username for login |
+| password | waterkotte | No       | password for login |
+
+NOTE: Since Waterkotte Display software version 1.6.xx, the username/password
+default value is `waterkotte`. Prior to that, the username default was `admin`
+and the password default was `wtkadmin`.
+
+
+## Item Configuration
+
+The binding configuration format is simple and looks like this:
 
     ecotouch="<eventType>"
 
 where `<eventType>` is one of the following values:
 
-description | `<eventType>` | itemClass | write | notes
------------ | ----------- | --------- | ----- | -----
-Außentemperatur | temperature_outside | number |  | 
-Außentemperatur gemittelt über 1h | temperature_outside_1h | number |  | 
-Außentemperatur gemittelt über 24h | temperature_outside_24h | number |  | 
-Quelleneintrittstemperatur | temperature_source_in | number |  | 
-Quellenaustrittstemperatur | temperature_source_out | number |  | 
-Verdampfungstemperatur | temperature_evaporation | number |  | 
-Sauggastemperatur | temperature_suction | number |  | 
-Verdampfungsdruck | pressure_evaporation | number |  | 
-Temperatur Rücklauf Soll | temperature_return_set | number |  | 
-Temperatur Rücklauf | temperature_return | number |  | 
-Temperatur Vorlauf | temperature_flow | number |  | 
-Kondensationstemperatur | temperature_condensation | number |  | 
-Kondensationsdruck | pressure_condensation | number |  | 
-Speichertemperatur | temperature_storage | number |  | 
-Raumtemperatur | temperature_room | number |  | 
-Raumtemperatur gemittelt über 1h | temperature_room_1h | number |  | 
-Warmwassertemperatur | temperature_water | number |  | 
-Pooltemperatur | temperature_pool | number |  | 
-Solarkollektortemperatur | temperature_solar | number |  | 
-Solarkreis Vorlauf | temperature_solar_flow | number |  | 
-Ventilöffnung elektrisches Expansionsventil % | position_expansion_valve | number |  | 
-elektrische Leistung Verdichter | power_compressor | number |  | 
-abgegebene thermische Heizleistung der Wärmepumpe | power_heating | number |  | 
-abgegebene thermische KälteLeistung der Wärmepumpe | power_cooling | number |  | 
-COP Heizleistung | cop_heating | number |  | 
-COP Kälteleistung | cop_cooling | number |  | 
-Aktuelle Heizkreistemperatur | temperature_heating_return | number |  | 
-Geforderte Temperatur im Heizbetrieb | temperature_heating_set | number |  | 
-Sollwertvorgabe Heizkreistemperatur | temperature_heating_set2 | number | yes | 
-Aktuelle Kühlkreistemperatur | temperature_cooling_return | number |  | 
-Geforderte Temperatur im Kühlbetrieb | temperature_cooling_set | number |  | 
-Sollwertvorgabe Kühlbetrieb | temperature_cooling_set2 | number | yes | 
-Sollwert Warmwassertemperatur | temperature_water_set | number |  | 
-Sollwertvorgabe Warmwassertemperatur | temperature_water_set2 | number | yes | 
-Sollwert Poolwassertemperatur | temperature_pool_set | number |  | 
-Sollwertvorgabe Poolwassertemperatur | temperature_pool_set2 | number | yes | 
-geforderte Verdichterleistung | compressor_power | number |  | 
-% Heizungsumwälzpumpe | percent_heat_circ_pump | number |  | 
-% Quellenpumpe | percent_source_pump | number |  | 
-% Leistung Verdichter | percent_compressor | number |  | 
-Heizkurve - Norm-Aussen-Temp (Auslegungstemp)| nviNormAussen | number | yes | 
-Heizkurve - Temp Heizkreis bei Auslegungstemp | nviHeizkreisNorm | number | yes | 
-Heizkurve - Temp Heizgrenze | nviTHeizgrenze | number | yes | 
-Heizkurve - Temp Heizkreis Heizgrenze | nviTHeizgrenzeSoll | number | yes | 
-Heizkurve - max. VL-Temp | maxVLTemp | number | yes | 
-Kühlen Einschalt-Aussentemp | coolEnableTemp | number | yes | 
-geforderte Kühltemperatur | nviSollKuehlen | number |  | 
-Firmware-Version Regler | version_controller | number |  | 
-Build-Nr. Regler | version_controller_build | number |  | 
-Bios-Version Regler | version_bios | number |  | 
-Datum: Tag | date_day | number |  | 
-Datum: Monat | date_month | number |  | 
-Datum: Jahr | date_year | number |  | 
-Uhrzeit: Stunde | time_hour | number |  | 
-Uhrzeit: Minute | time_minute | number |  | 
-Betriebsstunden Verdichter 1 | operating_hours_compressor1 | number |  | 
-Betriebsstunden Verdichter 2 | operating_hours_compressor2 | number |  | 
-Betriebsstunden Heizungsumwälzpumpe | operating_hours_circulation_pump | number |  | 
-Betriebsstunden Quellenpumpe | operating_hours_source_pump | number |  | 
-Betriebsstunden Solarkreis | operating_hours_solar | number |  | 
-Handabschaltung Heizbetrieb | enable_heating | switch | yes | 
-Handabschaltung Kühlbetrieb | enable_cooling | switch | yes | 
-Handabschaltung Warmwasserbetrieb | enable_warmwater | switch | yes | 
-Handabschaltung Pool_Heizbetrieb | enable_pool | switch | yes | 
-Status der Wärmepumpenkomponenten | state | number |  | 
-Status Quellenpumpe | state_sourcepump | switch |  | 
-Status Heizungsumwälzpumpe | state_heatingpump | switch |  | 
-Status Freigabe Regelung EDV / Magnetventil | state_evd | switch |  | 
-Status Verdichter 1 | state_compressor1 | switch |  | 
-Status Verdichter 2 | state_compressor2 | switch |  | 
-Status externer Wärmeerzeuger | state_extheater | switch |  | 
-Status Alarmausgang | state_alarm | switch |  | 
-Status Motorventil Kühlbetrieb | state_cooling | switch |  | 
-Status Motorventil Warmwasser | state_water | switch |  | 
-Status Motorventil Pool | state_pool | switch |  | 
-Status Solarbetrieb | state_solar | switch |  | 
-Status 4-Wege-Ventil | state_cooling4way | switch |  | 
-Temperaturanpassung für die Heizung -2,0 / +2,0 | adapt_heating | number | yes | -2 bis +2 (0,5)---> 0 bis 8
-Handschaltung Heizungspumpe | manual_heatingpump |  | yes | (H-0-A) H= manuell ein (Handschaltung), 0= aus, A= Automatik
-Handschaltung Quellenpumpe | manual_sourcepump |  | yes | (H-0-A)
-Handschaltung Solarpumpe 1 | manual_solarpump1 |  | yes | (H-0-A)
-Handschaltung Solarpumpe 2 | manual_solarpump2 |  | yes | (H-0-A)
-Handschaltung Speicherladepumpe | manual_tankpump |  | yes | (H-0-A)
-Handschaltung Brauchwasserventil | manual_valve |  | yes | (H-0-A)
-Handschaltung Poolventil | manual_poolvalve |  | yes | (H-0-A)
-Handschaltung Kühlventil | manual_coolvalve |  | yes | (H-0-A)
-Handschaltung Vierwegeventil | manual_4wayvalve |  | yes | (H-0-A)
-Handschaltung Multiausgang Ext. | manual_multiext |  | yes | (H-0-A)
+| Description | `<eventType>` | ItemClass | Write | Notes |
+| ----------- | ------------- | --------- | ----- | ----- |
+| Außentemperatur | temperature_outside | number |  | 
+| Außentemperatur gemittelt über 1h | temperature_outside_1h | number |  | 
+| Außentemperatur gemittelt über 24h | temperature_outside_24h | number |  | 
+| Quelleneintrittstemperatur | temperature_source_in | number |  | 
+| Quellenaustrittstemperatur | temperature_source_out | number |  | 
+| Verdampfungstemperatur | temperature_evaporation | number |  | 
+| Sauggastemperatur | temperature_suction | number |  | 
+| Verdampfungsdruck | pressure_evaporation | number |  | 
+| Temperatur Rücklauf Soll | temperature_return_set | number |  | 
+| Temperatur Rücklauf | temperature_return | number |  | 
+| Temperatur Vorlauf | temperature_flow | number |  | 
+| Kondensationstemperatur | temperature_condensation | number |  | 
+| Kondensationsdruck | pressure_condensation | number |  | 
+| Speichertemperatur | temperature_storage | number |  | 
+| Raumtemperatur | temperature_room | number |  | 
+| Raumtemperatur gemittelt über 1h | temperature_room_1h | number |  | 
+| Warmwassertemperatur | temperature_water | number |  | 
+| Pooltemperatur | temperature_pool | number |  | 
+| Solarkollektortemperatur | temperature_solar | number |  | 
+| Solarkreis Vorlauf | temperature_solar_flow | number |  | 
+| Ventilöffnung elektrisches Expansionsventil % | position_expansion_valve | number |  | 
+| elektrische Leistung Verdichter | power_compressor | number |  | 
+| abgegebene thermische Heizleistung der Wärmepumpe | power_heating | number |  | 
+| abgegebene thermische KälteLeistung der Wärmepumpe | power_cooling | number |  | 
+| COP Heizleistung | cop_heating | number |  | 
+| COP Kälteleistung | cop_cooling | number |  | 
+| Aktuelle Heizkreistemperatur | temperature_heating_return | number |  | 
+| Geforderte Temperatur im Heizbetrieb | temperature_heating_set | number |  | 
+| Sollwertvorgabe Heizkreistemperatur | temperature_heating_set2 | number | yes | 
+| Aktuelle Kühlkreistemperatur | temperature_cooling_return | number |  | 
+| Geforderte Temperatur im Kühlbetrieb | temperature_cooling_set | number |  | 
+| Sollwertvorgabe Kühlbetrieb | temperature_cooling_set2 | number | yes | 
+| Sollwert Warmwassertemperatur | temperature_water_set | number |  | 
+| Sollwertvorgabe Warmwassertemperatur | temperature_water_set2 | number | yes | 
+| Sollwert Poolwassertemperatur | temperature_pool_set | number |  | 
+| Sollwertvorgabe Poolwassertemperatur | temperature_pool_set2 | number | yes | 
+| geforderte Verdichterleistung | compressor_power | number |  | 
+| % Heizungsumwälzpumpe | percent_heat_circ_pump | number |  | 
+| % Quellenpumpe | percent_source_pump | number |  | 
+| % Leistung Verdichter | percent_compressor | number |  | 
+| Heizkurve - Norm-Aussen-Temp (Auslegungstemp)| nviNormAussen | number | yes | 
+| Heizkurve - Temp Heizkreis bei Auslegungstemp | nviHeizkreisNorm | number | yes | 
+| Heizkurve - Temp Heizgrenze | nviTHeizgrenze | number | yes | 
+| Heizkurve - Temp Heizkreis Heizgrenze | nviTHeizgrenzeSoll | number | yes | 
+| Heizkurve - max. VL-Temp | maxVLTemp | number | yes | 
+| Kühlen Einschalt-Aussentemp | coolEnableTemp | number | yes | 
+| geforderte Kühltemperatur | nviSollKuehlen | number |  | 
+| Firmware-Version Regler | version_controller | number |  | 
+| Build-Nr. Regler | version_controller_build | number |  | 
+| Bios-Version Regler | version_bios | number |  | 
+| Datum: Tag | date_day | number |  | 
+| Datum: Monat | date_month | number |  | 
+| Datum: Jahr | date_year | number |  | 
+| Uhrzeit: Stunde | time_hour | number |  | 
+| Uhrzeit: Minute | time_minute | number |  | 
+| Betriebsstunden Verdichter 1 | operating_hours_compressor1 | number |  | 
+| Betriebsstunden Verdichter 2 | operating_hours_compressor2 | number |  | 
+| Betriebsstunden Heizungsumwälzpumpe | operating_hours_circulation_pump | number |  | 
+| Betriebsstunden Quellenpumpe | operating_hours_source_pump | number |  | 
+| Betriebsstunden Solarkreis | operating_hours_solar | number |  | 
+| Handabschaltung Heizbetrieb | enable_heating | switch | yes | 
+| Handabschaltung Kühlbetrieb | enable_cooling | switch | yes | 
+| Handabschaltung Warmwasserbetrieb | enable_warmwater | switch | yes | 
+| Handabschaltung Pool_Heizbetrieb | enable_pool | switch | yes | 
+| Status der Wärmepumpenkomponenten | state | number |  | 
+| Status Quellenpumpe | state_sourcepump | switch |  | 
+| Status Heizungsumwälzpumpe | state_heatingpump | switch |  | 
+| Status Freigabe Regelung EDV / Magnetventil | state_evd | switch |  | 
+| Status Verdichter 1 | state_compressor1 | switch |  | 
+| Status Verdichter 2 | state_compressor2 | switch |  | 
+| Status externer Wärmeerzeuger | state_extheater | switch |  | 
+| Status Alarmausgang | state_alarm | switch |  | 
+| Status Motorventil Kühlbetrieb | state_cooling | switch |  | 
+| Status Motorventil Warmwasser | state_water | switch |  | 
+| Status Motorventil Pool | state_pool | switch |  | 
+| Status Solarbetrieb | state_solar | switch |  | 
+| Status 4-Wege-Ventil | state_cooling4way | switch |  | 
+| Temperaturanpassung für die Heizung -2,0 / +2,0 | adapt_heating | number | yes | -2 bis +2 (0,5)---> 0 bis 8
+| Handschaltung Heizungspumpe | manual_heatingpump |  | yes | (H-0-A) H= manuell ein (Handschaltung), 0= aus, A= Automatik
+| Handschaltung Quellenpumpe | manual_sourcepump |  | yes | (H-0-A)
+| Handschaltung Solarpumpe 1 | manual_solarpump1 |  | yes | (H-0-A)
+| Handschaltung Solarpumpe 2 | manual_solarpump2 |  | yes | (H-0-A)
+| Handschaltung Speicherladepumpe | manual_tankpump |  | yes | (H-0-A)
+| Handschaltung Brauchwasserventil | manual_valve |  | yes | (H-0-A)
+| Handschaltung Poolventil | manual_poolvalve |  | yes | (H-0-A)
+| Handschaltung Kühlventil | manual_coolvalve |  | yes | (H-0-A)
+| Handschaltung Vierwegeventil | manual_4wayvalve |  | yes | (H-0-A)
+| Handschaltung Multiausgang Ext. | manual_multiext |  | yes | (H-0-A)
 
 
-As a result, your lines in the items file might look like the following:
+## Examples
+
+### Items examples
 
     /* Waterkotte EcoTouch heat pump DEMO */
     Group Heatpump
@@ -150,7 +160,7 @@ As a result, your lines in the items file might look like the following:
     Number HeatPump_state_compressor1 "Wärmepumpe Status Kompressor [%i]"   <settings> (Heatpump,Heatpump_state) { ecotouch="state_compressor1" }
     Number HeatPump_state_water      "Wärmepumpe Status Motorventil Warmwasser[%i]"   <settings> (Heatpump,Heatpump_state) { ecotouch="state_water" }
 
-## Sitemap Example
+### Sitemap examples
 
         Frame label="Waterkotte" {
                 Text item=HeatPump_Temperature_3 {
@@ -268,15 +278,10 @@ As a result, your lines in the items file might look like the following:
         }
 
 
-## Gallery
+### Gallery
 
-The following charts are created via the rrd4j chart and heatpump bundle. <br/>
+The following charts are created via the rrd4j chart and heatpump bundle.
 
 ![outside temperature](https://github.com/sibbi77/openhab/wiki/images/binding-ecotouch_chart1.png)
 
 ![power consumption](https://github.com/sibbi77/openhab/wiki/images/binding-ecotouch_chart2.png)
-
-## Further planned features (not yet implemented)
-
-- add some more `<eventType>`
- 
