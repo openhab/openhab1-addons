@@ -53,7 +53,7 @@ public class ComfoAirConnector {
 
     /**
      * Open and initialize a serial port.
-     * 
+     *
      * @param portName
      *            e.g. /dev/ttyS0
      * @param listener
@@ -132,7 +132,7 @@ public class ComfoAirConnector {
 
     /**
      * Prepare a command for sending using the serial port.
-     * 
+     *
      * @param command
      * @return reply byte values
      */
@@ -278,7 +278,7 @@ public class ComfoAirConnector {
     /**
      * Generate the byte sequence for sending to ComfoAir (incl. START & END
      * sequence and checksum).
-     * 
+     *
      * @param command
      * @param data
      * @return response byte value block with cmd, data and checksum
@@ -319,7 +319,7 @@ public class ComfoAirConnector {
 
     /**
      * Calculates a checksum for a command block (cmd, data and checksum).
-     * 
+     *
      * @param block
      * @return checksum byte value
      */
@@ -341,7 +341,7 @@ public class ComfoAirConnector {
 
     /**
      * Cleanup a commandblock from quoted 0x07 characters.
-     * 
+     *
      * @param processBuffer
      * @return the 0x07 cleaned byte values
      */
@@ -367,7 +367,7 @@ public class ComfoAirConnector {
 
     /**
      * Escape special 0x07 character.
-     * 
+     *
      * @param cleanedBuffer
      * @return escaped byte value array
      */
@@ -395,7 +395,7 @@ public class ComfoAirConnector {
 
     /**
      * Send the byte values.
-     * 
+     *
      * @param request
      * @return successful flag
      */
@@ -404,7 +404,6 @@ public class ComfoAirConnector {
 
         try {
             outputStream.write(request);
-            // remove outputStream.flush(), can hang forever
 
             return true;
 
@@ -416,7 +415,7 @@ public class ComfoAirConnector {
 
     /**
      * Is used to debug byte values.
-     * 
+     *
      * @param data
      * @return
      */
