@@ -109,6 +109,26 @@
         </Parameter>
 
         <Parameter>
+            <Index>27</Index>
+            <Label lang="en">LED Indicator Control</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Display power consumption always</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Display power consumption at state change</Label>
+            </Item>
+            <Help><![CDATA[LED Indicator Control
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
             <Index>151</Index>
             <Label lang="en">Power Report Value Threshold</Label>
             <Type>short</Type>

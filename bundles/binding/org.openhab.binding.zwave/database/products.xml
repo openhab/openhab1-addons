@@ -3895,7 +3895,7 @@
       </Reference>
       <Model>Zooz Z-Wave Smart Plug (ZEN06)</Model>
       <Label lang="en">Smart Plug with 2 USB ports</Label>
-      <ConfigFile>zooz/zoozsmartplugzen06.xml</ConfigFile>
+      <ConfigFile>zooz/zen06.xml</ConfigFile>
     </Product>
     <Product>
       <Reference>
