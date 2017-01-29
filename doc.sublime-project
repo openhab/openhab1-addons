@@ -1122,6 +1122,12 @@
             "file_include_patterns": ["README.md"],
             "folder_exclude_patterns": ["*"],
             "follow_symlinks": false
+        },
+        {
+            "path": "bundles/persistence/org.openhab.persistence.sitewhere",
+            "file_include_patterns": ["README.md"],
+            "folder_exclude_patterns": ["*"],
+            "follow_symlinks": false
         }
     ],
     "settings":
