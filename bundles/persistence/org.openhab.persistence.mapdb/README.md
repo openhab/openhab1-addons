@@ -1,50 +1,33 @@
-Documentation of the mapdb Persistence Service
+# mapdb Persistence
 
-## Introduction
+The [mapdb](http://www.mapdb.org/) Persistence Service is based on simple key-value store that only saves the last value. The intention is to use this for `restoreOnStartup` items because all other persistence options have their drawbacks if values are only needed for reload.  They:
 
-The mapdb Persistence Service is based on simple key-value store http://www.mapdb.org/
-
-## Since 
-
-1.7.0
-
-## Features
-
-The mapdb Persistence Service is a simple persistence provider that only saves the last value. The intention is to use this for "restoreOnStartup" items because all other persistence options have their drawbacks if values are only needed for reload.
-
-They:
-a) grow in time
-b) require complex installs (mysql, influxdb, ...)
-c) rrd4j can't store all item types (only numeric types)
+* grow in time
+* require complex installs (`mysql`, `influxdb`, ...)
+* `rrd4j` can't store all item types (only numeric types)
 
 Querying the mapdb persistence service for historic values other than the last value make no sense since the persistence service can only store one value per item.
 
-## Installation
-
-For installation of this persistence package please follow the same steps as if you would [install a binding](Bindings).
-
-On Debian/Raspbian, you can use the following:
-
-```
-sudo apt-get update
-sudo apt-get install openhab-addon-persistence-mapdb
-```
-
 ## Configuration
 
-Place a persistence file called `mapdb.persist` in the `${openhab_home}/configurations/persistence` folder.
+This service can be configured in the file `services/mapdb.cfg`.
 
-See [Persistence](Persistence) for details on configuring this file.
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| commitinterval | 5 |    No    | commit interval in seconds |
+| commitsamestate | false | No  | set to `true` to issue a commit even if the state did not change
 
-This persistence service can be configured in the "MapDB Persistence Service" section in `openhab.cfg`.
-You can set the commit interval.
+All item and event related configuration is done in the file `persistence/mapdb.persist`.
 
-If you would like MapDB to be the default persistence service, update `persistence:default` in `openhab.cfg` to the following:
+To configure this service as the default persistence service for openHAB 2, add or change the line
 
 ```
-persistence:default=mapdb
+org.eclipse.smarthome.persistence:default=mapdb
 ```
+
+in the file `services/runtime.cfg`.
+
 
 ## Troubleshooting
 
-Restore of items after startup is taking some time. Rules are already started in parallel. Especially in rules that are started via "System started" trigger, it may happen that the restore is not completed resulting in undefined items. In these cases the use of restored items has to be delayed by a couple of seconds. This delay has to be determined experimentally.
+Restore of items after startup is taking some time. Rules are already started in parallel. Especially in rules that are started via `System started` trigger, it may happen that the restore is not completed resulting in undefined items. In these cases the use of restored items has to be delayed by a couple of seconds. This delay has to be determined experimentally.

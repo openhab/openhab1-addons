@@ -1,43 +1,33 @@
-Documentation of the Sen.Se Persistence Service
+# Sen.Se Persistence
 
-## Introduction
+This service allows you to feed item data to [Sen.Se web site](http://open.sen.se).
 
-This service allows you to feed item data to Sen.Se web site (see http://open.sen.se for more details)
+This persistence service supports only writing information, and so features such as `restoreOnStartup` and sitemap Chart widgets cannot be used with this service.
 
-## Features
+## Prerequisites
 
-This persistence service supports only writing information to the Sen.Se web site.
 You need a Sen.Se API key and data feed to put data to. Each item being persisted represents a separate feed.
 
-## Installation
+To connect openHAB to open.sen.se, you have to [create a _custom device_](http://open.sen.se/devices/add/custom/#navbar) in open.sen.se. Follow the wizard there ("Get started"). Give your device a name that makes sense to you, and where the form says "Device is" choose "Other". Leave "Sending data" as "HTTP Posting" and "Receiving Data" as "HTTP Polling". Add as many feeds as you have items to display, choosing the option "Input: data flows from device to Sen.se" for each feed.
 
-For installation of this persistence package please follow the same steps as if you would [install a binding](Bindings).
+Under [Devices](http://open.sen.se/devices/), you should see the device that you have just created. If you click on "Profile & Settings" you will see, amongst other things, a list of the input feeds that you created. If you click on an input feed you will see all its data, including a _feed ID_ (currently a 5-digit integer).
 
-Additionally, place a persistence file called sense.persist in the `${openhab.home}/configuration/persistence` folder.
+Note the feed ID of each input feed that you want to connect to an item in openHAB.  You will need this information to configure the file `persistence/sense.persist`.
 
 ## Configuration
 
-### openhab.cfg
+This service can be configured in the file `services/sense.cfg`.
 
-This persistence service can be configured in the "Sen.Se Persistence Service" section in `openhab.cfg`. You need to specify your Sen.Se API key as
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| apikey   |         |   Yes    | your Sen.Se API key |
 
-    sense:apikey=your_api_key
+All item- and event-related configuration is done in the file `persistence/sense.persist`.  Choose whatever strategies make sense in your application. This is totally independent of open.sen.se.
 
-### Prepare open.sen.se for OpenHAB
+In the `Items` section, you will create the connection between openHAB and open.sen.se. The syntax of the items section is as follows:
 
-To connect your OpenHAB installation to open.sen.se you have to [create a _custom device_](http://open.sen.se/devices/add/custom/#navbar) in open.sen.se. Follow the wizard there ("Get started"). Give your device a name that makes sense to you, and where the form says "Device is" choose "Other". Leave "Sending data" as "HTTP Posting" and "Receiving Data" as "HTTP Polling". Add as many feeds as you have items to display, choosing the option "Input: data flows from device to Sen.se" for each feed.
+persistence/sense.persist
 
-Under http://open.sen.se/devices/ you should see the device that you have just created. If you click on "Profile & Settings" you will see - amongst other things - a list of the input feeds that you created. If you click on an input feed you will see all its data, including a _feed ID_ (currently a 5-digit integer).
-
-Note the feed ID of each input feed that you want to connect to an item in OpenHAB: you will need this information to configure the file `sense.persist`.
-
-### sense.persist
-
-All persistence files (including `sense.persist`) have the same syntax, which is documented in the [generic persistence file documentation](https://github.com/openhab/openhab/wiki/Persistence).
-
-Choose whatever strategies make sense in your application. This is totally independent of open.sen.se.
-
-In the `Items {}` section you will create the connection between OpenHAB and open.sen.se. The syntax of the items section is as follows:
 ```
 Items {
     <itemlist1> [-> "<alias1>"] : [strategy = <strategy1>, <strategy2>, ...]
@@ -45,11 +35,11 @@ Items {
     ...
 }
 ```
-Possible values for `<itemlist>` can be seen in the [generic persistence file documentation](https://github.com/openhab/openhab/wiki/Persistence), as can values for the `strategy` clauses.
 
 The important values for open.sen.se are the `alias`es. Substitute `<alias1>`, `<alias2>`, etc. with a feed ID from open.sen.se and the corresponding items will be sent to that feed.
 
 The following example shows a very simple `sense.persist` which illustrates this:
+
 ```
 Strategies {
 	everyDay	: "0 0 0 * * ?"
@@ -67,3 +57,4 @@ Items {
 	// Values from Humidity_Item are sent to open.sen.se feed "yyyyy"
 }
 ```
+

@@ -1,3 +1,5 @@
+# CalDAV Persistence
+
 This binding can be used to connect through the CalDAV Interface to calendars.
 First of all you need to add the org.openhab.io.caldav-version.jar to the addons folder.
 
@@ -5,7 +7,8 @@ First of all you need to add the org.openhab.io.caldav-version.jar to the addons
 Newest Version can be downloaded from the build-agent
 
 
-openhab.cfg
+services/caldavio.cfg
+
 * `caldavio:<calendar-id>:url=`
 * `caldavio:<calendar-id>:username=`
 * `caldavio:<calendar-id>:password=`

@@ -1,29 +1,20 @@
-Documentation of the Cosm Persistence Service
+# Xively (formerly Cosm) Persistence
 
-## Introduction
+This service allows you to feed item states to the [Xively IoT Platform](https://www.xively.com/).
 
-This service allows you to feed item data to Cosm web site (see http://cosm.com for more details)
+This persistence service supports only writing information, and so features such as `restoreOnStartup` and sitemap Chart widgets cannot be used with this service.
 
-## Features
+## Prerequisites
 
-This persistence service supports only writing information to the Cosm web site.
-You need a Cosm API key and data feed to put data to. Each item being persisted represens a separate datastream.
-
-## Installation
-
-For installation of this persistence package please follow the same steps as if you would [install a binding](Bindings).
-
-Additionally, place a persistence file called cosm.persist in the `${openhab.home}/configuration/persistence` folder.
+You need a Xively API key and data feed in order to send data. Each item being persisted represens a separate datastream.
 
 ## Configuration
 
-This persistence service can be configured in the "Cosm Persistence Service" section in `openhab.cfg`.
-You need to specify your data feed url in the form
+This service can be configured in the file `services/cosm.cfg`.
 
-    cosm:url=http://api.cosm.com/v2/feeds/XXXXX/datastreams/
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| url      |         |   Yes    | The data feed URL to which your item states will be sent.  This is in the format `http://api.cosm.com/v2/feeds/<feed>/datastreams/`, where `<feed>` should be replaced with your data feed number. |
+| apikey   |         |   Yes    | Your Xively API key |
 
-where `XXXXX` is your data feed number. You also need to specify your Cosm API key as
-
-    cosm:apikey=your_api_key
-
-All item and event related configuration is done in the cosm.persist file. Aliases correspond to cosm datastream IDs for the cosm persistence service.
+All item and event related configuration is done in the file `persistence/cosm.persist`. Aliases correspond to cosm datastream IDs for the cosm persistence service.

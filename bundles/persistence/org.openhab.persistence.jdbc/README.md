@@ -1,229 +1,129 @@
-*Available as of openHAB 1.8*
+# JDBC Persistence
 
-### Table of Contents
+This service writes and reads item states to and from a number of relational database systems that support [Java Database Connectivity (JDBC)](https://en.wikipedia.org/wiki/Java_Database_Connectivity).  This service allows you to persist state updates using one of several different underlying database services. It is designed for a maximum of scalability, to store very large amounts of data and still over the years not lose its speed.
 
- * [Introduction](#introduction)
- * [Features](#features)
- * [Installing JDBC Persistence](#installing-jdbc-persistence)
-   * [New Installation](#new-installation)
-   * [Migrating from MySQL Bundle](#migrating-from-mysql-bundle)
-   * [JDBC Driver Files](#jdbc-driver-files)
- * [Configuring JDBC Persistence](#configuring-jdbc-persistence)
- * [Database Table Schema](#database-table-schema)
- * [Number Precision](#number-precision)
- * [Rounding results](#rounding-results)
- * [Not representative Database Performance Tests](#not-representative-database-performance-tests)
+The generic design makes it relatively easy for developers to integrate other databases that have JDBC drivers.  The following databases are currently supported and tested:
 
-### Introduction
+| Database                                     | Tested Driver / Version |
+|----------------------------------------------|-------------------------|
+| [Apache Derby](https://db.apache.org/derby/) | [derby-10.12.1.1.jar](http://mvnrepository.com/artifact/org.apache.derby/derby) |
+| [H2](http://www.h2database.com/)             | [h2-1.4.191.jar](http://mvnrepository.com/artifact/com.h2database/h2) |
+| [HSQLDB](http://hsqldb.org/)                 | [hsqldb-2.3.3.jar](http://mvnrepository.com/artifact/org.hsqldb/hsqldb) |
+| [MariaDB](https://mariadb.org/)              | [mariadb-java-client-1.4.6.jar](http://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client) |
+| [MySQL](https://www.mysql.com/)              | [mysql-connector-java-5.1.39.jar](http://mvnrepository.com/artifact/mysql/mysql-connector-java) |
+| [PostgreSQL](http://www.postgresql.org/)     | [postgresql-9.4.1209.jre7.jar](http://mvnrepository.com/artifact/org.postgresql/postgresql) |
+| [SQLite](https://www.sqlite.org/)            | [sqlite-jdbc-3.8.11.2.jar](http://mvnrepository.com/artifact/org.xerial/sqlite-jdbc) |
 
-This service allows you to persist state updates using one of several different underlying database services. 
-The **JDBC Persistence Service** is designed for a maximum of scalability. It is designed to store very large amounts of data, and still over the years not lose its speed.
-The generic design makes it relatively easy for developers to integrate other databases that have JDBC drivers.
-It can act as a replacement for the [MySQL-Persistence](https://github.com/openhab/openhab/wiki/MySQL-Persistence) bundle (with additional configuration in `openhab.cfg`).
+## Table of Contents
 
-Currently the following databases are supported and tested:
- - [Apache Derby](https://db.apache.org/derby/)
- - [H2](http://www.h2database.com/)
- - [HSQLDB](http://hsqldb.org/)
- - [MariaDB](https://mariadb.org/)
- - [MySQL](https://www.mysql.com/)
- - [PostgreSQL](http://www.postgresql.org/)
- - [SQLite](https://www.sqlite.org/)
+<!-- MarkdownTOC -->
 
-### Features
+- [Configuration](#configuration)
+	- [Minimal Configuration](#minimal-configuration)
+	- [Migration from MySQL to JDBC Persistence Services](#migration-from-mysql-to-jdbc-persistence-services)
+- [Technical Notes](#technical-notes)
+	- [Database Table Schema](#database-table-schema)
+	- [Number Precision](#number-precision)
+	- [Rounding results](#rounding-results)
+	- [For Developers](#for-developers)
+	- [Performance Tests](#performance-tests)
 
-**NOTE Sept. 2016:** 
-- The JDBC Persistence respects server's **LOCALTIME** now, it used **UTC** before. Through an update, there may be a time lag in the recorded data! See [Time zones are different...](https://github.com/openhab/openhab/issues/3905) and [JDBC now with high precision by fractional seconds](https://github.com/openhab/openhab/pull/4550#discussion_r75578302)
+<!-- /MarkdownTOC -->
 
-*General:*
-- Writing/reading information to relational database systems.
-- [Database Table Name Schema](#database-table-schema) can be reconfigured after creation.
-- JDBC drivers are not contained within the bundle and must be downloaded and added separately to your `${openhab.home}/addons` directory.
- 
-*For Developers:*
-- Clearly separated source files for the database-specific part of openHAB logic.
-- Code duplication by similar services is prevented.
-- Integrating a new SQL and JDBC enabled database is fairly simple.
+## Configuration
 
-### Installing JDBC Persistence
+This service can be configured in the file `services/jdbc.cfg`.
 
-#### New Installation
-  1. For installation of this persistence bundle, please follow the same steps as if you would [install a binding](Bindings).
-  1. Copy the database-specific driver JAR file (see below) to your `${openhab.home}/addons` directory. 
-  1. Place a persistence file called `jdbc.persist` into the `${openhab.home}/configuration/persistence` folder. This has the standard format as described in [[Persistence]].
-  1. In `openhab.cfg` change `persistence:default` parameter to `jdbc`:
-```
-persistence:default=jdbc
-```
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| url      |         |    Yes   | JDBC URL to establish a connection to your database.  Examples:<br/><br/>`jdbc:derby:./testDerby;create=true`<br/>`jdbc:h2:./testH2`<br/>`jdbc:hsqldb:./testHsqlDb`<br/>`jdbc:mariadb://192.168.0.1:3306/testMariadb`<br/>`jdbc:mysql://192.168.0.1:3306/testMysql?serverTimezone=UTC`<br/>`jdbc:postgresql://192.168.0.1:5432/testPostgresql`<br/>`jdbc:sqlite:./testSqlite.db`.<br/><br/>If no database is available it will be created; for example the url `jdbc:h2:./testH2` creates a new H2 database in openHAB folder. Example to create your own MySQL database directly:<br/><br/>`CREATE DATABASE 'yourDB' CHARACTER SET utf8 COLLATE utf8_general_ci;`|
+| user     |        | if needed | database user name |
+| password |        | if needed | database user password |
+| errReconnectThreshold | 0 | No | when the service is deactivated (0 means ignore) |
+| sqltype.CALL			    | `VARCHAR(200)`   | No | All `sqlType` options allow you to change the SQL data type used to store values for different openHAB item states.  See the following links for further information: [mybatis](https://mybatis.github.io/mybatis-3/apidocs/reference/org/apache/ibatis/type/JdbcType.html) [H2](http://www.h2database.com/html/datatypes.html) [PostgresSQL](http://www.postgresql.org/docs/9.3/static/datatype.html) |
+| sqltype.COLOR			    | `VARCHAR(70)`    | No | see above |
+| sqltype.CONTACT		    | `VARCHAR(6)`     | No | see above |
+| sqltype.DATETIME		    | `DATETIME`       | No | see above |
+| sqltype.DIMMER		    | `TINYINT`        | No | see above |
+| sqltype.LOCATION		    | `VARCHAR(30)`    | No | see above |
+| sqltype.NUMBER		    | `DOUBLE`         | No | see above |
+| sqltype.ROLLERSHUTTER	    | `TINYINT`        | No | see above |
+| sqltype.STRING		    | `VARCHAR(65500)` | No | see above |
+| sqltype.SWITCH		    | `VARCHAR(6)`     | No | see above |
+| sqltype.TABLEPRIMARYKEY   | `TIMESTAMP`      | No | see above |
+| sqltype.TABLEPRIMARYVALUE | `NOW()`          | No | see above |
+| numberDecimalcount        | 3                | No | for Itemtype "Number" default decimal digit count |
+| tableNamePrefix           | `item`           | No | table name prefix. For Migration from MySQL Persistence, set to `Item`. |
+| tableUseRealItemNames     | `false`          | No | table name prefix generation.  When set to `true`, real item names are used for table names and `tableNamePrefix` is ignored.  When set to `false`, the `tableNamePrefix` is used to generate table names with sequential numbers. |
+| tableIdDigitCount         | 4                | No | when `tableUseRealItemNames` is `false` and thus table names are generated sequentially, this controls how many zero-padded digits are used in the table name.  With the default of 4, the first table name will end with `0001`. For migration from the MySQL persistence service, set this to 0. |
+| rebuildTableNames         | false            | No | rename existing tables using `tableUseRealItemNames` and `tableIdDigitCount`. USE WITH CARE! Deactivate after Renaming is done! |
+| jdbc.maximumPoolSize      | configured per database in package `org.openhab.persistence.jdbc.db.*` | No | Some embeded databases can handle only one connection.  See [this link](https://github.com/brettwooldridge/HikariCP/issues/256) for more information |
+| jdbc.minimumIdle          | see above        | No | see above |
+| enableLogTime             | `false`          | No | timekeeping |
 
-#### Migrating from MySQL Bundle
-If you are migrating from the MySQL persistence bundle to the JDBC persistence bundle, follow these steps:
-  1. For installation of this persistence bundle, please follow the same steps as if you would [install a binding](Bindings).
-  1. Copy the database-specific driver JAR file (see below) to your `${openhab.home}/addons` directory. 
-  1. Remove the MySQL persistence bundle from your `${openhab.home}/addons` directory.
-  1. In your `${openhab.home}/configurations/persistence` directory, rename your `mysql.persist` file to `jdbc.persist`.
-  1. In your `openhab.cfg` file, add or change these configuration items:
-```
-persistence:default=jdbc
-jdbc:tableNamePrefix=Item
-jdbc:tableUseRealItemNames=false
-jdbc:tableIdDigitCount=0
-```
+All item- and event-related configuration is done in the file `persistence/jdbc.persist`.
 
-#### JDBC Driver Files
-Database | Tested File | Repository
-------------- | ------------- | -------------
-Derby | derby-10.12.1.1.jar | [Maven](http://mvnrepository.com/artifact/org.apache.derby/derby)
-H2 | h2-1.4.191.jar | [Maven](http://mvnrepository.com/artifact/com.h2database/h2)
-HSQLDB | hsqldb-2.3.3.jar | [Maven](http://mvnrepository.com/artifact/org.hsqldb/hsqldb)
-MariaDB | mariadb-java-client-1.4.6.jar | [Maven](http://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client)
-MySQL | mysql-connector-java-5.1.39.jar | [Maven](http://mvnrepository.com/artifact/mysql/mysql-connector-java)
-PostgreSQL | postgresql-9.4.1209.jre7.jar  | [Maven](http://mvnrepository.com/artifact/org.postgresql/postgresql)
-SQLite | sqlite-jdbc-3.8.11.2.jar | [Maven](http://mvnrepository.com/artifact/org.xerial/sqlite-jdbc)
-
-### Configuring JDBC Persistence
-You can configure the persistence service in **JDBC Persistence Service** section in `openhab.cfg`.
-
-#### Minimal Configuration
-```
-############################ JDBC Persistence Service ##################################
-#
-# required database url like 'jdbc:<service>:<host>[:<port>;<attributes>]'
-jdbc:url=jdbc:postgresql://192.168.0.1:5432/testPostgresql
-#
-```
-
-#### Migration from MYSQL Bundle to JDBC Bundle
-```
-############################ JDBC Persistence Service ##################################
-#
-# required database url like 'jdbc:<service>:<host>[:<port>;<attributes>]'
-jdbc:url=jdbc:mysql://192.168.0.1:3306/testMysql
-#
-# optional database user
-jdbc:user=test
-#
-# optional database password
-jdbc:password=test
-#
-# for Migration from MYSQL-Bundle set to 'Item'.
-jdbc:tableNamePrefix=Item
-#
-# for Migration from MYSQL-Bundle do not use real names.
-jdbc:tableUseRealItemNames=false
-#
-# for Migration from MYSQL-Bundle set to 0.
-jdbc:tableIdDigitCount=0
+To configure this service as the default persistence service for openHAB 2, add or change the line
 
 ```
-
-#### Full Configuration
+org.eclipse.smarthome.persistence:default=jdbc
 ```
-############################ JDBC Persistence Service ##################################
-# I N S T A L L   J D B C   P E R S I S T E N C E   S E R V I C E 
-# To use this JDBC-service-bundle (org.openhab.persistence.jdbc-X.X.X.jar),
-# a appropriate JDBC database-driver is needed in OpenHab addons Folder.
-# Copy both (JDBC-service-bundle and a JDBC database-driver) to your OpenHab '[OpenHab]/addons' Folder to make it work. 
-#
-# Driver jars see: https://github.com/openhab/openhab/wiki/JDBC-Persistence#jdbc-driver-files
-#
-# Tested databases/url-prefix: jdbc:derby, jdbc:h2, jdbc:hsqldb, jdbc:mariadb, jdbc:mysql, jdbc:postgresql, jdbc:sqlite
-# 
-# derby, h2, hsqldb, sqlite can be embedded, 
-# If no database is available it will be created, for example the url 'jdbc:h2:./testH2' creates a new DB in OpenHab Folder. 
-#
-# Create new database, for example on a MySQL-Server use: 
-# CREATE DATABASE 'yourDB' CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-# D A T A B A S E  C O N F I G
-# Some URL-Examples, 'service' identifies and activates internally the correct jdbc driver.
-# required database url like 'jdbc:<service>:<host>[:<port>;<attributes>]'
-# jdbc:url=jdbc:derby:./testDerby;create=true
-# jdbc:url=jdbc:h2:./testH2
-# jdbc:url=jdbc:hsqldb:./testHsqlDb
-# jdbc:url=jdbc:mariadb://192.168.0.1:3306/testMariadb
-# jdbc:url=jdbc:mysql://192.168.0.1:3306/testMysql?serverTimezone=UTC
-# jdbc:url=jdbc:postgresql://192.168.0.1:5432/testPostgresql
-# jdbc:url=jdbc:sqlite:./testSqlite.db
+in the file `services/runtime.cfg`.
 
-# optional database user
-#jdbc:user=
-jdbc:user=test
+### Minimal Configuration
 
-# optional database password
-#jdbc:password=
-jdbc:password=test
-
-# E R R O R   H A N D L I N G
-# optional when Service is deactivated (optional, default: 0 -> ignore) 
-#jdbc:errReconnectThreshold=
-
-# I T E M   O P E R A T I O N S
-# optional tweaking SQL datatypes
-# see: https://mybatis.github.io/mybatis-3/apidocs/reference/org/apache/ibatis/type/JdbcType.html	
-# see: http://www.h2database.com/html/datatypes.html
-# see: http://www.postgresql.org/docs/9.3/static/datatype.html
-# defaults:
-#jdbc:sqltype.CALL			=	VARCHAR(200)
-#jdbc:sqltype.COLOR			=	VARCHAR(70)
-#jdbc:sqltype.CONTACT		=	VARCHAR(6)
-#jdbc:sqltype.DATETIME		=	DATETIME
-#jdbc:sqltype.DIMMER		=	TINYINT
-#jdbc:sqltype.LOCATION		=	VARCHAR(30)
-#jdbc:sqltype.NUMBER		=	DOUBLE
-#jdbc:sqltype.ROLLERSHUTTER	=	TINYINT
-#jdbc:sqltype.STRING		=	VARCHAR(65500)
-#jdbc:sqltype.SWITCH		=	VARCHAR(6)
-#jdbc:sqltype.TABLEPRIMARYKEY   =	TIMESTAMP
-#jdbc:sqltype.TABLEPRIMARYVALUE =	NOW()
-
-# For Itemtype "Number" default decimal digit count (optional, default: 3) 
-#jdbc:numberDecimalcount=
-
-# T A B L E   O P E R A T I O N S
-# Tablename Prefix String (optional, default: "item") 
-# for Migration from MYSQL-Bundle set to 'Item'.
-#jdbc:tableNamePrefix=Item
-
-# Tablename Prefix generation, using Item real names or "item" (optional, default: false -> "item") 
-# If true, 'tableNamePrefix' is ignored.
-#jdbc:tableUseRealItemNames=
-jdbc:tableUseRealItemNames=true
-
-# Tablename Suffix length (optional, default: 4 -> 0001-9999) 
-# for Migration from MYSQL-Bundle set to 0.
-#jdbc:tableIdDigitCount=
-
-# Rename existing Tables using tableUseRealItemNames and tableIdDigitCount (optional, default: false) 
-# USE WITH CARE! Deactivate after Renaming is done!
-#jdbc:rebuildTableNames=true
-
-# D A T A B A S E  C O N N E C T I O N S
-# Some embeded Databases can handle only one Connection (optional, default: configured per database in packet org.openhab.persistence.jdbc.db.* )
-# see: https://github.com/brettwooldridge/HikariCP/issues/256
-# jdbc.maximumPoolSize = 1
-# jdbc.minimumIdle = 1
-
-# T I M E K E E P I N G
-# (optional, default: false) 
-#jdbc:enableLogTime=true
+services/jdbc.cfg
 
 ```
+url=jdbc:postgresql://192.168.0.1:5432/testPostgresql
+```
+
+### Migration from MySQL to JDBC Persistence Services
+
+The JDBC Persistence service can act as a replacement for the MySQL Persistence service.  Here is an example of a configuration for a MySQL database named `testMysql` with user `test` and password `test`:
+
+services/jdbc.cfg
+
+```
+url=jdbc:mysql://192.168.0.1:3306/testMysql
+user=test
+password=test
+tableNamePrefix=Item
+tableUseRealItemNames=false
+tableIdDigitCount=0
+```
+
+Remember to install and uninstall the services you want, and rename `persistence/mysql.persist` to `persistence/jdbc.persist`.
+
+## Technical Notes
 
 ### Database Table Schema
-The service will create a mapping table to link each item to a table, and a separate table is generated for each item.
-The item data tables include time and data values.  The SQL data type used depends on the openHAB item type, and allows the item state to be recovered back into openHAB in the same way it was stored.
-With this *per-item* layout, the scalability and easy maintenance of the database is ensured, even if large amounts of data must be managed. To rename existing tables, use the parameters `jdbc:tableUseRealItemNames` and `jdbc:tableIdDigitCount` in the **JDBC Persistence Service** section of `openhab.cfg`.
+
+The table name schema can be reconfigured after creation, if needed.
+
+The service will create a mapping table to link each item to a table, and a separate table is generated for each item.  The item data tables include time and data values.  The SQL data type used depends on the openHAB item type, and allows the item state to be recovered back into openHAB in the same way it was stored.
+
+With this *per-item* layout, the scalability and easy maintenance of the database is ensured, even if large amounts of data must be managed. To rename existing tables, use the parameters `tableUseRealItemNames` and `tableIdDigitCount` in the configuration.
 
 ### Number Precision
-Default openHab number items are persisted with sql datatype `double`. Internally openHab uses `BigDecimal`. If better numerical precision is needed, for example set `jdbc:sqltype.NUMBER = DECIMAL(max digits, max decimals)`  in the **JDBC Persistence Service** section of `openhab.cfg`, then on java side the service works with `BigDecimal` without type conversion. If more come decimals as `max decimals` provides, this persisted value is rounded mathematically correct. The sql types `DECIMAL ` or  `NUMERIC` are precise, but to work with `DOUBLE` is faster.
+
+Default openHAB number items are persisted with SQL datatype `double`. Internally openHAB uses `BigDecimal`. If better numerical precision is needed, for example set `sqltype.NUMBER = DECIMAL(max digits, max decimals)`, then on the Java side, the service works with `BigDecimal` without type conversion. If more come decimals as `max decimals` provides, this persisted value is rounded mathematically correctly. The SQL types `DECIMAL` or  `NUMERIC` are precise, but to work with `DOUBLE` is faster.
 
 ### Rounding results
-The results of database queries of number items are rounded to three decimal places by default. With `jdbc:numberDecimalcount` in the **JDBC Persistence Service** section of `openhab.cfg` decimals can be changed. Especially if sql types `DECIMAL ` or  `NUMERIC` are used for `jdbc:sqltype.NUMBER`, rounding can be disabled by setting `jdbc:numberDecimalcount=-1`. 
 
+The results of database queries of number items are rounded to three decimal places by default. With `numberDecimalcount` decimals can be changed. Especially if sql types `DECIMAL` or  `NUMERIC` are used for `sqltype.NUMBER`, rounding can be disabled by setting `numberDecimalcount=-1`. 
 
-### Not representative Database Performance Tests
-#### Results per DATABASE:
+### For Developers
+
+* Clearly separated source files for the database-specific part of openHAB logic.
+* Code duplication by similar services is prevented.
+* Integrating a new SQL and JDBC enabled database is fairly simple.
+
+### Performance Tests
+
+Not necessarily representative of the performance you may experience.
+
 DATABASE | FIRST RUN | AVERAGE | FASTEST | SIZE AFTER | COMMENT
 -------- | --------: | ------: | ------: | ---------: | --------
 Derby | 7.829 | 6.892 | 5.381 | 5.36 MB  | local embedded
@@ -233,11 +133,13 @@ mysql | 11.873 | 11.524 | 10.971 | - | ext. Server VM
 postgresql | 8.147 | 7.072 | 6.895 | - | ext. Server VM
 sqlite | 2.406 | 1.249 | 1.137 | 0.28 MB| local embedded
 
-Each Test ran about 20 Times every 30 seconds.
-OpenHAB has ready started for about a Minute.
-The data in seconds for the evaluation are from the Console Output.
-#### Used a script like this:
-````
+* Each test ran about 20 Times every 30 seconds.
+* openHAB 1.x has ready started for about a Minute.
+* the data in seconds for the evaluation are from the console output.
+
+Used a script like this:
+
+```
 var count = 0;
 rule "DB STRESS TEST"
 when 
@@ -255,6 +157,6 @@ then
 		}
 	}
 end
-````
+```
 
 
