@@ -3890,6 +3890,15 @@
     <Name>Zooz</Name>
     <Product>
       <Reference>
+        <Type>0101</Type>
+        <Id>000A</Id>
+      </Reference>
+      <Model>Zooz Z-Wave Smart Plug (ZEN06)</Model>
+      <Label lang="en">Smart Plug with 2 USB ports</Label>
+      <ConfigFile>zooz/zen06.xml</ConfigFile>
+    </Product>
+    <Product>
+      <Reference>
         <Type>2021</Type>
         <Id>2101</Id>
       </Reference>
