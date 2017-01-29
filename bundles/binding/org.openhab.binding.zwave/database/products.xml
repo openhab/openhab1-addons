@@ -2602,6 +2602,10 @@
                 <Type>0002</Type>
                 <Id>001f</Id>
             </Reference>
+            <Reference>
+                <Type>0002</Type>
+                <Id>0020</Id>
+            </Reference>
             <Model>PAT02-A/B/C</Model>
             <Label lang="en">Flood Multisensor (incl. humidty and temperature)</Label>
             <Label lang="de">Überschwemmungssensor inkl. Luftfeuchtigkeit und Temperatur</Label>
