@@ -12,8 +12,8 @@ You need a running pulseaudio server whith module `module-cli-protocol-tcp` load
 
 This binding can be configured in the file `services/pulseaudio.cfg`.
 
-| Key | Default | Required | Description |
-|-----|---------|:--------:|-------------|
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
 | `<ServerName>`.TBD | TBD     |   TBD    |   TBD       |
 
 
