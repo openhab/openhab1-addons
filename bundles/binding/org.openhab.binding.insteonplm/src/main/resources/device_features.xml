@@ -764,4 +764,12 @@
 	<command-handler default="true">NoOpCommandHandler</command-handler>
 	<poll-handler>NoPollHandler</poll-handler> <!-- polled by ThermostatData1bGroup -->
 </feature>
+<feature name="ReceiveBroadcast">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- handles out-of band status messages -->
+	<message-handler cmd="0x11" ext="0" match_cmd1="0x11" low_byte="group">NumberMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<poll-handler>NoPollHandler</poll-handler> <!-- broadcast messages only, no polling! -->
+</feature>
+
 </xml>
