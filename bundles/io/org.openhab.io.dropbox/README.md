@@ -1,8 +1,8 @@
 # Dropbox Synchronization Service
 
-If you want to enhance openHAB with an integration to your personal Dropbox, please place this bundle in the folder `${openhab_home}/addons` and configure it to your needs. See the following sections on how to do this.
+This service will synchronize files on your openHAB server, such as configuration and log files, to and/or from your Dropbox account.
 
-The intended main use cases are backing up openHAB configuration and log files to a version able cloud space and transporting changed files back to openHAB after editing them with the openHAB Designer on the Administrator's Desktop PC.
+The intended main use cases are backing up openHAB configuration and log files to a version-able cloud space and transporting changed files back to openHAB after editing them with the openHAB Designer on the administrator's desktop PC.
 
 > NOTE: This service is currently disabled, due to [#4588](https://github.com/openhab/openhab1-addons/issues/4588).
 
