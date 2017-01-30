@@ -1,57 +1,64 @@
-Documentation of the Dropbox IO Bundle
+# Dropbox Synchronization Service
 
-## Introduction
-NOTE: The OpenHAB Dropbox app is disabled, making Dropbox IO currently unusable. This is being tracked in [#4588](https://github.com/openhab/openhab/issues/4588).
-
-The Dropbox IO bundle is available as a separate (optional) download.
 If you want to enhance openHAB with an integration to your personal Dropbox, please place this bundle in the folder `${openhab_home}/addons` and configure it to your needs. See the following sections on how to do this.
 
 The intended main use cases are backing up openHAB configuration and log files to a version able cloud space and transporting changed files back to openHAB after editing them with the openHAB Designer on the Administrator's Desktop PC.
 
-## Authentication
+> NOTE: This service is currently disabled, due to [#4588](https://github.com/openhab/openhab1-addons/issues/4588).
 
-You'll have to authorize openHAB to connect to your Dropbox. This is done in a three step process. openHAB requests a token which is used as a one-time-password to get hold of an access token (second step) which will be used for all future requests against Dropbox.
+## Service Configuration
 
-**Step 1** is to add the line "dropbox:initialize=true" in the openhab.cfg file, if it does not already exist.
+This service can be configured in the file `services/dropbox.cfg`.
 
-**Step 2** is issued by openHAB automatically on startup. You will find some log entries (also in the console) like this:
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| appkey   | `gbrwwfzvrw6a9uv` |  Yes due to [#4588](https://github.com/openhab/openhab1-addons/issues/4588) | the default app key is defunct and code changes are necessary. |
+| appsecret | `gu5v7lp1f5bbs07` | Yes due to [#4588](https://github.com/openhab/openhab1-addons/issues/4588) | the default app secret is defunct and code changes are necessary. |
+| fakemode |  `false` |   No    | operates the synchronizer in fake mode which avoids uploading files to or downloading files from Dropbox. Set to `true` as a test mode for the filter settings. |
+| contentdir | openHAB configuration directory | No | the base directory to synchronize with openHAB, configure `uploadFilter` and `downloadFilter` to select files |
+| uploadInterval | `0 0 2 * * ?` | No | a [cron expression](http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06) to set the schedule for uploading changes to Dropbox.  The default schedule uploads changes every day at 2am. |
+| downloadInterval | `0 0/5 * * * ?` | No | a [cron expression](http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06) to set the schedule for downloading changes from Dropbox.  The default schedule downloads any changes every five minutes. |
+| syncmode | `LOCAL_TO_DROPBOX` | No | There are three different synchronization modes available:<br/><br/>`DROPBOX_TO_LOCAL` - changed files will be downloaded from your Dropbox to openHAB only<br/>`LOCAL_TO_DROPBOX` - locally changed files will be uploaded to your Dropbox only<br/>`BIDIRECTIONAL` - files will be synchronized from Dropbox to your local openHAB and vice versa. All changes will be downloaded from Dropbox to your local system first. After that any local changes will be uploaded to Dropbox. Hence a concurrent change to one file will be overruled by Dropbox in any case.<br/><br/>In case your Dropbox returns the `reset` flag, all local files will be uploaded to your Dropbox once, even if your synchronization mode is set to `DROPBOX_TO_LOCAL`. The `reset` flag might be returned either if the synchronization has been the first call ever (so no delta cursor is available) or there might be technical issues at Dropbox which causes the connected clients to resynchronize their states with Dropbox again. |
+| uploadfilter | `^([^/]*/){1}[^/]*$,/configurations.*,/logs/.*,/etc/.*` | No | The defaults are specific to openHAB 1.x running on Unix-like systems |
+| downloadfilter | `^([^/]*/){1}[^/]*$,/configurations.*` | No | The defaults are specific to openHAB 1.x running on Unix-like systems |
 
-    17:04:35.375 INFO  o.o.i.d.i.DropboxSynchronizer[:202] - #########################################################################################
-    17:04:35.376 INFO  o.o.i.d.i.DropboxSynchronizer[:203] - # Dropbox-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!
-    17:04:35.376 INFO  o.o.i.d.i.DropboxSynchronizer[:204] - # 1. Open URL 'https://www.dropbox.com/1/oauth2/authorize?locale=en_US&client_id=gbrwwfzvrw6a9uv&response_type=code'
-    17:04:35.376 INFO  o.o.i.d.i.DropboxSynchronizer[:205] - # 2. Allow openHAB to access Dropbox
-    17:04:35.376 INFO  o.o.i.d.i.DropboxSynchronizer[:206] - # 3. Paste the authorisation code here using the command 'finishAuthentication "<token>"'
-    17:04:35.376 INFO  o.o.i.d.i.DropboxSynchronizer[:207] - #########################################################################################
+## Authorize openHAB
 
-**Step 3** needs interaction. Copy the given URL to your browser and authorize openHAB to use Dropbox in the future. Be aware that the request token is only valid for the next five minutes, so don't be to placid. After successful authorization a token is shown on the Dropbox Webpage.
+You'll have to authorize openHAB to connect to your Dropbox. This is done in a three-step process. openHAB requests a token which is used as a one-time-password to obtain an access token (second step) which will be used for all future requests against Dropbox.
 
-**Step 4** needs interaction, too. Please copy the token shown on the Dropbox Webpage and issue the following command `finishAuthentication "lsdfgkj03lewkfd987349z3kjh222"` on the OSGi console.
+### Step 1: Monitor Log for Authorization Message
 
-![](images/screenshots/dropbox-authorization.png)
+This service issues a message to the log automatically on first startup. You will find some log entries (also in the console) containing entries like these:
 
-To activate the OSGi console in a running session simply press enter you should then get a prompt like "osgi >". If openHAB has been started as a service, terminate this service and start openHAB using one of the start scripts to enter the OSGi console.
+```text
+ #########################################################################################
+ # Dropbox-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!
+ # 1. Open URL 'https://www.dropbox.com/1/oauth2/_type=code'
+ # 2. Allow openHAB to access Dropbox
+ # 3. Paste the authorisation code here using the command 'dropbox:finishAuthentication "<token>"'
+ #########################################################################################
+```
 
-If you have installed openhab via the debian packages, you can telnet to the osgi console using the TELNET_PORT port set in /etc/default/openhab (default 5555) to enter the finishAuthentication command.
+### Step 2: Obtain Authorization Token
 
-## Sync Modes
+Copy the given URL to your browser and authorize openHAB to use Dropbox in the future. Be aware that the request token is only valid for the next five minutes, so don't be to placid.
 
-There are three different synchronization modes available
+After successful authorization, a token is shown on the Dropbox web page:
 
-- `DROPBOX_TO_LOCAL` - changed files will be downloaded from your Dropbox to openHAB only
-- `LOCAL_TO_DROPBOX` - locally changed files will be uploaded to your Dropbox only
-- `BIDIRECTIONAL` - files will be synchronized from Dropbox to your local openHAB and vice versa. All changes will be downloaded from Dropbox to your local system first. After that any local changes will be uploaded to Dropbox. Hence a concurrent change to one file will be overruled by Dropbox in any case.
+![](https://github.com/openhab/openhab1-addons/wiki/images/screenshots/dropbox-authorization.png)
 
-In case your Dropbox returns the `reset` flag and your local configuration of `dropbox:initialize` is set to `true` all local files will be uploaded to your Dropbox once, even if your synchronization mode is set to `DROPBOX_TO_LOCAL`. The `reset` flag might be returned either if the synchronization has been the first call ever (so no delta cursor is available) or there might be technical issues at Dropbox which causes the connected clients to resynchronize their states with Dropbox again.
+### Step 3: Save Token in openHAB Console
 
-## Filters
+Access the openHAB console to reach the `openhab>` prompt.  One way you can access the openHAB 2 console from the server with:
 
-The default upload and download filter do not work properly with non-unix (windows) based file systems. Windows based file paths use backslashes and the bundle uses forward slashes. The simplest workaround is to manually set the upload and download filter with the slashes removed.
+```shell
+ssh openhab@localhost -p 8101
+```
 
-    dropbox:uploadfilter=configuration.*
-    dropbox:downloadfilter=configuration.*
+The default password is `habopen`.  If this is the first time accessing your console, it may take some time to generate cryptographic keys.
 
-## Schedules
+Copy the token shown on the Dropbox Web page and issue the following command 
 
-The Dropbox IO Bundle supports different schedules for each synchronization direction. E.g. one could backup the configuration- and log files once a day (preferably at night 2-4am) whereas configuration changes should be downloaded every minutes. Such configuration can be accomplished by two [Cron expressions](http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06) (see `openhab_default.cfg` for more information on these parameters).
-
-The default schedule is set to every five minutes for download and once day at 2am for upload.
+```text
+dropbox:finishAuthentication "replace with the token"
+```
