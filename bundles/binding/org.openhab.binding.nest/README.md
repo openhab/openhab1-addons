@@ -28,7 +28,7 @@ This binding can be configured in the file `services/nest.cfg`.
 
 The syntax for the Nest item configuration string is explained below.
 
-Nest bindings start with a `<`, `>` or `=`, to indicate if the Item receives values from the API (in binding), sends values to the API (out binding), or both (bidirectional binding), respectively.
+Nest bindings start with a symbol character to indicate if the item receives values from the API (in binding `<`), sends values to the API (out binding `>`), or both (bidirectional binding `=`).
 
 The first character is then followed by a section between square brackets (\[and \] characters):
 
@@ -36,7 +36,7 @@ The first character is then followed by a section between square brackets (\[and
 <[<property>]
 ```
 
-where `<property>` is one of a long list of properties than you can read and optionally change. See the list below, and peruse the [Nest API Reference](https://developer.nest.com/documentation/api-reference) for all specifics as to their meanings.
+where `<property>` is one of a long list of properties than you can read and optionally change. See the list below, and then read the [Nest API Reference](https://developer.nest.com/documentation/api-reference) for all specifics as to their meanings.
 
 Since device and structure identifiers are very long, cryptic strings that are hard to learn, binding configurations allow you to use the device's textual name as a reference.  Whatever name you see in the web or mobile client is the name you would supply in an Item's binding configuration.  So, for example, in order to determine the current humidity detected at the thermostat named 'Living Room', your binding configuration would look like this:
 
