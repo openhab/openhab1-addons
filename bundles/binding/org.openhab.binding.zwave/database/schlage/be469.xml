@@ -89,6 +89,7 @@
         <Parameter>
             <Index>7</Index>
             <Label lang="en">Lock Specific Alarm Mode</Label>
+            <Help lang="en">BE469 Only</Help>
             <Type>list</Type>
             <Default>0</Default>
             <Minimum>0</Minimum>
@@ -110,8 +111,6 @@
                 <Value>3</Value>
                 <Label lang="en">Forced Entry</Label>
             </Item>
-            <Help><![CDATA[BE469 Only
-            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -185,6 +184,7 @@
         <Parameter>
             <Index>10</Index>
             <Label lang="en">Lock Specific Alarm Kick Sensitivity</Label>
+            <Help lang="en">BE469 Only</Help>
             <Type>list</Type>
             <Default>0</Default>
             <Minimum>0</Minimum>
@@ -214,8 +214,6 @@
                 <Value>5</Value>
                 <Label lang="en">Least Sensitive</Label>
             </Item>
-            <Help><![CDATA[BE469 Only
-            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -257,6 +255,7 @@
         <Parameter>
             <Index>16</Index>
             <Label lang="en">User Code PIN Length</Label>
+            <Help lang="en">User Code PIN length, a value between 4 and 8 (default 4)</Help>
             <Type>list</Type>
             <Default>4</Default>
             <Minimum>4</Minimum>
@@ -282,8 +281,6 @@
                 <Value>8</Value>
                 <Label lang="en">Eight Digits</Label>
             </Item>
-            <Help><![CDATA[User Code PIN length, a value between 4 and 8 (default 4)
-            ]]></Help>
         </Parameter>
 
         <Parameter>
