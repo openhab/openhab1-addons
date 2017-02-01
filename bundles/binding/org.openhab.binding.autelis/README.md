@@ -1,13 +1,13 @@
 # Autelis Binding
 
-Autelis manufactures a network enabled pool interface for many popular pool systems.  See [the Autelis website](http://www.autelis.com) and the  [Autelis Command Protocol](http://www.autelis.com/wiki/index.php?title=Pool_Control_(PI)_HTTP_Command_Reference) for more information.
+Autelis manufactures a network enabled pool interface for many popular pool systems.  See [the Autelis website](http://www.autelis.com) and the [Autelis Command Protocol](http://www.autelis.com/wiki/index.php?title=Pool_Control_(PI)_HTTP_Command_Reference) for more information.
 
 The binding is fairly complete and supports the following functionality.
 
 * Read circuit, auxiliary, temperature, pump, chemistry and system values  
 * Control circuit, auxiliary lighting scenes, and temperature set points
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/autelis/readme.html).
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/oh2/autelis/readme.html).
 
 ## Binding Configuration
 

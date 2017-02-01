@@ -2,7 +2,7 @@
 
 This binding integrates the [Belkin WeMo Family](http://www.belkin.com/us/Products/c/home-automation/).  The integration happens either through the WeMo-Link bridge (feature still to come) which acts as an IP gateway to the ZigBee devices, or through Wi-Fi connection to standalone devices.
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/wemo/readme.html).
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/oh2/wemo/readme.html).
 
 ## Binding Configuration
 
