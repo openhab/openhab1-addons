@@ -3484,6 +3484,15 @@
             <Label lang="en">Touchscreen Deadbolt</Label>
             <ConfigFile>schlage/be468.xml</ConfigFile>
         </Product>
+	<Product>
+            <Reference>
+                <Type>6341</Type>
+                <Id>5044</Id>
+            </Reference>
+            <Model>BE469</Model>
+            <Label lang="en">Touchscreen Deadbolt</Label>
+            <ConfigFile>schlage/be469.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0184</Id>
