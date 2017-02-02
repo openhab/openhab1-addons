@@ -456,11 +456,11 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                 chInfo.getChannel().close();
             }
         } catch (Exception e) {
-            logger.error("() - Device {}/{} channel close exception: {}", toString(), chInfo.getDeviceId(),
+            logger.error("{} - Device {}/{} channel close exception: {}", toString(), chInfo.getDeviceId(),
                     chInfo.getIp(), e.getMessage());
         } finally {
             chInfo.closed();
-            logger.info("() -Device {}/{} was disconnected", toString(), chInfo.getDeviceId(), chInfo.getIp());
+            logger.info("{} - Device {}/{} was disconnected", toString(), chInfo.getDeviceId(), chInfo.getIp());
         }
 
         devicesStates.setDeviceState(deviceName, chInfo.getDeviceId(), DeviceStates.NOT_RESPONDING);

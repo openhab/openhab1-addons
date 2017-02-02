@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.simplebinary.internal;
 
-import java.awt.Color;
 import java.util.Map;
 
 import org.openhab.binding.simplebinary.internal.SimpleBinaryGenericBindingProvider.DeviceConfig;
@@ -27,6 +26,7 @@ import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
+import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -191,7 +191,8 @@ public class SimpleBinaryProtocol {
                         }
                     } else if (itemConfig.getItemType().isAssignableFrom(DimmerItem.class)) {
                         if (cmd == OnOffType.ON) {
-                            PercentType val = ((PercentType) (itemConfig.item).getStateAs(PercentType.class));
+                            State state = (itemConfig.item).getStateAs(PercentType.class);
+                            PercentType val = state != null ? ((PercentType) state) : null;
                             if (val == null) {
                                 data[4] = 100;
                                 ((DimmerItem) itemConfig.item).setState(PercentType.HUNDRED);
@@ -303,9 +304,10 @@ public class SimpleBinaryProtocol {
             case HSB:
             case RGB:
             case RGBW:
-
-                HSBType hsbVal;
                 Item item = itemConfig.item;
+                State state = item.getStateAs(HSBType.class);
+
+                HSBType hsbVal = state == null ? null : (state instanceof HSBType ? (HSBType) state : null);
 
                 if (logger.isDebugEnabled()) {
                     logger.debug(item.toString());
@@ -318,16 +320,20 @@ public class SimpleBinaryProtocol {
                     OnOffType onOffCmd = (OnOffType) command;
 
                     if (onOffCmd == OnOffType.OFF) {
-                        hsbVal = new HSBType(new Color(0, 0, 0));
+                        hsbVal = HSBType.BLACK;
                     } else {
-                        hsbVal = ((HSBType) item.getStateAs(HSBType.class));
+                        if (hsbVal == null) {
+                            hsbVal = HSBType.WHITE;
+                        }
                     }
                 } else if (command instanceof IncreaseDecreaseType) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("IncreaseDecreaseType");
                     }
 
-                    hsbVal = ((HSBType) item.getStateAs(HSBType.class));
+                    if (hsbVal == null) {
+                        hsbVal = HSBType.BLACK;
+                    }
                     int brightness = hsbVal.getBrightness().intValue();
 
                     IncreaseDecreaseType upDownCmd = (IncreaseDecreaseType) command;
@@ -347,20 +353,19 @@ public class SimpleBinaryProtocol {
                     }
 
                     hsbVal = new HSBType(hsbVal.getHue(), hsbVal.getSaturation(), new PercentType(brightness));
-
-                    ((ColorItem) item).setState(hsbVal);
                 } else if (command instanceof HSBType) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("HSBType");
                     }
                     hsbVal = (HSBType) command;
-
-                    ((ColorItem) item).setState(hsbVal);
                 } else if (command instanceof PercentType) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("PercentType");
                     }
-                    hsbVal = ((HSBType) item.getStateAs(HSBType.class));
+                    if (hsbVal == null) {
+                        hsbVal = HSBType.WHITE;
+                    }
+                    hsbVal = new HSBType(hsbVal.getHue(), hsbVal.getSaturation(), (PercentType) command);
                 } else {
                     logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
                             itemConfig.getDataType());
@@ -373,6 +378,10 @@ public class SimpleBinaryProtocol {
                                 hsbVal.getGreen(), hsbVal.getBlue());
                         logger.trace("         Hue={} Sat={} Bri={}", hsbVal.getHue(), hsbVal.getSaturation(),
                                 hsbVal.getBrightness());
+                    }
+
+                    if (item instanceof ColorItem) {
+                        ((ColorItem) item).setState(hsbVal);
                     }
 
                     HSBType cmd = hsbVal;
