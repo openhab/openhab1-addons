@@ -1,7 +1,26 @@
 # TinkerForge Binding
 
+[TinkerForge](http://www.tinkerforge.com) is a system of open source hardware building blocks that
+allows you to combine sensor and actuator blocks by plug and play. You can create your individual
+hardware system by choosing the necessary building blocks for your project and combine it with other
+home automation products. 
+
+There are many blocks available e.g for temperature, humidity or air pressure
+measurement as well as for I/O, LCDs and motor control. You will find a complete List of available
+blocks [here](http://www.tinkerforge.com/en/doc/Product_Overview.html).
+
+This binding connects the [TinkerForge](http://tinkerforge.com) devices to the openHAB event bus.
+Sensor values from devices are made available to openHAB and actions on devices can be triggered by
+openHAB.
+
+The binding supports the connection to several brickd instances.
+The TinkerForge auto reconnect feature is supported. Furthermore even if the initial connect failed the binding will make retries to get connected to the brickd.
+
+---
+[Table of Contents](#table-of-contents)
+
 ## Table of Contents
-- [Introduction](#introduction)
+
 - [Generic Item Binding Configuration](#generic-item-binding-configuration)
    - [Basic Configuration](#basic-configuration)
    - [Item Binding Configuration](#item-binding-configuration)
@@ -69,27 +88,10 @@
 
 ---
 
-## Introduction
-[TinkerForge](http://www.tinkerforge.com) is a system of open source hardware building blocks that
-allows you to combine sensor and actuator blocks by plug and play. You can create your individual
-hardware system by choosing the necessary building blocks for your project and combine it with other
-home automation products. There are many blocks available e.g for temperature, humidity or air pressure
-measurement as well as for I/O, LCDs and motor control. You will find a complete List of available
-blocks [here](http://www.tinkerforge.com/en/doc/Product_Overview.html).
-
-This binding connects the [TinkerForge](http://tinkerforge.com) devices to the openHAB event bus.
-Sensor values from devices are made available to openHAB and actions on devices can be triggered by
-openHAB.
-
-The binding supports the connection to several brickd instances.
-The TinkerForge auto reconnect feature is supported. Furthermore even if the initial connect failed the binding will make retries to get connected to the brickd.
-
----
-[Table of Contents](#table-of-contents)
-
 ## Generic Item Binding Configuration
 
 ### Basic Configuration
+
 In order to connect openHAB to TinkerForge devices you need to define all the brickd hosts and ports in the services/tinkerforge.cfg file.
 The following properties must be configured to define a brickd connection:
 ```

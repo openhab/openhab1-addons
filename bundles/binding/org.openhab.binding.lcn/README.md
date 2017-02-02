@@ -1,8 +1,8 @@
 # LCN Binding
 
-![](http://3.bp.blogspot.com/-d5mm3HC7uic/VpO2ctrfWNI/AAAAAAAAJOI/a37JMGhC4IY/s600/openhab_lcn.jpg)
+This binding connects to one or more LCN-PCHK instances via TCP/IP. **This means 1 unused LCN-PCHK license is required!**
 
-The *openHAB LCN binding* connects to one or more LCN-PCHK instances via TCP/IP. **This means 1 unused LCN-PCHK license is required!**
+![](http://3.bp.blogspot.com/-d5mm3HC7uic/VpO2ctrfWNI/AAAAAAAAJOI/a37JMGhC4IY/s600/openhab_lcn.jpg)
 
 The minimum recommended version is LCN-PCHK 2.8 (older versions will also work, but lack some functionality). Visit [http://www.lcn.de](http://www.lcn.de) for updates.
 

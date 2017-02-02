@@ -1,5 +1,6 @@
 # Squeezebox Binding
 
+This binding integrates the [Logitech Media Server](http://www.mysqueezebox.com) and compatible Squeeze players.
 
 From the [Wikipedia entry](http://en.wikipedia.org/wiki/Squeezebox_%28network_music_player%29):
 
@@ -7,7 +8,7 @@ From the [Wikipedia entry](http://en.wikipedia.org/wiki/Squeezebox_%28network_mu
 
 > In 2006, Slim Devices was acquired by Logitech for $20 million USD. Logitech continued the development of the player until they announced in August 2012 that it would be discontinued. Given the cross-platform nature of the server and software client, some users have ensured the continued use of the platform by utilizing the Raspberry Pi as dedicated Squeezebox device (both client and server).
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/squeezebox/readme.html).
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/oh2/squeezebox/readme.html).
 
 ## Table of Contents
 

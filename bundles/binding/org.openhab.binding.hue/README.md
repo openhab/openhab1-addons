@@ -4,7 +4,7 @@ Click the image below for a YouTube video demonstrating setup, configuration and
 
 [![openHAB Hue binding](http://img.youtube.com/vi/Q4_LkXIRBWc/0.jpg)](http://www.youtube.com/watch?v=Q4_LkXIRBWc)
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/hue/readme.html).
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/oh2/hue/readme.html).
 
 ## Prerequisites
 

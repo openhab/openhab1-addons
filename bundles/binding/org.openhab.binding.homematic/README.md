@@ -1,5 +1,8 @@
 # Homematic Binding
 
+This is the binding for the [eQ-3 Homematic Solution](http://www.eq-3.de/).
+This binding allows you to integrate, view, control and configure all Homematic devices in the openHAB environment.
+
 - RF and WIRED devices are supported
 - CCU/Homegear variables with synchronisation
 - execute programs on the CCU/Homegear
@@ -78,7 +81,7 @@ These ports are used by the binding:
 
 The CCU firewall must be configured to 'full access' for the Remote Homematic-Script API.
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/homematic/readme.html).
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/oh2/homematic/readme.html).
 
 ## Binding Configuration
 

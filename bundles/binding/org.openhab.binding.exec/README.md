@@ -6,7 +6,7 @@ The Exec binding could act as the opposite of WoL and sends a shutdown command t
 
 Note: when using 'ssh' you should use private key authorization since the password cannot be read from commandline. The given user should have the necessary permissions.
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/exec/readme.html).
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/oh2/exec/readme.html).
 
 ## Binding Confguration
 

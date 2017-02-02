@@ -4,8 +4,8 @@ The binding supports both TCP and Serial slaves. RTU, ASCII and BIN variants of 
 
 The binding can act as 
 
-- Modbus TCP Client (that is, as modbus master), querying data from Modbus TCP servers (that is, modbus slaves).
-- Modbus serial master, querying data from modbus serial slaves
+* Modbus TCP Client (that is, as modbus master), querying data from Modbus TCP servers (that is, modbus slaves).
+* Modbus serial master, querying data from modbus serial slaves
 
 The Modbus binding polls the slaves with an configurable poll period. openHAB commands are translated to write requests.
 
@@ -57,14 +57,15 @@ The configuration parameters have the following pattern:
 ```ini
 <slave-type>.<slave-name>.<slave-parameter-name>=<slave-parameter-value>
 ```
-where
+
+where:
+
 - `<slave-type>` can be either "tcp" or "serial" depending on the type of this Modbus slave
 - `<slave-name>` is unique name per slave you are connecting to. Used in openHAB configuration to refer to the slave.
 - `<slave-parameter-name>` identifies the parameter to configure
 - `<slave-parameter-value>` is the value of the parameter
 
 Valid slave parameters are
-
 
 <table>
   <tr><td>Property</td><td>Required</td><td>Description</td></tr>
@@ -77,6 +78,7 @@ Valid slave parameters are
 <i>port</i> refers to COM port name on Windows and serial device path in *nix. Optionally one can configure one or more of the serial parameters: baud (default <i>9600</i>), dataBits (default <i>8</i>), parity (default <i>none</i>), stopBits (default <i>1</i>), encoding (default <i>ascii</i>). <br/>Options for the optional serial parameters are as follows: parity={<i>even</i>, <i>odd</i>}; encoding={<i>ascii</i>, <i>rtu</i>, <i>bin</i>}.</p>
 
 See also below for additional connection parameters introduced in 1.9.0.
+
 </td>
      </tr>
   <tr><td>id</td><td>optional</td>
@@ -148,6 +150,7 @@ There are three ways to bind an item to modbus coils/registers.
 ```ini
 Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}
 ```
+
 - This binds MySwitch to modbus slave defined as "slave1" in `modbus.cfg` reading/writing to the coil (5 + slave's `start` index). The `5` is called item read index.
 - If the slave is read-only, that is the `type` is `input` or `discrete`, the binding ignores any write commands. 
 - if the slave1 refers to registers, and after parsing using the registers as rules defined by the `valuetype`, zero value is considered as `OFF`, everything else as `ON`.
@@ -169,6 +172,7 @@ Contact Contact1 "Contact1 [MAP(en.map):%s]" (All)   {modbus="slave2:0"}
 
 - In this case regarding to moxa example coil 0 is used as discrete input (in Moxa naming DI-00)
 - (?) following examples are relatively useless, if you know better one let us know!
+
 counter values in most cases 16bit values, now we must do math: in rules to deal with them ...
 
 ### Read / write register (number) 
@@ -182,6 +186,7 @@ and in sitemap you can for example
 ```ini
 Setpoint item=Dimmer1 minValue=0 maxValue=100 step=5
 ```
+
 **NOTE:** if the item value goes over the max value specified by the `valuetype` (e.g. 32767 with `int16`), the effects are fully untested!!!
 
 (?) this example should write the value to all DO bits of an moxa e1212 as byte value
@@ -211,10 +216,10 @@ Number MyCounter "My Counter [%f]" (All) {modbus="slave5:0"}`
 
 # Details
 
-
 ## Modbus functions supported
 
 ### Supported Modbus object types
+
 Modbus binding allows to connect to multiple Modbus slaves. The binding supports following Modbus *object types*
 
 - coils, also known as *digital out (DO)* (read & write)
@@ -244,6 +249,7 @@ The binding uses following function codes when communicating with the slaves:
 
 
 ## Comment on addressing
+
 [Modbus Wikipedia article](https://en.wikipedia.org/wiki/Modbus#Coil.2C_discrete_input.2C_input_register.2C_holding_register_numbers_and_addresses) summarizes this excellently:
 
 > In the traditional standard, [entity] numbers for those entities start with a digit, followed by a number of four digits in range 1–9,999:
@@ -276,13 +282,16 @@ Please note that the binding requires that all slaves connecting to the same ser
 Similarly, one must have identical connection parameters for all tcp slaves connecting to same host+port.
 
 ## Read and write functions (modbus slave type)
+
 Modbus read functions 
+
 - `type=coil` uses function 1 "Read Coil Status" 
 - `type=discrete` uses function 2 "Read Input Status" (readonly inputs)
 - `type=holding` uses function 3, "Read Holding Registers"
 - `type=input` uses function 4 "Read Input Register" (readonly-registers eG analogue inputs)
 
 Modbus write functions 
+
 - `type=coil` uses function 5 "Write Single Coil"
 - `type=holding` uses function 6 "Write Single Register", or function 16 "Write Multiple registers" when `writemultipleregisters` is `true`
 
@@ -306,43 +315,53 @@ The logic for converting read registers to number goes as below. Different proce
 Note that <i>first register</i> refers to register with address `start` (as defined in the slave definition), <i>second register</i> refers to register with address `start + 1` etc. The <i>index</i> refers to item read index, e.g. item `Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}` has 5 as read index.
 
 `valuetype=bit`:
+
 - a single bit is read from the registers
 - indices between 0...15 (inclusive) represent bits of the first register
 - indices between 16...31 (inclusive) represent bits of the second register, etc.
 - index 0 refers to the least significant bit of the first register
 - index 1 refers to the second least significant bit of the first register, etc.
+
 (Note that updating a bit in a holding type register will NOT work as expected across Modbus, the whole register gets rewritten. Best to use a read-only mode, such as Contact item.  Input type registers are by definition read-only.)
 
 `valuetype=int8`:
+
 - a byte (8 bits) from the registers is interpreted as signed integer
 - index 0 refers to low byte of the first register, 1 high byte of first register
 - index 2 refers to low byte of the second register, 3 high byte of second register, etc.
 - it is assumed that each high and low byte is encoded in most significant bit first order
 
 `valuetype=uint8`:
+
 - same as `int8` except values are interpreted as unsigned integers
 
 `valuetype=int16`:
+
 - register with index (counting from zero) is interpreted as 16 bit signed integer.
 - it is assumed that each register is encoded in most significant bit first order
 
 `valuetype=uint16`:
+
 - same as `int16` except values are interpreted as unsigned integers
 
 `valuetype=int32`:
+
 - registers (2 index) and ( 2 *index + 1) are interpreted as signed 32bit integer.
 - it assumed that the first register contains the most significant 16 bits
 - it is assumed that each register is encoded in most significant bit first order
 
 `valuetype=uint32`:
+
 - same as `int32` except values are interpreted as unsigned integers
 
 `valuetype=float32`:
+
 - registers (2 index) and ( 2 *index + 1) are interpreted as signed 32bit floating point number.
 - it assumed that the first register contains the most significant 16 bits
 - it is assumed that each register is encoded in most significant bit first order
 
 #### Word Swapped valuetypes (New since 1.9.0)
+
 The MODBUS specification defines each 16bit word to be encoded as Big Endian,
 but there is no specification on the order of those words within 32bit or larger data types.
 The net result is that when you have a master and slave that operate with the same
@@ -353,20 +372,24 @@ that have the words swapped.
 If you get strange values using the int32, uint32 or float32 valuetypes then just try the int32_swap, uint32_swap or float32_swap valuetype, depending upon what your data type is.
 
 `valuetype=int32_swap`:
+
 - registers (2 index) and ( 2 *index + 1) are interpreted as signed 32bit integer.
 - it assumed that the first register contains the least significant 16 bits
 - it is assumed that each register is encoded in most significant bit first order (Big Endian)
 
 `valuetype=uint32_swap`:
+
 - same as `int32_swap` except values are interpreted as unsigned integers
 
 `valuetype=float32_swap`:
+
 - registers (2 index) and ( 2 *index + 1) are interpreted as signed 32bit floating point number.
 - it assumed that the first register contains the least significant 16 bits
 - it is assumed that each register is encoded in most significant bit first order (Big Endian)
 
 
 #### Extra notes
+
 - `valuetypes` smaller than one register (less than 16 bits) actually read the whole register, and finally extract single bit from the result.
 
 ### Write
@@ -378,6 +401,7 @@ When the binding processes openhab command (e.g. sent by `sendCommand` as explai
 3. the 16bits are written to the register with address `start` (as defined in the slave definition)
 
 Conversion rules for converting command to 16bit integer
+
 - UP, ON, OPEN commands that are converter to number 1
 - DOWN, OFF, CLOSED commands are converted to number 0 
 - Decimal commands are truncated as 32 bit integer (in 2's complement representation), and then the least significant 16 bits of this integer are extracted.
@@ -385,12 +409,14 @@ Conversion rules for converting command to 16bit integer
 **Note: The way Decimal commands are handled currently means that it is probably not useful to try to use Decimal commands with non-16bit `valuetype`s.**
 
 Converting INCREASE and DECREASE commands to numbers is more complicated
+
 1. Register matching (`start` + read index) is interpreted as unsigned 16bit integer. Previous polled register value is used
 2. add/subtract `1` from the integer
 
 **Note: note that INCREASE and DECREASE ignore valuetype when using the previously polled value. Thus, it is not recommended to use INCREASE and DECREASE commands with other than `valuetype=uint16`**
 
 ### Modbus RTU over TCP 
+
 Some devices uses modbus RTU over TCP. This is usually Modbus RTU encapsulation in an ethernet packet. So, those devices does not work with Modbus TCP binding since it is Modbus with a special header. Also Modbus RTU over TCP is not supported by Openhab Modbus Binding. But there is a workaround: you can use a Virtual Serial Port Server, to emulate a COM Port and Bind it with OpenHab unsing Modbus Serial.
 
 
@@ -487,7 +513,6 @@ tcp.slave5.valuetype=float32
 Above we used the same modbus gateway with ip 192.168.6.180 multiple times 
 on different modbus address ranges and modbus functions.
 
-
 # Troubleshooting
 
 ## Enable verbose logging 
@@ -505,14 +530,19 @@ You can use test serial slaves without any hardware on linux using these steps:
 
 1. Set-up virtual null modem emulator using [tty0tty](https://github.com/freemed/tty0tty)
 2. Download [diagslave](http://www.modbusdriver.com/diagslave.html) and start modbus serial slave up using this command: 
+
 ```
 ./diagslave -m rtu -a 1 -b 38400 -d 8 -s 1 -p none -4 10 /dev/pts/7
 ```
+
 3. Configure openhab's modbus slave to connect to `/dev/pts/8`: 
+
 ```ini
 xxx.connection=/dev/pts/8:38400:8:none:1:rtu
 ```
+
 4. Modify `start.sh` or `start_debug.sh` to include the unconventional port name by adding the following argument to `java`: 
+
 ```
 -Dgnu.io.rxtx.SerialPorts=/dev/pts/8
 ```
@@ -522,10 +552,13 @@ Naturally this is not the same thing as the real thing but helps to identify sim
 ## Testing TCP implementation
 
 1. Download [diagslave](http://www.modbusdriver.com/diagslave.html) and start modbus tcp server (slave) using this command: 
+
 ```
 ./diagslave -m tcp -a 1 -p 55502
 ```
+
 2. Configure openhab's modbus slave to connect to `127.0.0.1:55502`: 
+
 ```ini
 tcp.slave1.connection=127.0.0.1:55502
 ```
@@ -647,8 +680,6 @@ tcp.slave1.length=20
 tcp.slave1.postundefinedonreaderror=true
 ```
 
-As inspiration I used [Roller shutter wiki page](https://github.com/openhab/openhab/wiki/Rollershutter-Bindings)
+As inspiration I used [Roller shutter wiki page](https://github.com/openhab/openhab1-addons/wiki/Rollershutter-Bindings)
 
 [Table of Contents](#table-of-contents)
-
-See [Modbus Binding](https://github.com/openhab/openhab/wiki/Modbus-Binding)
