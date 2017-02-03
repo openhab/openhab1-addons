@@ -1,4 +1,4 @@
-# TCP & UDP Bindings
+# TCP & UDP Binding
 
 The TCP and UDP bindings provide basic support for simple ASCII-based protocols. They send and receive data as ASCII strings. Data sent out is by default padded with a CR/LF. This should be sufficient for many home automation devices that take simple ASCII-based control commands, or that send back text-based status messages.
 

@@ -1,8 +1,6 @@
 # Daikin Binding
 
-The openHAB Daikin binding allows monitoring and control of a Daikin air
-conditioner/heat pump.
-
+The Daikin binding allows monitoring and control of a Daikin air conditioner or heat pump, through either the KKRP01A wired module or the BRP072A42 wireless module.
 
 ## Prerequisites
 
@@ -29,7 +27,7 @@ Multiple KKRP01A units can be configured by giving each a unique name.
 
 | Property           | Default | Required | Description                                  |
 |--------------------|---------|:--------:|----------------------------------------------|
-| `<name>`.host      |         | Yes      | `<name>` is a unique name for the Daikin unit, also used in item bindings.<br/> The value of this setting must be formatted as `<which>`@`<address>`.<br/> `<which>` refers to the Daikin Remote Control Device, and must be either WIRELESS or WIRED.<br/> `<address>` is the IP address or hostname of the Daikin unit.                                                                      |
+| `<name>`.host      |         | Yes      | `<name>` is a unique name for the Daikin unit, also used in item bindings.<br/> The value of this setting must be formatted as `<which>`@`<address>`.<br/> `<which>` refers to the Daikin Remote Control Device, and must be either WIRELESS or WIRED.<br/> `<address>` is the IP address or hostname of the Daikin unit. |
 | refresh            | 60000   | No       | The refresh interval (in milliseconds)       |
 
 

@@ -1,6 +1,8 @@
 # Fritzbox Binding (using TR064 protocol)
 
-This is a binding for communication with AVM Fritz!Box using SOAP requests (TR064 protocol). It has been tested on:
+This is a binding for communication with AVM Fritz!Box using SOAP requests (TR064 protocol).
+
+It has been tested on:
 
 * 7270
 * 7360SL (v6.30)
