@@ -24,8 +24,8 @@ There are two different ways to configure the items.
 ### 1. Direct access with defined key
 
 ```
-DateTime  budDate	"Buderus Date Time[%1$tA, %1$td.%1$tm.%1$tY]" {km200="date_time"}
-DateTime  budDate	"Buderus Datum  [%1$td.%1$tm.%1$tY %1$tH:%1$tM]" {km200="date_time"}
+DateTime  budDate	"Buderus Date Time [%1$tA, %1$td.%1$tm.%1$tY]" {km200="date_time"}
+DateTime  budDate	"Buderus Datum [%1$td.%1$tm.%1$tY %1$tH:%1$tM]" {km200="date_time"}
 String  budBrand "Brand of the heater [%s]" {km200="sys_brand"}
 String  budType "Type of the heater [%s]" {km200="sys_type"}
 String  budStatus "State of the heater [%s]" {km200="sys_state"}
