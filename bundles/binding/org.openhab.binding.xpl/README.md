@@ -1,9 +1,6 @@
 # xPL Binding
 
-The xPL Bundle provides two packages :
-
-- Action to send messages over the xPL network
-- Bindings to grab xPL message values in items and send xPL commands
+The xPL binding grabs xPL message values in items and sends xPL commands.
 
 ## Prerequisites
 

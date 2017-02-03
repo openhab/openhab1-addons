@@ -1,6 +1,6 @@
 # Asterisk Binding
 
-The Asterisk binding is used to enable communication between openhab and the free and open source PBX solution [Asterisk](http://www.asterisk.org). By help of this binding, you can e.g. detect incoming phone calls or determine if someone currently does a phone call. In combination with other bindings (e.g. the Samsung TV Binding) you can display caller IDs on your TV.
+The Asterisk binding is used to enable communication between openhab and the free and open source PBX solution [Asterisk](http://www.asterisk.org). This binding detects incoming phone calls or if someone makes a phone call. In combination with other bindings (e.g., the Samsung TV Binding) you can display caller IDs on your TV.
 
 ## Binding Configuration
 
