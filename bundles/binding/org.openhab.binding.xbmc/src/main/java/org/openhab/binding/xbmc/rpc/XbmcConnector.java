@@ -33,6 +33,8 @@ import org.openhab.binding.xbmc.rpc.calls.JSONRPCPing;
 import org.openhab.binding.xbmc.rpc.calls.PVRGetChannels;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetActivePlayers;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetItem;
+import org.openhab.binding.xbmc.rpc.calls.PlayerGetLabels;
+import org.openhab.binding.xbmc.rpc.calls.PlayerGetProperties;
 import org.openhab.binding.xbmc.rpc.calls.PlayerOpen;
 import org.openhab.binding.xbmc.rpc.calls.PlayerPlayPause;
 import org.openhab.binding.xbmc.rpc.calls.PlayerStop;
@@ -61,7 +63,7 @@ import com.ning.http.client.websocket.WebSocketUpgradeHandler;
 /**
  * Manages the web socket connection for a single XBMC instance.
  *
- * @author tlan, Ben Jones, Ard van der Leeuw
+ * @author tlan, Ben Jones, Ard van der Leeuw, Plebs
  * @since 1.5.0
  */
 public class XbmcConnector {
@@ -125,7 +127,7 @@ public class XbmcConnector {
 
     /***
      * Check if the connection to the XBMC instance is active
-     * 
+     *
      * @return true if an active connection to the XBMC instance exists, false otherwise
      */
     public boolean isConnected() {
@@ -139,7 +141,7 @@ public class XbmcConnector {
     /**
      * Attempts to create a connection to the XBMC host and begin listening
      * for updates over the async http web socket
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      * @throws IOException
@@ -276,15 +278,16 @@ public class XbmcConnector {
 
     /**
      * Create a mapping between an item and an xbmc property
-     * 
+     *
      * @param itemName
      *            The name of the item which should receive updates
      * @param property
      *            The property of this xbmc instance, which is to be
      *            watched for changes
-     * 
+     *
      */
     public void addItem(String itemName, String property) {
+        logger.debug("Mapping: itemname = {} & property = {}", itemName, property);
         if (!watches.containsKey(itemName)) {
             watches.put(itemName, property);
         }
@@ -307,7 +310,7 @@ public class XbmcConnector {
 
     /**
      * Update the status of the current player
-     * 
+     *
      * @param updatePolledPropertiesOnly
      *            If updatePolledPropertiesOnly is true, only update the Player properties that need to be polled
      *            If updatePolledPropertiesOnly is false, update the Player state itself as well
@@ -543,7 +546,7 @@ public class XbmcConnector {
 
     /**
      * Request an update for the Player properties from XBMC
-     * 
+     *
      * @param playerId
      *            The id of the currently active player
      */
@@ -553,7 +556,7 @@ public class XbmcConnector {
 
     /**
      * Request an update for the Player properties from XBMC
-     * 
+     *
      * @param playerId
      *            The id of the currently active player
      * @param updatePolledPropertiesOnly
@@ -581,25 +584,78 @@ public class XbmcConnector {
         if (!properties.isEmpty()) {
             logger.debug("[{}]: Retrieving properties ({}) for playerId {}", xbmc.getHostname(), properties.size(),
                     playerId);
-            // make the request for the player item details
-            final PlayerGetItem item = new PlayerGetItem(client, httpUri);
-            item.setPlayerId(playerId);
-            item.setProperties(properties);
+            final List<String> propertiesInfo = new ArrayList<String>();
+            final List<String> propertiesProperties = new ArrayList<String>();
+            final List<String> propertiesLabels = new ArrayList<String>();
 
-            item.execute(new Runnable() {
-                @Override
-                public void run() {
-                    // now update each of the openHAB items for each property
-                    for (String property : properties) {
-                        String value = item.getPropertyValue(property);
-                        if (property.equals("Player.Fanart")) {
-                            updateFanartUrl(property, value);
-                        } else {
+            for (String property : properties) {
+                if (property.startsWith("Player.")) {
+                    propertiesInfo.add(property);
+                }
+                if (property.startsWith("Property.")) {
+                    propertiesProperties.add(property);
+                }
+                if (property.startsWith("Label.")) {
+                    propertiesLabels.add(property);
+                }
+            }
+
+            // make the request for the player item details using GETINFO
+            if (!propertiesInfo.isEmpty()) {
+                final PlayerGetItem item = new PlayerGetItem(client, httpUri);
+                item.setPlayerId(playerId);
+                item.setProperties(propertiesInfo);
+
+                item.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        // now update each of the openHAB items for each property
+                        for (String property : propertiesInfo) {
+                            String value = item.getPropertyValue(property);
+                            if (property.equals("Player.Fanart")) {
+                                updateFanartUrl(property, value);
+                            } else {
+                                updateProperty(property, value);
+                            }
+                        }
+                    }
+                });
+            }
+
+            // make the request for the player item2 details using GETPROPERTIES
+            if (!propertiesProperties.isEmpty()) {
+                final PlayerGetProperties item2 = new PlayerGetProperties(client, httpUri);
+                item2.setPlayerId(playerId);
+                item2.setProperties(propertiesProperties);
+
+                item2.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        // now update each of the openHAB items for each property
+                        for (String property : propertiesProperties) {
+                            String value = item2.getPropertyValue(property);
                             updateProperty(property, value);
                         }
                     }
-                }
-            });
+                });
+            }
+
+            // make the request for the player item3 details using GETLABELS
+            if (!propertiesLabels.isEmpty()) {
+                final PlayerGetLabels item3 = new PlayerGetLabels(client, httpUri);
+                item3.setProperties(propertiesLabels);
+
+                item3.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        // now update each of the openHAB items for each property
+                        for (String property : propertiesLabels) {
+                            String value = item3.getPropertyValue(property);
+                            updateProperty(property, value);
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -652,7 +708,7 @@ public class XbmcConnector {
 
     /**
      * get a distinct list of player properties we have items configured for
-     * 
+     *
      * @return
      *         A list of property names
      */
@@ -662,7 +718,7 @@ public class XbmcConnector {
 
     /**
      * get a distinct list of player properties we have items configured for
-     * 
+     *
      * @param updatePolledPropertiesOnly
      *            Only get the properties that need to be refreshed by polling if true,
      *            otherwise get all the properties that have items configured for
@@ -676,25 +732,37 @@ public class XbmcConnector {
             for (String property : watches.values()) {
                 if (properties.contains(property)) {
                     continue;
-                } else if (property.equals("Player.Label")) {
+                }
+                if (property.equals("Player.State")) {
+                    continue;
+                }
+                if (property.startsWith("Player.")) {
                     properties.add(property);
-                } else if (property.equals("Player.Title")) {
+                }
+                if (property.startsWith("Property.")) {
+                    properties.add(property);
+                }
+                if (property.startsWith("Label.")) {
                     properties.add(property);
                 }
             }
         } else {
             for (String property : watches.values()) {
-                if (!property.startsWith("Player.")) {
+                if (properties.contains(property)) {
                     continue;
                 }
                 if (property.equals("Player.State")) {
                     continue;
                 }
-                if (properties.contains(property)) {
-                    continue;
+                if (property.startsWith("Player.")) {
+                    properties.add(property);
                 }
-
-                properties.add(property);
+                if (property.startsWith("Property.")) {
+                    properties.add(property);
+                }
+                if (property.startsWith("Label.")) {
+                    properties.add(property);
+                }
             }
         }
         return properties;

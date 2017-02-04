@@ -43,6 +43,7 @@ import com.tinkerforge.TimeoutException;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getUid <em>Uid</em>}</li>
@@ -51,16 +52,15 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getTfConfig <em>Tf Config</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getPosition <em>Position</em>}
  * </li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -289,10 +289,9 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -316,9 +315,8 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -342,10 +340,9 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -369,10 +366,9 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -396,10 +392,9 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__SUB_ID, oldSubId,
                     subId));
-        }
     }
 
     /**
@@ -410,10 +405,21 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public MBrickletDualButton getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_BUTTON__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_BUTTON__MBRICK)
             return null;
-        }
         return (MBrickletDualButton) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletDualButton basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_BUTTON__MBRICK)
+            return null;
+        return (MBrickletDualButton) eInternalContainer();
     }
 
     /**
@@ -437,25 +443,20 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
     public void setMbrick(MBrickletDualButton newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_BUTTON__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
@@ -479,10 +480,9 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
     public void setSensorValue(OnOffValue newSensorValue) {
         OnOffValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
-        }
     }
 
     /**
@@ -508,11 +508,10 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -527,22 +526,18 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
     public void setTfConfig(ButtonConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -566,10 +561,9 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
     public void setDeviceType(String newDeviceType) {
         String oldDeviceType = deviceType;
         deviceType = newDeviceType;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__DEVICE_TYPE,
                     oldDeviceType, deviceType));
-        }
     }
 
     /**
@@ -593,10 +587,9 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
     public void setPosition(DualButtonDevicePosition newPosition) {
         DualButtonDevicePosition oldPosition = position;
         position = newPosition == null ? POSITION_EDEFAULT : newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -724,9 +717,8 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.DUAL_BUTTON_BUTTON__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletDualButton) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -785,7 +777,9 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
             case ModelPackage.DUAL_BUTTON_BUTTON__SUB_ID:
                 return getSubId();
             case ModelPackage.DUAL_BUTTON_BUTTON__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.DUAL_BUTTON_BUTTON__SENSOR_VALUE:
                 return getSensorValue();
             case ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG:
@@ -904,7 +898,7 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
             case ModelPackage.DUAL_BUTTON_BUTTON__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.DUAL_BUTTON_BUTTON__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.DUAL_BUTTON_BUTTON__SENSOR_VALUE:
                 return sensorValue != null;
             case ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG:
@@ -1029,9 +1023,8 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

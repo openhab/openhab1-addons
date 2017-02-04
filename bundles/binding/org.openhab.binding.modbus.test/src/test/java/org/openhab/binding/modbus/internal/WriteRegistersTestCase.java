@@ -54,10 +54,6 @@ public class WriteRegistersTestCase extends TestCaseSupport {
     private static Command[] BOOL_COMMANDS = new Command[] { OnOffType.OFF, OpenClosedType.CLOSED, OnOffType.ON,
             OpenClosedType.OPEN };
 
-    @SuppressWarnings("serial")
-    public static class ExpectedFailure extends AssertionError {
-    }
-
     @Parameters
     public static List<Object[]> parameters() {
         List<Object[]> parameters = WriteRegistersTestParameters.parameters();

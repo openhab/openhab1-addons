@@ -18,6 +18,7 @@ package net.wimpi.modbus.net;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import org.apache.commons.lang.builder.StandardToStringStyle;
@@ -49,6 +50,8 @@ public class TCPMasterConnection implements ModbusSlaveConnection {
     // private int m_Retries = Modbus.DEFAULT_RETRIES;
     private ModbusTCPTransport m_ModbusTransport;
 
+    private int m_ConnectTimeoutMillis;
+
     private static StandardToStringStyle toStringStyle = new StandardToStringStyle();
 
     static {
@@ -70,6 +73,11 @@ public class TCPMasterConnection implements ModbusSlaveConnection {
         setPort(port);
     }
 
+    public TCPMasterConnection(InetAddress adr, int port, int connectTimeoutMillis) {
+        this(adr, port);
+        setConnectTimeoutMillis(connectTimeoutMillis);
+    }
+
     /**
      * Opens this <tt>TCPMasterConnection</tt>.
      *
@@ -79,7 +87,8 @@ public class TCPMasterConnection implements ModbusSlaveConnection {
     public synchronized boolean connect() throws Exception {
         if (!isConnected()) {
             logger.debug("connect()");
-            m_Socket = new Socket(m_Address, m_Port);
+            m_Socket = new Socket();
+            m_Socket.connect(new InetSocketAddress(m_Address, m_Port), this.m_ConnectTimeoutMillis);
             setTimeout(m_Timeout);
             m_Socket.setReuseAddress(true);
             m_Socket.setSoLinger(true, 1);
@@ -221,6 +230,14 @@ public class TCPMasterConnection implements ModbusSlaveConnection {
     @Override
     public String toString() {
         return new ToStringBuilder(this, toStringStyle).append("socket", m_Socket).toString();
+    }
+
+    public int getConnectTimeoutMillis() {
+        return m_ConnectTimeoutMillis;
+    }
+
+    public void setConnectTimeoutMillis(int m_ConnectTimeoutMillis) {
+        this.m_ConnectTimeoutMillis = m_ConnectTimeoutMillis;
     }
 
 }// class TCPMasterConnection

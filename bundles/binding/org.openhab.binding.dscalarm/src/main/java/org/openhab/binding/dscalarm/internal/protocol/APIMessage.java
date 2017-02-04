@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.dscalarm.internal.protocol;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -606,10 +607,12 @@ public class APIMessage {
                     case LCDUpdate: /* 901 */
                         apiName = "LCD Update";
                         apiDescription = apiCodeReceived + ": Text of the IT-100 menu has changed.";
+                        apiMessageType = APIMessageType.KEYPAD_EVENT;
                         break;
                     case LCDCursor: /* 902 */
                         apiName = "LCD Cursor";
                         apiDescription = apiCodeReceived + ": Cursor position has changed.";
+                        apiMessageType = APIMessageType.KEYPAD_EVENT;
                         break;
                     case LEDStatus: /* 903 */
                         apiName = "LED Status";
@@ -684,7 +687,7 @@ public class APIMessage {
         sb.append(apiDescription);
         sb.append("\"");
 
-        if (timeStamp != "") {
+        if (StringUtils.isNotEmpty(timeStamp)) {
             sb.append(", Time Stamp: ");
             sb.append(timeStamp);
         }
@@ -699,22 +702,22 @@ public class APIMessage {
             sb.append(zone);
         }
 
-        if (data != "") {
+        if (StringUtils.isNotEmpty(data)) {
             sb.append(", Data: ");
             sb.append(data);
         }
 
-        if (mode != "") {
+        if (StringUtils.isNotEmpty(mode)) {
             sb.append(", Mode: ");
             sb.append(mode);
         }
 
-        if (user != "") {
+        if (StringUtils.isNotEmpty(user)) {
             sb.append(", user: ");
             sb.append(user);
         }
 
-        if (error != "") {
+        if (StringUtils.isNotEmpty(error)) {
             sb.append(", error: ");
             sb.append(error);
         }

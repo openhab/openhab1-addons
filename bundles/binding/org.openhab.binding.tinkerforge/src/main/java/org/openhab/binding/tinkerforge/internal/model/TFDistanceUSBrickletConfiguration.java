@@ -18,11 +18,11 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration#getMovingAverage
  *        <em>Moving Average</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFDistanceUSBrickletConfiguration()
  * @model
@@ -47,8 +47,8 @@ public interface TFDistanceUSBrickletConfiguration extends TFBaseConfiguration {
     Short getMovingAverage();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration#getMovingAverage
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration#getMovingAverage
      * <em>Moving Average</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

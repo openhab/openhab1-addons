@@ -101,6 +101,7 @@ public class HueBulb {
             }
         } else {
             logger.warn("Not a valid id on the bridge: " + deviceId);
+            throw new IllegalStateException("Not a valid id on the bridge: " + deviceId);
         }
     }
 

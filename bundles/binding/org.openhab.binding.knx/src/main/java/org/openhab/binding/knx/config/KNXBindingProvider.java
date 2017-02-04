@@ -98,5 +98,14 @@ public interface KNXBindingProvider extends BindingProvider {
      *         configured and <code>false</code> in all other cases.
      */
     public boolean isAutoRefreshEnabled(Datapoint dataPoint);
+    
+    /**
+     * Determines if the given group address is marked for start-stop dimming.
+     * 
+     * @param   groupAddress    the group address to check start-stop dimming for
+     *  
+     * @returns true, if the given group address is marked for start-stop dimming, false otherwise. 
+     */
+    public boolean isStartStopGA(GroupAddress groupAddress);    
 
 }

@@ -47,40 +47,40 @@ import com.tinkerforge.TimeoutException;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getLogger <em>Logger</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getEnabledA <em>Enabled A</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getIpConnection
- * <em>Ip Connection</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getConnectedUid
- * <em>Connected Uid</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getIpConnection <em>Ip
+ * Connection</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getConnectedUid <em>Connected
+ * Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getPosition <em>Position</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getDeviceIdentifier
- * <em>Device Identifier</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getDeviceIdentifier <em>Device
+ * Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getName <em>Name</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getBrickd <em>Brickd</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getSensorValue
- * <em>Sensor Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getTfConfig <em>Tf Config</em>
- * }</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getCallbackPeriod
- * <em>Callback Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getSensorValue <em>Sensor
+ * Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getTfConfig <em>Tf
+ * Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getCallbackPeriod <em>Callback
+ * Period</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getThreshold
  * <em>Threshold</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getMovingAverage
- * <em>Moving Average</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogInV2Impl#getMovingAverage <em>Moving
+ * Average</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -448,10 +448,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__LOGGER,
                     oldLogger, logger));
-        }
     }
 
     /**
@@ -475,10 +474,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__UID, oldUid,
                     uid));
-        }
     }
 
     /**
@@ -502,10 +500,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -529,10 +526,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -556,10 +552,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setTinkerforgeDevice(BrickletAnalogInV2 newTinkerforgeDevice) {
         BrickletAnalogInV2 oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_ANALOG_IN_V2__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
-        }
     }
 
     /**
@@ -583,10 +578,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -610,10 +604,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -637,10 +630,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -664,10 +656,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_ANALOG_IN_V2__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
@@ -691,10 +682,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__NAME, oldName,
                     name));
-        }
     }
 
     /**
@@ -705,10 +695,21 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_ANALOG_IN_V2__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_ANALOG_IN_V2__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_ANALOG_IN_V2__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -732,25 +733,20 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_ANALOG_IN_V2__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__BRICKD,
                     newBrickd, newBrickd));
-        }
     }
 
     /**
@@ -774,10 +770,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setSensorValue(DecimalValue newSensorValue) {
         DecimalValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
-        }
     }
 
     /**
@@ -803,11 +798,10 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_ANALOG_IN_V2__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -822,22 +816,18 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setTfConfig(TFAnalogInV2Configuration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_ANALOG_IN_V2__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_ANALOG_IN_V2__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -861,10 +851,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setCallbackPeriod(long newCallbackPeriod) {
         long oldCallbackPeriod = callbackPeriod;
         callbackPeriod = newCallbackPeriod;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__CALLBACK_PERIOD,
                     oldCallbackPeriod, callbackPeriod));
-        }
     }
 
     /**
@@ -899,10 +888,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setThreshold(BigDecimal newThreshold) {
         BigDecimal oldThreshold = threshold;
         threshold = newThreshold;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__THRESHOLD,
                     oldThreshold, threshold));
-        }
     }
 
     /**
@@ -926,10 +914,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public void setMovingAverage(Short newMovingAverage) {
         Short oldMovingAverage = movingAverage;
         movingAverage = newMovingAverage;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_ANALOG_IN_V2__MOVING_AVERAGE,
                     oldMovingAverage, movingAverage));
-        }
     }
 
     /**
@@ -1037,9 +1024,8 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_ANALOG_IN_V2__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -1107,7 +1093,9 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
             case ModelPackage.MBRICKLET_ANALOG_IN_V2__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_ANALOG_IN_V2__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_ANALOG_IN_V2__SENSOR_VALUE:
                 return getSensorValue();
             case ModelPackage.MBRICKLET_ANALOG_IN_V2__TF_CONFIG:
@@ -1278,7 +1266,7 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
             case ModelPackage.MBRICKLET_ANALOG_IN_V2__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_ANALOG_IN_V2__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_ANALOG_IN_V2__SENSOR_VALUE:
                 return sensorValue != null;
             case ModelPackage.MBRICKLET_ANALOG_IN_V2__TF_CONFIG:
@@ -1430,9 +1418,8 @@ public class MBrickletAnalogInV2Impl extends MinimalEObjectImpl.Container implem
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author Robert Delbrück
  * @since 1.8.0
  */
-public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>implements ManagedService, EventNotifier {
+public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implements ManagedService, EventNotifier {
 
     private static final String PARAM_HOME_IDENTIFIERS = "homeIdentifiers";
     private static final String PARAM_USED_CALENDARS = "usedCalendars";
@@ -233,8 +233,10 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
         CalDavQuery query = new CalDavQuery(config.getCalendar(), DateTime.now(), Sort.ASCENDING);
         query.setFilterName(config.getFilterName());
         query.setFilterCategory(config.getFilterCategory());
+        query.setFilterCategoryMatchesAny(config.getCategoriesFiltersAny());
         return query;
     }
+
     private synchronized void updateItem(String itemName, CalDavConfig config, List<CalDavEvent> events) {
         if (config.getType() == Type.PRESENCE) {
             List<CalDavEvent> subList = getActiveEvents(events);

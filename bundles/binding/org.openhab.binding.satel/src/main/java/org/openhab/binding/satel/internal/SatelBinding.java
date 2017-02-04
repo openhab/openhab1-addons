@@ -54,6 +54,7 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
     private SatelModule satelModule = null;
     private boolean forceRefresh = false;
     private String textEncoding;
+    private String userCodeOverride = null;
 
     /**
      * {@inheritDoc}
@@ -146,12 +147,20 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
             if (itemConfig != null) {
                 logger.trace("Sending internal command for item {}: {}", itemName, command);
                 SatelCommand satelCmd = itemConfig.convertCommand(command, this.satelModule.getIntegraType(),
-                        this.userCode);
+                        getUserCode());
                 if (satelCmd != null) {
                     this.satelModule.sendCommand(satelCmd);
                 }
                 break;
             }
+        }
+    }
+
+    private String getUserCode() {
+        if (StringUtils.isNotEmpty(this.userCodeOverride)) {
+            return this.userCodeOverride;
+        } else {
+            return this.userCode;
         }
     }
 
@@ -270,7 +279,8 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
             return false;
         }
 
-        while (!Thread.interrupted()) {
+        boolean interrupted = false;
+        while (!interrupted) {
             // wait for command state change
             try {
                 synchronized (command) {
@@ -278,6 +288,7 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
                 }
             } catch (InterruptedException e) {
                 // ignore, we will leave the loop on next interruption state check
+                interrupted = true;
             }
             // check current state
             switch (command.getState()) {
@@ -309,6 +320,22 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
             return null;
         }
         return this.satelModule.getIntegraVersion();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setUserCode(String userCode) {
+        this.userCodeOverride = userCode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void resetUserCode() {
+        this.userCodeOverride = null;
     }
 
 }

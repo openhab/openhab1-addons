@@ -34,6 +34,12 @@ public enum PlayerCommandTypeMapping {
         }
     },
 
+    PLAYSONGID {
+        {
+            command = "playsongid";
+        }
+    },
+
     PLAY {
         {
             command = "play";

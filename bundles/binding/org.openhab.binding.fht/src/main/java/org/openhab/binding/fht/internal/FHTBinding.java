@@ -220,7 +220,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
             int temp = (int) (temperature * 2.0);
 
             FHTDesiredTemperatureCommand commandItem = new FHTDesiredTemperatureCommand(config.getFullAddress(),
-                    "41" + Integer.toHexString(temp));
+                    "41" + String.format("%02X", temp));
             logger.debug("Queuing new desired temperature");
             temperatureCommandQueue.put(config.getFullAddress(), commandItem);
         } else {

@@ -18,11 +18,11 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration#getEmissivity
  *        <em>Emissivity</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFObjectTemperatureConfiguration()
  * @model
@@ -47,8 +47,8 @@ public interface TFObjectTemperatureConfiguration extends TFBaseConfiguration {
     int getEmissivity();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration#getEmissivity
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration#getEmissivity
      * <em>Emissivity</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

@@ -84,7 +84,7 @@ public enum PlugwiseCommandType {
         }
     },
 
-    /** The currentstate. */
+    /** The current state of a Circle/Circle+. */
     CURRENTSTATE {
         {
             command = "state";
@@ -92,6 +92,105 @@ public enum PlugwiseCommandType {
             jobClass = Stick.InformationJob.class;
         }
 
+    },
+
+    /** The moment when the last message from battery powered device was received (Scan, Sense or Switch). */
+    LASTSEEN {
+        {
+            command = "lastseen";
+            typeClass = DateTimeType.class;
+            jobClass = null;
+        }
+    },
+
+    /** The state of a Scan, Sense trigger. */
+    TRIGGERED {
+        {
+            command = "triggered";
+            typeClass = OnOffType.class;
+            jobClass = null;
+        }
+    },
+
+    /** The timestamp of the most recent Scan, Sense trigger change. */
+    TRIGGEREDSTAMP {
+        {
+            command = "triggered-stamp";
+            typeClass = DateTimeType.class;
+            jobClass = null;
+        }
+    },
+
+    /** The most recently measured humidity by a Sense. */
+    HUMIDITY {
+        {
+            command = "humidity";
+            typeClass = DecimalType.class;
+            jobClass = null;
+        }
+    },
+
+    /** The timestamp of the most recently measured humidity by a Sense. */
+    HUMIDITYSTAMP {
+        {
+            command = "humidity-stamp";
+            typeClass = DateTimeType.class;
+            jobClass = null;
+        }
+    },
+
+    /** The most recently measured temperature by a Sense. */
+    TEMPERATURE {
+        {
+            command = "temperature";
+            typeClass = DecimalType.class;
+            jobClass = null;
+        }
+    },
+
+    /** The timestamp of the most recently measured temperature by a Sense. */
+    TEMPERATURESTAMP {
+        {
+            command = "temperature-stamp";
+            typeClass = DateTimeType.class;
+            jobClass = null;
+        }
+    },
+
+    /** The state of the left button of a Switch. */
+    LEFTBUTTONSTATE {
+        {
+            command = "left-button-state";
+            typeClass = OnOffType.class;
+            jobClass = null;
+        }
+    },
+
+    /** The timestamp of the most recent left button press of a Switch. */
+    LEFTBUTTONSTATESTAMP {
+        {
+            command = "left-button-state-stamp";
+            typeClass = DateTimeType.class;
+            jobClass = null;
+        }
+    },
+
+    /** The state of the right button of a Switch. */
+    RIGHTBUTTONSTATE {
+        {
+            command = "right-button-state";
+            typeClass = OnOffType.class;
+            jobClass = null;
+        }
+    },
+
+    /** The timestamp of the most recent right button press of a Switch. */
+    RIGHTBUTTONSTATESTAMP {
+        {
+            command = "right-button-state-stamp";
+            typeClass = DateTimeType.class;
+            jobClass = null;
+        }
     };
 
     // Represents the Plugwise command as it will be used in *.items configuration

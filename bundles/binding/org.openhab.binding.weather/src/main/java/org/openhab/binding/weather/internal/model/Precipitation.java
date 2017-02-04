@@ -22,30 +22,37 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
  */
 public class Precipitation {
 
-    @ProviderMappings({ @Provider(name = ProviderName.FORECASTIO, property = "precipIntensity"),
+    @ProviderMappings({
+            @Provider(name = ProviderName.FORECASTIO, property = "precipIntensity"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.precip_1hr_metric"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "qpf_allday.mm"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "rain.3h", converter = ConverterType.DOUBLE_3H),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "rain", converter = ConverterType.DOUBLE_3H),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "rain.1h"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "precipMM"),
-            @Provider(name = ProviderName.HAMWEATHER, property = "precipMM") })
+            @Provider(name = ProviderName.HAMWEATHER, property = "precipMM"),
+            @Provider(name = ProviderName.METEOBLUE, property = "precipitation_amount") })
     private Double rain;
 
-    @ProviderMappings({ @Provider(name = ProviderName.WUNDERGROUND, property = "snow_allday.cm"),
+    @ProviderMappings({
+            @Provider(name = ProviderName.WUNDERGROUND, property = "snow_allday.cm"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "snow.3h", converter = ConverterType.DOUBLE_3H),
             @Provider(name = ProviderName.HAMWEATHER, property = "snowDepthCM") })
     private Double snow;
 
-    @ProviderMappings({ @Provider(name = ProviderName.FORECASTIO, property = "precipType") })
+    @ProviderMappings({
+            @Provider(name = ProviderName.FORECASTIO, property = "precipType"),
+            @Provider(name = ProviderName.METEOBLUE, property = "is_snow") })
     private String type;
 
     @ProviderMappings({
             @Provider(name = ProviderName.FORECASTIO, property = "precipProbability", converter = ConverterType.FRACTION_INTEGER),
-            @Provider(name = ProviderName.WUNDERGROUND, property = "pop") })
+            @Provider(name = ProviderName.WUNDERGROUND, property = "pop"),
+            @Provider(name = ProviderName.METEOBLUE, property = "precipitation_probability") })
     private Integer probability;
 
-    @ProviderMappings({ @Provider(name = ProviderName.WUNDERGROUND, property = "precip_today_metric") })
+    @ProviderMappings({
+            @Provider(name = ProviderName.WUNDERGROUND, property = "precip_today_metric") })
     private Double total;
 
     /**

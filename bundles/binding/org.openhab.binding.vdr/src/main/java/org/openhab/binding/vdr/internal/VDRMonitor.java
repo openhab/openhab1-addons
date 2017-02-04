@@ -72,30 +72,36 @@ public class VDRMonitor extends AbstractActiveService {
     @Override
     protected void execute() {
         logger.debug("VDRMonitor execute called");
-        if (vdrBinding != null) {
-            for (VDRConfig vdrConfig : vdrBinding.vdrConfigCache.values()) {
-                Boolean recording = checkRecording(vdrConfig);
-                if (recording != null) {
-                    if (eventPublisher != null) {
-                        VDRBindingProvider bindingProvider = vdrBinding
-                                .findFirstMatchingBindingProviderByVDRId(vdrConfig.vdrId);
-                        if (bindingProvider != null) {
-                            String itemName = bindingProvider.getBindingItemName(vdrConfig.vdrId,
-                                    VDRCommandType.RECORDING);
-                            State newState = recording.booleanValue() ? OnOffType.ON : OnOffType.OFF;
-                            eventPublisher.postUpdate(itemName, newState);
-
-                        }
-                    }
-                }
-            }
-        } else {
+        if (vdrBinding == null) {
             logger.info("VDRBinding not available");
+            return;
+        }
+
+        for (VDRConfig vdrConfig : vdrBinding.vdrConfigCache.values()) {
+            logger.debug("Loop examining vdrConfig '{}' ...", vdrConfig);
+            Boolean recording = checkRecording(vdrConfig);
+            if (recording == null || eventPublisher == null) {
+                continue;
+            }
+
+            VDRBindingProvider bindingProvider = vdrBinding.findFirstMatchingBindingProviderByVDRId(vdrConfig.vdrId);
+            if (bindingProvider == null) {
+                continue;
+            }
+
+            String itemName = bindingProvider.getBindingItemName(vdrConfig.vdrId, VDRCommandType.RECORDING);
+            if (itemName == null) {
+                logger.debug(
+                        "itemName was null, so this must not be a recording item binding. Not publishing anything.");
+            } else {
+                State newState = recording.booleanValue() ? OnOffType.ON : OnOffType.OFF;
+                logger.debug("Publishing update for recording item binding '{}' with state '{}'", itemName, newState);
+                eventPublisher.postUpdate(itemName, newState);
+            }
         }
     }
 
     private Boolean checkRecording(VDRConfig vdrConfig) {
         return vdrConfig.getVDRConnection().isRecording();
     }
-
 }

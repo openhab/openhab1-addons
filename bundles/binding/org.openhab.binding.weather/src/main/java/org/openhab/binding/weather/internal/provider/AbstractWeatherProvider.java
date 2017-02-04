@@ -96,6 +96,9 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
         if (locationConfig.getLongitude() != null) {
             url = StringUtils.replace(url, "[LONGITUDE]", locationConfig.getLongitude().toString());
         }
+        if (locationConfig.getMeasurementUnits() != null) {
+            url = StringUtils.replace(url, "[UNITS]", locationConfig.getMeasurementUnits());
+        }
         url = StringUtils.replace(url, "[LANGUAGE]", locationConfig.getLanguage());
         url = StringUtils.replace(url, "[WOEID]", locationConfig.getWoeid());
         return url;

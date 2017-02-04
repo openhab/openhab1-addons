@@ -60,7 +60,7 @@ public class WeatherJobScheduler {
     /**
      * Restarts the JobScheduler after a short delay.
      */
-    public void restart() {
+    public synchronized void restart() {
         delayedExecutor.cancel();
         delayedExecutor.schedule(new TimerTask() {
 

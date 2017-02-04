@@ -85,6 +85,10 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>i
         try {
             // send info request
             final InfoResponse response = createProtocol().info();
+            if (response == null) {
+                // already logged
+                return;
+            }
             for (NeoHubBindingProvider provider : providers) {
                 for (String itemName : provider.getItemNames()) {
                     final String device = provider.getNeoStatDevice(itemName);
