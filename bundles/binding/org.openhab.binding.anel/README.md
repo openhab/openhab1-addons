@@ -1,6 +1,6 @@
-# Anel binding 
+# Anel NET-PwrCtrl Binding 
 
-The Anel binding is for monitoring and controlling NET-PwrCtrl devices.
+Monitor and control Anel NET-PwrCtrl devices.
 
 | [Anel NET-PwrCtrl HUT](http://anel-elektronik.de/SITE/produkte/hut/hut.htm) | [Anel NET-PwrCtrl IO](http://anel-elektronik.de/SITE/produkte/io/io.htm) | [Anel NET-PwrCtrl HOME](http://anel-elektronik.de/SITE/produkte/home/home.htm) |
 | --- | --- | --- |
