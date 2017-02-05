@@ -28,7 +28,7 @@ In order to consume or publish messages to an MQTT broker, you need to define al
 | Property             | Default | Required | Description                                                 |
 |----------------------|---------|:--------:|-------------------------------------------------------------|
 | `<broker>`.url       |         | Yes      | URL to the MQTT broker, e.g. tcp://localhost:1883 or ssl://localhost:8883 |
-| `<broker>`.clientId  | random  | Yes*     | Client ID to use when connecting to the broker. If not provided a random default is generated. Usually restricted to 23 characters in length. (see the `allowLongerClientIds` setting) |
+| `<broker>`.clientId  | random  | No*      | Client ID to use when connecting to the broker. If not provided a random default is generated. Usually restricted to 23 characters in length. (see the `allowLongerClientIds` setting) |
 | `<broker>`.user      |         | Yes      | User ID to authenticate with the broker.                    |
 | `<broker>`.pwd       |         | Yes      | Password to authenticate with the broker.                   |
 | `<broker>`.qos       | 0       | No       | Set the quality of service level for sending messages to this broker. Possible values are 0 (Deliver at most once), 1 (Deliver at least once) or 2 (Deliver exactly once). |
@@ -37,8 +37,8 @@ In order to consume or publish messages to an MQTT broker, you need to define al
 | `<broker>`.keepAlive | 60      | No       | Integer. Defines the keep alive interval in seconds.        |
 | `<broker>`.allowLongerClientIds | false | No | True or false. If set to true, allows the use of clientId values up to 65535 characters long. NOTE: clientId values longer than 23 characters may not be supported by all MQTT servers. Check the server documentation. |
 
-`<broker>` is an alias name for the MQTT broker.  This is the name you can use in the item binding configurations afterwards.
-
+`<broker>` is an alias name for the MQTT broker.  This is the name you can use in the item binding configurations afterwards.<br>
+\* `<broker>`.clientId is not required to be provided because a random value will be generated if a value is not provided.
 
 ### Example Configurations
 
