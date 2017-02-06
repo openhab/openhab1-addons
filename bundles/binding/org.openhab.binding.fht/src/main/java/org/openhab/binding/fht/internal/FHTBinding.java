@@ -559,7 +559,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
 
     private void writeRegister(String device, String register, String value) {
         StringBuffer sendBuffer = new StringBuffer(8);
-        sendBuffer.append('F');
+        sendBuffer.append('T');
         sendBuffer.append(device);
         sendBuffer.append(register); // register to write
         sendBuffer.append(value);
@@ -587,7 +587,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
             return;
         }
         StringBuffer sendBuffer = new StringBuffer(8);
-        sendBuffer.append('F');
+        sendBuffer.append('T');
         sendBuffer.append(deviceAddress);
         for (WriteRegisterCommand command : commands) {
             sendBuffer.append(command.register);
