@@ -4,7 +4,7 @@ This binding allows openHAB items to receive realtime updates about information 
 
 [![openhab binding for xbmc](http://img.youtube.com/vi/N7_5phTVbo0/0.jpg)](http://www.youtube.com/watch?v=N7_5phTVbo0)
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/oh2/kodi/readme.html).
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/kodi/readme.html).
 
 <!-- MarkdownTOC -->
 

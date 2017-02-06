@@ -24,7 +24,7 @@ You can easily check if your IP radio is supported:
 4. If the response is similar to `FS_OK 6836164442`, your radio is most likely compatible with this binding
 5. If you radio works with this binding, please add it to the list above by [Editing this page](Frontier-Silicon-Radio-Binding/_edit)!
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/oh2/fsinternetradio/readme.html).
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/fsinternetradio/readme.html).
 
 ## Binding Configuration
 

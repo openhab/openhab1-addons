@@ -8,7 +8,7 @@ This binding should be compatible with Samsung TV models which support Apple and
 * The KEY_POWERON command does not switch the TV on. Tested on Samsung UE40ES5700, maybe other models are working.
 * New models (H-Series TV´s like e.g. UEH5570 ) use a different (encrypted) protocol; they are not yet supported by this binding.
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/oh2/samsungtv/readme.html).
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/samsungtv/readme.html).
 
 ## Binding Configuration
 
