@@ -2602,6 +2602,10 @@
                 <Type>0002</Type>
                 <Id>001f</Id>
             </Reference>
+            <Reference>
+                <Type>0002</Type>
+                <Id>0020</Id>
+            </Reference>
             <Model>PAT02-A/B/C</Model>
             <Label lang="en">Flood Multisensor (incl. humidty and temperature)</Label>
             <Label lang="de">Überschwemmungssensor inkl. Luftfeuchtigkeit und Temperatur</Label>
@@ -2897,6 +2901,15 @@
         </Product>
         <Product>
             <Reference>
+                <Type>802</Type>
+                <Id>261</Id>
+            </Reference>
+            <Model>VRCS4-M0Z</Model>
+            <Label lang="en">4-Zone Controller</Label>
+            <ConfigFile>leviton/vrcs4-m0z.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>1706</Type>
                 <Id>334</Id>
             </Reference>
@@ -2986,6 +2999,15 @@
             <Model>ZMNHJD</Model>
             <Label lang="en">Flush Pilot</Label>
             <ConfigFile>qubino/zmnhjd.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>0004</Type>
+                <Id>0052</Id>
+            </Reference>
+            <Model>ZMNHUD</Model>
+            <Label lang="en">Flush Pilot DIN</Label>
+            <ConfigFile>qubino/zmnhud.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
@@ -3418,6 +3440,15 @@
             <Label lang="en">RGBW bulb</Label>
             <ConfigFile>zipato/rgbwe27.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>2001</Type>
+                <Id>0106</Id>
+            </Reference>
+            <Model>ZD2102</Model>
+            <Label lang="en">Door Window Sensor</Label>
+            <ConfigFile>vision/zd2102.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0138</Id>
@@ -3452,6 +3483,15 @@
             <Model>BE468</Model>
             <Label lang="en">Touchscreen Deadbolt</Label>
             <ConfigFile>schlage/be468.xml</ConfigFile>
+        </Product>
+	<Product>
+            <Reference>
+                <Type>6341</Type>
+                <Id>5044</Id>
+            </Reference>
+            <Model>BE469</Model>
+            <Label lang="en">Touchscreen Deadbolt</Label>
+            <ConfigFile>schlage/be469.xml</ConfigFile>
         </Product>
     </Manufacturer>
     <Manufacturer>
@@ -3514,6 +3554,15 @@
             <Model>MH-S411</Model>
             <Label lang="en">Touch Panel Switch (Single)</Label>
             <ConfigFile>mcohome/mhs411.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>0905</Type>
+                <Id>0201</Id>
+            </Reference>
+            <Model>MH9-CO2-WD</Model>
+            <Label lang="en">CO2 Monitor Air quality detector</Label>
+            <ConfigFile>mcohome/mh9co2wd.xml</ConfigFile>
         </Product>
     </Manufacturer>
     <Manufacturer>
@@ -3848,6 +3897,15 @@
   <Manufacturer>
     <Id>027A</Id>
     <Name>Zooz</Name>
+    <Product>
+      <Reference>
+        <Type>0101</Type>
+        <Id>000A</Id>
+      </Reference>
+      <Model>Zooz Z-Wave Smart Plug (ZEN06)</Model>
+      <Label lang="en">Smart Plug with 2 USB ports</Label>
+      <ConfigFile>zooz/zen06.xml</ConfigFile>
+    </Product>
     <Product>
       <Reference>
         <Type>2021</Type>

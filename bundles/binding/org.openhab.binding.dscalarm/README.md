@@ -1,59 +1,36 @@
-## Introduction
+# DSC PowerSeries Alarm System Binding
 
-This is an OpenHAB binding for a DSC PowerSeries Alarm System utilizing the EyezOn Envisalink 3/2DS interface or the DSC IT-100 RS-232 interface.
+This binding mintors and controls the DSC PowerSeries Alarm System, utilizing the EyezOn Envisalink 3/2DS interface or the DSC IT-100 RS-232 interface.
+
+> Note: if you are using the DSC Alarm Binding 2.0 for OpenHab2 please follow the documentation here: [https://github.com/openhab/openhab2-addons/tree/master/addons/binding/org.openhab.binding.dscalarm](https://github.com/openhab/openhab2-addons/tree/master/addons/binding/org.openhab.binding.dscalarm)
 
 The DSC PowerSeries Alarm System is a popular do-it-yourself home security system, which can be monitored and controlled remotely through a standard web-browser or mobile device.
 
-The OpenHAB DSC Alarm binding provides connectivity to the DSC Alarm panel via a TCP socket connection to the EyesOn Envisalink 3/2DS interface or a RS-232 serial connection to the DSC IT-100 interface.
+The openHAB DSC Alarm binding provides connectivity to the DSC Alarm panel via a TCP socket connection to the EyesOn Envisalink 3/2DS interface or a RS-232 serial connection to the DSC IT-100 interface.
+
+Additionally there is a DSC Alarm action bundle that can be installed along with the DSC Alarm binding.  The action provides the ability to send DSC Alarm commands directly to the DSC Alarm system using rules.
+
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/oh2/dscalarm/readme.html).
 
 ## Binding Configuration
 
-There are some configuration settings that you can set in the openhab.cfg file. Include the following in your openhab.cfg.
+This binding can be configured in the file `services/dscalarm.cfg`.
 
-```
-############################## DSC Alarm Binding #####################################
-#
-# DSC Alarm interface device type
-# Valid values are it100 (default for serial connection) or envisalink (default for tcp connection)
-#dscalarm:deviceType=
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| deviceType | `it100` (default for serial connection) or `envisalink` (default for tcp connection) | No | DSC Alarm interface device type |
+| serialPort | | if connecting via serial port | Valid values are e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux. Leave undefined if not connecting by serial port. |
+| baud     |         |   No     | DSC Alarm baud rate for serial connections. Valid values are 9600 (default), 19200, 38400, 57600, and 115200. Leave undefined if using default. |
+| ip       |         | if connecting via network | DSC Alarm IP address for a TCP connection. Leave undefined if not connecting by network connection. |
+| tcpPort  | 4025    |   No     | DSC Alarm TCP port for a TCP connection to either an EyezOn Envisalink on 4025 (default) or a TCP serial server to IT-100. Leave undefined if not connecting by network connection. |
+| password |         |          | DSC Alarm password for logging into the EyezOn Envisalink 3/2DS interface. |
+| usercode |         |          | DSC Alarm user code for logging certain DSC Alarm commands. |
+| pollPeriod | 1     |   No     | DSC Alarm poll period. Amount of time elapsed in minutes between poll commands sent to the DSC Alarm. Valid values are 1-15. |
+| suppressAcknowledgementMsgs | false | No | Suppress Acknowledgement Messages. Set to `true` to suppress the display of Acknowledgement messages, such as the Command Acknowledge message after a poll command is sent. |
 
-# DSC Alarm port name for a serial connection.
-# Valid values are e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux.
-# Leave undefined if not connecting by serial port.
-#dscalarm:serialPort=
+The primary setting will be the IP address of the EyezOn Envisalink 3/2DS interface or the serial port name of the DSC IT-100.  The *password*, *usercode*, *baud*, *pollPeriod*, and *suppressAcknowledgementMsgs* settings are optional.  The *deviceType* and *tcpPort* settings are used to connect to an IT-100 interface through a TCP/IP serial server.  If these settings are not set, the binding will resort to the system defaults.
 
-# DSC Alarm baud rate for serial connections.
-# Valid values are 9600 (default), 19200, 38400, 57600, and 115200.
-# Leave undefined if using default.
-#dscalarm:baud=
-
-# DSC Alarm IP address for a TCP connection.
-# Leave undefined if not connecting by network connection.
-#dscalarm:ip=
-
-# DSC Alarm TCP port for a TCP connection.
-# Can be EyezOn Envisalink on 4025 (default) or a TCP serial server to IT-100
-# Leave undefined if not connecting by network connection.
-#dscalarm:tcpPort=
-
-# DSC Alarm password for logging into the EyezOn Envisalink 3/2DS interface.
-# Leave undefined if using default.
-#dscalarm:password=
-
-# DSC Alarm user code for logging certain DSC Alarm commands.
-# Leave undefined if using default.
-#dscalarm:usercode=
-
-# DSC Alarm poll period.
-# Amount of time elapsed in minutes between poll commands sent to the DSC Alarm.
-# Valid values are 1-15 (Default = 1).
-# Leave undefined if using default.
-#dscalarm:pollPeriod=
-```
-
-The primary setting will be the IP address of the EyezOn Envisalink 3/2DS interface or the serial port name of the DSC IT-100.  The *password*, *usercode*, *baud*, and *pollPeriod* settings are optional.  If not set, the binding will resort to the system defaults.
-
-## Item Binding
+## Item Configuration
 
 In order to bind to the DSC Alarm system you can add items to an item file using the following format:
 
@@ -64,101 +41,65 @@ dscalarm="DSCAlarmDeviceType:<partitionID>:<zoneID>:DSCAlarmItemType"
 
 The DSCAlarmDeviceType indicates one of four device types of the DSC Alarm System.  They consist of the following:
 
-<table>
-    <tr><td><b>DSC Alarm Device Type</b></td><td><b>Description</b></td></tr>
-    <tr><td>panel</td><td>The basic representation of the DSC Alarm System.</td></tr>
-    <tr><td>partition</td><td>Represents a controllable area within a DSC Alarm system.</td></tr>
-    <tr><td>zone</td><td>Represents a physical device such as a door, window, or motion sensor.</td></tr>
-    <tr><td>keypad</td><td>Represents the central administrative unit.</td></tr>
-</table>
+| DSC Alarm Device Type | Description |
+|-----------------------|-------------|
+| panel                 | The basic representation of the DSC Alarm System.|
+| partition             | Represents a controllable area within a DSC Alarm system. |
+| zone                  | Represents a physical device such as a door, window, or motion sensor.|
+| keypad                | Represents the central administrative unit. |
+
 
 The parameters *partitionID* and *zoneID* will depend on the DSC Alarm device type.  A DSC Alarm device type of 'partition' requires a *partitionID* in the range 1-8, which will depend on how your DSC Alarm system is configured.  A DSC Alarm device type of 'zone' requires *zoneID* in the range 1-64, as well as the *partitionID*.
 
 The DSCAlarmItemType maps the binding to an openHAB item type.  Here are the supported DSC Alarm Item Types:
 
-<table>
-    <tr><td><b>DSC Alarm Item Type</b></td><td><b>openHAB Item Type</b></td><td><b>Description</b></td></tr>
-    <tr><td>panel_connection</td><td>Number</td><td>Panel connection status.</td></tr>
-    <tr><td>panel_message</td><td>String</td><td>Event messages received from the DSC Alarm system.</td></tr>
-    <tr><td>panel_system_error</td><td>String</td><td>DSC Alarm system error.</td></tr>
-    <tr><td>panel_time</td><td>DateTime</td><td>DSC Alarm system time and date.</td></tr>
-    <tr><td>panel_time_stamp</td><td>Switch</td><td>Turn DSC Alarm message time stamping ON/OFF.</td></tr>
-    <tr><td>panel_time_broadcast</td><td>Switch</td><td>Turn DSC Alarm time broadcasting ON/OFF.</td></tr>
-    <tr><td>panel_fire_key_alarm</td><td>Switch</td><td>A fire key alarm has happened.</td></tr>
-    <tr><td>panel_panic_key_alarm</td><td>Switch</td><td>A panic key alarm has happened.</td></tr>
-    <tr><td>panel_aux_key_alarm</td><td>Switch</td><td>An auxiliary key alarm has happened.</td></tr>
-    <tr><td>panel_aux_input_alarm</td><td>Switch</td><td>An auxiliary input alarm has happened.</td></tr>
-    <tr><td>partition_status</td><td>String</td><td>A partitions current status.</td></tr>
-    <tr><td>partition_arm_mode</td><td>Number</td><td>A partitions current arm mode. The possible values are:
-<br/>
-0=disarmed<br/>
-1=armed away<br/>
-2=armed stay<br/>
-3=away no delay<br/>
-4=stay no delay<br/>
-</td></tr>
-    <tr><td>partition_armed</td><td>Switch</td><td>A partition has been armed.</td></tr>
-    <tr><td>partition_entry_delay</td><td>Switch</td><td>A partition is in entry delay mode.</td></tr>
-    <tr><td>partition_exit_delay</td><td>Switch</td><td>A partition is in exit delay mode.</td></tr>
-    <tr><td>partition_in_alarm</td><td>Switch</td><td>A partition is in alarm.</td></tr>
-    <tr><td>zone_general_status</td><td>Contact</td><td>A zones general (open/closed) status.</td></tr>
-    <tr><td>zone_alarm_status</td><td>String</td><td>A zones alarm status.</td></tr>
-    <tr><td>zone_tamper_status</td><td>String</td><td>A zones tamper status.</td></tr>
-    <tr><td>zone_fault_status</td><td>String</td><td>A zones fault status.</td></tr>
-    <tr><td>zone_bypass_mode</td><td>Number</td><td>A zones bypass mode.</td></tr>
-    <tr><td>zone_in_alarm</td><td>Switch</td><td>A zone is in alarm.</td></tr>
-    <tr><td>zone_tamper</td><td>Switch</td><td>A zone tamper condition has happened.</td></tr>
-    <tr><td>zone_fault</td><td>Switch</td><td>A zone fault condition has happened.</td></tr>
-    <tr><td>zone_tripped</td><td>Switch</td><td>A zone has tripped.</td></tr>
-    <tr><td>keypad_ready_led</td><td>Number</td><td>Keypad Ready LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/>
-</td></tr>
-    <tr><td>keypad_armed_led</td><td>Number</td><td>Keypad Armed LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/></td></tr>
-    <tr><td>keypad_memory_led</td><td>Number</td><td>Keypad Memory LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/></td></tr>
-    <tr><td>keypad_bypass_led</td><td>Number</td><td>Keypad Bypass LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/></td></tr>
-    <tr><td>keypad_trouble_led</td><td>Number</td><td>Keypad Trouble LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/></td></tr>
-    <tr><td>keypad_program_led</td><td>Number</td><td>Keypad Program LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/></td></tr>
-    <tr><td>keypad_fire_led</td><td>Number</td><td>Keypad Fire LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/></td></tr>
-    <tr><td>keypad_backlight_led</td><td>Number</td><td>Keypad Backlight LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/></td></tr>
-    <tr><td>keypad_ac_led</td><td>Number</td><td>Keypad AC LED Status. The values are:
-<br/>
-0=OFF<br/>
-1=ON<br/>
-2=Flashing<br/></td></tr>
-    <tr><td>keypad_lcd_update</td><td>String</td><td>LCD Update string for the IT100</td></tr>
-    <tr><td>keypad_lcd_cursor</td><td>String</td><td>LCD Cursor change string for the IT100</td></tr>
-</table>
+| DSC Alarm Item Type | openHAB Item Type| Description |
+|---------------------|------------------|-------------|
+| panel_connection | Number | Panel connection status. |
+| panel_message | String | Event messages received from the DSC Alarm system. |
+| panel_system_error | String | DSC Alarm system error. |
+| panel_time | DateTime | DSC Alarm system time and date. |
+| panel_time_stamp | Switch | Turn DSC Alarm message time stamping ON/OFF. |
+| panel_time_broadcast | Switch | Turn DSC Alarm time broadcasting ON/OFF. |
+| panel_fire_key_alarm | Switch | A fire key alarm has happened. |
+| panel_panic_key_alarm | Switch | A panic key alarm has happened. |
+| panel_aux_key_alarm | Switch | An auxiliary key alarm has happened. |
+| panel_aux_input_alarm | Switch | An auxiliary input alarm has happened. |
+| panel_trouble_led | Switch | The panel trouble LED is on. |
+| panel_service_required | Switch | Service is required on the panel. |
+| panel_ac_trouble | Switch | The panel has lost AC power. |
+| panel_telephone_trouble | Switch | Telephone line fault. |
+| panel_ftc_trouble | Switch | Failure to communicate with monitoring station. |
+| panel_zone_fault | Switch | There is a fault condition on a zone/sensor. |
+| panel_zone_tamper | Switch | There is a tamper condition on a zone/sensor. |
+| panel_time_low_battery | Switch | There is a low battery condition on a zone/sensor. |
+| panel_time_loss | Switch | Loss of time on the panel. |
+| panel_trouble_message | String | Displays any trouble messages the panel might send. |
+| partition_status | String | A partitions current status. |
+| partition_arm_mode | Number | A partitions current arm mode. The possible values are:<br/>0=disarmed<br/>1=armed away<br/>2=armed stay<br/>3=away no delay<br/>4=stay no delay |
+| partition_armed | Switch | A partition has been armed. |
+| partition_entry_delay | Switch | A partition is in entry delay mode. |
+| partition_exit_delay | Switch | A partition is in exit delay mode. |
+| partition_in_alarm | Switch | A partition is in alarm. |
+| partition_opening_closing_mode | String | Displays the opening/closing mode of a partition. |
+| zone_general_status | Contact | A zones general (open/closed) status. |
+| zone_alarm_status | String | A zones alarm status. |
+| zone_tamper_status | String | A zones tamper status. |
+| zone_fault_status | String | A zones fault status. |
+| zone_bypass_mode | Number | A zones bypass mode. |
+| zone_in_alarm | Switch | A zone is in alarm. |
+| zone_tamper | Switch | A zone tamper condition has happened. |
+| zone_fault | Switch | A zone fault condition has happened. |
+| zone_tripped | Switch | A zone has tripped. |
+| keypad_ready_led | Number | Keypad Ready LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_armed_led | Number | Keypad Armed LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_memory_led | Number | Keypad Memory LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_bypass_led | Number | Keypad Bypass LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_trouble_led | Number | Keypad Trouble LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_program_led | Number | Keypad Program LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_fire_led | Number | Keypad Fire LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_backlight_led | Number | Keypad Backlight LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
+| keypad_ac_led | Number | Keypad AC LED Status. The values are:<br/>0=OFF<br/>1=ON<br/>2=Flashing |
 
 The following is an example of an item file:
 
@@ -177,6 +118,17 @@ Number PANEL_COMMAND "Panel Commands" (DSCAlarmPanel) {dscalarm="panel:panel_com
 String PANEL_MESSAGE "Panel Message: [%s]" <"shield-1"> (DSCAlarmPanel) {dscalarm="panel:panel_message"}
 String PANEL_SYSTEM_ERROR "Panel System Error: [%s]" <"shield-1"> (DSCAlarmPanel) {dscalarm="panel:panel_system_error"}
 
+Switch PANEL_TROUBLE_LED "Panel Trouble LED" <warning> (DSCAlarmPanel) {dscalarm="panel:panel_trouble_led"}
+Switch PANEL_SERVICE_REQUIRED <yellowLED> (DSCAlarmPanel) {dscalarm="panel:panel_service_required"}
+Switch PANEL_AC_TROUBLE <yellowLED> (DSCAlarmPanel) {dscalarm="panel:panel_ac_trouble"}
+Switch PANEL_TELEPHONE_TROUBLE <yellowLED> (DSCAlarmPanel) {dscalarm="panel:panel_telephone_trouble"}
+Switch PANEL_FTC_TROUBLE <yellowLED> (DSCAlarmPanel) {dscalarm="panel:panel_ftc_trouble"}
+Switch PANEL_ZONE_FAULT <yellowLED> (DSCAlarmPanel) {dscalarm="panel:panel_zone_fault"}
+Switch PANEL_ZONE_TAMPER <yellowLED> (DSCAlarmPanel) {dscalarm="panel:panel_zone_tamper"}
+Switch PANEL_ZONE_LOW_BATTERY <yellowLED> (DSCAlarmPanel) {dscalarm="panel:panel_zone_low_battery"}
+Switch PANEL_TIME_LOSS <yellowLED> (DSCAlarmPanel) {dscalarm="panel:panel_time_loss"}
+String PANEL_TROUBLE_MESSAGE "Panel Trouble Message: [%s]" <"shield-1"> (DSCAlarmPanel) {dscalarm="panel:panel_trouble_message"}
+
 DateTime PANEL_TIME "Panel Time [%1$tA, %1$tm/%1$td/%1$tY %1tT]" <calendar> (DSCAlarmPanel) {dscalarm="panel:panel_time"}
 Switch PANEL_TIME_STAMP (DSCAlarmPanel) {dscalarm="panel:panel_time_stamp"}
 Switch PANEL_TIME_BROADCAST (DSCAlarmPanel) {dscalarm="panel:panel_time_broadcast"}
@@ -194,6 +146,7 @@ Switch PARTITION1_ARMED (DSCAlarmPartitions) {dscalarm="partition:1:partition_ar
 Switch PARTITION1_ENTRY_DELAY (DSCAlarmPartitions) {dscalarm="partition:1:partition_entry_delay"}
 Switch PARTITION1_EXIT_DELAY (DSCAlarmPartitions) {dscalarm="partition:1:partition_exit_delay"}
 Switch PARTITION1_IN_ALARM (DSCAlarmPartitions) {dscalarm="partition:1:partition_in_alarm"}
+String PARTITION1_OPENING_CLOSING_MODE "Partition 1 Opening/Closing Mode: [%s]" (DSCAlarmPartitions) {dscalarm="partition:1:partition_opening_closing_mode"}
 
 /* DSC Alarm Zones Items */
 Contact ZONE1_GENERAL_STATUS "Tamper Switch" (DSCAlarmZones) {dscalarm="zone:1:1:zone_general_status"}
@@ -310,9 +263,22 @@ Frame label="Alarm System" {
 			Text item=PANEL_TIME {
 				Switch item=PANEL_TIME_STAMP label="Panel Time Stamp"
 				Switch item=PANEL_TIME_BROADCAST label="Panel Time Broadcast"
-			}
-		}
+            }
 
+			Text item=PANEL_SYSTEM_ERROR icon="MyImages/system-error"
+
+			Text item=PANEL_TROUBLE_LED label="Panel Trouble Condition" {
+				Text item=PANEL_TROUBLE_MESSAGE icon="shield-0"
+				Text item=PANEL_SERVICE_REQUIRED label="Service Required"
+				Text item=PANEL_AC_TROUBLE label="AC Trouble"
+				Text item=PANEL_TELEPHONE_TROUBLE label="Telephone Line Trouble"
+				Text item=PANEL_FTC_TROUBLE label="Failed to Communicate Trouble"
+				Text item=PANEL_ZONE_FAULT label="Zone Fault"
+				Text item=PANEL_ZONE_TAMPER label="Zone Tamper"
+				Text item=PANEL_ZONE_LOW_BATTERY label="Zone Low Battery"
+				Text item=PANEL_TIME_LOSS label="Panel Time Loss"					
+		    }
+        }
 		Frame label="Partitions" {
 				Text item=PARTITION1_STATUS icon="shield-1" {
 					Switch item=PARTITION1_ARM_MODE label="Partition 1 Arm Options" mappings=[0="Disarm", 1="Away", 2="Stay", 3="Zero", 4="W/Code"]
@@ -398,7 +364,7 @@ Frame label="Alarm System" {
 					Text item=ZONE15_FAULT_STATUS icon="MyImages/Status-warning"
 					Text item=ZONE15_TAMPER_STATUS icon="MyImages/Status-warning"
 				}
-			}
+		    }
 			Text item=ZONE25_GENERAL_STATUS {
 				Switch item=ZONE25_BYPASS_MODE icon="MyImages/Zone-Alarm" mappings=[0="Armed", 1="Bypassed"]
 				Frame label="Other Status:" {
@@ -411,3 +377,27 @@ Frame label="Alarm System" {
 	}
 }
 ```
+
+## Change Log
+
+### OpenHAB 1.6.0
+
+* Initial commit of the DSC Alarm Binding. ([#1334](https://github.com/openhab/openhab/pull/1334))
+
+### OpenHAB 1.7.0
+
+* Added several on/off switch items to help with rule creation.  Added a binding configuration option to adjust the polling period performed by the binding. ([#1763](https://github.com/openhab/openhab/pull/1763))
+* Features added include: renamed item 'panel_time_date' to 'panel_time'; added item 'panel_time_stamp' to allow the receiving of time stamped messages from the DSC Alarm system; added item 'panel_time_broadcast' to allow the reception of DSC Alarm system time broadcasts for display.  Fixes include: item 'panel_time_date' (renamed to 'panel_time') was not working at all; added several methods to binding class to eliminate extra 'for' loop in message receive thread; included user code fix for the IT-100 serial interface from [#2203](https://github.com/openhab/openhab/pull/2203). ([#2320](https://github.com/openhab/openhab/pull/2320))
+
+
+### OpenHAB 1.8.0
+
+* Added several new item types to allow the display of trouble conditions on the DSC Alarm.  A new item added to show which opening/closing method was used.  Added a configuration option to allow the suppression of acknowledgement messages from the DSC Alarm system. ([#2893](https://github.com/openhab/openhab/pull/2893))
+* Added user code to user opening/closing messages. ([#2964](https://github.com/openhab/openhab/pull/2964))
+* Added a DSC Alarm Action bundle that allows users to send DSC Alarm Commands directly to the alarm system from a rule. ([#3266](https://github.com/openhab/openhab/pull/3266))
+
+### OpenHAB 1.8.1
+
+* Added support for the DSC Alarm binding to communicate with an IT-100 through a TCP/IP serial server. Also, fixed a bug where the IT-100 serial interface requires a 6 digit usercode but was only receiving 4 digits.
+([#3774](https://github.com/openhab/openhab/pull/3774))
+

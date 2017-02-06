@@ -195,6 +195,10 @@
             <Maximum>0</Maximum>
             <Size>1</Size>
             <Item>
+                <Value>-1</Value>
+                <Label lang="en">Unknown Battery Level</Label>
+            </Item>
+            <Item>
                 <Value>0</Value>
                 <Label lang="en">Battery Level Good</Label>
             </Item>

@@ -468,5 +468,11 @@ Example entry:
    </feature_group>
    <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
+ <device productKey="F00.00.22">
+   <model>2982-222</model>
+   <description>Insteon Smoke Bridge</description>
+   <feature name="notification">ReceiveBroadcast</feature>
+   <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
 
 </xml>
