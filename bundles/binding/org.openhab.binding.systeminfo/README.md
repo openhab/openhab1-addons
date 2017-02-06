@@ -4,7 +4,7 @@ The System Information binding provides operating system monitoring data, includ
 
 The binding uses the Hyperic SIGAR API to access system information regardless of the underlying platform (Windows, Linux, OS X...). 
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/oh2/systeminfo/readme.html).
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/systeminfo/readme.html).
 
 ## Table of Contents
 
