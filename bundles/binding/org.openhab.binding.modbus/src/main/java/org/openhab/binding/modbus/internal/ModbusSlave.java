@@ -329,6 +329,8 @@ public abstract class ModbusSlave {
                 throw e;
             }
             ModbusResponse response = transaction.getResponse();
+            logger.trace("ModbusSlave ({}): response for write (FC={}) {}", name, response.getFunctionCode(),
+                    response.getHexMessage());
             if ((response.getTransactionID() != transaction.getTransactionID()) && !response.isHeadless()) {
                 logger.warn(
                         "ModbusSlave ({}): Transaction id of the response does not match request {}.  Endpoint {}. Connection: {}. Ignoring response.",
@@ -518,6 +520,8 @@ public abstract class ModbusSlave {
                         name, request, endpoint, connection);
                 throw new ModbusUnexpectedTransactionIdException();
             }
+            logger.trace("ModbusSlave ({}): response for read (FC={}) {}", name, response.getFunctionCode(),
+                    response.getHexMessage());
         } finally {
             returnConnection(endpoint, connection);
         }
