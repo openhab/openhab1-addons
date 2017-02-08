@@ -119,8 +119,8 @@ public class ErroringQueriesTestCase extends TestCaseSupport {
             // After 100ms the binding has not yet given up, i.e. no UNDEF posted to event bus
             verifyNoMoreInteractions(eventPublisher);
 
-            // After 100ms+300ms the timeout of 300ms has passed and UNDEF should have been posted
-            lock.await(300, TimeUnit.MILLISECONDS);
+            // After 100ms+300ms+margin 500ms the timeout of 300ms has passed and UNDEF should have been posted
+            lock.await(100 + 300 + 500, TimeUnit.MILLISECONDS);
             verify(eventPublisher).postUpdate("Item1", UnDefType.UNDEF);
             verifyNoMoreInteractions(eventPublisher);
         } finally {
