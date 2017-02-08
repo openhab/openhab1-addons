@@ -1,8 +1,8 @@
 # Exec Binding
 
-Executes commands as you would enter on the command line, returning the output as the bound item's state.  Execute command lines in response to commands sent to bound items.
+Execute commands as you would enter on the command line, returning the output (possibly transformed) as the bound item's state.  Also, execute command lines in response to commands sent to bound items.
 
-The Exec binding could act as the opposite of WoL and sends a shutdown command to the servers. Or switches off WLAN connectivity if a scene "sleeping" is activated.
+See [examples](#examples) below.
 
 ## Considerations
 
@@ -78,6 +78,24 @@ Sometimes the `<commandLine to execute>` isn't executed properly. In that case, 
 
 ## Examples
 
+### Turn a Computer ON and OFF
+
+On possible useage is to turn a computer on or off.  The Wake-on-LAN binding could be bound to a Switch item, so that when the switch receives an ON command, A Wake-on-LAN message is sent to wake up the computer.  When the switch item receives an OFF command, it will call the Exec binding to connect via ssh and issue the shutdown command.  Here is the example item:
+
+```
+Switch MyLinuxPC "My Linux PC" { wol="192.168.1.255#00-1f-d0-93-f8-b7", exec=">[OFF:ssh user@host shutdown -p now]" }
+```
+
+### KNX Bus to Exec Command
+
+The example below combines three bindings to incorporate the following behavior: query the current state of the NAS with the given IP address. When receiving an OFF command over KNX or the user switches to OFF manually then send the given command line via the exec binding.
+
+```
+Switch Network_NAS	"NAS"	(Network, Status)	{ nh="192.168.1.100", knx="<2/0/0", exec=">[OFF:ssh user@host shutdown -p now]" }
+```
+
+### More Examples
+
 ```
 exec=">[ON:/bin/sh@@-c@@echo on >> /tmp/sw_log] >[OFF:/bin/sh@@-c@@echo off >> /tmp/sw_log]"
 exec=">[1:open /mp3/gong.mp3] >[2:open /mp3/greeting.mp3] >[*:open /mp3/generic.mp3]"
@@ -92,16 +110,4 @@ exec="OFF:ssh user@host shutdown -p now"
 exec="OFF:some command, ON:'some other\, more \'complex\' \\command\\ to execute', *:fallback command"
 exec="1:open /path/to/my/mp3/gong.mp3, 2:open /path/to/my/mp3/greeting.mp3, *:open /path/to/my/mp3/generic.mp3"
 ```
-
-### Items
-
-```
-Switch Network_NAS	"NAS"	(Network, Status)	{ nh="192.168.1.100", exec=">[OFF:ssh user@host shutdown -p now]" }
-```
-
-```
-Switch Network_NAS	"NAS"	(Network, Status)	{ nh="192.168.1.100", knx="<2/0/0", exec=">[OFF:ssh user@host shutdown -p now]" }
-```
-
-The example above combines three bindings to incorporate the following behavior: query the current state of the NAS with the given IP address. When receiving an OFF command over KNX or the user switches to OFF manually then send the given command line via the exec binding.
 
