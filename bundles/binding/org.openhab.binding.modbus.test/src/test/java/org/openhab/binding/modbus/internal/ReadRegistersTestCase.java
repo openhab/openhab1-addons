@@ -75,12 +75,12 @@ public class ReadRegistersTestCase extends TestCaseSupport {
     private String spiAddRegisterMethodName;
     private Class<?> addRegisterArgClass;
 
+    /**
+     * Return value converted to bytes
+     *
+     * Bytes are returned in most significant bit (MSB) order
+     */
     private byte[] int32AsRegisters(int value) throws IOException {
-        /**
-         * Return value converted to bytes (CDAB)
-         *
-         * Bytes are returned in most significant bit (MSB) order
-         */
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         dos.writeInt(value); // writes all 4 bytes as MSB order
@@ -107,12 +107,13 @@ public class ReadRegistersTestCase extends TestCaseSupport {
         return byteArray;
     }
 
+    /**
+     * Return value converted to bytes
+     *
+     * Bytes are returned in most significant bit (MSB) order
+     */
     private byte[] float32AsRegisters(float value) throws IOException {
-        /**
-         * Return value converted to bytes
-         *
-         * Bytes are returned in most significant bit (MSB) order
-         */
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         dos.writeFloat(value); // writes all 4 bytes as MSB order
