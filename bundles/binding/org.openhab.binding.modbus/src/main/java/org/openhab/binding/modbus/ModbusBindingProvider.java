@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.modbus;
 
-import org.openhab.binding.modbus.internal.ModbusGenericBindingProvider.ModbusBindingConfig;
+import org.openhab.binding.modbus.internal.ModbusBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 
 /**

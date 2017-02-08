@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 public class ModbusActivator implements BundleActivator {
 
     private static Logger logger = LoggerFactory.getLogger(ModbusActivator.class);
+    private static BundleContext context;
 
     /**
      * Called whenever the OSGi framework starts our bundle
@@ -29,6 +30,7 @@ public class ModbusActivator implements BundleActivator {
     @Override
     public void start(BundleContext bc) throws Exception {
         logger.debug("Modbus binding has been started.");
+        context = bc;
     }
 
     /**
@@ -37,6 +39,15 @@ public class ModbusActivator implements BundleActivator {
     @Override
     public void stop(BundleContext bc) throws Exception {
         logger.debug("Modbus binding has been stopped.");
+    }
+
+    /**
+     * Returns the bundle context of this bundle
+     *
+     * @return the bundle context
+     */
+    public static BundleContext getContext() {
+        return context;
     }
 
 }
