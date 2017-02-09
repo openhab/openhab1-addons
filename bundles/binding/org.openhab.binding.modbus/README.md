@@ -11,36 +11,33 @@ The Modbus binding polls the slaves with an configurable poll period. openHAB co
 
 ## Table of Contents
 
-<!-- Using MarkdownTOC plugin for Sublime Text to update the table of contents (TOC) -->
-<!-- MarkdownTOC depth=2 autolink=true bracket=round -->
+<!-- You can generate TOC with https://github.com/ekalinin/github-markdown-toc and running the following command (and stripping out some of the too detailed ones)-->
+<!-- cat bundles/binding/org.openhab.binding.modbus/README.md | ./gh-md-toc -  -->
+   * [Modbus Binding](#modbus-binding)
+      * [Table of Contents](#table-of-contents)
+      * [Binding Configuration](#binding-configuration)
+         * [Global configuration](#global-configuration)
+         * [Configuration parameters specific to each slave](#configuration-parameters-specific-to-each-slave)
+         * [Advanced connection parameters](#advanced-connection-parameters)
+      * [Item Configuration](#item-configuration)
+         * [Simple format](#simple-format)
+         * [Extended format](#extended-format)
+         * [Item configuration examples](#item-configuration-examples)
+      * [Details](#details)
+         * [Modbus functions supported](#modbus-functions-supported)
+         * [Comment on addressing](#comment-on-addressing)
+         * [Many modbus binding slaves for single physical slave](#many-modbus-binding-slaves-for-single-physical-slave)
+         * [Read and write functions (modbus slave type)](#read-and-write-functions-modbus-slave-type)
+         * [Register interpretation (valuetype) on read &amp; write](#register-interpretation-valuetype-on-read--write)
+      * [Config Examples](#config-examples)
+      * [Troubleshooting](#troubleshooting)
+         * [Enable verbose logging](#enable-verbose-logging)
+      * [For developers](#for-developers)
+         * [Testing serial implementation](#testing-serial-implementation)
+         * [Testing TCP implementation](#testing-tcp-implementation)
+         * [Writing data](#writing-data)
+         * [Troubleshooting](#troubleshooting-1)
 
-- [Binding Configuration](#binding-configuration)
-	- [Global configuration](#global-configuration)
-	- [Configuration parameters specific to each slave](#configuration-parameters-specific-to-each-slave)
-	- [Advanced connection parameters](#advanced-connection-parameters)
-- [Item Configuration](#item-configuration)
-	- [Single coil/register per item](#single-coilregister-per-item)
-	- [Separate coils for reading and writing](#separate-coils-for-reading-and-writing)
-	- [input coil only for reading](#input-coil-only-for-reading)
-	- [Read / write register \(number\)](#read--write-register-number)
-- [Details](#details)
-	- [Modbus functions supported](#modbus-functions-supported)
-	- [Comment on addressing](#comment-on-addressing)
-	- [Many modbus binding slaves for single physical slave](#many-modbus-binding-slaves-for-single-physical-slave)
-	- [Read and write functions \(modbus slave type\)](#read-and-write-functions-modbus-slave-type)
-- [Register interpretation \(valuetype\) on read & write](#register-interpretation-valuetype-on-read--write)
-	- [Write](#write)
-	- [Modbus RTU over TCP](#modbus-rtu-over-tcp)
-- [Config Examples](#config-examples)
-- [Troubleshooting](#troubleshooting)
-	- [Enable verbose logging](#enable-verbose-logging)
-- [For developers](#for-developers)
-	- [Testing serial implementation](#testing-serial-implementation)
-	- [Testing TCP implementation](#testing-tcp-implementation)
-	- [Writing data](#writing-data)
-	- [Troubleshooting](#troubleshooting-1)
-
-<!-- /MarkdownTOC -->
 
 
 ## Binding Configuration
@@ -119,11 +116,94 @@ Examples:
 
 ModbusBindingProvider provides binding for openHAB Items.
 
-There are three ways to bind an item to modbus coils/registers. 
+The item configuration has two formats: simple and extended.
 
-### Single coil/register per item
+### Simple format
+
+Simple item configuration format looks like the below:
 
 ```
+Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}
+```
+
+where `slave1` is the name of the slave in openhab configuration, and `5` is the reference to the coil, discrete input, input register or holding register. 
+
+The index `5` is expressed relative to the slave `start` parameter and `valueType` parameter to determine which bits are used when interpreting the value. See also [Comment on addressing](#Comment-on-addressing) and [Register interpretation (valuetype) on read & write](#Register-interpretation-(valuetype)-on-read-&-write) for more details on this.
+
+```
+Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:<6:>7"}
+```
+
+In this case data is read from "index 6", while data is written to "index 7".
+
+### Extended format
+
+In addition to simple format, a new configuration syntax was introduced in version 1.10.0.
+
+This gives more freedom to the user. Among other things it enables
+- specify transformation to use on read/write
+- mark item as read-only (received openHAB commands are not processed)
+- mark item as write-only (polled data do not change the item state)
+- overriding `valueType` per-item basis (allows to read many registers at once and then interpret them using different value types)
+- processing only certain command (on write)
+- processing only certain state updates (on read) based on value
+
+The extended format looks like:
+
+(for read)
+
+```ini
+<[slaveName:readIndex:trigger=TRIGGER, transformation=TRANSFORMATION, valueType=VALUETYPE]
+ ```
+
+(for write)
+
+```ini
+[slaveName:writeIndex:trigger=TRIGGER, transformation=TRANSFORMATION, valueType=VALUETYPE]
+```
+
+Read and write entries can be combined, and there can be zero or more read/write entries. All the keyword arguments after index are optional. Defaults are such that they correspond to binding behaviour currently. Multiple read/write definitions can be specified with commas (whitespace allowed as well).
+
+Example of having multiple entries:
+
+```ini
+<[slaveName:0], >[slaveName:0], >[slaveName:1]
+```
+
+The above item config would read from "index 0", and write to both "index 0" and "index 1".
+
+
+Similar to simple configuration syntax, place the configuration string in `modbus` parameter of the item. For example,
+
+```ini
+Switch MySwitch "My Modbus Switch" (ALL) {modbus="<[slaveName:0], >[slaveName:0], >[slaveName:1]"}
+```
+
+
+Explanation of different keyword arguments
+- `trigger`: a string matching command (write definitions) or state (read definitions). If the command/state does not match the trigger value, the command/state is not processed by this write/read definition. 
+ - use `*` to process all (overrides slave's `updateunchangeditems`)
+ - use `CHANGED` (case-insensitive) with read entries to handle only changed values (similar to slave setting `updateunchangeditems=false`). 
+ - use `default` (case-insensitive) to handle all or just the changed values, depending on slave `updateunchangeditems` parameter
+ - if omitted, uses `default`.
+- `transformation`: transformation to use interpreting the result. 
+ - use `default` (case-insensitive) to communicate that no transformation is done and value should be passed as is
+ - use `SERVICE(ARG)` to refer to transformation service. 
+ - any other value than the above types will be interpreted as static text, in which case the actual content of the command/polled value is ignored. 
+ - if omitted, uses `default`.
+- `valueType`: valueType to use when interpreting the register
+ - use `default` (case-insensitive) to refer to slave definition's valueType
+ - if omitted, uses `default`. Allows to poll the data only once with a single request, and then interpret pieces of data with the correct value type.
+
+The transformations can convert to string representing command and state types of the item. You can also always use numbers (that is, `DecimalType`), `ON`/`OFF` and `OPEN`/`CLOSED`. The transformation can be quoted in case of special characters (e.g. `=` or `,`). One can use java-like escaping inside the quotes for complex transformations such as regular expressions (e.g. `\"`).
+
+
+### Item configuration examples
+ 
+
+#### Single coil/register per item
+
+```ini
 Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}
 ```
 
@@ -131,43 +211,15 @@ Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}
 - If the slave is read-only, that is the `type` is `input` or `discrete`, the binding ignores any write commands. 
 - if the slave1 refers to registers, and after parsing using the registers as rules defined by the `valuetype`, zero value is considered as `OFF`, everything else as `ON`.
 
-### Separate coils for reading and writing
+#### Separate index for reading and writing
 
-```
+```ini
 Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:<6:>7"}
 ``` 
 
-- In this case coil 6 is used as status coil (read-only) and commands are put to coil 7 by setting coil 7 to true.
-- (?) Your hardware should then set coil 7 back to false to allow further commands processing (Note 16.3.2016: does this relate to [issue #3685](https://github.com/openhab/openhab1-addons/issues/3685)?).
+- In this case index 6 is used for reading while and commands are put to index 7.
 
-### input coil only for reading
-
-```
-Contact Contact1 "Contact1 [MAP(en.map):%s]" (All)   {modbus="slave2:0"}
-```
-
-- In this case regarding to moxa example coil 0 is used as discrete input (in Moxa naming DI-00)
-- (?) following examples are relatively useless, if you know better one let us know!
-
-counter values in most cases 16bit values, now we must do math: in rules to deal with them ...
-
-### Read / write register (number) 
-
-```
-Number Dimmer1 "Dimmer1 [%d]" (ALL) {modbus="slave4:0"}
-```
-
-and in sitemap you can for example
-
-```
-Setpoint item=Dimmer1 minValue=0 maxValue=100 step=5
-```
-
-**NOTE:** if the item value goes over the max value specified by the `valuetype` (e.g. 32767 with `int16`), the effects are fully untested!!!
-
-(?) this example should write the value to all DO bits of an moxa e1212 as byte value
-
-5. read only register `type=input`
+#### Index and value types
 
 ```
 Number MyCounterH "My Counter high [%d]" (All) {modbus="slave3:0"}
@@ -181,13 +233,93 @@ Number MyCounterL "My Counter low [%d]" (All) {modbus="slave3:1"}
 
 this reads counter 1 low word when valuetype=`int8` or `uint8`
 
-6. floating point value numbers
+#### 32bit floating point value numbers
 
 When using a float32 value you must use [%f] in item description.
 
 ```
 Number MyCounter "My Counter [%f]" (All) {modbus="slave5:0"}`
 ```
+
+The above reads two registers, starting from index 0 (plus slave offset `start`).
+
+#### Read-only items
+
+```
+Number NumberItem "Number [%.1f]" <temperature> {modbus="<[slave1:0]"}
+```
+
+
+#### Write-only items
+
+```
+Number NumberItem "Number [%.1f]" <temperature> {modbus=">[slave1:0]"}
+```
+
+#### Set coil to 1 on any command
+
+(inspired by [[Modbus] Coil reset only after item update to ON (OFF excepted) #4745](https://github.com/openhab/openhab1-addons/issues/4745))
+
+Reads from index 0, writes to index 1. All writes (no matter what command) are converted to 1.
+
+```
+Number NumberItem "Number [%.1f]" <temperature> {modbus="<[slave1:0], >[slave1:1:transformation=ON]"}
+```
+
+#### JS transformation (scaling)
+
+This example multiplies the DecimalType commands by 10 when writing to modbus, and divides the values by 10 when reading from modbus.
+
+default.items:
+
+```
+Number NumberItem "Number [%.1f]" <temperature> {modbus=">[slave1:0:transformation=JS(multiply10.js)], <[slave1:0:transformation=JS(divide10.js)]"}
+```
+
+transform/multiply10.js:
+
+```
+// Wrap everything in a function
+(function(i) {
+    return Math.round(parseFloat(i, 10) * 10);
+})(input)
+// input variable contains data passed by openhab
+```
+
+transform/divide10.js:
+
+```
+// Wrap everything in a function
+(function(i) {
+    return parseFloat(i) / 10;
+})(input)
+// input variable contains data passed by openhab
+```
+
+
+
+#### Rollershutter
+
+(inspired by [[modbus] enhance modbus binding for rollershutter items #4654](https://github.com/openhab/openhab1-addons/pull/4654))
+
+This is an example how different Rollershutter commands can be written to MODBUS.
+
+Roller shutter position is read from register 0, UP(=1)/DOWN(=-1) commands are written to register 1, and MOVE(=1)/STOP(=0) commands are written to register 2.
+
+default.items:
+
+```
+Rollershutter RollershutterItem "Roller shutter position [%.1f]" <temperature> {modbus="<[slave1:0], >[slave1:1:trigger=UP, transformation=1], >[slave1:1:trigger=DOWN, transformation=-1], >[slave1:2:trigger=MOVE, transformation=1], >[slave1:2:trigger=STOP, transformation=0]"}
+```
+
+default.sitemap:
+
+```
+sitemap demo label="Main Menu" {
+    Switch item=RollershutterItem label="Roller shutter [(%d)]" mappings=[UP="up", STOP="X", DOWN="down"]
+}
+```
+
 
 
 ## Details
@@ -272,7 +404,7 @@ Modbus write functions
 See also [simplymodbus.ca](http://www.simplymodbus.ca) and [wikipedia article](https://en.wikipedia.org/wiki/Modbus#Supported_function_codes).
 
 
-## Register interpretation (valuetype) on read & write
+### Register interpretation (valuetype) on read & write
 
 Note that this section applies to register elements only (`holding` or `input` type)
 
@@ -282,9 +414,10 @@ When the binding interprets and converts polled input registers (`input`) or hol
 
 - 1. register(s) are first parsed to a number (see below for the details, exact logic depends on `valuetype`)
 - 2a. if the item is Switch or Contact: zero is converted CLOSED / OFF. Other numbers are converted to OPEN / ON.
-- 2b. if the item is Number: the value is passed as is
+- 2b. if the item is Number: the value is used as is
+- 3. transformation is done to the value, if configured. The transformation output (string) is parsed to state using item's accepted state types (e.g. number, or CLOSED/OPEN).
 
-The logic for converting read registers to number goes as below. Different procedure is taken depending on `valuetype`. 
+The logic for converting to the read read registers to number goes as below. Different procedure is taken depending on `valuetype`. 
 
 Note that _first register_ refers to register with address `start` (as defined in the slave definition), _second register_ refers to register with address `start + 1` etc. The _index_ refers to item read index, e.g. item `Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}` has 5 as read index.
 
@@ -334,7 +467,7 @@ Note that _first register_ refers to register with address `start` (as defined i
 - it assumed that the first register contains the most significant 16 bits
 - it is assumed that each register is encoded in most significant bit first order
 
-#### Word Swapped valuetypes (New since 1.9.0)
+##### Word Swapped valuetypes (New since 1.9.0)
 
 The MODBUS specification defines each 16bit word to be encoded as Big Endian,
 but there is no specification on the order of those words within 32bit or larger data types.
@@ -343,7 +476,7 @@ Endian mode things work fine, but add a device with a different Endian mode and 
 very hard to correct. To resolve this the binding supports a second set of valuetypes
 that have the words swapped.
 
-If you get strange values using the int32, uint32 or float32 valuetypes then just try the int32_swap, uint32_swap or float32_swap valuetype, depending upon what your data type is.
+If you get strange values using the `int32`, `uint32` or `float32` valuetypes then just try the `int32_swap`, `uint32_swap` or `float32_swap` valuetype, depending upon what your data type is.
 
 `valuetype=int32_swap`:
 
@@ -362,34 +495,45 @@ If you get strange values using the int32, uint32 or float32 valuetypes then jus
 - it is assumed that each register is encoded in most significant bit first order (Big Endian)
 
 
-#### Extra notes
+##### Extra notes
 
 - `valuetypes` smaller than one register (less than 16 bits) actually read the whole register, and finally extract single bit from the result.
 
-### Write
+#### Write
 
 When the binding processes openHAB command (e.g. sent by `sendCommand` as explained [here](https://github.com/openhab/openhab1-addons/wiki/Actions)), the process goes as follows
 
 1. it is checked whether the associated item is bound to holding register. If not, command is ignored.
-2. command is converted to 16bit integer (in [two's complement format](https://www.cs.cornell.edu/~tomf/notes/cps104/twoscomp.html)) (see below for details)
-3. the 16bits are written to the register with address `start` (as defined in the slave definition)
+2. command goes through transformation, if configured. No matter what commands the associated item accepts, the transformation can always output number (DecimalType), OPEN/CLOSED (OpenClosedType) and ON/OFF (OnOffType).
+3. command is converted to 16bit integer (in [two's complement format](https://www.cs.cornell.edu/~tomf/notes/cps104/twoscomp.html)). See below for details.
+4. the 16bits are written to the register with address `start` (as defined in the slave definition)
 
 Conversion rules for converting command to 16bit integer
 
 - UP, ON, OPEN commands that are converter to number 1
 - DOWN, OFF, CLOSED commands are converted to number 0 
 - Decimal commands are truncated as 32 bit integer (in 2's complement representation), and then the least significant 16 bits of this integer are extracted.
+- INCREASE, DECREASE: see below
+
+Other commands are not supported.
 
 **Note: The way Decimal commands are handled currently means that it is probably not useful to try to use Decimal commands with non-16bit `valuetype`s.**
 
 Converting INCREASE and DECREASE commands to numbers is more complicated
 
+(After 1.10.0)
+
+1. Most recently polled state (as it has gone through the read transformations etc.) of this item is acquired
+2. add/subtract `1` from the state. If the state is not a number, the whole command is ignored.
+
+(Before 1.10.0)
+
 1. Register matching (`start` + read index) is interpreted as unsigned 16bit integer. Previous polled register value is used
 2. add/subtract `1` from the integer
 
-**Note: note that INCREASE and DECREASE ignore valuetype when using the previously polled value. Thus, it is not recommended to use INCREASE and DECREASE commands with other than `valuetype=uint16`**
+**Note (before 1.10.0): note that INCREASE and DECREASE ignore valuetype when using the previously polled value. Thus, it is not recommended to use INCREASE and DECREASE commands with other than `valuetype=uint16`**
 
-### Modbus RTU over TCP 
+#### Modbus RTU over TCP 
 
 Some devices uses modbus RTU over TCP. This is usually Modbus RTU encapsulation in an ethernet packet. So, those devices does not work with Modbus TCP binding since it is Modbus with a special header. Also Modbus RTU over TCP is not supported by Openhab Modbus Binding. But there is a workaround: you can use a Virtual Serial Port Server, to emulate a COM Port and Bind it with OpenHab unsing Modbus Serial.
 
@@ -442,7 +586,7 @@ tcp.slave1.type=coil
 > you only read 6 input bits and say start from 0
 > the moxa manual ist not right clear in this case 
 
-```
+```ini
 poll=300
 
 # Query coils from 192.168.6.180
