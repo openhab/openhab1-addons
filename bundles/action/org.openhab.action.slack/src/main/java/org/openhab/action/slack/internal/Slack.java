@@ -26,7 +26,8 @@ import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
  *
  * It uses the Simple Slack Api from https://github.com/Ullink/simple-slack-api
  *
- * @author Rino van Wijngaarden (rino.van.wijngaarden@gmail.com)
+ * @since 1.10.0
+ * @author Rino.van.Wijngaarden@gmail.com
  *
  */
 public class Slack {
@@ -69,7 +70,7 @@ public class Slack {
                     session.disconnect();
                 }
             } catch (IOException e) {
-                logger.error("Error disonnecting Slack session", e);
+                logger.error("Error disconnecting Slack session", e);
             }
         }
         return success;
@@ -97,7 +98,7 @@ public class Slack {
                     session.disconnect();
                 }
             } catch (IOException e) {
-                logger.error("Error disonnecting Slack session", e);
+                logger.error("Error disconnecting Slack session", e);
             }
         }
         return success;

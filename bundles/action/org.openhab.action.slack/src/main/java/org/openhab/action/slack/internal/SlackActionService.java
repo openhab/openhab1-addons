@@ -18,7 +18,8 @@ import org.osgi.service.cm.ManagedService;
 /**
  * This class registers an OSGi service for the Slack action.
  *
- * @author Rino van Wijngaarden
+ * @since 1.10.0
+ * @author Rino.van.Wijngaarden@gmail.com
  *
  */
 public class SlackActionService implements ActionService, ManagedService {
@@ -60,7 +61,7 @@ public class SlackActionService implements ActionService, ManagedService {
             // check mandatory settings
             if (StringUtils.isBlank(Slack.authToken)) {
                 throw new ConfigurationException("slack",
-                        "Parameter authToken is mandatory and must be configured. Please check your slack.cfg!");
+                        "Parameter authToken is mandatory and must be configured. Please check your configuration!");
             }
             isProperlyConfigured = true;
         }

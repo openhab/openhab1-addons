@@ -16,7 +16,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Extension of the default OSGi bundle activator
  *
- * @author Rino van Wijngaarden
+ * @since 1.10.0
+ * @author Rino.van.Wijngaarden@gmail.com
  *
  */
 public final class SlackActivator implements BundleActivator {

@@ -1,28 +1,49 @@
-# OpenHab Slack Action
-Send messages to a Slack channel or user from an OpenHab rule or script.
+# Slack Action
+The Slack action sends messages to a Slack ([https://slack.com/]) channel or Slack user from a rule or script.
+
+## Prerequisites
+As described on the Slack page ([https://my.slack.com/services/new/bot]) you first need to create a bot.
+After that you can use the authToken in the openHAB configuration (see below)
 
 ## Install
-One way of installing would be to simply copy the org.openhab.action.slack*.jar to the OpenHab addons folder
-(e.g. for OpenHab2 this would be /usr/share/openhab2/addons)
+One way of installing would be to simply copy the org.openhab.action.slack*.jar to the OpenHAB addons folder
+(e.g. for OpenHAB2 this would be /usr/share/openhab2/addons)
 
-## Config
-In openhab.cfg or services/slack.cfg 
+## Configuration 
+The action can be configured in `services/slack.cfg`.
 
-    authToken = your-bot-token-here
+### Configuration example
 
-This is the token you get when you create a new bot in Slack. 
-See https://my.slack.com/services/new/bot
-
-## Usage
-In your script / rules:
-    
-    sendToSlackChannel("Hello from OpenHab", "general")
-    
-    sendToSlackUser ("Hello from OpenHab", "userx")
-
-## Designer
-TBD: make the action available in the Designer
+```
+authToken = your-bot-token-here
+```
 
 
-###### Contact
-Author: R. van Wijngaarden (Rino.van.Wijngaarden@gmail.com)
+## Examples
+
+### Send a text message to a Slack channel
+
+slack.rules
+```
+rule "Send text message to Slack channel 'general'"
+when
+    Item Foo changed
+then
+    sendToSlackChannel("Item Foo changed", "general")
+end    
+```
+
+
+### Send a text message to a Slack user
+
+slack.rules
+```
+rule "Send text message to Slack user 'userxyz'"
+when
+    Item Foo changed
+then
+     sendToSlackUser ("Item Foo changed", "userxyz")
+end    
+```
+   
+
