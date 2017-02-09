@@ -411,72 +411,73 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
                         if (provider == null) {
                             continue;
                         }
-                        String service = comm.checkParameterReplacement(provider, item);
-                        KM200CommObject object = device.getServiceObject(service);
+                        synchronized (device) {
+                            String service = comm.checkParameterReplacement(provider, item);
+                            KM200CommObject object = device.getServiceObject(service);
 
-                        logger.debug("Sending: {}", provider.getService(item));
+                            logger.debug("Sending: {}", provider.getService(item));
 
-                        if (object.getVirtual() == 1) {
-                            rCode = comm.sendDataToService(object.getParent(), encData);
-                        } else {
-                            rCode = comm.sendDataToService(service, encData);
-                        }
-                        logger.debug("Returncode: {}", rCode);
-                        /* set all update flags to zero */
-
-                        logger.debug("Data sended, reset und updated providers");
-
-                        /* Now update the set values and for all virtual values depending on same parent */
-                        if (object.getVirtual() == 1) {
-                            String parent = object.getParent();
-                            device.getServiceObject(parent).setUpdated(false);
-
-                            for (KM200BindingProvider tmpProvider : providers) {
-                                for (String tmpItem : tmpProvider.getItemNames()) {
-                                    String tmpService = comm.checkParameterReplacement(tmpProvider, tmpItem);
-                                    if (parent.equals(device.getServiceObject(tmpService).getParent())) {
-                                        try {
-                                            state = comm.getProvidersState(tmpProvider, tmpItem);
-                                            if (state != null) {
-                                                eventPublisher.postUpdate(tmpItem, state);
-                                            }
-                                        } catch (Exception e) {
-                                            logger.error("Could not get updated item state, Error: {}", e);
-                                        }
-                                    }
-                                }
+                            if (object.getVirtual() == 1) {
+                                rCode = comm.sendDataToService(object.getParent(), encData);
+                            } else {
+                                rCode = comm.sendDataToService(service, encData);
                             }
-                        } else {
-                            try {
-                                object.setUpdated(false);
-                                state = comm.getProvidersState(provider, item);
-                                if (state != null) {
-                                    eventPublisher.postUpdate(item, state);
-                                }
-                                /* Check whether the service is used as a parameter replacement */
+                            logger.debug("Returncode: {}", rCode);
+                            /* set all update flags to zero */
+
+                            logger.debug("Data sended, reset und updated providers");
+
+                            /* Now update the set values and for all virtual values depending on same parent */
+                            if (object.getVirtual() == 1) {
+                                String parent = object.getParent();
+                                device.getServiceObject(parent).setUpdated(false);
+
                                 for (KM200BindingProvider tmpProvider : providers) {
                                     for (String tmpItem : tmpProvider.getItemNames()) {
-                                        if (tmpProvider.getParameter(tmpItem).containsKey("current")) {
-                                            if (service.equals(tmpProvider.getParameter(tmpItem).get("current"))) {
-                                                try {
-                                                    state = comm.getProvidersState(tmpProvider, tmpItem);
-                                                    if (state != null) {
-                                                        eventPublisher.postUpdate(tmpItem, state);
-                                                    }
-                                                } catch (Exception e) {
-                                                    logger.error("Could not get updated item state, Error: {}", e);
+                                        String tmpService = comm.checkParameterReplacement(tmpProvider, tmpItem);
+                                        if (parent.equals(device.getServiceObject(tmpService).getParent())) {
+                                            try {
+                                                state = comm.getProvidersState(tmpProvider, tmpItem);
+                                                if (state != null) {
+                                                    eventPublisher.postUpdate(tmpItem, state);
                                                 }
-
+                                            } catch (Exception e) {
+                                                logger.error("Could not get updated item state, Error: {}", e);
                                             }
                                         }
                                     }
                                 }
+                            } else {
+                                try {
+                                    object.setUpdated(false);
+                                    state = comm.getProvidersState(provider, item);
+                                    if (state != null) {
+                                        eventPublisher.postUpdate(item, state);
+                                    }
+                                    /* Check whether the service is used as a parameter replacement */
+                                    for (KM200BindingProvider tmpProvider : providers) {
+                                        for (String tmpItem : tmpProvider.getItemNames()) {
+                                            if (tmpProvider.getParameter(tmpItem).containsKey("current")) {
+                                                if (service.equals(tmpProvider.getParameter(tmpItem).get("current"))) {
+                                                    try {
+                                                        state = comm.getProvidersState(tmpProvider, tmpItem);
+                                                        if (state != null) {
+                                                            eventPublisher.postUpdate(tmpItem, state);
+                                                        }
+                                                    } catch (Exception e) {
+                                                        logger.error("Could not get updated item state, Error: {}", e);
+                                                    }
 
-                            } catch (Exception e) {
-                                logger.error("Could not get item state, Error: {}", e);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                } catch (Exception e) {
+                                    logger.error("Could not get item state, Error: {}", e);
+                                }
                             }
                         }
-
                     }
                     /*
                      * We have time, all changes on same item in this time are overwritten in memory and we need send

@@ -333,8 +333,8 @@ public class KM200Comm {
                 readable = 0;
                 id = service;
                 type = "$$PROTECTED$$";
-            }
-            if (readable == 1) {
+                nodeRoot = new JSONObject();
+            } else {
                 decodedData = decodeMessage(recData);
 
                 if (decodedData == null) {
@@ -404,7 +404,6 @@ public class KM200Comm {
                     sPService.setSwitchPointTimeRaster(nodeRoot.getInt("switchPointTimeRaster"));
                     JSONObject propObject = nodeRoot.getJSONObject("setpointProperty");
                     sPService.setSetpointProperty(propObject.getString("id"));
-                    sPService.updateSwitches(nodeRoot);
                     newObject.setValueParameter(sPService);
                     newObject.setJSONData(decodedData);
                     device.virtualList.add(newObject);
@@ -492,6 +491,8 @@ public class KM200Comm {
                 case "switchProgram":
                     KM200SwitchProgramService sPService = ((KM200SwitchProgramService) object.getValueParameter());
                     sPService.determineSwitchNames(device);
+                    JSONObject nodeRoot = new JSONObject(object.getJSONData());
+                    sPService.updateSwitches(nodeRoot);
                     newObject = new KM200CommObject(id + "/weekday", type, 1, 0, 1, id, object);
                     object.serviceTreeMap.put("weekday", newObject);
                     newObject = new KM200CommObject(id + "/nbrCycles", type, 0, 0, 1, id, object);

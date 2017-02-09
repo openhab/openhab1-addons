@@ -9,6 +9,7 @@
 
 package org.openhab.binding.km200.internal;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,7 +24,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author Markus Eckhardt
  *
- * @since 1.9.0
  */
 
 public class KM200SwitchProgramService {
@@ -51,7 +51,7 @@ public class KM200SwitchProgramService {
     protected Integer activeCycle = 1;
 
     /* Night- and daylist for all weekdays */
-    HashMap<String, HashMap<String, ArrayList<Integer>>> switchMap = null;
+    public HashMap<String, HashMap<String, ArrayList<Integer>>> switchMap = null;
 
     /* List with all days */
     ArrayList<String> days = null;
@@ -300,6 +300,24 @@ public class KM200SwitchProgramService {
      */
     void determineSwitchNames(KM200Device device) {
         if (setpointProperty != null) {
+            KM200CommObject setpObject = device.getServiceObject(setpointProperty);
+            BigDecimal firstVal = null;
+            for (String key : setpObject.serviceTreeMap.keySet()) {
+                if (positiveSwitch == null || negativeSwitch == null) {
+                    positiveSwitch = key;
+                    negativeSwitch = key;
+                    firstVal = (BigDecimal) setpObject.serviceTreeMap.get(key).getValue();
+                } else {
+                    BigDecimal nextVal = (BigDecimal) setpObject.serviceTreeMap.get(key).getValue();
+                    if (nextVal.compareTo(firstVal) > 0) {
+                        positiveSwitch = key;
+                    } else {
+                        negativeSwitch = key;
+                    }
+                }
+            }
+            setpoints.add(positiveSwitch);
+            setpoints.add(negativeSwitch);
             HashMap<String, ArrayList<Integer>> weekMap = null;
             weekMap = switchMap.get(positiveSwitch);
             if (weekMap == null) {
@@ -310,6 +328,7 @@ public class KM200SwitchProgramService {
                 initWeeklist(negativeSwitch);
             }
         }
+
     }
 
     /**
@@ -327,18 +346,6 @@ public class KM200SwitchProgramService {
                 String day = subJSON.getString("dayOfWeek");
                 String setpoint = subJSON.getString("setpoint");
                 Integer time = subJSON.getInt("time");
-                if (positiveSwitch == null) {
-                    /* The first switchpoint is always positive */
-                    positiveSwitch = setpoint;
-                    logger.debug("positiveSwitch: {}", positiveSwitch);
-                    setpoints.add(positiveSwitch);
-
-                } else if (negativeSwitch == null && !setpoint.equals(positiveSwitch)) {
-                    /* The second switchpoint is always negative */
-                    negativeSwitch = setpoint;
-                    logger.debug("negativeSwitch: {}", negativeSwitch);
-                    setpoints.add(negativeSwitch);
-                }
                 addSwitch(day, setpoint, time);
             }
         }
@@ -415,15 +422,15 @@ public class KM200SwitchProgramService {
         return switchPointTimeRaster;
     }
 
-    String getSetpointProperty() {
+    public String getSetpointProperty() {
         return setpointProperty;
     }
 
-    String getPositiveSwitch() {
+    public String getPositiveSwitch() {
         return positiveSwitch;
     }
 
-    String getNegativeSwitch() {
+    public String getNegativeSwitch() {
         return negativeSwitch;
     }
 
@@ -436,6 +443,9 @@ public class KM200SwitchProgramService {
             HashMap<String, ArrayList<Integer>> weekP = switchMap.get(getPositiveSwitch());
             HashMap<String, ArrayList<Integer>> weekN = switchMap.get(getNegativeSwitch());
             if (weekP != null && weekN != null) {
+                if (weekP.isEmpty() && weekN.isEmpty()) {
+                    return 0;
+                }
                 ArrayList<Integer> daysListP = weekP.get(getActiveDay());
                 ArrayList<Integer> daysListN = weekN.get(getActiveDay());
                 return Math.min(daysListP.size(), daysListN.size());
