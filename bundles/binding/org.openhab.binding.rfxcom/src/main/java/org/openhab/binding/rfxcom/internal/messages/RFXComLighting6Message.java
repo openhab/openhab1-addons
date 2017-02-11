@@ -53,6 +53,16 @@ public class RFXComLighting6Message extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     public enum Commands {
@@ -76,16 +86,26 @@ public class RFXComLighting6Message extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) command;
         }
+
+        public static Commands fromByte(int input) {
+            for (Commands c : Commands.values()) {
+                if (c.command == input) {
+                    return c;
+                }
+            }
+
+            return Commands.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.COMMAND, RFXComValueSelector.CONTACT);
 
-    public SubType subType = SubType.BLYSS;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public char groupCode = 'A';
     public byte unitcode = 0;
-    public Commands command = Commands.OFF;
+    public Commands command = Commands.UNKNOWN;
     public byte signalLevel = 0;
 
     public RFXComLighting6Message() {
@@ -117,22 +137,11 @@ public class RFXComLighting6Message extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
-        sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF) << 0;
+        subType = SubType.fromByte(super.subType);
+        sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
         groupCode = (char) data[6];
         unitcode = data[7];
-
-        try {
-            command = Commands.values()[data[8]];
-        } catch (Exception e) {
-            command = Commands.UNKNOWN;
-        }
-
+        command = Commands.fromByte(data[8]);
         signalLevel = (byte) ((data[11] & 0xF0) >> 4);
     }
 

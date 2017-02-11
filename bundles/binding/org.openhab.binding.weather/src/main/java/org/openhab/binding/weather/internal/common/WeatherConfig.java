@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
  * #weather:location.<locationId1>.woeid=      (required for Yahoo provider)
  * #weather:location.<locationId1>.language=
  * #weather:location.<locationId1>.updateInterval= (optional, defaults to 240)
+ * #weather:location.<locationId1>.units=      (optional; defaults to "si")
  *
  * #weather:location.<locationId2>.latitude=   (not required for Yahoo provider)
  * #weather:location.<locationId2>.longitude=  (not required for Yahoo provider)
@@ -50,6 +51,7 @@ import org.slf4j.LoggerFactory;
  * #weather:location.<locationId2>.woeid=      (required for Yahoo provider)
  * #weather:location.<locationId2>.language=
  * #weather:location.<locationId2>.updateInterval= (optional, defaults to 240)
+ * #weather:location.<locationId2>.units=      (optional; defaults to "si")
  * </pre>
  *
  * @author Gerhard Riegler
@@ -157,6 +159,8 @@ public class WeatherConfig {
             lc.setLanguage(value);
         } else if (StringUtils.equalsIgnoreCase(keyId, "name")) {
             lc.setName(value);
+        } else if (StringUtils.equalsIgnoreCase(keyId, "units")) {
+            lc.setMeasurementUnits(value.toLowerCase());
         } else {
             logger.debug("Unknown weather configuration setting '{}'. Check openhab.cfg.", key);
         }

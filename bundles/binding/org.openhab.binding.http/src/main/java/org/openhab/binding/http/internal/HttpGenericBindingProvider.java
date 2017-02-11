@@ -20,6 +20,7 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -126,16 +127,15 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
      * Delegates parsing the <code>bindingConfig</code> with respect to the
      * first character (<code>&lt;</code> or <code>&gt;</code>) to the
      * specialized parsing methods
-     * 
+     *
      * @param item
      * @param bindingConfig
-     * 
+     *
      * @throws BindingConfigParseException
      */
     protected HttpBindingConfig parseBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException {
 
-        HttpBindingConfig config = new HttpBindingConfig();
-        config.itemType = item.getClass();
+        HttpBindingConfig config = new HttpBindingConfig(item);
 
         Matcher matcher = BASE_CONFIG_PATTERN.matcher(bindingConfig);
 
@@ -171,13 +171,13 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
      * <li>2 - refresh interval</li>
      * <li>3 - the transformation rule</li>
      * </ul>
-     * 
+     *
      * @param item
-     * 
+     *
      * @param bindingConfig the config string to parse
      * @param config
      * @return the filled {@link HttpBindingConfig}
-     * 
+     *
      * @throws BindingConfigParseException if the regular expression doesn't match
      *             the given <code>bindingConfig</code>
      */
@@ -236,17 +236,18 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
      * <li>3 - url</li>
      * <li>4 - post body</li>
      * </ul>
-     * 
+     *
      * @param item
      * @param bindingConfig the config string to parse
      * @param config
      * @return the filled {@link HttpBindingConfig}
-     * 
+     *
      * @throws BindingConfigParseException if the regular expression doesn't match
      *             the given <code>bindingConfig</code>
      */
     protected HttpBindingConfig parseOutBindingConfig(Item item, String bindingConfig, HttpBindingConfig config)
             throws BindingConfigParseException {
+        logger.debug("parsing this as an http out binding: {}", bindingConfig);
         Matcher matcher = OUT_BINDING_PATTERN.matcher(bindingConfig);
 
         if (!matcher.matches()) {
@@ -264,11 +265,22 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
             Command command = createCommandFromString(item, matcher.group(1));
             configElement.httpMethod = matcher.group(2);
             String lastPart = matcher.group(3).replaceAll("\\\\\"", "");
-            if (lastPart.trim().endsWith("}") && lastPart.contains("{")) {
-                int beginIdx = lastPart.lastIndexOf("{");
-                int endIdx = lastPart.lastIndexOf("}");
-                configElement.url = lastPart.substring(0, beginIdx);
-                configElement.headers = parseHttpHeaders(lastPart.substring(beginIdx + 1, endIdx));
+            logger.debug("URL portion of binding config to be processed: {}", lastPart);
+
+            Matcher urlMatcher = URL_PARSING_PATTERN.matcher(lastPart);
+            urlMatcher.find();
+            if (logger.isDebugEnabled()) {
+                for (int i = 0; i <= urlMatcher.groupCount(); i++) {
+                    logger.debug("Group {}: {}", i, urlMatcher.group(i));
+                }
+            }
+
+            if (urlMatcher.group(1).endsWith("}")) {
+                String g1 = urlMatcher.group(1);
+                int beginIdx = g1.indexOf("{");
+                int endIdx = g1.indexOf("}");
+                configElement.url = g1.substring(0, beginIdx);
+                configElement.headers = parseHttpHeaders(g1.substring(beginIdx + 1, endIdx));
             } else {
                 if (configElement.httpMethod.equals("POST")) {
                     Matcher urlMatcher = URL_PARSING_PATTERN.matcher(lastPart);
@@ -292,16 +304,16 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
      * Creates a {@link Command} out of the given <code>commandAsString</code>
      * taking the special Commands "CHANGED" and "*" into account and incorporating
      * the {@link TypeParser}.
-     * 
+     *
      * @param item
      * @param commandAsString
-     * 
+     *
      * @return an appropriate Command (see {@link TypeParser} for more
      *         information
-     * 
+     *
      * @throws BindingConfigParseException if the {@link TypeParser} couldn't
      *             create a command appropriately
-     * 
+     *
      * @see {@link TypeParser}
      */
     private Command createCommandFromString(Item item, String commandAsString) throws BindingConfigParseException {
@@ -325,9 +337,14 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
      * @{inheritDoc}
      */
     @Override
-    public Class<? extends Item> getItemType(String itemName) {
+    public State getState(String itemName, String value) {
         HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
-        return config != null ? config.itemType : null;
+        if (config != null) {
+            List<Class<? extends State>> acceptedDataTypes = config.getAcceptedDataTypes();
+            return TypeParser.parseState(acceptedDataTypes, value);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -442,8 +459,16 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 
         /** generated serialVersion UID */
         private static final long serialVersionUID = 6164971643530954095L;
-        Class<? extends Item> itemType;
 
+        private List<Class<? extends State>> acceptedDataTypes = null;
+
+        HttpBindingConfig(Item item) {
+            acceptedDataTypes = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
+        }
+
+        List<Class<? extends State>> getAcceptedDataTypes() {
+            return acceptedDataTypes;
+        }
     }
 
     /**

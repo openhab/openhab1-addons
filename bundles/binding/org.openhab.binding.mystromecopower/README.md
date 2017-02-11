@@ -1,43 +1,45 @@
-Documentation of the Mystrom Eco Power binding bundle
+# Mystrom Eco Power Binding
 
-## Introduction
+The openHAB Mystrom binding allows you to send commands to Mystrom Eco Power Switches, receive consumption numbers and states of devices.
 
-The openHAB Mystrom binding allows to send commands Mystrom Eco Power Switches, 
-receive consumption numbers and states of devices.
+## Prerequisites
 
-For installation of the binding, please see Wiki page [[Bindings]].
+You must have an account at the Mystrom website.
 
-####This Binding will be available with openHAB version 1.7 !!!
+## Binding Configuration
 
-Mystrom Binding needs user and password of mystrom site in openhab.cfg, add the follwing lines into the config file:
+The binding needs user and password of mystrom site to be added to the file `services/mystromecopower.cfg`.
 
-	mystromecopower:userName=<b>youremail</b>
-	mystromecopower:password=<b>yourpassword</b>
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| userName | | Yes | your user name for the Mystrom website |
+| password | | Yes | your password for the Mystrom website |
 
 ## Item Binding Configuration
 
-In order to bind an item to the device, you need to provide configuration settings. The easiest way to do so is to add some binding information in your item file (in the folder configurations/items`). The syntax of the binding configuration strings accepted is the following:
+The syntax of the binding configuration strings accepted is the following:
 
-    mystromecopower="<friendlyName>"
+```
+mystromecopower="<friendlyName>"
+```
 
-The friendlyName is given to your device on Mystrom site.
-If not sure about the friendlyNames of your devices, take a look in your openhab.log. The discovered devices are listed.
+The friendlyName is given to your device on the Mystrom site.
 
-Examples, how to configure your items in your items file, you can configure as Switch, Number or String, 
-String is usefull for scripting because you can receive the state on, off or offline:
+If not sure about the `<friendlyName>`s of your devices, take a look in your openhab.log. The discovered devices are listed.
 
-    Switch WallFanOffice_Switch 	{mystromecopower="lightBathroom"}
-    Number WallFanOffice_Number 	{mystromecopower="lightBathroom"}
-    String WallFanOffice_String 	{mystromecopower="lightBathroom"}					
+| Item Type | Description |
+|-----------|-------------|
+| Switch | used to get state on/off of the device, accepted commands are `ON` or `OFF`. For master device, if you send the `OFF` command it will ll restart the master. |
+| Number | used to receive consumption in Watts of the device. Please note that the binding does not accept DecimalType commands. |
+| String | used to receive state on/off/offline |
 
-*Switch: used to get state on/off of the device, accepted commands are <b>on</b>,<b>off</b>. For master device, if you send <b>off</b> command it'll restart the master.
-*Number: used to receive consumption in Watt of the device, doesn't support command.
-*String: used to receive state on/off/offline.
 
-## Logs
-Add the log into the logback.xml file, the logger name is org.openhab.binding.mystromecopower:
-for INFO level you can set:
+## Examples
 
-	&lt;logger name=&quot;org.openhab.binding.mystromecopower&quot; level=&quot;INFO&quot;&gt;
-			&lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-	&lt;/logger&gt;
+How to configure your items in your items file, you can configure as Switch, Number or String.  
+
+```
+Switch WallFanOffice_Switch 	{mystromecopower="lightBathroom"}
+Number WallFanOffice_Number 	{mystromecopower="lightBathroom"}
+String WallFanOffice_String 	{mystromecopower="lightBathroom"}					
+```

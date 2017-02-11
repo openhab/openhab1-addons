@@ -17,12 +17,12 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getGain <em>Gain</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getIntegrationTime
  * <em>Integration Time</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletColorConfiguration()
  * @model
@@ -76,8 +76,8 @@ public interface BrickletColorConfiguration extends TFConfig {
     Short getIntegrationTime();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getIntegrationTime
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getIntegrationTime
      * <em>Integration Time</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

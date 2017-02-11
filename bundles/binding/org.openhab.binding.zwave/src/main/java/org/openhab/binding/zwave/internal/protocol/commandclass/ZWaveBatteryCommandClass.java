@@ -100,7 +100,7 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass
                 if (batteryLevel == 255) {
                     batteryLevel = 0;
                     batteryLow = true;
-                    logger.warn("NODE {}: BATTERY LOW!", this.getNode().getNodeId());
+                    logger.debug("NODE {}: BATTERY LOW!", this.getNode().getNodeId());
                 } else {
                     batteryLow = false;
                 }

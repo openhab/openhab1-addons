@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="ecotouch"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>Waterkotte EcoTouch Binding</name>
+    <description>This is the binding for the Waterkotte EcoTouch heatpump.</description>
+    <author>Sebastian Held</author>
+    <service-id>org.openhab.ecotouch</service-id>
+
+    <config-description>
+        <parameter name="refresh" type="integer">
+            <label>Refresh interval (ms)</label>
+            <description>Data refresh interval in ms.</description>
+            <default>60000</default>
+        </parameter>
+        <parameter name="ip" type="text">
+            <label>IP address</label>
+            <description>The IP address of the Waterkotte EcoTouch display unit.</description>
+            <default></default>
+        </parameter>
+        <parameter name="username" type="text">
+            <label>Username</label>
+            <description>Username of the display unit.</description>
+            <default>admin</default>
+        </parameter>
+        <parameter name="password" type="text">
+            <label>Password</label>
+            <description>Password of the display unit.</description>
+            <default>wtkadmin</default>
+            <context>password</context>
+        </parameter>
+    </config-description>
+
+</binding:binding>

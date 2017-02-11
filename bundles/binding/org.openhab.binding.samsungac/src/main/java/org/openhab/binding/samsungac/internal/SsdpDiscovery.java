@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Helper class that is able to discover Samsung Airconditioners in the network by a SSDP
  * broadcast.
@@ -31,6 +34,7 @@ import java.util.Map;
  */
 public class SsdpDiscovery {
 
+    private static final Logger logger = LoggerFactory.getLogger(SsdpDiscovery.class);
     static final int PORT = 1900;
     static final String NEWLINE = "\r\n";
 
@@ -41,10 +45,10 @@ public class SsdpDiscovery {
 
     public static void main(String args[]) {
         Map<String, Map<String, String>> resp = discover();
-        System.out.println("\nGot response from possible air conditioner(s):");
+        logger.debug("Got response from possible air conditioner(s):");
         for (Map<String, String> ac : resp.values()) {
             if (ac.get("IP") != null) {
-                System.out.println(ac);
+                logger.debug(ac.toString());
             }
         }
     }
@@ -58,24 +62,23 @@ public class SsdpDiscovery {
      */
     public static Map<String, Map<String, String>> discover() {
         Map<String, Map<String, String>> response = new HashMap<String, Map<String, String>>();
-        System.out.println("Sending multibroadcast to all possible network interfaces...");
+        logger.debug("Sending multibroadcast to all possible network interfaces...");
         try {
             List<InetAddress> ia = getBroadCastAddress();
             for (InetAddress i : ia) {
                 try {
-                    System.out.println("Broadcasting to " + i);
+                    logger.debug("Broadcasting to {}", i);
                     sendNotify(DISCOVER_MESSAGE, i);
                     Map<String, Map<String, String>> resp = retrieveResponse();
                     response.putAll(resp);
                 } catch (IOException ioe) {
-                    System.out.println("Could not broadcast to " + i + ", moving on to next broadcast address");
+                    logger.warn("Could not broadcast to {}, moving on to next broadcast address", i);
                 } catch (Exception e) {
                     // No problem, let's try next InetAddress
                 }
 
             }
         } catch (Exception e) {
-            // System.out.println("Could not get broadcast addresses..returning " + e.printStackTrace());
         }
         return response;
     }
@@ -109,12 +112,11 @@ public class SsdpDiscovery {
         MulticastSocket recSocket = setUpSocket();
 
         int i = 0;
-        System.out.print("Retrieving response");
+        logger.debug("Retrieving response");
         while (i < 10) {
             byte[] buf = new byte[2048];
             DatagramPacket input = new DatagramPacket(buf, buf.length);
             try {
-                System.out.print(".");
                 recSocket.receive(input);
                 response = new String(input.getData());
                 Map<String, String> parsedResponse = parseResponse(response);
@@ -126,8 +128,7 @@ public class SsdpDiscovery {
                 i++;
             }
         }
-        System.out.print("\r\n");
-        System.out.println("Response retrieved: " + result);
+        logger.debug("Response retrieved: {}", result);
         return result;
     }
 
@@ -148,7 +149,7 @@ public class SsdpDiscovery {
             byte[] data = notifyMessage.toString().getBytes();
             socket.send(new DatagramPacket(data, data.length, new InetSocketAddress(ia, PORT)));
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("sendNotify", e);
             throw e;
         } finally {
             socket.disconnect();

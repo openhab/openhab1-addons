@@ -16,12 +16,12 @@ import javax.xml.bind.DatatypeConverter;
 import org.openhab.binding.rfxcom.RFXComValueSelector;
 import org.openhab.binding.rfxcom.internal.RFXComException;
 import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -37,16 +37,16 @@ public class RFXComThermostat2Message extends RFXComBaseMessage {
 
     /*
      * Thermostat2 packet layout (length 7)
-
-	 * packetlength = 0
-	 * packettype = 1
-	 * subtype = 2
-	 * seqnbr = 3
-	 * unitcode = 4
-	 * cmnd = 5
-	 * filler = 6  'bits 3-0
-	 * rssi = 6    'bits 7-4
-	 */
+     *
+     * packetlength = 0
+     * packettype = 1
+     * subtype = 2
+     * seqnbr = 3
+     * unitcode = 4
+     * cmnd = 5
+     * filler = 6 'bits 3-0
+     * rssi = 6 'bits 7-4
+     */
 
     public enum SubType {
         HE105(0),
@@ -67,13 +67,23 @@ public class RFXComThermostat2Message extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
- 
+
     public enum Commands {
         OFF(0),
         ON(1),
-        PROGRAM(2),	
-		
+        PROGRAM(2),
+
         UNKNOWN(255);
 
         private final int command;
@@ -89,15 +99,25 @@ public class RFXComThermostat2Message extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) command;
         }
-    }
-	
-    private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
-            RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.TEMPERATURE,
-            RFXComValueSelector.SET_POINT, RFXComValueSelector.CONTACT);
 
-    public SubType subType = SubType.HE105;
+        public static Commands fromByte(int input) {
+            for (Commands c : Commands.values()) {
+                if (c.command == input) {
+                    return c;
+                }
+            }
+
+            return Commands.UNKNOWN;
+        }
+    }
+
+    private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
+            RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.TEMPERATURE, RFXComValueSelector.SET_POINT,
+            RFXComValueSelector.CONTACT);
+
+    public SubType subType = SubType.UNKNOWN;
     public byte unitcode = 0;
-    public Commands command = Commands.OFF;
+    public Commands command = Commands.UNKNOWN;
     public int commandId = 0;
     public byte signalLevel = 0;
 
@@ -127,31 +147,18 @@ public class RFXComThermostat2Message extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
+        subType = SubType.fromByte(super.subType);
         unitcode = data[4];
         commandId = data[5];
-
-        command = Commands.UNKNOWN;
-        for (Commands loCmd : Commands.values()) {
-            if (loCmd.toByte() == commandId) {
-                command = loCmd;
-                break;
-            }
-        }		
-
-        signalLevel = (byte) ((data[9] & 0xF0) >> 4);
+        command = Commands.fromByte(commandId);
+        signalLevel = (byte) ((data[6] & 0xF0) >> 4);
     }
-		
+
     @Override
     public byte[] decodeMessage() {
         byte[] data = new byte[7];
 
-        data[0] = 0x07;
+        data[0] = (byte) (data.length - 1);
         data[1] = RFXComBaseMessage.PacketType.THERMOSTAT2.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
@@ -208,7 +215,7 @@ public class RFXComThermostat2Message extends RFXComBaseMessage {
                         break;
                 }
             }
-			
+
         } else if (valueSelector.getItemClass() == SwitchItem.class) {
 
             if (valueSelector == RFXComValueSelector.COMMAND) {
@@ -222,7 +229,7 @@ public class RFXComThermostat2Message extends RFXComBaseMessage {
                     default:
                         break;
                 }
-			}
+            }
         }
 
         else {
@@ -235,7 +242,6 @@ public class RFXComThermostat2Message extends RFXComBaseMessage {
     @Override
     public void convertFromState(RFXComValueSelector valueSelector, String id, Object subType, Type type,
             byte seqNumber) throws RFXComException {
-
 
         this.subType = ((SubType) subType);
         seqNbr = seqNumber;

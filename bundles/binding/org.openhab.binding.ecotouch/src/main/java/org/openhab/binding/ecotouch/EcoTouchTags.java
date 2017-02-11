@@ -353,7 +353,52 @@ public enum EcoTouchTags {
         }
     },
 
-    // German: nviNormAussen
+    // German: % Heizungsumwälzpumpe
+    TYPE_PERCENT_HEAT_CIRC_PUMP {
+        {
+            command = "percent_heat_circ_pump";
+            itemClass = NumberItem.class;
+            tagName = "A51";
+        }
+    },
+
+    // German: % Quellenpumpe
+    TYPE_PERCENT_SOURCE_PUMP {
+        {
+            command = "percent_source_pump";
+            itemClass = NumberItem.class;
+            tagName = "A52";
+        }
+    },
+
+    // German: % Leistung Verdichter
+    TYPE_PERCENT_COMPRESSOR {
+        {
+            command = "percent_compressor";
+            itemClass = NumberItem.class;
+            tagName = "A58";
+        }
+    },
+
+    // German: Hysterese Heizung
+    TYPE_HYSTERESIS_HEATING {
+        {
+            command = "hysteresis_heating";
+            itemClass = NumberItem.class;
+            tagName = "A61";
+        }
+    },
+
+    // German: Außentemperatur gemittelt über 1h (scheinbar identisch zu A2)
+    TYPE_TEMPERATURE2_OUTSIDE_1H {
+        {
+            command = "temperature2_outside_1h";
+            itemClass = NumberItem.class;
+            tagName = "A90";
+        }
+    },
+
+    // German: Heizkurve - nviNormAussen
     TYPE_NVINORMAUSSEN {
         {
             command = "nviNormAussen";
@@ -362,7 +407,7 @@ public enum EcoTouchTags {
         }
     },
 
-    // German: nviHeizkreisNorm
+    // German: Heizkurve - nviHeizkreisNorm
     TYPE_NVIHEIZKREISNORM {
         {
             command = "nviHeizkreisNorm";
@@ -371,7 +416,7 @@ public enum EcoTouchTags {
         }
     },
 
-    // German: nviTHeizgrenze
+    // German: Heizkurve - nviTHeizgrenze
     TYPE_NVITHEIZGRENZE {
         {
             command = "nviTHeizgrenze";
@@ -380,12 +425,166 @@ public enum EcoTouchTags {
         }
     },
 
-    // German: nviTHeizgrenzeSoll
+    // German: Heizkurve - nviTHeizgrenzeSoll
     TYPE_NVITHEIZGRENZESOLL {
         {
             command = "nviTHeizgrenzeSoll";
             itemClass = NumberItem.class;
             tagName = "A94";
+        }
+    },
+
+    // German: undokumentiert: Heizkurve max. VL-Temp (??)
+    TYPE_MAX_VL_TEMP {
+        {
+            command = "maxVLTemp";
+            itemClass = NumberItem.class;
+            tagName = "A95";
+        }
+    },
+
+    // German: undokumentiert: Heizkreis Soll-Temp bei 0° Aussen
+    TYPE_TEMP_SET_0DEG {
+        {
+            command = "tempSet0Deg";
+            itemClass = NumberItem.class;
+            tagName = "A97";
+        }
+    },
+
+    // German: undokumentiert: Kühlen Einschalt-Temp. Aussentemp (??)
+    TYPE_COOLENABLETEMP {
+        {
+            command = "coolEnableTemp";
+            itemClass = NumberItem.class;
+            tagName = "A108";
+        }
+    },
+
+    // German: Heizkurve - nviSollKuehlen
+    TYPE_NVITSOLLKUEHLEN {
+        {
+            command = "nviSollKuehlen";
+            itemClass = NumberItem.class;
+            tagName = "A109";
+        }
+    },
+
+    // German: Temperaturveränderung Heizkreis bei PV-Ertrag
+    TYPE_TEMPCHANGE_HEATING_PV {
+        {
+            command = "tempchange_heating_pv";
+            itemClass = NumberItem.class;
+            tagName = "A682";
+        }
+    },
+
+    // German: Temperaturveränderung Kühlkreis bei PV-Ertrag
+    TYPE_TEMPCHANGE_COOLING_PV {
+        {
+            command = "tempchange_cooling_pv";
+            itemClass = NumberItem.class;
+            tagName = "A683";
+        }
+    },
+
+    // German: Temperaturveränderung Warmwasser bei PV-Ertrag
+    TYPE_TEMPCHANGE_WARMWATER_PV {
+        {
+            command = "tempchange_warmwater_pv";
+            itemClass = NumberItem.class;
+            tagName = "A684";
+        }
+    },
+
+    // German: Temperaturveränderung Pool bei PV-Ertrag
+    TYPE_TEMPCHANGE_POOL_PV {
+        {
+            command = "tempchange_pool_pv";
+            itemClass = NumberItem.class;
+            tagName = "A685";
+        }
+    },
+
+    // German: undokumentiert: Firmware-Version Regler
+    // value 10401 => 01.04.01
+    TYPE_VERSION_CONTROLLER {
+        {
+            command = "version_controller";
+            itemClass = NumberItem.class;
+            tagName = "I1";
+            type = Type.Word;
+        }
+    },
+
+    // German: undokumentiert: Firmware-Build Regler
+    TYPE_VERSION_CONTROLLER_BUILD {
+        {
+            command = "version_controller_build";
+            itemClass = NumberItem.class;
+            tagName = "I2";
+            type = Type.Word;
+        }
+    },
+
+    // German: undokumentiert: BIOS-Version
+    // value 620 => 06.20
+    TYPE_VERSION_BIOS {
+        {
+            command = "version_bios";
+            itemClass = NumberItem.class;
+            tagName = "I3";
+            type = Type.Word;
+        }
+    },
+
+    // German: undokumentiert: Datum: Tag
+    TYPE_DATE_DAY {
+        {
+            command = "date_day";
+            itemClass = NumberItem.class;
+            tagName = "I5";
+            type = Type.Word;
+        }
+    },
+
+    // German: undokumentiert: Datum: Monat
+    TYPE_DATE_MONTH {
+        {
+            command = "date_month";
+            itemClass = NumberItem.class;
+            tagName = "I6";
+            type = Type.Word;
+        }
+    },
+
+    // German: undokumentiert: Datum: Jahr
+    TYPE_DATE_YEAR {
+        {
+            command = "date_year";
+            itemClass = NumberItem.class;
+            tagName = "I7";
+            type = Type.Word;
+        }
+    },
+
+    // German: undokumentiert: Uhrzeit: Stunde
+    TYPE_TIME_HOUR {
+        {
+            command = "time_hour";
+            itemClass = NumberItem.class;
+            tagName = "I8";
+            type = Type.Word;
+        }
+    },
+
+    // German: undokumentiert: Uhrzeit: Minute
+    TYPE_TIME_MINUTE {
+        {
+            command = "time_minute";
+            itemClass = NumberItem.class;
+            tagName = "I9";
+            type = Type.Word;
         }
     },
 
@@ -475,6 +674,16 @@ public enum EcoTouchTags {
             command = "enable_pool";
             itemClass = SwitchItem.class;
             tagName = "I33";
+            type = Type.Word;
+        }
+    },
+
+    // German: undokumentiert: vermutlich Betriebsmodus PV 0=Aus, 1=Auto, 2=Ein
+    TYPE_ENABLE_PV {
+        {
+            command = "enable_pv";
+            itemClass = NumberItem.class;
+            tagName = "I41";
             type = Type.Word;
         }
     },
@@ -642,6 +851,16 @@ public enum EcoTouchTags {
         }
     },
 
+    // German: Serviceebene (0: normal, 1: service)
+    TYPE_STATE_SERVICE {
+        {
+            command = "state_service";
+            itemClass = NumberItem.class;
+            tagName = "I135";
+            type = Type.Word;
+        }
+    },
+
     // German: Temperaturanpassung für die Heizung
     TYPE_ADAPT_HEATING {
         {
@@ -649,6 +868,108 @@ public enum EcoTouchTags {
             itemClass = NumberItem.class;
             tagName = "I263";
             type = Type.Word; // value range 0..8 => -2K .. +2K
+        }
+    },
+
+    // German: Handschaltung Heizungspumpe (H-0-A)
+    // H:Handschaltung Ein 0:Aus A:Automatik
+    // Kodierung: 0:? 1:? 2:Automatik
+    TYPE_MANUAL_HEATINGPUMP {
+        {
+            command = "manual_heatingpump";
+            itemClass = NumberItem.class;
+            tagName = "I1270";
+            type = Type.Word;
+        }
+    },
+
+    // German: Handschaltung Quellenpumpe (H-0-A)
+    TYPE_MANUAL_SOURCEPUMP {
+        {
+            command = "manual_sourcepump";
+            itemClass = NumberItem.class;
+            tagName = "I1281";
+            type = Type.Word;
+        }
+    },
+
+    // German: Handschaltung Solarpumpe 1 (H-0-A)
+    TYPE_MANUAL_SOLARPUMP1 {
+        {
+            command = "manual_solarpump1";
+            itemClass = NumberItem.class;
+            tagName = "I1287";
+            type = Type.Word;
+        }
+    },
+
+    // German: Handschaltung Solarpumpe 2 (H-0-A)
+    TYPE_MANUAL_SOLARPUMP2 {
+        {
+            command = "manual_solarpump2";
+            itemClass = NumberItem.class;
+            tagName = "I1289";
+            type = Type.Word;
+        }
+    },
+
+    // German: Handschaltung Speicherladepumpe (H-0-A)
+    TYPE_MANUAL_TANKPUMP {
+        {
+            command = "manual_tankpump";
+            itemClass = NumberItem.class;
+            tagName = "I1291";
+            type = Type.Word;
+        }
+    },
+
+    // German: Handschaltung Brauchwasserventil (H-0-A)
+    TYPE_MANUAL_VALVE {
+        {
+            command = "manual_valve";
+            itemClass = NumberItem.class;
+            tagName = "I1293";
+            type = Type.Word;
+        }
+    },
+
+    // German: Handschaltung Poolventil (H-0-A)
+    TYPE_MANUAL_POOLVALVE {
+        {
+            command = "manual_poolvalve";
+            itemClass = NumberItem.class;
+            tagName = "I1295";
+            type = Type.Word;
+        }
+    },
+
+    // German: Handschaltung Kühlventil (H-0-A)
+    TYPE_MANUAL_COOLVALVE {
+        {
+            command = "manual_coolvalve";
+            itemClass = NumberItem.class;
+            tagName = "I1297";
+            type = Type.Word;
+        }
+    },
+
+    // German: Handschaltung Vierwegeventil (H-0-A)
+    TYPE_MANUAL_4WAYVALVE {
+        {
+            command = "manual_4wayvalve";
+            itemClass = NumberItem.class;
+            tagName = "I1299";
+            type = Type.Word;
+        }
+    },
+
+    // German: Handschaltung Multiausgang Ext. (H-0-A)
+    TYPE_MANUAL_MULTIEXT {
+        {
+            command = "manual_multiext";
+            itemClass = NumberItem.class;
+            tagName = "I1319";
+            type = Type.Word;
         }
     },
 
@@ -719,7 +1040,7 @@ public enum EcoTouchTags {
     }
 
     /**
-     * 
+     *
      * @param bindingConfig
      *            command e.g. TYPE_TEMPERATURE_OUTSIDE,..
      * @param itemClass
@@ -739,7 +1060,7 @@ public enum EcoTouchTags {
 
     /**
      * Searches the available heat pump commands and returns the matching one.
-     * 
+     *
      * @param heatpumpCommand
      *            command string e.g. "temperature_outside"
      * @return matching EcoTouchTags instance, if available
@@ -760,7 +1081,7 @@ public enum EcoTouchTags {
     /**
      * Searches the available heat pump commands and returns the first matching
      * one.
-     * 
+     *
      * @param tag
      *            raw heatpump tag e.g. "A1"
      * @return first matching EcoTouchTags instance, if available

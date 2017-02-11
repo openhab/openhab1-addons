@@ -23,6 +23,7 @@ import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBConfigurationImpl#getAddress
  *        <em>Address</em>}</li>
@@ -31,7 +32,6 @@ import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBConfigurationImpl#getRepeats
  *        <em>Repeats</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -140,10 +140,9 @@ public class RemoteSwitchBConfigurationImpl extends DimmableConfigurationImpl im
     public void setAddress(Long newAddress) {
         Long oldAddress = address;
         address = newAddress;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_BCONFIGURATION__ADDRESS,
                     oldAddress, address));
-        }
     }
 
     /**
@@ -167,10 +166,9 @@ public class RemoteSwitchBConfigurationImpl extends DimmableConfigurationImpl im
     public void setUnit(Short newUnit) {
         Short oldUnit = unit;
         unit = newUnit;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_BCONFIGURATION__UNIT,
                     oldUnit, unit));
-        }
     }
 
     /**
@@ -194,10 +192,9 @@ public class RemoteSwitchBConfigurationImpl extends DimmableConfigurationImpl im
     public void setRepeats(Short newRepeats) {
         Short oldRepeats = repeats;
         repeats = newRepeats;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_BCONFIGURATION__REPEATS,
                     oldRepeats, repeats));
-        }
     }
 
     /**
@@ -290,9 +287,8 @@ public class RemoteSwitchBConfigurationImpl extends DimmableConfigurationImpl im
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (address: ");

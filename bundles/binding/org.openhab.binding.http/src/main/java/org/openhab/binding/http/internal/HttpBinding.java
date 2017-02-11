@@ -17,6 +17,7 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,25 +27,12 @@ import org.apache.commons.lang.StringUtils;
 
 import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.items.Item;
-import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.DateTimeItem;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.types.DateTimeType;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
-import org.openhab.core.types.TypeParser;
 import org.openhab.io.net.http.HttpUtil;
 
 import org.osgi.service.cm.ConfigurationException;
@@ -206,7 +194,8 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
                                         transformationType);
                             }
                         } catch (TransformationException te) {
-                            logger.error("Transformation '{}' threw an exception. [response={}]", transformation, response, te);
+                            logger.error("Transformation '{}' threw an exception. [response={}]", transformation,
+                                    response, te);
 
                             // in case of an error we return the response without any
                             // transformation
@@ -215,11 +204,12 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 
                         logger.debug("transformed response is '{}'", transformedResponse);
 
-                        Class<? extends Item> itemType = provider.getItemType(itemName);
-                        State state = createState(itemType, transformedResponse);
-
+                        State state = provider.getState(itemName, transformedResponse);
                         if (state != null) {
                             eventPublisher.postUpdate(itemName, state);
+                        } else {
+                            logger.debug("Couldn't create state for item '{}' from string '{}'", itemName,
+                                    transformedResponse);
                         }
                     }
 
@@ -250,38 +240,6 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
         String pattern = matcher.group(2);
 
         return new String[] { type, pattern };
-    }
-
-    /**
-     * Returns a {@link State} which is inherited from the {@link Item}s
-     * accepted DataTypes. The call is delegated to the {@link TypeParser}. If
-     * <code>item</code> is <code>null</code> the {@link StringType} is used.
-     *
-     * @param itemType
-     * @param transformedResponse
-     *
-     * @return a {@link State} which type is inherited by the {@link TypeParser}
-     *         or a {@link StringType} if <code>item</code> is <code>null</code>
-     */
-    private State createState(Class<? extends Item> itemType, String transformedResponse) {
-        try {
-            if (itemType.isAssignableFrom(NumberItem.class)) {
-                return DecimalType.valueOf(transformedResponse);
-            } else if (itemType.isAssignableFrom(ContactItem.class)) {
-                return OpenClosedType.valueOf(transformedResponse);
-            } else if (itemType.isAssignableFrom(SwitchItem.class)) {
-                return OnOffType.valueOf(transformedResponse);
-            } else if (itemType.isAssignableFrom(RollershutterItem.class)) {
-                return PercentType.valueOf(transformedResponse);
-            } else if (itemType.isAssignableFrom(DateTimeItem.class)) {
-                return DateTimeType.valueOf(transformedResponse);
-            } else {
-                return StringType.valueOf(transformedResponse);
-            }
-        } catch (Exception e) {
-            logger.debug("Couldn't create state of type '{}' for value '{}'", itemType, transformedResponse);
-            return StringType.valueOf(transformedResponse);
-        }
     }
 
     /**
@@ -439,17 +397,17 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
             itemCache.clear();
 
             if (config != null) {
-                String timeoutString = (String) config.get(CONFIG_TIMEOUT);
+                String timeoutString = Objects.toString(config.get(CONFIG_TIMEOUT), null);
                 if (StringUtils.isNotBlank(timeoutString)) {
                     timeout = Integer.parseInt(timeoutString);
                 }
 
-                String granularityString = (String) config.get(CONFIG_GRANULARITY);
+                String granularityString = Objects.toString(config.get(CONFIG_GRANULARITY), null);
                 if (StringUtils.isNotBlank(granularityString)) {
                     granularity = Integer.parseInt(granularityString);
                 }
 
-                String formatString = (String) config.get(CONFIG_FORMAT);
+                String formatString = Objects.toString(config.get(CONFIG_FORMAT), null);
                 if (StringUtils.isNotBlank(formatString)) {
                     format = formatString.equalsIgnoreCase("true");
                 }
@@ -489,7 +447,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
                     }
 
                     String configKey = matcher.group(2);
-                    String value = (String) config.get(key);
+                    String value = Objects.toString(config.get(key), null);
 
                     if ("url".equals(configKey)) {
                         matcher = EXTRACT_CACHE_CONFIG_URL.matcher(value);

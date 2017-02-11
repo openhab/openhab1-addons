@@ -9,6 +9,7 @@
 package org.openhab.binding.fritzboxtr064.internal;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.fritzboxtr064.FritzboxTr064BindingProvider;
@@ -39,13 +40,6 @@ import org.slf4j.LoggerFactory;
 public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064BindingProvider> {
 
     private static final Logger logger = LoggerFactory.getLogger(FritzboxTr064Binding.class);
-
-    /**
-     * The BundleContext. This is only valid when the bundle is ACTIVE. It is set in the activate()
-     * method and must not be accessed anymore once the deactivate() method was called or before activate()
-     * was called.
-     */
-    private BundleContext bundleContext;
 
     // URL to connect to fbox. Provided in main cfg file
     private String _url;
@@ -80,21 +74,20 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
      * @param configuration Configuration properties for this component obtained from the ConfigAdmin service
      */
     public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
-        this.bundleContext = bundleContext;
         logger.debug("FritzBox TR064 Binding activated!");
 
         // to override the default refresh interval one has to add a
         // parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
-        String refreshIntervalString = (String) configuration.get("refresh");
+        String refreshIntervalString = Objects.toString(configuration.get("refresh"), null);
         if (StringUtils.isNotBlank(refreshIntervalString)) {
             refreshInterval = Long.parseLong(refreshIntervalString);
-            logger.debug("Custom refresh interval set to " + refreshInterval);
+            logger.debug("Custom refresh interval set to {}", refreshInterval);
         }
 
         // Check if fritzbox parameters were provided in config, otherwise does not make sense going on...
-        String fboxurl = (String) configuration.get("url");
-        String fboxuser = (String) configuration.get("user");
-        String fboxpw = (String) configuration.get("pass");
+        String fboxurl = Objects.toString(configuration.get("url"), null);
+        String fboxuser = Objects.toString(configuration.get("user"), null);
+        String fboxpw = Objects.toString(configuration.get("pass"), null);
         if (fboxurl == null) {
             logger.warn("Fritzbox URL was not provided in config. Shutting down binding.");
             // how to shutdown??

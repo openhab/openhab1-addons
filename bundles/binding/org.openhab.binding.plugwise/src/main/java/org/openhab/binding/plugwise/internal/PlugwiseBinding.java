@@ -25,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.IllegalClassException;
+import org.apache.commons.lang.ObjectUtils;
 import org.joda.time.DateTime;
 import org.openhab.binding.plugwise.PlugwiseBindingProvider;
 import org.openhab.binding.plugwise.PlugwiseCommandType;
@@ -97,6 +98,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 
         if (stick != null) {
             setupNonStickDevices(config);
+            stick.startBackgroundThreads();
             setProperlyConfigured(true);
         } else {
             logger.warn("Plugwise needs at least one Stick in order to operate");
@@ -106,7 +108,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 
     private Stick setupStick(Dictionary<String, ?> config) {
 
-        String port = (String) config.get("stick.port");
+        String port = ObjectUtils.toString(config.get("stick.port"), null);
 
         if (port == null) {
             return null;
@@ -115,13 +117,13 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
         Stick stick = new Stick(port, this);
         logger.debug("Plugwise added Stick connected to serial port {}", port);
 
-        String interval = (String) config.get("stick.interval");
+        String interval = ObjectUtils.toString(config.get("stick.interval"), null);
         if (interval != null) {
             stick.setInterval(Integer.valueOf(interval));
             logger.debug("Setting the interval to send ZigBee PDUs to {} ms", interval);
         }
 
-        String retries = (String) config.get("stick.retries");
+        String retries = ObjectUtils.toString(config.get("stick.retries"), null);
         if (retries != null) {
             stick.setRetries(Integer.valueOf(retries));
             logger.debug("Setting the maximum number of attempts to send a message to ", retries);
@@ -143,7 +145,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                 continue;
             }
 
-            String MAC = (String) config.get(deviceName + ".mac");
+            String MAC = ObjectUtils.toString(config.get(deviceName + ".mac"), null);
             if (MAC == null || MAC.equals("")) {
                 logger.warn("Plugwise can not add device with name {} without a MAC address", deviceName);
             } else if (stick.getDeviceByMAC(MAC) != null) {
@@ -152,11 +154,11 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                                 + "the same MAC address is already used by device with name: {}",
                         deviceName, MAC, stick.getDeviceByMAC(MAC).name);
             } else {
-                String deviceType = (String) config.get(deviceName + ".type");
+                String deviceType = ObjectUtils.toString(config.get(deviceName + ".type"), null);
                 PlugwiseDevice device = createPlugwiseDevice(deviceType, MAC, deviceName);
 
                 if (device != null) {
-                    stick.plugwiseDeviceCache.add(device);
+                    stick.addDevice(device);
                 }
             }
 
@@ -402,6 +404,8 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
         // the logic below covers all possible command types and value types
         if (typeClass == DecimalType.class && value instanceof Float) {
             return new DecimalType((Float) value);
+        } else if (typeClass == DecimalType.class && value instanceof Double) {
+            return new DecimalType((Double) value);
         } else if (typeClass == OnOffType.class && value instanceof Boolean) {
             return ((Boolean) value).booleanValue() ? OnOffType.ON : OnOffType.OFF;
         } else if (typeClass == DateTimeType.class && value instanceof Calendar) {
@@ -479,7 +483,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                             if (!cp.getMAC().equals(element.getId())) {
                                 // a circleplus has been added/detected and it is not what is in the binding config
                                 PlugwiseDevice device = new Circle(element.getId(), stick, element.getId());
-                                stick.plugwiseDeviceCache.add(device);
+                                stick.addDevice(device);
                                 logger.debug("Plugwise added Circle with MAC address: {}", element.getId());
                             }
                         } else {

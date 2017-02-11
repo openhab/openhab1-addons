@@ -38,6 +38,7 @@ import tuwien.auto.calimero.dptxlator.DPTXlator3BitControlled;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteFloat;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteSigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteUnsigned;
+import tuwien.auto.calimero.dptxlator.DPTXlator8BitSigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
@@ -68,7 +69,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toDPTid()
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -119,7 +120,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.001 DPT_SWITCH
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -129,7 +130,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.002 DPT_BOOL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -139,7 +140,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.003 DPT_ENABLE
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -149,7 +150,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.004 DPT_RAMP
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -159,7 +160,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.005 DPT_ALARM
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -169,7 +170,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.006 DPT_BINARYVALUE
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -179,7 +180,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.007 DPT_STEP
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -190,7 +191,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.008 DPT_UPDOWN
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -200,7 +201,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.009 DPT_UPDOWN
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -210,7 +211,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.010 DPT_START
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -220,7 +221,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.011 DPT_STATE
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -230,7 +231,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.012 DPT_INVERT
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -240,7 +241,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.013 DPT_DIMSENDSTYLE
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -250,7 +251,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.014 DPT_INPUTSOURCE
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -260,7 +261,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.015 DPT_RESET
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -270,7 +271,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.018 DPT_OCCUPANCY
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -280,7 +281,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.019 DPT_WINDOW_DOOR
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -291,7 +292,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.021
      * DPT_LOGICAL_FUNCTION
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -302,7 +303,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.022 DPT_SCENE_AB
      * Remark: mapped to DecimalType
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -313,7 +314,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.023
      * DPT_SHUTTER_BLINDS_MODE
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -324,7 +325,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B2" KNX ID: 2.001 DPT_SWITCH_CONTROL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -334,7 +335,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B2" KNX ID: 2.002 DPT_BOOL_CONTROL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -344,7 +345,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B2" KNX ID: 2.003 DPT_ENABLE_CONTROL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -354,7 +355,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B2" KNX ID: 2.004 DPT_RAMP_CONTROL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -364,7 +365,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B2" KNX ID: 2.005 DPT_ALARM_CONTROL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -374,7 +375,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B2" KNX ID: 2.006 DPT_BINARY_CONTROL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -384,7 +385,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B2" KNX ID: 2.007 DPT_STEP_CONTROL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -394,7 +395,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B2" KNX ID: 2.008 DPT_UPDOWN_CONTROL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -404,7 +405,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B2" KNX ID: 2.009 DPT_SWITCH_CONTROL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -414,7 +415,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B2" KNX ID: 2.010 DPT_START_CONTROL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -424,7 +425,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B2" KNX ID: 2.011 DPT_STATE_CONTROL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -434,7 +435,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B2" KNX ID: 2.012 DPT_INVERT_CONTROL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -444,7 +445,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type B1U3 KNX ID: 3.007 DPT_CONTROL_DIMMING
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -455,11 +456,11 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 5.001 DPT_SCALING
-     * 
+     *
      * This data type is a “Multi-state” type, according KNX spec. No exact linear conversion from value to byte(s) and
      * reverse is required, since rounding is
      * involved.
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -488,11 +489,11 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 5.003 DPT_ANGLE
-     * 
+     *
      * This data type is a “Multi-state” type, according KNX spec. No exact linear conversion from value to byte(s) and
      * reverse is required, since rounding is
      * involved.
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -525,7 +526,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType()for type “8-Bit Unsigned Value" KNX ID: 5.004 DPT_PERCENT_U8
      * (previously name DPT_RelPos_Valve)
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -558,7 +559,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 5.005
      * DPT_DECIMALFACTOR
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -584,7 +585,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 5.006 DPT_TARRIF
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -611,7 +612,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 5.010
      * DPT_VALUE_1_UCOUNT
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -636,9 +637,75 @@ public class KNXCoreTypeMapperTest {
     }
 
     /**
+     * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Signed Value" KNX ID: 6.001
+     * DPT_PERCENT_V8
+     *
+     * @throws KNXFormatException
+     */
+    @Test
+    public void testTypeMapping8BitSigned_6_001() throws KNXFormatException {
+        DPT dpt = DPTXlator8BitSigned.DPT_PERCENT_V8;
+
+        testToTypeClass(dpt, DecimalType.class);
+
+        // Use a too short byte array
+        assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+                testToType(dpt, new byte[] {}, DecimalType.class));
+
+        Type type = testToType(dpt, new byte[] { 0 }, DecimalType.class);
+        testToDPTValue(dpt, type, "0");
+
+        type = testToType(dpt, new byte[] { (byte) 0x7F }, DecimalType.class);
+        testToDPTValue(dpt, type, "127");
+
+        type = testToType(dpt, new byte[] { (byte) 0x80 }, DecimalType.class);
+        testToDPTValue(dpt, type, "-128");
+
+        type = testToType(dpt, new byte[] { (byte) 0xFF }, DecimalType.class);
+        testToDPTValue(dpt, type, "-1");
+
+        // Use a too long byte array expecting that additional bytes will be ignored
+        type = testToType(dpt, new byte[] { (byte) 0xFF, 0 }, DecimalType.class);
+        testToDPTValue(dpt, type, "-1");
+    }
+
+    /**
+     * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Signed Value" KNX ID: 6.010
+     * DPT_VALUE_1_UCOUNT
+     *
+     * @throws KNXFormatException
+     */
+    @Test
+    public void testTypeMapping8BitSigned_6_010() throws KNXFormatException {
+        DPT dpt = DPTXlator8BitSigned.DPT_VALUE_1_UCOUNT;
+
+        testToTypeClass(dpt, DecimalType.class);
+
+        // Use a too short byte array
+        assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+                testToType(dpt, new byte[] {}, DecimalType.class));
+
+        Type type = testToType(dpt, new byte[] { 0 }, DecimalType.class);
+        testToDPTValue(dpt, type, "0");
+
+        type = testToType(dpt, new byte[] { (byte) 0x7F }, DecimalType.class);
+        testToDPTValue(dpt, type, "127");
+
+        type = testToType(dpt, new byte[] { (byte) 0x80 }, DecimalType.class);
+        testToDPTValue(dpt, type, "-128");
+
+        type = testToType(dpt, new byte[] { (byte) 0xFF }, DecimalType.class);
+        testToDPTValue(dpt, type, "-1");
+
+        // Use a too long byte array expecting that additional bytes will be ignored
+        type = testToType(dpt, new byte[] { (byte) 0xFF, 0 }, DecimalType.class);
+        testToDPTValue(dpt, type, "-1");
+    }
+
+    /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.001
      * DPT_VALUE_2_UCOUNT
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -648,7 +715,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.002 DPT_TIMEPERIOD
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -659,7 +726,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.003
      * DPT_TIMEPERIOD_10
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -689,7 +756,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests for method typeMapper.toType() type “2-Octet Unsigned Value" KNX ID: 7.004
      * DPT_TIMEPERIOD_100
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -719,7 +786,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() method typeMapper.toType() for type “2-Octet Unsigned Value"
      * KNX ID: 7.005 DPT_TIMEPERIOD_SEC
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -730,7 +797,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() method typeMapper.toType() for type “2-Octet Unsigned Value"
      * KNX ID: 7.006 DPT_TIMEPERIOD_MIN
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -741,7 +808,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.007
      * DPT_TIMEPERIOD_HOURS
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -752,7 +819,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.010
      * DPT_PROP_DATATYPE
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -762,7 +829,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.011 DPT_LENGTH
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -773,7 +840,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.012
      * DPT_ELECTRICAL_CURRENT
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -783,7 +850,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.013 DPT_BRIGHTNESS
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -794,7 +861,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.001. DPT_TEMPERATURE
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -805,7 +872,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.002.
      * DPT_TEMPERATURE_DIFFERENCE
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -816,7 +883,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.003.
      * DPT_TEMPERATURE_GRADIENT
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -827,7 +894,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.004.
      * DPT_INTENSITY_OF_LIGHT
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -837,7 +904,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.005. DPT_WIND_SPEED
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -848,7 +915,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.006.
      * DPT_AIR_PRESSURE
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -858,7 +925,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.007. DPT_HUMIDITY
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -868,7 +935,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.008. DPT_AIRQUALITY
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -879,7 +946,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.010.
      * DPT_TIME_DIFFERENCE1
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -890,7 +957,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.011.
      * DPT_TIME_DIFFERENCE2
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -900,7 +967,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.020. DPT_VOLTAGE
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -911,7 +978,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.021.
      * DPT_ELECTRICAL_CURRENT
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -922,7 +989,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.022.
      * DPT_POWERDENSITY
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -933,7 +1000,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.023.
      * DPT_KELVIN_PER_PERCENT
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -943,7 +1010,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.024. DPT_POWER
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -953,7 +1020,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.025. DPT_VOLUME_FLOW
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -963,7 +1030,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.026. DPT_RAIN_AMOUNT
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -973,7 +1040,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.027. DPT_TEMP_F
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -984,7 +1051,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.028.
      * DPT_WIND_SPEED_KMH
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -994,9 +1061,9 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
-     * 
+     *
      * Test case: positive tests
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1015,7 +1082,7 @@ public class KNXCoreTypeMapperTest {
 
         /*
          * Set day to no day, 0 hours, 0 minutes and 0 seconds
-         * 
+         *
          */
         type = testToType(dpt, new byte[] { 0x00, 0x00, 0x00 }, DateTimeType.class);
         String today = String.format(Locale.US, "%1$ta", Calendar.getInstance());
@@ -1090,9 +1157,9 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
-     * 
+     *
      * Test case: Set day to Monday, 24 hours, 59 minutes and 59 seconds
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1107,9 +1174,9 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
-     * 
+     *
      * Set day to Monday, 23 hours, 60 minutes and 59 seconds
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1124,9 +1191,9 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
-     * 
+     *
      * Set day to Monday, 23 hours, 59 minutes and 60 seconds
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1141,9 +1208,9 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 11.001 DPT_DATE
-     * 
+     *
      * Test illegal data (day and month cannot be 0) This should throw an KNXIllegalArgumentException
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1158,9 +1225,9 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 11.001 DPT_DATE
-     * 
+     *
      * Test illegal day (cannot be 0) This should throw an KNXIllegalArgumentException
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1175,9 +1242,9 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 11.001 DPT_DATE
-     * 
+     *
      * Test illegal month (cannot be 0) This should throw an KNXIllegalArgumentException
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1192,9 +1259,9 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 11.001 DPT_DATE
-     * 
+     *
      * Test correct year evaluation according KNX spec.
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1231,7 +1298,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Unsigned Value" KNX ID: 12.001
      * DPT_VALUE_4_UCOUNT
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1258,7 +1325,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Signed Value" KNX ID: 13.001 DPT_COUNT
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1268,7 +1335,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Signed Value" KNX ID: 13.002 DPT_FLOWRATE
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1279,7 +1346,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Signed Value" KNX ID: 13.010
      * DPT_ACTIVE_ENERGY
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1290,7 +1357,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Signed Value" KNX ID: 13.011
      * DPT_APPARENT_ENERGY
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1301,7 +1368,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Signed Value" KNX ID: 13.012
      * DPT_REACTIVE_ENERGY
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1312,7 +1379,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Signed Value" KNX ID: 13.013
      * DPT_ACTIVE_ENERGY_KWH
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1323,7 +1390,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Signed Value" KNX ID: 13.014
      * DPT_APPARENT_ENERGY_KVAH
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1334,7 +1401,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Signed Value" KNX ID: 13.015
      * DPT_REACTIVE_ENERGY_KVARH
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1344,7 +1411,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Signed Value" KNX ID: 13.100 DPT_DELTA_TIME
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1354,7 +1421,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1439,7 +1506,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “String" KNX ID: 16.001 DPT_STRING_8859_1
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1450,7 +1517,7 @@ public class KNXCoreTypeMapperTest {
 
         /*
          * According to spec the length of this DPT is fixed to 14 bytes.
-         * 
+         *
          * Test the that a too short array results in an <null> string. There should be an error logged by calimero lib
          * (V2.2.0).
          */
@@ -1465,7 +1532,7 @@ public class KNXCoreTypeMapperTest {
          * without error. As a result: anything less then 14 bytes and above a multiple of 14 bytes will be accepted but
          * cutoff. Even for the failed check (less
          * then 14 bytes) calimero is not throwing an exception but is logging an error which we cannot check for here.
-         * 
+         *
          * Test the erroneous behavior that a too long arrays result in a cutoff string. There probably won't be an
          * error logged by calimero lib (V2.2.0).
          */
@@ -1493,7 +1560,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Scene Number" KNX ID: 17.001 DPT_SCENE_NUMBER
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1527,7 +1594,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Scene Number" KNX ID: 18.001 DPT_SCENE_CONTROL
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1561,7 +1628,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “Date Time" KNX ID: 19.001 DPT_DATE_TIME
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1659,7 +1726,7 @@ public class KNXCoreTypeMapperTest {
         testToDPTValue(dpt, type, "2155-12-31 23:59:59");
         /*
          * December 31st, 2155, 24:00:00, day of week=Any day, Day of week field invalid
-         * 
+         *
          * TODO: this test case should test for "2155-12-31 24:00:00" since that is what the (valid) KNX bytes
          * represent.
          * Nevertheless, calimero is "cheating" by using the milliseconds such that "23:59:59.999" is interpreted as
@@ -1672,7 +1739,7 @@ public class KNXCoreTypeMapperTest {
         testToDPTValue(dpt, type, "2155-12-31 23:59:59");
         /*
          * December 31st, 2014 24:00:00, day of week=Any day, Day of week field invalid
-         * 
+         *
          * TODO: this test case should test for "2155-12-31 24:00:00" since that is what the (valid) KNX bytes
          * represent.
          * Nevertheless, calimero is "cheating" by using the milliseconds such that "23:59:59.999" is interpreted as
@@ -1690,7 +1757,7 @@ public class KNXCoreTypeMapperTest {
      * Testcase tests handling of Daylight Savings Time flag (DST).
      * Interpretation of DST is depending on default timezone, hence we're trying to test using
      * different timezones: default, New York, Berlin and Shanghai. Shanghai not having a DST.
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1724,7 +1791,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toType() for type “3-byte RGB value" KNX ID: 232.600 DPT_Colour_RGB
-     * 
+     *
      * @throws KNXFormatException
      */
     @Test
@@ -1764,7 +1831,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * KNXCoreTypeMapper tests method typeMapper.toTypeClass()
-     * 
+     *
      * @param dpt
      * @param expectedClass
      * @throws KNXFormatException
@@ -1777,7 +1844,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * Convenience method: testing KNXCoretypeMapper for type “Datapoint Types B1"
-     * 
+     *
      * @throws KNXFormatException
      */
     private void testTypeMappingB1(DPT dpt, Class<? extends Type> expectedClass, String valueLow, String valueHigh)
@@ -1811,7 +1878,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * Convenience method: testing KNXCoretypeMapper for type “Datapoint Types B1 Controlled"
-     * 
+     *
      * @throws KNXFormatException
      */
     private void testTypeMappingB1_Controlled(DPT dpt, String valueLow, String valueHigh) throws KNXFormatException {
@@ -1844,7 +1911,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * Convenience method: testing KNXCoretypeMapper for type “Datapoint Types B1U3 Controlled"
-     * 
+     *
      * @throws KNXFormatException
      */
     private void testTypeMappingB1U3(DPT dpt, Class<? extends Type> expectedClass, String valueLow, String valueHigh)
@@ -1883,7 +1950,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * Convenience method: testing KNXCoretypeMapper for type “Datapoint Types 2-Byte Float"
-     * 
+     *
      * @throws KNXFormatException
      */
     private void testTypeMapping2ByteUnsigned(DPT dpt) throws KNXFormatException {
@@ -1909,7 +1976,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * Convenience method: testing KNXCoretypeMapper for type “Datapoint Types 2-Byte Float"
-     * 
+     *
      * @throws KNXFormatException
      */
     private void testTypeMapping2ByteFloat(DPT dpt) throws KNXFormatException {
@@ -1924,7 +1991,7 @@ public class KNXCoreTypeMapperTest {
 
         /*
          * Test the maximum positive value
-         * 
+         *
          */
         type = testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0xFF }, DecimalType.class);
         testToDPTValue(dpt, type, "670760.96");
@@ -1940,7 +2007,7 @@ public class KNXCoreTypeMapperTest {
 
         /*
          * Test the maximum negative value
-         * 
+         *
          */
         type = testToType(dpt, new byte[] { (byte) 0xF8, 0x00 }, DecimalType.class);
         testToDPTValue(dpt, type, "-671088.64");
@@ -1952,7 +2019,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * Convenience method: testing KNXCoretypeMapper for type “Datapoint Types 4-Byte Signed"
-     * 
+     *
      * @throws KNXFormatException
      */
     private void testTypeMapping4ByteSigned(DPT dpt) throws KNXFormatException {
@@ -1983,7 +2050,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * Convenience method: testing KNXCoreTypeMapper.toType() method.
      * This test checks whether the returned Type Object is of the desired Class
-     * 
+     *
      * @param dpt requested datapoint type ({@link tuwien.auto.calimero.dptxlator.DPT})
      * @param data byte array with KNX raw data
      * @param expectedClass the desired class
@@ -2002,7 +2069,7 @@ public class KNXCoreTypeMapperTest {
     /**
      * Convenience method: testing KNXCoreTypeMapper.toDPTValue() method.
      * This test checks whether the returned Type Object contains the correct KNX value
-     * 
+     *
      * @param dpt requested datapoint type ({@link tuwien.auto.calimero.dptxlator.DPT})
      * @param type the Type object holding the value
      * @param expectedStringResult a string expected to be returned by KNXCoreTypeMapper.toDPTValue()
@@ -2015,7 +2082,7 @@ public class KNXCoreTypeMapperTest {
 
     /**
      * Convenience method creating a Datapoint
-     * 
+     *
      * @param dpt datapoint type
      * @return a new CommandDP
      * @throws KNXFormatException

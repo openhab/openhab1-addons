@@ -17,12 +17,12 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration#getMovingAverage
- * <em>Moving Average</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration#getMovingAverage <em>Moving
+ * Average</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration#getRange <em>Range</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFAnalogInConfiguration()
  * @model
@@ -47,9 +47,9 @@ public interface TFAnalogInConfiguration extends TFBaseConfiguration {
     Short getMovingAverage();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration#getMovingAverage
-     * <em>Moving Average</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration#getMovingAverage <em>Moving
+     * Average</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

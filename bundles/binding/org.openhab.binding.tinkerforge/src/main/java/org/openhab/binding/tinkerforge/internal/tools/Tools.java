@@ -49,6 +49,10 @@ public class Tools {
         return calculate(value, BigDecimal.TEN);
     }
 
+    public static DecimalValue calculate100(long value) {
+        return calculate(value, new BigDecimal("100"));
+    }
+
     public static DecimalValue calculate1000(int value) {
         return calculate(value, new BigDecimal("1000"));
     }
@@ -185,5 +189,57 @@ public class Tools {
             }
         }
         return ledlist;
+    }
+
+    public static class LinePositionParseException extends Exception {
+
+        public LinePositionParseException() {
+            super();
+        }
+
+        public LinePositionParseException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public LinePositionParseException(String message) {
+            super(message);
+        }
+
+        /**
+        *
+        */
+        private static final long serialVersionUID = 8149389077312288393L;
+
+    }
+
+    public static LinePositionText parseLinePostion(String text, String positionPrefix, String positionSuffix,
+            int lineLength, int positionLength, int maxLine, int maxPostion) throws LinePositionParseException {
+        if (!text.startsWith(positionPrefix)) {
+            throw new LinePositionParseException("prefix is missing");
+        }
+        int indexOfSuffix = text.indexOf(positionSuffix);
+        if (indexOfSuffix == -1 || indexOfSuffix > positionPrefix.length() + (lineLength + positionLength)) {
+            throw new LinePositionParseException("suffix is missing");
+        }
+
+        try {
+            short lineNum = (short) Integer
+                    .parseInt(text.substring(positionPrefix.length(), positionPrefix.length() + lineLength));
+            short position = (short) Integer
+                    .parseInt(text.substring(positionPrefix.length() + lineLength, indexOfSuffix));
+            if (lineNum < 0 || lineNum > maxLine) {
+                logger.error("line number must have a value from 0 - {}", maxLine);
+                throw new LinePositionParseException("line number must have a value from 0 - " + maxLine);
+            }
+            if (position < 0 || position > maxPostion) {
+                logger.error("position must have a value from 0 - {}", maxPostion);
+                throw new LinePositionParseException("position must have a value from 0 - " + maxPostion);
+            }
+            String text2show = text.substring(indexOfSuffix + 1);
+            return new LinePositionText(lineNum, position, text2show);
+        } catch (NumberFormatException e) {
+            throw new LinePositionParseException("invalid postion number", e);
+        }
+
     }
 }

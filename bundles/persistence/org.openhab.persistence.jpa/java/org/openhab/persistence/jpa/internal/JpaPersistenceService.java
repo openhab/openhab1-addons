@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * JPA based implementation of QueryablePersistenceService.
- * 
+ *
  * @author Manfred Bergmann
  * @since 1.6.0
  */
@@ -47,7 +47,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 
     /**
      * lazy loading because update() is called after activate()
-     * 
+     *
      * @return
      */
     protected EntityManagerFactory getEntityManagerFactory() {
@@ -91,7 +91,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 
     @Override
     public void store(Item item, String alias) {
-        logger.debug("Storing item: " + item.getName());
+        logger.debug("Storing item: {}", item.getName());
 
         if (item.getState() instanceof UnDefType) {
             logger.debug("This item is of undefined type. Cannot persist it!");
@@ -99,7 +99,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
         }
 
         if (!JpaConfiguration.isInitialized) {
-            logger.warn("Trying to create EntityManagerFactory but we don't have configuration yet!");
+            logger.debug("Trying to create EntityManagerFactory but we don't have configuration yet!");
             return;
         }
 
@@ -220,7 +220,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 
     /**
      * Creates a new EntityManagerFactory with properties read from openhab.cfg via JpaConfiguration.
-     * 
+     *
      * @return initialized EntityManagerFactory
      */
     protected EntityManagerFactory newEntityManagerFactory() {
@@ -262,7 +262,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 
     /**
      * Checks if EntityManagerFactory is open
-     * 
+     *
      * @return true when open, false otherwise
      */
     protected boolean isEntityManagerFactoryOpen() {
@@ -271,7 +271,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 
     /**
      * Return the persistence unit as in persistence.xml file.
-     * 
+     *
      * @return the persistence unit name
      */
     protected String getPersistenceUnitName() {
@@ -280,7 +280,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 
     /**
      * Retrieves the item for the given name from the item registry
-     * 
+     *
      * @param itemName
      * @return
      */

@@ -61,7 +61,7 @@ public abstract class AbstractEBusWriteConnector extends AbstractEBusConnector {
 
     /**
      * Returns the eBus binding used sender Id
-     * 
+     *
      * @return
      */
     public byte getSenderId() {
@@ -70,7 +70,7 @@ public abstract class AbstractEBusWriteConnector extends AbstractEBusConnector {
 
     /**
      * Set the eBus binding sender Id
-     * 
+     *
      * @param senderId The new id, default is 0xFF
      */
     public void setSenderId(byte senderId) {
@@ -79,7 +79,7 @@ public abstract class AbstractEBusWriteConnector extends AbstractEBusConnector {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.ebus.internal.connection.AbstractEBusConnector#connect()
      */
     @Override
@@ -99,7 +99,7 @@ public abstract class AbstractEBusWriteConnector extends AbstractEBusConnector {
 
     /**
      * Add a byte array to send queue.
-     * 
+     *
      * @param data
      * @return
      */
@@ -174,7 +174,7 @@ public abstract class AbstractEBusWriteConnector extends AbstractEBusConnector {
 
     /**
      * Internal send function. Send and read to detect byte collisions.
-     * 
+     *
      * @param secondTry
      * @throws IOException
      */
@@ -297,13 +297,13 @@ public abstract class AbstractEBusWriteConnector extends AbstractEBusConnector {
                             }
                         }
 
-                        // read slave data, be aware of 0x0A bytes
+                        // read slave data, be aware of 0xA9 bytes
                         while (nn2 > 0) {
                             byte d = (byte) (readByte(true) & 0xFF);
                             sendBuffer.put(d);
                             crc = EBusUtils.crc8_tab(d, crc);
 
-                            if (d != (byte) 0xA) {
+                            if (d != (byte) 0xA9) {
                                 nn2--;
                             }
                         }
@@ -311,6 +311,24 @@ public abstract class AbstractEBusWriteConnector extends AbstractEBusConnector {
                         // read slave crc
                         byte crc2 = (byte) (readByte(true) & 0xFF);
                         sendBuffer.put(crc2);
+
+                        // check for expanded crc
+                        if (crc2 == (byte) 0xA9) {
+
+                            // expanded value
+                            crc2 = (byte) (readByte(true) & 0xFF);
+                            sendBuffer.put(crc2);
+
+                            if (crc2 == (byte) 0x00 && crc == (byte) 0xA9) {
+                                // crc ok, set for next if condition
+                                crc = crc2;
+                            }
+
+                            if (crc2 == (byte) 0x01 && crc == (byte) 0xAA) {
+                                // crc ok, set for next if condition
+                                crc = crc2;
+                            }
+                        }
 
                         // check slave crc
                         if (crc2 != crc) {
@@ -380,7 +398,7 @@ public abstract class AbstractEBusWriteConnector extends AbstractEBusConnector {
 
     /**
      * Resend data if it's the first try or call resetSend()
-     * 
+     *
      * @param secondTry
      * @return
      * @throws IOException
@@ -416,7 +434,7 @@ public abstract class AbstractEBusWriteConnector extends AbstractEBusConnector {
 
     /**
      * Called event if a SYN packet has been received
-     * 
+     *
      * @throws IOException
      */
     @Override
@@ -435,7 +453,7 @@ public abstract class AbstractEBusWriteConnector extends AbstractEBusConnector {
 
     /**
      * Writes one byte to the backend
-     * 
+     *
      * @param b
      * @throws IOException
      */
@@ -443,14 +461,14 @@ public abstract class AbstractEBusWriteConnector extends AbstractEBusConnector {
 
     /**
      * Resets the input buffer of input stream
-     * 
+     *
      * @throws IOException
      */
     protected abstract void resetInputBuffer() throws IOException;
 
     /**
      * Return the undelaying input stream
-     * 
+     *
      * @return
      */
     protected abstract InputStream getInputStream();

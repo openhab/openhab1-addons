@@ -17,14 +17,15 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.PTCConnected#getDeviceType <em>Device Type</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getPTCConnected()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.PTCDevice org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.DigitalValue>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.PTCDevice
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.DigitalValue>"
  * @generated
  */
 public interface PTCConnected extends PTCDevice, MSensor<HighLowValue> {

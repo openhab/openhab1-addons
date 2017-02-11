@@ -35,7 +35,7 @@ public class CallEvent {
     private String _line;
 
     // default logger
-    private static final Logger logger = LoggerFactory.getLogger(FritzboxTr064Binding.class);
+    private static final Logger logger = LoggerFactory.getLogger(CallEvent.class);
 
     public CallEvent(String rawEvent) {
         this._raw = rawEvent;
@@ -108,7 +108,7 @@ public class CallEvent {
 
     /***
      * parses the raw event string/line from fbox into fields of object
-     * 
+     *
      * @return true if parsing was successful
      */
     public boolean parseRawEvent() {
