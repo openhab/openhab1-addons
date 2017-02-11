@@ -104,7 +104,7 @@ public class DropboxSynchronizer implements ManagedService {
     /** The default directory to download files from Dropbox to (currently '.') */
     private static final String DEFAULT_CONTENT_DIR = getConfigDirFolder();
 
-    //a user's personal access token retrieved from openhab.cfg only; null by default
+    // a user's personal access token retrieved from configuration only; null by default
     private static String personalAccessToken = null;
 
     /**
@@ -196,7 +196,7 @@ public class DropboxSynchronizer implements ManagedService {
      * @see <a href="https://github.com/openhab/openhab/wiki/Dropbox-IO">openHAB Dropbox IO Wiki</a>
      */
     public void startAuthentication() throws DbxException {
-        if( personalAccessToken == null ) {
+        if (personalAccessToken == null) {
             DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(requestConfig, appInfo);
             String authUrl = webAuth.start();
 
@@ -206,8 +206,7 @@ public class DropboxSynchronizer implements ManagedService {
             logger.info("# 2. Allow openHAB to access Dropbox");
             logger.info("# 3. Paste the authorisation code here using the command 'finishAuthentication \"<token>\"'");
             logger.info("#########################################################################################");
-        }
-        else {
+        } else {
             logger.info("#########################################################################################");
             logger.info("# Starting auth using personal access token");
             logger.info("#########################################################################################");
@@ -483,7 +482,7 @@ public class DropboxSynchronizer implements ManagedService {
             if (file.isDirectory()) {
                 collectLocalEntries(localEntries, file.getPath());
             } else {
-                //if we are on a Windows filesystem we need to change the separator for dropbox
+                // if we are on a Windows filesystem we need to change the separator for dropbox
                 if (isWindows()) {
                     normalizedPath = normalizedPath.replace('\\', '/');
                 }
@@ -505,12 +504,12 @@ public class DropboxSynchronizer implements ManagedService {
     }
 
     /*
-     * TODO: TEE: Currently there is now way to change the attribute
+     * TODO: TEE: Currently there is no way to change the attribute
      * 'lastModified' of the files to upload via Dropbox API. See the
      * discussion below for more details.
      * 
      * Since this is a missing feature (from my point of view) we should
-     * check the improvements of the API development on regular basis.
+     * check the improvements of the API development on a regular basis.
      * 
      * @see http://forums.dropbox.com/topic.php?id=22347
      */
@@ -520,8 +519,7 @@ public class DropboxSynchronizer implements ManagedService {
         try {
             DbxWriteMode mode = overwrite ? DbxWriteMode.force() : DbxWriteMode.add();
             DbxEntry.File uploadedFile = client.uploadFile(dropboxPath, mode, file.length(), inputStream);
-            logger.debug("Successfully uploaded file '{}'. New revision is '{}'", uploadedFile,
-                    uploadedFile.rev);
+            logger.debug("Successfully uploaded file '{}'. New revision is '{}'", uploadedFile, uploadedFile.rev);
         } finally {
             inputStream.close();
         }
@@ -621,8 +619,7 @@ public class DropboxSynchronizer implements ManagedService {
             String pat = Objects.toString(config.get("personalAccessToken"), null);
             if (isNotBlank(pat)) {
                 DropboxSynchronizer.personalAccessToken = pat;
-            }
-            else {
+            } else {
                 logger.debug("Didn't find a personal access token.");
             }
 
