@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -161,7 +162,7 @@ public class DropboxSynchronizer implements ManagedService {
     }
 
     public void deactivate() {
-        logger.debug("about to shut down DropboxSynchronizer ...");
+        logger.debug("About to shut down DropboxSynchronizer ...");
 
         cancelAllJobs();
         isProperlyConfigured = false;
@@ -200,7 +201,7 @@ public class DropboxSynchronizer implements ManagedService {
             String authUrl = webAuth.start();
 
             logger.info("#########################################################################################");
-            logger.info("# Dropbox-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
+            logger.info("# Dropbox Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
             logger.info("# 1. Open URL '{}'", authUrl);
             logger.info("# 2. Allow openHAB to access Dropbox");
             logger.info("# 3. Paste the authorisation code here using the command 'finishAuthentication \"<token>\"'");
@@ -363,7 +364,7 @@ public class DropboxSynchronizer implements ManagedService {
                     isChanged = true;
                     logger.debug("Successfully deleted file '{}' from Dropbox", path);
                 } else {
-                    logger.trace("skipped file '{}' since it doesn't match the given filter arguments.", path);
+                    logger.trace("Skipped file '{}' since it doesn't match the given filter arguments.", path);
                 }
             }
         }
@@ -376,7 +377,7 @@ public class DropboxSynchronizer implements ManagedService {
                 logger.warn("Couldn't delete file '{}'", dropboxEntryFile.getPath());
             } else {
                 logger.debug(
-                        "Deleted cache file '{}' since there are changes. It will be recreated while next synchronization loop.",
+                        "Deleted cache file '{}' since there are changes. It will be recreated on the next synchronization loop.",
                         dropboxEntryFile.getPath());
             }
 
@@ -386,7 +387,7 @@ public class DropboxSynchronizer implements ManagedService {
             DbxDelta<DbxEntry> delta = client.getDelta(lastCursor);
             writeDeltaCursor(delta.cursor);
         } else {
-            logger.debug("No files changed locally > no deltas to upload to Dropbox ...");
+            logger.debug("No files changed locally. No deltas to upload to Dropbox ...");
         }
     }
 
@@ -434,7 +435,7 @@ public class DropboxSynchronizer implements ManagedService {
                 if (lineComponents.length == 2) {
                     dropboxEntries.put(lineComponents[0], Long.valueOf(lineComponents[1]));
                 } else {
-                    logger.trace("Couldn't parse line '{}' - it does not contain to elements delimited by '{}'", line,
+                    logger.trace("Couldn't parse line '{}' - it does not contain two elements delimited by '{}'", line,
                             FIELD_DELIMITER);
                 }
             }
@@ -471,7 +472,7 @@ public class DropboxSynchronizer implements ManagedService {
                     }
                 }
 
-                logger.trace("skipped file '{}' since it doesn't match the given filter arguments.",
+                logger.trace("Skipped file '{}' since it doesn't match the given filter arguments.",
                         file.getAbsolutePath());
                 return false;
             }
@@ -519,7 +520,7 @@ public class DropboxSynchronizer implements ManagedService {
         try {
             DbxWriteMode mode = overwrite ? DbxWriteMode.force() : DbxWriteMode.add();
             DbxEntry.File uploadedFile = client.uploadFile(dropboxPath, mode, file.length(), inputStream);
-            logger.debug("successfully uploaded file '{}'. New revision is '{}'", uploadedFile.toString(),
+            logger.debug("Successfully uploaded file '{}'. New revision is '{}'", uploadedFile,
                     uploadedFile.rev);
         } finally {
             inputStream.close();
@@ -568,7 +569,7 @@ public class DropboxSynchronizer implements ManagedService {
                     content = lines.get(0);
                 }
             } catch (IOException ioe) {
-                logger.debug("Handling of cursor file throws an Exception", ioe);
+                logger.debug("Handling of cursor file threw an Exception", ioe);
             }
         }
         return content;
@@ -579,7 +580,7 @@ public class DropboxSynchronizer implements ManagedService {
             FileUtils.writeStringToFile(file, content);
             logger.debug("Created file '{}' with content '{}'", file.getAbsolutePath(), content);
         } catch (IOException e) {
-            logger.error("Couldn't write to file '" + file.getPath() + "'.", e);
+            logger.error("Couldn't write to file '{}'.", file.getPath(), e);
         }
     }
 
@@ -597,7 +598,7 @@ public class DropboxSynchronizer implements ManagedService {
                 logger.debug("Local file '{}' couldn't be deleted", fqPath);
             }
         } else {
-            logger.trace("Local file '{}' isn't deleted because it is a directory");
+            logger.trace("Local item '{}' wasn't deleted because it is a directory.");
         }
     }
 
@@ -607,18 +608,18 @@ public class DropboxSynchronizer implements ManagedService {
         if (config != null) {
             isProperlyConfigured = false;
 
-            String appKeyString = (String) config.get("appkey");
+            String appKeyString = Objects.toString(config.get("appkey"), null);
             if (isNotBlank(appKeyString)) {
                 DropboxSynchronizer.appKey = appKeyString;
             }
 
-            String appSecretString = (String) config.get("appsecret");
+            String appSecretString = Objects.toString(config.get("appsecret"), null);
             if (isNotBlank(appSecretString)) {
                 DropboxSynchronizer.appSecret = appSecretString;
             }
 
-            String pat = (String) config.get("personalAccessToken");
-            if( isNotBlank(pat)) {
+            String pat = Objects.toString(config.get("personalAccessToken"), null);
+            if (isNotBlank(pat)) {
                 DropboxSynchronizer.personalAccessToken = pat;
             }
             else {
@@ -627,31 +628,31 @@ public class DropboxSynchronizer implements ManagedService {
 
             if (isBlank(DropboxSynchronizer.appKey) || isBlank(DropboxSynchronizer.appSecret)) {
                 throw new ConfigurationException("dropbox:appkey",
-                        "The parameters 'appkey' or 'appsecret' are missing! Please refer to your 'openhab.cfg'");
+                        "The parameters 'appkey' or 'appsecret' are missing! Please check your configuration.");
             }
 
-            String fakeModeString = (String) config.get("fakemode");
+            String fakeModeString = Objects.toString(config.get("fakemode"), null);
             if (isNotBlank(fakeModeString)) {
                 DropboxSynchronizer.fakeMode = BooleanUtils.toBoolean(fakeModeString);
             }
 
-            String contentDirString = (String) config.get("contentdir");
+            String contentDirString = Objects.toString(config.get("contentdir"), null);
             if (isNotBlank(contentDirString)) {
                 DropboxSynchronizer.contentDir = contentDirString;
             }
             logger.debug("contentdir: {}", contentDir);
 
-            String uploadIntervalString = (String) config.get("uploadInterval");
+            String uploadIntervalString = Objects.toString(config.get("uploadInterval"), null);
             if (isNotBlank(uploadIntervalString)) {
                 DropboxSynchronizer.uploadInterval = uploadIntervalString;
             }
 
-            String downloadIntervalString = (String) config.get("downloadInterval");
+            String downloadIntervalString = Objects.toString(config.get("downloadInterval"), null);
             if (isNotBlank(downloadIntervalString)) {
                 DropboxSynchronizer.downloadInterval = downloadIntervalString;
             }
 
-            String syncModeString = (String) config.get("syncmode");
+            String syncModeString = Objects.toString(config.get("syncmode"), null);
             if (isNotBlank(syncModeString)) {
                 try {
                     DropboxSynchronizer.syncMode = DropboxSyncMode.valueOf(syncModeString.toUpperCase());
@@ -661,21 +662,21 @@ public class DropboxSynchronizer implements ManagedService {
                 }
             }
 
-            String uploadFilterString = (String) config.get("uploadfilter");
+            String uploadFilterString = Objects.toString(config.get("uploadfilter"), null);
             if (isNotBlank(uploadFilterString)) {
                 String[] newFilterElements = uploadFilterString.split(",");
                 uploadFilterElements = Arrays.asList(newFilterElements);
             }
 
-            String downloadFilterString = (String) config.get("downloadfilter");
+            String downloadFilterString = Objects.toString(config.get("downloadfilter"), null);
             if (isNotBlank(downloadFilterString)) {
                 String[] newFilterElements = downloadFilterString.split(",");
                 downloadFilterElements = Arrays.asList(newFilterElements);
             }
 
-            // we got thus far, so we define this synchronizer as properly configured ...
+            // we got this far, so we define this synchronizer as properly configured ...
             isProperlyConfigured = true;
-            logger.debug("bundle is properly configured: activating synchronizer");
+            logger.debug("Bundle is properly configured. Activating synchronizer.");
             activateSynchronizer();
         }
     }
@@ -688,7 +689,7 @@ public class DropboxSynchronizer implements ManagedService {
         if (isProperlyConfigured) {
             cancelAllJobs();
             if (isAuthenticated()) {
-                logger.debug("authenticated: scheduling jobs");
+                logger.debug("Authenticated. Scheduling jobs.");
                 scheduleJobs();
             } else {
                 logger.debug("Dropbox bundle isn't authorized properly, so the synchronization jobs "
@@ -704,15 +705,15 @@ public class DropboxSynchronizer implements ManagedService {
     private void scheduleJobs() {
         switch (syncMode) {
             case DROPBOX_TO_LOCAL:
-                logger.debug("scheduling DROPBOX_TO_LOCAL download interval: {}", DropboxSynchronizer.downloadInterval);
+                logger.debug("Scheduling DROPBOX_TO_LOCAL download interval: {}", DropboxSynchronizer.downloadInterval);
                 schedule(DropboxSynchronizer.downloadInterval, false);
                 break;
             case LOCAL_TO_DROPBOX:
-                logger.debug("scheduling LOCAL_TO_DROPBOX upload interval: {}", DropboxSynchronizer.uploadInterval);
+                logger.debug("Scheduling LOCAL_TO_DROPBOX upload interval: {}", DropboxSynchronizer.uploadInterval);
                 schedule(DropboxSynchronizer.uploadInterval, true);
                 break;
             case BIDIRECTIONAL:
-                logger.debug("scheduling BIDIRECTIONAL download interval: {}, upload interval: {}",
+                logger.debug("Scheduling BIDIRECTIONAL download interval: {}, upload interval: {}",
                         DropboxSynchronizer.downloadInterval, DropboxSynchronizer.uploadInterval);
                 schedule(DropboxSynchronizer.downloadInterval, false);
                 schedule(DropboxSynchronizer.uploadInterval, true);
@@ -755,7 +756,7 @@ public class DropboxSynchronizer implements ManagedService {
             Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(DROPBOX_SCHEDULER_GROUP));
             if (jobKeys.size() > 0) {
                 sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
-                logger.debug("Found {} synchronization jobs to delete from DefaulScheduler (keys={})", jobKeys.size(),
+                logger.debug("Found {} synchronization jobs to delete from DefaultScheduler (keys={})", jobKeys.size(),
                         jobKeys);
             }
         } catch (SchedulerException e) {
@@ -788,11 +789,11 @@ public class DropboxSynchronizer implements ManagedService {
                         }
                     } else {
                         logger.info("Couldn't create Dropbox client. Most likely there has been no "
-                                + "access token found. Please restart authentication process by typing "
-                                + "'startAuthentication' on the OSGi console");
+                                + "access token found. Please restart the authentication process by"
+                                + " typing 'startAuthentication' on the OSGi console");
                     }
                 } catch (Exception e) {
-                    logger.warn("Synchronizing data with Dropbox throws an exception: {}", e.getMessage());
+                    logger.warn("Synchronizing data with Dropbox threw an exception", e);
                 }
             } else {
                 logger.debug("DropboxSynchronizer instance hasn't been initialized properly!");
@@ -808,12 +809,11 @@ public class DropboxSynchronizer implements ManagedService {
         private DbxClient getClient(DropboxSynchronizer synchronizer) {
             String accessToken = synchronizer.readAccessToken();
             if (StringUtils.isNotBlank(accessToken)) {
-                logger.debug("creating new DbxClient with config");
+                logger.debug("Creating new DbxClient");
                 return new DbxClient(requestConfig, accessToken);
             }
             return null;
         }
-
     }
 
     static private String getUserDbxDataFolder() {
