@@ -282,16 +282,11 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
                 configElement.url = g1.substring(0, beginIdx);
                 configElement.headers = parseHttpHeaders(g1.substring(beginIdx + 1, endIdx));
             } else {
-                if (configElement.httpMethod.equals("POST")) {
-                    Matcher urlMatcher = URL_PARSING_PATTERN.matcher(lastPart);
-                    urlMatcher.find();
-                    configElement.url = urlMatcher.group(1);
-                    if (urlMatcher.group(11) != null) {
-                        configElement.body = urlMatcher.group(11).substring(1);
-                    }
-                } else {
-                    configElement.url = lastPart;
-                }
+                configElement.url = urlMatcher.group(1);
+            }
+
+            if (configElement.httpMethod.equals("POST") && urlMatcher.group(11) != null) {
+                configElement.body = urlMatcher.group(11).substring(1);
             }
 
             config.put(command, configElement);
