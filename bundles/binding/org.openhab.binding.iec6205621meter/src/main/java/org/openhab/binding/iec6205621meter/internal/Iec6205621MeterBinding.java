@@ -116,7 +116,7 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
                         Map<String, DataSet> dataSets;
                         if ((dataSets = cache.get(meterName)) == null) {
                             if (logger.isDebugEnabled()) {
-                                logger.debug("Read meter: {}; ", meterName, reader.getConfig().getSerialPort());
+                                logger.debug("Read meter: {}; {}", meterName, reader.getConfig().getSerialPort());
                             }
                             dataSets = reader.read();
                             cache.put(meterName, dataSets);
