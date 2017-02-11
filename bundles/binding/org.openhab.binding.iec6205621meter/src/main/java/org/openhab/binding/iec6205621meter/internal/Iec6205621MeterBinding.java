@@ -177,11 +177,6 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 
-        if (config == null || config.isEmpty()) {
-            logger.warn("Empty or null configuration. Ignoring.");
-            return;
-        }
-
         Set<String> names = getNames(config);
 
         for (String name : names) {
