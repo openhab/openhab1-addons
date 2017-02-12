@@ -97,6 +97,7 @@
                                 <artifact><file>src/main/resources/conf/xbmc.cfg</file><type>cfg</type><classifier>xbmc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/xmpp.cfg</file><type>cfg</type><classifier>xmpp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/zwave.cfg</file><type>cfg</type><classifier>zwave</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/iec6205621meter.cfg</file><type>cfg</type><classifier>iec6205621meter</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosArmedCommand.map</file><type>map</type><classifier>mios-armedcommand</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosContactIn.map</file><type>map</type><classifier>mios-contactin</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosContactOut.map</file><type>map</type><classifier>mios-contactout</classifier></artifact>
