@@ -136,13 +136,13 @@ tinkerforge="(uid=<your_id> [, subid=<your_subid>] | name=<your_name>)"
 ```
 
 The configuration is quite simple. You either have to set a value for the uid and optionally for the
-subid of the device, or - if the device is configured in /services/tinkerforge.cfg - the "symbolic name" of the device.
+subid of the device, or - if the device is configured in services/tinkerforge.cfg - the "symbolic name" of the device.
 
 | Property | Description |
 | -------- | ----------- |
 | uid      | TinkerForge uid of the device (Use the Brick Viewer to get this value) |
 | subid    | optional subid of the device|
-| name     | _symbolic name_ of the device. The name is only available if there is some configuration for the device in /services/tinkerforge.cfg. |
+| name     | _symbolic name_ of the device. The name is only available if there is some configuration for the device in services/tinkerforge.cfg. |
 
 For additional configuration options see the appropriate device section.
 
@@ -156,12 +156,12 @@ parameters depend on the device type.
 
 #### Overview
 
-For most of the devices **no configuration** is needed in /services/tinkerforge.cfg, they can be used with reasonable defaults.
+For most of the devices **no configuration** is needed in services/tinkerforge.cfg, they can be used with reasonable defaults.
 
 <a id="sym_name"></a>
 If you want to get rid of _uid_ and _subid_ statements in the items or rule file, you can use tinkerforge.cfg to get a _symbolic name_.
 
-A configuration line for a TinkerForge Device looks like this in /services/tinkerforge.cfg:
+A configuration line for a TinkerForge Device looks like this in services/tinkerforge.cfg:
 
 ```
 <symbolic name>.<property>=<value>
@@ -276,7 +276,7 @@ The following table shows the TinkerForge device, its device type, its subid and
 The TinkerForge CallbackListeners - if available - are used to observe the sensor values of the
 devices. These listeners are configured to update sensor values at a given time period
 (callbackPeriod). The default configuration sets the **callbackPeriod** to 1 second. This value can
-be changed in /services/tinkerforge.cfg. The values must be given in milliseconds.
+be changed in services/tinkerforge.cfg. The values must be given in milliseconds.
 
 The callbackPeriod controls the amount of traffic from the TF hardware to the binding.
 
@@ -293,7 +293,7 @@ Threshold values have the same unit as sensor values, no conversion is needed.
 #### Refresh of Sensor Values
 
 Devices which do not support callbacks will be polled with a configurable interval, the default
-is 60000 milliseconds. This value can be changed in /services/tinkerforge.cfg:
+is 60000 milliseconds. This value can be changed in services/tinkerforge.cfg:
 
 ```
 refresh=<value in milliseconds>
@@ -313,7 +313,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 The device supports Dimmer, Rollershutter and Number items.  Besides that the speed
 can be set using a percent value.
 The number items show the current velocity. The values are reported using the VelocityListener.
-"[callbackPeriod](#callback-and-threshold)" and "[threshold](#callback-and-threshold)" for the listener can be configured in /services/tinkerforge.cfg.
+"[callbackPeriod](#callback-and-threshold)" and "[threshold](#callback-and-threshold)" for the listener can be configured in services/tinkerforge.cfg.
 
 * callbackPeriod: milliseconds
 * threshold: numeric value
@@ -664,7 +664,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold).
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold).
 
 ##### Bricklet:
 
@@ -711,7 +711,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
@@ -911,7 +911,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 #### Binding properties:
 
 Bricklet measures air pressure in range of 10 to 1200mbar with a resolution of 0.012mbar.  
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
@@ -963,7 +963,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold).
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold).
 
 ##### Bricklet:
 
@@ -1090,7 +1090,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
@@ -1131,7 +1131,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
 
 Distance is reported as unitless value, not in mm.
 
@@ -1180,6 +1180,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 The Dual Button Bricklet has four sub devices: two leds and two buttons.
 The subids are:
+
 * dualbutton_leftled
 * dualbutton_rightled
 * dualbutton_leftbutton
@@ -1196,11 +1197,15 @@ autotoggle=False. The autotoggle mode can be configured using tinkerforge.cfg.
 
 There are also two operating modes for the buttons. The buttons can behave like a switch or
 like a tactile switch.  
+
 * Switch mode
+
 The switch mode operates like this: pressing the button toggles the
 switch state, if state was ON it goes to OFF and vice versa. Releasing the button doesn't
 change anything, only the next button press will change the state.
+
 * Tactile switch mode
+
 Pressing the button changes the switch state to ON and releasing the button changes the
 state back to OFF again.
 
@@ -1287,7 +1292,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
@@ -1460,7 +1465,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
 
 The measured humidity can be read out directly in percent, no conversions are necessary.
 
@@ -1605,6 +1610,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 sampleRate: possible values 0, 1, 2, 3. Setting the sample rate is optional
 it defaults to 3 (4 samples per second).
+
 * 0 means: 240 samples per second
 * 1 means: 60 samples per second
 * 2 means: 15 samples per second
@@ -2060,11 +2066,15 @@ different callback periods.
 
 Two operating modes for the button. The button can behave like a switch or
 like a tactile switch.
+
 * Switch mode
+
 The switch mode operates like this: pressing the button toggles the
 switch state, if state was ON it goes to OFF and vice versa. Releasing the button doesn't
 change anything, only the next button press will change the state.
+
 * Tactile switch mode
+
 Pressing the button changes the switch state to ON and releasing the button changes the
 state back to OFF again.
 
@@ -2123,7 +2133,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 #### Binding properties:
 
 The laser will be enabled by default on system start. This can be changed by 
-setting enableLaserOnStartup to false on the bricklet_laser_range_finder type in /services/tinkerforge.cfg.
+setting enableLaserOnStartup to false on the bricklet_laser_range_finder type in services/tinkerforge.cfg.
 If the laser is already enabled it will never be disabled on openHAB startup.
 
 Moving average is a calculation to analyze data points by creating series of averages of different subsets of the full data set.
@@ -2371,7 +2381,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 #### Binding properties:
 
 Supported chip types are WS2801, WS2811, WS2812/SK6812 (NeoPixel RGB), SK6812RGBW (NeoPixel RGBW), LPD8806 or APA102 (DotStar) LED driver.
-An entry in /services/tinkerforge.cfg is *mandatory*. $type, $frameduration, $chiptype, $clockfrequency and $colorMapping have to be set. The available configuration variables depend on the chip type of the LED strip.  
+An entry in services/tinkerforge.cfg is *mandatory*. $type, $frameduration, $chiptype, $clockfrequency and $colorMapping have to be set. The available configuration variables depend on the chip type of the LED strip.  
 All LEDs can be switched independently. A subdevice $ledgroup can be set to group LED's together.  
 The colormapping of the LED chip types are not standardized, therefore the sequence of the letters "rgb" can be changed individually to match the the color of your LED Strip. 
 
@@ -2449,7 +2459,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 #### Binding properties:
 
 You can expect values from 0 - 100 %.
-The default callback period is 10 millis, you can change this within /services/tinkerforge.cfg.
+The default callback period is 10 millis, you can change this within services/tinkerforge.cfg.
 
 ##### Bricklet:
 
@@ -2597,7 +2607,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 Senses movement of people and animals with a detection range of 3m to 7m and a sensing angle of 100°.
 
-An entry in /services/tinkerforge.cfg is only needed if you want to use a [_symbolic name_](#sym_name).
+An entry in services/tinkerforge.cfg is only needed if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
@@ -2641,7 +2651,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust sensitivity, recalibrate, disable
+An entry in services/tinkerforge.cfg is only needed if you want to adjust sensitivity, recalibrate, disable
 electrodes or use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
@@ -2741,7 +2751,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
 
 Moving average is a calculation to analyze data points by creating series of averages of different subsets of the full data set.
 
@@ -2785,6 +2795,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 #### Binding properties:
 
 The Piezo Speaker Bricklet supports two modes:
+
 * sending morse codes with configurable frequency
 * sending tones with configurable duration and frequency
 
@@ -2870,7 +2881,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is *mandatory*. You have to set sub device names $subdevice for your devices in the appropriate
+An entry in services/tinkerforge.cfg is *mandatory*. You have to set sub device names $subdevice for your devices in the appropriate
 type$typeDevices variable as space separated list. $type depends on the device hardware type of your switching device.
 You must also add configuration for the $subdevice device. The available configuration variables depend
 on the device type.
@@ -3019,11 +3030,15 @@ end
 
 Two operating modes for the button. The button can behave like a switch or
 like a tactile switch.
+
 * Switch mode
+
 The switch mode operates like this: pressing the button toggles the
 switch state, if state was ON it goes to OFF and vice versa. Releasing the button doesn't
 change anything, only the next button press will change the state.
+
 * Tactile switch mode
+
 Pressing the button changes the switch state to ON and releasing the button changes the
 state back to OFF again.
 
@@ -3092,7 +3107,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 The Segment Display 4x7 is a bit special as it acts as actuator which can receive number messages. To
 achieve this, you have to configure the device as Number item.
 
-An entry in /services/tinkerforge.cfg is only needed if you want to use a [_symbolic name_](#sym_name).
+An entry in services/tinkerforge.cfg is only needed if you want to use a [_symbolic name_](#sym_name).
 
 ##### Items file entry (e.g. tinkerforge.items):
 
@@ -3180,7 +3195,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
@@ -3221,11 +3236,10 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold) or if you want to use a [_symbolic name_](#sym_name).
 
 Since OH 1.8 there is a new option slowI2C which could be set to "True" or "False",
-the default value is "False". More information on this setting can be found here:
-http://www.tinkerforge.com/en/doc/Software/Bricklets/Temperature_Bricklet_Java.html#BrickletTemperature::setI2CMode__short-
+the default value is "False". More information on this setting can be found [here](http://www.tinkerforge.com/en/doc/Software/Bricklets/Temperature_Bricklet_Java.html#BrickletTemperature::setI2CMode__short-).
 
 ##### Bricklet:
 
@@ -3270,7 +3284,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold),
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold),
 if you want to use a [_symbolic name_](#sym_name) or adjust the emissivity of the object temperature device.
 
 ##### Bricklet:
@@ -3345,7 +3359,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 You can use a contact, number or switch item.
 
-An entry in /services/tinkerforge.cfg is only needed if you want to use a [_symbolic name_](#sym_name).
+An entry in services/tinkerforge.cfg is only needed if you want to use a [_symbolic name_](#sym_name).
 
 ##### Bricklet:
 
@@ -3449,7 +3463,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold).
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold).
 
 ##### Bricklet:
 
@@ -3497,7 +3511,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 #### Binding properties:
 
-An entry in /services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold),
+An entry in services/tinkerforge.cfg is only needed if you want to adjust [threshold and / or callbackPeriod](#callback-and-threshold),
 if you want to use a [_symbolic name_](#sym_name) or adjust the averaging, voltage conversion time,
 current conversion time of the device.
 
