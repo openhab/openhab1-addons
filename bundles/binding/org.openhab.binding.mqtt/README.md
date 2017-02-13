@@ -7,9 +7,9 @@ OpenHAB provides MQTT support on different levels. The table below gives a quick
 | Level | Description | Usage | Configuration |
 |-------|-------------|-------|--------|
 | **Transport** | Shared transport functions for setting up MQTT broker connections. | Ideal if you want to roll your own binding using MQTT as the transport. | `services/mqtt.cfg` |
-| **Item binding** | Allows MQTT publish/subscribe configuration on item level | Ideal for highly customized in and outbound message scenarios. | via transport |
+| **Item binding** | Allows MQTT publish/subscribe configuration on item level | Ideal for highly customized in and outbound message scenarios. | `items/*.items` |
 | **Event bus binding** | Publish/receive all states/commmands directly on the openHAB eventbus. | Perfect for integrating multiple openHAB instances or broadcasting all events. | `services/mqtt-eventbus.cfg` |
-| **Persistence** | Uses persistent strategies to push messages on change or a regular interval. | Perfect for persisting time series to a public service like Xively. (See MQTT persistence service.) | via transport and `persist/mqtt.persist` |
+| **Persistence** | Uses persistent strategies to push messages on change or a regular interval. | Perfect for persisting time series to a public service like Xively. (See MQTT persistence service.) | `persist/mqtt.persist` |
 
 The OwnTracks (formerly Mqttitude) binding is also available, which is an extension of this binding.
 
