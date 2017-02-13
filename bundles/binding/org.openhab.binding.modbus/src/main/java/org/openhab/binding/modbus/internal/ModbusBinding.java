@@ -163,7 +163,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 
     @Override
     public void deactivate() {
-        clear();
+        clearAndClose();
     }
 
     @Override
@@ -492,11 +492,11 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
     /**
      * Clear all configuration and close all connections
      */
-    private void clear() {
+    private void clearAndClose() {
         try {
             // Closes all connections by calling destroyObject method in the ObjectFactory implementation
             if (connectionPool != null) {
-                connectionPool.clear();
+                connectionPool.close();
             }
         } catch (Exception e) {
             // Should not happen
@@ -509,7 +509,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
         try {
             // remove all known items if configuration changed
-            clear();
+            clearAndClose();
             reconstructConnectionPool();
             if (config == null) {
                 logger.debug("Got null config!");

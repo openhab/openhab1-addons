@@ -123,6 +123,8 @@ public class ModbusSlaveConnectionFactoryImpl
 
     @Override
     public void destroyObject(ModbusSlaveEndpoint endpoint, final PooledObject<ModbusSlaveConnection> obj) {
+        logger.trace("destroyObject for connection {} and endpoint {} -> closing the connection", obj.getObject(),
+                endpoint);
         obj.getObject().resetConnection();
     }
 
