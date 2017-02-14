@@ -202,16 +202,19 @@ public class ModbusSerialTransaction implements ModbusTransaction {
                                 m_Request.getTransactionID(), m_SerialCon.getParameters());
                         if (tries >= m_Retries) {
                             logger.error(
-                                    "execute reached max tries {}, throwing last error: {}. Request: {}. Serial parameters: {}",
-                                    m_Retries, e.getMessage(), m_Request, m_SerialCon.getParameters());
+                                    "execute reached max tries {}, throwing last error: {}. Request: {} (unit id {} & transaction {}). Serial parameters: {}",
+                                    m_Retries, e.getMessage(), m_Request, m_Request.getUnitID(),
+                                    m_Request.getTransactionID(), m_SerialCon.getParameters());
                             throw e;
                         }
                         Thread.sleep(m_RetryDelayMillis);
                     }
                 } while (true);
                 if (tries > 0) {
-                    logger.info("execute eventually succeeded with {} re-tries. Request: {}. Serial parameters: {}",
-                            tries, m_Request, m_SerialCon.getParameters());
+                    logger.info(
+                            "execute eventually succeeded with {} re-tries. Request: {} (unit id {} & transaction id {}). Serial parameters: {}",
+                            tries, m_Request, m_Request.getUnitID(), m_Request.getTransactionID(),
+                            m_SerialCon.getParameters());
                 }
             }
 

@@ -64,7 +64,6 @@ public class TCPConnectionHandler implements Runnable {
             do {
                 // 1. read the request
                 ModbusRequest request = m_Transport.readRequest();
-                logger.trace("Request:{}", request.getHexMessage());
                 ModbusResponse response = null;
 
                 // test if Process image exists
@@ -73,8 +72,8 @@ public class TCPConnectionHandler implements Runnable {
                 } else {
                     response = request.createResponse();
                 }
-                logger.debug("Request:{}", request.getHexMessage());
-                logger.debug("Response:{}", response.getHexMessage());
+                logger.debug("Request (transaction id {}): {}", request.getHexMessage(), request.getTransactionID());
+                logger.debug("Response (transaction id {}): {}", response.getHexMessage(), response.getTransactionID());
 
                 m_Transport.writeMessage(response);
             } while (true);
