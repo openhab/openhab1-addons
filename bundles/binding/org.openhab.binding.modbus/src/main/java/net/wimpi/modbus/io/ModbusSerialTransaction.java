@@ -177,10 +177,8 @@ public class ModbusSerialTransaction implements ModbusTransaction {
             synchronized (m_IO) {
                 int tries = 0;
 
-                // toggle the id
-                m_Request.setTransactionID(c_TransactionID.increment());
-
                 do {
+                    m_Request.setTransactionID(c_TransactionID.increment());
                     try {
                         if (m_TransDelayMS > 0) {
                             try {
@@ -189,6 +187,7 @@ public class ModbusSerialTransaction implements ModbusTransaction {
                                 logger.error("InterruptedException: {}", ex.getMessage());
                             }
                         }
+
                         // write request message
                         m_IO.writeMessage(m_Request);
                         // read response message
