@@ -50,6 +50,7 @@
                                 <artifact><file>src/main/resources/conf/heatmiser.cfg</file><type>cfg</type><classifier>heatmiser</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/homematic.cfg</file><type>cfg</type><classifier>homematic</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/http.cfg</file><type>cfg</type><classifier>http</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/iec6205621meter.cfg</file><type>cfg</type><classifier>iec6205621meter</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ihc.cfg</file><type>cfg</type><classifier>ihc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/influxdb.cfg</file><type>cfg</type><classifier>influxdb</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/insteonplm.cfg</file><type>cfg</type><classifier>insteonplm</classifier></artifact>
@@ -97,7 +98,6 @@
                                 <artifact><file>src/main/resources/conf/xbmc.cfg</file><type>cfg</type><classifier>xbmc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/xmpp.cfg</file><type>cfg</type><classifier>xmpp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/zwave.cfg</file><type>cfg</type><classifier>zwave</classifier></artifact>
-                                <artifact><file>src/main/resources/conf/iec6205621meter.cfg</file><type>cfg</type><classifier>iec6205621meter</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosArmedCommand.map</file><type>map</type><classifier>mios-armedcommand</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosContactIn.map</file><type>map</type><classifier>mios-contactin</classifier></artifact>
                                 <artifact><file>src/main/resources/transform/miosContactOut.map</file><type>map</type><classifier>mios-contactout</classifier></artifact>
