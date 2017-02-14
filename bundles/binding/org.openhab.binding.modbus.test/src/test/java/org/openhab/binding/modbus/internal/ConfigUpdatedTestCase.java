@@ -24,6 +24,8 @@ import org.openhab.binding.modbus.ModbusBindingProvider;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.osgi.service.cm.ConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
 
@@ -55,7 +57,7 @@ public class ConfigUpdatedTestCase extends TestCaseSupport {
         this.serverType = serverType;
         // Server is a bit slower to respond than normally
         // this for the testConfigUpdatedWhilePolling
-        this.artificialServerWait = 800;
+        this.artificialServerWait = 1000; // Also remember default timeout for tcp Modbus.DEFAULT_TIMEOUT
     }
 
     @Test
@@ -108,6 +110,7 @@ public class ConfigUpdatedTestCase extends TestCaseSupport {
     @Test
     public void testConfigUpdatedWhilePolling() throws UnknownHostException, org.osgi.service.cm.ConfigurationException,
             BindingConfigParseException, InterruptedException {
+        final Logger logger = LoggerFactory.getLogger(ConfigUpdatedTestCase.class);
         // run this test only for tcp server due to the customized connection string
         Assume.assumeTrue(serverType.equals(ServerType.TCP));
         MAX_WAIT_REQUESTS_MILLIS = 10000;
@@ -124,28 +127,45 @@ public class ConfigUpdatedTestCase extends TestCaseSupport {
                 ModbusBindingProvider.TYPE_DISCRETE, null, 1, 0, 2);
         putSlaveConfigParameter(cfg, serverType, SLAVE_NAME, "updateunchangeditems", "true");
         binding.updated(cfg);
+
         configureSwitchItemBinding(2, SLAVE_NAME, 0);
+
         Thread executeOnBackground = new Thread(new Runnable() {
             @Override
             public void run() {
+                logger.info("First execution started");
                 binding.execute();
+                logger.info("First execution finished");
             }
         });
 
         executeOnBackground.start();
         Thread.sleep(100);
-        // Connection should be now open (since ~100ms passed since connection).
+        // Connection should be now open (since ~100ms passed since connection)
+        // But the first query is still on the way (since server is so slow)
+
         // Simulate config update
+        // any returned connections to the old connection pool will be closed immediately on return
         binding.updated(cfg);
 
-        // Polling should work after config update
-        binding.execute();
+        // Let the previous polling round end before entering the next round
+        // We are not really interested what would happen in the "transient period"
+        // where the old connections are ongoing at the same time as the new ones
         executeOnBackground.join();
 
-        waitForRequests(2);
-        waitForConnectionsReceived(2);
-        verifyEvents();
+        // Polling should work after config update
+        logger.info("Second execution started");
+        binding.execute();
+        logger.info("Second execution finished");
 
+        // three requests, two of those due to execute() commands in this test,
+        // one due to initial automatic execute() (when updated the first time)
+        waitForRequests(3);
+        // two connections, connection is closed on second updated(), and thus connection needs to re-initated
+        waitForConnectionsReceived(2);
+        verify(eventPublisher, times(3)).postUpdate("Item1", OnOffType.ON);
+        verify(eventPublisher, times(3)).postUpdate("Item2", OnOffType.OFF);
+        verifyNoMoreInteractions(eventPublisher);
     }
 
 }
