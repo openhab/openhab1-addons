@@ -4,20 +4,16 @@ This binding allows openHAB to act as an MQTT client, so that openHAB items can 
 
 OpenHAB provides MQTT support on different levels. The table below gives a quick overview:
 
-| Level | Description | Usage | Bundle |
+| Level | Description | Usage | Configuration |
 |-------|-------------|-------|--------|
-| Transport | Shared transport functions for setting up MQTT broker connections. | Ideal if you want to roll your own binding using MQTT as the transport. | o.o.io.transport.mqtt |
-| Item binding | Allows MQTT publish/subscribe configuration on item level | Ideal for highly customized in and outbound message scenarios. | o.o.binding.mqtt |
-| Event bus binding | Publish/receive all states/commmands directly on the openHAB eventbus. | Perfect for integrating multiple openHAB instances or broadcasting all events. | o.o.binding.mqtt |
-| Persistence | Uses persistent strategies to push messages on change or a regular interval. | Perfect for persisting time series to a public service like Xively. (See [[MQTT persistence|MQTT-Persistence]].) | o.o.persistence.mqtt |
+| **Transport** | Shared transport functions for setting up MQTT broker connections. | Ideal if you want to roll your own binding using MQTT as the transport. | `services/mqtt.cfg` |
+| **Item binding** | Allows MQTT publish/subscribe configuration on item level | Ideal for highly customized in and outbound message scenarios. | `items/*.items` |
+| **Event bus binding** | Publish/receive all states/commmands directly on the openHAB eventbus. | Perfect for integrating multiple openHAB instances or broadcasting all events. | `services/mqtt-eventbus.cfg` |
+| **Persistence** | Uses persistent strategies to push messages on change or a regular interval. | Perfect for persisting time series to a public service like Xively. (See MQTT persistence service.) | `persist/mqtt.persist` |
 
 The OwnTracks (formerly Mqttitude) binding is also available, which is an extension of this binding.
 
-## Binding Configuration
-
-This binding can be configured in the file `services/mqtt.cfg`.
-
-### Transport Configuration
+## Transport Configuration
 
 In order to consume or publish messages to an MQTT broker, you need to define all the brokers which you want to connect to, in your `services/mqtt.cfg` file.
 
@@ -32,7 +28,7 @@ In order to consume or publish messages to an MQTT broker, you need to define al
 | `<broker>`.async | true | true or false. Defines if messages are published asynchronously or synchronously. |
 | `<broker>`.keepAlive | 60 | Integer. Defines the keep alive interval in seconds. |
 
-where `<broker>` is an a lias name for the MQTT broker.  This is the name you can use in the item binding configurations afterwards.
+where `<broker>` is an alias name for the MQTT broker.  This is the name you can use in the item binding configurations afterwards.
 
 ### Example Configurations
 
@@ -87,14 +83,13 @@ Number mfase1 "mfase1 [%.3f]" {mqtt="<[flukso:sensor/9cf3d75543fa82a4662fe70df5b
 Number humidity "humidity [%.1f%%] {mqtt="<[broker:weatherstation/readings:state:JS(convertPercent.js):humidity=.*]"}
 ```
 
-## Item Binding Configuration for Outbound Messages
+## Item Configuration for Outbound Messages
 
 Below you can see the structure of the outbound mqtt configuration string.  Outbound configurations allow you to publish (send) an MQTT message to the MQTT broker when an item receives a command or state update, and other MQTT clients that are subscribed to the given topic on the same broker, like Arduino devices for example, will receive those messages. 
 
 ```
 Item itemName { mqtt="<direction>[<broker>:<topic>:<type>:<trigger>:<transformation>]" }
 ```
-
 
 | Property | Description |
 |----------|-------------|
@@ -136,11 +131,12 @@ commandSubscribeTopic=<commandSubscribeTopic>
 The properties indicated by `<...>` need to be replaced with an actual value.  The table below lists the meaning of the different properties.
 
 | Property | Description |
-| broker | Name of the broker as it is defined in the `services/mqtt.cfg`. If this property is not available, no event bus MQTT binding will be created. |
+|----------|-------------|
+| broker   | Name of the broker as it is defined in the `services/mqtt.cfg`. If this property is not available, no event bus MQTT binding will be created. |
 | statePublishTopic | When available, all status updates which occur on the openHAB event bus are published to the provided topic. The message content will be the status. The variable ${item} will be replaced during publishing with the item name for which the state was received. |
 | commandPublishTopic | When available, all commands which occur on the openHAB event bus are published to the provided topic. The message content will be the command. The variable ${item} will be replaced during publishing with the item name for which the command was received. |
 | stateSubscribeTopic | When available, all status updates received on this topic will be posted to the openHAB event bus. The message content is assumed to be a string representation of the status. The topic should include the variable ${item} to indicate which part of the topic contains the item name which can be used for posting the received value to the event bus. |
-| commandSubscribeTopic | When available, all commands received on this topic will be posted to the openHAB event bus. The message content is assumed to be a string representation of the command. The topic should include the variable ${item} to indicate which part of the topic contains the item name which can be used for posting the received value to the event bus. |
+| commandSubscribeTopic | When available, all commands received on this topic will be posted to the openHAB event bus. The message content is assumed to be a string representation of the command. The topic should include the variable `${item}` to indicate which part of the topic contains the item name which can be used for posting the received value to the event bus. |
 
 ### Example Configurations
 
@@ -153,13 +149,13 @@ commandPublishTopic=/openHAB/out/${item}/command
 stateSubscribeTopic=/openHAB/in/${item}/state
 ```
 
-## Using the `org.openhab.io.transport.mqtt` bundle
+## Using the transport (org.openhab.io.transport.mqtt) bundle
 
 When the default MQTT binding configuration options are not sufficient for your needs, you can also use the MQTT transport bundle directly from within your own binding.
 
 ## MqttService
 
-Using the MqttService, your binding can add custom message consumers and publishers to any of the defined MQTT brokers. You don't have to worry about (re)connection issues, all of this is done by the transport.mqtt bundle. The MqttService class is available  to your binding through Declarative Services. A good example on how to use the MqttService can be found in the org.openhab.persistence.mqtt bundle.
+Using the MqttService, your binding can add custom message consumers and publishers to any of the defined MQTT brokers. You don't have to worry about (re)connection issues, all of this is done by the transport.mqtt bundle. The MqttService class is available  to your binding through Declarative Services. A good example on how to use the MqttService can be found in the persistence (org.openhab.persistence.mqtt) bundle.
 
 ## Eclipse Paho
 
