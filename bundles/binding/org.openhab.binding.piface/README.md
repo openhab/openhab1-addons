@@ -66,7 +66,11 @@ The binding supports multiple Piface devices by specifying a unique `<PifaceId>`
 | `<Pifaceid>`.host | |   Yes   | Host IP address of the Piface device |
 | `<Pifaceid>`.listenerport | 15432 | No | Port the Piface device is listening on for commands FROM the binding |
 | `<Pifaceid>`.monitorport | 15433 | No | Port the Piface device uses to send updates TO the binding |
+| `<Pifaceid>`.sockettimeout | 1000 | No | Socket timeout in milliseconds when sending packets |
+| `<Pifaceid>`.maxretries | 3 | No | Number of retry attempts before failing a packet |
 | watchdog.interval | 60000 | No | Watchdog polling interval in milliseconds |
+
+where `<Pifaceid>` is a simple name you choose for a specific Piface device; the name is used in your item configurations (see below).  Do not use `watchdog` for `<Pifaceid>` as it is reserved.  You can repeat entries in `services/piface.cfg` to address multiple Piface devices.
 
 ## Item Configuration
 

@@ -563,6 +563,13 @@
     <configfile finalname="${openhab.conf}/services/plex.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/plex</configfile>
   </feature>
 
+  <feature name="openhab-binding-piface1" description="Piface Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.piface/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/piface.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/piface</configfile>
+  </feature>
+
   <feature name="openhab-binding-plugwise1" description="Plugwise Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
