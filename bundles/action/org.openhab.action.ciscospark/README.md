@@ -1,43 +1,35 @@
-# Cisco Spark Actions
-
-[Cisco Spark](https://www.ciscospark.com) can be used to send messages to groups or individuals 
-when certain events take place in openHAB. 
-
-Messages in the Cisco Spark plugin support Markdown text.
+# Cisco Spark Action
 
 
-## Actions
+Cisco Spark can be used to message individuals are _rooms_ when certain events take place in openHAB.
 
-* `sparkMessage('message', 'roomId')`: Send a message to a specific room.
-* `sparkMessage('message')`: Send a message to the default room (from config)
-* `sparkPerson('message', 'personEmail)`: Send a direct message to a person
 
 ## Configuration
 
-The Cisco Spark action service is one of the pre-defined set of actions that is automatically 
-available, and can be used within rules and scripts. Before you can use Cisco Spark you need 
-to register your application with the Cisco Spark Developers service.
+Configuration is very easy and only required an access token.  To obtain this token, first log in to [Spark for Developers](https://developer.ciscospark.com/add-app.html) and add a new App.  Make sure to select 'Create a Bot' and fill in the required fields. Once completed, you will be presented with an access token. 
 
-### Register your application
+Next, configure openHAB with the access token by adding following line to the file `services/ciscospark.cfg`:
 
-Login and navigate to Cisco [Spark for Developers](https://developer.ciscospark.com/apps.html).  
-You are presented with two options: create an integration or a Bot.  Select 'Create a Bot'.
+    accessToken= << access token from Spark for Developers >>
 
-Follow the screens to create your bot.  Once done you'll be presented with an access token.
+There's an optional convenience configuration option that allows you to set a default room to which you want Spark to send messages so you don't have to include it in each action request.
 
-### Configure openhab
+    defaultRoomId= << UUID of the default room >>
 
-Configure openhab with the access token by adding the following to the file `services/ciscospark.cfg`:
+Note: you can find the uuids for rooms when using the [web client for Cisco Spark](https://web.ciscospark.com).  When you navigate to a room, the uuid can be copied from the browsers location bar.  The uuid looks like this:
+`24c617f0-fbe4-11e5-be0f-2fe93bbeddd9` 
 
-```
-    accessToken=<< token from Spark for Developers >>
-```
+## Actions
 
-This is enough to use the `sparkMessage('message', 'roomId')` action.  There are some additional
-configurations that are provided for your convenience, which unlock additional actions.
+Send a message to a specific room
 
-```
-defaultRoomId=<< UUID of room to use with sparkMessage('message') >>
-```
+    sparkMessage('message', 'roomId') 
 
+Send a message to the default room (from config)
+
+    sparkMessage('message')
+
+Send a direct message to a person
+
+    sparkPerson('message', 'personEmail')
 

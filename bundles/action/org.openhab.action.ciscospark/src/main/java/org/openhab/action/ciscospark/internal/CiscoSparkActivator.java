@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,11 +17,11 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  *
  * @author Tom Deckers
- * @since 1.9.0
+ * @since 1.10.0
  */
 public final class CiscoSparkActivator implements BundleActivator {
 
-    private static Logger logger = LoggerFactory.getLogger(CiscoSparkActivator.class);
+    private Logger logger = LoggerFactory.getLogger(CiscoSparkActivator.class);
 
     private static BundleContext context;
 

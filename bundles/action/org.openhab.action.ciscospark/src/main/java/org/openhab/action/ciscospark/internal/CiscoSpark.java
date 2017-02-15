@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,7 +27,7 @@ import com.ciscospark.SparkException;
  * sending Messages via Cisco Spark.
  *
  * @author Tom Deckers
- * @since 1.9.0
+ * @since 1.10.0
  */
 public class CiscoSpark {
 
@@ -54,7 +54,7 @@ public class CiscoSpark {
 
         // Validate message
         if (msgTxt == null || "".equals(msgTxt)) {
-            logger.error("Message can't be empty");
+            logger.warn("Message can't be empty");
             return false;
         }
 
@@ -62,7 +62,7 @@ public class CiscoSpark {
         try {
             UUID.fromString(roomId);
         } catch (IllegalArgumentException e) {
-            logger.error("Room id is not a UUID");
+            logger.warn("Room id is not a UUID");
             return false;
         }
 
@@ -78,10 +78,10 @@ public class CiscoSpark {
             logger.debug("Successfully sent Message '{}'", msg.getMarkdown());
             return true;
         } catch (SparkException se) {
-            logger.error("Failed to send message.", se);
+            logger.warn("Failed to send message.", se);
             return false;
         } catch (Exception e) {
-            logger.error("Failed to send message!", e);
+            logger.warn("Failed to send message!", e);
             return false;
         }
     }
@@ -97,7 +97,7 @@ public class CiscoSpark {
     @ActionDoc(text = "Sends a Message to the default room via Cisco Spark", returns = "<code>true</code>, if sending the tweet has been successful and <code>false</code> in all other cases.")
     public static boolean sparkMessage(@ParamDoc(name = "msgTxt", text = "the Message to send") String msgTxt) {
         if (CiscoSparkActionService.defaultRoomId == null || "".equals(CiscoSparkActionService.defaultRoomId)) {
-            logger.error("No default room configured");
+            logger.warn("No default room configured");
             return false;
         }
         return sparkMessage(msgTxt, CiscoSparkActionService.defaultRoomId);
@@ -116,13 +116,13 @@ public class CiscoSpark {
     public static boolean sparkPerson(@ParamDoc(name = "msgTxt", text = "the Message to send") String msgTxt,
             @ParamDoc(name = "personEmail", text = "the email of the person to which to send") String personEmail) {
         if (!CiscoSparkActionService.isProperlyConfigured) {
-            logger.debug("Cisco Spark is not yet configured > execution aborted!");
+            logger.warn("Cisco Spark is not yet configured > execution aborted!");
             return false;
         }
 
         // Validate message
         if (msgTxt == null || "".equals(msgTxt)) {
-            logger.error("Message can't be empty");
+            logger.warn("Message can't be empty");
             return false;
         }
 
@@ -131,7 +131,7 @@ public class CiscoSpark {
             InternetAddress email = new InternetAddress(personEmail);
             email.validate();
         } catch (AddressException e) {
-            logger.error("Email address is not valid");
+            logger.warn("Email address is not valid");
             return false;
         }
 
@@ -147,10 +147,10 @@ public class CiscoSpark {
             logger.debug("Successfully sent Message '{}'", msg.getMarkdown());
             return true;
         } catch (SparkException se) {
-            logger.error("Failed to send message.", se);
+            logger.warn("Failed to send message.", se);
             return false;
         } catch (Exception e) {
-            logger.error("Failed to send message!", e);
+            logger.warn("Failed to send message!", e);
             return false;
         }
     }
