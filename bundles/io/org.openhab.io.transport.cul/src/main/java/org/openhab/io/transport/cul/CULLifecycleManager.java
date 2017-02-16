@@ -77,6 +77,7 @@ public class CULLifecycleManager {
 
     public void open() {
         if (config == null || (cul != null && config.equals(cul.getConfig()))) {
+            logger.warn("CUL config is NULL, doing nothing");
             return;
         }
 
