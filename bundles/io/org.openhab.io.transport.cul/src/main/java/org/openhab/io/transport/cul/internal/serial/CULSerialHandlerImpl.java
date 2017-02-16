@@ -40,7 +40,7 @@ import gnu.io.UnsupportedCommOperationException;
  * @author Till Klocke
  * @since 1.4.0
  */
-public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>implements SerialPortEventListener {
+public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig> implements SerialPortEventListener {
 
     private final static Logger log = LoggerFactory.getLogger(CULSerialHandlerImpl.class);
 

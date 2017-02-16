@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author Till Klocke
  * @since 1.5.0
  */
-public class CULNetworkHandlerImpl extends AbstractCULHandler<CULNetworkConfig>implements Runnable {
+public class CULNetworkHandlerImpl extends AbstractCULHandler<CULNetworkConfig> implements Runnable {
 
     private static final int CUN_DEFAULT_PORT = 2323;
 
