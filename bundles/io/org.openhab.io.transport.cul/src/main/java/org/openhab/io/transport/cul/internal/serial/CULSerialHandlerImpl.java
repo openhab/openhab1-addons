@@ -62,7 +62,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig> im
     @Override
     public void serialEvent(SerialPortEvent event) {
         if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-            synchronized (br) {
+            synchronized (serialPort) {
                 try {
                     if (br == null) {
                         logger.warn("BufferedReader for serial connection is null");
@@ -98,10 +98,8 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig> im
                     config.getParityMode());
             InputStream is = serialPort.getInputStream();
             OutputStream os = serialPort.getOutputStream();
-            synchronized (br) {
+            synchronized (serialPort) {
                 br = new BufferedReader(new InputStreamReader(is));
-            }
-            synchronized (bw) {
                 bw = new BufferedWriter(new OutputStreamWriter(os));
             }
 
@@ -156,7 +154,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig> im
     @Override
     protected void write(String command) {
         try {
-            synchronized (bw) {
+            synchronized (serialPort) {
                 if (bw == null) {
                     logger.warn("BufferedWriter for serial connection is null");
                 } else {
