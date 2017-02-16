@@ -54,7 +54,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
                     try {
                         writeMessage(command);
                     } catch (CULCommunicationException e) {
-                        logger.error("Error while writing command to CUL", e);
+                        logger.warn("Error while writing command to CUL", e);
                     }
                 }
                 try {
