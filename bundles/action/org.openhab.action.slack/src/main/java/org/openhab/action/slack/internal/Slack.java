@@ -78,7 +78,7 @@ public class Slack {
 
     private static boolean sendToSlackChannel(String authToken, String message, String channel) {
         boolean success = false;
-        logger.info("sendToSlackChannel authToken='{}', message='{}', channel='{}'", authToken, message, channel);
+        logger.debug("sendToSlackChannel authToken='{}', message='{}', channel='{}'", authToken, message, channel);
         SlackSession session = null;
         try {
             session = SlackSessionFactory.createWebSocketSlackSession(authToken);

@@ -32,7 +32,7 @@ public final class SlackActivator implements BundleActivator {
     @Override
     public void start(BundleContext bc) throws Exception {
         context = bc;
-        logger.info("Slack action has been started.");
+        logger.debug("Slack action has been started.");
     }
 
     /**
@@ -41,7 +41,7 @@ public final class SlackActivator implements BundleActivator {
     @Override
     public void stop(BundleContext bc) throws Exception {
         context = null;
-        logger.info("Slack action has been stopped.");
+        logger.debug("Slack action has been stopped.");
     }
 
     /**
