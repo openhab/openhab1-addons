@@ -40,9 +40,9 @@ import gnu.io.UnsupportedCommOperationException;
  * @author Till Klocke
  * @since 1.4.0
  */
-public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>implements SerialPortEventListener {
+public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig> implements SerialPortEventListener {
 
-    private final static Logger log = LoggerFactory.getLogger(CULSerialHandlerImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(CULSerialHandlerImpl.class);
 
     private SerialPort serialPort;
 
@@ -62,16 +62,16 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
     @Override
     public void serialEvent(SerialPortEvent event) {
         if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-            synchronized (br) {
+            synchronized (serialPort) {
                 try {
                     if (br == null) {
-                        log.error("BufferedReader for serial connection is null");
+                        logger.warn("BufferedReader for serial connection is null");
                     } else {
                         String line = br.readLine();
                         processNextLine(line);
                     }
                 } catch (IOException e) {
-                    log.error("Can't read from serial device {}", config.getDeviceName(), e);
+                    logger.warn("Can't read from serial device {}", config.getDeviceName(), e);
                     tryReopenHardware();
                 }
             }
@@ -81,7 +81,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
     @Override
     protected void openHardware() throws CULDeviceException {
         String deviceName = config.getDeviceAddress();
-        log.debug("Opening serial CUL connection for " + deviceName);
+        logger.debug("Opening serial CUL connection for {}", deviceName);
         try {
             CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(deviceName);
             if (portIdentifier.isCurrentlyOwned()) {
@@ -98,15 +98,13 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
                     config.getParityMode());
             InputStream is = serialPort.getInputStream();
             OutputStream os = serialPort.getOutputStream();
-            synchronized (br) {
+            synchronized (serialPort) {
                 br = new BufferedReader(new InputStreamReader(is));
-            }
-            synchronized (bw) {
                 bw = new BufferedWriter(new OutputStreamWriter(os));
             }
 
             serialPort.notifyOnDataAvailable(true);
-            log.debug("Adding serial port event listener");
+            logger.debug("Adding serial port event listener");
             serialPort.addEventListener(this);
         } catch (NoSuchPortException e) {
             throw new CULDeviceException(e);
@@ -124,7 +122,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
 
     @Override
     protected void closeHardware() {
-        log.debug("Closing serial device " + config.getDeviceAddress());
+        logger.debug("Closing serial device {}", config.getDeviceAddress());
         if (serialPort != null) {
             serialPort.removeEventListener();
         }
@@ -136,7 +134,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
                 bw.close();
             }
         } catch (IOException e) {
-            log.error("Can't close the input and output streams propberly", e);
+            logger.warn("Can't close the input and output streams properly", e);
         } finally {
             if (serialPort != null) {
                 serialPort.close();
@@ -149,27 +147,24 @@ public class CULSerialHandlerImpl extends AbstractCULHandler<CULSerialConfig>imp
         try {
             openHardware();
         } catch (CULDeviceException e) {
-            log.error("Failed to reopen serial connection after connection error", e);
+            logger.warn("Failed to reopen serial connection after connection error", e);
         }
     }
 
     @Override
     protected void write(String command) {
-
         try {
-            synchronized (bw) {
+            synchronized (serialPort) {
                 if (bw == null) {
-                    log.error("BufferedWriter for serial connection is null");
+                    logger.warn("BufferedWriter for serial connection is null");
                 } else {
                     bw.write(command);
                     bw.flush();
                 }
             }
         } catch (IOException e) {
-            log.error("Can't write to serial device {}", config.getDeviceName(), e);
+            logger.warn("Can't write to serial device {}", config.getDeviceName(), e);
             tryReopenHardware();
         }
-
     }
-
 }

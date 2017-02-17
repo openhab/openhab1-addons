@@ -85,13 +85,13 @@ public class CULLifecycleManager {
         try {
             cul = culManager.getOpenCULHandler(config);
         } catch (CULDeviceException e) {
-            logger.error("Can't open CUL", e);
+            logger.warn("Can't open CUL", e);
         }
 
         try {
             listener.open(cul);
         } catch (CULCommunicationException e) {
-            logger.error("Can't set parameters", e);
+            logger.warn("Can't start listener", e);
             cul = null;
         }
     }

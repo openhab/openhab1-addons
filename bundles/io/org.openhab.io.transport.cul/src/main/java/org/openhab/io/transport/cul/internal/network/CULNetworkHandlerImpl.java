@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author Till Klocke
  * @since 1.5.0
  */
-public class CULNetworkHandlerImpl extends AbstractCULHandler<CULNetworkConfig>implements Runnable {
+public class CULNetworkHandlerImpl extends AbstractCULHandler<CULNetworkConfig> implements Runnable {
 
     private static final int CUN_DEFAULT_PORT = 2323;
 
@@ -118,9 +118,9 @@ public class CULNetworkHandlerImpl extends AbstractCULHandler<CULNetworkConfig>i
         try {
             send(buf);
         } catch (InterruptedException e) {
-            logger.error("InterruptedException when sending command", e);
+            logger.warn("InterruptedException when sending command", e);
         } catch (IOException e) {
-            logger.error("IOException when sending command", e);
+            logger.warn("IOException when sending command", e);
         }
     }
 
@@ -182,7 +182,7 @@ public class CULNetworkHandlerImpl extends AbstractCULHandler<CULNetworkConfig>i
 
     @Override
     public void run() {
-        logger.info("event loop running");
+        logger.info("event loop starting");
         try {
             while (!Thread.interrupted()) { // reconnection loop
                 try {
@@ -199,7 +199,7 @@ public class CULNetworkHandlerImpl extends AbstractCULHandler<CULNetworkConfig>i
                         }
                     }
                 } catch (Exception e) {
-                    logger.error("exception", e);
+                    logger.warn("exception", e);
                 } finally {
                     connected.set(false);
                     onDisconnected();
@@ -225,7 +225,7 @@ public class CULNetworkHandlerImpl extends AbstractCULHandler<CULNetworkConfig>i
                 }
             }
         } catch (Exception e) {
-            logger.error("unrecoverable error", e);
+            logger.warn("unrecoverable error", e);
         }
 
         logger.info("event loop terminated");
