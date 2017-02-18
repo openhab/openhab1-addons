@@ -1,7 +1,6 @@
 # Dropbox Synchronization Service
 
-This service will synchronize files on the openHAB server, such as
-configuration and log files, to and/or from a Dropbox account.
+This service will synchronize files on the openHAB server, such as configuration and log files, to and/or from a Dropbox account.
 
 The main use case is backing up openHAB configuration and log files
 to a version-able cloud space and transporting changed files back to openHAB
@@ -28,9 +27,20 @@ This service can be configured in the file `services/dropbox.cfg`.
 
 An app must be created on Dropbox in order to get a generated access token.
 
-Follow the steps in [this tutorial](http://www.iperiusbackup.net/en/create-dropbox-app-get-authentication-token/)
-to do that, then place the generated access token into the config file as the
-value for the `personalAccessToken` setting shown above.
+### Creating an app
+
+- Create an account in [Dropbox](http://www.dropbox.com)
+- Navigate to the [developer section of the site](http://www.dropbox.com/developers)
+- Click the "My apps" link in the left navigation menu, then click the "Create app" button
+- In the next screen, select "Dropbox API" in step 1
+- Select "Full Dropbox" in step 2 (This is probably not critical, as "App folder" may also work, but this has not been tested)
+- Choose a name for your app in step 3 and click "Create app"
+- The following screen will summarize your app; verify the "Allow implicit grant" setting is set to "Allow"
+- Under the heading that says "Generated access token", click the "Generate" button to generate an access token that openHAB can use to connect with your app
+- Copy the long code string that is generated and paste it into the openHAB configuration file as the value for the `personalAccessToken` setting shown above
+
+[This tutorial](http://www.iperiusbackup.net/en/create-dropbox-app-get-authentication-token/)
+also contains a video of the process.
 
 
 ## Prior versions
@@ -40,4 +50,4 @@ of openHAB may encounter this error:
 
 >[WARN ] [d.internal.DropboxSynchronizer] - Synchronizing data with Dropbox throws an exception: {"error": "Invalid \"cursor\" parameter: this cursor is for a different app."}
 
-To eliminate this error, delete the `deltacursor.dbx` file.
+To eliminate this error, delete the `deltacursor.dbx` file. It should be in the same folder as the openHAB startup scripts.
