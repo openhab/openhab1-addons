@@ -1,10 +1,12 @@
 # Dropbox Synchronization Service
 
-This service will synchronize files on your openHAB server, such as configuration and log files, to and/or from your Dropbox account.
+This service will synchronize files on the openHAB server, such as
+configuration and log files, to and/or from a Dropbox account.
 
-The intended main use cases are backing up openHAB configuration and log files to a version-able cloud space and transporting changed files back to openHAB after editing them with the openHAB Designer on the administrator's desktop PC.
+The main use case is backing up openHAB configuration and log files
+to a version-able cloud space and transporting changed files back to openHAB
+after editing them with the openHAB Designer on the administrator's desktop PC.
 
-> NOTE: This service is currently disabled, due to [#4588](https://github.com/openhab/openhab1-addons/issues/4588).
 
 ## Service Configuration
 
@@ -12,8 +14,7 @@ This service can be configured in the file `services/dropbox.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| appkey   | `gbrwwfzvrw6a9uv` |  Yes due to [#4588](https://github.com/openhab/openhab1-addons/issues/4588) | the default app key is defunct and code changes are necessary. |
-| appsecret | `gu5v7lp1f5bbs07` | Yes due to [#4588](https://github.com/openhab/openhab1-addons/issues/4588) | the default app secret is defunct and code changes are necessary. |
+| personalAccessToken | | Yes   | This is the generated access token; see instructions below |
 | fakemode |  `false` |   No    | operates the synchronizer in fake mode which avoids uploading files to or downloading files from Dropbox. Set to `true` as a test mode for the filter settings. |
 | contentdir | openHAB configuration directory | No | the base directory to synchronize with openHAB, configure `uploadFilter` and `downloadFilter` to select files |
 | uploadInterval | `0 0 2 * * ?` | No | a [cron expression](http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06) to set the schedule for uploading changes to Dropbox.  The default schedule uploads changes every day at 2am. |
@@ -22,43 +23,21 @@ This service can be configured in the file `services/dropbox.cfg`.
 | uploadfilter | `^([^/]*/){1}[^/]*$,/configurations.*,/logs/.*,/etc/.*` | No | The defaults are specific to openHAB 1.x running on Unix-like systems |
 | downloadfilter | `^([^/]*/){1}[^/]*$,/configurations.*` | No | The defaults are specific to openHAB 1.x running on Unix-like systems |
 
-## Authorize openHAB
 
-You'll have to authorize openHAB to connect to your Dropbox. This is done in a three-step process. openHAB requests a token which is used as a one-time-password to obtain an access token (second step) which will be used for all future requests against Dropbox.
+## Dropbox App
 
-### Step 1: Monitor Log for Authorization Message
+An app must be created on Dropbox in order to get a generated access token.
 
-This service issues a message to the log automatically on first startup. You will find some log entries (also in the console) containing entries like these:
+Follow the steps in [this tutorial](http://www.iperiusbackup.net/en/create-dropbox-app-get-authentication-token/)
+to do that, then place the generated access token into the config file as the
+value for the `personalAccessToken` setting shown above.
 
-```text
- #########################################################################################
- # Dropbox-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!
- # 1. Open URL 'https://www.dropbox.com/1/oauth2/_type=code'
- # 2. Allow openHAB to access Dropbox
- # 3. Paste the authorisation code here using the command 'dropbox:finishAuthentication "<token>"'
- #########################################################################################
-```
 
-### Step 2: Obtain Authorization Token
+## Prior versions
 
-Copy the given URL to your browser and authorize openHAB to use Dropbox in the future. Be aware that the request token is only valid for the next five minutes, so don't be to placid.
+Installations that used the Dropbox Synchronization Service in earlier versions
+of openHAB may encounter this error:
 
-After successful authorization, a token is shown on the Dropbox web page:
+>[WARN ] [d.internal.DropboxSynchronizer] - Synchronizing data with Dropbox throws an exception: {"error": "Invalid \"cursor\" parameter: this cursor is for a different app."}
 
-![](https://github.com/openhab/openhab1-addons/wiki/images/screenshots/dropbox-authorization.png)
-
-### Step 3: Save Token in openHAB Console
-
-Access the openHAB console to reach the `openhab>` prompt.  One way you can access the openHAB 2 console from the server with:
-
-```shell
-ssh openhab@localhost -p 8101
-```
-
-The default password is `habopen`.  If this is the first time accessing your console, it may take some time to generate cryptographic keys.
-
-Copy the token shown on the Dropbox Web page and issue the following command 
-
-```text
-dropbox:finishAuthentication "replace with the token"
-```
+To eliminate this error, delete the `deltacursor.dbx` file.
