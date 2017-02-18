@@ -118,6 +118,14 @@
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.hdpowerview/${project.version}</bundle>
     </feature>
 
+	<feature name="openhab-binding-iec6205621meter" description="IEC 62056-21 meter" version="${project.version}">
+		<feature>openhab-runtime-base</feature>
+		<feature>openhab-runtime-compat1x</feature>
+		<feature>openhab-transport-serial</feature>
+		<bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.iec6205621meter/${project.version}</bundle>
+		<configfile finalname="${openhab.conf}/services/iec6205621meter.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/iec6205621meter</configfile>
+	</feature>
+  
     <feature name="openhab-binding-ipp" description="IPP Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-transport-mdns</feature>
