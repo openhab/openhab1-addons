@@ -306,7 +306,7 @@ public abstract class ModbusSlave {
                 transaction.setRequest(request);
                 try {
                     logger.trace(
-                            "Executing modbus request {} using transaction {} (global transaction id before increment {}) to read data",
+                            "Executing modbus request {} using transaction {} (global transaction id before increment {}) to write data",
                             transaction.getRequest(), transaction, transaction.getTransactionID());
                     transaction.execute();
                 } catch (Exception e) {
