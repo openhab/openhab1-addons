@@ -77,7 +77,7 @@ public class ReadRegistersTestCase extends TestCaseSupport {
 
     private byte[] int32AsRegisters(int value) throws IOException {
         /**
-         * Return value converted to bytes
+         * Return value converted to bytes (CDAB)
          *
          * Bytes are returned in most significant bit (MSB) order
          */
@@ -85,6 +85,25 @@ public class ReadRegistersTestCase extends TestCaseSupport {
         DataOutputStream dos = new DataOutputStream(baos);
         dos.writeInt(value); // writes all 4 bytes as MSB order
         byte[] byteArray = baos.toByteArray();
+        return byteArray;
+    }
+
+    private byte[] int32AsRegistersSwapped(int value) throws IOException {
+        /**
+         * Return value converted to bytes (CDAB)
+         *
+         * Bytes are returned in most significant bit (MSB) order, but low and high 16 bits swapped (CDAB)
+         */
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(baos);
+        dos.writeInt(value); // writes all 4 bytes as MSB order
+        byte[] byteArray = baos.toByteArray();
+        byte a = byteArray[0];
+        byte b = byteArray[1];
+        byteArray[0] = byteArray[2];
+        byteArray[1] = byteArray[3];
+        byteArray[2] = a;
+        byteArray[3] = b;
         return byteArray;
     }
 
@@ -118,7 +137,7 @@ public class ReadRegistersTestCase extends TestCaseSupport {
      */
     public ReadRegistersTestCase(ServerType serverType, boolean nonZeroOffset, String type,
             Class<Register> registerClass, String spiAddRegisterMethodName, Class<?> addRegisterArgClass)
-                    throws NoSuchMethodException, SecurityException {
+            throws NoSuchMethodException, SecurityException {
         this.serverType = serverType;
         this.nonZeroOffset = nonZeroOffset;
         this.type = type;
@@ -439,6 +458,58 @@ public class ReadRegistersTestCase extends TestCaseSupport {
             // 854263643 = 0x32EB 075B = (2nd register lo byte, 3rd register hi
             // byte)
             verify(eventPublisher).postUpdate("Item2", new DecimalType(854263643));
+        } else {
+            verify(eventPublisher).postUpdate("Item1", new DecimalType(123456789));
+            verify(eventPublisher).postUpdate("Item2", new DecimalType(-123456789));
+        }
+    }
+
+    /**
+     * Test reading of input/holding registers, uses valuetype=int32_swap
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testReadRegistersInt32Swap()
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+            ConfigurationException, BindingConfigParseException, IOException {
+        // Modbus server ("modbus slave") has input registers
+        byte[] registerData = int32AsRegistersSwapped(123456789); // 0x075BCD15
+        addRegisterMethod.invoke(spi, constructRegister2Byte.newInstance(registerData[0], registerData[1]));
+        addRegisterMethod.invoke(spi, constructRegister2Byte.newInstance(registerData[2], registerData[3]));
+        registerData = int32AsRegistersSwapped(-123456789); // 0xF8A432EB
+        addRegisterMethod.invoke(spi, constructRegister2Byte.newInstance(registerData[0], registerData[1]));
+        addRegisterMethod.invoke(spi, constructRegister2Byte.newInstance(registerData[2], registerData[3]));
+        registerData = int32AsRegistersSwapped(123456788); // 0x075BCD14
+        addRegisterMethod.invoke(spi, constructRegister2Byte.newInstance(registerData[0], registerData[1]));
+        addRegisterMethod.invoke(spi, constructRegister2Byte.newInstance(registerData[2], registerData[3]));
+
+        binding = new ModbusBinding();
+        // read 4 registers = 2 uint32 numbers
+        binding.updated(addSlave(newLongPollBindingConfig(), SLAVE_NAME, type,
+                ModbusBindingProvider.VALUE_TYPE_INT32_SWAP, nonZeroOffset ? 1 : 0, 4));
+        configureNumberItemBinding(2, SLAVE_NAME, 0);
+        binding.execute();
+
+        // Give the system some time to make the expected connections & requests
+        waitForConnectionsReceived(1);
+        waitForRequests(1);
+
+        verify(eventPublisher, never()).postCommand(null, null);
+        verify(eventPublisher, never()).sendCommand(null, null);
+
+        // register data:
+        // CD15 075B
+        // 32EB F8A4
+        // CD14 075B
+
+        if (nonZeroOffset) {
+            // 075B32EB interpreted as CDAB int32 (1st register lo byte, 2nd register hi
+            // byte)
+            verify(eventPublisher).postUpdate("Item1", new DecimalType(854263643));
+            // F8A4CD14 interpreted as CDAB int32 (2nd register lo byte, 3rd register hi
+            // byte)
+            verify(eventPublisher).postUpdate("Item2", new DecimalType(-854263644));
         } else {
             verify(eventPublisher).postUpdate("Item1", new DecimalType(123456789));
             verify(eventPublisher).postUpdate("Item2", new DecimalType(-123456789));

@@ -4,8 +4,11 @@ Sends push messages to your Android devices.
 
 ## Actions
 
-- `notifyMyAndroid(String event, String description)`: Send a message to a the pre configured api key (account) and use the configured or default values for the other parameters
+- `notifyMyAndroid(String event, String description)`: Send a message to the pre-configured api key (account) and use the configured or default values for the other parameters. Event is the notification title, and description the details.
+- `notifyMyAndroid(String event, String description, int priority)`: Send a message to a the pre-configured api key (account) with priority level (-2 to 2, from very low to emergency) and use the configured or default values for the other parameters.
 - `notifyMyAndroid(String apiKey, String event, String description)`: Send a message to another api key than the configured or use this method if you have not configured a default api key
+- `notifyMyAndroid(String apiKey, String event, String description, int priority)`: Send a message to another api key than the configured or use this method if you have not configured a default api key
+- `notifyMyAndroid(String apiKey, String event, String description, int priority, String url)`: Send a message to another api key than the configured or use this method if you have not configured a default api key
 - `notifyMyAndroid(String apiKey, String event, String description, int priority, String url, boolean html)`: Send a message overwriting all configured parameters and using the specified values.
 
 ## Configuration
