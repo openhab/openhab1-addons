@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,12 +15,12 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.openhab.binding.rfxcom.RFXComValueSelector;
 import org.openhab.binding.rfxcom.internal.RFXComException;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
-import org.openhab.core.library.items.DateTimeItem;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
-import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
 import org.openhab.core.types.UnDefType;
@@ -35,24 +35,23 @@ public class RFXComDateTimeMessage extends RFXComBaseMessage {
 
     /*
      * Current packet layout (length 13) - RTGR328N
-	*     packetlength = 0
-	*     packettype = 1
-	*     subtype = 2
-	*     seqnbr = 3
-	*     id1 = 4
-	*     id2 = 5
-	*     yy = 6
-	*     mm = 7
-	*     dd = 8
-	*     dow = 9
-	*     hr = 10
-	*     Min = 11
-	*     sec = 12
-	*     battery_level = 13  'bits 3-0
-	*     rssi = 13           'bits 7-4
-	*/
+     * packetlength = 0
+     * packettype = 1
+     * subtype = 2
+     * seqnbr = 3
+     * id1 = 4
+     * id2 = 5
+     * yy = 6
+     * mm = 7
+     * dd = 8
+     * dow = 9
+     * hr = 10
+     * Min = 11
+     * sec = 12
+     * battery_level = 13 'bits 3-0
+     * rssi = 13 'bits 7-4
+     */
     public enum SubType {
-        UNDEF(0),
         RTGR328N(1),
 
         UNKNOWN(255);
@@ -70,12 +69,22 @@ public class RFXComDateTimeMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.DATE_TIME);
 
-    public SubType subType = SubType.RTGR328N;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public String dateTime = "yyyy-MM-dd'T'HH:mm:ss";
     public int yy = 0;
@@ -85,7 +94,7 @@ public class RFXComDateTimeMessage extends RFXComBaseMessage {
     public int HH = 0;
     public int mm = 0;
     public int ss = 0;
-    
+
     public byte signalLevel = 0;
     public byte batteryLevel = 0;
 
@@ -116,46 +125,42 @@ public class RFXComDateTimeMessage extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-    /*
-     * Current packet layout (length 13) - RTGR328N
-	*     packetlength = 0
-	*     packettype = 1
-	*     subtype = 2
-	*     seqnbr = 3
-	*     id1 = 4
-	*     id2 = 5
-	*     yy = 6
-	*     mm = 7
-	*     dd = 8
-	*     dow = 9
-	*     hr = 10
-	*     Min = 11
-	*     sec = 12
-	*     battery_level = 13  'bits 3-0
-	*     rssi = 13           'bits 7-4
-	*/
+        subType = SubType.fromByte(super.subType);
+        /*
+         * Current packet layout (length 13) - RTGR328N
+         * packetlength = 0
+         * packettype = 1
+         * subtype = 2
+         * seqnbr = 3
+         * id1 = 4
+         * id2 = 5
+         * yy = 6
+         * mm = 7
+         * dd = 8
+         * dow = 9
+         * hr = 10
+         * Min = 11
+         * sec = 12
+         * battery_level = 13 'bits 3-0
+         * rssi = 13 'bits 7-4
+         */
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 
-		//dateTime = "yyyy-MM-dd'T'HH:mm:ss";
-        yy = (int)(data[6] & 0xFF);
-        MM = (int)(data[7] & 0xFF);
-        dd = (int)(data[8] & 0xFF);
-        dow = (int)(data[9] & 0xFF);
-        HH = (int)(data[10] & 0xFF);
-        mm = (int)(data[11] & 0xFF);
-        ss = (int)(data[12] & 0xFF);
-               
-		dateTime = "20" + yy;
-		dateTime += "-" + MM;
-		dateTime += "-" + dd;
-		dateTime += "T" + HH;
-		dateTime += ":" + mm;
-		dateTime += ":" + ss;
+        // dateTime = "yyyy-MM-dd'T'HH:mm:ss";
+        yy = data[6] & 0xFF;
+        MM = data[7] & 0xFF;
+        dd = data[8] & 0xFF;
+        dow = data[9] & 0xFF;
+        HH = data[10] & 0xFF;
+        mm = data[11] & 0xFF;
+        ss = data[12] & 0xFF;
+
+        dateTime = "20" + yy;
+        dateTime += "-" + MM;
+        dateTime += "-" + dd;
+        dateTime += "T" + HH;
+        dateTime += ":" + mm;
+        dateTime += ":" + ss;
 
         signalLevel = (byte) ((data[13] & 0xF0) >> 4);
         batteryLevel = (byte) (data[13] & 0x0F);
@@ -163,9 +168,9 @@ public class RFXComDateTimeMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[13];
+        byte[] data = new byte[14];
 
-        data[0] = 0x0D;
+        data[0] = (byte) (data.length - 1);
         data[1] = RFXComBaseMessage.PacketType.DATE_TIME.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;

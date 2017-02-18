@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
+import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
@@ -156,7 +157,9 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
         }
 
         logger.error("NODE {}: Got an error while sending data. Resending message.", node.getNodeId());
-        zController.sendData(originalMessage);
+        // Set priority to Immediate since this is a retry
+        originalMessage.setPriority(SerialMessagePriority.Immediate);
+        zController.enqueue(originalMessage);
         return true;
     }
 

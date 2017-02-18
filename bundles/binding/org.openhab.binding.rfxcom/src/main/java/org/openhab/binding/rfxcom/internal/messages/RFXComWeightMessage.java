@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,21 +29,21 @@ import org.openhab.core.types.UnDefType;
  * @author Damien Servant
  * @since 1.9.0
  */
- public class RFXComWeightMessage extends RFXComBaseMessage {
+public class RFXComWeightMessage extends RFXComBaseMessage {
 
     /*
      * Weight packet layout (length 9)
-     * 
-	 *     packetlength = 0
-	 *     packettype = 1
-	 *     subtype = 2
-	 *     seqnbr = 3
-	 *     id1 = 4
-	 *     id2 = 5
-	 *     weighthigh = 6
-	 *     weightlow = 7
-	 *     filler = 8    'bits 3-0
-	 *     rssi = 8      'bits 7-4
+     *
+     * packetlength = 0
+     * packettype = 1
+     * subtype = 2
+     * seqnbr = 3
+     * id1 = 4
+     * id2 = 5
+     * weighthigh = 6
+     * weightlow = 7
+     * filler = 8 'bits 3-0
+     * rssi = 8 'bits 7-4
      */
 
     public enum SubType {
@@ -65,12 +65,22 @@ import org.openhab.core.types.UnDefType;
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.WEIGHT);
 
-    public SubType subType = SubType.BWR101_BWR102;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public double weight = 0;
     public byte signalLevel = 0;
@@ -102,12 +112,7 @@ import org.openhab.core.types.UnDefType;
     public void encodeMessage(byte[] data) {
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 
         weight = ((data[6] & 0xFF) << 8 | (data[7] & 0xFF)) / 10.0;
@@ -130,7 +135,7 @@ import org.openhab.core.types.UnDefType;
 
         data[6] = (byte) (((int) (weight * 10.0) >> 8) & 0xFF);
         data[7] = (byte) ((int) (weight * 10.0) & 0xFF);
-		
+
         data[8] = (byte) (((signalLevel & 0x0F) << 4) | (batteryLevel & 0x0F));
 
         return data;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,6 +20,7 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -29,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * <p>
  * This class can parse information from the generic binding format and
- * provides HTTP binding information from it. It registers as a
+ * provides HTTP binding information from it. It registers as an
  * {@link HttpBindingProvider} service as well.
  * </p>
  *
@@ -56,6 +57,7 @@ import org.slf4j.LoggerFactory;
  * </ul>
  *
  * @author Thomas.Eichstaedt-Engelen
+ * @author Chris Carman
  *
  * @since 0.6.0
  */
@@ -85,6 +87,10 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 
     /** {@link Pattern} which matches an Out-Binding */
     private static final Pattern OUT_BINDING_PATTERN = Pattern.compile("(.*?):([A-Z]*):(.*)");
+
+    /** {@link Pattern} that separates a url string from the following post body string */
+    private static final Pattern URL_PARSING_PATTERN = Pattern
+            .compile("^((([^:/?#]+):)?(//([^/?#]*))?([^?#:]*)(\\?([^#:]*))?(#(.*))?)(:.*)?");
 
     /**
      * {@inheritDoc}
@@ -121,16 +127,15 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
      * Delegates parsing the <code>bindingConfig</code> with respect to the
      * first character (<code>&lt;</code> or <code>&gt;</code>) to the
      * specialized parsing methods
-     * 
+     *
      * @param item
      * @param bindingConfig
-     * 
+     *
      * @throws BindingConfigParseException
      */
     protected HttpBindingConfig parseBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException {
 
-        HttpBindingConfig config = new HttpBindingConfig();
-        config.itemType = item.getClass();
+        HttpBindingConfig config = new HttpBindingConfig(item);
 
         Matcher matcher = BASE_CONFIG_PATTERN.matcher(bindingConfig);
 
@@ -166,13 +171,13 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
      * <li>2 - refresh interval</li>
      * <li>3 - the transformation rule</li>
      * </ul>
-     * 
+     *
      * @param item
-     * 
+     *
      * @param bindingConfig the config string to parse
      * @param config
      * @return the filled {@link HttpBindingConfig}
-     * 
+     *
      * @throws BindingConfigParseException if the regular expression doesn't match
      *             the given <code>bindingConfig</code>
      */
@@ -222,31 +227,33 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
     }
 
     /**
-     * Parses a http-out configuration by using the regular expression
+     * Parses an http-out configuration by using the regular expression
      * <code>(.*?):([A-Z]*):(.*)</code>. Where the groups should contain the
      * following content:
      * <ul>
      * <li>1 - command</li>
      * <li>2 - http method</li>
      * <li>3 - url</li>
+     * <li>4 - post body</li>
      * </ul>
-     * 
+     *
      * @param item
-     * 
      * @param bindingConfig the config string to parse
      * @param config
      * @return the filled {@link HttpBindingConfig}
-     * 
+     *
      * @throws BindingConfigParseException if the regular expression doesn't match
      *             the given <code>bindingConfig</code>
      */
     protected HttpBindingConfig parseOutBindingConfig(Item item, String bindingConfig, HttpBindingConfig config)
             throws BindingConfigParseException {
+        logger.debug("parsing this as an http out binding: {}", bindingConfig);
         Matcher matcher = OUT_BINDING_PATTERN.matcher(bindingConfig);
 
         if (!matcher.matches()) {
             throw new BindingConfigParseException("bindingConfig '" + bindingConfig
-                    + "' doesn't contain a valid out-binding-configuration. A valid configuration is matched by the RegExp '(.*?):?([A-Z]*):(.*)'");
+                    + "' doesn't contain a valid out-binding-configuration. A valid configuration is matched by the RegExp '"
+                    + OUT_BINDING_PATTERN + "'");
         }
         matcher.reset();
 
@@ -258,13 +265,28 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
             Command command = createCommandFromString(item, matcher.group(1));
             configElement.httpMethod = matcher.group(2);
             String lastPart = matcher.group(3).replaceAll("\\\\\"", "");
-            if (lastPart.trim().endsWith("}") && lastPart.contains("{")) {
-                int beginIdx = lastPart.lastIndexOf("{");
-                int endIdx = lastPart.lastIndexOf("}");
-                configElement.url = lastPart.substring(0, beginIdx);
-                configElement.headers = parseHttpHeaders(lastPart.substring(beginIdx + 1, endIdx));
+            logger.debug("URL portion of binding config to be processed: {}", lastPart);
+
+            Matcher urlMatcher = URL_PARSING_PATTERN.matcher(lastPart);
+            urlMatcher.find();
+            if (logger.isDebugEnabled()) {
+                for (int i = 0; i <= urlMatcher.groupCount(); i++) {
+                    logger.debug("Group {}: {}", i, urlMatcher.group(i));
+                }
+            }
+
+            if (urlMatcher.group(1).endsWith("}")) {
+                String g1 = urlMatcher.group(1);
+                int beginIdx = g1.indexOf("{");
+                int endIdx = g1.indexOf("}");
+                configElement.url = g1.substring(0, beginIdx);
+                configElement.headers = parseHttpHeaders(g1.substring(beginIdx + 1, endIdx));
             } else {
-                configElement.url = lastPart;
+                configElement.url = urlMatcher.group(1);
+            }
+
+            if (configElement.httpMethod.equals("POST") && urlMatcher.group(11) != null) {
+                configElement.body = urlMatcher.group(11).substring(1);
             }
 
             config.put(command, configElement);
@@ -277,16 +299,16 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
      * Creates a {@link Command} out of the given <code>commandAsString</code>
      * taking the special Commands "CHANGED" and "*" into account and incorporating
      * the {@link TypeParser}.
-     * 
+     *
      * @param item
      * @param commandAsString
-     * 
+     *
      * @return an appropriate Command (see {@link TypeParser} for more
      *         information
-     * 
+     *
      * @throws BindingConfigParseException if the {@link TypeParser} couldn't
      *             create a command appropriately
-     * 
+     *
      * @see {@link TypeParser}
      */
     private Command createCommandFromString(Item item, String commandAsString) throws BindingConfigParseException {
@@ -310,9 +332,14 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
      * @{inheritDoc}
      */
     @Override
-    public Class<? extends Item> getItemType(String itemName) {
+    public State getState(String itemName, String value) {
         HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
-        return config != null ? config.itemType : null;
+        if (config != null) {
+            List<Class<? extends State>> acceptedDataTypes = config.getAcceptedDataTypes();
+            return TypeParser.parseState(acceptedDataTypes, value);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -352,6 +379,16 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
     public String getUrl(String itemName) {
         HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
         return config != null && config.get(IN_BINDING_KEY) != null ? config.get(IN_BINDING_KEY).url : null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getBody(String itemName, Command command) {
+        HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
+        return config != null && getConfigElement(config, command) != null ? getConfigElement(config, command).body
+                : null;
     }
 
     /**
@@ -413,12 +450,20 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
      * {@link HttpBindingConfigElement }. There will be map like
      * <code>ON->HttpBindingConfigElement</code>
      */
-    static class HttpBindingConfig extends HashMap<Command, HttpBindingConfigElement>implements BindingConfig {
+    static class HttpBindingConfig extends HashMap<Command, HttpBindingConfigElement> implements BindingConfig {
 
         /** generated serialVersion UID */
         private static final long serialVersionUID = 6164971643530954095L;
-        Class<? extends Item> itemType;
 
+        private List<Class<? extends State>> acceptedDataTypes = null;
+
+        HttpBindingConfig(Item item) {
+            acceptedDataTypes = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
+        }
+
+        List<Class<? extends State>> getAcceptedDataTypes() {
+            return acceptedDataTypes;
+        }
     }
 
     /**
@@ -433,6 +478,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
         public Properties headers;
         public int refreshInterval;
         public String transformation;
+        public String body;
 
         @Override
         public String toString() {

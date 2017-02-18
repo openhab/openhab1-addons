@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -610,7 +610,9 @@ public class ZWaveDeviceClass {
                 case SMOKE_SENSOR_ZENSOR:
                     return new CommandClass[] { CommandClass.SENSOR_ALARM, CommandClass.MANUFACTURER_SPECIFIC,
                             CommandClass.BATTERY, CommandClass.VERSION };
-
+                case SECURE_KEYPAD_DOOR_LOCK:
+                    return new CommandClass[] { CommandClass.SECURITY, CommandClass.MANUFACTURER_SPECIFIC,
+                            CommandClass.DOOR_LOCK, CommandClass.USER_CODE, CommandClass.VERSION };
                 default:
                     return new CommandClass[0];
             }

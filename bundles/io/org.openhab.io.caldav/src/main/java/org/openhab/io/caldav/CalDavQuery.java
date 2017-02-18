@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,6 +27,7 @@ public class CalDavQuery {
     private Sort sort;
     private String filterName;
     private List<String> filterCategory;
+    private boolean filterCategoryMatchesAny = false;
 
     public CalDavQuery() {
         super();
@@ -90,6 +91,14 @@ public class CalDavQuery {
 
     public void setSort(Sort sort) {
         this.sort = sort;
+    }
+
+    public void setFilterCategoryMatchesAny(boolean filterCategoryMatchesAny) {
+        this.filterCategoryMatchesAny = filterCategoryMatchesAny;
+    }
+
+    public boolean getFilterCategoryMatchesAny() {
+        return filterCategoryMatchesAny;
     }
 
     public String getFilterName() {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,8 +23,6 @@ import org.openhab.binding.tinkerforge.internal.model.TFConfig;
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>OHTF Sub Device Admin Device</b></em>'.
  * <!-- end-user-doc -->
- * <p>
- * </p>
  *
  * @generated
  */
@@ -58,7 +56,7 @@ public class OHTFSubDeviceAdminDeviceImpl<TFC extends TFConfig, IDS extends Enum
      * @generated
      */
     @Override
-    public boolean isValidSubId(String subId) {
+    public boolean isValidSubId(final String subId) {
         return true;
     }
 

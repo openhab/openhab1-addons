@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -100,27 +101,27 @@ public class GaradgetBinding extends AbstractActiveBinding<GaradgetBindingProvid
 
         // to override the default granularity one has to add a
         // parameter to the .cfg like [garadget:]granularity=2000
-        String granularityString = (String) configuration.get(CONFIG_GRANULARITY);
+        String granularityString = Objects.toString(configuration.get(CONFIG_GRANULARITY), null);
         granularity = isNotBlank(granularityString) ? Long.parseLong(granularityString) : DEFAULT_GRANULARITY;
 
         // to override the default refresh interval one has to add a
         // parameter to .cfg like [garadget:]refresh=240000
-        String refreshIntervalString = (String) configuration.get(CONFIG_REFRESH);
+        String refreshIntervalString = Objects.toString(configuration.get(CONFIG_REFRESH), null);
         refreshInterval = isNotBlank(refreshIntervalString) ? Long.parseLong(refreshIntervalString) : DEFAULT_REFRESH;
 
         // to override the default quickPoll interval one has to add a
         // parameter to .cfg like [garadget:]quickpoll=4000
-        String quickPollIntervalString = (String) configuration.get(CONFIG_QUICKPOLL);
+        String quickPollIntervalString = Objects.toString(configuration.get(CONFIG_QUICKPOLL), null);
         quickPollInterval = isNotBlank(quickPollIntervalString) ? Long.parseLong(quickPollIntervalString)
                 : DEFAULT_QUICKPOLL;
 
         // to override the default HTTP timeout one has to add a
         // parameter to .cfg like [garadget:]timeout=20000
-        String timeoutString = (String) configuration.get(CONFIG_TIMEOUT);
+        String timeoutString = Objects.toString(configuration.get(CONFIG_TIMEOUT), null);
         int timeout = isNotBlank(timeoutString) ? Integer.parseInt(timeoutString) : DEFAULT_TIMEOUT;
 
-        String username = (String) configuration.get("username");
-        String password = (String) configuration.get("password");
+        String username = Objects.toString(configuration.get("username"), null);
+        String password = Objects.toString(configuration.get("password"), null);
 
         if (isNotBlank(username) && isNotBlank(password)) {
             connection = new Connection(username, password, timeout);
@@ -292,7 +293,7 @@ public class GaradgetBinding extends AbstractActiveBinding<GaradgetBindingProvid
     /**
      * Call a function in the Particle REST API using the property in the binding config. The argument to the Particle
      * device function is the String version of the command, with a special case for calling the setState function so
-     * sending ON, OFF, UP, DOWN and STOP commands are translated as "open", "close" or "stop". Upon successfully
+     * sending ON, OFF, UP, DOWN and STOP commands are translated as "open", "close" or "stopped". Upon successfully
      * calling the Particle device function, the state of the item is updated to the return value from the function
      * call.
      *
@@ -326,7 +327,7 @@ public class GaradgetBinding extends AbstractActiveBinding<GaradgetBindingProvid
                         || command.equals(PercentType.HUNDRED)) {
                     command = new StringType("close");
                 } else if (command.equals(StopMoveType.STOP) || command instanceof PercentType) {
-                    command = new StringType("stop");
+                    command = new StringType("stopped");
                 }
             }
 

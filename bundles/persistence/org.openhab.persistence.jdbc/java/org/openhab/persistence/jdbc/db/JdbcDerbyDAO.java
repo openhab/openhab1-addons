@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -50,20 +50,22 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
     private void initSqlQueries() {
         logger.debug("JDBC::initSqlQueries: '{}'", this.getClass().getSimpleName());
         SQL_PING_DB = "values 1";
+        SQL_GET_DB = "VALUES SYSCS_UTIL.SYSCS_GET_DATABASE_PROPERTY( 'DataDictionaryVersion' )"; // returns version
         SQL_IF_TABLE_EXISTS = "SELECT * FROM SYS.SYSTABLES WHERE TABLENAME='#searchTable#'";
         SQL_CREATE_ITEMS_TABLE_IF_NOT = "CREATE TABLE #itemsManageTable# ( ItemId INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), #colname# #coltype# NOT NULL)";
-        SQL_CREATE_ITEM_TABLE = "CREATE TABLE #tableName# (time TIMESTAMP NOT NULL, value #dbType#, PRIMARY KEY(time))";
+        SQL_CREATE_ITEM_TABLE = "CREATE TABLE #tableName# (time #tablePrimaryKey# NOT NULL, value #dbType#, PRIMARY KEY(time))";
         // Prevent error against duplicate time value (seldom): No powerful Merge found:
         // http://www.codeproject.com/Questions/162627/how-to-insert-new-record-in-my-table-if-not-exists
-        SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( CURRENT_TIMESTAMP, CAST( ? as #dbType#) )";
+        SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( #tablePrimaryValue#, CAST( ? as #dbType#) )";
     }
 
     private void initSqlTypes() {
-        sqlTypes.put("DATETIMEITEM", "DATE");
+        sqlTypes.put("DATETIMEITEM", "TIMESTAMP");
         sqlTypes.put("DIMMERITEM", "SMALLINT");
         sqlTypes.put("ROLLERSHUTTERITEM", "SMALLINT");
         sqlTypes.put("STRINGITEM", "VARCHAR(32000)");
-        logger.debug("JDBC::initEtendedSqlTypes: Initialize the type array sqlTypes={}", sqlTypes.values());
+        sqlTypes.put("tablePrimaryValue", "CURRENT_TIMESTAMP");
+        logger.debug("JDBC::initSqlTypes: Initialized the type array sqlTypes={}", sqlTypes.values());
     }
 
     /**
@@ -79,6 +81,13 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
         databaseProps.setProperty("maximumPoolSize", "1");
         databaseProps.setProperty("minimumIdle", "1");
 
+    }
+
+    @Override
+    public void initAfterFirstDbConnection() {
+        logger.debug("JDBC::initAfterFirstDbConnection: Initializing step, after db is connected.");
+        // Initialize sqlTypes, depending on DB version for example
+        // derby does not like this... dbMeta = new DbMetaData();// get DB information
     }
 
     /**************
@@ -118,7 +127,7 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
             logger.debug("JDBC::doCreateItemsTableIfNot tableExists={} therefore sql={}", tableExists, sql);
             Yank.execute(sql, null);
         } else {
-            logger.debug("JDBC::doCreateItemsTableIfNot tableExists={}, did no CREATE TABLE", tableExists);
+            logger.debug("JDBC::doCreateItemsTableIfNot tableExists={}, did not CREATE TABLE", tableExists);
         }
         return vo;
     }
@@ -128,16 +137,18 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
      *************/
     @Override
     public void doCreateItemTable(ItemVO vo) {
-        String sql = StringUtilsExt.replaceArrayMerge(SQL_CREATE_ITEM_TABLE, new String[] { "#tableName#", "#dbType#" },
-                new String[] { vo.getTableName(), vo.getDbType() });
+        String sql = StringUtilsExt.replaceArrayMerge(SQL_CREATE_ITEM_TABLE,
+                new String[] { "#tableName#", "#dbType#", "#tablePrimaryKey#" },
+                new String[] { vo.getTableName(), vo.getDbType(), sqlTypes.get("tablePrimaryKey") });
         Yank.execute(sql, null);
     }
 
     @Override
     public void doStoreItemValue(Item item, ItemVO vo) {
         vo = storeItemValueProvider(item, vo);
-        String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE, new String[] { "#tableName#", "#dbType#" },
-                new String[] { vo.getTableName().toUpperCase(), vo.getDbType() });
+        String sql = StringUtilsExt.replaceArrayMerge(SQL_INSERT_ITEM_VALUE,
+                new String[] { "#tableName#", "#dbType#", "#tablePrimaryValue#" },
+                new String[] { vo.getTableName().toUpperCase(), vo.getDbType(), sqlTypes.get("tablePrimaryValue") });
         Object[] params = new Object[] { vo.getValue() };
         logger.debug("JDBC::doStoreItemValue sql={} value='{}'", sql, vo.getValue());
         Yank.execute(sql, params);
@@ -149,7 +160,7 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
         String sql = histItemFilterQueryProvider(filter, numberDecimalcount, table, name);
         List<Object[]> m = Yank.queryObjectArrays(sql, null);
 
-        logger.debug("JDBC::doGetHistItemFilterQuery gor Array length={}", m.size());
+        logger.debug("JDBC::doGetHistItemFilterQuery got Array length={}", m.size());
 
         List<HistoricItem> items = new ArrayList<HistoricItem>();
         for (int i = 0; i < m.size(); i++) {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * An abstract class for the communication with the Visonic alarm panel that
  * handles stuff common to all communication types
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public abstract class PowerMaxConnector implements PowerMaxConnectorInterface {

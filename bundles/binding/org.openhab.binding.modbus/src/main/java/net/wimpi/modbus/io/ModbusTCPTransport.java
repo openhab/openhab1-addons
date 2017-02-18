@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +56,7 @@ public class ModbusTCPTransport implements ModbusTransport {
      * Constructs a new <tt>ModbusTransport</tt> instance,
      * for a given <tt>Socket</tt>.
      * <p>
-     * 
+     *
      * @param socket the <tt>Socket</tt> used for message transport.
      */
     public ModbusTCPTransport(Socket socket) {
@@ -86,15 +87,9 @@ public class ModbusTCPTransport implements ModbusTransport {
 
     @Override
     public void close() throws IOException {
-        if (m_Input != null) {
-            m_Input.close();
-        }
-        if (m_Output != null) {
-            m_Output.close();
-        }
-        if (m_Socket != null) {
-            m_Socket.close();
-        }
+        IOUtils.closeQuietly(m_Input);
+        IOUtils.closeQuietly(m_Output);
+        IOUtils.closeQuietly(m_Socket);
     }// close
 
     @Override
@@ -104,7 +99,7 @@ public class ModbusTCPTransport implements ModbusTransport {
             m_Output.flush();
             // write more sophisticated exception handling
         } catch (Exception ex) {
-            throw new ModbusIOException("I/O exception - failed to write.");
+            throw new ModbusIOException(String.format("I/O exception - failed to write: %s", ex.getMessage()));
         }
     }// write
 
@@ -159,7 +154,7 @@ public class ModbusTCPTransport implements ModbusTransport {
              * request.setProtocolID(protocolID);
              * request.setUnitID(unitID);
              * return request;
-             * 
+             *
              */
         } catch (EOFException eoex) {
             throw new ModbusIOException(true);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,6 +27,9 @@ public class ZWaveDbCommandClass {
 
     // Endpoint number - if we want to set these options for a specific endpoint
     public Integer endpoint;
+
+    // Force the version of this command class
+    public Integer version;
 
     // If we want to remove this class, set to true
     public Boolean remove;

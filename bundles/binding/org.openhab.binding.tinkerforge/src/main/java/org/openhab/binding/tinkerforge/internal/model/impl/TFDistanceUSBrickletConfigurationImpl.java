@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,12 +23,12 @@ import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfig
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>
  *        {@link org.openhab.binding.tinkerforge.internal.model.impl.TFDistanceUSBrickletConfigurationImpl#getMovingAverage
  *        <em>Moving Average</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -98,11 +98,10 @@ public class TFDistanceUSBrickletConfigurationImpl extends TFBaseConfigurationIm
     public void setMovingAverage(Short newMovingAverage) {
         Short oldMovingAverage = movingAverage;
         movingAverage = newMovingAverage;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.TF_DISTANCE_US_BRICKLET_CONFIGURATION__MOVING_AVERAGE, oldMovingAverage,
                     movingAverage));
-        }
     }
 
     /**
@@ -176,9 +175,8 @@ public class TFDistanceUSBrickletConfigurationImpl extends TFBaseConfigurationIm
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (movingAverage: ");

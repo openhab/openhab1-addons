@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,26 +29,26 @@ import org.openhab.core.types.UnDefType;
  * @author Damien Servant
  * @since 1.9.0
  */
- public class RFXComPowerMessage extends RFXComBaseMessage {
+public class RFXComPowerMessage extends RFXComBaseMessage {
 
     /*
      * Power packet layout (length 16) - ELEC5
-     * 
-	 * packetlength = 0
-	 * packettype = 1
-	 * subtype = 2
-	 * seqnbr = 3
-	 * id1 = 4
-	 * id2 = 5
-	 * voltage = 6
-	 * currentH = 7
-	 * currentL = 8
-	 * powerH = 9
-	 * powerL = 10
-	 * energyH = 11
-	 * energyL = 12
-	 * pf = 13
-	 * freq = 14
+     *
+     * packetlength = 0
+     * packettype = 1
+     * subtype = 2
+     * seqnbr = 3
+     * id1 = 4
+     * id2 = 5
+     * voltage = 6
+     * currentH = 7
+     * currentL = 8
+     * powerH = 9
+     * powerL = 10
+     * energyH = 11
+     * energyL = 12
+     * pf = 13
+     * freq = 14
      * battery_level = 15 //bits 3-0
      * signal_level = 15 //bits 7-4
      */
@@ -71,14 +71,24 @@ import org.openhab.core.types.UnDefType;
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
-			RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.VOLTAGE,
-			RFXComValueSelector.INSTANT_AMPS, RFXComValueSelector.INSTANT_POWER, RFXComValueSelector.INSTANT_ENERGY,
-			RFXComValueSelector.POWER_FACTOR, RFXComValueSelector.FREQUENCY);
+            RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.VOLTAGE,
+            RFXComValueSelector.INSTANT_AMPS, RFXComValueSelector.INSTANT_POWER, RFXComValueSelector.INSTANT_ENERGY,
+            RFXComValueSelector.POWER_FACTOR, RFXComValueSelector.FREQUENCY);
 
-    public SubType subType = SubType.ELEC5;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public byte count = 0;
     public int voltage = 0;
@@ -118,24 +128,18 @@ import org.openhab.core.types.UnDefType;
         return str;
     }
 
-
     @Override
     public void encodeMessage(byte[] data) {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
-        voltage = data[6];
+        voltage = (data[6] & 0xFF);
 
-        instantAmps= ((data[7] & 0xFF) << 8 | (data[8] & 0xFF)) / 100.0; 		// Current = Field / 100
-        instantPower = ((data[9] & 0xFF) << 8 | (data[10] & 0xFF)) / 10.0; 		// Watt
-        instantEnergy = ((data[11] & 0xFF) << 8 | (data[12] & 0xFF)) / 100.0; 	// kWh
+        instantAmps = ((data[7] & 0xFF) << 8 | (data[8] & 0xFF)) / 100.0; // Current = Field / 100
+        instantPower = ((data[9] & 0xFF) << 8 | (data[10] & 0xFF)) / 10.0; // Watt
+        instantEnergy = ((data[11] & 0xFF) << 8 | (data[12] & 0xFF)) / 100.0; // kWh
         powerFactor = data[13] / 100.0;
         frequency = data[14];
 

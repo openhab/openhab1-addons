@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -104,6 +104,8 @@ public enum LoadCellSubIds implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param literal the literal.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static LoadCellSubIds get(String literal) {
@@ -121,6 +123,8 @@ public enum LoadCellSubIds implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param name the name.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static LoadCellSubIds getByName(String name) {
@@ -138,6 +142,8 @@ public enum LoadCellSubIds implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param value the integer value.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static LoadCellSubIds get(int value) {

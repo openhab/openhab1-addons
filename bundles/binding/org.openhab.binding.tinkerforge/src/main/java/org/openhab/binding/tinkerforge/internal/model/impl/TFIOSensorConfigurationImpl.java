@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,12 +24,12 @@ import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>
  *        {@link org.openhab.binding.tinkerforge.internal.model.impl.TFIOSensorConfigurationImpl#isPullUpResistorEnabled
  *        <em>Pull Up Resistor Enabled</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -98,11 +98,10 @@ public class TFIOSensorConfigurationImpl extends MinimalEObjectImpl.Container im
     public void setPullUpResistorEnabled(boolean newPullUpResistorEnabled) {
         boolean oldPullUpResistorEnabled = pullUpResistorEnabled;
         pullUpResistorEnabled = newPullUpResistorEnabled;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.TFIO_SENSOR_CONFIGURATION__PULL_UP_RESISTOR_ENABLED, oldPullUpResistorEnabled,
                     pullUpResistorEnabled));
-        }
     }
 
     /**
@@ -175,9 +174,8 @@ public class TFIOSensorConfigurationImpl extends MinimalEObjectImpl.Container im
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (pullUpResistorEnabled: ");

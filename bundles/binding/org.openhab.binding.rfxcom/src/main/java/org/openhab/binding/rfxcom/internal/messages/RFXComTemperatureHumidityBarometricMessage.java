@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,31 +30,31 @@ import org.openhab.core.types.UnDefType;
  * @since 1.9.0
  */
 public class RFXComTemperatureHumidityBarometricMessage extends RFXComBaseMessage {
-	
+
     /*
-    * Current packet layout (length 13) - BTHR918, BTHGN129, BTHR918N, BTHR968
-	*     packetlength = 0
-	*     packettype = 1
-	*     subtype = 2
-	*     seqnbr = 3
-	*     id1 = 4
-	*     id2 = 5
-	*     temperatureh = 6    'bits 6-0
-	*     tempsign = 6        'bit 7
-	*     temperaturel = 7
-	*     humidity = 8
-	*     humidity_status = 9
-	*     baroh = 10
-	*     barol = 11
-	*     forecast = 12
-	*     battery_level = 13  'bits 3-0
-	*     signal_level = 13   'bits 7-4
-    */
-	 
+     * Current packet layout (length 13) - BTHR918, BTHGN129, BTHR918N, BTHR968
+     * packetlength = 0
+     * packettype = 1
+     * subtype = 2
+     * seqnbr = 3
+     * id1 = 4
+     * id2 = 5
+     * temperatureh = 6 'bits 6-0
+     * tempsign = 6 'bit 7
+     * temperaturel = 7
+     * humidity = 8
+     * humidity_status = 9
+     * baroh = 10
+     * barol = 11
+     * forecast = 12
+     * battery_level = 13 'bits 3-0
+     * signal_level = 13 'bits 7-4
+     */
+
     public enum SubType {
-        UNDEF(0),
-        BTHR918_BTHGN129(1), //BTHR918, BTHGN129
-        BTHR918N_BTHR968(2), //BTHR918N, BTHR968
+        BTHR918_BTHGN129(1), // BTHR918, BTHGN129
+        BTHR918N_BTHR968(2), // BTHR918N, BTHR968
+
         UNKNOWN(255);
 
         private final int subType;
@@ -69,6 +69,16 @@ public class RFXComTemperatureHumidityBarometricMessage extends RFXComBaseMessag
 
         public byte toByte() {
             return (byte) subType;
+        }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
         }
     }
 
@@ -93,6 +103,16 @@ public class RFXComTemperatureHumidityBarometricMessage extends RFXComBaseMessag
         public byte toByte() {
             return (byte) humidityStatus;
         }
+
+        public static HumidityStatus fromByte(int input) {
+            for (HumidityStatus status : HumidityStatus.values()) {
+                if (status.humidityStatus == input) {
+                    return status;
+                }
+            }
+
+            return HumidityStatus.UNKNOWN;
+        }
     }
 
     public enum ForecastStatus {
@@ -100,7 +120,7 @@ public class RFXComTemperatureHumidityBarometricMessage extends RFXComBaseMessag
         SUNNY(1),
         PARTLY_CLOUDY(2),
         CLOUDY(3),
-        RAIN(3),
+        RAIN(4),
 
         UNKNOWN(255);
 
@@ -117,19 +137,30 @@ public class RFXComTemperatureHumidityBarometricMessage extends RFXComBaseMessag
         public byte toByte() {
             return (byte) forecastStatus;
         }
+
+        public static ForecastStatus fromByte(int input) {
+            for (ForecastStatus status : ForecastStatus.values()) {
+                if (status.forecastStatus == input) {
+                    return status;
+                }
+            }
+
+            return ForecastStatus.UNKNOWN;
+        }
     }
-	
+
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.TEMPERATURE,
-            RFXComValueSelector.HUMIDITY, RFXComValueSelector.HUMIDITY_STATUS, RFXComValueSelector.PRESSURE, RFXComValueSelector.FORECAST);
+            RFXComValueSelector.HUMIDITY, RFXComValueSelector.HUMIDITY_STATUS, RFXComValueSelector.PRESSURE,
+            RFXComValueSelector.FORECAST);
 
-    public SubType subType = SubType.BTHR918_BTHGN129;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public double temperature = 0;
     public byte humidity = 0;
-    public HumidityStatus humidityStatus = HumidityStatus.NORMAL;
+    public HumidityStatus humidityStatus = HumidityStatus.UNKNOWN;
     public double pressure = 0;
-    public ForecastStatus forecastStatus = ForecastStatus.NO_INFO_AVAILABLE;
+    public ForecastStatus forecastStatus = ForecastStatus.UNKNOWN;
     public byte signalLevel = 0;
     public byte batteryLevel = 0;
 
@@ -164,11 +195,7 @@ public class RFXComTemperatureHumidityBarometricMessage extends RFXComBaseMessag
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
 
         temperature = (short) ((data[6] & 0x7F) << 8 | (data[7] & 0xFF)) * 0.1;
@@ -177,21 +204,11 @@ public class RFXComTemperatureHumidityBarometricMessage extends RFXComBaseMessag
         }
 
         humidity = data[8];
-
-        try {
-            humidityStatus = HumidityStatus.values()[data[9]];
-        } catch (Exception e) {
-            humidityStatus = HumidityStatus.UNKNOWN;
-        }
+        humidityStatus = HumidityStatus.fromByte(data[9]);
 
         pressure = (data[10] & 0xFF) << 8 | (data[11] & 0xFF);
-		
-        try {
-            forecastStatus = ForecastStatus.values()[data[12]];
-        } catch (Exception e) {
-            forecastStatus = ForecastStatus.UNKNOWN;
-        }
-		
+        forecastStatus = ForecastStatus.fromByte(data[12]);
+
         signalLevel = (byte) ((data[13] & 0xF0) >> 4);
         batteryLevel = (byte) (data[13] & 0x0F);
     }
@@ -216,13 +233,13 @@ public class RFXComTemperatureHumidityBarometricMessage extends RFXComBaseMessag
 
         data[8] = humidity;
         data[9] = humidityStatus.toByte();
-		
-		temp = (short) (pressure);
-		data[10] = (byte) ((temp >> 8) & 0xFF);
-		data[11] = (byte) (temp  & 0xFF);
-		
+
+        temp = (short) (pressure);
+        data[10] = (byte) ((temp >> 8) & 0xFF);
+        data[11] = (byte) (temp & 0xFF);
+
         data[12] = forecastStatus.toByte();
-		
+
         data[13] = (byte) (((signalLevel & 0x0F) << 4) | (batteryLevel & 0x0F));
 
         return data;

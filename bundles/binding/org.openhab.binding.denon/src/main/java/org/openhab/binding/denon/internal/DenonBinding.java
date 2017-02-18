@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.openhab.binding.denon.DenonBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -33,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * @author Jeroen Idserda
  * @since 1.7.0
  */
-public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider>implements ManagedService {
+public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider> implements ManagedService {
 
     private static final String CONFIG_REFRESH = "refresh";
 
@@ -137,73 +138,74 @@ public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider>imp
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        if (config != null) {
-            logger.debug("Denon binding updated");
+        logger.debug("Denon binding updated");
 
-            Enumeration<String> keys = config.keys();
-
-            while (keys.hasMoreElements()) {
-
-                String key = keys.nextElement();
-                if (CONFIG_SERVICE_PID.equals(key)) {
-                    continue;
-                }
-
-                String[] parts = key.split("\\.");
-                String value = ((String) config.get(key)).trim();
-
-                if (parts.length == 1) {
-                    String option = parts[0];
-                    if (CONFIG_REFRESH.equals(option)) {
-                        refreshInterval = Integer.valueOf(value);
-                    }
-                } else {
-                    String instance = parts[0];
-
-                    DenonConnectionProperties connection = connections.get(instance);
-                    if (connection == null) {
-                        connection = new DenonConnectionProperties();
-                        connection.setInstance(instance);
-                        connections.put(instance, connection);
-                    }
-
-                    String option = parts[1].trim();
-
-                    if (CONFIG_HOST.equals(option)) {
-                        connection.setHost(value);
-                    } else if (CONFIG_UPDATE_TYPE.equals(option)) {
-                        connection.setTelnet(value.equals(CONFIG_UPDATE_TYPE_TELNET));
-                        connection.setHttp(value.equals(CONFIG_UPDATE_TYPE_HTTP));
-
-                        if (!value.equals(CONFIG_UPDATE_TYPE_TELNET) && !value.equals(CONFIG_UPDATE_TYPE_HTTP)) {
-                            logger.warn("Invalid connection type {} for instance {}, using default", value, instance);
-                        }
-                    }
-                }
-            }
-
-            boolean isActiveBinding = false;
-
-            for (Entry<String, DenonConnectionProperties> entry : connections.entrySet()) {
-                DenonConnectionProperties connection = entry.getValue();
-
-                logger.debug("Denon receiver configured at {}", connection.getHost());
-                DenonConnector connector = new DenonConnector(connection, new DenonPropertyUpdatedCallback() {
-                    @Override
-                    public void updated(String instance, String property, State state) {
-                        processPropertyUpdated(instance, property, state);
-                    }
-                });
-                connection.setConnector(connector);
-                connector.connect();
-
-                if (connection.isHttp()) {
-                    isActiveBinding = true;
-                }
-            }
-
-            setProperlyConfigured(isActiveBinding);
+        if (config == null) {
+            return;
         }
+
+        Enumeration<String> keys = config.keys();
+
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            if (CONFIG_SERVICE_PID.equals(key)) {
+                continue;
+            }
+
+            String[] parts = key.split("\\.");
+            String value = Objects.toString(config.get(key), null);
+
+            if (parts.length == 1) {
+                String option = parts[0];
+                if (CONFIG_REFRESH.equals(option)) {
+                    refreshInterval = Integer.valueOf(value);
+                }
+            } else {
+                String instance = parts[0];
+
+                DenonConnectionProperties connection = connections.get(instance);
+                if (connection == null) {
+                    connection = new DenonConnectionProperties();
+                    connection.setInstance(instance);
+                    connections.put(instance, connection);
+                }
+
+                String option = parts[1].trim();
+
+                if (CONFIG_HOST.equals(option)) {
+                    connection.setHost(value);
+                } else if (CONFIG_UPDATE_TYPE.equals(option)) {
+                    connection.setTelnet(value.equals(CONFIG_UPDATE_TYPE_TELNET));
+                    connection.setHttp(value.equals(CONFIG_UPDATE_TYPE_HTTP));
+
+                    if (!value.equals(CONFIG_UPDATE_TYPE_TELNET) && !value.equals(CONFIG_UPDATE_TYPE_HTTP)) {
+                        logger.warn("Invalid connection type {} for instance {}, using default", value, instance);
+                    }
+                }
+            }
+        }
+
+        boolean isActiveBinding = false;
+
+        for (Entry<String, DenonConnectionProperties> entry : connections.entrySet()) {
+            DenonConnectionProperties connection = entry.getValue();
+
+            logger.debug("Denon receiver configured at {}", connection.getHost());
+            DenonConnector connector = new DenonConnector(connection, new DenonPropertyUpdatedCallback() {
+                @Override
+                public void updated(String instance, String property, State state) {
+                    processPropertyUpdated(instance, property, state);
+                }
+            });
+            connection.setConnector(connector);
+            connector.connect();
+
+            if (connection.isHttp()) {
+                isActiveBinding = true;
+            }
+        }
+
+        setProperlyConfigured(isActiveBinding);
     }
 
     private void updateInitialState() {

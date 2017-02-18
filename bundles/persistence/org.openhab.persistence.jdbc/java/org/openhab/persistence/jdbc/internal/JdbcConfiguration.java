@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  */
 package org.openhab.persistence.jdbc.internal;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
@@ -32,6 +33,8 @@ public class JdbcConfiguration {
 
     private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.([0-9.a-zA-Z]+)$");
     private static final String DB_DAO_PACKAGE = "org.openhab.persistence.jdbc.db.Jdbc";
+
+    private Map<Object, Object> configuration;
 
     private JdbcBaseDAO dBDAO = null;
     private String dbName = null;
@@ -68,99 +71,65 @@ public class JdbcConfiguration {
     /**
      * @{inheritDoc
      */
-    public void updateConfig(Map<Object, Object> configuration) {
-        logger.debug("JDBC::updateConfig: configuration.size = " + configuration.size());
+    public void updateConfig(Map<Object, Object> config) {
+        configuration = config;
 
-        // Database-Url jdbc:h2:./testH2
-        String url = (String) configuration.get("url");
-        Properties parsedURL = StringUtilsExt.parseJdbcURL(url);
-        logger.debug("JDBC::updateConfig: url={}", url);
-        if (StringUtils.isBlank(url) || parsedURL.getProperty("parseValid") == "false") {
-            logger.error(
-                    "JDBC::updateConfig: url The SQL database URL is missing - please configure the jdbc:url parameter in openhab.cfg");
-        } else {
-            dbName = parsedURL.getProperty("databaseName");
-        }
-
-        // Which DB-Type to use
-        serviceName = parsedURL.getProperty("dbShortcut"); // derby, h2, hsqldb, mariadb, mysql, postgresql, sqlite
-        logger.debug("JDBC::updateConfig: found serviceName = '{}'", serviceName);
-        if (StringUtils.isBlank(serviceName) || serviceName.length() < 2) {
-            serviceName = "no";
-            logger.error(
-                    "JDBC::updateConfig: url Required database url like 'jdbc:<service>:<host>[:<port>;<attributes>]' - please configure the jdbc:url parameter in openhab.cfg");
-        }
-
-        // DB Class
-        String ddp = DB_DAO_PACKAGE + serviceName.toUpperCase().charAt(0) + serviceName.toLowerCase().substring(1)
-                + "DAO";
-
-        logger.debug("JDBC::updateConfig: Init Data Access Object Class: '{}'", ddp);
-        try {
-
-            dBDAO = (JdbcBaseDAO) Class.forName(ddp).newInstance();
-            // dBDAO.databaseProps.setProperty("jdbcUrl", url);
-            // dBDAO.databaseProps.setProperty("dataSource.url", url);
-
-            logger.debug("JDBC::updateConfig: dBDAO ClassName={}", dBDAO.getClass().getName());
-        } catch (InstantiationException e) {
-            logger.error("JDBC::updateConfig: InstantiationException: {}", e.getMessage());
-        } catch (IllegalAccessException e) {
-            logger.error("JDBC::updateConfig: IllegalAccessException: {}", e.getMessage());
-        } catch (ClassNotFoundException e) {
-            logger.warn("JDBC::updateConfig: no Configuration for serviceName '{}' found. ClassNotFoundException: {}",
-                    serviceName, e.getMessage());
-            logger.debug("JDBC::updateConfig: using default Database Configuration: JdbcBaseDAO !!");
-            dBDAO = new JdbcBaseDAO();
-            logger.debug("JDBC::updateConfig: dBConfig done");
-        }
-
-        @SuppressWarnings("unchecked")
-        Enumeration<String> keys = new IteratorEnumeration(configuration.keySet().iterator());
-
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-
-            Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
-
-            if (!matcher.matches()) {
-                continue;
-            }
-
-            matcher.reset();
-            matcher.find();
-
-            if (!matcher.group(1).equals("sqltype")) {
-                continue;
-            }
-
-            String itemType = matcher.group(2).toUpperCase() + "ITEM";
-            String value = (String) configuration.get(key);
-
-            logger.debug("JDBC::updateConfig: set sqlTypes: itemType={} value={}", itemType, value);
-            dBDAO.sqlTypes.put(itemType, value);
-        }
+        logger.debug("JDBC::updateConfig: configuration size = {}", configuration.size());
 
         String user = (String) configuration.get("user");
-        logger.debug("JDBC::updateConfig:  user={}", user);
+        String password = (String) configuration.get("password");
+
+        // mandatory url
+        String url = (String) configuration.get("url");
+        Properties parsedURL = StringUtilsExt.parseJdbcURL(url);
+
         if (StringUtils.isBlank(user)) {
-            logger.error(
-                    "JDBC::updateConfig: SQL user is missing - please configure the jdbc:user parameter in openhab.cfg");
-        } else {
+            logger.debug("No jdbc:user parameter defined in openhab.cfg");
+        }
+        if (StringUtils.isBlank(password)) {
+            logger.debug("No jdbc:password parameter defined in openhab.cfg.");
+        }
+
+        if (StringUtils.isBlank(url)) {
+            logger.warn(
+                    "JDBC url is missing - please configure in openhab.cfg like 'jdbc:<service>:<host>[:<port>;<attributes>]'");
+            return;
+        }
+
+        if ("false".equalsIgnoreCase(parsedURL.getProperty("parseValid"))) {
+            Enumeration<?> en = parsedURL.propertyNames();
+            String enstr = "";
+            for (Object key : Collections.list(en)) {
+                enstr += key + " = " + parsedURL.getProperty("" + key) + "\n";
+            }
+            logger.warn(
+                    "JDBC url is not well formatted: {}\nPlease configure in openhab.cfg like 'jdbc:<service>:<host>[:<port>;<attributes>]'",
+                    enstr);
+            return;
+        }
+
+        logger.debug("JDBC::updateConfig: user={}", user);
+        logger.debug("JDBC::updateConfig: password exists? {}", password != null & !StringUtils.isBlank(password));
+        logger.debug("JDBC::updateConfig: url={}", url);
+
+        // set database type and database type class
+        setDBDAOClass(parsedURL.getProperty("dbShortcut")); // derby, h2, hsqldb, mariadb, mysql, postgresql,
+                                                            // sqlite
+        // set user
+        if (StringUtils.isNotBlank(user)) {
             dBDAO.databaseProps.setProperty("dataSource.user", user);
         }
 
-        String password = (String) configuration.get("password");
-        if (StringUtils.isBlank(password)) {
-            logger.error("JDBC::updateConfig: SQL password is missing. Attempting to connect without password. "
-                    + "To specify a password configure the jdbc:password parameter in openhab.cfg.");
-        } else {
-            logger.debug("JDBC::updateConfig:  password=<masked> password.length={}", password.length());
+        // set password
+        if (StringUtils.isNotBlank(password)) {
             dBDAO.databaseProps.setProperty("dataSource.password", password);
         }
 
+        // set sql-types from external config
+        setSqlTypes();
+
         String et = (String) configuration.get("reconnectCnt");
-        if (StringUtils.isNotBlank(et)) {
+        if (StringUtils.isNotBlank(et) && StringUtils.isNumeric(et)) {
             errReconnectThreshold = Integer.parseInt(et);
             logger.debug("JDBC::updateConfig: errReconnectThreshold={}", errReconnectThreshold);
         }
@@ -172,7 +141,7 @@ public class JdbcConfiguration {
         }
 
         String dd = (String) configuration.get("numberDecimalcount");
-        if (StringUtils.isNotBlank(dd)) {
+        if (StringUtils.isNotBlank(dd) && StringUtils.isNumeric(dd)) {
             numberDecimalcount = Integer.parseInt(dd);
             logger.debug("JDBC::updateConfig: numberDecimalcount={}", numberDecimalcount);
         }
@@ -184,26 +153,29 @@ public class JdbcConfiguration {
         }
 
         String td = (String) configuration.get("tableIdDigitCount");
-        if (StringUtils.isNotBlank(td)) {
+        if (StringUtils.isNotBlank(td) && StringUtils.isNumeric(td)) {
             tableIdDigitCount = Integer.parseInt(td);
             logger.debug("JDBC::updateConfig: tableIdDigitCount={}", tableIdDigitCount);
         }
 
         String rt = (String) configuration.get("rebuildTableNames");
         if (StringUtils.isNotBlank(rt)) {
-            rebuildTableNames = "true".equals(rt) ? Boolean.parseBoolean(rt) : false;
+            rebuildTableNames = Boolean.parseBoolean(rt);
             logger.debug("JDBC::updateConfig: rebuildTableNames={}", rebuildTableNames);
         }
+
         // undocumented
         String ac = (String) configuration.get("maximumPoolSize");
         if (StringUtils.isNotBlank(ac)) {
             dBDAO.databaseProps.setProperty("maximumPoolSize", ac);
         }
+
         // undocumented
         String ic = (String) configuration.get("minimumIdle");
         if (StringUtils.isNotBlank(ic)) {
             dBDAO.databaseProps.setProperty("minimumIdle", ic);
         }
+
         // undocumented
         String it = (String) configuration.get("idleTimeout");
         if (StringUtils.isNotBlank(it)) {
@@ -221,12 +193,14 @@ public class JdbcConfiguration {
         if (StringUtils.isNotBlank(fd)) {
             dBDAO.databaseProps.setProperty("driverClassName", fd);
         }
+
         // undocumented
         String ds = (String) configuration.get("dataSourceClassName");
         if (StringUtils.isNotBlank(ds)) {
             dBDAO.databaseProps.setProperty("dataSourceClassName", ds);
         }
 
+        // undocumented
         String dn = dBDAO.databaseProps.getProperty("driverClassName");
         if (dn == null) {
             dn = dBDAO.databaseProps.getProperty("dataSourceClassName");
@@ -234,19 +208,81 @@ public class JdbcConfiguration {
             dBDAO.databaseProps.setProperty("jdbcUrl", url);
         }
 
+        // test if JDBC driver bundle is available
+        testJDBCDriver(dn);
+
+        logger.debug("JDBC::updateConfig: configuration complete. service={}", getName());
+    }
+
+    private void setDBDAOClass(String sn) {
+
+        serviceName = "none";
+
+        // set database type
+        if (StringUtils.isBlank(sn) || sn.length() < 2) {
+            logger.error(
+                    "JDBC::updateConfig: Required database url like 'jdbc:<service>:<host>[:<port>;<attributes>]' - please configure the jdbc:url parameter in openhab.cfg");
+        } else {
+            serviceName = sn;
+        }
+        logger.debug("JDBC::updateConfig: found serviceName = '{}'", serviceName);
+
+        // set class for database type
+        String ddp = DB_DAO_PACKAGE + serviceName.toUpperCase().charAt(0) + serviceName.toLowerCase().substring(1)
+                + "DAO";
+
+        logger.debug("JDBC::updateConfig: Init Data Access Object Class: '{}'", ddp);
         try {
-            if (dn != null) {
-                driverAvailable = true;
-                Class.forName(dn);
-                logger.debug("JDBC::updateConfig: load JDBC-driverClass was successful: '{}'", dn);
+            dBDAO = (JdbcBaseDAO) Class.forName(ddp).newInstance();
+            logger.debug("JDBC::updateConfig: dBDAO ClassName={}", dBDAO.getClass().getName());
+        } catch (InstantiationException e) {
+            logger.error("JDBC::updateConfig: InstantiationException: {}", e.getMessage());
+        } catch (IllegalAccessException e) {
+            logger.error("JDBC::updateConfig: IllegalAccessException: {}", e.getMessage());
+        } catch (ClassNotFoundException e) {
+            logger.warn("JDBC::updateConfig: no Configuration for serviceName '{}' found. ClassNotFoundException: {}",
+                    serviceName, e.getMessage());
+            logger.debug("JDBC::updateConfig: using default Database Configuration: JdbcBaseDAO !!");
+            dBDAO = new JdbcBaseDAO();
+            logger.debug("JDBC::updateConfig: dBConfig done");
+        }
+    }
+
+    private void setSqlTypes() {
+
+        @SuppressWarnings("unchecked")
+        Enumeration<String> keys = new IteratorEnumeration(configuration.keySet().iterator());
+
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
+            if (!matcher.matches()) {
+                continue;
             }
+            matcher.reset();
+            matcher.find();
+            if (!matcher.group(1).equals("sqltype")) {
+                continue;
+            }
+            String itemType = matcher.group(2).toUpperCase() + "ITEM";
+            String value = (String) configuration.get(key);
+            logger.debug("JDBC::updateConfig: set sqlTypes: itemType={} value={}", itemType, value);
+            dBDAO.sqlTypes.put(itemType, value);
+        }
+    }
+
+    private void testJDBCDriver(String driver) {
+        driverAvailable = true;
+        try {
+            Class.forName(driver);
+            logger.debug("JDBC::updateConfig: load JDBC-driverClass was successful: '{}'", driver);
         } catch (ClassNotFoundException e) {
             driverAvailable = false;
             logger.error(
-                    "JDBC::updateConfig: could NOT load JDBC-driverClassName or JDBC-dataSourceClassName ClassNotFoundException: '{}'",
+                    "JDBC::updateConfig: could NOT load JDBC-driverClassName or JDBC-dataSourceClassName. ClassNotFoundException: '{}'",
                     e.getMessage());
             String warn = ""
-                    + "\n\n\t!!!\n\tTo avoid this error, place a appropriate JDBC driver file for serviceName '{}' in addons directory.\n"
+                    + "\n\n\t!!!\n\tTo avoid this error, place an appropriate JDBC driver file for serviceName '{}' in addons directory.\n"
                     + "\tCopy missing JDBC-Driver-jar to your OpenHab/addons Folder.\n\t!!!\n" + "\tDOWNLOAD: \n";
             if (serviceName.equals("derby")) {
                 warn += "\tDerby:     version >= 10.11.1.1 from          http://mvnrepository.com/artifact/org.apache.derby/derby\n";
@@ -259,14 +295,12 @@ public class JdbcConfiguration {
             } else if (serviceName.equals("mysql")) {
                 warn += "\tMySQL:     version >= 5.1.36 from             http://mvnrepository.com/artifact/mysql/mysql-connector-java\n";
             } else if (serviceName.equals("postgresql")) {
-                warn += "\tPostgreSQL:version >= 9.4-1201-jdbc41 from    http://mvnrepository.com/artifact/org.postgresql/postgresql\n";
+                warn += "\tPostgreSQL:version >= 9.4.1208 from    http://mvnrepository.com/artifact/org.postgresql/postgresql\n";
             } else if (serviceName.equals("sqlite")) {
                 warn += "\tSQLite:    version >= 3.8.11.2 from           http://mvnrepository.com/artifact/org.xerial/sqlite-jdbc\n";
             }
             logger.warn(warn, serviceName);
         }
-
-        logger.debug("JDBC::updateConfig: configuration complete. service={}", getName());
     }
 
     public Properties getHikariConfiguration() {
@@ -324,6 +358,11 @@ public class JdbcConfiguration {
 
     public void setDbConnected(boolean dbConnected) {
         logger.debug("JDBC::setDbConnected {}", dbConnected);
+        // Initializing step, after db is connected.
+        // Initialize sqlTypes, depending on DB version for example
+        dBDAO.initAfterFirstDbConnection();
+        // Running once again to prior external configured SqlTypes!
+        setSqlTypes();
         this.dbConnected = dbConnected;
     }
 

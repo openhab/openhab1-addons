@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -41,12 +41,12 @@ import org.slf4j.Logger;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.EcosystemImpl#getLogger <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.EcosystemImpl#getMbrickds <em>Mbrickds</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.EcosystemImpl#getMbrickds
+ *        <em>Mbrickds</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -124,9 +124,8 @@ public class EcosystemImpl extends MinimalEObjectImpl.Container implements Ecosy
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.ECOSYSTEM__LOGGER, oldLogger, logger));
-        }
     }
 
     /**
@@ -383,9 +382,8 @@ public class EcosystemImpl extends MinimalEObjectImpl.Container implements Ecosy
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

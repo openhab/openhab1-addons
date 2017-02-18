@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -350,6 +350,9 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                 break;
             case 17:
                 returnValue = Messages.HeatPumpBinding_ZWE_OPERATION;
+                break;
+            case 19:
+                returnValue = Messages.HeatPumpBinding_SERVICE_WATER_ADDITIONAL_HEATING;
                 break;
             default:
                 logger.info(

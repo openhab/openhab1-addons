@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.onewire.internal.deviceproperties;
 
-import org.openhab.binding.onewire.internal.deviceproperties.modifier.InterfaceOneWireTypeModifier;
+import org.openhab.binding.onewire.internal.deviceproperties.modifier.OneWireTypeModifier;
 import org.openhab.core.types.Type;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -37,12 +37,12 @@ public abstract class AbstractOneWireDevicePropertyWritableBindingConfig
      *         property
      */
     public String convertTypeToString(Type pvType) {
-        for (InterfaceOneWireTypeModifier lvTypeModifier : getTypeModifieryList()) {
-            logger.debug("type of " + getDevicePropertyPath() + " before modifier:" + lvTypeModifier.getModifierName()
-                    + "type=" + pvType.toString());
+        for (OneWireTypeModifier lvTypeModifier : getTypeModifieryList()) {
+            logger.debug("type of {} before modifier:{} type={}", getDevicePropertyPath(),
+                    lvTypeModifier.getModifierName(), pvType);
             pvType = lvTypeModifier.modify4Write(pvType);
-            logger.debug("type of " + getDevicePropertyPath() + " after modifier:" + lvTypeModifier.getModifierName()
-                    + "state=" + pvType.toString());
+            logger.debug("type of {} after modifier:{} type={}", getDevicePropertyPath(),
+                    lvTypeModifier.getModifierName(), pvType);
         }
 
         return convertTypeToUnmodifiedString(pvType);
@@ -50,7 +50,7 @@ public abstract class AbstractOneWireDevicePropertyWritableBindingConfig
 
     /**
      * Abstract method, which must be implemented by specialized Classes
-     * 
+     *
      * @param pvType
      * @return the converted given openHab Type <code>pvType</code> into a unmodified String
      */

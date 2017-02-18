@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,7 +25,6 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.AlarmState;
 import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.BatteryHealth;
 import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.ColorState;
 import org.openhab.binding.nest.internal.messages.Structure.AwayState;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,11 +21,11 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ButtonConfigurationImpl#isTactile <em>Tactile</em>}
  * </li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -94,10 +94,9 @@ public class ButtonConfigurationImpl extends MinimalEObjectImpl.Container implem
     public void setTactile(boolean newTactile) {
         boolean oldTactile = tactile;
         tactile = newTactile;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.BUTTON_CONFIGURATION__TACTILE,
                     oldTactile, tactile));
-        }
     }
 
     /**
@@ -170,9 +169,8 @@ public class ButtonConfigurationImpl extends MinimalEObjectImpl.Container implem
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (tactile: ");

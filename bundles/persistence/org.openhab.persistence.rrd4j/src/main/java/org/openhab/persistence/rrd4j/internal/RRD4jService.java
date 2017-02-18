@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,10 +17,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.items.Item;
@@ -53,13 +57,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This is the implementation of the RRD4j {@link PersistenceService}. To learn
- * more about RRD4j please visit their <a href="https://github.com/rrd4j/rrd4j">website</a>.
+ * more about RRD4j please visit their
+ * <a href="https://github.com/rrd4j/rrd4j">website</a>.
  *
  * @author Kai Kreuzer
  * @author Jan N. Klug
+ * @author Karel Goderis - remove TimerThread dependency
  * @since 1.0.0
  */
 public class RRD4jService implements QueryablePersistenceService {
+
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3, new NamedThreadFactory());
 
     private ConcurrentHashMap<String, RrdDefConfig> rrdDefs = new ConcurrentHashMap<String, RrdDefConfig>();
 
@@ -69,7 +77,7 @@ public class RRD4jService implements QueryablePersistenceService {
 
     private static final Logger logger = LoggerFactory.getLogger(RRD4jService.class);
 
-    private Map<String, Timer> timers = new HashMap<String, Timer>();
+    private Map<String, ScheduledFuture<?>> scheduledJobs = new HashMap<String, ScheduledFuture<?>>();
 
     protected ItemRegistry itemRegistry;
 
@@ -101,7 +109,8 @@ public class RRD4jService implements QueryablePersistenceService {
             long now = System.currentTimeMillis() / 1000;
             if (function != ConsolFun.AVERAGE) {
                 try {
-                    // we store the last value again, so that the value change in the database is not interpolated, but
+                    // we store the last value again, so that the value change
+                    // in the database is not interpolated, but
                     // happens right at this spot
                     if (now - 1 > db.getLastUpdateTime()) {
                         // only do it if there is not already a value
@@ -126,8 +135,13 @@ public class RRD4jService implements QueryablePersistenceService {
                 DecimalType state = (DecimalType) item.getStateAs(DecimalType.class);
                 if (state != null) {
                     double value = state.toBigDecimal().doubleValue();
-                    if (db.getDatasource(DATASOURCE_STATE).getType() == DsType.COUNTER) { // counter values must be
-                                                                                          // adjusted by stepsize
+                    if (db.getDatasource(DATASOURCE_STATE).getType() == DsType.COUNTER) { // counter
+                        // values
+                        // must
+                        // be
+                        // adjusted
+                        // by
+                        // stepsize
                         value = value * db.getRrdDef().getStep();
                     }
                     sample.setValue(DATASOURCE_STATE, value);
@@ -138,25 +152,24 @@ public class RRD4jService implements QueryablePersistenceService {
                 if (e.getMessage().contains("at least one second step is required")) {
 
                     // we try to store the value one second later
-                    TimerTask task = new TimerTask() {
+                    Runnable task = new Runnable() {
                         @Override
                         public void run() {
                             store(item, name);
                         }
                     };
-                    Timer timer = timers.get(name);
-                    if (timer != null) {
-                        timer.cancel();
-                        timers.remove(name);
+                    ScheduledFuture<?> job = scheduledJobs.get(name);
+                    if (job != null) {
+                        job.cancel(true);
+                        scheduledJobs.remove(name);
                     }
-                    timer = new Timer();
-                    timers.put(name, timer);
-                    timer.schedule(task, 1000);
+                    job = scheduler.schedule(task, 1, TimeUnit.SECONDS);
+                    scheduledJobs.put(name, job);
                 } else {
-                    logger.warn("Could not persist '{}' to rrd4j database: {}", new String[] { name, e.getMessage() });
+                    logger.warn("Could not persist '{}' to rrd4j database: {}", name, e.getMessage());
                 }
             } catch (Exception e) {
-                logger.warn("Could not persist '{}' to rrd4j database: {}", new String[] { name, e.getMessage() });
+                logger.warn("Could not persist '{}' to rrd4j database: {}", name, e.getMessage());
             }
             try {
                 db.close();
@@ -186,9 +199,11 @@ public class RRD4jService implements QueryablePersistenceService {
 
             try {
                 if (filter.getBeginDate() == null) {
-                    // as rrd goes back for years and gets more and more inaccurate, we only support descending order
+                    // as rrd goes back for years and gets more and more
+                    // inaccurate, we only support descending order
                     // and a single return value
-                    // if there is no begin date is given - this case is required specifically for the historicState()
+                    // if there is no begin date is given - this case is
+                    // required specifically for the historicState()
                     // query, which we
                     // want to support
                     if (filter.getOrdering() == Ordering.DESCENDING && filter.getPageSize() == 1
@@ -220,7 +235,7 @@ public class RRD4jService implements QueryablePersistenceService {
                 long ts = result.getFirstTimestamp();
                 long step = result.getRowCount() > 1 ? result.getStep() : 0;
                 for (double value : result.getValues(DATASOURCE_STATE)) {
-                    if (!Double.isNaN(value)) {
+                    if (!Double.isNaN(value) && (((ts >= start) && (ts <= end)) || (start == end))) {
                         RRD4jItem rrd4jItem = new RRD4jItem(itemName, mapToState(value, itemName), new Date(ts * 1000));
                         items.add(rrd4jItem);
                     }
@@ -228,8 +243,7 @@ public class RRD4jService implements QueryablePersistenceService {
                 }
                 return items;
             } catch (IOException e) {
-                logger.warn("Could not query rrd4j database for item '{}': {}",
-                        new String[] { itemName, e.getMessage() });
+                logger.warn("Could not query rrd4j database for item '{}': {}", itemName, e.getMessage());
             }
         }
         return Collections.emptyList();
@@ -252,19 +266,18 @@ public class RRD4jService implements QueryablePersistenceService {
                 db = new RrdDb(getRrdDef(alias, file));
             }
         } catch (IOException e) {
-            logger.error("Could not create rrd4j database file '{}': {}",
-                    new String[] { file.getAbsolutePath(), e.getMessage() });
+            logger.error("Could not create rrd4j database file '{}': {}", file.getAbsolutePath(), e.getMessage());
         } catch (RejectedExecutionException e) {
             // this happens if the system is shut down
-            logger.debug("Could not create rrd4j database file '{}': {}",
-                    new String[] { file.getAbsolutePath(), e.getMessage() });
+            logger.debug("Could not create rrd4j database file '{}': {}", file.getAbsolutePath(), e.getMessage());
         }
         return db;
     }
 
     private RrdDefConfig getRrdDefConfig(String itemName) {
         RrdDefConfig useRdc = null;
-        for (Map.Entry<String, RrdDefConfig> e : rrdDefs.entrySet()) { // try to find special config
+        for (Map.Entry<String, RrdDefConfig> e : rrdDefs.entrySet()) {
+            // try to find special config
             RrdDefConfig rdc = e.getValue();
             if (rdc.appliesTo(itemName)) {
                 useRdc = rdc;
@@ -320,7 +333,8 @@ public class RRD4jService implements QueryablePersistenceService {
                 } else if (item instanceof ContactItem) {
                     return value == 0.0d ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
                 } else if (item instanceof DimmerItem || item instanceof RollershutterItem) {
-                    // make sure Items that need PercentTypes instead of DecimalTypes
+                    // make sure Items that need PercentTypes instead of
+                    // DecimalTypes
                     // do receive the right information
                     return new PercentType((int) Math.round(value * 100));
                 }
@@ -369,7 +383,8 @@ public class RRD4jService implements QueryablePersistenceService {
 
             String key = keys.next();
 
-            if (key.equals("service.pid") || key.equals("component.name")) { // ignore service.pid and name
+            if (key.equals("service.pid") || key.equals("component.name")) {
+                // ignore service.pid and name
                 continue;
             }
 
@@ -416,9 +431,9 @@ public class RRD4jService implements QueryablePersistenceService {
 
         for (RrdDefConfig rrdDef : rrdDefs.values()) {
             if (rrdDef.isValid()) {
-                logger.debug("Created {}", rrdDef.toString());
+                logger.debug("Created {}", rrdDef);
             } else {
-                logger.info("Removing invalid definition {}", rrdDef.toString());
+                logger.info("Removing invalid definition {}", rrdDef);
                 rrdDefs.remove(rrdDef.name);
             }
         }
@@ -540,7 +555,8 @@ public class RRD4jService implements QueryablePersistenceService {
             return itemNames.contains(item);
         }
 
-        public boolean isValid() { // a valid configuration must be initialized and contain at least one function
+        public boolean isValid() { // a valid configuration must be initialized
+            // and contain at least one function
             return (isInitialized && (archives.size() > 0));
         }
 
@@ -566,6 +582,36 @@ public class RRD4jService implements QueryablePersistenceService {
             }
             sb.append("]");
             return sb.toString();
+        }
+    }
+
+    /**
+     * This is a normal thread factory, which adds a named prefix to all created
+     * threads.
+     */
+    private static class NamedThreadFactory implements ThreadFactory {
+
+        protected final ThreadGroup group;
+        protected final AtomicInteger threadNumber = new AtomicInteger(1);
+        protected final String namePrefix;
+
+        public NamedThreadFactory() {
+            this.namePrefix = "RRD4J Store Pool-";
+            SecurityManager s = System.getSecurityManager();
+            group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+        }
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
+            if (!t.isDaemon()) {
+                t.setDaemon(true);
+            }
+            if (t.getPriority() != Thread.NORM_PRIORITY) {
+                t.setPriority(Thread.NORM_PRIORITY);
+            }
+
+            return t;
         }
     }
 }

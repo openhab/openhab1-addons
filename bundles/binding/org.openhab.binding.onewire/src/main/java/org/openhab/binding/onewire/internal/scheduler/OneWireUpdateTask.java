@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,7 @@ package org.openhab.binding.onewire.internal.scheduler;
 
 import java.util.concurrent.BlockingQueue;
 
-import org.openhab.binding.onewire.internal.listener.InterfaceOneWireDevicePropertyWantsUpdateListener;
+import org.openhab.binding.onewire.internal.listener.OneWireDevicePropertyWantsUpdateListener;
 import org.openhab.binding.onewire.internal.listener.OneWireDevicePropertyWantsUpdateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +31,10 @@ public class OneWireUpdateTask extends Thread {
 
     private final BlockingQueue<String> ivUpdateQueue;
 
-    private InterfaceOneWireDevicePropertyWantsUpdateListener ivWantsUpdateListener;
+    private OneWireDevicePropertyWantsUpdateListener ivWantsUpdateListener;
 
     public OneWireUpdateTask(BlockingQueue<String> pvQueue,
-            InterfaceOneWireDevicePropertyWantsUpdateListener pvWantsUpdateListener) {
+            OneWireDevicePropertyWantsUpdateListener pvWantsUpdateListener) {
         super("OneWireBinding/ReaderTask");
         setDaemon(true);
         this.ivUpdateQueue = pvQueue;
@@ -70,7 +70,7 @@ public class OneWireUpdateTask extends Thread {
     /**
      * @return
      */
-    public InterfaceOneWireDevicePropertyWantsUpdateListener getIvWantsUpdateListener() {
+    public OneWireDevicePropertyWantsUpdateListener getIvWantsUpdateListener() {
         return ivWantsUpdateListener;
     }
 }

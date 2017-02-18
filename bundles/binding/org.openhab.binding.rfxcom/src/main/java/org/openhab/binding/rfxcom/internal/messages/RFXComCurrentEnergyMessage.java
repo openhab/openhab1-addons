@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,37 +29,37 @@ import org.openhab.core.types.UnDefType;
  * @author Damien Servant
  * @since 1.9.0
  */
- public class RFXComCurrentEnergyMessage extends RFXComBaseMessage {
+public class RFXComCurrentEnergyMessage extends RFXComBaseMessage {
 
     /*
      * Current packet layout (length 19) - ELEC4 - OWL - CM180i
-	 * packetlength = 0
-	 * packettype = 1
-	 * subtype = 2
-	 * seqnbr = 3
-	 * id1 = 4
-	 * id2 = 5
-	 * count = 6
-	 * ch1h = 7
-	 * ch1l = 8
-	 * ch2h = 9
-	 * ch2l = 10
-	 * ch3h = 11
-	 * ch3l = 12
-	 * total1 = 13
-	 * total2 = 14
-	 * total3 = 15
-	 * total4 = 16
-	 * total5 = 17
-	 * total6 = 18
-	 * battery_level : 19 //bits 3-0
-	 * signal_level : 19 //bits 7-4
+     * packetlength = 0
+     * packettype = 1
+     * subtype = 2
+     * seqnbr = 3
+     * id1 = 4
+     * id2 = 5
+     * count = 6
+     * ch1h = 7
+     * ch1l = 8
+     * ch2h = 9
+     * ch2l = 10
+     * ch3h = 11
+     * ch3l = 12
+     * total1 = 13
+     * total2 = 14
+     * total3 = 15
+     * total4 = 16
+     * total5 = 17
+     * total6 = 18
+     * battery_level : 19 //bits 3-0
+     * signal_level : 19 //bits 7-4
      */
-	 
+
     private static float TOTAL_USAGE_CONVERSION_FACTOR = 223.666F;
 
     public enum SubType {
-        ELEC4(1), //OWL - CM180i
+        ELEC4(1), // OWL - CM180i
 
         UNKNOWN(255);
 
@@ -76,13 +76,23 @@ import org.openhab.core.types.UnDefType;
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.CHANNEL1_AMPS,
-            RFXComValueSelector.CHANNEL2_AMPS, RFXComValueSelector.CHANNEL3_AMPS, RFXComValueSelector.TOTAL_USAGE );
+            RFXComValueSelector.CHANNEL2_AMPS, RFXComValueSelector.CHANNEL3_AMPS, RFXComValueSelector.TOTAL_USAGE);
 
-    public SubType subType = SubType.ELEC4;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public byte count = 0;
     public double channel1Amps = 0.0;
@@ -123,12 +133,7 @@ import org.openhab.core.types.UnDefType;
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-
+        subType = SubType.fromByte(super.subType);
         sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
         count = data[6];
 
@@ -136,8 +141,8 @@ import org.openhab.core.types.UnDefType;
         channel1Amps = ((data[7] & 0xFF) << 8 | (data[8] & 0xFF)) / 10.0;
         channel2Amps = ((data[9] & 0xFF) << 8 | (data[10] & 0xFF)) / 10.0;
         channel3Amps = ((data[11] & 0xFF) << 8 | (data[12] & 0xFF)) / 10.0;
-		
-        totalUsage = ((data[13] & 0xFF) << 40 | (data[14] & 0xFF) << 32 | (data[15] & 0xFF) << 24
+
+        totalUsage = ((long) (data[13] & 0xFF) << 40 | (long) (data[14] & 0xFF) << 32 | (data[15] & 0xFF) << 24
                 | (data[16] & 0xFF) << 16 | (data[17] & 0xFF) << 8 | (data[18] & 0xFF));
         totalUsage = totalUsage / TOTAL_USAGE_CONVERSION_FACTOR;
 
@@ -147,9 +152,9 @@ import org.openhab.core.types.UnDefType;
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[19];
+        byte[] data = new byte[20];
 
-        data[0] = 0x13;
+        data[0] = (byte) (data.length - 1);
         data[1] = RFXComBaseMessage.PacketType.CURRENT_ENERGY.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
@@ -165,7 +170,7 @@ import org.openhab.core.types.UnDefType;
         data[11] = (byte) (((int) (channel3Amps * 10.0) >> 8) & 0xFF);
         data[12] = (byte) ((int) (channel3Amps * 10.0) & 0xFF);
 
-        long totalUsageLoc = Double.doubleToRawLongBits(totalUsage * TOTAL_USAGE_CONVERSION_FACTOR);
+        long totalUsageLoc = (long) (totalUsage * TOTAL_USAGE_CONVERSION_FACTOR);
 
         data[13] = (byte) ((totalUsageLoc >> 40) & 0xFF);
         data[14] = (byte) ((totalUsageLoc >> 32) & 0xFF);
@@ -173,7 +178,7 @@ import org.openhab.core.types.UnDefType;
         data[16] = (byte) ((totalUsageLoc >> 16) & 0xFF);
         data[17] = (byte) ((totalUsageLoc >> 8) & 0xFF);
         data[18] = (byte) (totalUsageLoc & 0xFF);
-		
+
         data[19] = (byte) (((signalLevel & 0x0F) << 4) | (batteryLevel & 0x0F));
 
         return data;

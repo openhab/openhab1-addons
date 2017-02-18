@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,23 +20,26 @@ import com.tinkerforge.BrickletLCD20x4;
  *
  *        <p>
  *        The following features are supported:
- *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#getDeviceType <em>Device Type</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#getPositionPrefix
- *        <em>Position Prefix</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#getPositonSuffix
- *        <em>Positon Suffix</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#isDisplayErrors
- *        <em>Display Errors</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#getErrorPrefix
- *        <em>Error Prefix</em>}</li>
- *        </ul>
  *        </p>
+ *        <ul>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#getPositionPrefix <em>Position
+ *        Prefix</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#getPositonSuffix <em>Positon
+ *        Suffix</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#isDisplayErrors <em>Display
+ *        Errors</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#getErrorPrefix <em>Error
+ *        Prefix</em>}</li>
+ *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLCD20x4()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletLCD20x4> org.openhab.binding.tinkerforge.internal.model.MTextActor org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletLCD20x4>
+ *        org.openhab.binding.tinkerforge.internal.model.MTextActor
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
+ *        <org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice>"
  * @generated
  */
 public interface MBrickletLCD20x4 extends MDevice<BrickletLCD20x4>, MTextActor, MSubDeviceHolder<MLCDSubDevice> {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,10 +23,10 @@ import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MSensor#getSensorValue <em>Sensor Value</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMSensor()
  * @model interface="true" abstract="true"
@@ -52,8 +52,8 @@ public interface MSensor<DeviceValue extends TinkerforgeValue> extends EObject {
     DeviceValue getSensorValue();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MSensor#getSensorValue
-     * <em>Sensor Value</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MSensor#getSensorValue <em>Sensor
+     * Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

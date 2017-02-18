@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -247,7 +247,7 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
             Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(SCHEDULER_GROUP));
             if (jobKeys.size() > 0) {
                 sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
-                logger.debug("Found {} DB4O-Jobs to delete from DefaulScheduler (keys={})", jobKeys.size(), jobKeys);
+                logger.debug("Found {} DB4O-Jobs to delete from DefaultScheduler (keys={})", jobKeys.size(), jobKeys);
             }
         } catch (SchedulerException e) {
             logger.warn("Couldn't remove Commit-Job: {}", e.getMessage());

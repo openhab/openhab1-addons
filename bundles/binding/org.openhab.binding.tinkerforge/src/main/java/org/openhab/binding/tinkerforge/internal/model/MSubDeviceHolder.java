@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,11 +21,11 @@ import org.eclipse.emf.ecore.EObject;
  *
  *        <p>
  *        The following features are supported:
- *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder#getMsubdevices <em>Msubdevices</em>
- *        }</li>
- *        </ul>
  *        </p>
+ *        <ul>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder#getMsubdevices
+ *        <em>Msubdevices</em>}</li>
+ *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMSubDeviceHolder()
  * @model interface="true" abstract="true"
@@ -34,9 +34,8 @@ import org.eclipse.emf.ecore.EObject;
 public interface MSubDeviceHolder<S extends MSubDevice<?>> extends EObject {
     /**
      * Returns the value of the '<em><b>Msubdevices</b></em>' containment reference list.
-     * The list contents are of type {@link S}.
-     * It is bidirectional and its opposite is '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MSubDevice#getMbrick <em>Mbrick</em>}'.
+     * It is bidirectional and its opposite is
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MSubDevice#getMbrick <em>Mbrick</em>}'.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Msubdevices</em>' containment reference list isn't clear,

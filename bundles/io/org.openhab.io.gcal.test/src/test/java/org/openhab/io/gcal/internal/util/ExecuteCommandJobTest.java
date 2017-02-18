@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -47,7 +47,7 @@ public class ExecuteCommandJobTest {
         content = commandJob.parseCommand("send ItemName 125");
         Assert.assertEquals("send", content[0]);
         Assert.assertEquals("ItemName", content[1]);
-        Assert.assertEquals("125.0", content[2]);
+        Assert.assertEquals("125", content[2]);
 
         content = commandJob.parseCommand("> say(\"Hello\")");
         Assert.assertEquals(">", content[0]);

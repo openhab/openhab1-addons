@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,11 +15,11 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  * <p>
  * The following features are supported:
- * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration#isAutotoggle <em>Autotoggle</em>
- * }</li>
- * </ul>
  * </p>
+ * <ul>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration#isAutotoggle
+ * <em>Autotoggle</em>}</li>
+ * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDualButtonLEDConfiguration()
  * @model
@@ -45,9 +45,9 @@ public interface DualButtonLEDConfiguration extends TFConfig {
     boolean isAutotoggle();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration#isAutotoggle <em>Autotoggle</em>
-     * }' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration#isAutotoggle
+     * <em>Autotoggle</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

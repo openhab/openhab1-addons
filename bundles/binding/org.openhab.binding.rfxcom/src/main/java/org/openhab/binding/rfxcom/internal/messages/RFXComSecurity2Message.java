@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,7 +22,6 @@ import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
@@ -34,16 +33,16 @@ import org.openhab.core.types.UnDefType;
  * (i.e. KeeLoq)
  *
  * KeeLoq protocol can send data for 4 buttons, they are mapped as
- *	Button 0 - Contact
- *	Button 1 - Contact 1
- *	Button 2 - Contact 2
+ * Button 0 - Contact
+ * Button 1 - Contact 1
+ * Button 2 - Contact 2
  *
  * SerialNumber is mapped to deviceId as S2_serialnumber
  *
  *
  * This code is based on RFXComSecurity1Message
  *
- * @author Ivan Martinez 
+ * @author Ivan Martinez
  * @since 1.9.0
  */
 public class RFXComSecurity2Message extends RFXComBaseMessage {
@@ -68,17 +67,25 @@ public class RFXComSecurity2Message extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
-    }
 
+        public static SubType fromByte(int input) {
+            for (SubType c : SubType.values()) {
+                if (c.subType == input) {
+                    return c;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
+    }
 
     private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL,
-            //Buttons from 0 to 3
-            RFXComValueSelector.CONTACT, RFXComValueSelector.CONTACT_1, 
-            RFXComValueSelector.CONTACT_2, RFXComValueSelector.CONTACT_3 
-            );
+            // Buttons from 0 to 3
+            RFXComValueSelector.CONTACT, RFXComValueSelector.CONTACT_1, RFXComValueSelector.CONTACT_2,
+            RFXComValueSelector.CONTACT_3);
 
-    public SubType subType = SubType.CLASSIC;
+    public SubType subType = SubType.UNKNOWN;
     public int sensorId = 0;
     public int buttonStatus = 0;
     public byte batteryLevel = 0;
@@ -110,24 +117,20 @@ public class RFXComSecurity2Message extends RFXComBaseMessage {
     private final int BUTTON_1_BIT = 0x04;
     private final int BUTTON_2_BIT = 0x08;
     private final int BUTTON_3_BIT = 0x01;
-    
+
     @Override
     public void encodeMessage(byte[] data) {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
+        subType = SubType.fromByte(super.subType);
         // Encrypted portion id1(4)-id2(5)-id3(6)-id4(7)
         // Not implemented
-        
+
         // Fixed Portion id5(8)-id6(9)-id7(10)-id8(11)-id9(12)
-        sensorId = (data[11] & 0x0F) <<  24 | (data[10] & 0xFF) << 16 | (data[9] & 0xFF) << 8 | (data[8] & 0xFF);
+        sensorId = (data[11] & 0x0F) << 24 | (data[10] & 0xFF) << 16 | (data[9] & 0xFF) << 8 | (data[8] & 0xFF);
         buttonStatus = (data[11] & 0xF0) >> 4;
-        //id10-id24
+        // id10-id24
         // not implemented
 
         batteryLevel = (byte) ((data[28] & 0xF0) >> 4);
@@ -139,37 +142,37 @@ public class RFXComSecurity2Message extends RFXComBaseMessage {
 
         byte[] data = new byte[29];
 
-        data[0] = (byte)(data.length-1);
+        data[0] = (byte) (data.length - 1);
         data[1] = RFXComBaseMessage.PacketType.SECURITY2.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
-        
-        data[4] = 0;        
-        data[5] = 0;        
-        data[6] = 0;        
-        data[7] = 0;      
-          
-        data[8] = (byte) (sensorId & 0xff);        
+
+        data[4] = 0;
+        data[5] = 0;
+        data[6] = 0;
+        data[7] = 0;
+
+        data[8] = (byte) (sensorId & 0xff);
         data[9] = (byte) ((sensorId >> 8) & 0xff);
-        data[10] = (byte) ((sensorId >> 16) & 0xff);        
+        data[10] = (byte) ((sensorId >> 16) & 0xff);
         data[11] = (byte) ((buttonStatus & 0x0f) << 4 | ((sensorId >> 24) & 0x0f));
-        data[12] = 0;        
-        
-        data[13] = 0;        
-        data[14] = 0;        
-        data[15] = 0;        
-        data[16] = 0;        
-        data[17] = 0;        
-        data[18] = 0;        
-        data[19] = 0;        
-        data[20] = 0;        
-        data[21] = 0;        
-        data[22] = 0;        
-        data[23] = 0;        
-        data[24] = 0;        
-        data[25] = 0;        
-        data[26] = 0;        
-        data[27] = 0;        
+        data[12] = 0;
+
+        data[13] = 0;
+        data[14] = 0;
+        data[15] = 0;
+        data[16] = 0;
+        data[17] = 0;
+        data[18] = 0;
+        data[19] = 0;
+        data[20] = 0;
+        data[21] = 0;
+        data[22] = 0;
+        data[23] = 0;
+        data[24] = 0;
+        data[25] = 0;
+        data[26] = 0;
+        data[27] = 0;
         data[28] = (byte) (((batteryLevel & 0x0F) << 4) | (signalLevel & 0x0F));
 
         return data;
@@ -187,7 +190,7 @@ public class RFXComSecurity2Message extends RFXComBaseMessage {
         org.openhab.core.types.State state = UnDefType.UNDEF;
 
         if (valueSelector.getItemClass() == SwitchItem.class) {
-                throw new RFXComException("Can't convert " + valueSelector + " to SwitchItem");
+            throw new RFXComException("Can't convert " + valueSelector + " to SwitchItem");
         } else if (valueSelector.getItemClass() == ContactItem.class) {
 
             if (valueSelector == RFXComValueSelector.CONTACT) {

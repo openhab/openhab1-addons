@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -57,7 +57,7 @@ import gnu.io.UnsupportedCommOperationException;
  * @author Bernd Pfrommer
  * @since 1.6.0
  */
-public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindingProvider>implements ManagedService {
+public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindingProvider> implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(AlarmDecoderBinding.class);
 
@@ -93,6 +93,11 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
     @Override
     protected long getRefreshInterval() {
         return refreshInterval;
+    }
+
+    @Override
+    public void deactivate() {
+        disconnect();
     }
 
     @Override
@@ -312,6 +317,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
                 m_port.disableReceiveFraming();
                 m_port.disableReceiveThreshold();
                 m_reader = new BufferedReader(new InputStreamReader(m_port.getInputStream()));
+                m_writer = new BufferedWriter(new OutputStreamWriter(m_port.getOutputStream()));
                 logger.info("connected to serial port: {}", m_serialDeviceName);
                 startMsgReader();
             } else {
@@ -409,6 +415,9 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
                             case RFX:
                                 parseRFMessage(msg);
                                 break;
+                            case LRR:
+                                parseLRRMessage(msg);
+                                break;
                             case INVALID:
                             default:
                                 break;
@@ -422,9 +431,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
                 }
             } catch (IOException e) {
                 logger.error("I/O error while reading from stream: {}", e.getMessage());
-                // mark connections as down so they get reestablished
-                m_socket = null;
-                m_port = null;
+                disconnect();
             }
             logger.debug("msg reader thread exited");
         }
@@ -544,6 +551,9 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
                         case REL:
                             updateItem(bc, OpenClosedType.CLOSED);
                             break;
+                        case LRR:
+                            updateItem(bc, new StringType(""));
+                            break;
                         case INVALID:
                         default:
                             m_unupdatedItems.remove(itemName);
@@ -606,6 +616,19 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
         } catch (NumberFormatException e) {
             throw new MessageParseException("msg contains invalid state number: " + e.getMessage());
         }
+    }
+
+    private void parseLRRMessage(String msg) throws MessageParseException {
+        String parts[] = splitMessage(msg);
+        if (parts.length != 3) {
+            throw new MessageParseException("need 3 comma separated fields in msg");
+        }
+
+        ArrayList<AlarmDecoderBindingConfig> bcl = getItems(ADMsgType.LRR, null, null);
+        for (AlarmDecoderBindingConfig c : bcl) {
+            updateItem(c, new StringType(String.join(",", parts)));
+        }
+
     }
 
     private String[] splitMessage(String msg) throws MessageParseException {
@@ -693,6 +716,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
         s_startToMsgType.put("!SER", ADMsgType.INVALID);
         s_startToMsgType.put("!RFX", ADMsgType.RFX);
         s_startToMsgType.put("!EXP", ADMsgType.EXP);
+        s_startToMsgType.put("!LRR", ADMsgType.LRR);
     }
 
     /**

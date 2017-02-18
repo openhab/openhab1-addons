@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -43,11 +43,15 @@ public class MyqData {
 
     private static final String WEBSITE = "https://myqexternal.myqdevice.com";
     public static final String DEFAULT_APP_ID = "JVM/G9Nwih5BwKgNCjLxiFUQxQijAebyyg8QUHr7JOrP+tuPb8iHfRHKwTmDzHOu";
+
+    private static final String CRAFTSMAN_WEBSITE = "https://craftexternal.myqdevice.com";
+    public static final String CRAFTSMAN_DEFAULT_APP_ID = "eU97d99kMG4t3STJZO/Mu2wt69yTQwM0WXZA5oZ74/ascQ2xQrLD/yjeVhEQccBZ";
     public static final int DEFAUALT_TIMEOUT = 5000;
 
     private String userName;
     private String password;
     private String appId;
+    private String websiteUrl;
     private int timeout;
 
     private String sercurityToken;
@@ -55,28 +59,41 @@ public class MyqData {
 
     /**
      * Constructor For Chamberlain MyQ http connection
-     * 
+     *
      * @param username
      *            Chamberlain MyQ UserName
-     * 
+     *
      * @param password
      *            Chamberlain MyQ password
-     * 
+     *
      * @param appId
      *            Chamberlain Application Id, defaults to DEFAULT_APP_ID if null
-     * 
+     *
      * @param timeout
      *            HTTP timeout in milliseconds, defaults to DEFAUALT_TIMEOUT if
      *            not > 0
+     *
+     * @param craftman
+     *            Use Craftman url instead of MyQ
      */
-    public MyqData(String username, String password, String appId, int timeout) {
+    public MyqData(String username, String password, String appId, int timeout, boolean craftman) {
         this.userName = username;
         this.password = password;
 
         if (appId != null) {
             this.appId = appId;
         } else {
-            this.appId = DEFAULT_APP_ID;
+            if (craftman) {
+                this.appId = CRAFTSMAN_DEFAULT_APP_ID;
+            } else {
+                this.appId = DEFAULT_APP_ID;
+            }
+        }
+
+        if (craftman) {
+            this.websiteUrl = CRAFTSMAN_WEBSITE;
+        } else {
+            this.websiteUrl = WEBSITE;
         }
 
         if (timeout > 0) {
@@ -91,18 +108,18 @@ public class MyqData {
     }
 
     /**
-     * Retrieves garage door device data from myq website, throws if connection
+     * Retrieves MyQ device data from myq website, throws if connection
      * fails or user login fails
-     * 
+     *
      */
-    public GarageDoorData getGarageData() throws InvalidLoginException, IOException {
+    public MyqDeviceData getMyqData() throws InvalidLoginException, IOException {
         logger.trace("Retrieving door data");
-        String url = String.format("%s/api/v4/userdevicedetails/get?appId=%s&SecurityToken=%s", WEBSITE, enc(appId),
+        String url = String.format("%s/api/v4/userdevicedetails/get?appId=%s&SecurityToken=%s", websiteUrl, enc(appId),
                 enc(getSecurityToken()));
 
         JsonNode data = request("GET", url, null, null, true);
 
-        return new GarageDoorData(data);
+        return new MyqDeviceData(data);
     }
 
     /**
@@ -110,8 +127,8 @@ public class MyqData {
      */
     private void login() throws InvalidLoginException, IOException {
         logger.trace("attempting to login");
-        String url = String.format("%s/api/user/validate?appId=%s&SecurityToken=null&username=%s&password=%s", WEBSITE,
-                enc(appId), enc(userName), enc(password));
+        String url = String.format("%s/api/user/validate?appId=%s&SecurityToken=null&username=%s&password=%s",
+                websiteUrl, enc(appId), enc(userName), enc(password));
 
         JsonNode data = request("GET", url, null, null, true);
         LoginData login = new LoginData(data);
@@ -121,18 +138,23 @@ public class MyqData {
     /**
      * Send Command to open/close garage door opener with MyQ API Returns false
      * if return code from API is not correct or connection fails
-     * 
+     *
      * @param deviceID
      *            MyQ deviceID of Garage Door Opener.
+     *
+     * @param name
+     *            Attribute Name "desireddoorstate" or "desiredlightstate"
+     *
      * @param state
      *            Desired state to put the door in, 1 = open, 0 = closed
+     *            Desired state to put the lamp in, 1 = on, 0 = off
      */
-    public void executeGarageDoorCommand(int deviceID, int state) throws InvalidLoginException, IOException {
+    public void executeMyQCommand(int deviceID, String name, int state) throws InvalidLoginException, IOException {
         String message = String.format(
                 "{\"ApplicationId\":\"%s\"," + "\"SecurityToken\":\"%s\"," + "\"MyQDeviceId\":\"%d\","
-                        + "\"AttributeName\":\"desireddoorstate\"," + "\"AttributeValue\":\"%d\"}",
-                appId, sercurityToken, deviceID, state);
-        String url = String.format("%s/api/v4/deviceattribute/putdeviceattribute?appId=%s&SecurityToken=%s", WEBSITE,
+                        + "\"AttributeName\":\"%s\"," + "\"AttributeValue\":\"%d\"}",
+                appId, sercurityToken, deviceID, name, state);
+        String url = String.format("%s/api/v4/deviceattribute/putdeviceattribute?appId=%s&SecurityToken=%s", websiteUrl,
                 enc(appId), enc(getSecurityToken()));
 
         request("PUT", url, message, "application/json", true);
@@ -141,7 +163,7 @@ public class MyqData {
     /**
      * Returns the currently cached security token, this will make a call to
      * login if the token does not exist.
-     * 
+     *
      * @return The cached security token
      * @throws IOException
      * @throws InvalidLoginException
@@ -157,7 +179,7 @@ public class MyqData {
      * Make a request to the server, optionally retry the call if there is a
      * login issue. Will throw a InvalidLoginExcpetion if the account is
      * invalid, locked or soon to be locked.
-     * 
+     *
      * @param method
      *            The Http Method Type (GET,PUT)
      * @param url
@@ -223,7 +245,7 @@ public class MyqData {
 
     /**
      * URL Encode a string using UTF-8 encoding
-     * 
+     *
      * @param string
      * @return
      */

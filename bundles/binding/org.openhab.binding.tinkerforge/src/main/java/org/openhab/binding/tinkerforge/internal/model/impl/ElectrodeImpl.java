@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,11 +21,11 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
- *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ElectrodeImpl#getDeviceType
- *        <em>Device Type</em>}</li>
- *        </ul>
  *        </p>
+ *        <ul>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ElectrodeImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        </ul>
  *
  * @generated
  */
@@ -122,9 +122,8 @@ public class ElectrodeImpl extends MultiTouchDeviceImpl implements Electrode {
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (deviceType: ");

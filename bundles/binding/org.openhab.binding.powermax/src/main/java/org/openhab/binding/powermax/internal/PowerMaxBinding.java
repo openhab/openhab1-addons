@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.powermax.PowerMaxBindingConfig;
@@ -45,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * Binding that get information from the Visonic alarm system.
  * The binding is listening to openHAB event bus and is able to send few commands to the alarm system
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxBinding extends AbstractActiveBinding<PowerMaxBindingProvider>
@@ -443,12 +444,14 @@ public class PowerMaxBinding extends AbstractActiveBinding<PowerMaxBindingProvid
         PowerMaxReceiveType.POWERLINK.setHandlerClass(PowerMaxPowerlinkMessage.class);
 
         if (config != null) {
-            if (StringUtils.isNotBlank((String) config.get("serialPort"))) {
-                serialPort = (String) config.get("serialPort");
+            String serialPortString = Objects.toString(config.get("serialPort"), null);
+            if (StringUtils.isNotBlank(serialPortString)) {
+                serialPort = serialPortString;
             }
 
-            if (StringUtils.isNotBlank((String) config.get("ip"))) {
-                ipAddress = (String) config.get("ip");
+            String ipString = Objects.toString(config.get("ip"), null);
+            if (StringUtils.isNotBlank(ipString)) {
+                ipAddress = ipString;
             }
 
             if (serialPort == null && ipAddress == null) {
@@ -467,43 +470,54 @@ public class PowerMaxBinding extends AbstractActiveBinding<PowerMaxBindingProvid
             }
 
             if (ipAddress != null) {
-                if (StringUtils.isNotBlank((String) config.get("tcpPort"))) {
+                String tcpPortString = Objects.toString(config.get("tcpPort"), null);
+                if (StringUtils.isNotBlank(tcpPortString)) {
                     try {
-                        tcpPort = Integer.parseInt((String) config.get("tcpPort"));
+                        tcpPort = Integer.parseInt(tcpPortString);
                     } catch (NumberFormatException numberFormatException) {
                         tcpPort = 0;
-                        logger.warn("PowerMax alarm binding: TCP port not configured correctly (number expected)");
+                        logger.warn(
+                                "PowerMax alarm binding: TCP port not configured correctly (number expected, received '{}')",
+                                tcpPortString);
                         this.setProperlyConfigured(false);
                         throw new ConfigurationException("tcpPort",
-                                "TCP port not configured correctly (number expected)");
+                                "TCP port not configured correctly (number expected, received '" + tcpPortString
+                                        + "')");
                     }
                 }
             }
 
-            if (StringUtils.isNotBlank((String) config.get("motionOffDelay"))) {
+            String motionOffDelayString = Objects.toString(config.get("motionOffDelay"), null);
+            if (StringUtils.isNotBlank(motionOffDelayString)) {
                 try {
-                    motionOffDelay = Integer.parseInt((String) config.get("motionOffDelay")) * 60000;
+                    motionOffDelay = Integer.parseInt(motionOffDelayString) * 60000;
                 } catch (NumberFormatException numberFormatException) {
                     motionOffDelay = DEFAULT_MOTION_OFF_DELAY;
-                    logger.warn("PowerMax alarm binding: motion off delay not configured correctly (number expected)");
+                    logger.warn(
+                            "PowerMax alarm binding: motion off delay not configured correctly (number expected, received '{}')",
+                            motionOffDelayString);
                 }
             }
 
-            if (StringUtils.isNotBlank((String) config.get("allowArming"))) {
-                allowArming = Boolean.valueOf((String) config.get("allowArming"));
+            String allowArmingString = Objects.toString(config.get("allowArming"), null);
+            if (StringUtils.isNotBlank(allowArmingString)) {
+                allowArming = Boolean.valueOf(allowArmingString);
             }
-            if (StringUtils.isNotBlank((String) config.get("allowDisarming"))) {
-                allowDisarming = Boolean.valueOf((String) config.get("allowDisarming"));
+            String allowDisarmingString = Objects.toString(config.get("allowDisarming"), null);
+            if (StringUtils.isNotBlank(allowDisarmingString)) {
+                allowDisarming = Boolean.valueOf(allowDisarmingString);
             }
-            if (StringUtils.isNotBlank((String) config.get("forceStandardMode"))) {
-                forceStandardMode = Boolean.valueOf((String) config.get("forceStandardMode"));
+            String forceStandardModeString = Objects.toString(config.get("forceStandardMode"), null);
+            if (StringUtils.isNotBlank(forceStandardModeString)) {
+                forceStandardMode = Boolean.valueOf(forceStandardModeString);
                 PowerMaxReceiveType.POWERLINK.setHandlerClass(
                         forceStandardMode ? PowerMaxBaseMessage.class : PowerMaxPowerlinkMessage.class);
             }
 
-            if (StringUtils.isNotBlank((String) config.get("panelType"))) {
+            String panelTypeString = Objects.toString(config.get("panelType"), null);
+            if (StringUtils.isNotBlank(panelTypeString)) {
                 try {
-                    panelType = PowerMaxPanelType.fromLabel((String) config.get("panelType"));
+                    panelType = PowerMaxPanelType.fromLabel(panelTypeString);
                 } catch (IllegalArgumentException exception) {
                     panelType = PowerMaxPanelType.POWERMAX_PRO;
                     logger.warn("PowerMax alarm binding: panel type not configured correctly");
@@ -511,12 +525,14 @@ public class PowerMaxBinding extends AbstractActiveBinding<PowerMaxBindingProvid
             }
             PowerMaxPanelSettings.initPanelSettings(panelType);
 
-            if (StringUtils.isNotBlank((String) config.get("autoSyncTime"))) {
-                autoSyncTime = Boolean.valueOf((String) config.get("autoSyncTime"));
+            String autoSyncTimeString = Objects.toString(config.get("autoSyncTime"), null);
+            if (StringUtils.isNotBlank(autoSyncTimeString)) {
+                autoSyncTime = Boolean.valueOf(autoSyncTimeString);
             }
 
-            if (StringUtils.isNotBlank((String) config.get("pinCode"))) {
-                pinCode = (String) config.get("pinCode");
+            String pinCodeString = Objects.toString(config.get("pinCode"), null);
+            if (StringUtils.isNotBlank(pinCodeString)) {
+                pinCode = pinCodeString;
             }
 
             this.setProperlyConfigured(true);

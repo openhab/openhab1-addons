@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,15 +19,16 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *
  * <p>
  * The following features are supported:
- * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerTemperature#getDeviceType <em>Device Type</em>
- * }</li>
- * </ul>
  * </p>
+ * <ul>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerTemperature#getDeviceType <em>Device
+ * Type</em>}</li>
+ * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getAccelerometerTemperature()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>"
  * @generated
  */
 public interface AccelerometerTemperature extends AccelerometerDevice, MSensor<DecimalValue> {

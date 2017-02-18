@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * @author Jack Sleuters
  * @since 1.7.0
  */
-public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>implements ManagedService {
+public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider> implements ManagedService {
     static final Logger logger = LoggerFactory.getLogger(MochadX10Binding.class);
 
     /**
@@ -318,6 +318,11 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
         if (!isShuttingDown) {
             logger.trace("reconnectToMochadX10Server called");
             disconnectFromMochadX10Server();
+            try {
+                Thread.sleep(20000); // Wait 20 secs before retrying
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
             connectToMochadX10Server();
             logger.trace("Reconnected to Mochad X10 server");
         } else {

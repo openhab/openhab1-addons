@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,12 +24,12 @@ import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfigurat
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>
  *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceConfigurationImpl#getDisableElectrode
  *        <em>Disable Electrode</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -99,11 +99,10 @@ public class MultiTouchDeviceConfigurationImpl extends MinimalEObjectImpl.Contai
     public void setDisableElectrode(Boolean newDisableElectrode) {
         Boolean oldDisableElectrode = disableElectrode;
         disableElectrode = newDisableElectrode;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MULTI_TOUCH_DEVICE_CONFIGURATION__DISABLE_ELECTRODE, oldDisableElectrode,
                     disableElectrode));
-        }
     }
 
     /**
@@ -177,9 +176,8 @@ public class MultiTouchDeviceConfigurationImpl extends MinimalEObjectImpl.Contai
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (disableElectrode: ");

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,7 +26,7 @@ public class PowerBufferRequestMessage extends Message {
 
     @Override
     protected String payLoadToHexString() {
-        return String.format("%08X", (logAddress * 8 + 278528));
+        return String.format("%08X", (logAddress * 32 + 278528));
     }
 
     @Override

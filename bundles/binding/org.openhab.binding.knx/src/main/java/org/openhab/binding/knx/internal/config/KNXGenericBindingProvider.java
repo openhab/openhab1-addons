@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,8 +8,10 @@
  */
 package org.openhab.binding.knx.internal.config;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.openhab.binding.knx.config.KNXBindingProvider;
@@ -21,6 +23,9 @@ import org.openhab.core.types.Type;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.model.item.binding.BindingConfigReader;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -92,6 +97,12 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /** the binding type to register for as a binding config reader */
     public static final String KNX_BINDING_TYPE = "knx";
+
+    /** the suffix to mark a group address for start-stop-dimming */
+    private static final String START_STOP_MARKER_SUFFIX = "ss";
+
+    //Logger
+    private static Logger logger = LoggerFactory.getLogger(KNXGenericBindingProvider.class);
 
     /**
      * {@inheritDoc}
@@ -380,11 +391,6 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
                     throw new BindingConfigParseException("Only one readable GA allowed.");
                 }
 
-                Class<? extends Type> typeClass = item.getAcceptedCommandTypes().size() > 0
-                        ? item.getAcceptedCommandTypes().get(i)
-                        : item.getAcceptedDataTypes().size() > 1 ? item.getAcceptedDataTypes().get(i)
-                                : item.getAcceptedDataTypes().get(0);
-
                 String[] dataPoints = datapointConfig.split("\\+");
                 for (int j = 0; j < dataPoints.length; ++j) {
                     String dataPoint = dataPoints[j].trim();
@@ -431,7 +437,20 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
                     // find the DPT for this entry
                     String[] segments = dataPoint.split(":");
-                    String dptID = (segments.length == 1) ? getDefaultDPTId(typeClass) : segments[0];
+                    Class<? extends Type> typeClass = null;
+                    String dptID = null;
+                    if( segments.length == 1 ) {
+                      //DatapointID NOT specified in binding config, so try to guess it
+                      typeClass = item.getAcceptedCommandTypes().size() > 0
+                              ? item.getAcceptedCommandTypes().get(i)
+                              : item.getAcceptedDataTypes().size() > 1 ? item.getAcceptedDataTypes().get(i)
+                                      : item.getAcceptedDataTypes().get(0);
+                      dptID = getDefaultDPTId(typeClass);
+                    }
+                    else {
+                      //DatapointID specified in binding config, so use it
+                      dptID = segments[0];
+                    }
                     if (dptID == null || dptID.trim().isEmpty()) {
                         throw new BindingConfigParseException(
                                 "No DPT could be determined for the type '" + typeClass.getSimpleName() + "'.");
@@ -443,8 +462,16 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
                     String ga = (segments.length == 1) ? segments[0].trim() : segments[1].trim();
 
+                    // determine start/stop behavior
+                    Boolean startStopBehavior = Boolean.FALSE;
+                    if (ga.endsWith(START_STOP_MARKER_SUFFIX)) {
+                        startStopBehavior = Boolean.TRUE;
+                        ga = ga.substring(0, ga.length() - START_STOP_MARKER_SUFFIX.length());
+                    }
+
                     // create group address and datapoint
                     GroupAddress groupAddress = new GroupAddress(ga);
+                    configItem.startStopMap.put(groupAddress, startStopBehavior);
                     Datapoint dp;
                     if (j != 0 || item.getAcceptedCommandTypes().size() == 0) {
                         dp = new StateDP(groupAddress, item.getName(), 0, dptID);
@@ -515,5 +542,28 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
         public Datapoint readableDataPoint = null;
         public DatapointMap allDataPoints = new DatapointMap();
         public int autoRefreshInSecs = 0;
+        public Map<GroupAddress, Boolean> startStopMap = new HashMap<GroupAddress, Boolean>();
+    }
+
+    /**
+     * Determines if the given group address is marked for start-stop dimming.
+     *
+     * @param groupAddress the group address to check start-stop dimming for
+     * @returns true, if the given group address is marked for start-stop dimming, false otherwise.
+     */
+    @Override
+    public boolean isStartStopGA(GroupAddress groupAddress) {
+        synchronized (bindingConfigs) {
+            for (BindingConfig config : bindingConfigs.values()) {
+                KNXBindingConfig knxConfig = (KNXBindingConfig) config;
+                for (KNXBindingConfigItem configItem : knxConfig) {
+                    Boolean startStopBehavior = configItem.startStopMap.get(groupAddress);
+                    if (startStopBehavior != null) {
+                        return startStopBehavior;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
