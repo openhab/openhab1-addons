@@ -326,7 +326,7 @@ public abstract class ModbusSlave {
             }
             if ((response.getTransactionID() != requestTransactionID) && !response.isHeadless()) {
                 logger.warn(
-                        "ModbusSlave ({}): Transaction id of the response ({}) does not match request {}.  Endpoint {}. Connection: {}. Ignoring response.",
+                        "ModbusSlave ({}): Transaction id of the response ({}) does not match request {} id {}.  Endpoint {}. Connection: {}. Ignoring response.",
                         name, response.getTransactionID(), request, requestTransactionID, endpoint, connection);
                 throw new ModbusUnexpectedTransactionIdException();
             }
