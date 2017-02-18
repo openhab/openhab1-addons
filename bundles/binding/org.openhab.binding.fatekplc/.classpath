@@ -4,6 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="lib" path="lib/jfatek-1.1.0.jar" sourcepath="lib/jfatek-1.1.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jfatek-2.0.0.jar" sourcepath="lib/jfatek-2.0.0-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
