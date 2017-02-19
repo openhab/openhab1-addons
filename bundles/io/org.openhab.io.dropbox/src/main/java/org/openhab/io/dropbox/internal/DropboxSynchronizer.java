@@ -93,7 +93,7 @@ public class DropboxSynchronizer implements ManagedService {
     //// Authentication: user must configure either the personalAccessToken or
     //// BOTH the AppKey AND the AppSecret; if all 3 are defined, then the
     //// personalAccessToken will be used and the others ignored.
-    
+
     /** a user's personal access token retrieved from configuration only; null by default */
     private static String personalAccessToken;
 
@@ -126,7 +126,9 @@ public class DropboxSynchronizer implements ManagedService {
     /** the upload interval as a Cron Expression (optional; defaults to '0 0 2 * * ?', which means once a day at 2am) */
     private static String uploadInterval = "0 0 2 * * ?";
 
-    /** the download interval as a Cron Expression (optional; defaults to '0 0/5 * * * ?' which means every 5 minutes) */
+    /**
+     * the download interval as a Cron Expression (optional; defaults to '0 0/5 * * * ?' which means every 5 minutes)
+     */
     private static String downloadInterval = "0 0/5 * * * ?";
 
     private static final List<String> DEFAULT_UPLOAD_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$",
@@ -635,13 +637,12 @@ public class DropboxSynchronizer implements ManagedService {
             StringBuffer message = new StringBuffer();
             message.append("Authentication parameters to be used:\r\n");
             if (isNotBlank(pat)) {
-                message.append("     Personal access token = " +pat + "\r\n");
-            }
-            else {
+                message.append("     Personal access token = " + pat + "\r\n");
+            } else {
                 message.append("     appkey = " + appKeyString + "\r\n");
                 message.append("  appsecret = " + appSecretString + "\r\n");
             }
-            logger.debug(message);
+            logger.debug(message.toString());
         }
 
         if (isBlank(pat) && (isBlank(appKeyString) || isBlank(appSecretString))) {
