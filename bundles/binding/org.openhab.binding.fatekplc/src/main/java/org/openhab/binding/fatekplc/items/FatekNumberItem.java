@@ -24,16 +24,15 @@ import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.simplify4u.jfatek.FatekException;
+import org.simplify4u.jfatek.FatekPLC;
+import org.simplify4u.jfatek.FatekWriteMixDataCmd;
+import org.simplify4u.jfatek.io.FatekIOException;
+import org.simplify4u.jfatek.registers.Reg;
+import org.simplify4u.jfatek.registers.RegValue;
+import org.simplify4u.jfatek.registers.UnknownRegNameException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.github.s4u.jfatek.FatekException;
-import com.github.s4u.jfatek.FatekPLC;
-import com.github.s4u.jfatek.FatekWriteMixDataCmd;
-import com.github.s4u.jfatek.io.FatekIOException;
-import com.github.s4u.jfatek.registers.Reg;
-import com.github.s4u.jfatek.registers.RegValue;
-import com.github.s4u.jfatek.registers.UnknownRegNameException;
 
 /**
  * Number item implementation.
