@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openhab</groupId>
         <artifactId>features</artifactId>
-        <version>1.9.0-SNAPSHOT</version>
+        <version>1.10.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.openhab.addons</groupId>
@@ -45,6 +45,7 @@
                                 <artifact><file>src/main/resources/conf/ebus.cfg</file><type>cfg</type><classifier>ebus</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ecobee.cfg</file><type>cfg</type><classifier>ecobee</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ecotouch.cfg</file><type>cfg</type><classifier>ecotouch</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/ekey.cfg</file><type>cfg</type><classifier>ekey</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/enphaseenergy.cfg</file><type>cfg</type><classifier>enphaseenergy</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/enocean.cfg</file><type>cfg</type><classifier>enocean</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/epsonprojector.cfg</file><type>cfg</type><classifier>epsonprojector</classifier></artifact>
@@ -69,6 +70,7 @@
                                 <artifact><file>src/main/resources/conf/jdbc.cfg</file><type>cfg</type><classifier>jdbc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jpa.cfg</file><type>cfg</type><classifier>jpa</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jointspace.cfg</file><type>cfg</type><classifier>jointspace</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/km200.cfg</file><type>cfg</type><classifier>km200</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/knx.cfg</file><type>cfg</type><classifier>knx</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/koubachi.cfg</file><type>cfg</type><classifier>koubachi</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/lgtv.cfg</file><type>cfg</type><classifier>lgtv</classifier></artifact>
@@ -102,6 +104,7 @@
                                 <artifact><file>src/main/resources/conf/owserver.cfg</file><type>cfg</type><classifier>owserver</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/panasonictv.cfg</file><type>cfg</type><classifier>panasonictv</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pebble.cfg</file><type>cfg</type><classifier>pebble</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/piface.cfg</file><type>cfg</type><classifier>piface</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/plex.cfg</file><type>cfg</type><classifier>plex</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/plugwise.cfg</file><type>cfg</type><classifier>plugwise</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/powermax.cfg</file><type>cfg</type><classifier>powermax</classifier></artifact>

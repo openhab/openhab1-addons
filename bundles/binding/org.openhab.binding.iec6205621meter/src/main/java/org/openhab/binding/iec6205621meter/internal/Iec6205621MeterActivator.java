@@ -51,5 +51,4 @@ public final class Iec6205621MeterActivator implements BundleActivator {
     public static BundleContext getContext() {
         return context;
     }
-
 }

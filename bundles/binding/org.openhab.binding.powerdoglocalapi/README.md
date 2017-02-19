@@ -1,62 +1,38 @@
-Documentation of the PowerDog Local API Binding Bundle
+# PowerDog Local API Binding 
 
-## Introduction
+This is an openHAB binding for an [eco-data PowerDog](http://www.eco-data.de/produkte.html). It supports the [PowerAPI Local Device API](http://api.power-dog.eu/documentation/) in the only available revision [v0.b](http://api.power-dog.eu/documentation/DOCUMENATION/PowerAPI%20Local%20Device%20API%20Description_v0.b.pdf).
 
-This is an OpenHAB binding for an [eco-data PowerDog](http://www.eco-data.de/produkte.html). It supports the [PowerAPI Local Device API](http://api.power-dog.eu/documentation/) in the only available revision [v0.b](http://api.power-dog.eu/documentation/DOCUMENATION/PowerAPI%20Local%20Device%20API%20Description_v0.b.pdf).
 The binding allows to query multiple PowerDogs if they are reachable in your network via TCP/IP. For querying, it is expected that your PowerDog is already set up.
+
 The binding supports reading of all PowerDog variables available via PowerDog Local API. It also supports writing of PowerAPI sensors. The binding uses the [Redstone XML-RPC Library](http://xmlrpc.sourceforge.net/) which can be downloaded [here from Sourceforge](http://sourceforge.net/projects/xmlrpc/) for accessing the PowerAPI.
 
 
 ## Binding Configuration
 
-You will normally need some basic configuration for accessing a PowerDog. The following settings can be made for one or several PowerDogs in openhab.cfg.
+You will normally need some basic configuration for accessing a PowerDog. The following settings can be made for one or several PowerDogs in `services/powerdog.cfg`.
 
-    ############################### eco-data PowerDog LocalAPI Binding #####################
-    #
-    # Refresh Interval in ms, determines the fastest refresh rate for any PowerDog
-    # (optional, defaults to 300000ms = 5min)
-    #powerdoglocalapi:refresh=
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| refresh  | 300000 |    No    | the globally fastest refresh rate for all PowerDog servers configured. If you configure lower values for the single PowerDog servers or items, this value will override it. By default the value is set to 5 minutes - be aware that lower values mean more communication, which might result in too much load of your PowerDog. |
+| `<serverId>`.host | powerdog | No | PowerDog IP or host name. |
+| `<serverId>`.port | 20000    | No | PowerDog port for local API via XML-RPC. You might need configure this if changed or port redirection is used. | `<serverId>.refresh` | value of `refresh` | You can set different refresh rates per PowerDog unit. The `powerdoglocalapi:<serverId>.refresh=` value should be the same or a multiple of `refresh` |
+| `<serverId>`.password | empty string | usually | Password set for PowerDog PowerAPI. Normally you will need to set this value. On a PowerDog it is set to the unlock key by default. |
 
-The `powerdoglocalapi:refresh` value is the globally fastest refresh rate for all PowerDog servers configured. If you configure lower values for the single PowerDog servers or items, this value will override it. By default the value is set to 5 minutes - be aware that lower values mean more communication, which might result in too much load of your PowerDog.
-
-Using different `serverId`s, you can configure several PowerDog servers at a time.
-
-    # PowerDog IP or host name (optional, defaults to powerdog)
-    #powerdoglocalapi:<serverId>.host=
-
-    # PowerDog port for local API via XML-RPC (optional, defaults to 20000)
-    #powerdoglocalapi:<serverId>.port=
-
-Normally you will need to set the `host` value or configure your DHCP server accordingly. The `powerdoglocalapi:<serverId>.host` value is the host name to access the PowerDog - it can be an IP adress or a local DNS entry and defaults to `powerdog`. The `powerdoglocalapi:<serverId>.port` value of the PowerDog Local API is by default 20000, but you might need configure this if changed or port redirection is used.
-
-    # Refresh interval in ms used to poll values from the specific PowerDog via local API
-    # should be a multiple of powerdoglocalapi:refresh
-    # if this value is lower than powerdoglocalapi:refresh the binding will
-    # use powerdoglocalapi:refresh instead
-    # (optional, defaults to 300000ms = 5min)
-    #powerdoglocalapi:<serverId>.refresh=
-
-You can set different refresh rates per PowerDog unit. The `powerdoglocalapi:<serverId>.refresh=` value should be the same or a multiple of `powerdoglocalapi:refresh`.
-
-    # Password set for PowerDog PowerAPI (On a Powerdog set to unlock key by default)
-    # defaults to empty string if not set
-    #powerdoglocalapi:<serverId>.password=1abcd2
-
-Normally you will need to set this value. The `powerdoglocalapi:<serverId>.password` value defaults for the binding to an empty string, but on a PowerDog it is set to the unlock key by default.
-
+Using different `<serverId>`s, you can configure several PowerDog servers at a time.
 
 ## Item Configuration
 
-In order to bind an generic item to the device, you need to provide PowerDog Local API configuration settings in your item file (in the folder configurations/items) containing at least the value ID of the device you wish to control used on your PowerDog.
+In order to bind an generic item to the device, you need to provide PowerDog Local API configuration settings in your items file, containing at least the value ID of the device you wish to control used on your PowerDog.
 
 The syntax of the binding configuration strings accepted is the following:
 
-    powerdoglocalapi="<<serverId>:<valueID>:<refreshInterval>[:<variableName>]"
+```
+powerdoglocalapi="<<serverId>:<valueID>:<refreshInterval>[:<variableName>]"
+```
 
 The `<` in front of `<serverId>` tells the binding to *read* the following value, while `>` means to write (only applicable for PowerAPI sensors).
 
-The `serverId` corresponds to the device which is introduced in openhab.cfg. 'serverId' can be any alphanumeric string as long as it is the same in the binding and
-configuration file. *NOTE*: The parameter is case sensitive!
+The `serverId` corresponds to the device which is introduced in openhab.cfg. 'serverId' can be any alphanumeric string as long as it is the same in the binding and configuration file. *NOTE*: The parameter is case sensitive!
 
 The `valueID` corresponds to the PowerDog configuration key or value ID of the device you want to query. 
 *How to get the PowerDog key or value ID*: Please configure a (even wrong example) item and run OpenHAB in debug mode. In the generated log file you will find the complete response of your PowerDog server indicating all keys/valueIDs.
@@ -69,45 +45,55 @@ The `value-name` corresponds to the value you want to query.
 
 Here are some examples for valid binding configuration strings:
 
-    { powerdoglocalapi="<serverId:arithmetic_1234567890:300000" }
+```
+{ powerdoglocalapi="<serverId:arithmetic_1234567890:300000" }
+```
 
 These two lines have actually the same result:
 
-    { powerdoglocalapi="<powerdog:pv_global_1234567890:300000" }
-    { powerdoglocalapi="<powerdog:pv_global_1234567890:300000:Current_Value" }
-    
+```
+{ powerdoglocalapi="<powerdog:pv_global_1234567890:300000" }
+{ powerdoglocalapi="<powerdog:pv_global_1234567890:300000:Current_Value" }
+```
+
 This is a string result:
 
-    { powerdoglocalapi="<powerdog:impulsecounter_1234567890:300000:Unit_1000000" }
-    
+```
+{ powerdoglocalapi="<powerdog:impulsecounter_1234567890:300000:Unit_1000000" }
+```
+
 This is a configuration for writing a value to a PowerAPI sensor. Configuration of the `variableName` is ignored in that case, because writing to PowerDog Local API only affects the `Current_Value`.
 
-    { powerdoglocalapi=">powerdog:powerapi_1234567890:300000" }
+```
+{ powerdoglocalapi=">powerdog:powerapi_1234567890:300000" }
+```
 
 The following item types are supported: 
-* Number, 
-* Switch, 
-* Dimmer, 
-* Contact, 
-* String 
+
+* Number
+* Switch 
+* Dimmer
+* Contact
+* String
 
 PowerDog supports in the PowerAPI the following types for In-Bindings,  which should be  mapped to the following items:
 
-| PowerDog unit | OpenHAB item type | Remark
-| ------------- | ----------------- | ------
+| PowerDog unit | openHAB item type | Remark |
+|---------------|-------------------|--------|
 | V, A, °C, W, l, m/s, km/h | Number, String | 
-| % | Number, Switch, Dimmer, Contact, String | In case of Switch, 100% will be mapped to ON; In case of Contact, 100% is mapped to OPEN
-| (String) | String | Other values than 'Current_Value' might be only mapped to String
+| % | Number, Switch, Dimmer, Contact, String | In case of Switch, 100% will be mapped to ON; In case of Contact, 100% is mapped to OPEN |
+| (String) | String | Other values than 'Current_Value' might be only mapped to String |
 
 Item configuration examples are therefore:
 
-    Number Power_PV "PV Power [%.1f W]" <sun> (PV) { powerdoglocalapi="<powerdog:impulsecounter_1234567890:300000" }
-    Number Power_Supplied "Supplied Power [%.1f W]" <energy> (PV) { powerdoglocalapi="<powerdog:impulsecounter_1372456576:10000" }
-    String Power_Supplied_Unit1M { powerdoglocalapi="<powerdog:impulsecounter_1372456576:300000:Unit_1000000" }
-    Number Temperature_Outside "Outside temperature [%.1f °C]" <temperature> (Weather) { powerdoglocalapi="<powerdog:onewire_1234567890:300000" }
-    Number Temperature_Outside "Outside temperature [%.1f °C]" <temperature> (Weather) { powerdoglocalapi="<powerdog:onewire_1234567890:300000" }
-    Number OpenHAB_Alive_2PD "Connection OpenHAB->PowerDog alive [%.1f %%]" <network> { powerdoglocalapi=">pd:powerapi_1234567890:150000" }
-
+```
+Number Power_PV "PV Power [%.1f W]" <sun> (PV) { powerdoglocalapi="<powerdog:impulsecounter_1234567890:300000" }
+Number Power_Supplied "Supplied Power [%.1f W]" <energy> (PV) { powerdoglocalapi="<powerdog:impulsecounter_1372456576:10000" }
+String Power_Supplied_Unit1M { powerdoglocalapi="<powerdog:impulsecounter_1372456576:300000:Unit_1000000" }
+Number Temperature_Outside "Outside temperature [%.1f °C]" <temperature> (Weather) { powerdoglocalapi="<powerdog:onewire_1234567890:300000" }
+Number Temperature_Outside "Outside temperature [%.1f °C]" <temperature> (Weather) { powerdoglocalapi="<powerdog:onewire_1234567890:300000" }
+Number OpenHAB_Alive_2PD "Connection OpenHAB->PowerDog alive [%.1f %%]" <network> { powerdoglocalapi=">pd:powerapi_1234567890:150000" }
+```
 
 ## Known Limitations
 

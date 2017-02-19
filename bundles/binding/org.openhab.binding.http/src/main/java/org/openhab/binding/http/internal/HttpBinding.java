@@ -194,7 +194,8 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
                                         transformationType);
                             }
                         } catch (TransformationException te) {
-                            logger.error("Transformation '{}' threw an exception. [response={}]", transformation, response, te);
+                            logger.error("Transformation '{}' threw an exception. [response={}]", transformation,
+                                    response, te);
 
                             // in case of an error we return the response without any
                             // transformation

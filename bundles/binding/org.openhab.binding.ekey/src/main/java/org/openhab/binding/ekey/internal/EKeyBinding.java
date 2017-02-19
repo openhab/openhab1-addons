@@ -9,6 +9,7 @@
 package org.openhab.binding.ekey.internal;
 
 import java.util.Dictionary;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,8 +20,6 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
-import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -76,7 +75,7 @@ import at.fhooe.mc.schlgtwt.parser.UniformPacket;
  * @author Paul Schlagitweit
  * @since 1.5.0
  */
-public class EKeyBinding extends AbstractBinding<EKeyBindingProvider>implements ManagedService, IEKeyListener {
+public class EKeyBinding extends AbstractBinding<EKeyBindingProvider> implements ManagedService, IEKeyListener {
 
     private static final Logger logger = LoggerFactory.getLogger(EKeyBinding.class);
 
@@ -110,28 +109,6 @@ public class EKeyBinding extends AbstractBinding<EKeyBindingProvider>implements 
         }
     }
 
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    protected void internalReceiveCommand(String itemName, Command command) {
-        // the code being executed when a command was sent on the openHAB
-        // event bus goes here. This method is only called if one of the
-        // BindingProviders provide a binding for the given 'itemName'.
-        logger.debug("internalReceiveCommand() is called!");
-    }
-
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    protected void internalReceiveUpdate(String itemName, State newState) {
-        // the code being executed when a state was sent on the openHAB
-        // event bus goes here. This method is only called if one of the
-        // BindingProviders provide a binding for the given 'itemName'.
-        logger.debug("internalReceiveCommand() is called!");
-    }
-
     protected void addBindingProvider(EKeyBindingProvider bindingProvider) {
         super.addBindingProvider(bindingProvider);
     }
@@ -148,24 +125,25 @@ public class EKeyBinding extends AbstractBinding<EKeyBindingProvider>implements 
         if (config != null) {
 
             // get ip from config file
-            ip = (String) config.get("ip");
+            ip = Objects.toString(config.get("ip"), null);
 
             if (!Pattern.compile(IP_PATTERN).matcher(ip).matches()) { // check valid ip
-                logger.warn("eKey:ip No ip specified. It is recommended to specify a static ip");
+                logger.warn(
+                        "ip configuration parameter not specified or incorrect format. It is recommended to specify a static ip.");
                 ip = null;
             }
 
-            // get port from config file
-            String portstring = (String) config.get("port");
+            // get port from configuration
+            String portstring = Objects.toString(config.get("port"), null);
             if (StringUtils.isNotBlank(portstring)) {
                 port = Integer.parseInt(portstring);
             } else {
-                throw new ConfigurationException("eKey:port", "No port specified."
-                        + " Please specify a port as you did during the UDP-Converter configuration");
+                throw new ConfigurationException("port", "No port specified."
+                        + " Please specify a port as you did during the UDP-Converter configuration.");
             }
 
-            // get mode from config file
-            String modestring = (String) config.get("mode");
+            // get mode from configuration
+            String modestring = Objects.toString(config.get("mode"), null);
             if (StringUtils.isNotBlank(modestring)) {
                 modestring = modestring.toUpperCase().trim();
 
@@ -176,19 +154,19 @@ public class EKeyBinding extends AbstractBinding<EKeyBindingProvider>implements 
                 } else if (modestring.equals(MODES[2])) {
                     mode = UniformPacket.tMULTI;
                 } else {
-                    throw new ConfigurationException("eKey:mode",
+                    throw new ConfigurationException("mode",
                             "Unknown mode '" + modestring + "'. Valid values are RARE, MULTI or HOME.");
                 }
 
             } else { // no mode specified -> use default
-                logger.warn("eKey:mode was not declared in the config file. So mode RARE is used as default!");
+                logger.warn("mode was not declared in the configuration, so mode RARE is used as default.");
                 mode = UniformPacket.tRARE;
             }
 
-            // get deliminator from the config file
-            String delstring = (String) config.get("delimiter");
+            // get delimiter from the configuration
+            String delstring = Objects.toString(config.get("delimiter"), null);
             if (StringUtils.isBlank(delstring)) {
-                // a blank (" ") will be definded as default deliminator
+                // a blank (" ") will be defined as default delimiter
                 deliminator = " ";
             } else {
                 deliminator = delstring;
@@ -231,23 +209,17 @@ public class EKeyBinding extends AbstractBinding<EKeyBindingProvider>implements 
                         logger.error("Your NumberItem cannot take values of type String!");
                     }
 
-                } else // StringItem
-                    if (itemType.isAssignableFrom(StringItem.class)) {
+                } else if (itemType.isAssignableFrom(StringItem.class)) {
                     // allow both - return of number or integer
-                    if (value instanceof String) {
-                        eventPublisher.postUpdate(itemName, StringType.valueOf((String) value));
-                    } else if (value instanceof Integer) {
+                    if (value != null && (value instanceof String || value instanceof Integer)) {
                         eventPublisher.postUpdate(itemName, StringType.valueOf(value.toString()));
                     }
                 }
-
             }
         }
 
         if (ekeyRecord != null) {
-            logger.info("new packet arrived: " + ekeyRecord.toString());
+            logger.debug("new packet arrived {} ", ekeyRecord);
         }
-
     }
-
 }

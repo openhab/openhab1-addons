@@ -35,8 +35,7 @@ import org.slf4j.LoggerFactory;
  * Circles maintain current energy usage by counting 'pulses' in a one or eight-second interval. Furthermore, they
  * store hourly energy usage as well in a buffer. Each entry in the buffer contains usage for the last 4 full hours
  * of consumption. In order to convert pulses to power (Watt) or KWh you need to apply a formula that uses some
- * calibration
- * information
+ * calibration information.
  *
  * @author Karel Goderis
  * @since 1.1.0
@@ -45,7 +44,9 @@ public class Circle extends PlugwiseDevice {
 
     private static Logger logger = LoggerFactory.getLogger(Circle.class);
 
-    private static final float PULSE_FACTOR = 2.1324759f;
+    private static final double PULSES_PER_KW_SECOND = 468.9385193;
+
+    private static final double PULSES_PER_W_SECOND = (PULSES_PER_KW_SECOND / 1000);
 
     private static final int POWER_STATE_RETRIES = 3;
 
@@ -67,10 +68,10 @@ public class Circle extends PlugwiseDevice {
 
     // Calibration data, required to calculate energy consumption
     protected boolean calibrated;
-    protected float gaina;
-    protected float gainb;
-    protected float offtot;
-    protected float offruis;
+    protected double gainA;
+    protected double gainB;
+    protected double offsetTotal;
+    protected double offsetNoise;
 
     // System variables as kept/maintained by the Circle hardware
     protected DateTime stamp;
@@ -82,6 +83,7 @@ public class Circle extends PlugwiseDevice {
     protected String hardwareVersion;
     protected DateTime firmwareVersion;
     protected Energy one;
+    protected Energy lastHour;
 
     // Pending power state changes are tracked for retries and temporarily
     // ignoring an outdated result of an InformationJob
@@ -155,15 +157,14 @@ public class Circle extends PlugwiseDevice {
         } else {
             previousLogAddress = 0;
         }
-        while (previousLogAddress < recentLogAddress) {
+        while (previousLogAddress <= recentLogAddress) {
             PowerBufferRequestMessage message = new PowerBufferRequestMessage(MAC, previousLogAddress);
             previousLogAddress = previousLogAddress + 1;
             stick.sendMessage(message);
         }
-
     }
 
-    public float getCurrentWatt() {
+    public double getCurrentWatt() {
         if (one != null) {
             return pulseToWatt(one);
         } else {
@@ -171,32 +172,22 @@ public class Circle extends PlugwiseDevice {
         }
     }
 
-    private float pulseToWatt(Energy energy) {
-        float averagePulses;
-        float correctedPulses;
-
-        if (energy.getInterval() != 0) {
-            averagePulses = energy.getPulses() / energy.getInterval();
-        } else {
+    private double correctPulses(double pulses) {
+        double correctedPulses = Math.pow(pulses + offsetNoise, 2) * gainB + (pulses + offsetNoise) * gainA
+                + offsetTotal;
+        if ((pulses > 0 && correctedPulses < 0) || (pulses < 0 && correctedPulses > 0)) {
             return 0;
         }
-        correctedPulses = (float) (Math.pow(averagePulses + offruis, 2) * gainb + (averagePulses + offruis) * gaina
-                + offtot);
-
-        return correctedPulses * PULSE_FACTOR;
+        return correctedPulses;
     }
 
-    private float pulseTokWh(Energy energy) {
-        float joule = 0;
-        if (energy.getInterval() == 0) {
-            float correctedPulses = (float) (Math.pow(energy.getPulses() + offruis, 2) * gainb
-                    + (energy.getPulses() + offruis) * gaina + offtot);
-            joule = correctedPulses * PULSE_FACTOR;
-        } else {
-            joule = pulseToWatt(energy) * energy.getInterval();
-        }
+    private double pulseToWatt(Energy energy) {
+        double averagePulses = energy.getPulses() / energy.getInterval();
+        return correctPulses(averagePulses) / PULSES_PER_W_SECOND;
+    }
 
-        return joule / (3600 * 1000);
+    private double pulseTokWh(Energy energy) {
+        return pulseToWatt(energy) * energy.getInterval() / (3600 * 1000);
     }
 
     @Override
@@ -215,10 +206,10 @@ public class Circle extends PlugwiseDevice {
 
                 case DEVICE_CALIBRATION_RESPONSE:
 
-                    gaina = ((CalibrationResponseMessage) message).getGaina();
-                    gainb = ((CalibrationResponseMessage) message).getGainb();
-                    offtot = ((CalibrationResponseMessage) message).getOfftot();
-                    offruis = ((CalibrationResponseMessage) message).getOffruis();
+                    gainA = ((CalibrationResponseMessage) message).getGainA();
+                    gainB = ((CalibrationResponseMessage) message).getGainB();
+                    offsetTotal = ((CalibrationResponseMessage) message).getOffsetTotal();
+                    offsetNoise = ((CalibrationResponseMessage) message).getOffsetNoise();
                     calibrated = true;
 
                     return true;
@@ -258,6 +249,10 @@ public class Circle extends PlugwiseDevice {
                         postUpdate(MAC, PlugwiseCommandType.CURRENTSTATE, powerState);
                     }
 
+                    if (lastHour == null) {
+                        updateEnergy(false);
+                    }
+
                     return true;
 
                 case POWER_INFORMATION_RESPONSE:
@@ -271,7 +266,7 @@ public class Circle extends PlugwiseDevice {
                         return true;
                     }
                     one = ((PowerInformationResponseMessage) message).getOneSecond();
-                    float watt = pulseToWatt(one);
+                    double watt = pulseToWatt(one);
                     if (watt > 10000) {
                         logger.debug("{} with name: {} and MAC address: {} is in a kind of error state, "
                                 + "skipping power information response", type.name(), name, MAC);
@@ -283,21 +278,27 @@ public class Circle extends PlugwiseDevice {
 
                 case POWER_BUFFER_RESPONSE:
 
-                    // get the last hour energy consumption
-                    Energy lastHour = ((PowerBufferResponseMessage) message).getEnergy(3);
-                    if (lastHour == null) {
-                        lastHour = ((PowerBufferResponseMessage) message).getEnergy(2);
-                    }
-                    if (lastHour == null) {
-                        lastHour = ((PowerBufferResponseMessage) message).getEnergy(1);
-                    }
-                    if (lastHour == null) {
-                        lastHour = ((PowerBufferResponseMessage) message).getEnergy(0);
+                    if (!calibrated) {
+                        return true;
                     }
 
-                    if (lastHour != null) {
-                        postUpdate(MAC, PlugwiseCommandType.LASTHOURCONSUMPTION, pulseTokWh(lastHour));
-                        postUpdate(MAC, PlugwiseCommandType.LASTHOURCONSUMPTIONSTAMP, lastHour.getTime());
+                    // get the most recent energy consumption
+                    Energy mostRecentEnergy = null;
+                    for (int i = 0; i < 4; i++) {
+                        Energy energy = ((PowerBufferResponseMessage) message).getEnergy(i);
+                        if (energy != null) {
+                            mostRecentEnergy = energy;
+                        }
+                    }
+
+                    if (mostRecentEnergy != null) {
+                        // when the current time is '11:44:55.888', the last hour energy has time '10:00:00.000'
+                        boolean isLastHour = mostRecentEnergy.getTime().isAfter(DateTime.now().minusHours(2));
+                        if (isLastHour) {
+                            lastHour = mostRecentEnergy;
+                            postUpdate(MAC, PlugwiseCommandType.LASTHOURCONSUMPTION, pulseTokWh(lastHour));
+                            postUpdate(MAC, PlugwiseCommandType.LASTHOURCONSUMPTIONSTAMP, lastHour.getTime());
+                        }
                     }
 
                     return true;
@@ -342,4 +343,5 @@ public class Circle extends PlugwiseDevice {
         }
 
     }
+
 }

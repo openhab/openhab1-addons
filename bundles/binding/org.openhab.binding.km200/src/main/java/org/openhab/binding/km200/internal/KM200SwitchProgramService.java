@@ -39,11 +39,6 @@ public class KM200SwitchProgramService {
     protected final Integer MIN_TIME = 0;
     protected final Integer MAX_TIME = 1430;
 
-    protected final String SETPOINT_NIGHT = "night";
-    protected final String SETPOINT_DAY = "day";
-    protected final String SETPOINT_ON = "on";
-    protected final String SETPOINT_OFF = "off";
-
     protected final String TYPE_MONDAY = "Mo";
     protected final String TYPE_TUESDAY = "Tu";
     protected final String TYPE_WEDNESDAY = "We";
@@ -74,10 +69,6 @@ public class KM200SwitchProgramService {
         days.add(TYPE_SATURDAY);
         days.add(TYPE_SUNDAY);
         setpoints = new ArrayList<String>();
-        setpoints.add(SETPOINT_NIGHT);
-        setpoints.add(SETPOINT_DAY);
-        setpoints.add(SETPOINT_ON);
-        setpoints.add(SETPOINT_OFF);
     }
 
     /**
@@ -102,9 +93,11 @@ public class KM200SwitchProgramService {
     void addSwitch(String day, String setpoint, int time) {
         logger.debug("Adding day: {} setpoint: {} time: {}", day, setpoint, time);
         if (!days.contains(day)) {
+            logger.error("This type of weekday is not supported, get day: {}", day);
             throw new IllegalArgumentException("This type of weekday is not supported, get day: " + day);
         }
         if (!setpoints.contains(setpoint)) {
+            logger.error("This type of setpoint is not supported, get setpoint: {}", setpoint);
             throw new IllegalArgumentException("This type of setpoint is not supported, get setpoint: " + setpoint);
         }
         HashMap<String, ArrayList<Integer>> weekMap = switchMap.get(setpoint);
@@ -155,6 +148,7 @@ public class KM200SwitchProgramService {
      */
     void setActiveDay(String day) {
         if (!days.contains(day)) {
+            logger.error("This type of weekday is not supported, get day: {}", day);
             throw new IllegalArgumentException("This type of weekday is not supported, get day: " + day);
         }
         activeDay = day;
@@ -166,6 +160,7 @@ public class KM200SwitchProgramService {
      */
     void setActiveCycle(Integer cycle) {
         if (cycle > this.getMaxNbOfSwitchPoints() / 2 || cycle > this.getMaxNbOfSwitchPointsPerDay() / 2 || cycle < 1) {
+            logger.error("The value of cycle is not valid, get cycle: {}", cycle);
             throw new IllegalArgumentException("The value of cycle is not valid, get cycle: " + cycle.toString());
         }
         /* limit the cycle to the next one after last (for creating a new one) */
@@ -301,30 +296,11 @@ public class KM200SwitchProgramService {
 
     /**
      * This function determines the positive and negative switch point names
-     *
+     * TO-DO: Check the parent service and enable more then two setpoints
      */
     void determineSwitchNames(KM200Device device) {
         if (setpointProperty != null) {
             HashMap<String, ArrayList<Integer>> weekMap = null;
-            /* Check the positive values like day, on */
-            if (device.serviceMap.containsKey(setpointProperty + "/" + SETPOINT_DAY)) {
-                positiveSwitch = SETPOINT_DAY;
-            } else if (device.serviceMap.containsKey(setpointProperty + "/" + SETPOINT_ON)) {
-                positiveSwitch = SETPOINT_ON;
-            } else {
-                throw new IllegalArgumentException(
-                        "The switch points in service " + setpointProperty + " are not supported: ");
-            }
-
-            /* Check the negative values like day, on */
-            if (device.serviceMap.containsKey(setpointProperty + "/" + SETPOINT_NIGHT)) {
-                negativeSwitch = SETPOINT_NIGHT;
-            } else if (device.serviceMap.containsKey(setpointProperty + "/" + SETPOINT_OFF)) {
-                negativeSwitch = SETPOINT_OFF;
-            } else {
-                throw new IllegalArgumentException(
-                        "The switch points in service " + setpointProperty + " are not supported: ");
-            }
             weekMap = switchMap.get(positiveSwitch);
             if (weekMap == null) {
                 initWeeklist(positiveSwitch);
@@ -345,11 +321,24 @@ public class KM200SwitchProgramService {
             /* Update the list of switching points */
             removeAllSwitches();
             JSONArray sPoints = nodeRoot.getJSONArray("switchPoints");
+            logger.debug("sPoints: {}", nodeRoot);
             for (int i = 0; i < sPoints.length(); i++) {
                 JSONObject subJSON = sPoints.getJSONObject(i);
                 String day = subJSON.getString("dayOfWeek");
                 String setpoint = subJSON.getString("setpoint");
                 Integer time = subJSON.getInt("time");
+                if (positiveSwitch == null) {
+                    /* The first switchpoint is always positive */
+                    positiveSwitch = setpoint;
+                    logger.debug("positiveSwitch: {}", positiveSwitch);
+                    setpoints.add(positiveSwitch);
+
+                } else if (negativeSwitch == null && !setpoint.equals(positiveSwitch)) {
+                    /* The second switchpoint is always negative */
+                    negativeSwitch = setpoint;
+                    logger.debug("negativeSwitch: {}", negativeSwitch);
+                    setpoints.add(negativeSwitch);
+                }
                 addSwitch(day, setpoint, time);
             }
         }
@@ -400,7 +389,7 @@ public class KM200SwitchProgramService {
                     }
                 }
             }
-            logger.debug("New switching points: {}", sPoints.toString());
+            logger.debug("New switching points: {}", sPoints);
             JSONObject switchRoot = new JSONObject(parObject.getJSONData());
             switchRoot.remove("switchPoints");
             switchRoot.put("switchPoints", sPoints);

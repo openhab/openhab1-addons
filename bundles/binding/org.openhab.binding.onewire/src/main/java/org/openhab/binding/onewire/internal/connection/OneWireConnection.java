@@ -318,7 +318,7 @@ public class OneWireConnection {
                     reconnect();
                 }
             } catch (IOException ioe) {
-                logger.error("couldn't establish network connection while read attempt {} '{}'" + " ip:port={}:{}",
+                logger.error("couldn't establish network connection while read attempt {} '{}' ip:port={}:{}",
                         lvAttempt, lvDevicePropertyPath, cvIp, cvPort, ioe);
                 reconnect();
             } catch (NumberFormatException lvNumberFormatException) {
@@ -355,7 +355,7 @@ public class OneWireConnection {
                         lvAttempt, oe);
                 reconnect();
             } catch (IOException ioe) {
-                logger.error("Couldn't establish network connection while write attempt {} to '{}'" + " ip:port={}:{}",
+                logger.error("Couldn't establish network connection while write attempt {} to '{}' ip:port={}:{}",
                         lvAttempt, pvDevicePropertyPath, cvIp, cvPort, ioe);
                 reconnect();
             } finally {

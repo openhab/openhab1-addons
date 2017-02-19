@@ -8,10 +8,6 @@
  */
 package org.openhab.io.transport.cul.internal;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -58,7 +54,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
                     try {
                         writeMessage(command);
                     } catch (CULCommunicationException e) {
-                        logger.error("Error while writing command to CUL", e);
+                        logger.warn("Error while writing command to CUL", e);
                     }
                 }
                 try {
@@ -108,8 +104,6 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
 
     protected Queue<String> sendQueue = new ConcurrentLinkedQueue<String>();
     protected int credit10ms = 0;
-    protected BufferedReader br;
-    protected BufferedWriter bw;
 
     protected AbstractCULHandler(T config) {
         this.config = config;
@@ -157,6 +151,8 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
      * Close the connection to the hardware and clean up all resources.
      */
     protected abstract void closeHardware();
+
+    protected abstract void write(String command);
 
     @Override
     public void send(String command) {
@@ -210,45 +206,21 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
      * @throws CULCommunicationException
      *             if
      */
-    protected void processNextLine() throws CULCommunicationException {
-        String deviceName = config.getDeviceAddress();
-        try {
-            String data = br.readLine();
-            if (data == null) {
-                String msg = "EOF encountered for " + deviceName;
-                log.error(msg);
-                throw new CULCommunicationException(msg);
-            }
-
-            log.debug("Received raw message from CUL: " + data);
-            if ("EOB".equals(data)) {
-                log.warn("(EOB) End of Buffer. Last message lost. Try sending less messages per time slot to the CUL");
-                return;
-            } else if ("LOVF".equals(data)) {
-                log.warn(
-                        "(LOVF) Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
-                return;
-            } else if (data.matches("^\\d+\\s+\\d+")) {
-                processCreditReport(data);
-                return;
-            }
-            notifyDataReceived(data);
-            requestCreditReport();
-        } catch (SocketException e) {
-            try {
-                this.openHardware();
-            } catch (CULDeviceException e1) {
-                log.error("Exception while reading from CUL port " + deviceName, e);
-                notifyError(e);
-
-                throw new CULCommunicationException(e);
-            }
-        } catch (IOException e) {
-            log.error("Exception while reading from CUL port " + deviceName, e);
-            notifyError(e);
-
-            throw new CULCommunicationException(e);
+    protected void processNextLine(String data) {
+        log.debug("Received raw message from CUL: " + data);
+        if ("EOB".equals(data)) {
+            log.warn("(EOB) End of Buffer. Last message lost. Try sending less messages per time slot to the CUL");
+            return;
+        } else if ("LOVF".equals(data)) {
+            log.warn(
+                    "(LOVF) Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
+            return;
+        } else if (data.matches("^\\d+\\s+\\d+")) {
+            processCreditReport(data);
+            return;
         }
+        notifyDataReceived(data);
+        requestCreditReport();
     }
 
     /**
@@ -280,12 +252,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     private void requestCreditReport() {
         /* this requests a report which provides credit10ms */
         log.debug("Requesting credit report");
-        try {
-            bw.write("X\r\n");
-            bw.flush();
-        } catch (IOException e) {
-            log.error("Can't write report command to CUL", e);
-        }
+        write("X\r\n");
     }
 
     /**
@@ -295,21 +262,8 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
      * @throws CULCommunicationException
      */
     private void writeMessage(String message) throws CULCommunicationException {
-        String deviceName = config.getDeviceAddress();
-        log.debug("Sending raw message to CUL " + deviceName + ":  '" + message + "'");
-        if (bw == null) {
-            log.error("Can't write message, BufferedWriter is NULL");
-        }
-        synchronized (bw) {
-            try {
-                bw.write(message);
-                bw.flush();
-            } catch (IOException e) {
-                log.error("Can't write to CUL " + deviceName, e);
-            }
-
-            requestCreditReport();
-        }
+        write(message);
+        requestCreditReport();
     }
 
     @Override

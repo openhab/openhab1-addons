@@ -9,7 +9,9 @@
 package org.openhab.binding.onewire.internal.deviceproperties;
 
 import org.openhab.binding.onewire.internal.deviceproperties.modifier.OneWireTypeModifier;
+import org.openhab.core.types.Type;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -36,8 +38,8 @@ public abstract class AbstractOneWireDevicePropertyWritableBindingConfig
      */
     public String convertTypeToString(Type pvType) {
         for (OneWireTypeModifier lvTypeModifier : getTypeModifieryList()) {
-            logger.debug("type of " + getDevicePropertyPath() + " before modifier:" + lvTypeModifier.getModifierName()
-                    + "type=" + pvType.toString());
+            logger.debug("type of {} before modifier:{} type={}", getDevicePropertyPath(),
+                    lvTypeModifier.getModifierName(), pvType);
             pvType = lvTypeModifier.modify4Write(pvType);
             logger.debug("type of {} after modifier:{} type={}", getDevicePropertyPath(),
                     lvTypeModifier.getModifierName(), pvType);

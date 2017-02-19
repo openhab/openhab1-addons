@@ -177,9 +177,12 @@ public class ExecuteCommandJob implements Job {
         }
 
         StreamTokenizer tokenizer = new StreamTokenizer(new StringReader(command));
-        tokenizer.wordChars('_', '_');
-        tokenizer.wordChars('-', '-');
-        tokenizer.wordChars('.', '.');
+        // treat all characters as ordinary, including digits, so we never
+        // have to deal with doubles
+        tokenizer.resetSyntax();
+        tokenizer.wordChars(0x23, 0xFF);
+        tokenizer.whitespaceChars(0x00, 0x20);
+        tokenizer.quoteChar('"');
 
         List<String> tokens = new ArrayList<String>();
         try {
@@ -191,9 +194,6 @@ public class ExecuteCommandJob implements Job {
                     case StreamTokenizer.TT_WORD:
                     case 34 /* quoted String */:
                         token = tokenizer.sval;
-                        break;
-                    case StreamTokenizer.TT_NUMBER:
-                        token = String.valueOf(tokenizer.nval);
                         break;
                 }
                 tokens.add(token);
