@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,20 +20,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * This class can parse information from the generic binding format and
  * provides Cups binding information from it. It registers as a
  * {@link CupsBindingProvider} service as well.
- * </p>
  *
- * <p>
  * The syntax of the binding configuration strings accepted is the following:
- * <p>
- * <p>
+ * 
  * <code>
  * 	cups="printerName"
  * </code>
- * </p>
  *
  * @author Tobias Bräutigam
  * @since 1.1.0
@@ -56,8 +51,8 @@ public class CupsGenericBindingProvider extends AbstractGenericBindingProvider i
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
         if (!(item instanceof NumberItem)) {
             throw new BindingConfigParseException(
-                    "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
-                            + "', only NumberItems are allowed - please check your *.items configuration");
+                    "Item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
+                            + "'. Only NumberItems are allowed - please check your *.items configuration");
         }
     }
 
@@ -74,8 +69,8 @@ public class CupsGenericBindingProvider extends AbstractGenericBindingProvider i
             try {
                 config.whichJobs = Enum.valueOf(WhichJobsEnum.class, parts[1].toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new BindingConfigParseException("WhichJobs-Part " + parts[1] + " is unknown (use one of "
-                        + StringUtils.join(WhichJobsEnum.values(), ", ") + ")");
+                throw new BindingConfigParseException("WhichJobs Part '" + parts[1] + "' is unknown. Use one of "
+                        + StringUtils.join(WhichJobsEnum.values(), ", ") + ".");
             } catch (NullPointerException e) {
                 // empty WhichJobs-Part -> use default
                 config.whichJobs = WhichJobsEnum.NOT_COMPLETED;
@@ -114,5 +109,4 @@ public class CupsGenericBindingProvider extends AbstractGenericBindingProvider i
         public String printerName;
         public WhichJobsEnum whichJobs = WhichJobsEnum.NOT_COMPLETED;
     }
-
 }
