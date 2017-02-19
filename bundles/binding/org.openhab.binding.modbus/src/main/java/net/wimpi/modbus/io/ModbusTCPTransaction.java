@@ -39,7 +39,7 @@ import net.wimpi.modbus.util.Mutex;
  */
 public class ModbusTCPTransaction implements ModbusTransaction {
 
-    private static final Logger logger = LoggerFactory.getLogger(ModbusSerialTransaction.class);
+    private static final Logger logger = LoggerFactory.getLogger(ModbusTCPTransaction.class);
 
     // class attributes
     private static AtomicCounter c_TransactionID = new AtomicCounter(Modbus.DEFAULT_TRANSACTION_ID);
