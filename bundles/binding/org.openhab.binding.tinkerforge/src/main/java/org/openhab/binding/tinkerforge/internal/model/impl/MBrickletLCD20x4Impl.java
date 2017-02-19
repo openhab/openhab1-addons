@@ -760,6 +760,20 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     }
 
     /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public void setText(String newText) {
+        String oldText = text;
+        text = newText;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__TEXT, oldText,
+                    text));
+    }
+
+    /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      *
      * @generated NOT
@@ -775,78 +789,6 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
             } catch (NotConnectedException e) {
                 TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
             }
-        }
-    }
-
-    /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     *
-     * @generated NOT
-     */
-    @Override
-    public void setText(String newText) {
-        String oldText = text;
-        text = newText;
-        // TODO check if there are changes
-        logger.debug("setText: " + newText);
-        try {
-            if (text == null || text.equals("")) {
-                tinkerforgeDevice.clearDisplay();
-            } else if (text.startsWith(positionPrefix)) {
-                int indexOfSuffix = text.indexOf(positonSuffix);
-                if (indexOfSuffix == -1 || indexOfSuffix > positionPrefix.length() + 3) {
-                    logger.error("no valid suffix found");
-                    displayError("no valid suffix");
-                } else {
-
-                    try {
-                        short lineNum = (short) Integer
-                                .parseInt(text.substring(positionPrefix.length(), positionPrefix.length() + 1));
-                        short inLinePostition = (short) Integer
-                                .parseInt(text.substring(positionPrefix.length() + 1, indexOfSuffix));
-                        if (lineNum < 0 || lineNum > 3) {
-                            logger.error("line number must have a value from 0 - 3");
-                            displayError("faulty line number");
-                        } else if (inLinePostition < 0 || inLinePostition > 19) {
-                            logger.error("position must have a value from 0 - 19");
-                            displayError("faulty position number");
-                        } else {
-                            String text2show = text.substring(indexOfSuffix + 1);
-                            if (text2show.length() == 0) {
-                                text2show = "                    "; // TODO
-                            }
-                            // clear
-                            // line
-                            tinkerforgeDevice.writeLine(lineNum, inLinePostition, text2show);
-                        }
-                    } catch (NumberFormatException e) {
-                        logger.error("found erroneous line numbers: ", e);
-                        displayError("faulty numbers");
-                    }
-                }
-            } else {
-                tinkerforgeDevice.clearDisplay();
-                int lineSize = 19;
-                int lineNum = 0;
-                for (int i = 0; i < text.length(); i += lineSize) {
-                    if (lineNum > 3) {
-                        break;
-                    }
-                    tinkerforgeDevice.writeLine((short) lineNum, (short) 0,
-                            text.substring(i, Math.min(text.length(), i + lineSize)));
-                    lineNum++;
-                }
-
-            }
-            if (eNotificationRequired()) {
-                eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__TEXT, oldText,
-                        text));
-            }
-
-        } catch (TimeoutException e) {
-            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-        } catch (NotConnectedException e) {
-            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
         }
     }
 
@@ -1029,10 +971,70 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
      * @generated NOT
      */
     @Override
-    public void write(String text) {
-        // TODO: implement this method
-        // Ensure that you remove @generated or mark it @generated NOT
-        throw new UnsupportedOperationException();
+    public void write(String newText) {
+        String oldText = text;
+        text = newText;
+        // TODO check if there are changes
+        logger.debug("setText: " + newText);
+        try {
+            if (text == null || text.equals("")) {
+                tinkerforgeDevice.clearDisplay();
+            } else if (text.startsWith(positionPrefix)) {
+                int indexOfSuffix = text.indexOf(positonSuffix);
+                if (indexOfSuffix == -1 || indexOfSuffix > positionPrefix.length() + 3) {
+                    logger.error("no valid suffix found");
+                    displayError("no valid suffix");
+                } else {
+
+                    try {
+                        short lineNum = (short) Integer
+                                .parseInt(text.substring(positionPrefix.length(), positionPrefix.length() + 1));
+                        short inLinePostition = (short) Integer
+                                .parseInt(text.substring(positionPrefix.length() + 1, indexOfSuffix));
+                        if (lineNum < 0 || lineNum > 3) {
+                            logger.error("line number must have a value from 0 - 3");
+                            displayError("faulty line number");
+                        } else if (inLinePostition < 0 || inLinePostition > 19) {
+                            logger.error("position must have a value from 0 - 19");
+                            displayError("faulty position number");
+                        } else {
+                            String text2show = text.substring(indexOfSuffix + 1);
+                            if (text2show.length() == 0) {
+                                text2show = "                    "; // TODO
+                            }
+                            // clear
+                            // line
+                            tinkerforgeDevice.writeLine(lineNum, inLinePostition, text2show);
+                        }
+                    } catch (NumberFormatException e) {
+                        logger.error("found erroneous line numbers: ", e);
+                        displayError("faulty numbers");
+                    }
+                }
+            } else {
+                tinkerforgeDevice.clearDisplay();
+                int lineSize = 19;
+                int lineNum = 0;
+                for (int i = 0; i < text.length(); i += lineSize) {
+                    if (lineNum > 3) {
+                        break;
+                    }
+                    tinkerforgeDevice.writeLine((short) lineNum, (short) 0,
+                            text.substring(i, Math.min(text.length(), i + lineSize)));
+                    lineNum++;
+                }
+
+            }
+            if (eNotificationRequired()) {
+                eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__TEXT, oldText,
+                        text));
+            }
+
+        } catch (TimeoutException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+        } catch (NotConnectedException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+        }
     }
 
     /**
