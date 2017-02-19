@@ -80,35 +80,39 @@ public class DropboxSynchronizer implements ManagedService {
     private static final Logger logger = LoggerFactory.getLogger(DropboxSynchronizer.class);
 
     private static final String DROPBOX_SCHEDULER_GROUP = "Dropbox";
-
     private static final String FIELD_DELIMITER = "@@";
-
     private static final String LINE_DELIMITER = System.getProperty("line.separator");
-
     private static final String DELTA_CURSOR_FILE_NAME = File.separator + "deltacursor.dbx";
-
     private static final String DROPBOX_ENTRIES_FILE_NAME = File.separator + "dropbox-entries.dbx";
-
     private static final String AUTH_FILE_NAME = File.separator + "authfile.dbx";
 
     /** holds the id of the last synchronisation cursor. This is needed to define the delta to download from Dropbox. */
     private static String lastCursor = null;
     private static String lastHash = null;
 
-    /** the configured AppKey (optional, defaults to the official Dropbox-App key 'gbrwwfzvrw6a9uv') */
-    private static String appKey = "gbrwwfzvrw6a9uv";
+    //// Authentication: user must configure either the personalAccessToken or
+    //// BOTH the AppKey AND the AppSecret; if all 3 are defined, then the
+    //// personalAccessToken will be used and the others ignored.
+    
+    /** a user's personal access token retrieved from configuration only; null by default */
+    private static String personalAccessToken;
 
-    /** the configured AppSecret (optional, defaults to official Dropbox-App secret 'gu5v7lp1f5bbs07') */
-    private static String appSecret = "gu5v7lp1f5bbs07";
+    /// AppKey and AppSecret:
+    /// These are legacy attributes from when there was an official openHAB Dropbox app.
+    /// These should not generally be used, as they are more difficult to set up than
+    /// the newer method via personalAccessToken.
+
+    /** the configured AppKey (optional; see notes above) */
+    private static String appKey;
+
+    /** the configured AppSecret (optional; see notes above) */
+    private static String appSecret;
 
     /** The default directory to download files from Dropbox to (currently '.') */
     private static final String DEFAULT_CONTENT_DIR = getConfigDirFolder();
 
-    // a user's personal access token retrieved from configuration only; null by default
-    private static String personalAccessToken = null;
-
     /**
-     * the base directory to synchronize with openHAB, configure 'filter' to select files (defaults to
+     * the base directory to synchronize with openHAB (defaults to
      * DEFAULT_CONTENT_DIR)
      */
     private static String contentDir = DEFAULT_CONTENT_DIR;
@@ -119,10 +123,10 @@ public class DropboxSynchronizer implements ManagedService {
     /** the configured synchronization mode (defaults to LOCAL_TO_DROPBOX) */
     private static DropboxSyncMode syncMode = DropboxSyncMode.LOCAL_TO_DROPBOX;
 
-    /** the upload interval as Cron-Expression (optional, defaults to '0 0 2 * * ?' which means once a day at 2am) */
+    /** the upload interval as a Cron Expression (optional; defaults to '0 0 2 * * ?', which means once a day at 2am) */
     private static String uploadInterval = "0 0 2 * * ?";
 
-    /** the download interval as Cron-Expression (optional, defaults to '0 0/5 * * * ?' which means every 5 minutes) */
+    /** the download interval as a Cron Expression (optional; defaults to '0 0/5 * * * ?' which means every 5 minutes) */
     private static String downloadInterval = "0 0/5 * * * ?";
 
     private static final List<String> DEFAULT_UPLOAD_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$",
@@ -131,20 +135,20 @@ public class DropboxSynchronizer implements ManagedService {
             "/configurations.*");
 
     /**
-     * defines a comma separated list of regular expressions which matches the filenames to upload to Dropbox (optional,
+     * defines a comma separated list of regular expressions which matches the filenames to upload to Dropbox (optional;
      * defaults to '/configurations.*, /logs/.*, /etc/.*')
      */
     private static List<String> uploadFilterElements = DEFAULT_UPLOAD_FILE_FILTER;
 
     /**
      * defines a comma separated list of regular expressions which matches the filenames to download from Dropbox
-     * (optional, defaults to '/configurations.*')
+     * (optional; defaults to '/configurations.*')
      */
     private static List<String> downloadFilterElements = DEFAULT_DOWNLOAD_FILE_FILTER;
 
     /**
-     * operates the Synchronizer in fake mode which avoids up- or downloading files to and from Dropbox. This is meant
-     * as testMode for the filter settings (optional, defaults to false)
+     * operates the Synchronizer in fake mode which avoids sending files to or from Dropbox. This is meant
+     * as a test mode for the filter settings. (optional; defaults to false)
      */
     private static boolean fakeMode = false;
 
@@ -162,7 +166,7 @@ public class DropboxSynchronizer implements ManagedService {
     }
 
     public void deactivate() {
-        logger.debug("About to shut down DropboxSynchronizer ...");
+        logger.debug("About to shut down Dropbox Synchronizer ...");
 
         cancelAllJobs();
         isProperlyConfigured = false;
@@ -172,6 +176,8 @@ public class DropboxSynchronizer implements ManagedService {
         downloadFilterElements = DEFAULT_DOWNLOAD_FILE_FILTER;
 
         DropboxSynchronizer.instance = null;
+
+        logger.debug("Shutdown completed.");
     }
 
     private void activateSynchronizer() {
@@ -187,8 +193,8 @@ public class DropboxSynchronizer implements ManagedService {
     }
 
     /**
-     * Starts the OAuth authorization process with Dropbox. The authorization
-     * process is a multi step process which is described in the Wiki in detail.
+     * Starts the OAuth authorization process with Dropbox. This is a
+     * multi-step process which is described in the Wiki.
      * 
      * @throws DbxException if there are technical or application level errors
      *             in the Dropbox communication
@@ -603,79 +609,93 @@ public class DropboxSynchronizer implements ManagedService {
     @SuppressWarnings("rawtypes")
     @Override
     public void updated(Dictionary config) throws ConfigurationException {
-        if (config != null) {
-            isProperlyConfigured = false;
-
-            String appKeyString = Objects.toString(config.get("appkey"), null);
-            if (isNotBlank(appKeyString)) {
-                DropboxSynchronizer.appKey = appKeyString;
-            }
-
-            String appSecretString = Objects.toString(config.get("appsecret"), null);
-            if (isNotBlank(appSecretString)) {
-                DropboxSynchronizer.appSecret = appSecretString;
-            }
-
-            String pat = Objects.toString(config.get("personalAccessToken"), null);
-            if (isNotBlank(pat)) {
-                DropboxSynchronizer.personalAccessToken = pat;
-            } else {
-                logger.debug("Didn't find a personal access token.");
-            }
-
-            if (isBlank(DropboxSynchronizer.appKey) || isBlank(DropboxSynchronizer.appSecret)) {
-                throw new ConfigurationException("dropbox:appkey",
-                        "The parameters 'appkey' or 'appsecret' are missing! Please check your configuration.");
-            }
-
-            String fakeModeString = Objects.toString(config.get("fakemode"), null);
-            if (isNotBlank(fakeModeString)) {
-                DropboxSynchronizer.fakeMode = BooleanUtils.toBoolean(fakeModeString);
-            }
-
-            String contentDirString = Objects.toString(config.get("contentdir"), null);
-            if (isNotBlank(contentDirString)) {
-                DropboxSynchronizer.contentDir = contentDirString;
-            }
-            logger.debug("contentdir: {}", contentDir);
-
-            String uploadIntervalString = Objects.toString(config.get("uploadInterval"), null);
-            if (isNotBlank(uploadIntervalString)) {
-                DropboxSynchronizer.uploadInterval = uploadIntervalString;
-            }
-
-            String downloadIntervalString = Objects.toString(config.get("downloadInterval"), null);
-            if (isNotBlank(downloadIntervalString)) {
-                DropboxSynchronizer.downloadInterval = downloadIntervalString;
-            }
-
-            String syncModeString = Objects.toString(config.get("syncmode"), null);
-            if (isNotBlank(syncModeString)) {
-                try {
-                    DropboxSynchronizer.syncMode = DropboxSyncMode.valueOf(syncModeString.toUpperCase());
-                } catch (IllegalArgumentException iae) {
-                    throw new ConfigurationException("dropbox:syncmode", "Unknown SyncMode '" + syncModeString
-                            + "'. Valid SyncModes are 'DROPBOX_TO_LOCAL', 'LOCAL_TO_DROPBOX' and 'BIDIRECTIONAL'.");
-                }
-            }
-
-            String uploadFilterString = Objects.toString(config.get("uploadfilter"), null);
-            if (isNotBlank(uploadFilterString)) {
-                String[] newFilterElements = uploadFilterString.split(",");
-                uploadFilterElements = Arrays.asList(newFilterElements);
-            }
-
-            String downloadFilterString = Objects.toString(config.get("downloadfilter"), null);
-            if (isNotBlank(downloadFilterString)) {
-                String[] newFilterElements = downloadFilterString.split(",");
-                downloadFilterElements = Arrays.asList(newFilterElements);
-            }
-
-            // we got this far, so we define this synchronizer as properly configured ...
-            isProperlyConfigured = true;
-            logger.debug("Bundle is properly configured. Activating synchronizer.");
-            activateSynchronizer();
+        if (config == null) {
+            logger.debug("Updated() was called with a null config!");
+            return;
         }
+
+        isProperlyConfigured = false;
+
+        String appKeyString = Objects.toString(config.get("appkey"), null);
+        if (isNotBlank(appKeyString)) {
+            DropboxSynchronizer.appKey = appKeyString;
+        }
+
+        String appSecretString = Objects.toString(config.get("appsecret"), null);
+        if (isNotBlank(appSecretString)) {
+            DropboxSynchronizer.appSecret = appSecretString;
+        }
+
+        String pat = Objects.toString(config.get("personalAccessToken"), null);
+        if (isNotBlank(pat)) {
+            DropboxSynchronizer.personalAccessToken = pat;
+        }
+
+        if (logger.isDebugEnabled()) {
+            StringBuffer message = new StringBuffer();
+            message.append("Authentication parameters to be used:\r\n");
+            if (isNotBlank(pat)) {
+                message.append("     Personal access token = " +pat + "\r\n");
+            }
+            else {
+                message.append("     appkey = " + appKeyString + "\r\n");
+                message.append("  appsecret = " + appSecretString + "\r\n");
+            }
+            logger.debug(message);
+        }
+
+        if (isBlank(pat) && (isBlank(appKeyString) || isBlank(appSecretString))) {
+            throw new ConfigurationException("dropbox:authentication",
+                    "The Dropbox authentication parameters are incorrect!  The parameter 'personalAccesstoken' must be set, or both of the parameters 'appkey' and 'appsecret' must be set. Please check your configuration.");
+        }
+
+        String fakeModeString = Objects.toString(config.get("fakemode"), null);
+        if (isNotBlank(fakeModeString)) {
+            DropboxSynchronizer.fakeMode = BooleanUtils.toBoolean(fakeModeString);
+        }
+
+        String contentDirString = Objects.toString(config.get("contentdir"), null);
+        if (isNotBlank(contentDirString)) {
+            DropboxSynchronizer.contentDir = contentDirString;
+        }
+        logger.debug("contentdir: {}", contentDir);
+
+        String uploadIntervalString = Objects.toString(config.get("uploadInterval"), null);
+        if (isNotBlank(uploadIntervalString)) {
+            DropboxSynchronizer.uploadInterval = uploadIntervalString;
+        }
+
+        String downloadIntervalString = Objects.toString(config.get("downloadInterval"), null);
+        if (isNotBlank(downloadIntervalString)) {
+            DropboxSynchronizer.downloadInterval = downloadIntervalString;
+        }
+
+        String syncModeString = Objects.toString(config.get("syncmode"), null);
+        if (isNotBlank(syncModeString)) {
+            try {
+                DropboxSynchronizer.syncMode = DropboxSyncMode.valueOf(syncModeString.toUpperCase());
+            } catch (IllegalArgumentException iae) {
+                throw new ConfigurationException("dropbox:syncmode", "Unknown SyncMode '" + syncModeString
+                        + "'. Valid SyncModes are 'DROPBOX_TO_LOCAL', 'LOCAL_TO_DROPBOX' and 'BIDIRECTIONAL'.");
+            }
+        }
+
+        String uploadFilterString = Objects.toString(config.get("uploadfilter"), null);
+        if (isNotBlank(uploadFilterString)) {
+            String[] newFilterElements = uploadFilterString.split(",");
+            uploadFilterElements = Arrays.asList(newFilterElements);
+        }
+
+        String downloadFilterString = Objects.toString(config.get("downloadfilter"), null);
+        if (isNotBlank(downloadFilterString)) {
+            String[] newFilterElements = downloadFilterString.split(",");
+            downloadFilterElements = Arrays.asList(newFilterElements);
+        }
+
+        // we got this far, so we define this synchronizer as properly configured ...
+        isProperlyConfigured = true;
+        logger.debug("Bundle is properly configured. Activating synchronizer.");
+        activateSynchronizer();
     }
 
     // ****************************************************************************
@@ -716,7 +736,7 @@ public class DropboxSynchronizer implements ManagedService {
                 schedule(DropboxSynchronizer.uploadInterval, true);
                 break;
             default:
-                throw new IllegalArgumentException("Unknown SyncMode '" + syncMode.toString() + "'");
+                throw new IllegalArgumentException("Unknown SyncMode '" + syncMode + "'");
         }
     }
 
