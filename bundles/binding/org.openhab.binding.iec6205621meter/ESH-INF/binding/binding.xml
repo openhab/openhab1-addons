@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="iec6205621meter"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>IEC 62056-21 Meter Binding</name>
+    <description>This binding is used to communicate to metering devices supporting serial communication according mode C master. It can be used to read metering data from slaves such as gas, water, heat, or electricity meters.</description>
+    <author>Peter Kreutzer</author>
+    
+    <service-id>org.openhab.iec6205621meter</service-id>
+
+    <config-description>
+        <parameter name="refresh" type="integer">
+            <label>Refresh interval</label>
+            <description>Data refresh interval in milliseconds.</description>
+            <default>60000</default>
+        </parameter>
+        <parameter name="echoHandling" type="boolean">
+            <label>Echo Handling</label>
+            <description>Enable handling of echos caused by some optical tranceivers</description>
+            <default>true</default>
+        </parameter>
+        <parameter name="baudRateChangeDelay" type="integer">
+            <label>Delay of baud rate change</label>
+            <description>Delay of baud rate change in ms. Default is 0. USB to serial converters often require a delay of up to 250ms default is 0ms</description>
+            <default>0</default>
+        </parameter>        
+        <parameter name="serialPort" type="text" required="true">
+            <label>Serial port</label>
+            <description>The serial port to use for connecting to the metering device e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux.</description>
+            <default>/dev/ttyS0</default>
+        </parameter>
+    </config-description>
+</binding:binding>
