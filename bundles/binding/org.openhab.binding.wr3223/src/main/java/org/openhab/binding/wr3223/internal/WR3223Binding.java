@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * at least every 20 second a message.
  *
  * @author Michael Fraefel
- * @since 1.8.0
+ * @since 1.10.0
  */
 public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> {
 
@@ -331,7 +331,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
                 }
             } else {
                 logger.warn(
-                        "The control device is activ! Openhab can only control the WR3223, when the control device is removed. (Bedienteil)");
+                        "The control device is active! Openhab can only control the WR3223, when the control device is removed. (Bedienteil)");
             }
 
             // Read and publish other values from WR3223
@@ -341,7 +341,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
                         readAndPublishValue(readCommand);
                     } else {
                         logger.info(
-                                "Skip reading values for command {} from WR3223, because an updated values must fist be send to WR3223.",
+                                "Skip reading values for command {} from WR3223, because an updated value must first be sent to WR3223.",
                                 readCommand.getCommand());
                     }
                 }
@@ -362,7 +362,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
     /**
      * Check if a command is available.
-     * 
+     *
      * @param command
      * @return
      * @throws IOException
@@ -374,7 +374,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
         String value = connector.read(controllerAddr, command);
         if (value == null || value.contains("???")) {
             disabledCommands.add(command);
-            logger.warn("Command " + command + " is not supported by the controller.");
+            logger.warn("Command {} is not supported by the controller.", command);
             return false;
         }
         return true;
@@ -459,48 +459,48 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
      * @param value
      */
     private void publishValueToItems(List<String> itemNames, WR3223CommandType wr3223CommandType, Object value) {
-        if (value != null) {
-            State state = null;
-            if (wr3223CommandType.getItemClass() == NumberItem.class) {
-                try {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("WR3223Binding.publishValueToItems: publish command {} with number {} ",
-                                wr3223CommandType.getCommand(), value.toString().trim());
-                    }
-                    state = DecimalType.valueOf(value.toString().trim());
-                } catch (NumberFormatException nfe) {
-                    logger.error("Can't set value {} to item type {} because it's not a decimal number.", value,
-                            wr3223CommandType.getCommand());
-                }
-            } else if (wr3223CommandType.getItemClass() == SwitchItem.class) {
-                state = parseBooleanValue(value);
+        if (value == null) {
+            logger.error("Can't set NULL value to item type {}.", wr3223CommandType.getCommand());
+            return;
+        }
+
+        State state = null;
+        if (wr3223CommandType.getItemClass() == NumberItem.class) {
+            try {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("WR3223 publish switch item {} to {}.", wr3223CommandType.getCommand(), state);
+                    logger.debug("WR3223Binding.publishValueToItems: publish command {} with number {} ",
+                            wr3223CommandType.getCommand(), value.toString().trim());
                 }
-            } else if (wr3223CommandType.getItemClass() == ContactItem.class) {
-                state = parseBooleanValue(value) == OnOffType.ON ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
-                if (logger.isDebugEnabled()) {
-                    logger.debug("WR3223 publish contact item {} to {}.", wr3223CommandType.getCommand(), state);
-                }
-            } else {
-                logger.error("Can't set value {} to item type {}.", value, wr3223CommandType.getCommand());
+                state = DecimalType.valueOf(value.toString().trim());
+            } catch (NumberFormatException nfe) {
+                logger.error("Can't set value {} to item type {} because it's not a decimal number.", value,
+                        wr3223CommandType.getCommand());
             }
-            if (state != null) {
-                for (String itemName : itemNames) {
-                    eventPublisher.postUpdate(itemName, state);
-                }
+        } else if (wr3223CommandType.getItemClass() == SwitchItem.class) {
+            state = parseBooleanValue(value);
+            if (logger.isDebugEnabled()) {
+                logger.debug("WR3223 publish switch item {} to {}.", wr3223CommandType.getCommand(), state);
+            }
+        } else if (wr3223CommandType.getItemClass() == ContactItem.class) {
+            state = parseBooleanValue(value) == OnOffType.ON ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+            if (logger.isDebugEnabled()) {
+                logger.debug("WR3223 publish contact item {} to {}.", wr3223CommandType.getCommand(), state);
             }
         } else {
-            logger.error("Can't set NULL value to item type {}.", wr3223CommandType.getCommand());
-
+            logger.error("Can't set value {} to item type {}.", value, wr3223CommandType.getCommand());
+        }
+        if (state != null) {
+            for (String itemName : itemNames) {
+                eventPublisher.postUpdate(itemName, state);
+            }
         }
     }
 
     /**
-     * Versucht aus einem Objekt ein On/Off Status zu lesen
+     * Try to read the On/Off state.
      *
      * @param value
-     * @return
+     * @return state of a boolean value
      */
     private State parseBooleanValue(Object value) {
         State state;
@@ -647,7 +647,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
         private final int STATUS_MASK = 112;
 
         /**
-         * @param "Wärmepumpe  ein (bei Anlagen mit Wärmepumpe)"
+         * @param "Wärmepumpe ein (bei Anlagen mit Wärmepumpe)"
          */
         public void setHeatPumpOn(boolean heatPumpOn) {
             this.heatPumpOn = heatPumpOn;
@@ -668,7 +668,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
         }
 
         /**
-         * @param "kühlen      (bei Anlagen mit Wärmepumpe)"
+         * @param "kühlen (bei Anlagen mit Wärmepumpe)"
          */
         public void setCoolingOn(boolean coolingOn) {
             this.coolingOn = coolingOn;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Base implementation for the connector to a wr3223 device.
- * 
+ *
  * @author Michael Fraefel
  *
  */
@@ -64,8 +64,8 @@ public abstract class AbstractWR3223Connector {
     private DataOutputStream outputStream;
 
     /**
-     * Connecto to the WR3223
-     * 
+     * Connect to the WR3223
+     *
      * @param inputStream
      * @param outputStream
      */
@@ -76,7 +76,7 @@ public abstract class AbstractWR3223Connector {
 
     /**
      * Close the connection to the WR3223
-     * 
+     *
      * @throws IOException
      */
     protected void close() throws IOException {
@@ -90,10 +90,10 @@ public abstract class AbstractWR3223Connector {
 
     /**
      * Read data from the WR3223 controller
-     * 
+     *
      * @param addr Controller address
      * @param command Command
-     * @return
+     * @return The received value.
      * @throws IOException
      */
     public String read(int addr, WR3223Commands command) throws IOException {
@@ -127,7 +127,7 @@ public abstract class AbstractWR3223Connector {
                 if (command.name().equals(toString(answer, 1, 2))) {
                     return toString(answer, 3, answer.length - 2);
                 } else {
-                    logger.error("Wrong command receive. Expected {} but got {}.", command.name(),
+                    logger.error("Wrong command received. Expected {} but got {}.", command.name(),
                             toString(answer, 1, 2));
                 }
             } else {
@@ -182,15 +182,15 @@ public abstract class AbstractWR3223Connector {
             }
             logger.error("Command {} with data {} not accepted.", command.name(), data);
         } else {
-            logger.error("Timout. No answer for command {} with data {}.", command.name(), data);
+            logger.error("Timeout. No answer for command {} with data {}.", command.name(), data);
         }
         return false;
 
     }
 
     /**
-     * Wait until the specified amout of data are available or the timout is reached.
-     * 
+     * Wait until the specified timeout of data are available or the timout is reached.
+     *
      * @param dataCount
      * @param timeout
      * @throws IOException
@@ -214,9 +214,9 @@ public abstract class AbstractWR3223Connector {
     }
 
     /**
-     * Read bytes from input steram until ETX.
-     * 
-     * @return
+     * Read bytes from input stream until ETX.
+     *
+     * @return The extracted answer.
      * @throws IOException
      */
     private byte[] readAnswer() throws IOException {
@@ -232,7 +232,7 @@ public abstract class AbstractWR3223Connector {
 
     /**
      * Set the command to the message.
-     * 
+     *
      * @param message
      * @param command
      * @param offset
@@ -245,7 +245,7 @@ public abstract class AbstractWR3223Connector {
 
     /**
      * Set the controller address to the message.
-     * 
+     *
      * @param message
      * @param addr
      * @param offset
@@ -267,11 +267,11 @@ public abstract class AbstractWR3223Connector {
 
     /**
      * Answer to string
-     * 
+     *
      * @param answer as bytes
      * @param start
      * @param end
-     * @return
+     * @return the answer as string value.
      */
     private String toString(byte[] answer, int start, int end) {
         String data = "";
@@ -284,11 +284,11 @@ public abstract class AbstractWR3223Connector {
 
     /**
      * Build the checksum.
-     * 
+     *
      * @param answer
      * @param start
      * @param end
-     * @return
+     * @return checksum of the answer byte array.
      */
     private int buildCheckSum(byte[] answer, int start, int end) {
         int chkSum = answer[start];
@@ -300,7 +300,7 @@ public abstract class AbstractWR3223Connector {
 
     /**
      * Convert the bytes to a hex string for debug messages.
-     * 
+     *
      * @param data
      * @return
      */

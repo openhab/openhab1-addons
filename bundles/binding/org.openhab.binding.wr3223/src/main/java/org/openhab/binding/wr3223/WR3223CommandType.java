@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,7 +18,7 @@ import org.openhab.core.library.items.SwitchItem;
  * Represents all valid commands which could be processed by this binding
  *
  * @author Michael Fraefel
- * @since 1.8.0
+ * @since 1.10.0
  */
 public enum WR3223CommandType {
 
@@ -88,7 +88,7 @@ public enum WR3223CommandType {
     /** T8 (de: Temperatur nach Wärmetauscher) */
     TEMPERATURE_AFTER_PREHEATING {
         {
-            command = "temperature_after_heat_exchanger";
+            command = "temperature_after_preheating";
             itemClass = NumberItem.class;
             wr3223Command = WR3223Commands.T8;
         }
@@ -772,7 +772,8 @@ public enum WR3223CommandType {
      * Find the right command for an item string.
      *
      * @param bindingConfigString
-     * @return
+     * @return The matching WR3223 command or null when the bindingConfigString is empty.
+     * @throws IllegalArgumentException When no matching command is found.
      */
     public static WR3223CommandType fromString(String bindingConfigString) {
 

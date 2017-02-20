@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,9 +23,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
- * 
+ *
  * @author Michael Fraefel
- * @since 1.8.0
+ * @since 1.10.0
  */
 public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider implements WR3223BindingProvider {
 
@@ -34,6 +34,7 @@ public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getBindingType() {
         return "wr3223";
     }
@@ -65,6 +66,7 @@ public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider
         }
     }
 
+    @Override
     public String[] getItemNamesForType(WR3223CommandType eventType) {
         Set<String> itemNames = new HashSet<String>();
         for (Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
@@ -76,6 +78,7 @@ public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider
         return itemNames.toArray(new String[itemNames.size()]);
     }
 
+    @Override
     public WR3223CommandType getWR3223CommandTypeForItemName(String itemName) {
         WR3223BindingConfig config = (WR3223BindingConfig) bindingConfigs.get(itemName);
         if (config != null) {
@@ -86,7 +89,7 @@ public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider
 
     /**
      * This is a helper class holding binding specific configuration details
-     * 
+     *
      * @author Michael Fraefel
      * @since 1.8.0
      */
