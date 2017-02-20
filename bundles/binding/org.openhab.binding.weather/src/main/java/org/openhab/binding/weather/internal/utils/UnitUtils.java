@@ -109,6 +109,16 @@ public class UnitUtils {
     }
 
     /**
+     * Converts feet to meter.
+     */
+    public static Double feetToMeter(Double feet) {
+        if (feet == null) {
+            return null;
+        }
+        return feet / 3.2808399;
+    }
+
+    /**
      * Converts centimeter to millimeter.
      */
     public static Double centimeterToMillimeter(Double centimeter) {

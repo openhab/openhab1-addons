@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A class for the communication with the Visonic alarm panel through a TCP connection
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxTcpConnector extends PowerMaxConnector {

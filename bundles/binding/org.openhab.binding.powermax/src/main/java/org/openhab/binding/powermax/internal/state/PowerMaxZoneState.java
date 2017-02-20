@@ -11,7 +11,7 @@ package org.openhab.binding.powermax.internal.state;
 /**
  * A class to store the state of a zone
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxZoneState {

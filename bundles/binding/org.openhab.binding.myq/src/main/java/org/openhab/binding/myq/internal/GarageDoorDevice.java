@@ -8,42 +8,39 @@
  */
 package org.openhab.binding.myq.internal;
 
+import org.codehaus.jackson.JsonNode;
+
 /**
- * This Class holds the Garage Door Opener Device data.
+ * This Class holds the Garage Door Opener Device data and extends MyqDevice.
  * <ul>
- * <li>DeviceId: DeviceId from API, need for http Posts</li>
- * <li>DeviceType: MYQ Device Type. GarageDoorOpener or Gateway I've seen</li>
- * <li>DeviceName: Serial number of device I think</li>
  * <li>Status: Garage Door Opener "doorstate" Attribute</li>
  * </ul>
- *
+ * 
  * @author Scott Hanson
  * @author Dan Cunningham
  * @since 1.8.0
  */
-class GarageDoorDevice {
-    private int deviceId;
-    private String deviceType;
-    private String deviceName;
+class GarageDoorDevice extends MyqDevice {
+
     private GarageDoorStatus status;
 
-    public GarageDoorDevice(int deviceId, String deviceType, String deviceName, int status) {
-        this.deviceId = deviceId;
-        this.deviceType = deviceType;
-        this.deviceName = deviceName;
-        this.status = GarageDoorStatus.GetDoorStatus(status);
-    }
-
-    public int getDeviceId() {
-        return this.deviceId;
-    }
-
-    public String getDeviceType() {
-        return this.deviceType;
-    }
-
-    public String getDeviceName() {
-        return this.deviceName;
+    public GarageDoorDevice(int deviceId, String deviceType, int deviceTypeID, JsonNode deviceJson) {
+        super(deviceId, deviceType, deviceTypeID, deviceJson);
+        JsonNode attributes = deviceJson.get("Attributes");
+        if (attributes.isArray()) {
+            int attributesSize = attributes.size();
+            for (int j = 0; j < attributesSize; j++) {
+                String attributeName = attributes.get(j).get("AttributeDisplayName").asText();
+                if (attributeName.contains("doorstate")) {
+                    int doorstate = attributes.get(j).get("Value").asInt();
+                    this.status = GarageDoorStatus.GetDoorStatus(doorstate);
+                    deviceAttributes.put("UpdatedDate", attributes.get(j).get("UpdatedDate").asText());
+                    logger.debug("GarageDoorOpener DeviceID: {} DeviceType: {} Doorstate : {}", deviceId, deviceType,
+                            doorstate);
+                    break;
+                }
+            }
+        }
     }
 
     public GarageDoorStatus getStatus() {
@@ -56,6 +53,8 @@ class GarageDoorDevice {
         PARTIAL("Partially Open/Closed", 3),
         OPENING("Opening", 4),
         CLOSING("Closing", 5),
+        MOVING("Moving", 8),
+        OPEN2("Open", 9),
         UNKNOWN("Unknown", -1);
 
         /**
@@ -100,12 +99,30 @@ class GarageDoorDevice {
         }
 
         /**
+         * Is the door in a closed state
+         * 
+         * @return is closed
+         */
+        public boolean isClosed() {
+            return (this == CLOSED);
+        }
+
+        /**
+         * Is the door in a open or partial open state
+         * 
+         * @return is open or partial open
+         */
+        public boolean isOpen() {
+            return (this == OPEN || this == OPEN2 || this == PARTIAL);
+        }
+
+        /**
          * Is the door in motion
          * 
          * @return door in motion
          */
         public boolean inMotion() {
-            return (this == OPENING || this == CLOSING);
+            return (this == OPENING || this == CLOSING || this == MOVING);
         }
 
         /**
@@ -116,16 +133,10 @@ class GarageDoorDevice {
          */
         public static GarageDoorStatus GetDoorStatus(int value) {
             for (GarageDoorStatus ds : values()) {
-                if (ds.getValue() == value) {
+                if (ds.getValue() == value)
                     return ds;
-                }
             }
             return UNKNOWN;
         }
-    }
-
-    @Override
-    public String toString() {
-        return this.deviceName;
     }
 }

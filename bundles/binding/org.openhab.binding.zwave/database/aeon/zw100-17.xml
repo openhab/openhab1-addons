@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZW100</Model>
+    <Label lang="en">MultiSensor 6</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x30</id>             <!-- SENSOR_BINARY -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Stay Awake in Battery Mode         </Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">enable</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Motion Sensor reset timeout</Label>
+            <Type>short</Type>
+            <Default>240</Default>
+            <Minimum>5</Minimum>
+            <Maximum>3600</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Motion sensor sensitivity</Label>
+            <Type>list</Type>
+            <Default>5</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enable, sensitivity level 1 (minimum)</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Enable, sensitivity level 2</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Enable, sensitivity level 3</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Enable, sensitivity level 4</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Enable, sensitivity level 5 (maximum)</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">Motion Sensor Triggered Command</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Send Basic Set CC</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Send Sensor Binary Report CC</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>8</Index>
+            <Label lang="en">Timeout after wake up</Label>
+            <Type>short</Type>
+            <Default>30</Default>
+            <Minimum>8</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>9</Index>
+            <Label lang="en">Report the current power mode</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <ReadOnly>true</ReadOnly>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>39</Index>
+            <Label lang="en">Low Battery Report</Label>
+            <Type>short</Type>
+            <Default>20</Default>
+            <Minimum>10</Minimum>
+            <Maximum>50</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>40</Index>
+            <Label lang="en">Selective Reporting</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enable</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>41</Index>
+            <Label lang="en">Temperature Threshold</Label>
+            <Type>short</Type>
+            <Default>20</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>3</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>42</Index>
+            <Label lang="en">Humidity Threshold</Label>
+            <Type>short</Type>
+            <Default>10</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>43</Index>
+            <Label lang="en">Luminance Threshold</Label>
+            <Type>short</Type>
+            <Default>100</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>44</Index>
+            <Label lang="en">Battery Threshold</Label>
+            <Type>short</Type>
+            <Default>10</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>45</Index>
+            <Label lang="en">Ultraviolet Threshold</Label>
+            <Type>short</Type>
+            <Default>2</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>46</Index>
+            <Label lang="en">Send Alarm Report if low temperature</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enable</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>100</Index>
+            <Label lang="en">Set parameters 101-103 to default.         </Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>101</Index>
+            <Label lang="en">Group 1 Periodic Reports</Label>
+            <Type>short</Type>
+            <Default>241</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>102</Index>
+            <Label lang="en">Group 2 Periodic Reports           </Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>103</Index>
+            <Label lang="en">Group 3 Periodic Reports           </Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>110</Index>
+            <Label lang="en">Set parameters 111-113 to default.         </Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>111</Index>
+            <Label lang="en">Group 1 Report Interval</Label>
+            <Type>short</Type>
+            <Default>3600</Default>
+            <Minimum>5</Minimum>
+            <Maximum>2678400</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>112</Index>
+            <Label lang="en">Group 2 Report Interval</Label>
+            <Type>short</Type>
+            <Default>3600</Default>
+            <Minimum>5</Minimum>
+            <Maximum>2678400</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>113</Index>
+            <Label lang="en">Group 3 Report Interval</Label>
+            <Type>short</Type>
+            <Default>3600</Default>
+            <Minimum>5</Minimum>
+            <Maximum>2678400</Maximum>
+            <Size>4</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>201</Index>
+            <Label lang="en">Temperature Calibration</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>-128</Minimum>
+            <Maximum>127</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>202</Index>
+            <Label lang="en">Humidity Sensor Calibration</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>-50</Minimum>
+            <Maximum>50</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>203</Index>
+            <Label lang="en">Luminance Sensor Calibration</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>-1000</Minimum>
+            <Maximum>1000</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>204</Index>
+            <Label lang="en">Ultraviolet Sensor Calibration</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>-10</Minimum>
+            <Maximum>10</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>252</Index>
+            <Label lang="en">Lock Configuration Parameters          </Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enable</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>255</Index>
+            <Label lang="en">Reset to default factory settings</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1431655765</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>4</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Resets all configuration parameters to defaults</Label>
+            </Item>
+            <Item>
+                <Value>1431655765</Value>
+                <Label lang="en">Reset to default factory settings and be excluded</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Group 1</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Group 2</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Group 3</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

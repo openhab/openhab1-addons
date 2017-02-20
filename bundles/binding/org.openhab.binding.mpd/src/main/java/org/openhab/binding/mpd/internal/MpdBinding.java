@@ -53,6 +53,7 @@ import org.bff.javampd.objects.MPDSong;
 import org.openhab.binding.mpd.MpdBindingProvider;
 import org.openhab.binding.mpd.internal.MultiClickDetector.MultiClickListener;
 import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
@@ -83,7 +84,7 @@ import org.slf4j.LoggerFactory;
  *
  * @since 0.8.0
  */
-public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements ManagedService, VolumeChangeListener,
+public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements ManagedService, VolumeChangeListener,
         PlayerBasicChangeListener, TrackPositionChangeListener, MultiClickListener<Command> {
 
     private static final String MPD_SCHEDULER_GROUP = "MPD";
@@ -131,6 +132,10 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
             // we have received volume adjustment request
             matchingPlayerCommand = "PERCENT";
             params = command;
+        } else if (command instanceof DecimalType) {
+            // we have received play song id request
+            matchingPlayerCommand = "NUMBER";
+            params = command;
         } else {
             matchingPlayerCommand = command.toString();
         }
@@ -138,7 +143,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
         provider = findFirstMatchingBindingProvider(itemName, matchingPlayerCommand);
 
         if (provider == null) {
-            logger.warn("cannot find matching binding provider [itemName={}, command={}]", itemName, command);
+            logger.warn("Cannot find matching binding provider [itemName={}, command={}]", itemName, command);
             return;
         }
 
@@ -226,7 +231,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
                         player.playPrev();
                         break;
                     case PLAYSONG:
-                        logger.debug("Searching for Song {}", commandParams);
+                        logger.debug("Searching for song {}", commandParams);
                         Collection<MPDSong> songs = db.find(ScopeType.TITLE, (String) commandParams);
 
                         Iterator<MPDSong> it = songs.iterator();
@@ -244,6 +249,15 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
                         } else {
                             logger.debug("Song not found: {}", commandParams);
                         }
+
+                        break;
+                    case PLAYSONGID:
+                        logger.debug("Play id {}", ((DecimalType) commandParams).intValue());
+
+                        MPDSong song = new MPDSong();
+                        // song.setId(Integer.parseInt((String) commandParams));
+                        song.setId(((DecimalType) commandParams).intValue());
+                        player.playId(song);
 
                         break;
                     case ENABLE:
@@ -264,15 +278,15 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
 
                 }
             } catch (MPDPlayerException pe) {
-                logger.error("error while executing {} command: " + pe.getMessage(), pCommand);
+                logger.error("Error while executing '{}' command: {}", pCommand, pe.getMessage());
             } catch (Exception e) {
-                logger.warn("unknown playerCommand '{}'", playerCommand);
+                logger.warn("Unknown player command '{}'", playerCommand);
             }
-        } else {
-            logger.warn("didn't find player configuration instance for playerId '{}'", playerId);
-        }
 
-        logger.info("executed commandLine '{}' for player '{}'", playerCommand, playerId);
+            logger.info("Executed command '{}' for player '{}'", playerCommand, playerId);
+        } else {
+            logger.warn("Player '{}' was not found or is not connected", playerId);
+        }
     }
 
     private MPD findMPDInstance(String playerId) {
@@ -358,7 +372,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
                 PlayerStatus curPs = playerStatusCache.get(playerId);
                 if (curPs != null) {
                     if (ps != curPs) {
-                        logger.debug("Play state of '{}' changed", playerId);
+                        logger.debug("Play state of player '{}' changed", playerId);
                         playerStatusCache.put(playerId, ps);
 
                         PlayerCommandTypeMapping reportTo;
@@ -381,12 +395,12 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
                     playerStatusCache.put(playerId, ps);
                 }
             } catch (MPDPlayerException pe) {
-                logger.error("error while updating player status: {}" + pe.getMessage(), playerId);
+                logger.error("Error while updating player status for player '{}': {}", playerId, pe.getMessage());
             } catch (Exception e) {
-                logger.warn("Failed to communicate with '{}'", playerId);
+                logger.warn("Failed to communicate with player '{}'", playerId);
             }
         } else {
-            logger.warn("didn't find player configuration instance for playerId '{}'", playerId);
+            logger.warn("Player '{}' was not found or is not connected", playerId);
         }
     }
 
@@ -411,12 +425,12 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
                     songChanged(playerId, curSong);
                 }
             } catch (MPDPlayerException pe) {
-                logger.error("error while updating player status: {}" + pe.getMessage(), playerId);
+                logger.error("Error while updating player status for player '{}': {}", playerId, pe.getMessage());
             } catch (Exception e) {
-                logger.warn("Failed to communicate with '{}'", playerId);
+                logger.warn("Failed to communicate with player '{}'", playerId);
             }
         } else {
-            logger.warn("didn't find player configuration instance for playerId '{}'", playerId);
+            logger.warn("Player '{}' was not found or is not connected", playerId);
         }
     }
 
@@ -453,7 +467,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
         for (String itemName : itemNames) {
             if (StringUtils.isNotBlank(itemName)) {
                 eventPublisher.postUpdate(itemName, new StringType(title));
-                logger.debug("Updated title: {} {}", itemName, title);
+                logger.debug("Updated title: {}, {}", itemName, title);
             }
         }
 
@@ -463,6 +477,15 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
             if (StringUtils.isNotBlank(itemName)) {
                 eventPublisher.postUpdate(itemName, new StringType(artist));
                 logger.debug("Updated artist: {}, {}", itemName, artist);
+            }
+        }
+
+        int songID = newSong.getId();
+        itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.PLAYSONGID);
+        for (String itemName : itemNames) {
+            if (StringUtils.isNotBlank(itemName)) {
+                eventPublisher.postUpdate(itemName, new DecimalType(songID));
+                logger.debug("Updated song ID: {}, {}", itemName, songID);
             }
         }
     }
@@ -484,11 +507,16 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
     @Override
     public void volumeChanged(VolumeChangeEvent vce) {
         String playerId = findPlayerId(vce.getSource());
-        logger.debug("Volume on {} changed to {}", playerId, vce.getVolume());
-        String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.VOLUME);
-        for (String itemName : itemNames) {
-            if (StringUtils.isNotBlank(itemName)) {
-                eventPublisher.postUpdate(itemName, new PercentType(vce.getVolume()));
+        int volume = vce.getVolume();
+        if (volumeInvalid(volume)) {
+            logger.warn("Ignoring volume change because the volume is invalid: {}", volume);
+        } else {
+            logger.debug("Volume on player '{}' changed to {}", playerId, volume);
+            String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.VOLUME);
+            for (String itemName : itemNames) {
+                if (StringUtils.isNotBlank(itemName)) {
+                    eventPublisher.postUpdate(itemName, new PercentType(volume));
+                }
             }
         }
     }
@@ -503,7 +531,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
      */
     private void outputChanged(String playerId, OutputChangeEvent event) {
         MPDOutput output = (MPDOutput) event.getSource();
-        logger.debug("Output {} changed on player {}, enabled = {}", output.getId(), playerId, output.isEnabled());
+        logger.debug("Output {} changed on player '{}'. Enabled = {}", output.getId(), playerId, output.isEnabled());
         PlayerCommandTypeMapping playerCommand = output.isEnabled() ? PlayerCommandTypeMapping.ENABLE
                 : PlayerCommandTypeMapping.DISABLE;
         String[] itemNames = getItemsByPlayerCommandAndOutput(playerId, playerCommand, output);
@@ -559,8 +587,9 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
 
                 Matcher matcher = EXTRACT_PLAYER_CONFIG_PATTERN.matcher(key);
                 if (!matcher.matches()) {
-                    logger.debug("given mpd player-config-key '" + key
-                            + "' does not follow the expected pattern '<playername>.<host|port>'");
+                    logger.debug(
+                            "MPD player config-key '{}' does not follow the expected pattern '<playername>.<host|port>'",
+                            key);
                     continue;
                 }
 
@@ -604,9 +633,9 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
                     .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?")).build();
 
             sched.scheduleJob(job, trigger);
-            logger.debug("Scheduled a daily MPD Reconnect of all MPDs");
+            logger.debug("Scheduled a daily reconnect of all MPDs");
         } catch (SchedulerException se) {
-            logger.warn("scheduling MPD Reconnect failed", se);
+            logger.warn("Scheduling MPD reconnect failed", se);
         }
     }
 
@@ -619,10 +648,10 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
             Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(MPD_SCHEDULER_GROUP));
             if (jobKeys.size() > 0) {
                 sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
-                logger.debug("Found {} jobs to delete from DefaultScheduler (keys={})", jobKeys.size(), jobKeys);
+                logger.debug("Found {} jobs to delete from the DefaultScheduler (keys={})", jobKeys.size(), jobKeys);
             }
         } catch (SchedulerException e) {
-            logger.warn("Couldn't remove job: {}", e.getMessage());
+            logger.warn("Couldn't remove job(s): {}", e.getMessage());
         }
     }
 
@@ -685,9 +714,9 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
             }
 
         } catch (MPDConnectionException ce) {
-            logger.error("Error connecting to player '" + playerId + "' with config {}", config, ce);
+            logger.error("Error connecting to player '{}' with config {}", playerId, config, ce);
         } catch (UnknownHostException uhe) {
-            logger.error("Wrong connection details for player {}", playerId, uhe);
+            logger.error("Wrong connection details for player '{}'", playerId, uhe);
         }
     }
 
@@ -703,7 +732,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
     /**
      * Disconnects the player <code>playerId</code>
      *
-     * @param playerId the id of the player to disconnect from
+     * @param playerId the id of the player to disconnect
      */
     private void disconnect(String playerId) {
         try {
@@ -717,20 +746,31 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
                 mpd.close();
             }
         } catch (MPDConnectionException ce) {
-            logger.warn("couldn't disconnect player {}", playerId);
+            logger.warn("Couldn't disconnect player '{}'", playerId);
         } catch (MPDResponseException re) {
-            logger.warn("received response error {}", re.getLocalizedMessage());
+            logger.warn("Received response error: {}", re.getLocalizedMessage());
         }
     }
 
     /**
-     * Reconnects to <code>playerId</code> that means disconnect first and try
+     * Checks if MPD's volume is set to an invalid value
+     */
+    private boolean volumeInvalid(int volume) {
+        if (volume < 0 || volume > 100) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Reconnecting to <code>playerId</code> means disconnect first and try
      * to connect again.
      *
-     * @param playerId the id of the player to disconnect from
+     * @param playerId the id of the player to disconnect
      */
     private void reconnect(String playerId) {
-        logger.info("reconnect player {}", playerId);
+        logger.info("Reconnect player '{}'", playerId);
         disconnect(playerId);
         connect(playerId);
     }

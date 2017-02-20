@@ -255,10 +255,10 @@ Example entry:
  <device productKey="F00.00.10">
      <model>2342-2</model>
      <description>Mini Remote</description>
-     <feature name="buttonA">RemoteButtonA</feature>
-     <feature name="buttonB">RemoteButtonB</feature>
-     <feature name="buttonC">RemoteButtonC</feature>
-     <feature name="buttonD">RemoteButtonD</feature>     
+     <feature name="buttonA">RemoteButton1</feature>
+     <feature name="buttonB">RemoteButton2</feature>
+     <feature name="buttonC">RemoteButton3</feature>
+     <feature name="buttonD">RemoteButton4</feature>     
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -360,29 +360,29 @@ Example entry:
  </device>
  
  <device productKey="F00.00.18">
-     <model>2441TH</model>
-     <description>Insteon Thermostat</description>
-     <feature_group name="data1_group" type="ThermostatData1Group">     
-     	<feature name="backlightduration">ThermostatBackLightDuration</feature>
-     	<feature name="acdelay">ThermostatACDelay</feature>
-	 </feature_group>
-     <feature_group name="data1b_group" type="ThermostatData1bGroup">     
-     	<feature name="humidityhigh">ThermostatHumidityHigh</feature>
-     	<feature name="humiditylow">ThermostatHumidityLow</feature>
-     	<feature name="stage1duration">ThermostatStage1Duration</feature>
-	 </feature_group>
-	 <feature_group name="data2_group" type="ThermostatData2Group"> 
-	     <feature name="coolsetpoint">ThermostatCoolSetPoint</feature>
-     	 <feature name="heatsetpoint">ThermostatHeatSetPoint</feature>
-     	 <feature name="systemmode">ThermostatSystemMode</feature>
-     	 <feature name="fanmode">ThermostatFanMode</feature>
-	     <feature name="isheating">ThermostatIsHeating</feature>
-	     <feature name="iscooling">ThermostatIsCooling</feature>
-	     <feature name="tempcelsius">ThermostatTemperatureCelsius</feature>
-	     <feature name="tempfahrenheit">ThermostatTemperatureFahrenheit</feature>
-	     <feature name="humidity">ThermostatHumidity</feature>
-     </feature_group>
-     <feature name="lastheardfrom">GenericLastTime</feature>
+   <model>2441TH</model>
+   <description>Insteon Thermostat</description>
+   <feature_group name="data1_group" type="ThermostatData1Group">     
+     <feature name="backlightduration">ThermostatBackLightDuration</feature>
+     <feature name="acdelay">ThermostatACDelay</feature>
+   </feature_group>
+   <feature_group name="data1b_group" type="ThermostatData1bGroup">     
+     <feature name="humidityhigh">ThermostatHumidityHigh</feature>
+     <feature name="humiditylow">ThermostatHumidityLow</feature>
+     <feature name="stage1duration">ThermostatStage1Duration</feature>
+   </feature_group>
+   <feature_group name="data2_group" type="ThermostatData2Group"> 
+     <feature name="coolsetpoint">ThermostatCoolSetPoint</feature>
+     <feature name="heatsetpoint">ThermostatHeatSetPoint</feature>
+     <feature name="systemmode">ThermostatSystemMode</feature>
+     <feature name="fanmode">ThermostatFanMode</feature>
+     <feature name="isheating">ThermostatIsHeating</feature>
+     <feature name="iscooling">ThermostatIsCooling</feature>
+     <feature name="tempcelsius">ThermostatTemperatureCelsius</feature>
+     <feature name="tempfahrenheit">ThermostatTemperatureFahrenheit</feature>
+     <feature name="humidity">ThermostatHumidity</feature>
+   </feature_group>
+   <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
  
  <device productKey="F00.00.19">
@@ -432,4 +432,47 @@ Example entry:
      <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
+ 
+ <device productKey="F00.00.1F">
+     <model>2477SA1</model>
+     <description>220V 30-amp Load Controller N/O</description>
+     <feature name="switch">GenericSwitch</feature>
+     <feature name="fastonoff">FastOnOff</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ <device productKey="F00.00.20">
+     <model>2342-222</model>
+     <description>Mini Remote (8 Button)</description>
+     <feature name="buttonA">RemoteButton2</feature>
+     <feature name="buttonB">RemoteButton1</feature>
+     <feature name="buttonC">RemoteButton4</feature>
+     <feature name="buttonD">RemoteButton3</feature>
+     <feature name="buttonE">RemoteButton6</feature>
+     <feature name="buttonF">RemoteButton5</feature>
+     <feature name="buttonG">RemoteButton8</feature>
+     <feature name="buttonH">RemoteButton7</feature>
+      <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ <device productKey="F00.00.21">
+   <model>2441V</model>
+   <description>Insteon Thermostat Adaptor for Venstar</description>
+   <feature_group name="data1b_group" type="ThermostatData1bGroup">   
+     <feature name="coolsetpoint">VenstarCoolSetPoint</feature>
+     <feature name="heatsetpoint">VenstarHeatSetPoint</feature>
+     <feature name="systemmode">VenstarSystemMode</feature>
+     <feature name="fanmode">VenstarFanMode</feature>
+     <feature name="tempfahrenheit">VenstarTemperatureFahrenheit</feature>
+     <feature name="humidity">VenstarHumidity</feature>
+     <feature name="isheating">VenstarIsHeating</feature>
+     <feature name="iscooling">VenstarIsCooling</feature>
+   </feature_group>
+   <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ <device productKey="F00.00.22">
+   <model>2982-222</model>
+   <description>Insteon Smoke Bridge</description>
+   <feature name="notification">ReceiveBroadcast</feature>
+   <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
 </xml>

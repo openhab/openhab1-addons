@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.satel.internal.types;
 
+import java.util.BitSet;
+
 /**
  * Interface for all types of control.
  *
@@ -18,15 +20,23 @@ public interface ControlType {
 
     /**
      * Returns Satel command to control state for this kind of object type.
-     * 
+     *
      * @return command identifier
      */
     byte getControlCommand();
 
     /**
      * Returns object type for this kind of control.
-     * 
+     *
      * @return Integra object type
      */
     ObjectType getObjectType();
+
+    /**
+     * Returns set of states that may change for this control type.
+     *
+     * @return command identifier
+     */
+    BitSet getControlledStates();
+
 }

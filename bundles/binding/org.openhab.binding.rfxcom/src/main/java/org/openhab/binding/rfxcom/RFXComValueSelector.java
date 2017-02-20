@@ -29,6 +29,7 @@ import org.openhab.core.library.items.SwitchItem;
 public enum RFXComValueSelector {
 
     RAW_DATA("RawData", StringItem.class),
+    DATA("Data", StringItem.class),
     SHUTTER("Shutter", RollershutterItem.class),
     COMMAND("Command", SwitchItem.class),
     MOOD("Mood", NumberItem.class),

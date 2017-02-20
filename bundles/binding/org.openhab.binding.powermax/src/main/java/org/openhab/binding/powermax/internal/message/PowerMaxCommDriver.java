@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * the binding uses the available protocol specification given at the ​domoticaforum
  * http://www.domoticaforum.eu/viewtopic.php?f=68&t=6581
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxCommDriver {

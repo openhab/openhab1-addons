@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 /***
  * Wrapper class which handles all data/comm. when call monitoing is used
  * Thread control class
- * 
+ *
  * @author gitbock
  * @since 1.8.0
  */
@@ -59,7 +59,7 @@ public class CallMonitor extends Thread {
     protected EventPublisher _eventPublisher;
 
     // Default openhab Logger
-    protected final static Logger logger = LoggerFactory.getLogger(FritzboxTr064Binding.class);
+    protected final static Logger logger = LoggerFactory.getLogger(CallMonitor.class);
 
     // Main Monitor Thread receiving fbox messages
     protected CallMonitorThread _monitorThread;
@@ -77,7 +77,7 @@ public class CallMonitor extends Thread {
     protected static CallMonitor _instance;
 
     /***
-     * 
+     *
      * @param url from openhab.cfg to connect to fbox
      * @param ep eventPublisher to pass updates to items
      * @param providers all items relevant for this binding
@@ -95,7 +95,7 @@ public class CallMonitor extends Thread {
     /***
      * In Main Config only the TR064 URL is provided. Need IP for Socket connection.
      * Parses the IP from URL String
-     * 
+     *
      * @param url String
      * @return IP address from url
      */
@@ -189,7 +189,7 @@ public class CallMonitor extends Thread {
      * thread for setting up socket to fbox, listening for messages, parsing them
      * and updating items. Most of this code is from Kai Kreuzers original
      * fritzbox binding!
-     * 
+     *
      * @author gitbock
      *
      */
@@ -284,7 +284,7 @@ public class CallMonitor extends Thread {
 
         /**
          * Handle call event and update item as required
-         * 
+         *
          * @param ce call event to process
          */
         private void handleCallEvent(CallEvent ce) {

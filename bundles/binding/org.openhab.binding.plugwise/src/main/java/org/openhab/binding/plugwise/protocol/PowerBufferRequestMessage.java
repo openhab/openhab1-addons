@@ -26,7 +26,7 @@ public class PowerBufferRequestMessage extends Message {
 
     @Override
     protected String payLoadToHexString() {
-        return String.format("%08X", (logAddress * 8 + 278528));
+        return String.format("%08X", (logAddress * 32 + 278528));
     }
 
     @Override

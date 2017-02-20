@@ -44,17 +44,18 @@ import com.tinkerforge.TimeoutException;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getLogger <em>Logger</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getEnabledA
- * <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getIpConnection
- * <em>Ip Connection</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getIpConnection <em>Ip
+ * Connection</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getConnectedUid
  * <em>Connected Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getPosition
@@ -64,12 +65,11 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getName <em>Name</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getBrickd <em>Brickd</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getSwitchState
- * <em>Switch State</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getSwitchState <em>Switch
+ * State</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -387,10 +387,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_PIEZO_SPEAKER__LOGGER,
                     oldLogger, logger));
-        }
     }
 
     /**
@@ -414,10 +413,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_PIEZO_SPEAKER__UID, oldUid,
                     uid));
-        }
     }
 
     /**
@@ -441,10 +439,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_PIEZO_SPEAKER__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -468,10 +465,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_PIEZO_SPEAKER__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -495,10 +491,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     public void setTinkerforgeDevice(BrickletPiezoSpeaker newTinkerforgeDevice) {
         BrickletPiezoSpeaker oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_PIEZO_SPEAKER__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
-        }
     }
 
     /**
@@ -522,10 +517,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_PIEZO_SPEAKER__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -549,10 +543,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_PIEZO_SPEAKER__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -576,10 +569,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_PIEZO_SPEAKER__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -603,10 +595,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_PIEZO_SPEAKER__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
@@ -630,10 +621,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_PIEZO_SPEAKER__NAME, oldName,
                     name));
-        }
     }
 
     /**
@@ -644,10 +634,21 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_PIEZO_SPEAKER__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_PIEZO_SPEAKER__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_PIEZO_SPEAKER__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -671,25 +672,20 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_PIEZO_SPEAKER__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_PIEZO_SPEAKER__BRICKD,
                     newBrickd, newBrickd));
-        }
     }
 
     /**
@@ -713,10 +709,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     public void setSwitchState(OnOffValue newSwitchState) {
         OnOffValue oldSwitchState = switchState;
         switchState = newSwitchState;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_PIEZO_SPEAKER__SWITCH_STATE,
                     oldSwitchState, switchState));
-        }
     }
 
     /**
@@ -1045,9 +1040,8 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_PIEZO_SPEAKER__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -1113,7 +1107,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
             case ModelPackage.MBRICKLET_PIEZO_SPEAKER__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_PIEZO_SPEAKER__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_PIEZO_SPEAKER__SWITCH_STATE:
                 return getSwitchState();
             case ModelPackage.MBRICKLET_PIEZO_SPEAKER__DEVICE_TYPE:
@@ -1252,7 +1248,7 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
             case ModelPackage.MBRICKLET_PIEZO_SPEAKER__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_PIEZO_SPEAKER__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_PIEZO_SPEAKER__SWITCH_STATE:
                 return SWITCH_STATE_EDEFAULT == null ? switchState != null : !SWITCH_STATE_EDEFAULT.equals(switchState);
             case ModelPackage.MBRICKLET_PIEZO_SPEAKER__DEVICE_TYPE:
@@ -1374,9 +1370,8 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

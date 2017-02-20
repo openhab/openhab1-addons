@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>bundles</artifactId>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>1.10.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -19,8 +19,10 @@
     <module>org.openhab.action.mail</module>
     <module>org.openhab.action.prowl</module>
     <module>org.openhab.action.pushover</module>
+    <module>org.openhab.action.pushsafer</module>
     <module>org.openhab.action.squeezebox</module>
     <module>org.openhab.action.twitter</module>
+    <module>org.openhab.action.ciscospark</module>
     <module>org.openhab.action.xbmc</module>
     <module>org.openhab.action.xmpp</module>
     <module>org.openhab.action.xpl</module>
@@ -37,6 +39,7 @@
     <module>org.openhab.action.dscalarm</module>
     <module>org.openhab.action.telegram</module>
     <module>org.openhab.action.pebble</module>
+    <module>org.openhab.action.satel</module>
   </modules>
 
 </project>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>AD147</Model>
+    <Label lang="en">Z-Wave Dimmer Plug</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x26</id>             <!-- SWITCH_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Basic Set Command value</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Basic Set Command value
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Delaying Time to report to Group 1</Label>
+            <Type>short</Type>
+            <Default>3</Default>
+            <Minimum>3</Minimum>
+            <Maximum>25</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[The delaying time to report to Group 1
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Remember the last status</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[Remember the last status
+<p>1 = Remember</p> <p>0 = Do not remember</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Output mode setting: Dimming, On/Off</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[Output mode setting: Dimming, On/Off 
+<p>0 = Dimming</p> <p>1 = On/off</p>
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">On/Off control</Label>
+            <Maximum>4</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

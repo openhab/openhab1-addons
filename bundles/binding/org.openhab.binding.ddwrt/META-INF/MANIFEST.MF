@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB DD-WRT Binding
+Bundle-SymbolicName: org.openhab.binding.ddwrt
+Bundle-Version: 1.10.0.qualifier
+Bundle-Activator: org.openhab.binding.ddwrt.internal.DDWRTActivator
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.apache.commons.collections,
+ org.apache.commons.io,
+ org.apache.commons.lang,
+ org.apache.commons.net,
+ org.apache.commons.net.telnet,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.library.tel.items,
+ org.openhab.library.tel.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Export-Package: org.openhab.binding.ddwrt
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/ddwrtbinding.xml

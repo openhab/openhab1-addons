@@ -41,6 +41,7 @@ import com.tinkerforge.TimeoutException;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getUid <em>Uid</em>}</li>
@@ -48,12 +49,11 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getEnabledA <em>Enabled A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getDigitalState <em>Digital State</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getDigitalState <em>Digital
+ * State</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getDeviceType <em>Device Type</em>}
  * </li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -256,10 +256,9 @@ public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements Loa
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -283,9 +282,8 @@ public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements Loa
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -309,9 +307,8 @@ public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements Loa
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__POLL, oldPoll, poll));
-        }
     }
 
     /**
@@ -335,10 +332,9 @@ public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements Loa
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__ENABLED_A, oldEnabledA,
                     enabledA));
-        }
     }
 
     /**
@@ -362,9 +358,8 @@ public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements Loa
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__SUB_ID, oldSubId, subId));
-        }
     }
 
     /**
@@ -375,10 +370,21 @@ public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements Loa
      */
     @Override
     public MBrickletLoadCell getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.LOAD_CELL_LED__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.LOAD_CELL_LED__MBRICK)
             return null;
-        }
         return (MBrickletLoadCell) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletLoadCell basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.LOAD_CELL_LED__MBRICK)
+            return null;
+        return (MBrickletLoadCell) eInternalContainer();
     }
 
     /**
@@ -402,25 +408,20 @@ public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements Loa
     public void setMbrick(MBrickletLoadCell newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.LOAD_CELL_LED__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
@@ -444,10 +445,9 @@ public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements Loa
     public void setDigitalState(HighLowValue newDigitalState) {
         HighLowValue oldDigitalState = digitalState;
         digitalState = newDigitalState;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__DIGITAL_STATE,
                     oldDigitalState, digitalState));
-        }
     }
 
     /**
@@ -548,9 +548,8 @@ public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements Loa
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.LOAD_CELL_LED__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletLoadCell) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -607,7 +606,9 @@ public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements Loa
             case ModelPackage.LOAD_CELL_LED__SUB_ID:
                 return getSubId();
             case ModelPackage.LOAD_CELL_LED__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.LOAD_CELL_LED__DIGITAL_STATE:
                 return getDigitalState();
             case ModelPackage.LOAD_CELL_LED__DEVICE_TYPE:
@@ -704,7 +705,7 @@ public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements Loa
             case ModelPackage.LOAD_CELL_LED__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.LOAD_CELL_LED__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.LOAD_CELL_LED__DIGITAL_STATE:
                 return DIGITAL_STATE_EDEFAULT == null ? digitalState != null
                         : !DIGITAL_STATE_EDEFAULT.equals(digitalState);
@@ -809,9 +810,8 @@ public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements Loa
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

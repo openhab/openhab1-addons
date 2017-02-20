@@ -11,6 +11,7 @@ package org.openhab.binding.http.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.binding.http.internal.HttpGenericBindingProvider.HttpBindingConfig;
@@ -26,10 +27,9 @@ import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
-import junit.framework.Assert;
-
 /**
  * @author Thomas.Eichstaedt-Engelen
+ * @author Chris Carman
  * @since 0.6.0
  */
 public class HttpGenericBindingProviderTest {
@@ -194,7 +194,6 @@ public class HttpGenericBindingProviderTest {
         Assert.assertTrue(config.get(HttpGenericBindingProvider.IN_BINDING_KEY).headers.containsKey("header2"));
         Assert.assertTrue(config.get(HttpGenericBindingProvider.IN_BINDING_KEY).headers.contains("value1"));
         Assert.assertTrue(config.get(HttpGenericBindingProvider.IN_BINDING_KEY).headers.contains("value2"));
-
     }
 
     @Test
@@ -221,7 +220,7 @@ public class HttpGenericBindingProviderTest {
     }
 
     @Test
-    public void testParseBindingWilcard() throws BindingConfigParseException {
+    public void testParseBindingWildcard() throws BindingConfigParseException {
         String bindingConfig = ">[*:GET:http://192.168.0.2/RGB/%2$s] >[TWINKLE:PUT:http://192.168.0.2/PROGRAM/TWINKLE]";
 
         testItem = new StringTestItem("StringTestItem");
@@ -238,8 +237,73 @@ public class HttpGenericBindingProviderTest {
         Assert.assertEquals(provider.getUrl("StringTestItem", StringType.valueOf("CHANGED")), null);
     }
 
-    class StringTestItem extends GenericItem {
+    @Test
+    public void testParseBindingConfigForBody() throws BindingConfigParseException {
 
+        // method under test
+        String bindingConfig = ">[ON:POST:http://www.domain.org:1234/home/lights/23871/?status=on&type=\"text\":Hi]";
+        HttpBindingConfig config = provider.parseBindingConfig(testItem, bindingConfig);
+
+        // asserts
+        Assert.assertEquals(true, config.containsKey(StringType.valueOf("ON")));
+        Assert.assertEquals("POST", config.get(StringType.valueOf("ON")).httpMethod);
+        Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?status=on&type=\"text\"",
+                config.get(StringType.valueOf("ON")).url);
+        Assert.assertEquals("Hi", config.get(StringType.valueOf("ON")).body);
+
+        // method under test
+        bindingConfig = ">[OFF:POST:http://www.domain.org:1234/home/lights/23871/?status=off:Bye]";
+        config = provider.parseBindingConfig(testItem, bindingConfig);
+
+        // asserts
+        Assert.assertEquals(true, config.containsKey(StringType.valueOf("OFF")));
+        Assert.assertEquals("POST", config.get(StringType.valueOf("OFF")).httpMethod);
+        Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?status=off",
+                config.get(StringType.valueOf("OFF")).url);
+        Assert.assertEquals("Bye", config.get(StringType.valueOf("OFF")).body);
+
+        // method under test
+        bindingConfig = ">[CHANGED:POST:http://www.domain.org:1234/home/lights/23871/?value=%2$s:What?]";
+        config = provider.parseBindingConfig(testItem, bindingConfig);
+
+        // asserts
+        Assert.assertEquals(true, config.containsKey(HttpGenericBindingProvider.CHANGED_COMMAND_KEY));
+        Assert.assertEquals("POST", config.get(HttpGenericBindingProvider.CHANGED_COMMAND_KEY).httpMethod);
+        Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/?value=%2$s",
+                config.get(HttpGenericBindingProvider.CHANGED_COMMAND_KEY).url);
+        Assert.assertEquals("What?", config.get(HttpGenericBindingProvider.CHANGED_COMMAND_KEY).body);
+
+        // method under test
+        bindingConfig = ">[*:POST:http://www.domain.org:1234/home/lights?value=%2$s:I'm sorry, Dave, I'm afraid I can't do that.]";
+        config = provider.parseBindingConfig(testItem, bindingConfig);
+
+        // asserts
+        Assert.assertEquals(true, config.containsKey(HttpGenericBindingProvider.WILDCARD_COMMAND_KEY));
+        Assert.assertEquals("POST", config.get(HttpGenericBindingProvider.WILDCARD_COMMAND_KEY).httpMethod);
+        Assert.assertEquals("http://www.domain.org:1234/home/lights?value=%2$s",
+                config.get(HttpGenericBindingProvider.WILDCARD_COMMAND_KEY).url);
+        Assert.assertEquals("I'm sorry, Dave, I'm afraid I can't do that.",
+                config.get(HttpGenericBindingProvider.WILDCARD_COMMAND_KEY).body);
+    }
+
+    @Test
+    public void testParseBindingConfigForBodyWithHeaders() throws BindingConfigParseException {
+        // method under test
+        String bindingConfig = ">[ON:POST:http://www.domain.org:1234/home/lights/23871/{header1=value1}:Up]";
+        HttpBindingConfig config = provider.parseBindingConfig(testItem, bindingConfig);
+
+        // asserts
+        Assert.assertEquals(true, config.containsKey(StringType.valueOf("ON")));
+        Assert.assertEquals("POST", config.get(StringType.valueOf("ON")).httpMethod);
+        Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/", config.get(StringType.valueOf("ON")).url);
+        Assert.assertEquals("Up", config.get(StringType.valueOf("ON")).body);
+        Assert.assertNotNull(config.get(StringType.valueOf("ON")).headers);
+        Assert.assertEquals("{header1=value1}", config.get(StringType.valueOf("ON")).headers.toString());
+        Assert.assertTrue(config.get(StringType.valueOf("ON")).headers.containsKey("header1"));
+        Assert.assertTrue(config.get(StringType.valueOf("ON")).headers.contains("value1"));
+    }
+
+    class StringTestItem extends GenericItem {
         public StringTestItem() {
             super("TEST");
         }
@@ -266,11 +330,9 @@ public class HttpGenericBindingProviderTest {
         public State getStateAs(Class<? extends State> typeClass) {
             return null;
         }
-
     };
 
     class DecimalTestItem extends GenericItem {
-
         public DecimalTestItem() {
             super("TEST");
         }
@@ -297,11 +359,9 @@ public class HttpGenericBindingProviderTest {
         public State getStateAs(Class<? extends State> typeClass) {
             return null;
         }
-
     };
 
     class DimmerTestItem extends GenericItem {
-
         public DimmerTestItem() {
             super("TEST");
         }
@@ -332,7 +392,5 @@ public class HttpGenericBindingProviderTest {
         public State getStateAs(Class<? extends State> typeClass) {
             return null;
         }
-
     };
-
 }

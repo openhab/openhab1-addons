@@ -18,7 +18,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 /**
  * This class is responsible for parsing the binding configuration.
  *
- * @author lolodomo
+ * @author Laurent Garnier
  * @since 1.9.0
  */
 public class PowerMaxGenericBindingProvider extends AbstractGenericBindingProvider implements PowerMaxBindingProvider {

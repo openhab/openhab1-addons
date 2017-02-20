@@ -10,8 +10,10 @@ package org.openhab.binding.dsmr.internal;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 import org.openhab.binding.dsmr.internal.messages.OBISMessage;
 import org.openhab.binding.dsmr.internal.p1telegram.P1TelegramParser;
@@ -76,11 +78,6 @@ public class DSMRPort {
         OPENED;
     }
 
-    private enum PortSpeed {
-        LOW_SPEED,
-        HIGH_SPEED
-    }
-
     /* private object variables */
     private final String portName;
     private final int readTimeoutMSec;
@@ -94,7 +91,8 @@ public class DSMRPort {
 
     /* state variables */
     private PortState portState;
-    private PortSpeed portSpeed;
+    private DSMRPortSettings portSettings;
+    private DSMRPortSettings fixedPortSettings; // Used if DSMR binding has a static port configuration
 
     /* helpers */
     private P1TelegramParser p1Parser;
@@ -110,7 +108,7 @@ public class DSMRPort {
      * Creates a new DSMRPort. This is only a reference to a port. The port will
      * not be opened nor it is checked if the DSMR Port can successfully be
      * opened.
-     * 
+     *
      * @param portName
      *            Device identifier of the post (e.g. /dev/ttyUSB0)
      * @param p1Parser
@@ -120,20 +118,29 @@ public class DSMRPort {
      * @param autoDetectTimeoutMSec
      *            timeout for auto detection in milliseconds (after this period
      *            the Serial Port speed will be changed)
+     * @param fixedPortSettings
+     *            {@link PortSettings} object containing fixed port settings. This parameter
+     *            may be null. The binding will then use specification default settings
+     *            HIGH_SPEED (i.e. 115200 8N1) and LOW_SPEED (9600 7E1) and auto detect which
+     *            is applicable.
+     *            If the parameter is set, the binding will ONLY use the specified settings
+     *            auto detect functionality will only use the specified settings.
      */
-    public DSMRPort(String portName, P1TelegramParser p1Parser, int readTimeoutMSec, int autoDetectTimeoutMSec) {
+    public DSMRPort(String portName, P1TelegramParser p1Parser, int readTimeoutMSec, int autoDetectTimeoutMSec,
+            DSMRPortSettings fixedPortSettings) {
         this.portName = portName;
         this.readTimeoutMSec = readTimeoutMSec;
         this.autoDetectTimeoutMSec = autoDetectTimeoutMSec;
         this.p1Parser = p1Parser;
+        this.fixedPortSettings = fixedPortSettings;
 
-        portSpeed = PortSpeed.HIGH_SPEED;
+        portSettings = DSMRPortSettings.HIGH_SPEED_SETTINGS;
         portState = PortState.CLOSED;
     }
 
     /**
      * Returns whether or not the port is open
-     * 
+     *
      * @return true if the DSMRPort is open, false otherwise
      */
     public boolean isOpen() {
@@ -176,7 +183,7 @@ public class DSMRPort {
      * <p>
      * It is a technically valid that the read succeeds with an empty list. Most
      * likely there is a configuration problem of the global DSMR binding
-     * 
+     *
      * @return List of {@link OBISMessage} with 0 or more entries
      */
     public List<OBISMessage> read() {
@@ -202,8 +209,7 @@ public class DSMRPort {
                 if (bytesRead > 0) {
                     receivedMessages.addAll(p1Parser.parseData(buffer, 0, bytesRead));
                 } else {
-                    logger.debug(
-                            "Expected bytes " + bytesAvailable + " to read, but " + bytesRead + " bytes were read");
+                    logger.debug("Expected bytes {} to read, but {} bytes were read", bytesAvailable, bytesRead);
                 }
                 bytesAvailable = bis.available();
             }
@@ -258,6 +264,7 @@ public class DSMRPort {
                 break;
             case AUTO_DETECT:
                 if ((System.currentTimeMillis() - autoDetectTS) > autoDetectTimeoutMSec) {
+                    logger.warn("Did not receive messages from DSMR port, switching port speed.");
                     switchPortSpeed();
                     close();
                     if (open()) {
@@ -276,14 +283,57 @@ public class DSMRPort {
      * Switch the Serial Port speed (LOW --> HIGH and vice versa).
      */
     private void switchPortSpeed() {
-        switch (portSpeed) {
-            case HIGH_SPEED:
-                portSpeed = PortSpeed.LOW_SPEED;
-                break;
-            case LOW_SPEED:
-                portSpeed = PortSpeed.HIGH_SPEED;
-                break;
+        if (fixedPortSettings == null) {
+            logger.debug("No fixed port setting (autodetect ENABLED), switch between specification standard settings");
+
+            // Checking instance reference here since these are final
+            if (portSettings == DSMRPortSettings.HIGH_SPEED_SETTINGS) {
+                portSettings = DSMRPortSettings.LOW_SPEED_SETTINGS;
+            } else {
+                portSettings = DSMRPortSettings.HIGH_SPEED_SETTINGS;
+            }
+            logger.debug("Switched port settings to: {}", portSettings);
+        } else {
+            portSettings = fixedPortSettings;
+            logger.info("Fixed port settings configured (autodetect DISABLED): {}", portSettings);
         }
+    }
+
+    /**
+     * Checks if the given port name is autodetected by gnu.io or already listed
+     * in the system property gnu.io.rxtx.SerialPorts
+     *
+     * @param portName String containing the port name to lookup
+     * @return true if port exists, false otherwise
+     */
+    private boolean portExists(String portName) {
+        @SuppressWarnings("unchecked")
+        Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
+
+        boolean portExists = false;
+
+        logger.debug("Searching autodetected ports for: {}", portName);
+        while (portEnum.hasMoreElements()) {
+            CommPortIdentifier portIdentifier = portEnum.nextElement();
+            if (portIdentifier.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+                logger.debug("Found serial port: {}", portIdentifier.getName());
+                if (portIdentifier.getName().equals(portName)) {
+                    portExists = true;
+                }
+            }
+        }
+        if (!portExists) {
+            Properties properties = System.getProperties();
+            String currentPorts = properties.getProperty("gnu.io.rxtx.SerialPorts", "");
+            if (currentPorts.indexOf(portName) >= 0) {
+                logger.debug("{} is listed in system property gnu.io.rxtx.SerialPorts", portName);
+
+                portExists = true;
+            } else {
+                logger.debug("{} is not listed in system property gnu.io.rxtx.SerialPorts", portName);
+            }
+        }
+        return portExists;
     }
 
     /**
@@ -299,7 +349,7 @@ public class DSMRPort {
      * <p>
      * Opening an already open port is harmless. The method will return
      * immediately
-     * 
+     *
      * @return true if opening was successful (or port was already open), false
      *         otherwise
      */
@@ -311,6 +361,12 @@ public class DSMRPort {
             }
 
             try {
+                // GNU.io autodetects standard serial port names
+                // Add non standard port names if not exists (fixes part of #4175)
+                if (!portExists(portName)) {
+                    logger.warn("Port {} does not exists according to the system, we will still try to open it",
+                            portName);
+                }
                 // Opening Operating System Serial Port
                 logger.debug("Creating CommPortIdentifier");
                 CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
@@ -322,35 +378,34 @@ public class DSMRPort {
                 serialPort.enableReceiveTimeout(readTimeoutMSec);
 
                 // Configure Serial Port based on specified port speed
-                logger.debug("Configure serial port speed " + portSpeed);
-                switch (portSpeed) {
-                    case LOW_SPEED:
-                        serialPort.setSerialPortParams(9600, SerialPort.DATABITS_7, SerialPort.STOPBITS_1,
-                                SerialPort.PARITY_EVEN);
+                logger.debug("Configure serial port parameters: {}", portSettings);
+
+                if (portSettings != null) {
+                    serialPort.setSerialPortParams(portSettings.getBaudrate(), portSettings.getDataBits(),
+                            portSettings.getStopbits(), portSettings.getParity());
+
+                    /* special settings for low speed port (checking reference here) */
+                    if (portSettings == DSMRPortSettings.LOW_SPEED_SETTINGS) {
                         serialPort.setDTR(false);
                         serialPort.setRTS(true);
+                    }
+                } else {
+                    logger.error("Invalid port parameters, closing port:{}", portSettings);
 
-                        break;
-                    case HIGH_SPEED:
-                        serialPort.setSerialPortParams(115200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-                                SerialPort.PARITY_NONE);
-
-                        break;
-                    default:
-                        logger.error("Invalid speed, closing port");
-
-                        return false;
+                    return false;
                 }
             } catch (NoSuchPortException nspe) {
-                logger.error("Could not open port: " + portName, nspe);
+                logger.error("Could not open port: {}", portName, nspe);
 
                 return false;
             } catch (PortInUseException piue) {
-                logger.error("Port already in use: " + portName, piue);
+                logger.error("Port already in use: {}", portName, piue);
 
                 return false;
             } catch (UnsupportedCommOperationException ucoe) {
-                logger.error("Port is not suitable: " + portName, ucoe);
+                logger.error(
+                        "Port does not support requested port settings " + "(invalid dsmr:portsettings parameter?): {}",
+                        portName, ucoe);
 
                 return false;
             }

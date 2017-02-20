@@ -12,35 +12,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.openhab.binding.satel.command.IntegraVersionCommand;
+import org.openhab.binding.satel.command.SatelCommand;
+import org.openhab.binding.satel.command.SatelCommand.State;
 import org.openhab.binding.satel.internal.event.ConnectionStatusEvent;
 import org.openhab.binding.satel.internal.event.EventDispatcher;
 import org.openhab.binding.satel.internal.event.IntegraVersionEvent;
 import org.openhab.binding.satel.internal.event.SatelEvent;
 import org.openhab.binding.satel.internal.event.SatelEventListener;
-import org.openhab.binding.satel.internal.protocol.command.ClearTroublesCommand;
-import org.openhab.binding.satel.internal.protocol.command.ControlObjectCommand;
-import org.openhab.binding.satel.internal.protocol.command.IntegraStateCommand;
-import org.openhab.binding.satel.internal.protocol.command.IntegraStatusCommand;
-import org.openhab.binding.satel.internal.protocol.command.IntegraVersionCommand;
-import org.openhab.binding.satel.internal.protocol.command.NewStatesCommand;
-import org.openhab.binding.satel.internal.protocol.command.SatelCommand;
-import org.openhab.binding.satel.internal.protocol.command.SetClockCommand;
-import org.openhab.binding.satel.internal.types.ControlType;
-import org.openhab.binding.satel.internal.types.DoorsState;
 import org.openhab.binding.satel.internal.types.IntegraType;
-import org.openhab.binding.satel.internal.types.OutputControl;
-import org.openhab.binding.satel.internal.types.OutputState;
-import org.openhab.binding.satel.internal.types.PartitionControl;
-import org.openhab.binding.satel.internal.types.PartitionState;
-import org.openhab.binding.satel.internal.types.StateType;
-import org.openhab.binding.satel.internal.types.ZoneState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,13 +48,13 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
     private static final byte[] FRAME_START = { FRAME_SYNC, FRAME_SYNC };
     private static final byte[] FRAME_END = { FRAME_SYNC, (byte) 0x0d };
 
-    private final Map<Byte, SatelCommand> supportedCommands = new ConcurrentHashMap<Byte, SatelCommand>();
-    private final BlockingQueue<SatelMessage> sendQueue = new LinkedBlockingQueue<SatelMessage>();
+    private final BlockingQueue<SatelCommand> sendQueue = new LinkedBlockingQueue<SatelCommand>();
 
     private IntegraType integraType;
     private int timeout;
     private String integraVersion;
     private CommunicationChannel channel;
+    private Object channelLock;
     private CommunicationWatchdog communicationWatchdog;
 
     /*
@@ -98,7 +83,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 
     /**
      * Creates new instance of the class.
-     * 
+     *
      * @param timeout
      *            timeout value in milliseconds for connect/read/write
      *            operations
@@ -106,14 +91,14 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
     public SatelModule(int timeout) {
         this.integraType = IntegraType.UNKNOWN;
         this.timeout = timeout;
+        this.channelLock = new Object();
 
         addEventListener(this);
-        registerCommands();
     }
 
     /**
      * Returns type of Integra connected to the module.
-     * 
+     *
      * @return Integra type
      */
     public IntegraType getIntegraType() {
@@ -121,8 +106,17 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
     }
 
     /**
+     * Returns firmware revision of Integra connected to the module.
+     *
+     * @return version of Integra firmware
+     */
+    public String getIntegraVersion() {
+        return this.integraVersion;
+    }
+
+    /**
      * Returns configured timeout value.
-     * 
+     *
      * @return timeout value as milliseconds
      */
     public int getTimeout() {
@@ -135,7 +129,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 
     /**
      * Returns status of initialization.
-     * 
+     *
      * @return <code>true</code> if module is properly initialized and ready for
      *         sending commands
      */
@@ -149,7 +143,11 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
      * Starts communication.
      */
     public synchronized void open() {
-        this.communicationWatchdog = new CommunicationWatchdog();
+        if (this.communicationWatchdog == null) {
+            this.communicationWatchdog = new CommunicationWatchdog();
+        } else {
+            logger.warn("Module is already opened.");
+        }
     }
 
     /**
@@ -165,18 +163,32 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 
     /**
      * Enqueues specified command in send queue if not already enqueued.
-     * 
+     *
      * @param cmd
      *            command to enqueue
      * @return <code>true</code> if operation succeeded
      */
-    public boolean sendCommand(SatelMessage cmd) {
+    public boolean sendCommand(SatelCommand cmd) {
+        return this.sendCommand(cmd, false);
+    }
+
+    /**
+     * Enqueues specified command in send queue.
+     *
+     * @param cmd
+     *            command to enqueue
+     * @param force
+     *            if <code>true</code> enqueues unconditionally
+     * @return <code>true</code> if operation succeeded
+     */
+    public boolean sendCommand(SatelCommand cmd, boolean force) {
         try {
-            if (this.sendQueue.contains(cmd)) {
-                logger.debug("Command already in the queue: {}", cmd);
-            } else {
+            if (force || !this.sendQueue.contains(cmd)) {
                 this.sendQueue.put(cmd);
+                cmd.setState(State.ENQUEUED);
                 logger.trace("Command enqueued: {}", cmd);
+            } else {
+                logger.debug("Command already in the queue: {}", cmd);
             }
             return true;
         } catch (InterruptedException e) {
@@ -197,33 +209,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
         }
     }
 
-    private void registerCommands() {
-        this.supportedCommands.put(IntegraVersionCommand.COMMAND_CODE, new IntegraVersionCommand(this));
-        this.supportedCommands.put(NewStatesCommand.COMMAND_CODE, new NewStatesCommand(this));
-        for (StateType state : PartitionState.values()) {
-            this.supportedCommands.put(state.getRefreshCommand(), new IntegraStateCommand(state, this));
-        }
-        for (StateType state : ZoneState.values()) {
-            this.supportedCommands.put(state.getRefreshCommand(), new IntegraStateCommand(state, this));
-        }
-        for (StateType state : OutputState.values()) {
-            this.supportedCommands.put(state.getRefreshCommand(), new IntegraStateCommand(state, this));
-        }
-        for (StateType state : DoorsState.values()) {
-            this.supportedCommands.put(state.getRefreshCommand(), new IntegraStateCommand(state, this));
-        }
-        for (ControlType ct : PartitionControl.values()) {
-            this.supportedCommands.put(ct.getControlCommand(), new ControlObjectCommand(ct, this));
-        }
-        for (ControlType ct : OutputControl.values()) {
-            this.supportedCommands.put(ct.getControlCommand(), new ControlObjectCommand(ct, this));
-        }
-        this.supportedCommands.put(IntegraStatusCommand.COMMAND_CODE, new IntegraStatusCommand(this));
-        this.supportedCommands.put(ClearTroublesCommand.COMMAND_CODE, new ClearTroublesCommand(this));
-        this.supportedCommands.put(SetClockCommand.COMMAND_CODE, new SetClockCommand(this));
-    }
-
-    private SatelMessage readMessage() {
+    private SatelMessage readMessage() throws InterruptedException {
         try {
             InputStream is = this.channel.getInputStream();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -285,7 +271,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 
                 // if meanwhile thread has been interrupted, exit the loop
                 if (Thread.interrupted()) {
-                    return null;
+                    throw new InterruptedException();
                 }
             }
 
@@ -293,7 +279,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
             return SatelMessage.fromBytes(baos.toByteArray());
 
         } catch (IOException e) {
-            if (!Thread.interrupted()) {
+            if (!Thread.currentThread().isInterrupted()) {
                 logger.error("Unexpected exception occurred during reading a message", e);
             }
         }
@@ -317,7 +303,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
             return true;
 
         } catch (IOException e) {
-            if (!Thread.interrupted()) {
+            if (!Thread.currentThread().isInterrupted()) {
                 logger.error("Unexpected exception occurred during writing a message", e);
             }
         }
@@ -326,21 +312,29 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
     }
 
     private synchronized void disconnect() {
-        this.sendQueue.clear();
-        if (this.channel != null) {
-            this.channel.disconnect();
-            this.channel = null;
-            // notify about connection status change
-            this.dispatchEvent(new ConnectionStatusEvent(false));
+        // remove all pending commands from the queue
+        // notifying about send failure
+        while (!this.sendQueue.isEmpty()) {
+            SatelCommand cmd = this.sendQueue.poll();
+            cmd.setState(State.FAILED);
+        }
+        synchronized (this.channelLock) {
+            if (this.channel != null) {
+                this.channel.disconnect();
+                this.channel = null;
+                // notify about connection status change
+                this.dispatchEvent(new ConnectionStatusEvent(false));
+            }
         }
     }
 
     private void communicationLoop(TimeoutTimer timeoutTimer) {
         long reconnectionTime = 10 * 1000;
         boolean receivedResponse = false;
+        SatelCommand command = null;
 
         try {
-            while (!Thread.interrupted()) {
+            while (!Thread.currentThread().isInterrupted()) {
                 // connect, if not connected yet
                 if (this.channel == null) {
                     long connectStartTime = System.currentTimeMillis();
@@ -358,42 +352,41 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
                     }
                 }
 
-                SatelMessage message = this.sendQueue.take(), response = null;
-                SatelCommand command = this.supportedCommands.get(message.getCommand());
-
-                if (command == null) {
-                    logger.error("Unsupported command: {}", message);
-                    continue;
-                }
-
-                logger.debug("Sending message: {}", message);
+                // get next command and send it
+                command = this.sendQueue.take();
+                logger.debug("Sending message: {}", command.getRequest());
                 timeoutTimer.start();
-                boolean sent = this.writeMessage(message);
+                boolean sent = this.writeMessage(command.getRequest());
                 timeoutTimer.stop();
-
-                if (sent) {
-                    logger.trace("Waiting for response");
-                    timeoutTimer.start();
-                    response = this.readMessage();
-                    timeoutTimer.stop();
-                    if (response != null) {
-                        logger.debug("Got response: {}", response);
-
-                        if (!receivedResponse) {
-                            receivedResponse = true;
-                            // notify about connection success after first response from the module
-                            this.dispatchEvent(new ConnectionStatusEvent(true));
-                        }
-
-                        command.handleResponse(response);
-                    }
-                }
-
-                // if either send or receive failed, exit thread
-                if (!sent || response == null) {
+                if (!sent) {
                     break;
                 }
+                command.setState(State.SENT);
 
+                // command sent, wait for response
+                logger.trace("Waiting for response");
+                timeoutTimer.start();
+                SatelMessage response = this.readMessage();
+                timeoutTimer.stop();
+                if (response == null) {
+                    break;
+                }
+                logger.debug("Got response: {}", response);
+
+                if (!receivedResponse) {
+                    receivedResponse = true;
+                    // notify about connection success after first
+                    // response from the module
+                    this.dispatchEvent(new ConnectionStatusEvent(true));
+                }
+
+                if (command.handleResponse(this, response)) {
+                    command.setState(State.SUCCEEDED);
+                } else {
+                    command.setState(State.FAILED);
+                }
+
+                command = null;
             }
         } catch (InterruptedException e) {
             // exit thread
@@ -403,6 +396,11 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
         } finally {
             // stop counting if thread interrupted
             timeoutTimer.stop();
+        }
+
+        // either send or receive failed
+        if (command != null) {
+            command.setState(State.FAILED);
         }
 
         disconnect();
@@ -469,7 +467,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
             this.thread.start();
             // if module is not initialized yet, send version command
             if (!SatelModule.this.isInitialized()) {
-                SatelModule.this.sendCommand(IntegraVersionCommand.buildMessage());
+                SatelModule.this.sendCommand(new IntegraVersionCommand());
             }
         }
 

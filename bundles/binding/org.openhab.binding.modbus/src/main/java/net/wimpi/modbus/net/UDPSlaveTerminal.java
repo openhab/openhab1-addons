@@ -25,8 +25,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.wimpi.modbus.Modbus;
+import net.wimpi.modbus.Modbus;
+import net.wimpi.modbus.io.ModbusTransport;
 import net.wimpi.modbus.io.ModbusUDPTransport;
+import net.wimpi.modbus.io.ModbusUDPTransport;
+import net.wimpi.modbus.io.ModbusUDPTransportFactory;
 import net.wimpi.modbus.util.LinkedQueue;
+import net.wimpi.modbus.util.LinkedQueue;
+import net.wimpi.modbus.util.ModbusUtil;
 import net.wimpi.modbus.util.ModbusUtil;
 
 /**
@@ -35,8 +41,18 @@ import net.wimpi.modbus.util.ModbusUtil;
  * @author Dieter Wimberger
  * @version @version@ (@date@)
  */
-class UDPSlaveTerminal implements UDPTerminal {
+public class UDPSlaveTerminal implements UDPTerminal {
+    public static class ModbusUDPTransportFactoryImpl implements ModbusUDPTransportFactory {
+
+        @Override
+        public ModbusTransport create(UDPTerminal terminal) {
+            return new ModbusUDPTransport(terminal);
+        }
+
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(UDPSlaveTerminal.class);
+    public static final int DEFAULT_DEACTIVATION_WAIT_MILLIS = 100;
 
     // instance attributes
     private DatagramSocket m_Socket;
@@ -44,7 +60,7 @@ class UDPSlaveTerminal implements UDPTerminal {
     private boolean m_Active;
     protected InetAddress m_LocalAddress;
     private int m_LocalPort = Modbus.DEFAULT_PORT;
-    protected ModbusUDPTransport m_ModbusTransport;
+    protected ModbusTransport m_ModbusTransport;
     private int m_Retries = Modbus.DEFAULT_RETRIES;
 
     private LinkedQueue m_SendQueue;
@@ -56,15 +72,26 @@ class UDPSlaveTerminal implements UDPTerminal {
 
     protected Hashtable m_Requests;
 
-    protected UDPSlaveTerminal() {
-        m_SendQueue = new LinkedQueue();
-        m_ReceiveQueue = new LinkedQueue();
-        // m_Requests = new Hashtable(342,0.75F);
-        m_Requests = new Hashtable(342);
+    private ModbusUDPTransportFactory m_TransportFactory;
+    /**
+     * Time to wait for Threads to close when deactivate is called.
+     * Note that often no time is enough since threads might be waiting for data.
+     */
+    private int m_DeactivationWaitMillis = 100;
+
+    public UDPSlaveTerminal() {
+        this(null);
     }// constructor
 
-    protected UDPSlaveTerminal(InetAddress localaddress) {
+    public UDPSlaveTerminal(InetAddress localaddress) {
+        this(localaddress, new ModbusUDPTransportFactoryImpl(), DEFAULT_DEACTIVATION_WAIT_MILLIS);
+    }
+
+    public UDPSlaveTerminal(InetAddress localaddress, ModbusUDPTransportFactory transportFactory,
+            int deactivationWaitMillis) {
         m_LocalAddress = localaddress;
+        m_TransportFactory = transportFactory;
+        m_DeactivationWaitMillis = deactivationWaitMillis;
         m_SendQueue = new LinkedQueue();
         m_ReceiveQueue = new LinkedQueue();
         // m_Requests = new Hashtable(342, 0.75F);
@@ -81,7 +108,7 @@ class UDPSlaveTerminal implements UDPTerminal {
         return m_LocalPort;
     }// getLocalPort
 
-    protected void setLocalPort(int port) {
+    public void setLocalPort(int port) {
         m_LocalPort = port;
     }// setLocalPort
 
@@ -128,7 +155,7 @@ class UDPSlaveTerminal implements UDPTerminal {
             m_Sender = new Thread(m_PacketSender);
             m_Sender.start();
             logger.debug("UDPSlaveTerminal::sender started()");
-            m_ModbusTransport = new ModbusUDPTransport(this);
+            m_ModbusTransport = m_TransportFactory.create(this);
             logger.debug("UDPSlaveTerminal::transport created");
             m_Active = true;
         }
@@ -144,10 +171,12 @@ class UDPSlaveTerminal implements UDPTerminal {
             if (m_Active) {
                 // 1. stop receiver
                 m_PacketReceiver.stop();
-                m_Receiver.join();
+                m_Receiver.join(m_DeactivationWaitMillis);
+                m_Receiver.interrupt();
                 // 2. stop sender gracefully
                 m_PacketSender.stop();
-                m_Sender.join();
+                m_Sender.join(m_DeactivationWaitMillis);
+                m_Sender.interrupt();
                 // 3. close socket
                 m_Socket.close();
                 m_ModbusTransport = null;
@@ -165,7 +194,7 @@ class UDPSlaveTerminal implements UDPTerminal {
      * @return the connection's <tt>ModbusTransport</tt>.
      */
     @Override
-    public ModbusUDPTransport getModbusTransport() {
+    public ModbusTransport getModbusTransport() {
         return m_ModbusTransport;
     }// getModbusTransport
 
@@ -181,7 +210,7 @@ class UDPSlaveTerminal implements UDPTerminal {
      *         public int getReceiveTimeout() {
      *         return m_Timeout;
      *         }//getReceiveTimeout
-     * 
+     *
      *         /**
      *         Sets the timeout for this <tt>UDPSlaveTerminal</tt>.
      *

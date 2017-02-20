@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openhab.binding.dscalarm.DSCAlarmBindingConfig;
-import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties;
 import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceType;
 import org.openhab.binding.dscalarm.internal.model.Keypad;
 import org.openhab.binding.dscalarm.internal.model.Panel;
@@ -49,7 +48,7 @@ public class DSCAlarmItemUpdate {
 
     /**
      * Get connection status
-     * 
+     *
      * @return
      */
     public boolean getConnected() {
@@ -58,7 +57,7 @@ public class DSCAlarmItemUpdate {
 
     /**
      * Set connection status
-     * 
+     *
      * @param connected
      */
     public void setConnected(boolean connected) {
@@ -67,7 +66,7 @@ public class DSCAlarmItemUpdate {
 
     /**
      * Set the system message
-     * 
+     *
      * @param sysMessage
      */
     public void setSysMessage(String sysMessage) {
@@ -76,14 +75,13 @@ public class DSCAlarmItemUpdate {
 
     /**
      * Update a DSC Alarm Device Item
-     * 
+     *
      * @param item
      * @param config
      * @param eventPublisher
      * @param event
      */
-    public synchronized void updateDeviceItem(Item item, DSCAlarmBindingConfig config, EventPublisher eventPublisher,
-            DSCAlarmEvent event) {
+    public synchronized void updateDeviceItem(Item item, DSCAlarmBindingConfig config, EventPublisher eventPublisher, DSCAlarmEvent event, int state, String description) {
         logger.debug("updateDeviceItem(): Item Name: {}", item.getName());
 
         if (config != null) {
@@ -106,18 +104,14 @@ public class DSCAlarmItemUpdate {
                     }
 
                     if (config.getDSCAlarmItemType() == DSCAlarmItemType.PANEL_CONNECTION) {
-                        updateDeviceProperties(item, config, connected ? 1 : 0, "Panel Connected");
-                    }
-
-                    if ((config.getDSCAlarmItemType() == DSCAlarmItemType.PANEL_MESSAGE) && (sysMessage != "")) {
-                        updateDeviceProperties(item, config, 0, sysMessage);
-                        sysMessage = "";
+                        panel.refreshItem(item, config, eventPublisher, connected ? 1 : 0, "Panel Connected");
+                        break;
                     }
 
                     if (event != null) {
                         panel.handleEvent(item, config, eventPublisher, event);
                     } else {
-                        panel.refreshItem(item, config, eventPublisher);
+                        panel.refreshItem(item, config, eventPublisher, state, description);
                     }
                     break;
                 case PARTITION:
@@ -131,7 +125,7 @@ public class DSCAlarmItemUpdate {
                     if (event != null) {
                         partition.handleEvent(item, config, eventPublisher, event);
                     } else {
-                        partition.refreshItem(item, config, eventPublisher);
+                        partition.refreshItem(item, config, eventPublisher, state, description);
                     }
                     break;
                 case ZONE:
@@ -146,7 +140,7 @@ public class DSCAlarmItemUpdate {
                     if (event != null) {
                         zone.handleEvent(item, config, eventPublisher, event);
                     } else {
-                        zone.refreshItem(item, config, eventPublisher);
+                        zone.refreshItem(item, config, eventPublisher, state, description);
                     }
                     break;
                 case KEYPAD:
@@ -163,7 +157,7 @@ public class DSCAlarmItemUpdate {
                     if (event != null) {
                         keypad.handleEvent(item, config, eventPublisher, event);
                     } else {
-                        keypad.refreshItem(item, config, eventPublisher);
+                        keypad.refreshItem(item, config, eventPublisher, state, description);
                     }
                     break;
                 default:
@@ -171,113 +165,5 @@ public class DSCAlarmItemUpdate {
                     break;
             }
         }
-    }
-
-    /**
-     * Update DSC Alarm Device Properties
-     * 
-     * @param item
-     * @param config
-     * @param state
-     * @param description
-     */
-    public synchronized void updateDeviceProperties(Item item, DSCAlarmBindingConfig config, int state,
-            String description) {
-        logger.debug("updateDeviceProperties(): Item Name: {}", item.getName());
-
-        if (config != null) {
-            DSCAlarmDeviceType dscAlarmDeviceType = config.getDeviceType();
-            int panelId = 1;
-            int partitionId;
-            int zoneId;
-            int keypadId = 1;
-
-            switch (dscAlarmDeviceType) {
-                case PANEL:
-                    Panel panel = panelMap.get(panelId);
-                    if (panel != null) {
-                        panel.updateProperties(item, config, state, description);
-                    }
-                    break;
-                case PARTITION:
-                    partitionId = config.getPartitionId();
-                    Partition partition = partitionMap.get(partitionId);
-                    if (partition != null) {
-                        partition.updateProperties(item, config, state, description);
-                    }
-                    break;
-                case ZONE:
-                    partitionId = config.getPartitionId();
-                    zoneId = config.getZoneId();
-                    Zone zone = zoneMap.get(zoneId);
-                    if (zone != null) {
-                        zone.updateProperties(item, config, state, description);
-                    }
-                    break;
-                case KEYPAD:
-                    Keypad keypad = keypadMap.get(keypadId);
-                    if (keypad != null) {
-                        keypad.updateProperties(item, config, state, description);
-                    }
-                    break;
-                default:
-                    logger.debug("updateDeviceProperties(): Item properties not updated.");
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Get DSC Alarm Device Properties
-     * 
-     * @param item
-     * @param config
-     */
-    public synchronized DSCAlarmDeviceProperties getDeviceProperties(Item item, DSCAlarmBindingConfig config) {
-        logger.debug("updateDeviceProperties(): Item Name: {}", item.getName());
-
-        DSCAlarmDeviceProperties dscAlarmDeviceProperties = null;
-
-        if (config != null) {
-            DSCAlarmDeviceType dscAlarmDeviceType = config.getDeviceType();
-            int panelId = 1;
-            int partitionId;
-            int zoneId;
-            int keypadId = 1;
-
-            switch (dscAlarmDeviceType) {
-                case PANEL:
-                    Panel panel = panelMap.get(panelId);
-                    if (panel != null) {
-                        dscAlarmDeviceProperties = panel.panelProperties;
-                    }
-                    break;
-                case PARTITION:
-                    partitionId = config.getPartitionId();
-                    Partition partition = partitionMap.get(partitionId);
-                    if (partition != null) {
-                        dscAlarmDeviceProperties = partition.partitionProperties;
-                    }
-                    break;
-                case ZONE:
-                    partitionId = config.getPartitionId();
-                    zoneId = config.getZoneId();
-                    Zone zone = zoneMap.get(zoneId);
-                    if (zone != null) {
-                        dscAlarmDeviceProperties = zone.zoneProperties;
-                    }
-                    break;
-                case KEYPAD:
-                    Keypad keypad = keypadMap.get(keypadId);
-                    if (keypad != null) {
-                        dscAlarmDeviceProperties = keypad.keypadProperties;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        return dscAlarmDeviceProperties;
     }
 }

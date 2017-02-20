@@ -1,52 +1,41 @@
-# Documentation for the DSC Alarm Action Bundle
+# DSC Alarm Actions
 
-## Introduction
+This bundle exposes openHAB rule extensions to be used with the DSC Alarm Binding (1.x binding).  It allows the sending of DSC Alarm specific commands from within rules.
 
-This bundle exposes openHAB Rule extensions to be used with the [DSC Alarm Binding](https://github.com/openhab/openhab/wiki/DSC-Alarm-Binding).
+## Prerequisites
 
-It allows the sending of DSC Alarm specific commands from within [openHAB Rules](https://github.com/openhab/openhab/wiki/Rules):
+The DSC Alarm Action bundle relies on the DSC Alarm Binding (1.x) being installed and configured.
 
-## Releases
-
-* 1.8.0 - First release
-
-## Configuration
-
-The DSC Alarm Action bundle relies on the DSC Alarm Binding being installed and configured, along with the installation of the DSC Alarm Action Bundle (JAR) file.
-
-## Extensions
-
-Currently the DSC Alarm Action Bundle supports a single rule extension with the following formats:
+## Actions
 
 * `sendDSCAlarmCommand(String command)` - sends a DSC Alarm command.
 * `sendDSCAlarmCommand(String command, String data)` - same as above but with command specific required data.
 
-The 'command' parameter is a string numeric code.  The following table shows which commands are supported:
+The `command` parameter is a string numeric code.  The following table shows which commands are supported:
 
-<table>
-	<tr><td><b>DSC Alarm Command Code</b></td><td><b>Description</b></td><td><b>Data</b></td><td><b>Supported Interface</b></td></tr>
-	<tr><td>'000'</td><td>Poll</td><td>NONE</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'001'</td><td>Status Report</td><td>NONE</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'002'</td><td>Labels Request</td<td>NONE</td><td>IT100</td></tr>
-	<tr><td>'005'</td><td>Network Login</td><td>1-6 Character - [Password]</td><td>Envisalink</td></tr>
-	<tr><td>'008'</td><td>Dump Zone Timers</td><td>NONE</td><td>Envisalink</td></tr>
-	<tr><td>'010'</td><td>Set Time and Date</td><td>NONE</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'020'</td><td>Command Output Control</td><td>2 Characters - [Partition # (1-8)][PGM # (1-4)]</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'030'</td><td>Partition Arm Control - Away</td><td>1 Character - [Partition # (1-8)]</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'031'</td><td>Partition Arm Control - Stay</td><td>1 Character - [Partition # (1-8)]</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'032'</td><td>Partition Arm Control - No Entry Delay</td><td>1 Character - [Partition # (1-8)]</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'033'</td><td>Partition Arm Control - With User Code</td><td>5-7 Characters - [Partition # (1-8)][User Code (4-6)]</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'040'</td><td>Partition Disarm Control - With User Code</td><td>5-7 Characters - [Partition # (1-8)][User Code (4-6)]</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'055'</td><td>Time Stamp Control</td><td>1 Character - [On/Off (1,0)]</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'056'</td><td>Time/Date Broadcast Control</td><td>1 Character - [On/Off (1,0)]</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'057'</td><td>Temperature Broadcast Control</td><td>1 Character - [On/Off (1,0)]</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'058'</td><td>Virtual Keypad Control</td><td>1 Character - [On/Off (1,0)]</td><td>IT100</td></tr>
-	<tr><td>'060'</td><td>Trigger Panic Alarm</td><td>1 Character - [1=Fire, 2=Ambulance, 3=Police]</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'070'</td><td>Single Keystroke</td><td>1 Character - [Single ASCII Character]</td><td>Envisalink, IT100</td></tr>
-	<tr><td>'071'</td><td>Keystroke String</td><td>1-6 Characters - [1-6 ASCII Character String]</td><td>Envisalink</td></tr>
-	<tr><td>'074'</td><td>Keep Alive</td><td>1 Character - [Partition # (1-8)]</td><td>Envisalink</td></tr>
-	<tr><td>'200'</td><td>Code Send</td><td>4-6 Characters - [User Code (4-6)]</td><td>Envisalink, IT100</td></tr>
-</table>
+| DSC Alarm Command Code | Description | Data | Supported Interface |
+|------------------------|-------------|------|---------------------|
+| `000` | Poll | NONE | Envisalink, IT100 |
+| `001` | Status Report | NONE | Envisalink, IT100 |
+| `002` | Labels Request | NONE | IT100 |
+| `005` | Network Login | 1-6 Character - [Password] | Envisalink |
+| `008` | Dump Zone Timers | NONE | Envisalink |
+| `010` | Set Time and Date | NONE | Envisalink, IT100 |
+| `020` | Command Output Control | 2 Characters - [Partition # (1-8)][PGM # (1-4)] | Envisalink, IT100 |
+| `030` | Partition Arm Control - Away | 1 Character - [Partition # (1-8)] | Envisalink, IT100 |
+| `031` | Partition Arm Control - Stay | 1 Character - [Partition # (1-8)] | Envisalink, IT100 |
+| `032` | Partition Arm Control - No Entry Delay | 1 Character - [Partition # (1-8)] | Envisalink, IT100 |
+| `033` | Partition Arm Control - With User Code | 5-7 Characters - [Partition # (1-8)][User Code (4-6)] | Envisalink, IT100 |
+| `040` | Partition Disarm Control - With User Code | 5-7 Characters - [Partition # (1-8)][User Code (4-6)] | Envisalink, IT100 |
+| `055` | Time Stamp Control | 1 Character - [On/Off (1,0)] | Envisalink, IT100 |
+| `056` | Time/Date Broadcast Control | 1 Character - [On/Off (1,0)] | Envisalink, IT100 |
+| `057` | Temperature Broadcast Control | 1 Character - [On/Off (1,0)] | Envisalink, IT100 |
+| `058` | Virtual Keypad Control | 1 Character - [On/Off (1,0)] | IT100 |
+| `060` | Trigger Panic Alarm | 1 Character - [1=Fire, 2=Ambulance, 3=Police] | Envisalink, IT100 |
+| `070` | Single Keystroke | 1 Character - [Single ASCII Character] | Envisalink, IT100 |
+| `071` | Keystroke String | 1-6 Characters - [1-6 ASCII Character String] | Envisalink |
+| `074` | Keep Alive | 1 Character - [Partition # (1-8)] | Envisalink |
+| `200` | Code Send | 4-6 Characters - [User Code (4-6)] | Envisalink, IT100 |
 
 ## Examples
 
@@ -61,12 +50,12 @@ Switch PollCommand "Send a poll command to the DSC Alarm System"
 The following rule will trigger whenever the switch is turned ON:
 
 ```
-    rule "PollCommand"
-        when 
-            Item PollCommand received command ON
-        then
-            sendDSCAlarmCommand("000")
-    end
+rule "PollCommand"
+    when 
+        Item PollCommand received command ON
+    then
+        sendDSCAlarmCommand("000")
+end
 ```
 
 Again add an item to your items file:
@@ -78,10 +67,10 @@ Switch BypassZone1 "Bypass Zone 1"
 This rule triggers when the switch is turned ON:
 
 ```
-    rule "BypassZone1"
-        when 
-            Item BypassZone1 received command ON
-        then
-            sendDSCAlarmCommand("071","*101#")
-    end
+rule "BypassZone1"
+    when 
+        Item BypassZone1 received command ON
+    then
+        sendDSCAlarmCommand("071","*101#")
+end
 ```

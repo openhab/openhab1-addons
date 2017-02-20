@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZMNHSD</Model>
+    <Label lang="en">DIN Rail Dimmer</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x26</id>             <!-- SWITCH_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x32</id>             <!-- METER -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Input switch type</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">0 - Mono-stable switch type (push button)</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">1 - Bi-stable switch type</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">Working mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">dimmer mode</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">switch mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>10</Index>
+            <Label lang="en">Activate / deactivate functions ALL ON / ALL OFF</Label>
+            <Type>list</Type>
+            <Default>255</Default>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">ALL ON is not active, ALL OFF is not active</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">ALL ON is not active, ALL OFF active</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">ALL ON active, ALL OFF is not active</Label>
+            </Item>
+            <Item>
+                <Value>255</Value>
+                <Label lang="en">ALL ON active, ALL OFF active</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>11</Index>
+            <Label lang="en">Automatic turning off output after set time</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32536</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>12</Index>
+            <Label lang="en">Automatic turning on output after set time</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32536</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>21</Index>
+            <Label lang="en">Enable / Disable Double click function</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">0 - double click disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">1 - double click enabled</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>30</Index>
+            <Label lang="en">Saving the state of the device after a power failure</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">0 - Save state enabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">1 - Save state disabled</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>40</Index>
+            <Label lang="en">Power reporting in watts on power change</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>42</Index>
+            <Label lang="en">Power reporting in Watts by time interval</Label>
+            <Type>short</Type>
+            <Default>300</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32767</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>60</Index>
+            <Label lang="en">Minimum dimming value</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>98</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>61</Index>
+            <Label lang="en">Maximum dimming value</Label>
+            <Type>short</Type>
+            <Default>99</Default>
+            <Minimum>2</Minimum>
+            <Maximum>99</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>65</Index>
+            <Label lang="en">Dimming time (soft on/off)</Label>
+            <Type>short</Type>
+            <Default>100</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>66</Index>
+            <Label lang="en">Dimming time when key pressed</Label>
+            <Type>short</Type>
+            <Default>3</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>67</Index>
+            <Label lang="en">Ignore start level</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">0 - respect start level</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">1 - ignore start level</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>68</Index>
+            <Label lang="en">Dimming duration</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>127</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>110</Index>
+            <Label lang="en">Temperature sensor offset settings</Label>
+            <Type>short</Type>
+            <Default>32536</Default>
+            <Minimum>1</Minimum>
+            <Maximum>32536</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>120</Index>
+            <Label lang="en">Digital temperature sensor reporting</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>0</Minimum>
+            <Maximum>127</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Controller Updates</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">I1 basic on/off</Label>
+            <Maximum>16</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">I1 start/stop level change</Label>
+            <Maximum>16</Maximum>
+        </Group>
+
+        <Group>
+            <Index>4</Index>
+            <Label lang="en">Multilevel set</Label>
+            <Maximum>16</Maximum>
+        </Group>
+
+        <Group>
+            <Index>5</Index>
+            <Label lang="en">Multilevel sensor report</Label>
+            <Maximum>16</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

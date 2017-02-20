@@ -21,17 +21,21 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderVelocity#getDeviceType <em>Device Type</em>
- * }</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderVelocity#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderVelocity#getThreshold <em>Threshold</em>}
  * </li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLaserRangeFinderVelocity()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDevice org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDevice
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
 public interface LaserRangeFinderVelocity extends LaserRangeFinderDevice, MTFConfigConsumer<TFBaseConfiguration>,
@@ -72,8 +76,8 @@ public interface LaserRangeFinderVelocity extends LaserRangeFinderDevice, MTFCon
     BigDecimal getThreshold();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderVelocity#getThreshold <em>Threshold</em>}'
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderVelocity#getThreshold <em>Threshold</em>}'
      * attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

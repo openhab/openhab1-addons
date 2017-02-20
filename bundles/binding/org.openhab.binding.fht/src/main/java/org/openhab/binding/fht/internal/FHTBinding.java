@@ -205,9 +205,11 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
         if (config != null) {
             if (Datapoint.DESIRED_TEMP == config.getDatapoint() && command instanceof DecimalType) {
                 setDesiredTemperature(config, (DecimalType) command);
+            } else if (Datapoint.VALVE == config.getDatapoint() && command instanceof DecimalType) {
+                setValvePosition(config, (DecimalType) command);
             } else {
                 logger.error(
-                        "You can only manipulate the desired temperature via commands, all other data points are read only");
+                        "You can only manipulate the desired temperature or valve position via commands, all other data points are read only");
             }
         }
     }
@@ -218,11 +220,25 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
             int temp = (int) (temperature * 2.0);
 
             FHTDesiredTemperatureCommand commandItem = new FHTDesiredTemperatureCommand(config.getFullAddress(),
-                    "41" + Integer.toHexString(temp));
+                    "41" + String.format("%02X", temp));
             logger.debug("Queuing new desired temperature");
             temperatureCommandQueue.put(config.getFullAddress(), commandItem);
         } else {
             logger.error("The desired temperature is outside of the valid range");
+        }
+    }
+
+    private void setValvePosition(FHTBindingConfig config, DecimalType command) {
+        double valvePosition = command.doubleValue();
+        if ((valvePosition >= 0.0) && (valvePosition <= 100.0)) {
+            int temp = (int) (valvePosition * 2.55);
+
+            FHTDesiredTemperatureCommand commandItem = new FHTDesiredTemperatureCommand(config.getFullAddress(), "26"
+                            + ((Integer.toHexString(temp).length() == 1)?"0":"") + Integer.toHexString(temp));
+            logger.debug("Queuing new desired valve position");
+            temperatureCommandQueue.put(config.getFullAddress(), commandItem);
+        } else {
+            logger.error("The desired valve position is outside of the valid range (0.0 - 100.0%)");
         }
     }
 
@@ -543,7 +559,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
 
     private void writeRegister(String device, String register, String value) {
         StringBuffer sendBuffer = new StringBuffer(8);
-        sendBuffer.append('F');
+        sendBuffer.append('T');
         sendBuffer.append(device);
         sendBuffer.append(register); // register to write
         sendBuffer.append(value);
@@ -571,7 +587,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
             return;
         }
         StringBuffer sendBuffer = new StringBuffer(8);
-        sendBuffer.append('F');
+        sendBuffer.append('T');
         sendBuffer.append(deviceAddress);
         for (WriteRegisterCommand command : commands) {
             sendBuffer.append(command.register);

@@ -44,7 +44,7 @@ public class DataTypeBarometricTrend implements DavisDataType {
                 trend = "no trend info available";
                 break;
             default:
-                trend = "unkown";
+                trend = "unknown";
                 break;
         }
         return trend;

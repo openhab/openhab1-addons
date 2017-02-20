@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.dscalarm.internal.protocol;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,8 +182,7 @@ public class APIMessage {
                         break;
                     case LoginResponse: /* 505 */
                         apiName = "Login Interaction";
-                        apiDescription = apiCodeReceived
-                                + ": Login response (failed=0, success=1, time out=2, password request=3).";
+                        apiDescription = apiCodeReceived + ": Login response (failed=0, success=1, time out=2, password request=3).";
                         break;
                     case KeypadLEDState: /* 510 */
                         apiName = "Keypad LED State - Partition 1 Only";
@@ -191,8 +191,7 @@ public class APIMessage {
                         break;
                     case KeypadLEDFlashState: /* 511 */
                         apiName = "Keypad LED Flash State - Partition 1 Only";
-                        apiDescription = apiCodeReceived
-                                + ": A change of state in the Partition 1 keypad LEDs as to whether to flash or not.";
+                        apiDescription = apiCodeReceived + ": A change of state in the Partition 1 keypad LEDs as to whether to flash or not.";
                         apiMessageType = APIMessageType.KEYPAD_EVENT;
                         break;
                     case TimeDateBroadcast: /* 550 */
@@ -214,8 +213,7 @@ public class APIMessage {
                         break;
                     case ThermostatSetPoints: /* 563 */
                         apiName = "Thermostat Set Points";
-                        apiDescription = apiCodeReceived
-                                + ": Cooling and heating set points and the thermostat number.";
+                        apiDescription = apiCodeReceived + ": Cooling and heating set points and the thermostat number.";
                         break;
                     case BroadcastLabels: /* 570 */
                         apiName = "Broadcast Labels";
@@ -447,21 +445,18 @@ public class APIMessage {
                         partition = Integer.parseInt(apiMessage.substring(3, 4));
                         user = apiMessage.substring(4);
                         apiName = apiName.concat(": " + user);
-                        apiDescription = apiCodeReceived + ": Partition " + String.valueOf(partition)
-                                + " has been armed by user " + user + ".";
+                        apiDescription = apiCodeReceived + ": Partition " + String.valueOf(partition) + " has been armed by user " + user + ".";
                         apiMessageType = APIMessageType.PARTITION_EVENT;
                         break;
                     case SpecialClosing: /* 701 */
                         apiName = "Special Closing";
-                        apiDescription = apiCodeReceived
-                                + ": A partition has been armed by one of the following methods: Quick Arm, Auto Arm, Keyswitch, DLS software, Wireless Key.";
+                        apiDescription = apiCodeReceived + ": A partition has been armed by one of the following methods: Quick Arm, Auto Arm, Keyswitch, DLS software, Wireless Key.";
                         partition = Integer.parseInt(apiMessage.substring(3, 4));
                         apiMessageType = APIMessageType.PARTITION_EVENT;
                         break;
                     case PartialClosing: /* 702 */
                         apiName = "Partial Closing";
-                        apiDescription = apiCodeReceived
-                                + ": A partition has been armed but one or more zones have been bypassed.";
+                        apiDescription = apiCodeReceived + ": A partition has been armed but one or more zones have been bypassed.";
                         partition = Integer.parseInt(apiMessage.substring(3, 4));
                         apiMessageType = APIMessageType.PARTITION_EVENT;
                         break;
@@ -470,14 +465,12 @@ public class APIMessage {
                         partition = Integer.parseInt(apiMessage.substring(3, 4));
                         user = apiMessage.substring(4);
                         apiName = apiName.concat(": " + user);
-                        apiDescription = apiCodeReceived + ": Partition " + String.valueOf(partition)
-                                + " has been disarmed by user " + user + ".";
+                        apiDescription = apiCodeReceived + ": Partition " + String.valueOf(partition) + " has been disarmed by user " + user + ".";
                         apiMessageType = APIMessageType.PARTITION_EVENT;
                         break;
                     case SpecialOpening: /* 751 */
                         apiName = "Special Opening";
-                        apiDescription = apiCodeReceived
-                                + ": A partition has been disarmed by one of the following methods: Quick Arm, Auto Arm, Keyswitch, DLS software, Wireless Key.";
+                        apiDescription = apiCodeReceived + ": A partition has been disarmed by one of the following methods: Quick Arm, Auto Arm, Keyswitch, DLS software, Wireless Key.";
                         partition = Integer.parseInt(apiMessage.substring(3, 4));
                         apiMessageType = APIMessageType.PARTITION_EVENT;
                         break;
@@ -500,8 +493,7 @@ public class APIMessage {
                         break;
                     case SystemBellTrouble: /* 806 */
                         apiName = "System Bell Trouble";
-                        apiDescription = apiCodeReceived
-                                + ": An open circuit has been detected across the bell terminals.";
+                        apiDescription = apiCodeReceived + ": An open circuit has been detected across the bell terminals.";
                         break;
                     case SystemBellTroubleRestore: /* 807 */
                         apiName = "System Bell Trouble Restore";
@@ -525,13 +517,11 @@ public class APIMessage {
                         break;
                     case FTCTrouble: /* 814 */
                         apiName = "FTC Trouble";
-                        apiDescription = apiCodeReceived
-                                + ": The panel has failed to communicate successfully to the monitoring station.";
+                        apiDescription = apiCodeReceived + ": The panel has failed to communicate successfully to the monitoring station.";
                         break;
                     case BufferNearFull: /* 816 */
                         apiName = "Buffer Near Full";
-                        apiDescription = apiCodeReceived
-                                + ": The panel event buffer is 75% full from when it was last uploaded to DLS.";
+                        apiDescription = apiCodeReceived + ": The panel event buffer is 75% full from when it was last uploaded to DLS.";
                         break;
                     case GeneralDeviceLowBattery: /* 821 */
                         apiName = "General Device Low Battery";
@@ -560,8 +550,7 @@ public class APIMessage {
                         break;
                     case HandheldKeypadLowBatteryTroubleRestore: /* ("828 */
                         apiName = "Handheld Keypad Low Battery Trouble Restore";
-                        apiDescription = apiCodeReceived
-                                + ": A handhekd keypad low battery condition has been restored.";
+                        apiDescription = apiCodeReceived + ": A handhekd keypad low battery condition has been restored.";
                         zone = Integer.parseInt(apiMessage.substring(3));
                         break;
                     case GeneralSystemTamper: /* 829 */
@@ -600,8 +589,7 @@ public class APIMessage {
                         break;
                     case VerboseTroubleStatus: /* 849 */
                         apiName = "Verbose Trouble Status";
-                        apiDescription = apiCodeReceived
-                                + ": a trouble appears on the system and roughly every 5 minutes until the trouble is cleared.";
+                        apiDescription = apiCodeReceived + ": a trouble appears on the system and roughly every 5 minutes until the trouble is cleared.";
                         break;
                     case KeybusFault: /* 896 */
                         apiName = "Keybus Fault";
@@ -619,10 +607,12 @@ public class APIMessage {
                     case LCDUpdate: /* 901 */
                         apiName = "LCD Update";
                         apiDescription = apiCodeReceived + ": Text of the IT-100 menu has changed.";
+                        apiMessageType = APIMessageType.KEYPAD_EVENT;
                         break;
                     case LCDCursor: /* 902 */
                         apiName = "LCD Cursor";
                         apiDescription = apiCodeReceived + ": Cursor position has changed.";
+                        apiMessageType = APIMessageType.KEYPAD_EVENT;
                         break;
                     case LEDStatus: /* 903 */
                         apiName = "LED Status";
@@ -669,8 +659,7 @@ public class APIMessage {
                         break;
                 }
 
-                logger.debug("parseAPIMessage(): Message Received ({}) - Code: {}, Name: {}, Description: {}, Data: {}",
-                        apiMessage, apiCodeReceived, apiName, apiDescription, data);
+                logger.debug("parseAPIMessage(): Message Received ({}) - Code: {}, Name: {}, Description: {}, Data: {}", apiMessage, apiCodeReceived, apiName, apiDescription, data);
             } else {
                 logger.debug("parseAPIMessage(): Invalid Message Received");
             }
@@ -698,7 +687,7 @@ public class APIMessage {
         sb.append(apiDescription);
         sb.append("\"");
 
-        if (timeStamp != "") {
+        if (StringUtils.isNotEmpty(timeStamp)) {
             sb.append(", Time Stamp: ");
             sb.append(timeStamp);
         }
@@ -713,22 +702,22 @@ public class APIMessage {
             sb.append(zone);
         }
 
-        if (data != "") {
+        if (StringUtils.isNotEmpty(data)) {
             sb.append(", Data: ");
             sb.append(data);
         }
 
-        if (mode != "") {
+        if (StringUtils.isNotEmpty(mode)) {
             sb.append(", Mode: ");
             sb.append(mode);
         }
 
-        if (user != "") {
+        if (StringUtils.isNotEmpty(user)) {
             sb.append(", user: ");
             sb.append(user);
         }
 
-        if (error != "") {
+        if (StringUtils.isNotEmpty(error)) {
             sb.append(", error: ");
             sb.append(error);
         }

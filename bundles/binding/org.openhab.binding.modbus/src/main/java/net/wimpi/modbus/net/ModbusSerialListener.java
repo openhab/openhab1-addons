@@ -1,3 +1,4 @@
+
 /***
  * Copyright 2002-2010 jamod development team
  *
@@ -15,6 +16,8 @@
  ***/
 
 package net.wimpi.modbus.net;
+
+import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,23 +39,38 @@ import net.wimpi.modbus.util.SerialParameters;
  * @version @version@ (@date@)
  */
 public class ModbusSerialListener {
+	
+  public static class SerialConnectionFactoryImpl implements SerialConnectionFactory {
+
+		@Override
+		public SerialConnection create(SerialParameters parameters) {
+			return new SerialConnection(parameters); 
+		}
+
+	  }
 
     private static final Logger logger = LoggerFactory.getLogger(ModbusSerialListener.class);
     // Members
     private boolean m_Listening; // Flag for toggling listening/!listening
     private SerialConnection m_SerialCon;
     private static int c_RequestCounter = 0; // counter for amount of requests
+    private SerialConnectionFactory m_ConnectionFactory;
 
     /**
      * Constructs a new <tt>ModbusSerialListener</tt> instance.
      *
      * @param params a <tt>SerialParameters</tt> instance.
      */
-    public ModbusSerialListener(SerialParameters params) {
-        m_SerialCon = new SerialConnection(params);
+    public ModbusSerialListener(SerialParameters params, SerialConnectionFactory connectionFactory) {
+        this.m_ConnectionFactory = connectionFactory;
+        m_SerialCon = m_ConnectionFactory.create(params);
         logger.trace("Created connection");
         listen();
-    }// constructor
+    }//constructor
+    
+    public ModbusSerialListener(SerialParameters params) {
+          this(params, new SerialConnectionFactoryImpl());
+    }
 
     /**
      * Listen to incoming messages.

@@ -252,7 +252,7 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
     public boolean isConnected() {
         return out != null;
     }
-    
+
     @Override
     public void clearReceiveBuffer() {
         ignoreReceiveBuffer = true;

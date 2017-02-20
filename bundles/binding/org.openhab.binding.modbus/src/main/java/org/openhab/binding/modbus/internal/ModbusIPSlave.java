@@ -8,7 +8,11 @@
  */
 package org.openhab.binding.modbus.internal;
 
+import org.apache.commons.pool2.KeyedObjectPool;
+import org.openhab.binding.modbus.internal.pooling.ModbusSlaveEndpoint;
+
 import net.wimpi.modbus.Modbus;
+import net.wimpi.modbus.net.ModbusSlaveConnection;
 
 /**
  *
@@ -16,29 +20,34 @@ import net.wimpi.modbus.Modbus;
  */
 public abstract class ModbusIPSlave extends ModbusSlave {
 
+    public ModbusIPSlave(String slave, KeyedObjectPool<ModbusSlaveEndpoint, ModbusSlaveConnection> connectionPool) {
+        super(slave, connectionPool);
+        updateEndpoint();
+    }
+
     /** host address */
     protected String host;
     /** connection port. Default 502 */
     protected int port = Modbus.DEFAULT_PORT;
 
-    public ModbusIPSlave(String slave) {
-        super(slave);
-    }
-
-    String getHost() {
+    public String getHost() {
         return host;
     }
 
-    void setHost(String host) {
+    public void setHost(String host) {
         this.host = host;
+        updateEndpoint();
     }
 
-    int getPort() {
+    public int getPort() {
         return port;
     }
 
-    void setPort(int port) {
+    public void setPort(int port) {
         this.port = port;
+        updateEndpoint();
     }
+
+    protected abstract void updateEndpoint();
 
 }

@@ -20,15 +20,17 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *
  *        <p>
  *        The following features are supported:
- *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn#getDeviceType
- *        <em>Device Type</em>}</li>
- *        </ul>
  *        </p>
+ *        <ul>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMIndustrialDigitalIn()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MSubDevice<org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.DigitalValue>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSubDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4>
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.DigitalValue>"
  * @generated
  */
 public interface MIndustrialDigitalIn extends MSubDevice<MBrickletIndustrialDigitalIn4>, MSensor<HighLowValue> {

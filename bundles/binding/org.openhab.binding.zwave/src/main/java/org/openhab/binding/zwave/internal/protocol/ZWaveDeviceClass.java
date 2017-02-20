@@ -610,7 +610,9 @@ public class ZWaveDeviceClass {
                 case SMOKE_SENSOR_ZENSOR:
                     return new CommandClass[] { CommandClass.SENSOR_ALARM, CommandClass.MANUFACTURER_SPECIFIC,
                             CommandClass.BATTERY, CommandClass.VERSION };
-
+                case SECURE_KEYPAD_DOOR_LOCK:
+                    return new CommandClass[] { CommandClass.SECURITY, CommandClass.MANUFACTURER_SPECIFIC,
+                            CommandClass.DOOR_LOCK, CommandClass.USER_CODE, CommandClass.VERSION };
                 default:
                     return new CommandClass[0];
             }

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>HS-WS100+</Model>
+    <Label lang="en">Scene Capable Wall Switch</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x2C</id>             <!-- SCENE_ACTUATOR_CONF -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x2B</id>             <!-- SCENE_ACTIVATION -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x5B</id>             <!-- CENTRAL_SCENE -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Indicator LED</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">LED on when switch is OFF</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">LED on when switch is ON</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">LED always off</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Orientation</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Normal</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Inverted</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Group 1</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>

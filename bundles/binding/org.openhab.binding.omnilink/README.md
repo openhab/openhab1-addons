@@ -1,8 +1,6 @@
-## Introduction
+# HAI/Leviton Omni and Lumina Binding
 
-This is a OpenHab binding for HAI/Leviton Omni and Lumina home automation controllers
-
-The HAI/Leviton Omni is a popular home automation system in the US.  At Its core the Omni is a hardware board that provides security and access features.  It connects to many other devices through serial ports or relays and exposes them through a single TCP based API.
+The HAI/Leviton Omni is a popular home automation system in the US.  At its core, the Omni is a hardware board that provides security and access features.  It connects to many other devices through serial ports or relays and exposes them through a single TCP based API.
 
 The binding is fairly complete and supports the following functionality.
 
@@ -41,42 +39,33 @@ The binding is fairly complete and supports the following functionality.
     * Proficient(AudioVideo)
     * HAI Sensors and Thermostats
 
-More information about the Leviton line of controllers can be found at their [site](http://www.leviton.com/OA_HTML/SectionDisplay.jsp?section=60577&minisite=10251)
+More information about the Leviton line of controllers can be found at their [site](http://www.leviton.com/OA_HTML/SectionDisplay.jsp?section=60577&minisite=10251).
 
-## Installation 
+## Binding Configuration
 
-Copy the binding jar (org.openhab.omnilink*.jar) to the addons directory
+The binding can be configured in the file `services/omnilink.cfg`.
 
-add the following to your openhab.cfg
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| port     | 4369    |   No     | TCP/IP port number of the Omni panel |
+| host     |         | Yes      | IP address or host name of the Omni panel |
+| key1     |         | Yes      | crypto key 1 for your omni panel.  The key may be found in the installer menu on a HAI keypad or touchscreen. Each key is 16 hex characters in pairs separated by colons (aa:bb:cc) |
+| key2     |         | Yes      | crypto key 2 for your omni panel.  The key may be found in the installer menu on a HAI keypad or touchscreen. Each key is 16 hex characters in pairs separated by colons (aa:bb:cc) |
+| generateItems | true | No     | if set to true, the binding will print all known items and a sample sitemap to the log file (INFO).  Useful when setting up for the first time. Adds a little time to the binding startup. |
+
+## Item Configuration
+
+The format is 
+
 ```
-#################################Omnilink##################################################
-#
-#Enter the port (4369) host ip or name and the two crypto keys for your omni panel.  The
-#two keys may be found in the installer menu on a HAI keypad or touchscreen. Each key is
-#16 hex characters in pairs separated by colons (aa:bb:cc)
-#
-#if generateItems is set to true then the binding will print all known items and a sample
-#sitemap to the log file (INFO).  Useful when setting up for the first time. 
-#
-omnilink:port=4369
-omnilink:host=panel.yourdomain.com
-omnilink:key1=00:AA:BB:CC:DD:EE:FF:11
-omnilink:key2=00:AA:BB:CC:DD:EE:FF:11
-omnilink:generateItems=true
+omnilink="<type>:<index>"
 ```
 
-The two keys are hex characters separated  by colons, they can be found in the installer menu on your panel.
+where `<type>` is from the list below.
 
-if generateItems is true then a items configuration and simple sitemap will be printed to the log.  This is useful for an initial setup, but adds a little time to the binding startup. 
+### Types and Supported Items
 
-
-## Items
-
-if you want to manually add a item, the following types are supported:
-
-format is {omnilink:"type:number"}
-
-some types can be read (get) or read and set (get/set)
+Some types can be read (get) or read and set (get/set).
 
 * unit (get/set)
   * Dimmer
@@ -155,13 +144,15 @@ some types can be read (get) or read and set (get/set)
 * button (set)
   * String (send any non empty string to push)
   
-## Item Examples
+## Examples
 
-Dimmer for unit 2:
+### Dimmer for unit 2
 
-`Dimmer  Lights_Kitchen_Lights_Switch  "Lights [%d%%]" (Lights_Kitchen)  {omnilink="unit:2"}`
+```
+Dimmer  Lights_Kitchen_Lights_Switch  "Lights [%d%%]" (Lights_Kitchen)  {omnilink="unit:2"}
+```
 
-Thermostat 1:
+### Thermostat 1
 
 ```
 Number  Thermostats_MasterBed_Temp  "Temperature [%d °F]" (Thermostats_MasterBed) {omnilink="thermo_temp:1"}
@@ -172,7 +163,7 @@ Number  Thermostats_MasterBed_Fan "System Fan [%d]" (Thermostats_MasterBed) {omn
 Number  Thermostats_MasterBed_Hold  "System Hold [%d]"  (Thermostats_MasterBed) {omnilink="thermo_hold_mode:1"}
 ```
 
-Audio Zone 1:
+### Audio Zone 1
 
 ```
 Switch  AudioZones_Basement_Power "Power" (AudioZones_Basement) {omnilink="audiozone_power:1"}
@@ -186,7 +177,7 @@ String  AudioZones_Basement_Field3  "Field 3 [%s]"  (AudioZones_Basement) {omnil
 Number  AudioZones_Basement_Key "Key [%d]"  (AudioZones_Basement) {omnilink="audiozone_key:1",autoupdate="false"}
 ```
 
-Audio Source 1:
+### Audio Source 1
 
 ```
 String  AudioSources_XM_Text  "Now Playeing: [%s]"  (AudioSources_XM) {omnilink="audiosource_text:1"}
@@ -195,7 +186,7 @@ String  AudioSources_XM_Field2  "Field 2 [%s]"  (AudioSources_XM) {omnilink="aud
 String  AudioSources_XM_Field3  "Field 3 [%s]"  (AudioSources_XM) {omnilink="audiosource_field3:1"}
 ```
 
-Area (security) 1
+### Area (security) 1
 
 ```
 Number  Areas_Main_ExitDelay  "Exit Delay: [%d]"  (Areas_Main)  {omnilink="area_status_exit_delay:1"}
@@ -205,7 +196,8 @@ Number  Areas_Main_EntryTimer "Exit Delay: [%d]"  (Areas_Main)  {omnilink="area_
 String  Areas_Main_Mode "Mode: [%s]"  (Areas_Main)  {omnilink="area_status_mode:1"}
 String  Areas_Main_Alarm  "Alarm: [%s]" (Areas_Main)  {omnilink="area_status_alarm:1"}
 ```
-Contact zone number 17
+
+### Contact zone number 17
 
 ```
 Contact Zones_FrontDoor_Current "Current: [%s]" (Zones_FrontDoor) {omnilink="zone_status_current:17"}
@@ -214,7 +206,8 @@ String  Zones_FrontDoor_Arming  "Arming [%s]" (Zones_FrontDoor) {omnilink="zone_
 String  Zones_FrontDoor_All "Status  [%s]"  (Zones_FrontDoor) {omnilink="zone_status_all:17"}
 ```
 
-Button 1
+### Button 1
 
-`String Buttons_MusicOn "Music On"  (Buttons) {omnilink="button:1",autoupdate="false"}`
-
+```
+String Buttons_MusicOn "Music On"  (Buttons) {omnilink="button:1",autoupdate="false"}
+```

@@ -54,7 +54,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
      */
     @Override
     public void validateItemType(Item pvItem, String pvBindingConfig) throws BindingConfigParseException {
-        logger.debug("validateItemType: " + pvItem.getName() + " - bindingConfig:" + pvBindingConfig);
+        logger.debug("validateItemType: {} - bindingConfig:{}", pvItem.getName(), pvBindingConfig);
 
         if (OneWireBindingConfigFactory.isValidItemType(pvItem, pvBindingConfig)) {
             return;
