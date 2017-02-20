@@ -82,7 +82,8 @@ Valid slave parameters are
 | type     | mandatory | object type. Dictates the function codes used for read and write. See below for more information. Can be either `coil`, `discrete`, `holding`, or `input`. |
 | start    | optional  | address of first coil/discrete input/register to read. Default is 0. The address is directly passed to the corresponding Modbus request, and thus is zero-based. See below for more information on the addressing. |
 | length   | mandatory | number of _data items_ to read. _Data items_ here refers to registers, coils or discrete inputs depending on the slave type. For example, if the goal is to read one item with `valuetype=int32`, one needs to read two registers (2 * 16bit = 32bit), thus `length = 2`. If three coils are of interest, one should specify `length = 3` |
-| valuetype | optional | tells how interpret the register data. For details, consult [Register interpretation (valuetype) on read & write](#register-interpretation-valuetype-on-read--write). | updateunchangeditems | optional | **Since 1.9.0*. `true` or `false`. Controls whether the binding sends an update event on every successful poll (`true`) or only if the state of the item actually changes (`false`).  Default is `false`. When polling many items with high poll frequency, setting this parameter to `true` may cause significant CPU usage. |
+| valuetype | optional | tells how interpret the register data. For details, consult [Register interpretation (valuetype) on read & write](#register-interpretation-valuetype-on-read--write). 
+| updateunchangeditems | optional | **Since 1.9.0*. `true` or `false`. Controls whether the binding sends an update event on every successful poll (`true`) or only if the state of the item actually changes (`false`).  Default is `false`. When polling many items with high poll frequency, setting this parameter to `true` may cause significant CPU usage. |
 | postundefinedonreaderror | optional | **Since 1.9.0**. `true` or `false`. Controls whether the binding sends `Undefined` (`UnDefType.UNDEF`) to the items associated with this slave when a read error occurs. Here read error refers to connection issues (cannot establish connection), I/O error (e.g. uninterrupted connection, unexpected EOF), [modbus protocol exceptions](http://www.simplymodbus.ca/exceptions.htm) (e.g. "Illegal data address"), or response transaction id not matching the request. Note that when `updateunchangeditems` is enabled, the `Undefined` is sent only once on errors, unless the slave recovers from the error. |
 
 ### Advanced connection parameters
@@ -560,4 +561,4 @@ To summarize, here are the recommended steps in case of errors
 
 1. Update to latest development version; especially if you are using modbus binding version before 1.9.0
 2. isolate the issue using minimal configuration, and enable verbose logging (see above)
-3. record logs and configuration to [pastebin.com](http://pastebin.com/).  The page contains examples for use with the [[Modbus binding|Modbus-Binding]].
+3. record logs and configuration to [pastebin.com](http://pastebin.com/).  
