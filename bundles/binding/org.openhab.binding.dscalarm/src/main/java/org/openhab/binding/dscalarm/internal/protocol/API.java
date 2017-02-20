@@ -321,14 +321,15 @@ public class API {
             case CommandOutputControl: /* 020 */
                 if (apiData[0] == null || !apiData[0].matches("[1-8]")) {
                     logger.error(
-                            "sendCommand(): Partition number must be a single character string from 1 to 8, it was: "
-                                    + apiData[0]);
+                            "sendCommand(): Partition number must be a single character string from 1 to 8, it was: {}",
+                            apiData[0]);
                     break;
                 }
 
                 if (apiData[1] == null || !apiData[1].matches("[1-4]")) {
-                    logger.error("sendCommand(): Output number must be a single character string from 1 to 4, it was: "
-                            + apiData[1]);
+                    logger.error(
+                            "sendCommand(): Output number must be a single character string from 1 to 4, it was: {}",
+                            apiData[1]);
                     break;
                 }
 
