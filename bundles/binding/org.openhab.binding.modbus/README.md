@@ -9,28 +9,36 @@ The binding can act as
 
 The Modbus binding polls the slaves with an configurable poll period. openHAB commands are translated to write requests.
 
+## Table of Contents
 
 <!-- Using MarkdownTOC plugin for Sublime Text to update the table of contents (TOC) -->
 <!-- MarkdownTOC depth=2 autolink=true bracket=round -->
 
-  - [Binding Configuration](#binding-configuration)
-  - [Configuration parameters specific to each slave](#configuration-parameters-specific-to-each-slave)
-  - [Item Configuration](#item-configuration)
+- [Binding Configuration](#binding-configuration)
+	- [Global configuration](#global-configuration)
+	- [Configuration parameters specific to each slave](#configuration-parameters-specific-to-each-slave)
+	- [Advanced connection parameters](#advanced-connection-parameters)
+- [Item Configuration](#item-configuration)
+	- [Single coil/register per item](#single-coilregister-per-item)
+	- [Separate coils for reading and writing](#separate-coils-for-reading-and-writing)
+	- [input coil only for reading](#input-coil-only-for-reading)
+	- [Read / write register \(number\)](#read--write-register-number)
 - [Details](#details)
-  - [Modbus functions supported](#modbus-functions-supported)
-  - [Comment on addressing](#comment-on-addressing)
-  - [Many modbus binding slaves for single physical slave](#many-modbus-binding-slaves-for-single-physical-slave)
-  - [Read and write functions \(modbus slave type\)](#read-and-write-functions-modbus-slave-type)
-  - [Register interpretation \(valuetype\) on read & write](#register-interpretation-valuetype-on-read--write)
+	- [Modbus functions supported](#modbus-functions-supported)
+	- [Comment on addressing](#comment-on-addressing)
+	- [Many modbus binding slaves for single physical slave](#many-modbus-binding-slaves-for-single-physical-slave)
+	- [Read and write functions \(modbus slave type\)](#read-and-write-functions-modbus-slave-type)
+- [Register interpretation \(valuetype\) on read & write](#register-interpretation-valuetype-on-read--write)
+	- [Write](#write)
+	- [Modbus RTU over TCP](#modbus-rtu-over-tcp)
+- [Config Examples](#config-examples)
 - [Troubleshooting](#troubleshooting)
-  - [Enable verbose logging](#enable-verbose-logging)
+	- [Enable verbose logging](#enable-verbose-logging)
 - [For developers](#for-developers)
-  - [Testing serial implementation](#testing-serial-implementation)
-  - [Testing TCP implementation](#testing-tcp-implementation)
-  - [Writing data](#writing-data)
-  - [Troubleshooting](#troubleshooting-1)
-  - [Table of Contents](#table-of-contents)
-  - [Rollershutter Items](#rollershutter-items)
+	- [Testing serial implementation](#testing-serial-implementation)
+	- [Testing TCP implementation](#testing-tcp-implementation)
+	- [Writing data](#writing-data)
+	- [Troubleshooting](#troubleshooting-1)
 
 <!-- /MarkdownTOC -->
 
@@ -48,13 +56,13 @@ Most of config parameters are related to specific slaves, but some are global an
 | poll     | 200     |   No     | **Poll period (optional)**<br/> Frequency of polling Modbus slaves. Note that the value is in milliseconds! For example, `poll=1000` makes the binding poll Modbus slaves once per second. |
 | writemultipleregisters | false | No | **Function code to use when writing holding registers (optional)**<br/>Binding can be configured to use FC 16 (*Write Multiple Holding Registers*) over FC 6 (*Write Single Holding Register*) when writing holding register items (see above).  This is optional and default is `false`. For example, `writemultipleregisters=true` makes the binding to use FC16 when writing holding registers. |
 
-## Configuration parameters specific to each slave
+### Configuration parameters specific to each slave
 
-The slaves are configured using key value pairs in openHAB config file. Each slave (identified by the slave name) in the config corresponds to a single modbus read request. Note that it might be necessary to define many "slaves" in openhab configuration to read all data from a single physical modbus slave.
+The slaves are configured using key value pairs in openHAB config file. Each slave (identified by the slave name) in the config corresponds to a single modbus read request. Note that it might be necessary to define many "slaves" in openHAB configuration to read all data from a single physical modbus slave.
 
 The configuration parameters have the following pattern:
 
-```ini
+```
 <slave-type>.<slave-name>.<slave-parameter-name>=<slave-parameter-value>
 ```
 
@@ -67,59 +75,26 @@ where:
 
 Valid slave parameters are
 
-<table>
-  <tr><td>Property</td><td>Required</td><td>Description</td></tr>
-  <tr><td>connection</td><td>mandatory</td>
-       <td><p>Connection string for the slave.</p>
-           <p><b>TCP slaves</b> use the form <i>host_ip[:port]</i> e.g. <i>192.168.1.55</i> or <i>192.168.1.55:511</i>. If you omit port, default <i>502</i> will be used. </p>
-       <p>For <b>serial connections</b> use the form <i>port:[:baud:[dataBits:[parity:[stopBits:[encoding]]]]]</i>, e.g. <i>/dev/ttyS0:38400:8:none:1:rtu</i> (read from <i>/dev/ttyS0</i> using baud rate of 38400, 8 databits, no parity, 1 stopbits, and rtu encoding. Another minimal example is <i>/dev/ttyS0:38400</i> where all optional parameters except baud rate will get their default values.</p>
+| Property | Required | Description |
+|----------|----------|-------------|
+| connection | mandatory | Connection string for the slave.<br/><br/>**TCP slaves** use the form `host_ip[:port]` e.g. `192.168.1.55` or `192.168.1.55:511`. If you omit port, default `502` will be used.<br/><br/>For **serial connections** use the form `port:[:baud:[dataBits:[parity:[stopBits:[encoding]]]]]`, e.g. `/dev/ttyS0:38400:8:none:1:rtu` (read from `/dev/ttyS0` using baud rate of 38400, 8 databits, no parity, 1 stopbits, and rtu encoding. Another minimal example is `/dev/ttyS0:38400` where all optional parameters except baud rate will get their default values.<br/><br/>`port` refers to COM port name on Windows and serial device path in *nix. Optionally one can configure one or more of the serial parameters: baud (default `9600`), dataBits (default `8`), parity (default `none`), stopBits (default `1`), encoding (default `ascii`). <br/>Options for the optional serial parameters are as follows: parity={`even`, `odd`}; encoding={`ascii`, `rtu`, `bin`}. |
+| id       | optional | slave id, default `1`. Also known as _Address_, _Station address_, or _Unit identifier_, see [Wikipedia](https://en.wikipedia.org/wiki/Modbus) and [simplymodbus](http://www.simplymodbus.ca/index.html) articles for more information |
+| type     | mandatory | object type. Dictates the function codes used for read and write. See below for more information. Can be either `coil`, `discrete`, `holding`, or `input`. |
+| start    | optional  | address of first coil/discrete input/register to read. Default is 0. The address is directly passed to the corresponding Modbus request, and thus is zero-based. See below for more information on the addressing. |
+| length   | mandatory | number of _data items_ to read. _Data items_ here refers to registers, coils or discrete inputs depending on the slave type. For example, if the goal is to read one item with `valuetype=int32`, one needs to read two registers (2 * 16bit = 32bit), thus `length = 2`. If three coils are of interest, one should specify `length = 3` |
+| valuetype | optional | tells how interpret the register data. For details, consult [Register interpretation (valuetype) on read & write](#register-interpretation-valuetype-on-read--write). | updateunchangeditems | optional | **Since 1.9.0*. `true` or `false`. Controls whether the binding sends an update event on every successful poll (`true`) or only if the state of the item actually changes (`false`).  Default is `false`. When polling many items with high poll frequency, setting this parameter to `true` may cause significant CPU usage. |
+| postundefinedonreaderror | optional | **Since 1.9.0**. `true` or `false`. Controls whether the binding sends `Undefined` (`UnDefType.UNDEF`) to the items associated with this slave when a read error occurs. Here read error refers to connection issues (cannot establish connection), I/O error (e.g. uninterrupted connection, unexpected EOF), [modbus protocol exceptions](http://www.simplymodbus.ca/exceptions.htm) (e.g. "Illegal data address"), or response transaction id not matching the request. Note that when `updateunchangeditems` is enabled, the `Undefined` is sent only once on errors, unless the slave recovers from the error. |
 
-<p>
-<i>port</i> refers to COM port name on Windows and serial device path in *nix. Optionally one can configure one or more of the serial parameters: baud (default <i>9600</i>), dataBits (default <i>8</i>), parity (default <i>none</i>), stopBits (default <i>1</i>), encoding (default <i>ascii</i>). <br/>Options for the optional serial parameters are as follows: parity={<i>even</i>, <i>odd</i>}; encoding={<i>ascii</i>, <i>rtu</i>, <i>bin</i>}.</p>
+### Advanced connection parameters
 
-See also below for additional connection parameters introduced in 1.9.0.
+Since 1.9.0, `connection` parameter can take additional colon (`:`) separated parameters:
 
-</td>
-     </tr>
-  <tr><td>id</td><td>optional</td>
-       <td>slave id, default 1. Also known as <i>Address</i>, <i>Station address</i>, or <i>Unit identifier</i>, see <a href="https://en.wikipedia.org/wiki/Modbus">wikipedia</a> and <a href="http://www.simplymodbus.ca/index.html">simplymodbus</a> articles for more information</td>
-      </tr>
-
-       <tr><td>type</td><td>mandatory</td>
-              <td>object type. Dictates the function codes used for read & write. See below for more information. Can be either <i>coil</i>, <i>discrete</i>, <i>holding</i>, or <i>input</i>.</td>
-            </tr>
-       
-       <tr><td>start</td><td>optional</td>
-              <td>address of first coil/discrete input/register to read. Default is 0. The address is directly passed to the corresponding Modbus request, and thus is zero-based. See below for more information on the addressing. </td>
-            </tr>
-
-       <tr><td>length</td><td>mandatory</td><td>number of <i>data items</i> to read. <i>Data items</i> here refers to registers, coils or discrete inputs depending on the slave type. For example, if the goal is to read one item with <code>valuetype=int32</code>, one needs to read two registers (2 * 16bit = 32bit), thus <code>length = 2</code>. If three coils are of interest, one should specify <code>length = 3</code></td>
-              </tr>
-            </tr>
-
-       <tr><td>valuetype</td><td>optional</td><td>tells how interpret the register data. For details, consult <a href="#register-interpretation-valuetype-on-read--write">Register interpretation (valuetype) on read & write.</td>
-              </tr>
-            </tr>
-
-       <tr><td>updateunchangeditems</td><td>optional</td><td><b>Since 1.9.0</b>. <i>true</i> or <i>false</i>. Controls whether the binding sends an update event on every successful poll (true) or only if the state of the item actually changes (false). Default is <i>false</i>. When polling many items with high poll frequency, setting this parameter to <i>true</i> may cause significant CPU usage.</td>
-              </tr>
-
-       <tr><td>postundefinedonreaderror</td><td>optional</td><td><b>Since 1.9.0</b>. <i>true</i> or <i>false</i>. Controls whether the binding sends <code>Undefined</code> to the items associated with this slave when read error occurs. Here read error refers to connection issues (cannot establish connection), IO error (e.g. uninterrupted connection, unexpected EOF), <a href="http://www.simplymodbus.ca/exceptions.htm">modbus protocol exceptions</a> (e.g. "Illegal data address"), or response transaction id not matching the request. Note that when <code>updateunchangeditems</code> is enabled, the <code>Undefined</code> is sent only once on errors, unless the slave recovers from the error.</td>
-              </tr>
-
-</table>
-</td>
-
-### Advanced connection parameters (**since 1.9.0**)
-
-Since 1.9.0 `connection` parameter can take additional colon (:) separated parameters:
-
-- For TCP slave the new format for connection parameter is: <i>host_ip[:port[:interTransactionDelayMillis[:reconnectAfterMillis[:interConnectDelayMillis[:connectMaxTries[:connectTimeout]]]]]]</i>. 
-- For the serial slaves the new format is: <i>port[:baud[:dataBits[:parity[:stopBits[:encoding[:interTransactionDelayMillis[:receiveTimeoutMillis[:flowControlIn[:flowControlOut]]]]]]]]</i>
+- For TCP slave the new format for connection parameter is: `host_ip[:port[:interTransactionDelayMillis[:reconnectAfterMillis[:interConnectDelayMillis[:connectMaxTries[:connectTimeout]]]]]]`. 
+- For the serial slaves the new format is: `port[:baud[:dataBits[:parity[:stopBits[:encoding[:interTransactionDelayMillis[:receiveTimeoutMillis[:flowControlIn[:flowControlOut]]]]]]]]`.
 
 Explanation of these new parameters
 
-- `interTransactionDelayMillis`: : Time to wait between consecutive modbus transactions (to the same host or serial device), in milliseconds. Each modbus transaction corresponds to read or write operation. Default 35 for serial slaves and 60 for tcp slaves.
+- `interTransactionDelayMillis`: Time to wait between consecutive modbus transactions (to the same host or serial device), in milliseconds. Each modbus transaction corresponds to read or write operation. Default 35 for serial slaves and 60 for tcp slaves.
 - `reconnectAfterMillis`: Time after which connection is disconnected and re-established, in milliseconds. Default 0 (closes connection after every transaction).
 - `interConnectDelayMillis`: Time to wait between consecutive connection attempts (to the same host or ip), in milliseconds. Default 0.
 - `connectMaxTries`: Maximum tries when establishing connection. Default 3.
@@ -147,7 +122,7 @@ There are three ways to bind an item to modbus coils/registers.
 
 ### Single coil/register per item
 
-```ini
+```
 Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}
 ```
 
@@ -157,16 +132,16 @@ Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}
 
 ### Separate coils for reading and writing
 
-```ini
+```
 Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:<6:>7"}
 ``` 
 
 - In this case coil 6 is used as status coil (read-only) and commands are put to coil 7 by setting coil 7 to true.
-- (?) Your hardware should then set coil 7 back to false to allow further commands processing (Note 16.3.2016: does this relate to [issue #3685](https://github.com/openhab/openhab/issues/3685)?).
+- (?) Your hardware should then set coil 7 back to false to allow further commands processing (Note 16.3.2016: does this relate to [issue #3685](https://github.com/openhab/openhab1-addons/issues/3685)?).
 
 ### input coil only for reading
 
-```ini
+```
 Contact Contact1 "Contact1 [MAP(en.map):%s]" (All)   {modbus="slave2:0"}
 ```
 
@@ -177,13 +152,13 @@ counter values in most cases 16bit values, now we must do math: in rules to deal
 
 ### Read / write register (number) 
 
-```ini
+```
 Number Dimmer1 "Dimmer1 [%d]" (ALL) {modbus="slave4:0"}
 ```
 
 and in sitemap you can for example
 
-```ini
+```
 Setpoint item=Dimmer1 minValue=0 maxValue=100 step=5
 ```
 
@@ -193,13 +168,13 @@ Setpoint item=Dimmer1 minValue=0 maxValue=100 step=5
 
 5. read only register `type=input`
 
-```ini
+```
 Number MyCounterH "My Counter high [%d]" (All) {modbus="slave3:0"}
 ```
 
 this reads counter 1 high word when valuetype=`int8` or `uint8`
 
-```ini
+```
 Number MyCounterL "My Counter low [%d]" (All) {modbus="slave3:1"}
 ```
 
@@ -209,16 +184,16 @@ this reads counter 1 low word when valuetype=`int8` or `uint8`
 
 When using a float32 value you must use [%f] in item description.
 
-```ini
+```
 Number MyCounter "My Counter [%f]" (All) {modbus="slave5:0"}`
 ```
 
 
-# Details
+## Details
 
-## Modbus functions supported
+### Modbus functions supported
 
-### Supported Modbus object types
+#### Supported Modbus object types
 
 Modbus binding allows to connect to multiple Modbus slaves. The binding supports following Modbus *object types*
 
@@ -231,7 +206,7 @@ Binding can be configured to interpret values stored in the 16bit registers in d
 
 For more information on these object types, please consult [Modbus wikipedia article](https://en.wikipedia.org/wiki/Modbus).
 
-### Read and write functions
+#### Read and write functions
 
 Modbus specification has different operations for reading and writing different object types. These types of operations are identified by *function code*. Some devices support only certain function codes.
 
@@ -246,9 +221,7 @@ The binding uses following function codes when communicating with the slaves:
 - read holding registers: FC 3 (*Read Multiple Holding Registers*)
 - write holding register: FC 6 (*Write Single Holding Register*), OR  FC 16 (*Write Multiple Holding Registers*) (see note on `writemultipleregisters` configuration parameter below)
 
-
-
-## Comment on addressing
+### Comment on addressing
 
 [Modbus Wikipedia article](https://en.wikipedia.org/wiki/Modbus#Coil.2C_discrete_input.2C_input_register.2C_holding_register_numbers_and_addresses) summarizes this excellently:
 
@@ -261,13 +234,13 @@ The binding uses following function codes when communicating with the slaves:
 
 > This translates into [entity] addresses between 0 and 9,998 in data frames.
 
-The openhab modbus binding uses data frame entity addresses when referring to modbus entities. That is, the entity address configured in modbus binding is passed to modbus protocol frame as-is. For example, modbus slave definition with `start=3`, `length=2` and `type=holding` will read modbus entities with the following numbers 40004 and 40005.
+The openHAB modbus binding uses data frame entity addresses when referring to modbus entities. That is, the entity address configured in modbus binding is passed to modbus protocol frame as-is. For example, modbus slave definition with `start=3`, `length=2` and `type=holding` will read modbus entities with the following numbers 40004 and 40005.
 
-## Many modbus binding slaves for single physical slave
+### Many modbus binding slaves for single physical slave
 
-One needs to configure as many modbus slaves to openhab as there are corresponding modbus requests. For example, in order to poll status of `coil` and `holding` items from a single [physical] modbus slave, two separate modbus slave definitions need to be configured in the `modbus.cfg`. For example:
+One needs to configure as many modbus slaves to openHAB as there are corresponding modbus requests. For example, in order to poll status of `coil` and `holding` items from a single [physical] modbus slave, two separate modbus slave definitions need to be configured in the `modbus.cfg`. For example:
 
-```ini
+```
 serial.slave1.connection=/dev/pts/8:38400:8:none:1:rtu
 serial.slave1.type=coil
 serial.slave1.length=3
@@ -277,11 +250,11 @@ serial.slave2.type=holding
 serial.slave2.length=5
 ```
 
-Please note that the binding requires that all slaves connecting to the same serial port share the same connection parameters (e.g. baud-rate, parity, ..). In particular are different parameter settings considered bad practice, because they can confuse the instances (slaves) on the modbus.  For additional information, see [this discussion](https://community.openhab.org/t/connection-pooling-in-modbus-binding/5246/161?u=ssalonen) in the community forums.
+Please note that the binding requires that all slaves connecting to the same serial port share the same connection parameters (e.g. baud-rate, parity, ..). In particular are different parameter settings considered bad practice, because they can confuse the instances (slaves) on the modbus.  For additional information, see [this discussion](https://community.openHAB.org/t/connection-pooling-in-modbus-binding/5246/161?u=ssalonen) in the community forums.
 
 Similarly, one must have identical connection parameters for all tcp slaves connecting to same host+port.
 
-## Read and write functions (modbus slave type)
+### Read and write functions (modbus slave type)
 
 Modbus read functions 
 
@@ -302,9 +275,9 @@ See also [simplymodbus.ca](http://www.simplymodbus.ca) and [wikipedia article](h
 
 Note that this section applies to register elements only (`holding` or `input` type)
 
-### Read
+#### Read
 
-When the binding interprets and converts polled input registers (`input`) or holding registers (`holding`) to openhab items, the process goes like this:
+When the binding interprets and converts polled input registers (`input`) or holding registers (`holding`) to openHAB items, the process goes like this:
 
 - 1. register(s) are first parsed to a number (see below for the details, exact logic depends on `valuetype`)
 - 2a. if the item is Switch or Contact: zero is converted CLOSED / OFF. Other numbers are converted to OPEN / ON.
@@ -312,7 +285,7 @@ When the binding interprets and converts polled input registers (`input`) or hol
 
 The logic for converting read registers to number goes as below. Different procedure is taken depending on `valuetype`. 
 
-Note that <i>first register</i> refers to register with address `start` (as defined in the slave definition), <i>second register</i> refers to register with address `start + 1` etc. The <i>index</i> refers to item read index, e.g. item `Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}` has 5 as read index.
+Note that _first register_ refers to register with address `start` (as defined in the slave definition), _second register_ refers to register with address `start + 1` etc. The _index_ refers to item read index, e.g. item `Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}` has 5 as read index.
 
 `valuetype=bit`:
 
@@ -394,7 +367,7 @@ If you get strange values using the int32, uint32 or float32 valuetypes then jus
 
 ### Write
 
-When the binding processes openhab command (e.g. sent by `sendCommand` as explained [here](https://github.com/openhab/openhab/wiki/Actions)), the process goes as follows
+When the binding processes openHAB command (e.g. sent by `sendCommand` as explained [here](https://github.com/openhab/openhab1-addons/wiki/Actions)), the process goes as follows
 
 1. it is checked whether the associated item is bound to holding register. If not, command is ignored.
 2. command is converted to 16bit integer (in [two's complement format](https://www.cs.cornell.edu/~tomf/notes/cps104/twoscomp.html)) (see below for details)
@@ -421,13 +394,13 @@ Some devices uses modbus RTU over TCP. This is usually Modbus RTU encapsulation 
 
 
 
-### Config Examples
+## Config Examples
 
-Please take a look at [Samples-Binding-Config page](https://github.com/openhab/openhab/wiki/Samples-Binding-Config) or examine to the following examples.
+Please take a look at [Samples-Binding-Config page](https://github.com/openhab/openhab1-addons/wiki/Samples-Binding-Config) or examine to the following examples.
 
 - Minimal construction in modbus.cfg for TCP connections will look like:
 
-```ini
+```
 # read 10 coils starting from address 0
 tcp.slave1.connection=192.168.1.50
 tcp.slave1.length=10
@@ -436,7 +409,7 @@ tcp.slave1.type=coil
  
 - Minimal construction in modbus.cfg for serial connections will look like:
 
-```ini
+```
 # read 10 coils starting from address 0
 serial.slave1.connection=/dev/ttyUSB0
 tcp.slave1.length=10
@@ -445,7 +418,7 @@ tcp.slave1.type=coil
 
 - More complex setup could look like
 
-```ini
+```
 # Poll values very 300ms = 0.3 seconds
 poll=300
 
@@ -468,7 +441,7 @@ tcp.slave1.type=coil
 > you only read 6 input bits and say start from 0
 > the moxa manual ist not right clear in this case 
 
-```ini
+```
 poll=300
 
 # Query coils from 192.168.6.180
@@ -513,18 +486,18 @@ tcp.slave5.valuetype=float32
 Above we used the same modbus gateway with ip 192.168.6.180 multiple times 
 on different modbus address ranges and modbus functions.
 
-# Troubleshooting
+## Troubleshooting
 
-## Enable verbose logging 
+### Enable verbose logging 
 
 Enable `DEBUG` or `TRACE` (even more verbose) logging for the loggers named:
 
 * `net.wimpi.modbus`
 * `org.openhab.binding.modbus`
 
-# For developers
+## For developers
 
-## Testing serial implementation
+### Testing serial implementation
 
 You can use test serial slaves without any hardware on linux using these steps:
 
@@ -535,9 +508,9 @@ You can use test serial slaves without any hardware on linux using these steps:
 ./diagslave -m rtu -a 1 -b 38400 -d 8 -s 1 -p none -4 10 /dev/pts/7
 ```
 
-3. Configure openhab's modbus slave to connect to `/dev/pts/8`: 
+3. Configure openHAB's modbus slave to connect to `/dev/pts/8`: 
 
-```ini
+```
 xxx.connection=/dev/pts/8:38400:8:none:1:rtu
 ```
 
@@ -549,7 +522,7 @@ xxx.connection=/dev/pts/8:38400:8:none:1:rtu
 
 Naturally this is not the same thing as the real thing but helps to identify simple issues.
 
-## Testing TCP implementation
+### Testing TCP implementation
 
 1. Download [diagslave](http://www.modbusdriver.com/diagslave.html) and start modbus tcp server (slave) using this command: 
 
@@ -557,29 +530,29 @@ Naturally this is not the same thing as the real thing but helps to identify sim
 ./diagslave -m tcp -a 1 -p 55502
 ```
 
-2. Configure openhab's modbus slave to connect to `127.0.0.1:55502`: 
+2. Configure openHAB's modbus slave to connect to `127.0.0.1:55502`: 
 
-```ini
+```
 tcp.slave1.connection=127.0.0.1:55502
 ```
 
-## Writing data
+### Writing data
 
 See this [community post](https://community.openhab.org/t/something-is-rounding-my-float-values-in-sitemap/13704/32?u=ssalonen) explaining how `pollmb` and `diagslave` can be used to debug modbus communication.
 
-## Troubleshooting
+### Troubleshooting
 
 To troubleshoot, you might be asked to update to latest development version. You can find the "snapshot" or development version from [Cloudbees CI](https://openhab.ci.cloudbees.com/job/openHAB1-Addons/lastSuccessfulBuild/artifact/bundles/binding/org.openhab.binding.modbus/target/).
 
 With modbus binding before 1.9.0, it strongly recommended to try out with the latest development version since many bugs were fixed in 1.9.0. Furthermore, error logging is enhanced in this new version.
 
-If the problem persists in the new version, it is recommended to try to isolate to issue using minimal configuration. Easiest would be to have a fresh openhab installation, and configure it minimally (if possible, single modbus slave in `modbus.cfg`, single item, no rules etc.). This helps the developers and community to debug the issue.
+If the problem persists in the new version, it is recommended to try to isolate to issue using minimal configuration. Easiest would be to have a fresh openHAB installation, and configure it minimally (if possible, single modbus slave in `modbus.cfg`, single item, no rules etc.). This helps the developers and community to debug the issue.
 
 Problems can be communicated via [community.openhab.org](https://community.openhab.org). Please use the search function to find out existing reports of the same issue. 
 
-It helps greatly to document the issue in detail (especially how to reproduce the issue), and attach the related [verbose logs](#enable-verbose-debug-logging). Try to keep interaction minimal during this test; for example, if the problem occurs with modbus read alone, do not touch the the switch items in openhab sitemap (would trigger write). 
+It helps greatly to document the issue in detail (especially how to reproduce the issue), and attach the related [verbose logs](#enable-verbose-debug-logging). Try to keep interaction minimal during this test; for example, if the problem occurs with modbus read alone, do not touch the the switch items in openHAB sitemap (would trigger write). 
 
-For attaching the logs to a community post, [pastebin.com](http://pastebin.com/) service is strongly recommended to keep the thread readable. It is useful to store the logs from openhab startup, and let it run for a while.
+For attaching the logs to a community post, the [pastebin.com](http://pastebin.com/) service is strongly recommended to keep the thread readable. It is useful to store the logs from openHAB startup, and let it run for a while.
 
 Remember to attach configuration lines from modbus.cfg, item definitions related to modbus binding, and any relevant rules (if any). You can use [pastebin.com](http://pastebin.com/) for this purpose as well.
 
@@ -587,99 +560,4 @@ To summarize, here are the recommended steps in case of errors
 
 1. Update to latest development version; especially if you are using modbus binding version before 1.9.0
 2. isolate the issue using minimal configuration, and enable verbose logging (see above)
-3. record logs and configuration to [pastebin.com](http://pastebin.com/)The page contains examples for use with the [[Modbus binding|Modbus-Binding]].
-
-## Table of Contents
-
-* [Rollershutter Items](#rollershutter-items)
-
-## Rollershutter Items
-
-Since Modbus is a low-level protocol, more abstract concepts like controlling roller shutters can be implemented in a number of different ways.  This example (offered by @ssalonen [here](https://github.com/openhab/openhab/pull/4654#issuecomment-248996109)) is one approach using openHAB rules and the standard Modbus binding.  Adapt it to your needs, and please edit this wiki page to correct and clarify this example.
-
-### default.rules
-
-```
-import org.openhab.core.library.types.DecimalType
-import org.openhab.core.library.types.PercentType
-// comment out the above imports if running on openHAB 2+
-
-rule "Process roller shutter commands"
-when
-    Item myRS received command
-then
-    logInfo("rollerShutterRules", "Processing RS command")
-    if(receivedCommand != null){        
-        switch(receivedCommand.toString.upperCase) {        
-            case "UP" : {
-                sendCommand(myRSUpDown, 1)
-            }
-            case "DOWN":{
-                sendCommand(myRSUpDown, -1)
-            }
-            case "STOP":{ 
-                sendCommand(myRSMoveStop, 1)
-            }   
-            case "MOVE":{
-                sendCommand(myRSMoveStop, 0)
-            }
-        }
-    }
-end
-
-rule "Update roller shutter position"
-when
-    Item myRSMoveStop received update
-then
-    logInfo("rollerShutterRules", "Processing position update")
-    var currentPosition = myRSMoveStop.state as DecimalType
-    postUpdate(myRS, new PercentType(currentPosition.toBigDecimal))
-end
-```
-
-### default.items
-
-```
-
-// Main roller shutter item. 
-// - State will be updated from register index 0. 
-// - Up (1) & Down (-1) commands will be written to register index 1
-// - Move (0) & Stop (1) commands will be written to register index 2
-Rollershutter myRS "RollerShutter" (livingRoom)
-
-// Helper items for writing data to MODBUS
-Number myRSUpDown "RollerShutter Up/Down Control (writing to index 1, read from index 0)" (livingRoom) {modbus="slave1:<0:>1"} 
-Number myRSMoveStop "RollerShutter Move/Stop Control (writing to index 2, read from index 0)" (livingRoom) {modbus="slave1:<0:>2"} 
-```
-
-### default.sitemap
-
-```
-sitemap demo label="Main Menu" {
-    // https://github.com/openhab/openhab/wiki/Rollershutter-Bindings
-    Switch item=myRS label="Roller shutter [(%d)]" mappings=[UP="up", STOP="X", DOWN="down"]
-    Text item=myRSMoveStop
-    Text item=myRSUpDown
-}
-```
-
-### For local testing
-
-Starting up modbus tcp server (i.e. modbus slave)
-
-```
-./diagslave -m tcp -p 55502
-```
-
-services/modbus.cfg
-
-```
-tcp.slave1.connection=localhost:55502:0:0:0:1
-tcp.slave1.type=holding
-tcp.slave1.length=20
-tcp.slave1.postundefinedonreaderror=true
-```
-
-As inspiration I used [Roller shutter wiki page](https://github.com/openhab/openhab1-addons/wiki/Rollershutter-Bindings)
-
-[Table of Contents](#table-of-contents)
+3. record logs and configuration to [pastebin.com](http://pastebin.com/).  The page contains examples for use with the [[Modbus binding|Modbus-Binding]].
