@@ -737,15 +737,6 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
             additionalHeatingOnStatus = (value & FLAG_ADDITIONAL_HEATER_STATUS) == FLAG_ADDITIONAL_HEATER_STATUS ? true
                     : false;
 
-            // in case of any malfunction turn off ventilation, heat pump and additional heating
-            if (malfunction) {
-                // TODO Bei Störung Anlage ausschalten?
-                // ventilationLevel = 0;
-                // heatPumpOn = false;
-                // additionalHeatingOn = false;
-                // coolingOn = false;
-            }
-
         }
     }
 
