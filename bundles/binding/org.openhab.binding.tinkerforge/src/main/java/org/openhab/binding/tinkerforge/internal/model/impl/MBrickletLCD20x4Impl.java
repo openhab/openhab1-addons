@@ -975,7 +975,7 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
         String oldText = text;
         text = newText;
         // TODO check if there are changes
-        logger.debug("setText: " + newText);
+        logger.debug("setText: {}", newText);
         try {
             if (text == null || text.equals("")) {
                 tinkerforgeDevice.clearDisplay();
