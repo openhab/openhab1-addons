@@ -83,7 +83,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
     /**
      * When polling quickly, how often do we poll
      */
-    private static int RAPID_REFRESH = 2000;
+    private int rapidRefresh = 2000;
 
     /**
      * Cap the time we poll rapidly to not overwhelm the servers with api
@@ -129,6 +129,11 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
         String refreshIntervalString = Objects.toString(configuration.get("refresh"), null);
         if (StringUtils.isNotBlank(refreshIntervalString)) {
             refreshInterval = Long.parseLong(refreshIntervalString);
+        }
+
+        String quickrefreshIntervalString = Objects.toString(configuration.get("quickrefresh"), null);
+        if (StringUtils.isNotBlank(quickrefreshIntervalString)) {
+            rapidRefresh = Integer.parseInt(quickrefreshIntervalString);
         }
 
         // update the internal configuration accordingly
@@ -352,10 +357,10 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
                     LampDevice lampModule = (LampDevice) device;
                     if (command.equals(OnOffType.ON)) {
                         myqOnlineData.executeMyQCommand(lampModule.getDeviceId(), "desiredlightstate", 1);
-                        beginRapidPoll(true);
+                        doFuturePoll(rapidRefresh);
                     } else if (command.equals(OnOffType.OFF)) {
                         myqOnlineData.executeMyQCommand(lampModule.getDeviceId(), "desiredlightstate", 0);
-                        beginRapidPoll(true);
+                        doFuturePoll(rapidRefresh);
                     } else {
                         logger.warn("Unknown command {}", command);
                     }
@@ -431,8 +436,21 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
         }
 
         if (pollResetFuture == null || pollResetFuture.isCancelled()) {
-            schedulePoll(RAPID_REFRESH);
+            schedulePoll(rapidRefresh);
             scheduleFuturePollReset();
         }
+    }
+
+    /**
+     * schedule a Poll in the near future
+     */
+    private void doFuturePoll(long millis) {
+        pollResetFuture = pollService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                logger.trace("do schedule poll");
+                poll();
+            }
+        }, millis, TimeUnit.MILLISECONDS);
     }
 }
