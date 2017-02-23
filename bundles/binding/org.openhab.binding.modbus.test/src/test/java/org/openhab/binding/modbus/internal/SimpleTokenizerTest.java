@@ -26,6 +26,9 @@ public class SimpleTokenizerTest {
     @Parameters
     public static List<Object[]> parameters() {
         List<Object[]> parameters = Arrays.<Object[]> asList(//
+                new Object[] { "", ':', new String[] { "" } }, //
+                new Object[] { ":", ':', new String[] { "", "" } },
+                new Object[] { ": ", ':', new String[] { "", " " } },
                 new Object[] { "foo:bar", ':', new String[] { "foo", "bar" } },
                 new Object[] { "foo,bar", ',', new String[] { "foo", "bar" } },
                 new Object[] { "foo,", ',', new String[] { "foo", "" } },
@@ -53,8 +56,7 @@ public class SimpleTokenizerTest {
 
     @Test
     public void testParsing() throws BindingConfigParseException {
-        assertThat(new SimpleTokenizer(delimiter).parse(inputString),
-                is(equalTo(Arrays.asList(expectedTokens))));
+        assertThat(new SimpleTokenizer(delimiter).parse(inputString), is(equalTo(Arrays.asList(expectedTokens))));
     }
 
 }
