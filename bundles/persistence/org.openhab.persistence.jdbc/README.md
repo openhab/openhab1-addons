@@ -12,7 +12,7 @@ The generic design makes it relatively easy for developers to integrate other da
 | [MariaDB](https://mariadb.org/)              | [mariadb-java-client-1.4.6.jar](http://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client) |
 | [MySQL](https://www.mysql.com/)              | [mysql-connector-java-5.1.39.jar](http://mvnrepository.com/artifact/mysql/mysql-connector-java) |
 | [PostgreSQL](http://www.postgresql.org/)     | [postgresql-9.4.1209.jre7.jar](http://mvnrepository.com/artifact/org.postgresql/postgresql) |
-| [SQLite](https://www.sqlite.org/)            | [sqlite-jdbc-3.8.11.2.jar](http://mvnrepository.com/artifact/org.xerial/sqlite-jdbc) |
+| [SQLite](https://www.sqlite.org/)            | [sqlite-jdbc-3.16.1.jar](http://mvnrepository.com/artifact/org.xerial/sqlite-jdbc) |
 
 ## Table of Contents
 
