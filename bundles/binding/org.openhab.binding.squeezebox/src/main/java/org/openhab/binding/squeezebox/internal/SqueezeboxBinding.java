@@ -176,7 +176,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 
     @Override
     public void currentPlaylistIndexEvent(PlayerEvent event) {
-        percentChangeEvent(event.getPlayerId(), CommandType.CURRTRACK, event.getPlayer().getCurrentPlaylistIndex());
+        numberChangeEvent(event.getPlayerId(), CommandType.CURRTRACK, event.getPlayer().getCurrentPlaylistIndex());
     }
 
     @Override
@@ -186,17 +186,17 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 
     @Override
     public void numberPlaylistTracksEvent(PlayerEvent event) {
-        percentChangeEvent(event.getPlayerId(), CommandType.NUMTRACKS, event.getPlayer().getNumberPlaylistTracks());
+        numberChangeEvent(event.getPlayerId(), CommandType.NUMTRACKS, event.getPlayer().getNumberPlaylistTracks());
     }
 
     @Override
     public void currentPlaylistShuffleEvent(PlayerEvent event) {
-        percentChangeEvent(event.getPlayerId(), CommandType.SHUFFLE, event.getPlayer().getCurrentPlaylistShuffle());
+        numberChangeEvent(event.getPlayerId(), CommandType.SHUFFLE, event.getPlayer().getCurrentPlaylistShuffle());
     }
 
     @Override
     public void currentPlaylistRepeatEvent(PlayerEvent event) {
-        percentChangeEvent(event.getPlayerId(), CommandType.REPEAT, event.getPlayer().getCurrentPlaylistRepeat());
+        numberChangeEvent(event.getPlayerId(), CommandType.REPEAT, event.getPlayer().getCurrentPlaylistRepeat());
     }
 
     @Override
