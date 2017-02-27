@@ -154,7 +154,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
                         logger.warn("Unsupported command type '{}'", bindingConfig.getCommandType());
                 }
             } catch (Exception e) {
-                logger.warn("Error executing command type '" + bindingConfig.getCommandType() + "'", e);
+                logger.warn("Error executing command type '{}'", bindingConfig.getCommandType(), e);
             }
         }
     }
@@ -171,7 +171,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 
     @Override
     public void volumeChangeEvent(PlayerEvent event) {
-        numberChangeEvent(event.getPlayerId(), CommandType.VOLUME, event.getPlayer().getVolume());
+        percentChangeEvent(event.getPlayerId(), CommandType.VOLUME, event.getPlayer().getVolume());
     }
 
     @Override
@@ -247,23 +247,28 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
     }
 
     private void stringChangeEvent(String playerId, CommandType commandType, String newState) {
-        logger.debug("SqueezePlayer " + playerId + " -> " + commandType.getCommand() + ": " + newState);
+        logger.debug("SqueezePlayer {} -> {}: {}", playerId, commandType.getCommand(), newState);
         for (String itemName : getItemNames(playerId, commandType)) {
             eventPublisher.postUpdate(itemName, StringType.valueOf(newState));
         }
     }
 
-    private void numberChangeEvent(String playerId, CommandType commandType, int newState) {
-        logger.debug(
-                "SqueezePlayer " + playerId + " -> " + commandType.getCommand() + ": " + Integer.toString(newState));
+    private void percentChangeEvent(String playerId, CommandType commandType, int newState) {
+        logger.debug("SqueezePlayer {} -> {}: {}", playerId, commandType.getCommand(), newState);
         for (String itemName : getItemNames(playerId, commandType)) {
             eventPublisher.postUpdate(itemName, new PercentType(newState));
         }
     }
 
+    private void numberChangeEvent(String playerId, CommandType commandType, int newState) {
+        logger.debug("SqueezePlayer {} -> {}: {}", playerId, commandType.getCommand(), newState);
+        for (String itemName : getItemNames(playerId, commandType)) {
+            eventPublisher.postUpdate(itemName, new DecimalType(newState));
+        }
+    }
+
     private void booleanChangeEvent(String playerId, CommandType commandType, boolean newState) {
-        logger.debug(
-                "SqueezePlayer " + playerId + " -> " + commandType.getCommand() + ": " + Boolean.toString(newState));
+        logger.debug("SqueezePlayer {} -> {}: {}", playerId, commandType.getCommand(), newState);
         for (String itemName : getItemNames(playerId, commandType)) {
             if (newState) {
                 eventPublisher.postUpdate(itemName, OnOffType.ON);
