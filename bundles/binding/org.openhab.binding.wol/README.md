@@ -1,5 +1,7 @@
 # Wake-on-LAN Binding
 
+The Wake-on-LAN binding allows you to turn on or wake up a computer by sending it a [network message](https://en.wikipedia.org/wiki/Wake-on-LAN).
+
 ## Prerequisites
 
 For Windows computers not in a domain, the firewall must be configured properly (allow remote shutdowns) and the DWORD-Regkey `LocalAccountTokenFilterPolicy` in `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System` must be set to 1.
