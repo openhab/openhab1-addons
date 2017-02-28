@@ -9,6 +9,8 @@
 package org.openhab.binding.satel.command;
 
 import java.util.BitSet;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openhab.binding.satel.internal.event.EventDispatcher;
@@ -26,11 +28,15 @@ import org.openhab.binding.satel.internal.types.ControlType;
  */
 public class ControlObjectCommand extends ControlCommand {
 
+    private static final long REFRESH_DELAY = 1000;
+
+    private static final Timer refreshTimer = new Timer("ControlObjectCommand timer", true);
+
     private ControlType controlType;
 
     /**
      * Creates new command class instance for specified type of control.
-     * 
+     *
      * @param controlType
      *            type of controlled objects
      * @param objects
@@ -47,12 +53,18 @@ public class ControlObjectCommand extends ControlCommand {
      * {@inheritDoc}
      */
     @Override
-    public boolean handleResponse(EventDispatcher eventDispatcher, SatelMessage response) {
+    public boolean handleResponse(final EventDispatcher eventDispatcher, SatelMessage response) {
         if (super.handleResponse(eventDispatcher, response)) {
             // force refresh states that might have changed
-            BitSet newStates = this.controlType.getControlledStates();
+            final BitSet newStates = this.controlType.getControlledStates();
             if (newStates != null && !newStates.isEmpty()) {
-                eventDispatcher.dispatchEvent(new NewStatesEvent(newStates));
+                // add delay to give a chance to process sent command
+                refreshTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        eventDispatcher.dispatchEvent(new NewStatesEvent(newStates));
+                    }
+                }, REFRESH_DELAY);
             }
             return true;
         }

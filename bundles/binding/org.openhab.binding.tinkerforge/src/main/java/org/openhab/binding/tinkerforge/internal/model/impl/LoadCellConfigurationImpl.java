@@ -22,11 +22,11 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellConfigurationImpl#getMovingAverage
- * <em>Moving Average</em>}</li>
- * </ul>
  * </p>
+ * <ul>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellConfigurationImpl#getMovingAverage <em>Moving
+ * Average</em>}</li>
+ * </ul>
  *
  * @generated
  */
@@ -95,10 +95,9 @@ public class LoadCellConfigurationImpl extends TFBaseConfigurationImpl implement
     public void setMovingAverage(short newMovingAverage) {
         short oldMovingAverage = movingAverage;
         movingAverage = newMovingAverage;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_CONFIGURATION__MOVING_AVERAGE,
                     oldMovingAverage, movingAverage));
-        }
     }
 
     /**
@@ -171,9 +170,8 @@ public class LoadCellConfigurationImpl extends TFBaseConfigurationImpl implement
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (movingAverage: ");

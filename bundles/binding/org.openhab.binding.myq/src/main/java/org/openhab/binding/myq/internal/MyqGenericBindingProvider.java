@@ -17,6 +17,8 @@ import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.types.State;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -35,7 +37,6 @@ public class MyqGenericBindingProvider extends AbstractGenericBindingProvider im
     /**
      * {@inheritDoc}
      */
-    @Override
     public String getBindingType() {
         return "myq";
     }
@@ -46,11 +47,11 @@ public class MyqGenericBindingProvider extends AbstractGenericBindingProvider im
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
         if (!(item instanceof SwitchItem || item instanceof RollershutterItem || item instanceof ContactItem
-                || item instanceof StringItem)) {
+                || item instanceof StringItem || item instanceof NumberItem || item instanceof DateTimeItem)) {
             throw new BindingConfigParseException(
                     "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
-                            + "', only SwitchItems, RollershutterItem, ContactItem or StringItem are allowed "
-                            + "- please check your *.items configuration");
+                            + "', only SwitchItems, RollershutterItem, ContactItem, NumberItem,"
+                            + "DateTimeItem or StringItem are allowed " + "- please check your *.items configuration");
         }
     }
 
@@ -73,7 +74,20 @@ public class MyqGenericBindingProvider extends AbstractGenericBindingProvider im
         final MyqBindingConfig config = new MyqBindingConfig();
 
         config.acceptedDataTypes = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
-        config.deviceIndex = Integer.parseInt(bindingConfig);
+
+        logger.trace("bindingConfig: {}", bindingConfig);
+
+        if (bindingConfig.contains("#")) {
+            String[] newbindingConfig = bindingConfig.split("#");
+            config.deviceIndex = Integer.parseInt(newbindingConfig[0]);
+            config.attribute = newbindingConfig[1];
+            logger.trace("deviceIndex: {} attribute: {}", config.deviceIndex, config.attribute);
+        } else {
+            config.deviceIndex = Integer.parseInt(bindingConfig);
+            config.attribute = new String();
+            logger.trace("deviceIndex: {} attribute: {}", config.deviceIndex, config.attribute);
+        }
+
         return config;
     }
 
@@ -85,7 +99,6 @@ public class MyqGenericBindingProvider extends AbstractGenericBindingProvider im
         return (MyqBindingConfig) bindingConfigs.get(itemName);
     }
 
-    @Override
     public List<String> getInBindingItemNames() {
         List<String> inBindings = new ArrayList<String>();
         for (String itemName : bindingConfigs.keySet()) {

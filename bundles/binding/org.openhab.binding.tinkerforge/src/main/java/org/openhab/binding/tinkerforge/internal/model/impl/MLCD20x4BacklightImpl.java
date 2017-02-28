@@ -45,24 +45,24 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
- *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getSwitchState
- *        <em>Switch State</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getLogger <em>Logger</em>
- *        }</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getUid <em>Uid</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#isPoll <em>Poll</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getEnabledA
- *        <em>Enabled A</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getSubId <em>Sub Id</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getMbrick <em>Mbrick</em>
- *        }</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getDeviceType
- *        <em>Device Type</em>}</li>
- *        </ul>
  *        </p>
+ *        <ul>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getSwitchState <em>Switch
+ *        State</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getLogger
+ *        <em>Logger</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getUid <em>Uid</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#isPoll
+ *        <em>Poll</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getSubId <em>Sub
+ *        Id</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getMbrick
+ *        <em>Mbrick</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        </ul>
  *
  * @generated
  */
@@ -265,10 +265,9 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
     public void setSwitchState(OnOffValue newSwitchState) {
         OnOffValue oldSwitchState = switchState;
         switchState = newSwitchState;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BACKLIGHT__SWITCH_STATE,
                     oldSwitchState, switchState));
-        }
     }
 
     /**
@@ -292,10 +291,9 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BACKLIGHT__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -319,9 +317,8 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BACKLIGHT__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -345,10 +342,9 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BACKLIGHT__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -372,10 +368,9 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BACKLIGHT__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -399,10 +394,9 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BACKLIGHT__SUB_ID, oldSubId,
                     subId));
-        }
     }
 
     /**
@@ -413,10 +407,21 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
      */
     @Override
     public MBrickletLCD20x4 getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MLCD2_0X4_BACKLIGHT__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.MLCD2_0X4_BACKLIGHT__MBRICK)
             return null;
-        }
         return (MBrickletLCD20x4) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletLCD20x4 basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.MLCD2_0X4_BACKLIGHT__MBRICK)
+            return null;
+        return (MBrickletLCD20x4) eInternalContainer();
     }
 
     /**
@@ -440,25 +445,20 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
     public void setMbrick(MBrickletLCD20x4 newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MLCD2_0X4_BACKLIGHT__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BACKLIGHT__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
@@ -564,9 +564,8 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MLCD2_0X4_BACKLIGHT__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletLCD20x4) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -625,7 +624,9 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
             case ModelPackage.MLCD2_0X4_BACKLIGHT__SUB_ID:
                 return getSubId();
             case ModelPackage.MLCD2_0X4_BACKLIGHT__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.MLCD2_0X4_BACKLIGHT__DEVICE_TYPE:
                 return getDeviceType();
         }
@@ -722,7 +723,7 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
             case ModelPackage.MLCD2_0X4_BACKLIGHT__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.MLCD2_0X4_BACKLIGHT__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.MLCD2_0X4_BACKLIGHT__DEVICE_TYPE:
                 return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
         }
@@ -882,9 +883,8 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (switchState: ");

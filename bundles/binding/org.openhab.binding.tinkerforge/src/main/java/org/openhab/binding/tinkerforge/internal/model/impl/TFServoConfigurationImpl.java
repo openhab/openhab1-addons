@@ -23,6 +23,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFServoConfigurationImpl#getVelocity
  *        <em>Velocity</em>}</li>
@@ -39,7 +40,6 @@ import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFServoConfigurationImpl#getOutputVoltage
  *        <em>Output Voltage</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -240,10 +240,9 @@ public class TFServoConfigurationImpl extends DimmableConfigurationImpl implemen
     public void setVelocity(int newVelocity) {
         int oldVelocity = velocity;
         velocity = newVelocity;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_SERVO_CONFIGURATION__VELOCITY,
                     oldVelocity, velocity));
-        }
     }
 
     /**
@@ -267,10 +266,9 @@ public class TFServoConfigurationImpl extends DimmableConfigurationImpl implemen
     public void setAcceleration(int newAcceleration) {
         int oldAcceleration = acceleration;
         acceleration = newAcceleration;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_SERVO_CONFIGURATION__ACCELERATION,
                     oldAcceleration, acceleration));
-        }
     }
 
     /**
@@ -294,10 +292,9 @@ public class TFServoConfigurationImpl extends DimmableConfigurationImpl implemen
     public void setServoVoltage(int newServoVoltage) {
         int oldServoVoltage = servoVoltage;
         servoVoltage = newServoVoltage;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_SERVO_CONFIGURATION__SERVO_VOLTAGE,
                     oldServoVoltage, servoVoltage));
-        }
     }
 
     /**
@@ -321,10 +318,9 @@ public class TFServoConfigurationImpl extends DimmableConfigurationImpl implemen
     public void setPulseWidthMin(int newPulseWidthMin) {
         int oldPulseWidthMin = pulseWidthMin;
         pulseWidthMin = newPulseWidthMin;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_SERVO_CONFIGURATION__PULSE_WIDTH_MIN,
                     oldPulseWidthMin, pulseWidthMin));
-        }
     }
 
     /**
@@ -348,10 +344,9 @@ public class TFServoConfigurationImpl extends DimmableConfigurationImpl implemen
     public void setPulseWidthMax(int newPulseWidthMax) {
         int oldPulseWidthMax = pulseWidthMax;
         pulseWidthMax = newPulseWidthMax;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_SERVO_CONFIGURATION__PULSE_WIDTH_MAX,
                     oldPulseWidthMax, pulseWidthMax));
-        }
     }
 
     /**
@@ -375,10 +370,9 @@ public class TFServoConfigurationImpl extends DimmableConfigurationImpl implemen
     public void setPeriod(int newPeriod) {
         int oldPeriod = period;
         period = newPeriod;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_SERVO_CONFIGURATION__PERIOD,
                     oldPeriod, period));
-        }
     }
 
     /**
@@ -402,10 +396,9 @@ public class TFServoConfigurationImpl extends DimmableConfigurationImpl implemen
     public void setOutputVoltage(int newOutputVoltage) {
         int oldOutputVoltage = outputVoltage;
         outputVoltage = newOutputVoltage;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_SERVO_CONFIGURATION__OUTPUT_VOLTAGE,
                     oldOutputVoltage, outputVoltage));
-        }
     }
 
     /**
@@ -538,9 +531,8 @@ public class TFServoConfigurationImpl extends DimmableConfigurationImpl implemen
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (velocity: ");

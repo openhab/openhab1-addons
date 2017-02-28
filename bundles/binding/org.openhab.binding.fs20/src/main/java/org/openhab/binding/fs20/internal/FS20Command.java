@@ -40,7 +40,7 @@ public enum FS20Command {
     DIM_DOWN("14"),
     DIM_UP_DOWN("15"),
     RESET("1B"),
-    UNKOWN(null),
+    UNKNOWN(null),
     ON_OLD_DIM_VALUE("11"),
     TOGGLE("12");
     // TODO add the other values with extension bit set
@@ -66,9 +66,9 @@ public enum FS20Command {
 
     public static FS20Command getFromHexValue(String hexValue) {
         if (hexValue == null) {
-            return UNKOWN;
+            return UNKNOWN;
         }
         FS20Command command = hexValueToCommand.get(hexValue.toUpperCase());
-        return command != null ? command : UNKOWN;
+        return command != null ? command : UNKNOWN;
     }
 }

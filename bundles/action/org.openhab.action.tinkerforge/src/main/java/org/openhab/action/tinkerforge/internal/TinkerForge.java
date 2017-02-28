@@ -73,4 +73,39 @@ public class TinkerForge {
         return context.tfLoadCellTare(uid);
     }
 
+    @ActionDoc(text = "Clear the whole contents of the OLED", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean tfOLEDClear(@ParamDoc(name = "uid", text = "Bricklet OLED uid") String uid) {
+        return context.tfOLEDClear(uid);
+    }
+
+    @ActionDoc(text = "Clear an OLED window", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean tfOLEDClear(@ParamDoc(name = "uid", text = "Bricklet OLED uid") String uid,
+            @ParamDoc(name = "columnFrom", text = "the column to start at") short columnFrom,
+            @ParamDoc(name = "columnTo", text = "the column to start at") short columnTo,
+            @ParamDoc(name = "rowFrom", text = "the row to start at") short rowFrom,
+            @ParamDoc(name = "rowTo", text = "the ending row") short rowTo) {
+        return context.tfOLEDClear(uid, columnFrom, columnTo, rowFrom, rowTo);
+    }
+
+    @ActionDoc(text = "Write a line to an OLED Bricklet. The 64x48 Oled has 6 Lines (0-5) and 14 Columns (0 - 13). The 128x64 Oled has 8 Lines (0 - 7) and 26 Columns (0 - 25).", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean tfOLEDWriteLine(@ParamDoc(name = "uid", text = "Bricklet OLED uid") String uid,
+            @ParamDoc(name = "line", text = "the line to write to") Integer line,
+            @ParamDoc(name = "position", text = "the insert position") Integer position,
+            @ParamDoc(name = "text", text = "the text to write") String text) {
+        return context.tfOLEDWriteLine(uid, line.shortValue(), position.shortValue(), text);
+    }
+
+    @ActionDoc(text = "Write a line to an OLED Bricklet. The 64x48 Oled has 6 Lines (0-5) and 14 Columns (0 - 13). The 128x64 Oled has 8 Lines (0 - 7) and 26 Columns (0 - 25).", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean tfOLEDSimpleGauge(@ParamDoc(name = "uid", text = "Bricklet OLED uid") String uid,
+            @ParamDoc(name = "angle", text = "the angel") Integer angle) {
+        return context.tfOLEDSimpleGauge(uid, angle);
+    }
+
+    @ActionDoc(text = "Write a line to an OLED Bricklet. The 64x48 Oled has 6 Lines (0-5) and 14 Columns (0 - 13). The 128x64 Oled has 8 Lines (0 - 7) and 26 Columns (0 - 25).", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean tfOLEDSimpleGauge(@ParamDoc(name = "uid", text = "Bricklet OLED uid") String uid,
+            @ParamDoc(name = "angle", text = "the angel") Integer min,
+            @ParamDoc(name = "angle", text = "the angel") Integer max,
+            @ParamDoc(name = "angle", text = "the angel") Integer value) {
+        return context.tfOLEDSimpleGauge(uid, min, max, value);
+    }
 }

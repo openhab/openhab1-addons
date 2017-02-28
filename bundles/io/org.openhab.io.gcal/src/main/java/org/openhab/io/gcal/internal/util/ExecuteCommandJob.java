@@ -18,8 +18,16 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.openhab.io.console.Console;
+import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
+import org.openhab.core.types.TypeParser;
 import org.openhab.io.console.ConsoleInterpreter;
+import org.openhab.io.gcal.internal.GCalActivator;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -44,18 +52,67 @@ public class ExecuteCommandJob implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         String content = (String) context.getJobDetail().getJobDataMap().get(JOB_DATA_CONTENT_KEY);
 
+        ItemRegistry registry = GCalActivator.itemRegistryTracker.getService();
+        EventPublisher publisher = GCalActivator.eventPublisherTracker.getService();
+
+        if (registry == null) {
+            logger.warn("Sorry, no item registry service available!");
+            return;
+        }
+
+        if (publisher == null) {
+            logger.warn("Sorry, no event publisher service available!");
+            return;
+        }
+
+        if (content.startsWith("[PresenceSimulation]")) {
+            try {
+                Item item = registry.getItem("PresenceSimulation");
+                if (item.getState() != OnOffType.ON) {
+                    logger.debug(
+                            "Presence Simulation job detected, but PresenceSimulation is not in ON state. Job is not executed");
+                    return;
+                }
+            } catch (ItemNotFoundException e) {
+                logger.warn(
+                        "Presence Simulation job detected, but PresenceSimulation item does not exists. Check configuration");
+                return;
+            }
+        }
+
         if (StringUtils.isNotBlank(content)) {
             String[] commands = parseCommands(content);
             for (String command : commands) {
                 String[] args = parseCommand(command);
-                logger.debug("About to execute CommandJob with arguments {}", Arrays.asList(args));
+
                 try {
-                    ConsoleInterpreter.handleRequest(args, new LogConsole());
-                } catch (Exception e) {
-                    throw new JobExecutionException(
-                            "Executing command '" + command + "' throws an Exception. Job will be refired immediately.",
-                            e, true);
+                    if (args[0].equals("send")) {
+                        if (args.length > 2) {
+                            Item item = registry.getItem(args[1]);
+                            Command cmd = TypeParser.parseCommand(item.getAcceptedCommandTypes(), args[2]);
+                            if (cmd != null) {
+                                publisher.sendCommand(item.getName(), cmd);
+                                logger.debug("Command {} has been sent", Arrays.asList(args));
+                            } else {
+                                logger.warn("Command '{}' is not valid. Command not sent.", Arrays.asList(args));
+                            }
+                        }
+                    } else if (args[0].equals("update")) {
+                        if (args.length > 2) {
+                            Item item = registry.getItem(args[1]);
+                            State state = TypeParser.parseState(item.getAcceptedDataTypes(), args[2]);
+                            publisher.postUpdate(item.getName(), state);
+                            logger.debug("Published update {}", Arrays.asList(args));
+                        } else {
+                            logger.warn("Command '{}' is not valid. Update not sent.", Arrays.asList(args));
+                        }
+                    } else {
+                        logger.warn("Command {} not supported", args[0]);
+                    }
+                } catch (ItemNotFoundException e) {
+                    logger.warn("Executing command failed. Item {} not found", args[1]);
                 }
+
             }
         }
 
@@ -64,13 +121,22 @@ public class ExecuteCommandJob implements Job {
     /**
      * Reads the Calendar-Event content String line by line. It is assumed, that
      * each line contains a single command. Blank lines are omitted.
-     * 
+     *
      * @param content the Calendar-Event content
      * @return an array of single commands which can be executed afterwards
      */
     protected String[] parseCommands(String content) {
         Collection<String> parsedCommands = new ArrayList<String>();
         BufferedReader in = new BufferedReader(new StringReader(content));
+
+        if (content.startsWith("[PresenceSimulation]")) {
+            // Presence Simulation event. Needs to be fired only if PresenceSimulation event is set to ON
+            try {
+                in.readLine();
+            } catch (IOException e) {
+                logger.error("reading event content throws exception", e);
+            }
+        }
 
         try {
             String command;
@@ -94,11 +160,11 @@ public class ExecuteCommandJob implements Job {
     /**
      * Parses a <code>command</code>. Utilizes the {@link StreamTokenizer} which
      * takes care of quoted Strings as well.
-     * 
+     *
      * @param command the command to parse
      * @return the tokenized command which can be processed by the
      *         <code>ConsoleInterpreter</code>
-     * 
+     *
      * @see org.openhab.io.console.ConsoleInterpreter
      */
     protected String[] parseCommand(String command) {
@@ -111,9 +177,12 @@ public class ExecuteCommandJob implements Job {
         }
 
         StreamTokenizer tokenizer = new StreamTokenizer(new StringReader(command));
-        tokenizer.wordChars('_', '_');
-        tokenizer.wordChars('-', '-');
-        tokenizer.wordChars('.', '.');
+        // treat all characters as ordinary, including digits, so we never
+        // have to deal with doubles
+        tokenizer.resetSyntax();
+        tokenizer.wordChars(0x23, 0xFF);
+        tokenizer.whitespaceChars(0x00, 0x20);
+        tokenizer.quoteChar('"');
 
         List<String> tokens = new ArrayList<String>();
         try {
@@ -126,9 +195,6 @@ public class ExecuteCommandJob implements Job {
                     case 34 /* quoted String */:
                         token = tokenizer.sval;
                         break;
-                    case StreamTokenizer.TT_NUMBER:
-                        token = String.valueOf(tokenizer.nval);
-                        break;
                 }
                 tokens.add(token);
                 logger.trace("read value {} from the given command", token);
@@ -137,32 +203,6 @@ public class ExecuteCommandJob implements Job {
         }
 
         return tokens.toArray(new String[0]);
-    }
-
-    /**
-     * Simple implementation of the {@link Console} interface. It's output is
-     * send to the logger (INFO-Level).
-     * 
-     * @author Thomas.Eichstaedt-Engelen
-     * @since 0.7.0
-     */
-    private static class LogConsole implements Console {
-
-        @Override
-        public void print(String s) {
-            logger.info(s);
-        }
-
-        @Override
-        public void println(String s) {
-            logger.info(s);
-        }
-
-        @Override
-        public void printUsage(String s) {
-            logger.info(s);
-        }
-
     }
 
 }

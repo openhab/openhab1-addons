@@ -20,11 +20,11 @@ import org.eclipse.emf.ecore.EObject;
  *
  *        <p>
  *        The following features are supported:
- *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.CallbackListener#getCallbackPeriod
- *        <em>Callback Period</em>}</li>
- *        </ul>
  *        </p>
+ *        <ul>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.CallbackListener#getCallbackPeriod <em>Callback
+ *        Period</em>}</li>
+ *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getCallbackListener()
  * @model interface="true" abstract="true"

@@ -8,8 +8,11 @@
  */
 package org.openhab.io.gcal.internal;
 
+import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.ItemRegistry;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,12 +28,22 @@ public final class GCalActivator implements BundleActivator {
 
     private static BundleContext context;
 
+    public static ServiceTracker<ItemRegistry, ItemRegistry> itemRegistryTracker;
+    public static ServiceTracker<EventPublisher, EventPublisher> eventPublisherTracker;
+
     /**
      * Called whenever the OSGi framework starts our bundle
      */
     @Override
     public void start(BundleContext bc) throws Exception {
         context = bc;
+
+        itemRegistryTracker = new ServiceTracker<ItemRegistry, ItemRegistry>(bc, ItemRegistry.class, null);
+        itemRegistryTracker.open();
+
+        eventPublisherTracker = new ServiceTracker<EventPublisher, EventPublisher>(bc, EventPublisher.class, null);
+        eventPublisherTracker.open();
+
         logger.debug("Google Calendar IO has been started.");
     }
 
@@ -40,12 +53,15 @@ public final class GCalActivator implements BundleActivator {
     @Override
     public void stop(BundleContext bc) throws Exception {
         context = null;
+        itemRegistryTracker.close();
+        eventPublisherTracker.close();
+
         logger.debug("Google Calendar IO has been stopped.");
     }
 
     /**
      * Returns the bundle context of this bundle
-     * 
+     *
      * @return the bundle context
      */
     public static BundleContext getContext() {

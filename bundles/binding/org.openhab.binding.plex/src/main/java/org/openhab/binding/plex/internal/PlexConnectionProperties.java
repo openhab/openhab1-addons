@@ -37,6 +37,8 @@ public class PlexConnectionProperties {
 
     private String password;
 
+    private PlexApiLevel apiLevel = PlexApiLevel.getLatest();
+
     public String getHost() {
         return host;
     }
@@ -93,6 +95,14 @@ public class PlexConnectionProperties {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public PlexApiLevel getApiLevel() {
+        return apiLevel;
+    }
+
+    public void setApiLevel(PlexApiLevel apiLevel) {
+        this.apiLevel = apiLevel;
     }
 
     public boolean hasToken() {

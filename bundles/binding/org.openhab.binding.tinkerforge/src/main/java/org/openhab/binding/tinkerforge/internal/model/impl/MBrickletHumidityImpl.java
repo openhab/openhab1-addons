@@ -51,40 +51,40 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getSensorValue
- *        <em>Sensor Value</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getLogger <em>Logger</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getSensorValue <em>Sensor
+ *        Value</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getUid <em>Uid</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#isPoll <em>Poll</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getEnabledA
- *        <em>Enabled A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#isPoll
+ *        <em>Poll</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getTinkerforgeDevice
  *        <em>Tinkerforge Device</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getIpConnection
- *        <em>Ip Connection</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getIpConnection <em>Ip
+ *        Connection</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getConnectedUid
  *        <em>Connected Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getPosition
  *        <em>Position</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getDeviceIdentifier
  *        <em>Device Identifier</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getName <em>Name</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getBrickd <em>Brickd</em>
- *        }</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getName
+ *        <em>Name</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getBrickd
+ *        <em>Brickd</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getCallbackPeriod
  *        <em>Callback Period</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getThreshold
  *        <em>Threshold</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -430,10 +430,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setSensorValue(DecimalValue newSensorValue) {
         DecimalValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
-        }
     }
 
     /**
@@ -457,10 +456,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setCallbackPeriod(long newCallbackPeriod) {
         long oldCallbackPeriod = callbackPeriod;
         callbackPeriod = newCallbackPeriod;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__CALLBACK_PERIOD,
                     oldCallbackPeriod, callbackPeriod));
-        }
     }
 
     /**
@@ -484,10 +482,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setTinkerforgeDevice(BrickletHumidity newTinkerforgeDevice) {
         BrickletHumidity oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__TINKERFORGE_DEVICE,
                     oldTinkerforgeDevice, tinkerforgeDevice));
-        }
     }
 
     /**
@@ -511,10 +508,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -538,10 +534,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -565,9 +560,8 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -591,10 +585,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -618,10 +611,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -645,10 +637,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -672,10 +663,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -699,10 +689,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__DEVICE_IDENTIFIER,
                     oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
@@ -726,10 +715,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__NAME, oldName,
                     name));
-        }
     }
 
     /**
@@ -740,10 +728,21 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_HUMIDITY__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_HUMIDITY__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_HUMIDITY__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -767,25 +766,20 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_HUMIDITY__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__BRICKD, newBrickd,
                     newBrickd));
-        }
     }
 
     /**
@@ -811,11 +805,10 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_HUMIDITY__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -830,22 +823,18 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setTfConfig(TFBaseConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_HUMIDITY__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_HUMIDITY__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -869,10 +858,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setDeviceType(String newDeviceType) {
         String oldDeviceType = deviceType;
         deviceType = newDeviceType;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__DEVICE_TYPE,
                     oldDeviceType, deviceType));
-        }
     }
 
     /**
@@ -896,10 +884,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public void setThreshold(BigDecimal newThreshold) {
         BigDecimal oldThreshold = threshold;
         threshold = newThreshold;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__THRESHOLD,
                     oldThreshold, threshold));
-        }
     }
 
     /**
@@ -1007,9 +994,8 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_HUMIDITY__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -1079,7 +1065,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
             case ModelPackage.MBRICKLET_HUMIDITY__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_HUMIDITY__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_HUMIDITY__TF_CONFIG:
                 return getTfConfig();
             case ModelPackage.MBRICKLET_HUMIDITY__CALLBACK_PERIOD:
@@ -1248,7 +1236,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
             case ModelPackage.MBRICKLET_HUMIDITY__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_HUMIDITY__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_HUMIDITY__TF_CONFIG:
                 return tfConfig != null;
             case ModelPackage.MBRICKLET_HUMIDITY__CALLBACK_PERIOD:
@@ -1457,9 +1445,8 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (sensorValue: ");

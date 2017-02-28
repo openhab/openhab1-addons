@@ -121,7 +121,7 @@ public class RFXComConnection implements ManagedService {
         // so wait a while
         Thread.sleep(1000);
         // Clear received buffers
-        connector.clearReceiveBuffer();        
+        connector.clearReceiveBuffer();
 
         if (setMode != null) {
             try {

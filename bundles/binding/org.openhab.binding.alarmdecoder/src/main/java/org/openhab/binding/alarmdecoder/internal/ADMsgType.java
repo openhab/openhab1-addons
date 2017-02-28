@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 /**
  * The various message types that come from the ad2usb/ad2pi interface
- * 
+ *
  * @author Bernd Pfrommer
  * @since 1.6.0
  */
@@ -21,8 +21,9 @@ public enum ADMsgType {
     RFX(1), // wireless message
     EXP(2), // zone expander message
     REL(3), // relay message
-    INVALID(4), // invalid message
-    NUMTYPES(5); // total number of types
+    LRR(4), // long range radio message
+    INVALID(5), // invalid message
+    NUMTYPES(6); // total number of types
 
     private final int m_type;
 
@@ -31,7 +32,7 @@ public enum ADMsgType {
     }
 
     /**
-     * 
+     *
      * @return corresponding integer value
      */
     public int getValue() {
@@ -39,7 +40,7 @@ public enum ADMsgType {
     }
 
     /**
-     * 
+     *
      * @return true if it is a valid message type
      */
     public boolean isValid() {
@@ -48,7 +49,7 @@ public enum ADMsgType {
 
     /**
      * Determine the message type from a 3-letter string
-     * 
+     *
      * @param s the 3-letter string
      * @return the message type (potentially INVALID)
      */
@@ -62,7 +63,7 @@ public enum ADMsgType {
 
     /**
      * Test if 3-letter string is a message type
-     * 
+     *
      * @param s string to test
      * @return true if string is a valid message type
      */
@@ -72,7 +73,7 @@ public enum ADMsgType {
 
     /**
      * Test if string contains a valid message type
-     * 
+     *
      * @param s string to test
      * @return true if string contains a valid message type
      */
@@ -94,6 +95,7 @@ public enum ADMsgType {
         s_strToType.put("RFX", RFX);
         s_strToType.put("EXP", EXP);
         s_strToType.put("REL", REL);
+        s_strToType.put("LRR", LRR);
         s_strToType.put("INVALID", INVALID);
     }
 }

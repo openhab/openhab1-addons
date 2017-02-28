@@ -6,7 +6,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-@GenModel(literalsInterface="true", loadInitialization="false", adapterFactory="false")
+
+
+@GenModel(literalsInterface="true", loadInitialization="false", adapterFactory="false", updateClasspath="false", codeFormatting="true", commentFormatting="true", modelDirectory="/org.openhab.binding.tinkerforge/src/main/java")
 package org.openhab.binding.tinkerforge.internal.model
 
 import com.tinkerforge.Device
@@ -63,6 +65,13 @@ import com.tinkerforge.BrickletAnalogIn
 import com.tinkerforge.BrickletAnalogInV2
 import com.tinkerforge.BrickletLaserRangeFinder
 import com.tinkerforge.BrickletAccelerometer
+import com.tinkerforge.BrickletOLED128x64
+import com.tinkerforge.BrickletOLED64x48
+import com.tinkerforge.BrickletThermocouple
+import com.tinkerforge.BrickletUVLight
+import com.tinkerforge.BrickletCO2
+import com.tinkerforge.BrickStepper
+import com.tinkerforge.BrickletAnalogOutV2
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -81,6 +90,7 @@ type MLogger wraps Logger
 type MAtomicBoolean wraps AtomicBoolean
 type MTinkerforgeDevice wraps Device
 type MTinkerBrickDC wraps BrickDC
+type MTinkerBrickStepper wraps BrickStepper
 type MTinkerBrickletDualRelay wraps BrickletDualRelay
 type MTinkerBrickletIndustrialQuadRelay wraps BrickletIndustrialQuadRelay
 type MTinkerBrickletIndustrialDigitalIn4 wraps BrickletIndustrialDigitalIn4
@@ -128,6 +138,12 @@ type TinkerBrickletAnalogInV2 wraps BrickletAnalogInV2
 type TinkerBrickletAnalogIn wraps BrickletAnalogIn
 type TinkerBrickletLaserRangeFinder wraps BrickletLaserRangeFinder
 type TinkerBrickletAccelerometer wraps BrickletAccelerometer
+type TinkerBrickletOLED128x64 wraps BrickletOLED128x64
+type TinkerBrickletOLED64x48 wraps BrickletOLED64x48
+type TinkerBrickletThermocouple wraps BrickletThermocouple
+type TinkerBrickletUVLight wraps BrickletUVLight
+type TinkerBrickletCO2 wraps BrickletCO2
+type TinkerBrickletAnalogOutV2 wraps BrickletAnalogOutV2
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -250,7 +266,8 @@ interface ProgrammableActor {
 }
 
 interface MTextActor{
-	String text   
+	String text
+	op void write(String text)
 }
 interface MLCDSubDevice extends MSubDevice<MBrickletLCD20x4> {
 }
@@ -484,6 +501,12 @@ class JoystickButton extends JoystickDevice, MSensor<SwitchState>,
 		readonly String deviceType = "joystick_button"
 }
 
+class MBrickletAnalogOutV2 extends MSensor<MDecimalValue>, MDevice<TinkerBrickletAnalogOutV2>, SetPointActor<DimmableConfiguration>{
+    readonly String deviceType = "bricklet_analog_out_v2"
+    BigDecimal minValueDevice = "0"
+    BigDecimal maxValueDevice = "12000"
+}
+
 class MBrickServo extends MDevice<MTinkerBrickServo>, MSubDeviceHolder<MServo> {
 	readonly String deviceType = "brick_servo"
 	op void init(){}
@@ -521,6 +544,96 @@ class MBrickDC extends MSensor<MDecimalValue>, ProgrammableSwitchActor, MDevice<
 	int pwmFrequency = "15000"
 	DCDriveMode driveMode = "BRAKE"
 	op boolean setSpeed(Short velocity, int acceleration, String drivemode)
+}
+
+class MBrickStepper extends MDevice<MTinkerBrickStepper>, MSubDeviceHolder<MStepperDevice>, 
+    MTFConfigConsumer<TFBrickStepperConfiguration>{
+    readonly String deviceType = "brick_stepper"
+
+}
+
+class TFBrickStepperConfiguration extends TFBaseConfiguration {
+    int maxVelocity
+    int acceleration
+    int deacceleration
+    int motorCurrent
+    short stepMode
+    int decay
+    boolean syncRect
+    long timeBase
+}
+
+enum BrickStepperSubIds {
+    stepper_drive, 
+    stepper_velocity,
+    stepper_current,
+    stepper_position,
+    stepper_steps,
+    stepper_stack_voltage,
+    stepper_external_voltage,
+    stepper_consumption,
+    stepper_under_voltage,
+    stepper_state,
+    stepper_chip_temperature,
+    stepper_led
+}
+
+interface MStepperDevice extends MSubDevice<MBrickStepper> {
+    
+}
+
+class MStepperDrive extends MStepperDevice {
+    //setzt drive forward, backward und stop (emergency stop?)
+    readonly String deviceType = "stepper_drive"
+}
+
+class MStepperVelocity extends MStepperDevice, MSensor<MDecimalValue> {
+    readonly String deviceType = "stepper_velocity"
+}
+
+class MStepperCurrent extends MStepperDevice, MSensor<MDecimalValue> {
+    //setzt und liest? das current
+    readonly String deviceType = "stepper_current"
+}
+
+class MStepperPosition extends MStepperDevice, MSensor<MDecimalValue> {
+    //setzt die target position und liest die current position
+    readonly String deviceType = "stepper_position"
+}
+
+class MStepperSteps extends MStepperDevice, MSensor<MDecimalValue> {
+    // setzt und liest die steps
+    readonly String deviceType = "stepper_steps"
+}
+
+class MStepperStackVoltage extends MStepperDevice, MSensor<MDecimalValue> {
+    readonly String deviceType = "stepper_stack_voltage"
+}
+
+class MStepperExternalVoltage extends MStepperDevice, MSensor<MDecimalValue> {
+    readonly String deviceType = "stepper_external_voltage"
+}
+
+class MStepperConsumption extends MStepperDevice, MSensor<MDecimalValue> {
+    readonly String deviceType = "stepper_consumption"
+}
+
+class MStepperUnderVoltage extends MStepperDevice, MSensor<MDecimalValue> {
+    readonly String deviceType = "stepper_under_voltage"
+}
+
+
+class MStepperState extends MStepperDevice, MSensor<MDecimalValue> {
+    // for newSate listener
+    readonly String deviceType = "stepper_state"
+}
+
+class MStepperChipTemperature extends MStepperDevice, MSensor<MDecimalValue> {
+    readonly String deviceType = "stepper_chip_temperature"
+}
+
+class MStepperStatusLed extends MStepperDevice, DigitalActor {
+    readonly String deviceType = "stepper_led"
 }
 
 class MDualRelayBricklet extends MDevice<MTinkerBrickletDualRelay>,
@@ -771,6 +884,30 @@ class MBrickletTemperature extends MDevice<MTinkerBrickletTemperature>,
 	op void init(){}
 }
 
+class MBrickletThermocouple extends MDevice<TinkerBrickletThermocouple>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFThermocoupleConfiguration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_thermocouple"
+    BigDecimal threshold = "0"
+    op void init(){}
+}
+
+class MBrickletUVLight extends MDevice<TinkerBrickletUVLight>,
+    MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
+    CallbackListener {
+    readonly String deviceType = "bricklet_uv_light"
+    BigDecimal threshold = "0"
+    op void init(){}
+}
+
+class MBrickletCO2 extends MDevice<TinkerBrickletCO2>,
+    MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
+    CallbackListener {
+    readonly String deviceType = "bricklet_co2"
+    BigDecimal threshold = "0"
+    op void init(){}
+}
+
 class MBrickletTemperatureIR extends MDevice<TinkerBrickletTemperatureIR>,
         MSubDeviceHolder<MTemperatureIRDevice> {
     readonly String deviceType = "bricklet_temperatureIR"
@@ -935,6 +1072,28 @@ class MBrickletLCD20x4 extends MDevice<MTinkerBrickletLCD20x4>, MTextActor,
 	op boolean clear()
 }
 
+interface OLEDBricklet {
+    String positionPrefix = "TFNUM<"
+    String positionSuffix = ">"
+    short contrast = "143"
+    boolean invert = "false"
+    op void clear()
+    op void clear(short columnFrom, short columnTo, short rowFrom, short rowTo)
+    op void writeLine(short line, short position, String text)
+    op void simpleGauge(int angle)
+    op void simpleGauge(int min, int max, int value)
+}
+
+class MBrickletOLED128x64 extends OLEDBricklet, MDevice<TinkerBrickletOLED128x64>, MTextActor,
+    MTFConfigConsumer<BrickletOLEDConfiguration> {
+    readonly String deviceType = "bricklet_oled128x64"
+}
+
+class MBrickletOLE64x48 extends OLEDBricklet, MDevice<TinkerBrickletOLED64x48>, MTextActor,
+    MTFConfigConsumer<BrickletOLEDConfiguration> {
+    readonly String deviceType = "bricklet_oled64x48"
+}
+
 class MLCD20x4Backlight extends MInSwitchActor, MLCDSubDevice{
 	readonly String deviceType = "backlight"
 }
@@ -1016,6 +1175,12 @@ class BrickletIndustrialDualAnalogInConfiguration extends TFBaseConfiguration {
 
 class TFTemperatureConfiguration extends TFBaseConfiguration {
 	boolean slowI2C
+}
+
+class TFThermocoupleConfiguration extends TFBaseConfiguration {
+    Short averaging
+    String thermocoupleType
+    String filter
 }
 
 class TFObjectTemperatureConfiguration extends TFBaseConfiguration {
@@ -1144,6 +1309,11 @@ class BrickletAccelerometerConfiguration extends TFConfig {
 	Short dataRate
 	Short fullScale
 	Short filterBandwidth
+}
+
+class BrickletOLEDConfiguration extends TFConfig {
+    Short contrast
+    boolean invert
 }
 
 enum NoSubIds {

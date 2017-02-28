@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>openhab</artifactId>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>1.10.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -18,8 +18,8 @@
     <properties>
         <ohc.version>2.0.0-SNAPSHOT</ohc.version>
         <esh.version>0.9.0-SNAPSHOT</esh.version>
-        <kat.version>1.4.1</kat.version>
-        <karaf.version>4.0.4</karaf.version>
+        <kat.version>1.6</kat.version>
+        <karaf.version>4.0.8</karaf.version>
         <build.helper.maven.plugin.version>1.9.1</build.helper.maven.plugin.version>
     </properties>
 

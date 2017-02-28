@@ -22,7 +22,7 @@ public class FS20CommandHelperTest {
 		
 		// Test for issue: FS20 - Converting Value to raw-message fails #1635
 		// see: https://github.com/openhab/openhab/issues/1635
-		assertNotEquals(fs20Command, FS20Command.UNKOWN);
+		assertNotEquals(fs20Command, FS20Command.UNKNOWN);
 		assertNotEquals(fs20Command.toString(), null);
 		
 		// excepted value:

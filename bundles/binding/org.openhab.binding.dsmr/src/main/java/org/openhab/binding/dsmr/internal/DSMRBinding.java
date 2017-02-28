@@ -11,6 +11,7 @@ package org.openhab.binding.dsmr.internal;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.dsmr.DSMRBindingProvider;
@@ -48,16 +49,19 @@ import org.slf4j.LoggerFactory;
  * @author M.Volaart
  * @since 1.7.0
  */
-public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>implements ManagedService {
+public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider> implements ManagedService {
 
     /** Update interval as specified by DSMR */
-    public static final int DSMR_UPDATE_INTERVAL = 10000;
+    public static final int DSMR_UPDATE_INTERVAL = 1000;
 
     /* Logger */
     private static final Logger logger = LoggerFactory.getLogger(DSMRBinding.class);
 
     /* Serial port (configurable via openhab.cfg) */
     private String port = "";
+
+    /* Fixed serial port speed settings (configurable via openhab.cfg) */
+    private DSMRPortSettings fixedPortSettings = null;
 
     /* Meter - channel mapping (configurable via openhab.cfg) */
     private final List<DSMRMeter> dsmrMeters = new ArrayList<DSMRMeter>();
@@ -140,19 +144,19 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>imple
 
         // Check if a valid DSMR port exists. Open a new one if necessary
         if (dsmrPort == null || !dsmrPort.isOpen()) {
-            logger.debug("Creating DSMR Port:" + port);
+            logger.debug("Creating DSMR Port: {}", port);
 
             dsmrPort = new DSMRPort(port, new P1TelegramParser(new OBISMsgFactory(dsmrMeters)),
-                    DSMR_UPDATE_INTERVAL / 2, DSMR_UPDATE_INTERVAL * 2);
+                    DSMR_UPDATE_INTERVAL / 2, DSMR_UPDATE_INTERVAL * 2, fixedPortSettings);
         }
 
         // Read the DSMRPort
         List<OBISMessage> messages = dsmrPort.read();
-        logger.debug("Received " + messages.size() + " messages");
+        logger.debug("Received {} messages", messages.size());
 
         // Publish messages on the event bus
         for (OBISMessage msg : messages) {
-            logger.debug("Read message:" + msg);
+            logger.debug("Read message: {}", msg);
             for (DSMRBindingProvider provider : providers) {
                 for (String itemName : provider.getItemNames()) {
                     String dsmrItemId = provider.getDSMRItemID(itemName);
@@ -160,7 +164,7 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>imple
                         // DSMR items with an empty dsmrItemId are filtered
                         // automatically
                         if (dsmrItemId.equals(openHABValue.getDsmrItemId())) {
-                            logger.debug("Publish data(" + dsmrItemId + ") to " + itemName);
+                            logger.debug("Publish data({}) to {}", dsmrItemId, itemName);
 
                             eventPublisher.postUpdate(itemName, openHABValue.getValue());
                         }
@@ -186,12 +190,21 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>imple
         logger.debug("updated() is called!");
         if (config != null) {
             // Read port string
-            String portString = (String) config.get("port");
-            logger.debug("dsmr:port=" + portString);
+            String portString = Objects.toString(config.get("port"), null);
+            logger.debug("dsmr:port={}", portString);
             if (StringUtils.isNotBlank(portString)) {
                 port = portString;
             } else {
                 logger.warn("dsmr:port setting is empty");
+            }
+
+            // Read port settings
+            String portSettingsString = (String) config.get("portsettings");
+            logger.debug("dsmr:portsettings={}", portSettingsString);
+            if (StringUtils.isNotBlank(portSettingsString)) {
+                fixedPortSettings = DSMRPortSettings.getPortSettingsFromString(portSettingsString);
+            } else {
+                logger.info("dsmr:portsettings setting is empty. Ignored");
             }
 
             /*
@@ -200,15 +213,14 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>imple
             dsmrMeters.clear();
 
             for (DSMRMeterType meterType : DSMRMeterType.values()) {
-                String channelConfigValue = (String) config.get(meterType.channelConfigKey);
-                logger.debug("dsmr:" + meterType.channelConfigKey + "=" + channelConfigValue);
-
+                String channelConfigValue = Objects.toString(config.get(meterType.channelConfigKey), null);
+                logger.debug("dsmr:{}={}", meterType.channelConfigKey, channelConfigValue);
                 if (StringUtils.isNotBlank(channelConfigValue)) {
                     try {
                         dsmrMeters.add(new DSMRMeter(meterType, Integer.parseInt(channelConfigValue)));
                     } catch (NumberFormatException nfe) {
-                        logger.warn("Invalid value " + channelConfigValue + " for dsmr:" + meterType.channelConfigKey
-                                + ". Ignore mapping!", nfe);
+                        logger.warn("Invalid value {} for dsmr:{}. Ignore mapping!", channelConfigValue,
+                                meterType.channelConfigKey, nfe);
                     }
                 } else {
                     switch (meterType) {
@@ -217,7 +229,7 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>imple
                         case ELECTRICITY:
                             break; // Always channel 0, configuration not needed
                         default:
-                            logger.info("dsmr:" + meterType.channelConfigKey + " setting is empty");
+                            logger.info("dsmr:{} setting is empty", meterType.channelConfigKey);
                     }
                 }
             }

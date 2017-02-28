@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>PAN03</Model>
+	<Label lang="en">In Wall Single Relay (1 Way) Switch Module 1x 3.0kW with power meter</Label>
+	<Label lang="de">Einbau Einfach Schalter Modul 1x 3.0kW mit Leistungsmessung</Label>
+	<CommandClasses>
+        <Class><id>0x20</id></Class>
+        <Class><id>0x25</id></Class>
+        <Class><id>0x27</id></Class>
+        <Class><id>0x32</id></Class>
+        <Class><id>0x59</id></Class>
+        <Class><id>0x5A</id></Class>
+        <Class><id>0x5E</id></Class> 
+        <Class><id>0x70</id></Class>
+        <Class><id>0x71</id></Class>
+        <Class><id>0x72</id></Class>
+        <Class><id>0x73</id></Class>
+        <Class><id>0x75</id></Class>
+        <Class><id>0x7A</id></Class>
+        <Class><id>0x85</id></Class>
+        <Class><id>0x86</id></Class>
+        <Class><id>0x98</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>short</Type>
+			<Default>720</Default>
+			<Size>2</Size>
+            <Minimum>1</Minimum>
+            <Maximum>32767</Maximum>
+			<Label lang="en">W meter report period</Label>
+			<Label lang="de">W Zähler Berichtsperiode</Label>
+			<Help lang="en">If the setting is configured for 1 hour (value = 720),
+							the device will report its instant power consumption every 1 hour to Z-Wave Controller.
+							Unit: 5 seconds</Help>
+			<Help lang="de">Wenn diese Einstellung auf 1 Stunde steht (Wert = 720),
+							sendet das Gerät denn aktuellen Stromverbrauch jede Stunde an den Z-Wave Controller.
+							Einheit: 5 Sekunden</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>short</Type>
+			<Default>6</Default>
+			<Size>2</Size>
+            <Minimum>1</Minimum>
+            <Maximum>32767</Maximum>
+			<Label lang="en">kWh meter report period</Label>
+			<Label lang="de">kWh Messperiode</Label>
+			<Help lang="en">If the setting is configured for 1 hour (value = 6),
+							the device will report its total power consumption every 1 hour to Z-Wave Controller.
+							Unit: 10 minutes</Help>
+			<Help lang="de">Wenn diese Einstellung auf 1 Stunde steht (Wert = 6),
+							sendet das Gerät denn gesamthaften Stromverbrauch jede Stunde an den Z-Wave Controller.
+							Einheit: 10 Minuten</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>short</Type>
+			<Default>1100</Default>
+			<Size>2</Size>
+            <Minimum>10</Minimum>
+            <Maximum>1100</Maximum>
+			<Label lang="en">Threshold of Ampere for Load Caution</Label>
+			<Label lang="de">Schwellwert für Strom-Last</Label>
+			<Help lang="en">If threshold of ampere is reached, a meter report will be generated. Unit 0.01A.</Help>
+			<Help lang="de">Wenn der Strom-Schwellwert überschritten wird, wird automatisch ein Strommessbericht generiert. Einheit 0.01A.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>short</Type>
+			<Default>10000</Default>
+			<Size>2</Size>
+            <Minimum>1</Minimum>
+            <Maximum>10000</Maximum>
+			<Label lang="en">Threshold of kWh for Load Caution</Label>
+			<Label lang="de">Schwellwert in KWh für Gesammtverbrauch</Label>
+			<Help lang="en">If threshold of kWh is reached, a Meter Report will be generated. Unit 1kWh.</Help>
+			<Help lang="de">Wenn der kWH Schwellwert überschritten wird, wird automatisch ein Strommessbericht generiert. Einheit 1kWh.</Help>
+		</Parameter>    
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Restore switch state mode</Label>
+			<Label lang="de">Letzter Schalter-Zustand</Label>
+			<Help lang="en">Restores the switch state setting in case the device was disconnected from the power source.</Help>
+			<Help lang="de">Stellt den Schalter-Zustand her, nachdem das Gerät wieder mit der Spannungsversogung verbunden wird.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch Off</Label>
+				<Label lang="de">Schalter aus</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Last State</Label>
+				<Label lang="de">Letzter Zustand</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On</Label>
+				<Label lang="de">Schalter an</Label>
+			</Item>
+		</Parameter>
+  		<Parameter>
+			<Index>6</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Manual On/Off mode</Label>
+			<Label lang="de">Manueller Schalter</Label>
+			<Help lang="en">The On/Off function of S1, S2 and learn switch can be disabled or enabled by this parameter, default 
+                            value is Enable. But the learning operation won’t be affected. When manual On/Off function is disabled, 
+                            the RF command can only switch On but not Off. This is useful function for keeping the device in switch on state.</Help>
+			<Help lang="de">Der An-/Aus-Schalter kann mit dieser Option (de-)aktiviert werden.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable manual On/Off</Label>
+				<Label lang="de">Manueller Schalter deaktiviert</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable manual On/Off</Label>
+				<Label lang="de">Manueller Schalter aktiviert</Label>
+			</Item>
+		</Parameter>
+  		<Parameter>
+			<Index>7</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">LED indication mode</Label>
+			<Label lang="de">LED Mode</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">LED shows Switch State.</Label>
+				<Label lang="de">LED zeigt den Schalt-Zustand an.</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">LED shows inverted switch state.</Label>
+				<Label lang="de">LED zeigt den inversen Schaltzustand an.</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">LED will turn on for 1 second after switch state changed.</Label>
+				<Label lang="de">LED leuchted 1sec, wenn sich der Schaltzustand geändert hat.</Label>
+			</Item>
+		</Parameter>       
+		<Parameter>
+			<Index>8</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+            <Minimum>0</Minimum>
+            <Maximum>32767</Maximum>
+			<Label lang="en">Auto Off Timer</Label>
+			<Label lang="de">Auto Aus Timer</Label>
+			<Help lang="en">Whenever the device switches to on, the auto off timer begin to count down. After the timer decrease to zero, it will switch off automatically. 0 means timer is disabld.Unit 1 sec.</Help>
+			<Help lang="en">Das Modul wechselt automatisch in den Schaltzustand aus, nach dem die eingestellte Zeit abgelaufen ist. Ein Wert von 0 daktiviert den Timer. Einheit 1 sec.</Help>
+		</Parameter>        
+		<Parameter>
+			<Index>9</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">RF off command mode</Label>
+			<Help lang="en">Whenever a switch off command, BASIC_SET, BINARY_SWITCH_SET or SWITCH_ALL_OFF is received, it could be interpreted as 4 kinds of commands.</Help>
+			<Label lang="de">RF aus Kommando</Label>
+			<Help lang="de">Nachdem eines der folgenden Kommandos BASIC_SET ,BINARY_SWITCH_SET oder SWITCH_ALL_OFF empfangen wurde, wird folgender Schaltzustand eingenommen:</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch Off</Label>
+				<Label lang="de">Schaltzustand Aus</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+				<Label lang="de">Ignorieren</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch Toggle</Label>
+				<Label lang="de">Schaltzustand Ändern</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch On</Label>
+				<Label lang="de">Schaltzustand Aus</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">EDGE MODE, PULSE MODE AND EDGE-TOGGLE MODE:</Label>
+			<Help lang="en">Manual switch S1 and S2 can set to Edge mode or Pulse mode or Edge-Toggle mode, default value is Edge mode.</Help>
+			<Label lang="de">Schalter Mudus</Label>
+			<Help lang="de">Der manuelle Schalter S1 uns S2 kann in 3 verschiedenen Modi betrieben werden.</Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Edge mode</Label>
+				<Label lang="de">Flanken Modus</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Pulse Mode</Label>
+				<Label lang="de">Impuls Mode</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Edge-Toggle mode</Label>
+				<Label lang="de">Flanken-Umschalt-Modus</Label>
+			</Item>
+		</Parameter>
+ 	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Group 1</Label>
+			<Label lang="de">Gruppe 1</Label>
+		</Group>
+	</Associations>
+</Product>

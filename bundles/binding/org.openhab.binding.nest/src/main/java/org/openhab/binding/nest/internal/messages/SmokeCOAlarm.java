@@ -29,9 +29,9 @@ public class SmokeCOAlarm extends AbstractDevice {
 
     /**
      * Battery life/health; estimate of time to end of life.
-     * 
+     *
      * Possible values for battery_health:
-     * 
+     *
      * <dl>
      * <dt>ok</dt>
      * <dd>Battery OK</dd>
@@ -71,53 +71,9 @@ public class SmokeCOAlarm extends AbstractDevice {
     }
 
     /**
-     * Possible values for *_alarm_state:
-     * 
-     * <dl>
-     * <dt>ok</dt>
-     * <dd>OK</dd>
-     * <dt>warning</dt>
-     * <dd>Warning - CO Detected</dd>
-     * <dt>emergency</dt>
-     * <dd>Emergency - * Detected - move to fresh air</dd>
-     * </dl>
-     */
-    public static enum AlarmState {
-        OK("ok"),
-        WARNING("warning"),
-        EMERGENCY("emergency");
-
-        private final String state;
-
-        private AlarmState(String state) {
-            this.state = state;
-        }
-
-        @JsonValue
-        public String value() {
-            return state;
-        }
-
-        @JsonCreator
-        public static AlarmState forValue(String v) {
-            for (AlarmState as : AlarmState.values()) {
-                if (as.state.equals(v)) {
-                    return as;
-                }
-            }
-            throw new IllegalArgumentException("Invalid alarm_state: " + v);
-        }
-
-        @Override
-        public String toString() {
-            return this.state;
-        }
-    }
-
-    /**
      * Indicates device status by color in the Nest app UI; it is an aggregate condition for battery+smoke+co states,
      * and reflects the actual color indicators displayed in the Nest app
-     * 
+     *
      * Possible values for ui_color_state
      * <dl>
      * <dt>gray</dt>

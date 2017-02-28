@@ -60,40 +60,40 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getColor <em>Color</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getLogger <em>Logger</em>
- *        }</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getColor
+ *        <em>Color</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getUid <em>Uid</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#isPoll <em>Poll</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getEnabledA
- *        <em>Enabled A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#isPoll
+ *        <em>Poll</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getTinkerforgeDevice
  *        <em>Tinkerforge Device</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getIpConnection
- *        <em>Ip Connection</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getIpConnection <em>Ip
+ *        Connection</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getConnectedUid
  *        <em>Connected Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getPosition
  *        <em>Position</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getDeviceIdentifier
  *        <em>Device Identifier</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getName <em>Name</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getBrickd <em>Brickd</em>
- *        }</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getName
+ *        <em>Name</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getBrickd
+ *        <em>Brickd</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getMsubdevices
  *        <em>Msubdevices</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getDeviceType
- *        <em>Device Type</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getColorMapping
- *        <em>Color Mapping</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getColorMapping <em>Color
+ *        Mapping</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -441,10 +441,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setColor(HSBValue newColor) {
         HSBValue oldColor = color;
         color = newColor;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__COLOR, oldColor,
                     color));
-        }
     }
 
     /**
@@ -468,10 +467,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -495,9 +493,8 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -521,10 +518,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -548,10 +544,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -575,10 +570,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setTinkerforgeDevice(BrickletLEDStrip newTinkerforgeDevice) {
         BrickletLEDStrip oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__TINKERFORGE_DEVICE,
                     oldTinkerforgeDevice, tinkerforgeDevice));
-        }
     }
 
     /**
@@ -602,10 +596,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -629,10 +622,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -656,10 +648,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -683,10 +674,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__DEVICE_IDENTIFIER,
                     oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
@@ -710,10 +700,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__NAME, oldName,
                     name));
-        }
     }
 
     /**
@@ -724,10 +713,21 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LED_STRIP__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LED_STRIP__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LED_STRIP__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -751,25 +751,20 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_LED_STRIP__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__BRICKD, newBrickd,
                     newBrickd));
-        }
     }
 
     /**
@@ -795,11 +790,10 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -814,22 +808,18 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setTfConfig(LEDStripConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -841,8 +831,15 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     @Override
     public EList<LEDGroup> getMsubdevices() {
         if (msubdevices == null) {
-            msubdevices = new EObjectContainmentWithInverseEList<LEDGroup>(MSubDevice.class, this,
-                    ModelPackage.MBRICKLET_LED_STRIP__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+            msubdevices = new EObjectContainmentWithInverseEList<LEDGroup>(LEDGroup.class, this,
+                    ModelPackage.MBRICKLET_LED_STRIP__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK) {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public Class<?> getInverseFeatureClass() {
+                    return MSubDevice.class;
+                }
+            };
         }
         return msubdevices;
     }
@@ -879,10 +876,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public void setColorMapping(String newColorMapping) {
         String oldColorMapping = colorMapping;
         colorMapping = newColorMapping;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__COLOR_MAPPING,
                     oldColorMapping, colorMapping));
-        }
     }
 
     /**
@@ -1072,9 +1068,8 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_LED_STRIP__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
             case ModelPackage.MBRICKLET_LED_STRIP__MSUBDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMsubdevices()).basicAdd(otherEnd, msgs);
@@ -1148,7 +1143,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
             case ModelPackage.MBRICKLET_LED_STRIP__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_LED_STRIP__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG:
                 return getTfConfig();
             case ModelPackage.MBRICKLET_LED_STRIP__MSUBDEVICES:
@@ -1313,7 +1310,7 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
             case ModelPackage.MBRICKLET_LED_STRIP__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_LED_STRIP__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG:
                 return tfConfig != null;
             case ModelPackage.MBRICKLET_LED_STRIP__MSUBDEVICES:
@@ -1528,9 +1525,8 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (color: ");

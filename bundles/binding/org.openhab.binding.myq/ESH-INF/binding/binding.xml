@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="nest"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>Chamberlain MyQ Binding</name>
+    <description>Monitor and control Chamberlain Garage Door Openers and Light Modules using the MyQ API.</description>
+    <author>Scott Hanson</author>
+
+    <config-description>
+        <parameter name="username" type="text" required="true">
+            <label>MyQ Username</label>
+        </parameter>
+        <parameter name="password" type="text" required="true">
+            <label>MyQ Password</label>
+        </parameter>
+        <parameter name="quickrefresh" type="integer">
+            <label>Quick Refresh interval</label>
+            <description>Data refresh interval after Event is trigger in milliseconds.</description>
+            <default>2000</default>
+        </parameter>
+        <parameter name="refresh" type="integer">
+            <label>Refresh interval</label>
+            <description>Data refresh interval in milliseconds.</description>
+            <default>60000</default>
+        </parameter>
+        <parameter name="timeout" type="integer">
+            <label>HTTP Timeout</label>
+            <description>HTTP request timeout in milliseconds.</description>
+            <default>5000</default>
+        </parameter>
+        <parameter name="craftman" type="boolean">
+            <label>Craftman API</label>
+            <description>Use Craftsman Assurelink API instead of MyQ API.</description>
+            <default>false</default>
+        </parameter>
+        <parameter name="appId" type="text">
+            <label>Application ID</label>
+            <description>Application ID for the MyQ API.</description>
+            <advanced>true</advanced>
+        </parameter>
+    </config-description>
+</binding:binding>

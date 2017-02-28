@@ -23,6 +23,7 @@ import com.tinkerforge.BrickletAnalogIn;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn#getDeviceType <em>Device Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn#getThreshold <em>Threshold</em>}</li>
@@ -30,11 +31,15 @@ import com.tinkerforge.BrickletAnalogIn;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn#getRange <em>Range</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAnalogIn()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletAnalogIn> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletAnalogIn>
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration>
+ *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
 public interface MBrickletAnalogIn extends MDevice<BrickletAnalogIn>, MSensor<DecimalValue>,

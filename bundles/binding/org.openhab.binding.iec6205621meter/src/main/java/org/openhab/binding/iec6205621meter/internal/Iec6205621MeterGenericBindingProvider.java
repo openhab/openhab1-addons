@@ -109,5 +109,4 @@ public class Iec6205621MeterGenericBindingProvider extends AbstractGenericBindin
         public String meterName;
         public Class<? extends Item> itemType;
     }
-
 }
