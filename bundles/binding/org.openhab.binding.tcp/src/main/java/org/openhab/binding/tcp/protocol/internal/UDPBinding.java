@@ -117,7 +117,7 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
                 if (newState != null) {
                     eventPublisher.postUpdate(itemName, newState);
                 } else {
-                    logger.warn("Can not parse transformed input {} to match command {} on item {}",
+                    logger.warn("Cannot parse transformed input {} to match command {} on item {}",
                             transformedResponse, command, itemName);
                 }
 
