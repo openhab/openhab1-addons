@@ -1941,7 +1941,8 @@
             </Reference>
             <Model>FGWPE102</Model>
             <Label lang="en">Metered Wall Plug Switch (Z-Wave+)</Label>
-            <ConfigFile>fibaro/fgwpe102.xml</ConfigFile>
+            <ConfigFile VersionMin="2.1" VersionMax="2.5">fibaro/fgwpe102-21.xml</ConfigFile>
+            <ConfigFile VersionMin="3.2">fibaro/fgwpe102-32.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
