@@ -3926,4 +3926,17 @@
       <ConfigFile>zooz/zse40.xml</ConfigFile>
     </Product>
   </Manufacturer>
+  <Manufacturer>
+  <Id>015D</Id>
+  <Name>Willis Electric Co., Ltd.</Name>
+  <Product>
+    <Reference>
+      <Type>0111</Type>
+      <Id>231C</Id>
+    </Reference>
+    <Model>ZEN21</Model>
+    <Label lang="en">Zooz Z-Wave On / Off Light Switch ZEN21</Label>
+    <ConfigFile>willis/zen21.xml</ConfigFile>
+  </Product>
+</Manufacturer> 
 </Manufacturers>
