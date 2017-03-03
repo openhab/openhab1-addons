@@ -571,6 +571,7 @@ public class Connection {
         }
         return -1;
     }
+
     /**
      * Converts a byte array to good readable string.
      * 
@@ -579,26 +580,40 @@ public class Connection {
      * @return string representing the bytes
      */
     private String bytesToHex(byte[] bytes) {
-        int dwords = bytes.length / 4 + 1;
-        char[] hexChars = new char[bytes.length * 3 + dwords * 4];
-        int position = 0;
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            if (j % 4 == 0) {
-                String str = "(" + String.format("%02d", j) + ")";
-                char[] charArray = str.toCharArray();
-                for (char character : charArray) {
-                    hexChars[position] = character;
-                    position++;
+        try {
+            int dwords = bytes.length / 4 + 1;
+            char[] hexChars = new char[bytes.length * 3 + dwords * 4];
+            int position = 0;
+            for (int j = 0; j < bytes.length; j++) {
+                int v = bytes[j] & 0xFF;
+                if (j % 4 == 0) {
+                    String str = "(" + String.format("%02d", j) + ")";
+                    char[] charArray = str.toCharArray();
+                    for (char character : charArray) {
+                        hexChars[position] = character;
+                        position++;
+                    }
                 }
+                hexChars[position] = hexArray[v >>> 4];
+                position++;
+                hexChars[position] = hexArray[v & 0x0F];
+                position++;
+                hexChars[position] = ' ';
+                position++;
             }
-            hexChars[position] = hexArray[v >>> 4];
-            position++;
-            hexChars[position] = hexArray[v & 0x0F];
-            position++;
-            hexChars[position] = ' ';
-            position++;
+            return new String(hexChars);
         }
-        return new String(hexChars);
+        catch(ArrayIndexOutOfBoundsException e) {
+            StringBuffer buf = new StringBuffer();
+            for( int i=0; i<bytes.length; i++ ) {
+                buf.append("[");
+                if( bytes[i] < 16 ) {
+                    buf.append("0");
+                }
+                buf.append(Integer.toHexString(bytes[i]) + "]");
+            }
+
+            return buf.toString();
+        }
     }
 }
