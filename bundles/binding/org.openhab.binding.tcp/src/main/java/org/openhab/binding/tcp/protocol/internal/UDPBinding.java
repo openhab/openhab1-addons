@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,15 +34,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * UDPBinding is most "simple" implementation of a UDP based ASCII protocol. It sends and received
+ * UDPBinding is an implementation of a UDP based ASCII protocol. It sends and receives
  * data as ASCII strings. Data sent out is padded with a CR/LF. This should be sufficient for a lot
  * of home automation devices that take simple ASCII based control commands, or that send back
- * text based status messages
- *
+ * text based status messages.
  *
  * @author Karel Goderis
  * @since 1.1.0
- *
  */
 public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvider> implements ManagedService {
 
@@ -69,69 +68,66 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 
         ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 
-        if (command != null) {
+        if (command == null) {
+            return false;
+        }
 
-            String transformedMessage = transformResponse(provider.getProtocolCommand(itemName, command),
-                    commandAsString);
-            String UDPCommandName = preAmble + transformedMessage + postAmble;
+        String transformedMessage = transformResponse(provider.getProtocolCommand(itemName, command), commandAsString);
+        String UDPCommandName = preAmble + transformedMessage + postAmble;
 
-            ByteBuffer outputBuffer = null;
+        ByteBuffer outputBuffer = null;
+        try {
+            outputBuffer = ByteBuffer.allocate(UDPCommandName.getBytes(charset).length);
+            outputBuffer.put(UDPCommandName.getBytes(charset));
+        } catch (UnsupportedEncodingException e) {
+            logger.warn("Data for output buffer appears to be using an unsupported encoding");
+        }
+
+        // send the buffer in an asynchronous way
+        ByteBuffer result = null;
+        try {
+            result = writeBuffer(outputBuffer, sChannel, blocking, timeOut);
+        } catch (Exception e) {
+            logger.warn("An exception occurred while writing a buffer to a channel", e);
+        }
+
+        if (result != null && blocking) {
+            String resultString = "";
             try {
-                outputBuffer = ByteBuffer.allocate(UDPCommandName.getBytes(charset).length);
-                outputBuffer.put(UDPCommandName.getBytes(charset));
+                resultString = new String(result.array(), charset);
             } catch (UnsupportedEncodingException e) {
-                logger.warn("Exception while attempting an unsupported encoding scheme");
+                logger.warn("Data received from write operation appears to be using an unsupported encoding");
             }
 
-            // send the buffer in an asynchronous way
-            ByteBuffer result = null;
-            try {
-                result = writeBuffer(outputBuffer, sChannel, blocking, timeOut);
-            } catch (Exception e) {
-                logger.error("An exception occurred while writing a buffer to a channel: {}", e.getMessage());
-            }
+            logger.info("Received {} from the remote end {}", resultString, sChannel.toString());
+            String transformedResponse = transformResponse(provider.getProtocolCommand(itemName, command),
+                    resultString);
 
-            if (result != null && blocking) {
-                String resultString = "";
-                try {
-                    resultString = new String(result.array(), charset);
-                } catch (UnsupportedEncodingException e) {
-                    logger.warn("Exception while attempting an unsupported encoding scheme");
-                }
+            // if the remote-end does not send a reply in response to the string we just sent, then the
+            // abstract superclass will update the openhab status of the item for us. If it does reply,
+            // then an additional update is done via parseBuffer.
+            // since this binding does not know about the specific protocol, there might be two state
+            // updates (the command, and if the case, the reply from the remote-end)
 
-                logger.info("Received {} from the remote end {}", resultString, sChannel.toString());
-                String transformedResponse = transformResponse(provider.getProtocolCommand(itemName, command),
-                        resultString);
+            if (updateWithResponse) {
 
-                // if the remote-end does not send a reply in response to the string we just sent, then the abstract
-                // superclass will update
-                // the openhab status of the item for us. If it does reply, then an additional update is done via
-                // parseBuffer.
-                // since this TCP binding does not know about the specific protocol, there might be two state updates
-                // (the command, and if
-                // the case, the reply from the remote-end)
+                List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName, command);
+                State newState = createStateFromString(stateTypeList, transformedResponse);
 
-                if (updateWithResponse) {
-
-                    List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName, command);
-                    State newState = createStateFromString(stateTypeList, transformedResponse);
-
-                    if (newState != null) {
-                        eventPublisher.postUpdate(itemName, newState);
-                    } else {
-                        logger.warn("Can not parse transformed input " + transformedResponse
-                                + " to match command {} on item {}  ", command, itemName);
-                    }
-
-                    return false;
+                if (newState != null) {
+                    eventPublisher.postUpdate(itemName, newState);
                 } else {
-                    return true;
+                    logger.warn("Cannot parse transformed input {} to match command {} on item {}",
+                            transformedResponse, command, itemName);
                 }
+
+                return false;
             } else {
                 return true;
             }
+        } else {
+            return true;
         }
-        return false;
     }
 
     /**
@@ -147,11 +143,16 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
         String theUpdate = "";
         try {
             theUpdate = new String(byteBuffer.array(), charset);
+            logger.debug("parseBuffer constructed update: '{}'", theUpdate);
         } catch (UnsupportedEncodingException e) {
             logger.warn("Exception while attempting an unsupported encoding scheme");
         }
 
         ProtocolBindingProvider provider = findFirstMatchingBindingProvider(itemName);
+        if (provider == null) {
+            logger.warn("No provider could be found for the item '{}'", itemName);
+            return;
+        }
 
         List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName, aCommand);
 
@@ -161,7 +162,7 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
         if (newState != null) {
             eventPublisher.postUpdate(itemName, newState);
         } else {
-            logger.warn("Can not parse input " + theUpdate + " to match command {} on item {}  ", aCommand, itemName);
+            logger.warn("Cannot parse input {} to match command {} on item {}", theUpdate, aCommand, itemName);
         }
     }
 
@@ -179,63 +180,62 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 
         super.updated(config);
 
-        if (config != null) {
-
-            String timeOutString = (String) config.get("buffersize");
-            if (isNotBlank(timeOutString)) {
-                timeOut = Integer.parseInt((timeOutString));
-            } else {
-                logger.info("The maximum time out for blocking write operations will be set to the default value of {}",
-                        timeOut);
-            }
-
-            String blockingString = (String) config.get("retryinterval");
-            if (isNotBlank(blockingString)) {
-                blocking = Boolean.parseBoolean((blockingString));
-            } else {
-                logger.info("The blocking nature of read/write operations will be set to the default value of {}",
-                        blocking);
-            }
-
-            String preambleString = (String) config.get("preamble");
-            if (isNotBlank(preambleString)) {
-                try {
-                    preAmble = preambleString.replaceAll("\\\\", "\\");
-                } catch (Exception e) {
-                    preAmble = preambleString;
-                }
-            } else {
-                logger.info("The preamble for all write operations will be set to the default value of {}", preAmble);
-            }
-
-            String postambleString = (String) config.get("postamble");
-            if (isNotBlank(postambleString)) {
-                try {
-                    postAmble = postambleString.replaceAll("\\\\", "\\");
-                } catch (Exception e) {
-                    postAmble = postambleString;
-                }
-            } else {
-                logger.info("The postamble for all write operations will be set to the default value of {}", postAmble);
-            }
-
-            String updatewithresponseString = (String) config.get("updatewithresponse");
-            if (isNotBlank(updatewithresponseString)) {
-                updateWithResponse = Boolean.parseBoolean((updatewithresponseString));
-            } else {
-                logger.info("Updating states with returned values will be set to the default value of {}",
-                        updateWithResponse);
-            }
-
-            String charsetString = (String) config.get("charset");
-            if (isNotBlank(charsetString)) {
-                charset = charsetString;
-            } else {
-                logger.info("The characterset will be set to the default value of {}", charset);
-            }
-
+        if (config == null) {
+            return;
         }
 
+        String timeOutString = Objects.toString(config.get("buffersize"), null);
+        if (isNotBlank(timeOutString)) {
+            timeOut = Integer.parseInt(timeOutString);
+        } else {
+            logger.info("The maximum timeout for blocking write operations will be set to the default value of {}",
+                    timeOut);
+        }
+
+        String blockingString = Objects.toString(config.get("retryinterval"), null);
+        if (isNotBlank(blockingString)) {
+            blocking = Boolean.parseBoolean(blockingString);
+        } else {
+            logger.info("The blocking nature of read/write operations will be set to the default value of {}",
+                    blocking);
+        }
+
+        String preambleString = Objects.toString(config.get("preamble"), null);
+        if (isNotBlank(preambleString)) {
+            try {
+                preAmble = preambleString.replaceAll("\\\\", "\\");
+            } catch (Exception e) {
+                preAmble = preambleString;
+            }
+        } else {
+            logger.info("The preamble for all write operations will be set to the default value of {}", preAmble);
+        }
+
+        String postambleString = Objects.toString(config.get("postamble"), null);
+        if (isNotBlank(postambleString)) {
+            try {
+                postAmble = postambleString.replaceAll("\\\\", "\\");
+            } catch (Exception e) {
+                postAmble = postambleString;
+            }
+        } else {
+            logger.info("The postamble for all write operations will be set to the default value of {}", postAmble);
+        }
+
+        String updateWithResponseString = Objects.toString(config.get("updatewithresponse"), null);
+        if (isNotBlank(updateWithResponseString)) {
+            updateWithResponse = Boolean.parseBoolean(updateWithResponseString);
+        } else {
+            logger.info("Updating states with returned values will be set to the default value of {}",
+                    updateWithResponse);
+        }
+
+        String charsetString = Objects.toString(config.get("charset"), null);
+        if (isNotBlank(charsetString)) {
+            charset = charsetString;
+        } else {
+            logger.info("The character set will be set to the default value of {}", charset);
+        }
     }
 
     @Override
@@ -246,36 +246,36 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
         String transformedResponse;
 
         if (isEmpty(transformation) || transformation.equalsIgnoreCase("default")) {
-            transformedResponse = response;
-        } else {
-            Matcher matcher = EXTRACT_FUNCTION_PATTERN.matcher(transformation);
-            if (matcher.matches()) {
-                matcher.reset();
-                matcher.find();
-                String transformationServiceName = matcher.group(1);
-                String transformationServiceParam = matcher.group(2);
-                try {
-                    TransformationService transformationService = TransformationHelper
-                            .getTransformationService(TCPActivator.getContext(), transformationServiceName);
-                    if (transformationService != null) {
-                        transformedResponse = transformationService.transform(transformationServiceParam, response);
-                    } else {
-                        transformedResponse = response;
-                        logger.warn(
-                                "couldn't transform response because transformationService of type '{}' is unavailable",
-                                transformationServiceName);
-                    }
-                } catch (Exception te) {
-                    logger.error("transformation throws exception [transformation={}, response={}]", transformation,
-                            response, te);
+            logger.debug("transformed response is '{}'", response);
+            return response;
+        }
 
-                    // in case of an error we return the response without any
-                    // transformation
+        Matcher matcher = EXTRACT_FUNCTION_PATTERN.matcher(transformation);
+        if (matcher.matches()) {
+            matcher.reset();
+            matcher.find();
+            String transformationServiceName = matcher.group(1);
+            String transformationServiceParam = matcher.group(2);
+            try {
+                TransformationService transformationService = TransformationHelper
+                        .getTransformationService(TCPActivator.getContext(), transformationServiceName);
+                if (transformationService != null) {
+                    transformedResponse = transformationService.transform(transformationServiceParam, response);
+                } else {
                     transformedResponse = response;
+                    logger.warn("couldn't transform response because transformationService of type '{}' is unavailable",
+                            transformationServiceName);
                 }
-            } else {
-                transformedResponse = transformation;
+            } catch (Exception te) {
+                logger.warn("Transformation threw an exception. [transformation={}, response={}]", transformation,
+                        response, te);
+
+                // in case of an error we return the response without any
+                // transformation
+                transformedResponse = response;
             }
+        } else {
+            transformedResponse = transformation;
         }
 
         logger.debug("transformed response is '{}'", transformedResponse);
@@ -290,5 +290,4 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
     protected String getName() {
         return "UDP Refresh Service";
     }
-
 }
