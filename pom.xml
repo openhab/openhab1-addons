@@ -40,7 +40,7 @@
         <ohdr.version>1.0.10</ohdr.version>
         <ohc.version>2.1.x</ohc.version>
 
-        <tycho-version>1.0.0</tycho-version>
+        <tycho-version>0.24.0</tycho-version>
         <tycho-groupid>org.eclipse.tycho</tycho-groupid>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
