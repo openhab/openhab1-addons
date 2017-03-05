@@ -1879,6 +1879,10 @@
             </Reference>
             <Reference>
                 <Type>0501</Type>
+                <Id>2002</Id>
+            </Reference>
+            <Reference>
+                <Type>0501</Type>
                 <Id>3002</Id>
             </Reference>
             <Model>FGBS001</Model>
@@ -3938,5 +3942,5 @@
     <Label lang="en">Zooz Z-Wave On / Off Light Switch ZEN21</Label>
     <ConfigFile>willis/zen21.xml</ConfigFile>
   </Product>
-</Manufacturer> 
+</Manufacturer>
 </Manufacturers>
