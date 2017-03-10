@@ -506,7 +506,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
                                     node.getNodeId());
                             currentStage = ZWaveNodeInitStage.SESSION_START;
                         }
-                        logger.info("NODE {}: does not support SECURITY_REPORT, proceeding to next stage.",
+                        logger.debug("NODE {}: does not support SECURITY_REPORT, proceeding to next stage.",
                                 this.node.getNodeId());
                     }
                     break;

@@ -43,6 +43,7 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getLogger
  *        <em>Logger</em>}</li>
@@ -71,7 +72,6 @@ import com.tinkerforge.TimeoutException;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getDeviceType
  *        <em>Device Type</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -349,10 +349,9 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__LOGGER,
                     oldLogger, logger));
-        }
     }
 
     /**
@@ -376,10 +375,9 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__UID,
                     oldUid, uid));
-        }
     }
 
     /**
@@ -403,10 +401,9 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__POLL,
                     oldPoll, poll));
-        }
     }
 
     /**
@@ -430,10 +427,9 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -457,11 +453,10 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
     public void setTinkerforgeDevice(BrickletSegmentDisplay4x7 newTinkerforgeDevice) {
         BrickletSegmentDisplay4x7 oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__TINKERFORGE_DEVICE, oldTinkerforgeDevice,
                     tinkerforgeDevice));
-        }
     }
 
     /**
@@ -485,10 +480,9 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__IP_CONNECTION, oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -512,10 +506,9 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__CONNECTED_UID, oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -539,10 +532,9 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -566,11 +558,10 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__DEVICE_IDENTIFIER, oldDeviceIdentifier,
                     deviceIdentifier));
-        }
     }
 
     /**
@@ -594,10 +585,9 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__NAME,
                     oldName, name));
-        }
     }
 
     /**
@@ -608,10 +598,21 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -635,25 +636,20 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__BRICKD,
                     newBrickd, newBrickd));
-        }
     }
 
     /**
@@ -729,9 +725,8 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -797,7 +792,9 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
             case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__DEVICE_TYPE:
                 return getDeviceType();
         }
@@ -928,7 +925,7 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
             case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__DEVICE_TYPE:
                 return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
         }
@@ -1087,9 +1084,8 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

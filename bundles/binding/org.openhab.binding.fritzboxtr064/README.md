@@ -1,4 +1,4 @@
-# OpenHAB Fritzbox Binding using TR064 protocol
+# openHAB Fritzbox Binding using TR064 protocol
 
 
 Hi,
@@ -7,6 +7,7 @@ I created a binding for communication with fritzbox using SOAP requests (TR064 p
 * 7270
 * 7360SL (v6.30)
 * 7390
+* 7580
 
 **Features:**
 
@@ -64,8 +65,6 @@ Number  fboxTAM0NewMsg   "New Messages TAM 0 [%s]"      {fritzboxtr064="tamNewMe
 Number  fboxMissedCalls     "Missed Calls [%s]"      	{fritzboxtr064="missedCallsInDays:5"}
 
 ```
-
-
 
 
 ### openhab.cfg

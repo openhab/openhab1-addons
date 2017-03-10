@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="http"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>HTTP Binding</name>
+    <description>Send updates and commands to and poll updates from HTTP servers.</description>
+
+    <service-id>org.openhab.http</service-id>
+
+    <config-description>
+        <parameter name="timeout" type="integer">
+            <label>Timeout</label>
+            <description>HTTP request timeout in milliseconds.</description>
+            <default>5000</default>
+        </parameter>
+        <parameter name="granularity" type="integer">
+            <label>Granularity</label>
+            <description>The interval when to find new refresh candidates, in milliseconds.</description>
+            <default>1000</default>
+        </parameter>
+        <parameter name="format" type="boolean">
+        	<label>Format</label>
+        	<description>Whether to substitute the current time or state value into the URL</description>
+        	<default>true</default>
+        </parameter>
+    </config-description>
+</binding:binding>

@@ -55,6 +55,9 @@
             <Minimum>0</Minimum>
             <Maximum>100</Maximum>
             <Size>1</Size>
+            <Help><![CDATA[Set the repetitions for playing doorbell ringtone.
+<p>Value=1 to 255, the range of repetition is 1 to 100.   Value =0, ignore. Note: If the time of playing doorbell ringtone is more than 20s, the volume of ringtone will reduce to silence no matter how many repetitions of doorbell ringtone are set. </p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -65,6 +68,8 @@
             <Minimum>1</Minimum>
             <Maximum>100</Maximum>
             <Size>1</Size>
+            <Help><![CDATA[Set the default doorbell ringtone. Default=1
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -80,15 +85,23 @@
                 <Value>0</Value>
                 <Label lang="en">Stop</Label>
             </Item>
+            <Item>
+                <Value>255</Value>
+                <Label lang="en">play the default ringtone</Label>
+            </Item>
+            <Help><![CDATA[Set a ringtone to play. Default=0
+<p>Set this to any ringtone (1-100) to have it play that ringtone.</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
             <Index>7</Index>
-            <Label lang="en">Send Basic Set on open/close event</Label>
+            <Label lang="en">Control items</Label>
             <Type>list</Type>
             <Default>0</Default>
-            <Minimum>0</Minimum>
-            <Maximum>0</Maximum>
+            <Minimum>1</Minimum>
+            <Maximum>5</Maximum>
+            <WriteOnly>true</WriteOnly>
             <Size>1</Size>
             <Item>
                 <Value>0</Value>
@@ -114,6 +127,9 @@
                 <Value>5</Value>
                 <Label lang="en">Previous</Label>
             </Item>
+            <Help><![CDATA[Control current output
+<p>Control items: Value=1, play Value=2, stop Value=3, pause Value=4, Next Value=5, Previous Other, ignore</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -124,36 +140,75 @@
             <Minimum>0</Minimum>
             <Maximum>10</Maximum>
             <Size>1</Size>
+            <Help><![CDATA[Default=10
+            ]]></Help>
         </Parameter>
 
         <Parameter>
             <Index>10</Index>
             <Label lang="en">Define button- and button+ action</Label>
-            <Type>short</Type>
+            <Type>list</Type>
             <Default>0</Default>
             <Minimum>0</Minimum>
             <Maximum>1</Maximum>
             <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">“Button ‐” is previous, “Button+” is next</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">“Button ‐” is next, “Button+” is previous</Label>
+            </Item>
+            <Help><![CDATA[Define functions of “Button ‐”  and “Button+”.
+<p>0:  button- is previous, button+ is next</p> <p>1:  button- is next, button+ is previous</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
             <Index>11</Index>
             <Label lang="en">Define long press button- and button+</Label>
-            <Type>short</Type>
+            <Type>list</Type>
             <Default>0</Default>
             <Minimum>0</Minimum>
             <Maximum>1</Maximum>
             <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">short press changes vol, long press changes default ringtone</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">long press changes vol, short press changes default ringtone</Label>
+            </Item>
+            <Help><![CDATA[Define short/long button presses
+<p>0: short pressing changes volume, long pressing changes<br />default ringtone.<br />1: long pressing changes volume, short pressing changes<br />default ringtone.</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
             <Index>42</Index>
             <Label lang="en">Get wireless button battery status</Label>
-            <Type>short</Type>
+            <Type>list</Type>
             <Default>0</Default>
             <Minimum>0</Minimum>
             <Maximum>0</Maximum>
             <Size>1</Size>
+            <Item>
+                <Value>-1</Value>
+                <Label lang="en">Unknown Battery Level</Label>
+            </Item>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Battery Level Good</Label>
+            </Item>
+            <Item>
+                <Value>255</Value>
+                <Label lang="en">Low Battery</Label>
+            </Item>
+            <Help><![CDATA[Alert for low battery
+<p>0x00:  normal battery level</p> <p>0xff:  low battery level</p> <p>set 0x00:  cancel low battery alert</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -165,19 +220,41 @@
             <Maximum>2</Maximum>
             <Size>1</Size>
             <Item>
-                <Value>10</Value>
-                <Label lang="en">Define buton- and button+ functions</Label>
+                <Value>0</Value>
+                <Label lang="en">nothing</Label>
             </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">hail CC</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">basic CC report</Label>
+            </Item>
+            <Help><![CDATA[Enable to send notifications to associated devices (Group1)
+<p>Enable/disable to send notifications to associated devices (Group 1) when the state of Doorbell is changed (0=nothing, 1=hail CC, 2=basic CC report)</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
             <Index>81</Index>
             <Label lang="en">Enable/disable battery group notification</Label>
-            <Type>short</Type>
+            <Type>list</Type>
             <Default>0</Default>
             <Minimum>0</Minimum>
             <Maximum>1</Maximum>
             <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">nothing</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Configuration report parameter 42</Label>
+            </Item>
+            <Help><![CDATA[Notifies Group 1 when battery state is low
+<p>Enable/disable to send notifications to associated devices (Group<br />1) when the Wireless Button’s battery is in low battery state<br />(0=nothing, 1=Configuration report 0x2A)</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -188,6 +265,9 @@
             <Minimum>0</Minimum>
             <Maximum>0</Maximum>
             <Size>4</Size>
+            <Help><![CDATA[Starts wireless button pairing mode
+<p>Pair the Wireless Button with Doorbell.<br />Value=0x55555555, Start the Wireless Button pairing mode and<br />the blue Led will blink slowly, short press the Wireless Button<br />once, if the blue Led change to be solid, which means the pairing<br />is successful. Otherwise, repeat the steps.<br />It will automatically exit the pairing mode after 8s if there is no<br />pressing action of the Wireless Button.<br />Note:<br />You can send this configuration Get CC to ask the pairing result:<br />If configuration report value=0x00000000, which means the<br />pairing is failed.<br />If configuration report value =0xFFFFFFFF, which means the<br />pairing is successful.<br /></p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -198,6 +278,9 @@
             <Minimum>0</Minimum>
             <Maximum>1</Maximum>
             <Size>1</Size>
+            <Help><![CDATA[Lock configuration
+<p>0:  config not locked</p> <p>1:  config locked</p>
+            ]]></Help>
         </Parameter>
 
         <Parameter>
@@ -207,8 +290,10 @@
             <Default>0</Default>
             <Minimum>0</Minimum>
             <Maximum>0</Maximum>
-            <WriteOnly>true</WriteOnly>
             <Size>4</Size>
+            <Help><![CDATA[Reset to factory settings
+<p>1. Size=0x01， Configuration Value=0x00:<br />Reset configuration setting.<br />2. Size=0x04， Configuration Value=0x55555555:<br />Reset Factory setting.</p>
+            ]]></Help>
         </Parameter>
 
     </Configuration>

@@ -21,25 +21,25 @@ public class CalibrationResponseMessage extends Message {
 
     private static final Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{8})(\\w{8})(\\w{8})(\\w{8})");
 
-    private float gaina;
-    private float gainb;
-    private float offtot;
-    private float offruis;
+    private double gainA;
+    private double gainB;
+    private double offsetTotal;
+    private double offsetNoise;
 
-    public float getGaina() {
-        return gaina;
+    public double getGainA() {
+        return gainA;
     }
 
-    public float getGainb() {
-        return gainb;
+    public double getGainB() {
+        return gainB;
     }
 
-    public float getOfftot() {
-        return offtot;
+    public double getOffsetTotal() {
+        return offsetTotal;
     }
 
-    public float getOffruis() {
-        return offruis;
+    public double getOffsetNoise() {
+        return offsetNoise;
     }
 
     public CalibrationResponseMessage(int sequenceNumber, String payLoad) {
@@ -58,10 +58,10 @@ public class CalibrationResponseMessage extends Message {
         if (matcher.matches()) {
             MAC = matcher.group(1);
 
-            gaina = Float.intBitsToFloat((int) (Long.parseLong(matcher.group(2), 16)));
-            gainb = Float.intBitsToFloat((int) (Long.parseLong(matcher.group(3), 16)));
-            offtot = Float.intBitsToFloat((int) (Long.parseLong(matcher.group(4), 16)));
-            offruis = Float.intBitsToFloat((int) (Long.parseLong(matcher.group(5), 16)));
+            gainA = Float.intBitsToFloat((int) (Long.parseLong(matcher.group(2), 16)));
+            gainB = Float.intBitsToFloat((int) (Long.parseLong(matcher.group(3), 16)));
+            offsetTotal = Float.intBitsToFloat((int) (Long.parseLong(matcher.group(4), 16)));
+            offsetNoise = Float.intBitsToFloat((int) (Long.parseLong(matcher.group(5), 16)));
         } else {
             logger.debug("Plugwise protocol RoleCallResponseMessage error: {} does not match", payLoad);
         }

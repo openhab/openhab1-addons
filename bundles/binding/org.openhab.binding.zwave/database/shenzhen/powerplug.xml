@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>Power Plug</Model>
+    <Label lang="en">Metered Wall Plug Switch</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x32</id>             <!-- METER -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Meter Report Enable</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable Report</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enable Report</Label>
+            </Item>
+            <Help><![CDATA[This parameter defines Disable/Enable meter report measure data to controller.
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Meter Report Interval</Label>
+            <Type>short</Type>
+            <Default>300</Default>
+            <Minimum>1</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[This parameter defines interval time (in seconds) that Meter report data to main controller.
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Maxium over-load current</Label>
+            <Type>short</Type>
+            <Default>13</Default>
+            <Minimum>1</Minimum>
+            <Maximum>16</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[This parameter defines maximum current the plug can provide to load that be connected to plug. If the current consumed by load greater than maximum current, the plug will cut off power and send alarm.
+<p>send Alarm NOTIFICATION_EVENT_POWER_MANAGEMENT_OVER_LOAD_DETECTED to associated</p> <p>devices in lifeline. Red Led will blink every seconds until current is normal (less than Parameter</p> <p>#3). You must remove the loader and turn on the Plug (press the button once) to enable current</p> <p>monitor and clear NOTIFICATION ALARM.</p> <p>This parameter value must be great than #4. If user set this parameter to default by Configure CC,</p> <p>the parameter #4 will be set to default value.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Maximum alarm current</Label>
+            <Type>short</Type>
+            <Default>12</Default>
+            <Minimum>1</Minimum>
+            <Maximum>15</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[Defines maximum current, if the current plug provide to load great than this parameter, the plug will send over-current notification to main controller and the LED will be turn RED, but plug cannot cut-off power. Value must be less than parameter 3#. 
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">LED enable</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable LED indication Function</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enable LED indication Function</Label>
+            </Item>
+            <Help><![CDATA[This parameter defines the LED indication Function ON/OFF.
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>6</Index>
+            <Label lang="en">Power Report Threshold</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>1</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[How much the power consumed must change to be reported. If the rate of power consumed change ratio is greater than this parameter, the plug will report the results, voltage, current, power and energy.
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>7</Index>
+            <Label lang="en">Remember Relay ON/OFF status after power failure.</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Don’t Remember, the relay will keep OFF when Plug Supply Power.</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Remember the Relay Status.</Label>
+            </Item>
+            <Help><![CDATA[ Define how will the Plug react after the power supply is back on.  0 = will be off after the power supply is reconnected.  Others = remember relay status
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>8</Index>
+            <Label lang="en">Plug Time switch Function</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Time switch Disable</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Time switch Enable</Label>
+            </Item>
+            <Help><![CDATA[Defines if the timer function is enabled/disabled to switch the Plug OFF after the time period, which is defined in parameter 9#.
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>9</Index>
+            <Label lang="en">Time switch Period</Label>
+            <Type>short</Type>
+            <Default>150</Default>
+            <Minimum>1</Minimum>
+            <Maximum>65535</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[This parameter defines the time after the plug is switched off. If Parameter 9# is set to ‘1’, and relay is turn ON, the relay will be turn OFF after delay this parameter.
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>10</Index>
+            <Label lang="en">Button On/Off Enable</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable Button</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enable Button</Label>
+            </Item>
+            <Help><![CDATA[If this parameter is set to ‘1’, users can turn on and off the wall plug by pressing the button on the top of the wall plug.If this parameter is set to ‘0’, the wall plug cannot be turned on and off by pressing the button.
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Group 1</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Group 2</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Group 3</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

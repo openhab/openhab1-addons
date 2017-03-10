@@ -20,16 +20,20 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice#getPin <em>Pin</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice#getDisableElectrode
- *        <em>Disable Electrode</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice#getDisableElectrode <em>Disable
+ *        Electrode</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMultiTouchDevice()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MSubDevice<org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.DigitalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSubDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch>
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.DigitalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration>"
  * @generated
  */
 public interface MultiTouchDevice extends MSubDevice<MBrickletMultiTouch>, MSensor<HighLowValue>,
@@ -53,8 +57,8 @@ public interface MultiTouchDevice extends MSubDevice<MBrickletMultiTouch>, MSens
     int getPin();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice#getPin <em>Pin</em>
-     * }' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice#getPin
+     * <em>Pin</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

@@ -25,7 +25,6 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.AlarmState;
 import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.BatteryHealth;
 import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.ColorState;
 import org.openhab.binding.nest.internal.messages.Structure.AwayState;

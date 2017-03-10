@@ -41,17 +41,25 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) subType;
         }
+
+        public static SubType fromByte(int input) {
+            for (SubType subType : SubType.values()) {
+                if (subType.subType == input) {
+                    return subType;
+                }
+            }
+
+            return SubType.UNKNOWN;
+        }
     }
 
     public enum Commands {
         RESET(0), // Reset the receiver/transceiver. No answer is transmitted!
-        NOT_USED1(1), // Not used
         GET_STATUS(2), // Get Status, return firmware versions and configuration of the interface
         SET_MODE(3), // Set mode msg1-msg5, return firmware versions and configuration of the interface
         ENABLE_ALL(4), // Enable all receiving modes of the receiver/transceiver
         ENABLE_UNDECODED_PACKETS(5), // Enable reporting of undecoded packets
         SAVE_RECEIVING_MODES(6), // Save receiving modes of the receiver/transceiver in non-volatile memory
-        NOT_USED7(7), // Not used
         T1(8), // For internal use by RFXCOM
         T2(9), // For internal use by RFXCOM
 
@@ -70,13 +78,23 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) command;
         }
+
+        public static Commands fromByte(int input) {
+            for (Commands command : Commands.values()) {
+                if (command.command == input) {
+                    return command;
+                }
+            }
+
+            return Commands.UNKNOWN;
+        }
     }
 
     public enum TransceiverType {
         _310MHZ(80),
         _315MHZ(81),
-        _443_92MHZ_RECEIVER_ONLY(82),
-        _443_92MHZ_TRANSCEIVER(83),
+        _433_92MHZ_RECEIVER_ONLY(82),
+        _433_92MHZ_TRANSCEIVER(83),
         _868_00MHZ(85),
         _868_00MHZ_FSK(86),
         _868_30MHZ(87),
@@ -100,12 +118,47 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         public byte toByte() {
             return (byte) type;
         }
+
+        public static TransceiverType fromByte(int input) {
+            for (TransceiverType type : TransceiverType.values()) {
+                if (type.type == input) {
+                    return type;
+                }
+            }
+
+            return TransceiverType.UNKNOWN;
+        }
     }
 
-    public SubType subType = SubType.INTERFACE_RESPONSE;
+    public enum FirmwareType {
+        Type1_RFXRec(0),
+        Type1(1),
+        Type2(2),
+        Ext(3),
+        Ext2(4),
+
+        UNKNOWN(255);
+
+        private final int type;
+
+        FirmwareType(int type) {
+            this.type = type;
+        }
+
+        FirmwareType(byte type) {
+            this.type = type;
+        }
+
+        public byte toByte() {
+            return (byte) type;
+        }
+    }
+
+    public SubType subType = SubType.UNKNOWN;
     public Commands command = Commands.UNKNOWN;
-    public TransceiverType transceiverType = TransceiverType._443_92MHZ_TRANSCEIVER;
-    public byte firmwareVersion = 0;
+    public TransceiverType transceiverType = TransceiverType.UNKNOWN;
+    public short firmwareVersion = 0;
+    public FirmwareType firmwareType = FirmwareType.UNKNOWN;
 
     public boolean enableUndecodedPackets = false; // 0x80 - Undecoded packets
     public boolean enableRFU6Packets = false; // 0x40 - RFU6
@@ -134,13 +187,12 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
     public boolean enableARCPackets = false; // 0x02 - ARC (433.92)
     public boolean enableX10Packets = false; // 0x01 - X10 (310/433.92)
 
-    public boolean enableHomeConfortPackets = false; // 0x02 - HomeConfort (433.92) 
-    public boolean enableKeeLoqPackets = false; // 0x01 - KeeLoq (433.92) 
+    public boolean enableHomeConfortPackets = false; // 0x02 - HomeConfort (433.92)
+    public boolean enableKeeLoqPackets = false; // 0x01 - KeeLoq (433.92)
 
     public byte hardwareVersion1 = 0;
     public byte hardwareVersion2 = 0;
     public byte outputPower = 0;
-
 
     public RFXComInterfaceMessage() {
 
@@ -159,6 +211,7 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         str += "\n - Command = " + command;
         str += "\n - Transceiver type = " + transceiverType;
         str += "\n - Firmware version = " + firmwareVersion;
+        str += "\n - Firmware type = " + firmwareType;
         str += "\n - Hardware version = " + hardwareVersion1 + "." + hardwareVersion2;
         str += "\n - Undecoded packets = " + enableUndecodedPackets;
         str += "\n - RFU6 packets = " + enableRFU6Packets;
@@ -193,9 +246,10 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
     }
 
     /**
-     * The new and old firmwares have different message formats
-     * The firmware version is different for each hardware, 
-     *  and the hardware version are in different position depending of message format
+     * The format of message differ in some firmwares
+     * Some messages with 13 bytes(14 with length) have an intermediate format
+     * The firmware version is different for each hardware,
+     * and the hardware version are in different position depending of message format
      * Actually we dont know how to detect correctly for all hardwares
      *
      * Apparently we can consider this versions are using new format
@@ -204,9 +258,9 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
      * RFXtrx433E (HW version 1.3??) : 251
      *
      */
-    private boolean isNewFormat() {
-        final short fv = (short)(firmwareVersion & 0xff);
-        return  (fv >= 95 && fv <= 100) || (fv >= 195 && fv <= 200) || (fv >= 251);
+    private boolean isIntermediateFormat() {
+        return (firmwareVersion >= 95 && firmwareVersion <= 100) || (firmwareVersion >= 195 && firmwareVersion <= 200)
+                || (firmwareVersion >= 251);
     }
 
     @Override
@@ -214,27 +268,32 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
 
         super.encodeMessage(data);
 
-        try {
-            subType = SubType.values()[super.subType];
-        } catch (Exception e) {
-            subType = SubType.UNKNOWN;
-        }
-        try {
-            command = Commands.values()[data[4]];
-        } catch (Exception e) {
-            command = Commands.UNKNOWN;
-        }
+        subType = SubType.fromByte(super.subType);
+        command = Commands.fromByte(data[4]);
+        transceiverType = TransceiverType.fromByte(data[5]);
 
-        transceiverType = TransceiverType.UNKNOWN;
-
-        for (TransceiverType type : TransceiverType.values()) {
-            if (type.toByte() == data[5]) {
-                transceiverType = type;
-                break;
+        firmwareType = FirmwareType.UNKNOWN;
+        if (data.length > 14) {
+            firmwareVersion = (short) ((data[6] & 0xff) + 1000);
+            for (FirmwareType type : FirmwareType.values()) {
+                if (type.toByte() == data[14]) {
+                    firmwareType = type;
+                    break;
+                }
+            }
+        } else {
+            firmwareVersion = (short) (data[6] & 0xff);
+            if (transceiverType == TransceiverType._433_92MHZ_RECEIVER_ONLY && firmwareVersion < 162) {
+                firmwareType = FirmwareType.Type1_RFXRec;
+            } else if (transceiverType == TransceiverType._433_92MHZ_TRANSCEIVER && firmwareVersion < 162) {
+                firmwareType = FirmwareType.Type1;
+            } else if (transceiverType == TransceiverType._433_92MHZ_TRANSCEIVER
+                    && (firmwareVersion >= 162 && firmwareVersion < 225)) {
+                firmwareType = FirmwareType.Type2;
+            } else {
+                firmwareType = FirmwareType.Ext;
             }
         }
-
-        firmwareVersion = data[6];
 
         enableUndecodedPackets = (data[7] & 0x80) != 0 ? true : false;
         enableRFU6Packets = (data[7] & 0x40) != 0 ? true : false;
@@ -263,13 +322,13 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         enableARCPackets = (data[9] & 0x02) != 0 ? true : false;
         enableX10Packets = (data[9] & 0x01) != 0 ? true : false;
 
-        if (isNewFormat()) {
+        if (isIntermediateFormat() || data.length > 14) {
             enableHomeConfortPackets = (data[10] & 0x02) != 0 ? true : false;
             enableKeeLoqPackets = (data[10] & 0x01) != 0 ? true : false;
 
             hardwareVersion1 = data[11];
             hardwareVersion2 = data[12];
-        
+
             outputPower = data[13];
         } else {
             hardwareVersion1 = data[10];
@@ -281,15 +340,15 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
     @Override
     public byte[] decodeMessage() {
 
-        byte[] data = new byte[14];
+        byte[] data = new byte[(firmwareVersion < 1000) ? 14 : 21];
 
-        data[0] = (byte)(data.length-1);
+        data[0] = (byte) (data.length - 1);
         data[1] = RFXComBaseMessage.PacketType.INTERFACE_MESSAGE.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
         data[4] = command.toByte();
         data[5] = transceiverType.toByte();
-        data[6] = 0;
+        data[6] = (byte) (((firmwareVersion > 1000) ? (firmwareVersion - 1000) : firmwareVersion) & 0xff);
 
         data[7] |= enableUndecodedPackets ? 0x80 : 0x00;
         data[7] |= enableRFU6Packets ? 0x40 : 0x00;
@@ -318,13 +377,16 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         data[9] |= enableARCPackets ? 0x02 : 0x00;
         data[9] |= enableX10Packets ? 0x01 : 0x00;
 
-        if (isNewFormat()) {
+        if (isIntermediateFormat() || firmwareVersion > 1000) {
             data[10] |= enableHomeConfortPackets ? 0x02 : 0x00;
             data[10] |= enableKeeLoqPackets ? 0x01 : 0x00;
 
             data[11] = hardwareVersion1;
             data[12] = hardwareVersion2;
             data[13] = outputPower;
+            if (firmwareVersion > 1000) {
+                data[14] = firmwareType.toByte();
+            }
         } else {
             data[10] = hardwareVersion1;
             data[11] = hardwareVersion2;

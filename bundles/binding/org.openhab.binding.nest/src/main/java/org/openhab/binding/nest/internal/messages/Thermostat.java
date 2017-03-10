@@ -128,7 +128,6 @@ public class Thermostat extends AbstractDevice {
     private BigDecimal ambient_temperature_c;
     private BigDecimal humidity;
     private HvacState hvac_state;
-    private String where_id;
     private Boolean is_locked;
     private String locked_temp_min_f;
     private String locked_temp_max_f;
@@ -137,7 +136,6 @@ public class Thermostat extends AbstractDevice {
     private String label;
     private Boolean sunlight_correction_enabled;
     private Boolean sunlight_correction_active;
-    private String where_name;
     private Integer fan_timer_duration;
     private String time_to_target;
     private String time_to_target_training;
@@ -440,14 +438,6 @@ public class Thermostat extends AbstractDevice {
     }
 
     /**
-     * @return Where unique identifier.
-     */
-    @JsonProperty("where_id")
-    public String getWhere_id() {
-        return this.where_id;
-    }
-
-    /**
      * @return Thermostat Lock status. When true, the Thermostat Lock feature is enabled, and restricts the temperature
      *         range to these min/max values: locked_temp_min_f, locked_temp_max_f, locked_temp_min_c, and
      *         locked_temp_max_c.
@@ -529,15 +519,6 @@ public class Thermostat extends AbstractDevice {
     }
 
     /**
-     * @return The display name of the device. Associated with the thermostat where_id.
-     *         Can be any room name from a list we provide, or a custom name.
-     */
-    @JsonProperty("where_name")
-    public String getWhere_name() {
-        return this.where_name;
-    }
-
-    /**
      * @return the length of time (in minutes) that the fan is set to run.
      */
     @JsonProperty("fan_timer_duration")
@@ -615,7 +596,6 @@ public class Thermostat extends AbstractDevice {
         builder.append("ambient_temperature_c", this.ambient_temperature_c);
         builder.append("humidity", this.humidity);
         builder.append("hvac_state", this.hvac_state);
-        builder.append("where_id", this.where_id);
         builder.append("is_locked", this.is_locked);
         builder.append("locked_temp_min_f", this.locked_temp_min_f);
         builder.append("locked_temp_max_f", this.locked_temp_max_f);
@@ -624,7 +604,6 @@ public class Thermostat extends AbstractDevice {
         builder.append("label", this.label);
         builder.append("sunlight_correction_enabled", this.sunlight_correction_enabled);
         builder.append("sunlight_correction_active", this.sunlight_correction_active);
-        builder.append("where_name", this.where_name);
         builder.append("fan_timer_duration", this.fan_timer_duration);
         builder.append("time_to_target", this.time_to_target);
         builder.append("time_to_target_training", this.time_to_target_training);

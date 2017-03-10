@@ -20,18 +20,21 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4#getDeviceType <em>Device Type</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4#isPullUpResistorEnabled
- *        <em>Pull Up Resistor Enabled</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4#isPullUpResistorEnabled <em>Pull Up
+ *        Resistor Enabled</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4#getPin <em>Pin</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDigitalSensorIO4()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.IO4Device org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.DigitalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.IO4Device
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.DigitalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration>"
  * @generated
  */
 public interface DigitalSensorIO4 extends IO4Device, MSensor<HighLowValue>, MTFConfigConsumer<TFIOSensorConfiguration> {
@@ -70,9 +73,9 @@ public interface DigitalSensorIO4 extends IO4Device, MSensor<HighLowValue>, MTFC
     boolean isPullUpResistorEnabled();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4#isPullUpResistorEnabled
-     * <em>Pull Up Resistor Enabled</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4#isPullUpResistorEnabled <em>Pull Up
+     * Resistor Enabled</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -100,8 +103,8 @@ public interface DigitalSensorIO4 extends IO4Device, MSensor<HighLowValue>, MTFC
     int getPin();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4#getPin <em>Pin</em>
-     * }' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4#getPin
+     * <em>Pin</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

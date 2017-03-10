@@ -280,13 +280,11 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
         List<HistoricItem> historicItems = new ArrayList<HistoricItem>();
 
         StringBuffer query = new StringBuffer();
-        query.append("select ");
-        query.append(VALUE_COLUMN_NAME);
-        query.append(" ");
-        query.append("from " + retentionPolicy + ".");
+        query.append("select ").append(VALUE_COLUMN_NAME).append(' ').append("from \"").append(retentionPolicy)
+                .append("\".");
 
         if (filter.getItemName() != null) {
-            query.append(filter.getItemName());
+            query.append('"').append(filter.getItemName()).append('"');
         } else {
             query.append("/.*/");
         }

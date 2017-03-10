@@ -45,6 +45,7 @@ import com.tinkerforge.TimeoutException;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getUid <em>Uid</em>}</li>
@@ -53,19 +54,18 @@ import com.tinkerforge.TimeoutException;
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getSensorValue
- * <em>Sensor Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getTfConfig <em>Tf Config</em>}
  * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getCallbackPeriod
- * <em>Callback Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getCallbackPeriod <em>Callback
+ * Period</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getGain <em>Gain</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getIntegrationTime
  * <em>Integration Time</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -336,10 +336,9 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_ILLUMINANCE__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -363,9 +362,8 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_ILLUMINANCE__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -389,9 +387,8 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_ILLUMINANCE__POLL, oldPoll, poll));
-        }
     }
 
     /**
@@ -415,10 +412,9 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_ILLUMINANCE__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -442,10 +438,9 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_ILLUMINANCE__SUB_ID, oldSubId,
                     subId));
-        }
     }
 
     /**
@@ -456,10 +451,21 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public MBrickletColor getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.COLOR_ILLUMINANCE__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.COLOR_ILLUMINANCE__MBRICK)
             return null;
-        }
         return (MBrickletColor) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletColor basicGetMbrick() {
+        if (eContainerFeatureID() != ModelPackage.COLOR_ILLUMINANCE__MBRICK)
+            return null;
+        return (MBrickletColor) eInternalContainer();
     }
 
     /**
@@ -483,25 +489,20 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     public void setMbrick(MBrickletColor newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.COLOR_ILLUMINANCE__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_ILLUMINANCE__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
@@ -525,10 +526,9 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     public void setSensorValue(DecimalValue newSensorValue) {
         DecimalValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_ILLUMINANCE__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
-        }
     }
 
     /**
@@ -554,11 +554,10 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.COLOR_ILLUMINANCE__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -573,22 +572,18 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     public void setTfConfig(TFBaseConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.COLOR_ILLUMINANCE__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.COLOR_ILLUMINANCE__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_ILLUMINANCE__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -612,10 +607,9 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     public void setCallbackPeriod(long newCallbackPeriod) {
         long oldCallbackPeriod = callbackPeriod;
         callbackPeriod = newCallbackPeriod;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_ILLUMINANCE__CALLBACK_PERIOD,
                     oldCallbackPeriod, callbackPeriod));
-        }
     }
 
     /**
@@ -650,9 +644,8 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     public void setGain(Short newGain) {
         Short oldGain = gain;
         gain = newGain;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_ILLUMINANCE__GAIN, oldGain, gain));
-        }
     }
 
     /**
@@ -676,10 +669,9 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     public void setIntegrationTime(Short newIntegrationTime) {
         Short oldIntegrationTime = integrationTime;
         integrationTime = newIntegrationTime;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_ILLUMINANCE__INTEGRATION_TIME,
                     oldIntegrationTime, integrationTime));
-        }
     }
 
     /**
@@ -777,9 +769,8 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.COLOR_ILLUMINANCE__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletColor) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -838,7 +829,9 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
             case ModelPackage.COLOR_ILLUMINANCE__SUB_ID:
                 return getSubId();
             case ModelPackage.COLOR_ILLUMINANCE__MBRICK:
-                return getMbrick();
+                if (resolve)
+                    return getMbrick();
+                return basicGetMbrick();
             case ModelPackage.COLOR_ILLUMINANCE__SENSOR_VALUE:
                 return getSensorValue();
             case ModelPackage.COLOR_ILLUMINANCE__TF_CONFIG:
@@ -967,7 +960,7 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
             case ModelPackage.COLOR_ILLUMINANCE__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
             case ModelPackage.COLOR_ILLUMINANCE__MBRICK:
-                return getMbrick() != null;
+                return basicGetMbrick() != null;
             case ModelPackage.COLOR_ILLUMINANCE__SENSOR_VALUE:
                 return sensorValue != null;
             case ModelPackage.COLOR_ILLUMINANCE__TF_CONFIG:
@@ -1119,9 +1112,8 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

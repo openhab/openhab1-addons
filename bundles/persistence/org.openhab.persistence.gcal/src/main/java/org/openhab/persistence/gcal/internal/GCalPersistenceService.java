@@ -76,7 +76,7 @@ public class GCalPersistenceService implements PersistenceService {
      * <code>%s</code>. The first marker represents the Item to send the command
      * to and the second represents the State.
      */
-    private static String executeScript = "> if (PresenceSimulation.state == ON) %s.sendCommand(%s)";
+    private static String executeScript = "send %s %s";
 
     /** indicated whether this service was properly initialized */
     private boolean initialized = false;

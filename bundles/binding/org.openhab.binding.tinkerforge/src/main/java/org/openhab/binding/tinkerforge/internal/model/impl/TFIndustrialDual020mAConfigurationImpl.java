@@ -21,11 +21,11 @@ import org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfi
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFIndustrialDual020mAConfigurationImpl#getSampleRate
  * <em>Sample Rate</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -95,10 +95,9 @@ public class TFIndustrialDual020mAConfigurationImpl extends MinimalEObjectImpl.C
     public void setSampleRate(Short newSampleRate) {
         Short oldSampleRate = sampleRate;
         sampleRate = newSampleRate;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.TF_INDUSTRIAL_DUAL020M_ACONFIGURATION__SAMPLE_RATE, oldSampleRate, sampleRate));
-        }
     }
 
     /**
@@ -171,9 +170,8 @@ public class TFIndustrialDual020mAConfigurationImpl extends MinimalEObjectImpl.C
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (sampleRate: ");
