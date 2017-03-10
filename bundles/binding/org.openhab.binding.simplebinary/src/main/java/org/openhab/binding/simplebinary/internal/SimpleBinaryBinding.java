@@ -113,6 +113,16 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
         logger.debug("activate() method is called!");
         logger.info(bundleContext.getBundle().toString());
 
+        startBinding(configuration);
+    }
+
+    /**
+     * Parse configuration and start communications
+     *
+     * @param configuration
+     *            Configuration properties for this component obtained from the ConfigAdmin service
+     */
+    public void startBinding(final Map<String, Object> configuration) {
         // the configuration is guaranteed not to be null, because the component definition has the
         // configuration-policy set to require. If set to 'optional' then the configuration may be null
 
@@ -318,7 +328,9 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
     public void modified(final Map<String, Object> configuration) {
         // update the internal configuration accordingly
 
-        logger.debug("modified() method is called!");
+        logger.info("Binding configuration changed. Binding is going to restart...");
+
+        startBinding(configuration);
     }
 
     /**
@@ -342,7 +354,7 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
         // deallocate resources here that are no longer needed and
         // should be reset when activating this binding again
 
-        logger.debug("deactivate() method is called!");
+        logger.info("Binding configuration was removed. Binding wil be deactivated...");
 
         for (Map.Entry<String, SimpleBinaryGenericDevice> item : devices.entrySet()) {
             item.getValue().unsetBindingData();
@@ -383,6 +395,8 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
             for (Map.Entry<String, SimpleBinaryGenericDevice> item : devices.entrySet()) {
                 // check device for new data
                 item.getValue().checkNewData();
+                // check device for timeout connection (if implemented)
+                item.getValue().checkConnectionTimeout();
             }
         }
     }

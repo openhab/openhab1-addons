@@ -21,7 +21,7 @@ import java.util.Queue;
 public class SimpleBinaryDeviceState {
 
     double packetLost = 0.0;
-
+    Calendar lastCommunication = null;
     Queue<Calendar> communicationOK = new LinkedList<Calendar>();
     Queue<Calendar> communicationError = new LinkedList<Calendar>();
 
@@ -101,6 +101,8 @@ public class SimpleBinaryDeviceState {
         }
 
         calcPacketLost();
+
+        lastCommunication = Calendar.getInstance();
     }
 
     /**
@@ -133,5 +135,14 @@ public class SimpleBinaryDeviceState {
         } else {
             packetLost = 100 * communicationError.size() / (communicationOK.size() + communicationError.size());
         }
+    }
+
+    /**
+     * Return last communication time
+     *
+     * @return calendar
+     */
+    public Calendar getLastCommunication() {
+        return lastCommunication;
     }
 }

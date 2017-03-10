@@ -84,6 +84,44 @@ public class SimpleBinaryProtocol {
     }
 
     /**
+     * Compile data "Welcome" response packet
+     *
+     * @param itemConfig
+     *            Requested item configuration
+     * @return
+     */
+    public static SimpleBinaryItemData compileWelcomeDataFrame(byte deviceID, byte assignedId) {
+        byte[] data = new byte[4];
+
+        data[0] = deviceID;
+        data[1] = (byte) 0xD2;
+        data[2] = assignedId;
+        data[3] = evalCRC(data, 3);
+
+        return new SimpleBinaryItemData((byte) 0xD1, deviceID, data);
+    }
+
+    /**
+     * Compile data "Deny" response packet
+     *
+     * @param itemConfig
+     *            Requested item configuration
+     * @param reason
+     *            Deny reason (0 - default)
+     * @return
+     */
+    public static SimpleBinaryItemData compileDenyDataFrame(byte deviceID, byte reason) {
+        byte[] data = new byte[4];
+
+        data[0] = deviceID;
+        data[1] = (byte) 0xD3;
+        data[2] = reason;
+        data[3] = evalCRC(data, 3);
+
+        return new SimpleBinaryItemData((byte) 0xD1, deviceID, data);
+    }
+
+    /**
      * Compile command data for specific item
      *
      * @param itemName
@@ -380,7 +418,7 @@ public class SimpleBinaryProtocol {
                                 hsbVal.getBrightness());
                     }
 
-                    if (item instanceof ColorItem) {
+                    if (item instanceof ColorItem && hsbVal.getBrightness().intValue() > 0) {
                         ((ColorItem) item).setState(hsbVal);
                     }
 
@@ -545,7 +583,27 @@ public class SimpleBinaryProtocol {
             Map<String, SimpleBinaryBindingConfig> itemsConfig, String deviceName)
             throws NoValidCRCException, NoValidItemInConfig, UnknownMessageException, ModeChangeException {
 
-        return decompileData(data, itemsConfig, deviceName, false);
+        return decompileData(data, itemsConfig, deviceName, null, false);
+    }
+
+    /**
+     * Decompile received message
+     *
+     * @param data
+     * @param itemsConfig
+     * @param deviceName
+     * @param forcedDeviceId
+     * @return Decompiled data message
+     * @throws NoValidCRCException
+     * @throws NoValidItemInConfig
+     * @throws UnknownMessageException
+     * @throws ModeChangeException
+     */
+    public static SimpleBinaryMessage decompileData(SimpleBinaryByteBuffer data,
+            Map<String, SimpleBinaryBindingConfig> itemsConfig, String deviceName, Byte forcedDeviceId)
+            throws NoValidCRCException, NoValidItemInConfig, UnknownMessageException, ModeChangeException {
+
+        return decompileData(data, itemsConfig, deviceName, forcedDeviceId, false);
     }
 
     /**
@@ -564,7 +622,32 @@ public class SimpleBinaryProtocol {
     public static SimpleBinaryMessage decompileData(SimpleBinaryByteBuffer data,
             Map<String, SimpleBinaryBindingConfig> itemsConfig, String deviceName, boolean letDataInBuffer)
             throws NoValidCRCException, NoValidItemInConfig, UnknownMessageException, ModeChangeException {
+
+        return decompileData(data, itemsConfig, deviceName, null, letDataInBuffer);
+    }
+
+    /**
+     * Decompile received message
+     *
+     * @param data
+     * @param itemsConfig
+     * @param deviceName
+     * @param letDataInBuffer
+     * @param forcedDeviceId
+     * @return Decompiled data message
+     * @throws NoValidCRCException
+     * @throws NoValidItemInConfig
+     * @throws UnknownMessageException
+     * @throws ModeChangeException
+     */
+    public static SimpleBinaryMessage decompileData(SimpleBinaryByteBuffer data,
+            Map<String, SimpleBinaryBindingConfig> itemsConfig, String deviceName, Byte forcedDeviceId,
+            boolean letDataInBuffer)
+            throws NoValidCRCException, NoValidItemInConfig, UnknownMessageException, ModeChangeException {
         byte devId = data.get();
+        if (forcedDeviceId != null) {
+            devId = forcedDeviceId;
+        }
         byte msgId = data.get();
         int address = 0;
         byte[] rawPacket;
@@ -672,6 +755,7 @@ public class SimpleBinaryProtocol {
                 case (byte) 0xE4:
                 case (byte) 0xE5:
                 case (byte) 0xE6:
+                case (byte) 0xE7:
                     data.rewind();
                     rawPacket = new byte[3];
                     data.get(rawPacket);

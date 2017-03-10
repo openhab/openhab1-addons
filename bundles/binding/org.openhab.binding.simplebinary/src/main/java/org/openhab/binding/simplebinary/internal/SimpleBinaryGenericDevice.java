@@ -270,6 +270,21 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
      * @param data Data
      * @throws InterruptedException
      */
+    protected void offerDataPriority(SimpleBinaryItemData data) throws InterruptedException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("{} - offerData() device={}", toString(), data.deviceId);
+        }
+
+        commandQueue.addFirst(data);
+    }
+
+    /**
+     * Put data into command queue
+     *
+     * @param deviceAddress Device address
+     * @param data Data
+     * @throws InterruptedException
+     */
     protected void offerData(SimpleBinaryItemData data) throws InterruptedException {
         if (logger.isDebugEnabled()) {
             logger.debug("{} - offerData() device={}", toString(), data.deviceId);
@@ -632,8 +647,9 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
             byte[] data = new byte[inBuffer.limit()];
             inBuffer.get(data);
             inBuffer.position(position);
+
             logger.info("{} - Data in input buffer: {}", toString(),
-                    SimpleBinaryProtocol.arrayToString(data, data.length));
+                    (data.length == 0) ? "empty" : SimpleBinaryProtocol.arrayToString(data, data.length));
 
             if (lastSentData != null) {
                 // last data out
@@ -750,7 +766,7 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
         return expectedID == getDeviceID(inBuffer);
     }
 
-    protected int verifyDataOnly(SimpleBinaryByteBuffer inBuffer) {
+    protected SimpleBinaryMessage verifyDataOnly(SimpleBinaryByteBuffer inBuffer) {
         try {
             // flip buffer
             inBuffer.flip();
@@ -759,14 +775,14 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
                 logger.debug("{} - Verifying data, lenght={} bytes", toString(), inBuffer.limit());
             }
 
-            int receivedID = inBuffer.get();
+            byte receivedID = inBuffer.get();
             inBuffer.rewind();
             // decompile income message
             SimpleBinaryMessage itemData = SimpleBinaryProtocol.decompileData(inBuffer, itemsConfig, deviceName, true);
 
             // is decompiled
             if (itemData != null) {
-                return receivedID;
+                return itemData;
             }
         } catch (Exception ex) {
             logger.error("{} - Verify data error: {}", toString(), ex.getMessage());
@@ -781,7 +797,7 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
                 logger.error("{} - Bad operation: {}", this.toString(), ex.getMessage());
             }
         }
-        return -1;
+        return null;
     }
 
     /**
@@ -793,6 +809,19 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
      * @return Return device ID or error code when lower than 0
      */
     protected int processData(SimpleBinaryByteBuffer inBuffer, SimpleBinaryItemData lastSentData) {
+        return processData(inBuffer, lastSentData, null);
+    }
+
+    /**
+     * Process incoming data
+     *
+     * @param inBuffer Buffer with receiver data
+     * @param lastSentData Last data sent to device
+     * @param forcedDeviceId Id that replace received one
+     *
+     * @return Return device ID or error code when lower than 0
+     */
+    protected int processData(SimpleBinaryByteBuffer inBuffer, SimpleBinaryItemData lastSentData, Byte forcedDeviceId) {
 
         int receivedID = -1;
 
@@ -805,10 +834,15 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
                         Thread.currentThread().getId());
             }
 
+            if (inBuffer.limit() == 0) {
+                return ProcessDataResult.DATA_NOT_COMPLETED;
+            }
+
             receivedID = inBuffer.get();
             inBuffer.rewind();
             // decompile income message
-            SimpleBinaryMessage itemData = SimpleBinaryProtocol.decompileData(inBuffer, itemsConfig, deviceName);
+            SimpleBinaryMessage itemData = SimpleBinaryProtocol.decompileData(inBuffer, itemsConfig, deviceName,
+                    forcedDeviceId);
 
             // is decompiled
             if (itemData != null) {
@@ -829,7 +863,7 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
                 return ProcessDataResult.DATA_NOT_COMPLETED;
             }
         } catch (BufferUnderflowException ex) {
-            logger.warn("{} - Buffer underflow while reading: {}", toString(), ex.getMessage());
+            logger.warn("{} - Buffer underflow while reading", toString());
             // print details
             printCommunicationInfo(inBuffer, lastSentData);
 
@@ -1036,13 +1070,6 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
                         lastSentData.getItemAddress());
             }
 
-            // get device state
-            DeviceStates devstate = devicesStates.getDeviceState(itemData.getDeviceId());
-            if (devstate == DeviceStates.UNKNOWN || devstate == DeviceStates.NOT_RESPONDING
-                    || devstate == DeviceStates.RESPONSE_ERROR) {
-                sendAllItemsStates();
-            }
-
             // set state
             devicesStates.setDeviceState(this.deviceName, itemData.getDeviceId(), DeviceStates.CONNECTED);
 
@@ -1109,6 +1136,15 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
                 // set state
                 devicesStates.setDeviceState(this.deviceName, itemData.getDeviceId(), DeviceStates.DATA_ERROR);
             }
+
+            // get device state
+            DeviceStates devstate = devicesStates.getDeviceState(itemData.getDeviceId());
+            if (devstate == DeviceStates.UNKNOWN || devstate == DeviceStates.NOT_RESPONDING
+                    || devstate == DeviceStates.RESPONSE_ERROR
+                    || itemData.getMessageType() == SimpleBinaryMessageType.HI
+                    || itemData.getMessageType() == SimpleBinaryMessageType.WANT_EVERYTHING) {
+                sendAllItemsStates();
+            }
         }
     }
 
@@ -1142,6 +1178,13 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
                 }
             }
         }
+    }
+
+    /**
+     * Check for device connection timeout
+     */
+    public void checkConnectionTimeout() {
+
     }
 
     @Override

@@ -164,7 +164,7 @@ public class SimpleBinaryIPChannelInfo {
     }
 
     public int getDeviceId() {
-        if (receivedDeviceID >= 0) {
+        if (!isIpLocked && receivedDeviceID >= 0) {
             return receivedDeviceID;
         }
 

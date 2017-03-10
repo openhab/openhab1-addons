@@ -93,6 +93,8 @@ public class SimpleBinaryMessage {
                 return SimpleBinaryMessageType.SAVING_ERROR;
             case (byte) 0xE6:
                 return SimpleBinaryMessageType.HI;
+            case (byte) 0xE7:
+                return SimpleBinaryMessageType.WANT_EVERYTHING;
             default:
                 return SimpleBinaryMessageType.UNKNOWN;
         }

@@ -25,5 +25,6 @@ public enum SimpleBinaryMessageType {
     UNKNOWN,
     UNKNOWN_ADDRESS,
     SAVING_ERROR,
-    HI
+    HI,
+    WANT_EVERYTHING
 }
