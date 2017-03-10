@@ -143,12 +143,12 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
         if (config == null) {
-            log.warn("No configuration exists for CalDAV IO.");
+            log.debug("Update was called with a null configuration for CalDAV IO.");
             return;
         }
 
+        log.debug("Update was called for CalDAV IO.");
         CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
-
         Map<String, CalDavConfig> configMap = new HashMap<String, CalDavConfig>();
 
         Enumeration<String> iter = config.keys();
@@ -161,16 +161,22 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
 
             log.trace("processing configuration parameter: {}", key);
             if (key.equals(PROP_TIMEZONE)) {
-                String newTimeZone = Objects.toString(config.get(key), null);
-                log.debug("overriding default timezone {} with {}", defaultTimeZone, newTimeZone);
-                defaultTimeZone = DateTimeZone.forID(newTimeZone);
-                if (defaultTimeZone == null) {
-                    log.warn("Invalid timezone value: {}", newTimeZone);
-                    throw new ConfigurationException("CalDAV IO", "Invalid timezone value: " + newTimeZone);
+                String newTimeZoneStr = Objects.toString(config.get(key), null);
+                if (StringUtils.isBlank(newTimeZoneStr)) {
+                    log.info("The {} setting was configured with an empty value. Default value '{}' will be used instead.",
+                             PROP_TIMEZONE, defaultTimeZone);
+                    continue;
                 }
-                log.debug("found timeZone: {}", defaultTimeZone);
+                DateTimeZone newTimeZone = DateTimeZone.forID(newTimeZoneStr);
+                if (newTimeZone == null) {
+                    log.warn("Invalid timezone value: {}", newTimeZoneStr);
+                    throw new ConfigurationException(PROP_TIMEZONE, "Invalid timezone value: " + newTimeZoneStr);
+                }
+                log.debug("Overriding default timezone {} with {}", defaultTimeZone, newTimeZone);
+                defaultTimeZone = newTimeZone;
                 continue;
             }
+
             String[] keys = key.split(":");
             if (keys.length != 2) {
                 log.warn("Unable to parse configuration parameter: {}", key);
