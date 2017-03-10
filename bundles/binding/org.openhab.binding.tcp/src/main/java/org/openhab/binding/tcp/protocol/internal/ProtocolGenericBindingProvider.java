@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.tcp.protocol.internal;
 
-import java.net.InetAddress; 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
