@@ -25,10 +25,10 @@ public enum SwegonVentilationCommandType {
     T1("T1", NumberItem.class), // Temperature sensor, outdoor air
     T2("T2", NumberItem.class), // Temperature sensor, supply air
     T3("T3", NumberItem.class), // Temperature sensor, extract air
-    T4("T4", NumberItem.class), // Temperature sensor, supply air, reheating
+    T4("T4", NumberItem.class), // Temperature sensor, supply air, re-heating
     T5("T5", NumberItem.class),
     T6("T6", NumberItem.class), // The freeze protection sensor of the water-heated air heater
-    T7("T7", NumberItem.class), // Excess temperature sensor for the preheating air heater
+    T7("T7", NumberItem.class), // Excess temperature sensor for the pre-heating air heater
     T8("T8", NumberItem.class), // Temperature sensor, exhaust air, freeze protection
     OUTDOOR_TEMP("OutdoorTemperature", NumberItem.class), // T1
     SUPPLY_TEMP("SupplyAirTemperature", NumberItem.class), // T2
@@ -48,7 +48,6 @@ public enum SwegonVentilationCommandType {
     OPERATING_MODE("OperatingMode", NumberItem.class),
     UNIT_STATE("UnitState", NumberItem.class),
     HEATING_STATE("HeatingState", SwitchItem.class),
-
     COOLING_STATE("CoolingState", SwitchItem.class),
     BYBASS_STATE("BybassState", SwitchItem.class),
     FREEZE_PROTECTION_STATE("FreezeProtectionState", SwitchItem.class),
@@ -79,14 +78,11 @@ public enum SwegonVentilationCommandType {
     FILTER_GUARD_ALARM("FilterGuardAlarm", SwitchItem.class),
     SERVICE_REMINDER("ServiceReminder", SwitchItem.class),
     TEMPERATURE_FAILURE("TemperatureFailure", SwitchItem.class),
-
     AFTERHEATING_SETPOINT_SUPPLY_AIR_REGULATED("AfterheatingSetpointSupplyAirRegulated", NumberItem.class),
     AFTERHEATING_SETPOINT_ROOM_REGULATED("AfterheatingSetpointRoomRegulated", NumberItem.class),
     SUPPLY_FAN_VIRTUAL_SPEED("SupplyFanVirtualSpeed", NumberItem.class),
     EXTRACT_FAN_VIRTUAL_SPEED("ExtractFanVirtualSpeed", NumberItem.class),
-    UNIT_STATUS("UnitStatus", NumberItem.class),
-
-    ;
+    UNIT_STATUS("UnitStatus", NumberItem.class);
 
     private final String text;
     private Class<? extends Item> itemClass;
