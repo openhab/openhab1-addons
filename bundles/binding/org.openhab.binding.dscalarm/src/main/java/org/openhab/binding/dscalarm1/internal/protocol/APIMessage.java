@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.dscalarm.internal.protocol;
+package org.openhab.binding.dscalarm1.internal.protocol;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

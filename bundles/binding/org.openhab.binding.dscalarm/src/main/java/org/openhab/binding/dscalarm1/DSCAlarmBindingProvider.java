@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.dscalarm;
+package org.openhab.binding.dscalarm1;
 
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
@@ -21,7 +21,7 @@ public interface DSCAlarmBindingProvider extends BindingProvider {
 
     /**
      * Returns the binding configuration for the item with this name
-     * 
+     *
      * @param itemName
      * @return the binding configuration.
      */
@@ -29,7 +29,7 @@ public interface DSCAlarmBindingProvider extends BindingProvider {
 
     /**
      * Returns the {@link Item} with the specified item name
-     * 
+     *
      * @param itemName
      * @return item
      */

@@ -6,11 +6,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.dscalarm.internal;
+package org.openhab.binding.dscalarm1.internal;
 
 import java.util.EventObject;
 
-import org.openhab.binding.dscalarm.internal.protocol.APIMessage;
+import org.openhab.binding.dscalarm1.internal.protocol.APIMessage;
 
 /**
  * Event for Receiving API Messages

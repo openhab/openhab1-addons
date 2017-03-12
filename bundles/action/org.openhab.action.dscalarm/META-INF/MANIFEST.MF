@@ -18,7 +18,7 @@ Import-Package: org.openhab.core.items,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.slf4j,
- org.openhab.binding.dscalarm
+ org.openhab.binding.dscalarm1
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/action.xml

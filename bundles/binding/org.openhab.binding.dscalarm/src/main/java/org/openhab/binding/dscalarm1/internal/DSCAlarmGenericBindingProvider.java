@@ -6,13 +6,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.dscalarm.internal;
+package org.openhab.binding.dscalarm1.internal;
 
 import java.util.Set;
 
-import org.openhab.binding.dscalarm.DSCAlarmBindingConfig;
-import org.openhab.binding.dscalarm.DSCAlarmBindingProvider;
-import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceType;
+import org.openhab.binding.dscalarm1.DSCAlarmBindingConfig;
+import org.openhab.binding.dscalarm1.DSCAlarmBindingProvider;
+import org.openhab.binding.dscalarm1.internal.model.DSCAlarmDeviceType;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
