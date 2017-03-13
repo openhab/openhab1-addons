@@ -1,28 +1,28 @@
 # WR3223 ventilation controller Binding
 
-The ventilation controller WR3223 is used for room ventilation systems, for example in houses produced by company “Schwörer Haus”. The manufacturer of the controller is Hermes Electronic. (http://www.hermes-electronic.de/)
+The WR3223 ventilation controller is used for room ventilation systems, for example in houses produced by company “Schwörer Haus”. The manufacturer of the controller is [Hermes Electronic](http://www.hermes-electronic.de/).
 
 The WR3223 binding can read several measurements and the current state of the ventilation system. It can also adjust the fan speed, operation mode and the target temperature.
 
 ## Prerequisites
 
-The WR3223 can be connected by a RS232 or USB adapter. The adapter can be orderd by Hermes Electronic. If you wont connect the WR3223 by your self, have a look at: https://community.openhab.org/t/wr3223-ventilation-controller-schworer-haus/
+The WR3223 can be connected by an RS232 or USB adapter. The adapter can be orderd from Hermes Electronic. If you want to connect the WR3223 by yourself, have a look at: [https://community.openhab.org/t/wr3223-ventilation-controller-schworer-haus/](https://community.openhab.org/t/wr3223-ventilation-controller-schworer-haus/)
 
-To controll the WR3223, you have to disconnect the control panel (Bedienteil), otherwise the WR3223 ignore the command from the serial port. If you have any trouble, just let me know.
+To control the WR3223, you have to disconnect the control panel, otherwise the WR3223 will ignore the command from the serial port.
 
 ## Binding Configuration
 
 This binding can be configured in the file `services/wr3223.cfg`.
 
-All parameters are optional, but you have to configure at least the connection via serial port or via TCP. 
+The connection must be configured via either the serialPort setting or via the host and port settings.
 
 | Property       | Default | Required | Description |
 |----------------|---------|:--------:|-------------|
 | serialPort     |         |   Yes (if serial port is used)     | Serial port where the WR3223 is connected. E.g. /dev/ttyUSB0 |
 | host           |         |   Yes (if TCP is used)     | IP address of the TCP to serial gateway |
 | port           |         |   Yes (if TCP is used)     | port number of the TCP to serial gateway  |
-| refresh        | 15000   |   No     | Refresh inverval in milliseconds. The WR3223 need at least every 20 second a refresh! |
-| controllerAddr | 1       |   No     | The controller address is normaly 1.
+| refresh        | 15000   |   No     | Refresh interval in milliseconds. The WR3223 needs a refresh at least every 20 seconds! |
+| controllerAddr | 1       |   No     | The controller address is normally 1.
 
 ## Item Configuration
 
@@ -126,6 +126,7 @@ Number wr3223_temperature_supply_air_target "Soll Temperatur [%.1f]"  { wr3223="
 ```
 
 ### Sitemap (fragment)
+
 ```
 Switch item=wr3223_ventilation_level label="Stufe" mappings=[0="Aus", 1="1", 2="2", 3="3"]
 Switch item=wr3223_operation_mode label="Betriebsart" mappings=[1="Sommer", 2="Abluft", 3="Winter"]
