@@ -3806,6 +3806,15 @@
             <Label lang="en">Door Sensor</Label>
             <ConfigFile>telldus/tzdw-100.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0003</Type>
+                <Id>0001</Id>
+            </Reference>
+            <Model>TZWP-100</Model>
+            <Label lang="en">Wall Plug Switch</Label>
+            <ConfigFile>telldus/tzwp-100.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0239</Id>
