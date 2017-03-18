@@ -115,5 +115,5 @@ Number UG_Flur_Temp "Temperature [%.1f °C]" <temperature> { enocean="{id=00:00:
 
 
 ```
-Number mySwitch "Test Switch" <contact> { enocean="{id=00:00:00:00, eep=D5:00:01, parameter=CONTACT_STATE:closed}" }
+Contact mySwitch "Test Switch" <contact> { enocean="{id=00:00:00:00, eep=D5:00:01, parameter=CONTACT_STATE}" }
 ```
