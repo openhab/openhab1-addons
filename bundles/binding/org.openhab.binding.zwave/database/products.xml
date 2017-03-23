@@ -1705,15 +1705,15 @@
             <Label lang="en">Roller Shutter</Label>
             <ConfigFile>fibaro/fgrm222.xml</ConfigFile>
         </Product>
-		<Product>
-			<Reference>
-			<Type>0403</Type>
-			<Id>1000</Id>
-			</Reference>
-			<Model>FGS213</Model>
-			<Label lang="en">Single Switch 2</Label>
-			<ConfigFile>fibaro/fgs213.xml</ConfigFile>
-		</Product>
+                <Product>
+                        <Reference>
+                        <Type>0403</Type>
+                        <Id>1000</Id>
+                        </Reference>
+                        <Model>FGS213</Model>
+                        <Label lang="en">Single Switch 2</Label>
+                        <ConfigFile>fibaro/fgs213.xml</ConfigFile>
+                </Product>
         <Product>
             <Reference>
                 <Type>0203</Type>
