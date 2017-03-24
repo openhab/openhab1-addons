@@ -220,7 +220,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
         for (String item : bindingProvider.getItemNames()) {
             CalDavConfig config = bindingProvider.getConfig(item);
             List<CalDavEvent> events = eventCache.get(config.getUniqueEventListKey());
-            if (events == null) {
+            if (events == null && this.calDavLoader != null) {
                 CalDavQuery query = getQueryForConfig(config);
                 events = this.calDavLoader.getEvents(query);
                 eventCache.put(config.getUniqueEventListKey(), events);
