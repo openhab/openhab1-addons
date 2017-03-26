@@ -32,7 +32,7 @@ public class SimpleTokenizer {
     public List<String> parse(String itemConfig) {
         boolean insideQuotes = false;
         boolean escaping = false;
-        List<String> tokens = new ArrayList<String>();
+        List<String> tokens = new ArrayList<>();
         StringBuilder currentToken = new StringBuilder(itemConfig.length());
         for (int i = 0; i <= itemConfig.length(); i++) {
             if (i == itemConfig.length()) {

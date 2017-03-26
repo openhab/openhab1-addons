@@ -45,7 +45,7 @@ public class ReadCoilsAndDiscreteTestCase extends TestCaseSupport {
 
     @Parameters
     public static Collection<Object[]> parameters() {
-        List<Object[]> allParameters = new ArrayList<Object[]>();
+        List<Object[]> allParameters = new ArrayList<>();
         List<Object[]> baseParameters = Arrays.asList(new Object[][] {
                 { false, ModbusBindingProvider.TYPE_COIL, SimpleDigitalOut.class, "addDigitalOut", DigitalOut.class },
                 { true, ModbusBindingProvider.TYPE_COIL, SimpleDigitalOut.class, "addDigitalOut", DigitalOut.class },
@@ -54,7 +54,7 @@ public class ReadCoilsAndDiscreteTestCase extends TestCaseSupport {
                         DigitalIn.class } });
         for (ServerType serverType : TEST_SERVERS) {
             for (Object[] params : baseParameters) {
-                ArrayList<Object> paramsWithServer = new ArrayList<Object>();
+                ArrayList<Object> paramsWithServer = new ArrayList<>();
                 paramsWithServer.add(serverType);
                 paramsWithServer.addAll(Arrays.asList(params));
                 allParameters.add(paramsWithServer.toArray());

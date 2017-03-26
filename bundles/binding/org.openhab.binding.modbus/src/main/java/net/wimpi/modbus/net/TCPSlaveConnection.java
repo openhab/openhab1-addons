@@ -24,9 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.wimpi.modbus.Modbus;
+import net.wimpi.modbus.io.ModbusSocketBasedTransportFactory;
 import net.wimpi.modbus.io.ModbusTCPTransport;
 import net.wimpi.modbus.io.ModbusTransport;
-import net.wimpi.modbus.io.ModbusSocketBasedTransportFactory;
 
 /**
  * Class that implements a TCPSlaveConnection.
@@ -87,8 +87,9 @@ public class TCPSlaveConnection {
                 m_ModbusTransport.close();
                 m_Socket.close();
             } catch (IOException ex) {
-                if (Modbus.debug)
+                if (Modbus.debug) {
                     ex.printStackTrace();
+                }
             }
             m_Connected = false;
         }

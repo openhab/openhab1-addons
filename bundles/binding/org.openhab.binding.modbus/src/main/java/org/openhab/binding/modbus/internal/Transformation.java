@@ -62,7 +62,7 @@ public class Transformation {
     /**
      * Ordered list of types that are tried out first when trying to parse transformed command
      */
-    private final static List<Class<? extends Command>> DEFAULT_TYPES = new ArrayList<Class<? extends Command>>();
+    private final static List<Class<? extends Command>> DEFAULT_TYPES = new ArrayList<>();
     static {
         DEFAULT_TYPES.add(DecimalType.class);
         DEFAULT_TYPES.add(OpenClosedType.class);

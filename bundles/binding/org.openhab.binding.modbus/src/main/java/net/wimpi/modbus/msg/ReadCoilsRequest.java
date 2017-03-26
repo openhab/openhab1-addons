@@ -60,7 +60,7 @@ public final class ReadCoilsRequest extends ModbusRequest {
      * instance with a given reference and count of coils
      * (i.e. bits) to be read.
      * <p>
-     * 
+     *
      * @param ref the reference number of the register
      *            to read from.
      * @param count the number of bits to be read.
@@ -109,7 +109,7 @@ public final class ReadCoilsRequest extends ModbusRequest {
      * Sets the reference of the register to start reading
      * from with this <tt>ReadCoilsRequest</tt>.
      * <p>
-     * 
+     *
      * @param ref the reference of the register
      *            to start reading from.
      */
@@ -122,7 +122,7 @@ public final class ReadCoilsRequest extends ModbusRequest {
      * Returns the reference of the register to to start
      * reading from with this <tt>ReadCoilsRequest</tt>.
      * <p>
-     * 
+     *
      * @return the reference of the register
      *         to start reading from as <tt>int</tt>.
      */
@@ -134,7 +134,7 @@ public final class ReadCoilsRequest extends ModbusRequest {
      * Sets the number of bits (i.e. coils) to be read with
      * this <tt>ReadCoilsRequest</tt>.
      * <p>
-     * 
+     *
      * @param count the number of bits to be read.
      */
     public void setBitCount(int count) {
@@ -149,7 +149,7 @@ public final class ReadCoilsRequest extends ModbusRequest {
      * Returns the number of bits (i.e. coils) to be
      * read with this <tt>ReadCoilsRequest</tt>.
      * <p>
-     * 
+     *
      * @return the number of bits to be read.
      */
     public int getBitCount() {

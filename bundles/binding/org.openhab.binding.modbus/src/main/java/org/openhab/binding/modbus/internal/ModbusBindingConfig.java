@@ -51,8 +51,8 @@ public class ModbusBindingConfig implements BindingConfig {
         return itemName;
     }
 
-    private List<ItemIOConnection> readConnections = new ArrayList<ItemIOConnection>();
-    private List<ItemIOConnection> writeConnections = new ArrayList<ItemIOConnection>();
+    private List<ItemIOConnection> readConnections = new ArrayList<>();
+    private List<ItemIOConnection> writeConnections = new ArrayList<>();
     private List<Class<? extends Command>> itemAcceptedCommandTypes;
     private List<Class<? extends State>> itemAcceptedDataTypes;
     private static final List<String> VALID_EXTENDED_ITEM_CONFIG_KEYS = Arrays
@@ -153,7 +153,7 @@ public class ModbusBindingConfig implements BindingConfig {
     }
 
     public List<ItemIOConnection> getReadConnectionsBySlaveName(String slave) {
-        List<ItemIOConnection> connections = new ArrayList<ItemIOConnection>();
+        List<ItemIOConnection> connections = new ArrayList<>();
         for (ItemIOConnection connection : getReadConnections()) {
             if (slave.equals(connection.getSlaveName())) {
                 connections.add(connection);
@@ -165,7 +165,7 @@ public class ModbusBindingConfig implements BindingConfig {
     }
 
     public List<ItemIOConnection> getWriteConnectionsByCommand(Command command) {
-        List<ItemIOConnection> connections = new ArrayList<ItemIOConnection>();
+        List<ItemIOConnection> connections = new ArrayList<>();
         for (ItemIOConnection connection : getWriteConnections()) {
             if (connection.supportsCommand(command)) {
                 connections.add(connection);

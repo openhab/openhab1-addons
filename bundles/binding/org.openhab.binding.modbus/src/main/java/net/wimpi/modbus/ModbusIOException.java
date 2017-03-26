@@ -39,7 +39,7 @@ public class ModbusIOException extends ModbusException {
      * Constructs a new <tt>ModbusIOException</tt>
      * instance with the given message.
      * <p>
-     * 
+     *
      * @param message the message describing this
      *            <tt>ModbusIOException</tt>.
      */
@@ -61,7 +61,7 @@ public class ModbusIOException extends ModbusException {
      * Constructs a new <tt>ModbusIOException</tt>
      * instance with the given message.
      * <p>
-     * 
+     *
      * @param message the message describing this
      *            <tt>ModbusIOException</tt>.
      * @param b true if caused by end of stream, false otherwise.
@@ -75,7 +75,7 @@ public class ModbusIOException extends ModbusException {
      * Tests if this <tt>ModbusIOException</tt>
      * is caused by an end of the stream.
      * <p>
-     * 
+     *
      * @return true if stream ended, false otherwise.
      */
     public boolean isEOF() {
@@ -87,7 +87,7 @@ public class ModbusIOException extends ModbusException {
      * <tt>ModbusIOException</tt> was caused by
      * an end of the stream.
      * <p>
-     * 
+     *
      * @param b true if stream ended, false otherwise.
      */
     public void setEOF(boolean b) {

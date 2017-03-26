@@ -15,7 +15,7 @@ import org.mockito.stubbing.Answer;
 
 public class ResultCaptor<T> implements Answer<T> {
 
-    private ArrayList<T> results = new ArrayList<T>();
+    private ArrayList<T> results = new ArrayList<>();
     private long waitMillis;
 
     public ResultCaptor(long waitMillis) {

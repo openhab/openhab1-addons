@@ -34,7 +34,7 @@ public class ConfigUpdatedTestCase extends TestCaseSupport {
 
     @Parameters
     public static List<Object[]> data() {
-        List<Object[]> parameters = new ArrayList<Object[]>();
+        List<Object[]> parameters = new ArrayList<>();
         for (ServerType server : TEST_SERVERS) {
             parameters.add(new Object[] { server });
         }

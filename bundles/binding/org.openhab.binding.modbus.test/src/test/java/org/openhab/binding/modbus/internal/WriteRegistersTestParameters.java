@@ -28,7 +28,7 @@ public class WriteRegistersTestParameters extends TestCaseSupport {
 
     @Parameters
     public static List<Object[]> parameters() {
-        List<Object[]> parameters = new ArrayList<Object[]>();
+        List<Object[]> parameters = new ArrayList<>();
         generateWriteInt16SameValueAsBefore(parameters);
         generateNumberItemInt16(parameters);
         generateSwitchItemInt16(parameters);
@@ -309,7 +309,7 @@ public class WriteRegistersTestParameters extends TestCaseSupport {
     public static List<Object[]> generateParameters(short[] initialRegisters, State itemInitialState,
             short[] expectedValue, boolean expectingAssertionError, String[] types, String[] valueTypes,
             Command... commands) {
-        List<Object[]> parameters = new ArrayList<Object[]>();
+        List<Object[]> parameters = new ArrayList<>();
         for (ServerType serverType : TestCaseSupport.TEST_SERVERS) {
             for (boolean nonZeroOffset : new Boolean[] { true, false }) {
                 for (Command command : commands) {

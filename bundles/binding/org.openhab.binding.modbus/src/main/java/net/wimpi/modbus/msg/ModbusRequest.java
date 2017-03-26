@@ -32,7 +32,7 @@ public abstract class ModbusRequest extends ModbusMessageImpl {
      * Returns the <tt>ModbusResponse</tt> that
      * correlates with this <tt>ModbusRequest</tt>.
      * <p>
-     * 
+     *
      * @return the corresponding <tt>ModbusResponse</tt>.
      *
      *         public abstract ModbusResponse getResponse();
@@ -45,7 +45,7 @@ public abstract class ModbusRequest extends ModbusMessageImpl {
      * The implementation should take care about assembling
      * the reply to this <tt>ModbusRequest</tt>.
      * <p>
-     * 
+     *
      * @return the corresponding <tt>ModbusResponse</tt>.
      */
     public abstract ModbusResponse createResponse();

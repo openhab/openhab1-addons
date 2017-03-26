@@ -203,7 +203,7 @@ public class TestCaseSupport {
     }
 
     protected static Dictionary<String, Object> newLongPollBindingConfig() {
-        Dictionary<String, Object> config = new Hashtable<String, Object>();
+        Dictionary<String, Object> config = new Hashtable<>();
         config.put("poll", String.valueOf(REFRESH_INTERVAL));
         return config;
     }
@@ -273,7 +273,7 @@ public class TestCaseSupport {
 
     @Before
     public void setUp() throws Exception {
-        modbustRequestCaptor = new ResultCaptor<ModbusRequest>(artificialServerWait);
+        modbustRequestCaptor = new ResultCaptor<>(artificialServerWait);
         MockitoAnnotations.initMocks(this);
         startServer();
     }

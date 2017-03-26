@@ -55,7 +55,7 @@ public class WriteCoilsAndDiscreteTestCase extends TestCaseSupport {
      * @return
      */
     private static ArrayList<Object[]> generateParameters(Object expectedValue, Command... commands) {
-        ArrayList<Object[]> parameters = new ArrayList<Object[]>();
+        ArrayList<Object[]> parameters = new ArrayList<>();
         for (ServerType serverType : TEST_SERVERS) {
             for (boolean discreteInputInitialValue : new Boolean[] { true, false }) {
                 for (boolean coilInitialValue : new Boolean[] { true, false }) {

@@ -25,14 +25,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.wimpi.modbus.Modbus;
-import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.io.ModbusTransport;
-import net.wimpi.modbus.io.ModbusUDPTransport;
 import net.wimpi.modbus.io.ModbusUDPTransport;
 import net.wimpi.modbus.io.ModbusUDPTransportFactory;
 import net.wimpi.modbus.util.LinkedQueue;
-import net.wimpi.modbus.util.LinkedQueue;
-import net.wimpi.modbus.util.ModbusUtil;
 import net.wimpi.modbus.util.ModbusUtil;
 
 /**

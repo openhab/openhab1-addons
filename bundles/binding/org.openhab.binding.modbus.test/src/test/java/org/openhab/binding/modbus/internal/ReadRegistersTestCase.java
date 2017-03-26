@@ -48,7 +48,7 @@ public class ReadRegistersTestCase extends TestCaseSupport {
 
     @Parameters
     public static Collection<Object[]> parameters() {
-        List<Object[]> allParameters = new ArrayList<Object[]>();
+        List<Object[]> allParameters = new ArrayList<>();
         List<Object[]> baseParameters = Arrays.asList(new Object[][] {
                 { false, ModbusBindingProvider.TYPE_INPUT, SimpleInputRegister.class, "addInputRegister",
                         InputRegister.class },
@@ -58,7 +58,7 @@ public class ReadRegistersTestCase extends TestCaseSupport {
                 { true, ModbusBindingProvider.TYPE_HOLDING, SimpleRegister.class, "addRegister", Register.class } });
         for (ServerType serverType : TEST_SERVERS) {
             for (Object[] params : baseParameters) {
-                ArrayList<Object> paramsWithServer = new ArrayList<Object>();
+                ArrayList<Object> paramsWithServer = new ArrayList<>();
                 paramsWithServer.add(serverType);
                 paramsWithServer.addAll(Arrays.asList(params));
                 allParameters.add(paramsWithServer.toArray());

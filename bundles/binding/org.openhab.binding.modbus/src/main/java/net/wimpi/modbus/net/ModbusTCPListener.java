@@ -112,7 +112,7 @@ public class ModbusTCPListener implements Runnable {
 
     /**
      * Return local port of the ServerSocket.
-     * 
+     *
      * @return
      */
     public int getLocalPort() {

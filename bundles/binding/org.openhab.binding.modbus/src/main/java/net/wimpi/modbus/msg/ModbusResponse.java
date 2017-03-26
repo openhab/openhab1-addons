@@ -36,7 +36,7 @@ public abstract class ModbusResponse extends ModbusMessageImpl {
      * Utility method to set the raw data of the message.
      * Should not be used except under rare circumstances.
      * <p>
-     * 
+     *
      * @param msg the <tt>byte[]</tt> resembling the raw modbus
      *            response message.
      */

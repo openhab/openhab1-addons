@@ -34,7 +34,7 @@ public class ModbusTcpSlave extends ModbusIPSlave {
 
     /**
      * Performs physical write to device when slave type is "holding" using Modbus FC06 function
-     * 
+     *
      * @param command command received from OpenHAB
      * @param readRegister reference to the register that stores current value
      * @param writeRegister register reference to write data to

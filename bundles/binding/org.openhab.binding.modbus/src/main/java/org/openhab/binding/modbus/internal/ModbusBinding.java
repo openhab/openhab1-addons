@@ -94,7 +94,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
             "^(" + TCP_PREFIX + "|" + UDP_PREFIX + "|" + SERIAL_PREFIX + "|)\\.(.*?)\\.(" + VALID_CONFIG_KEYS + ")$");
 
     /** Stores instances of all the slaves defined in cfg file */
-    private static Map<String, ModbusSlave> modbusSlaves = new ConcurrentHashMap<String, ModbusSlave>();
+    private static Map<String, ModbusSlave> modbusSlaves = new ConcurrentHashMap<>();
 
     private static GenericKeyedObjectPoolConfig poolConfig = new GenericKeyedObjectPoolConfig();
 
@@ -133,7 +133,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 
     private static void reconstructConnectionPool() {
         connectionFactory = new ModbusSlaveConnectionFactoryImpl();
-        GenericKeyedObjectPool<ModbusSlaveEndpoint, ModbusSlaveConnection> genericKeyedObjectPool = new GenericKeyedObjectPool<ModbusSlaveEndpoint, ModbusSlaveConnection>(
+        GenericKeyedObjectPool<ModbusSlaveEndpoint, ModbusSlaveConnection> genericKeyedObjectPool = new GenericKeyedObjectPool<>(
                 connectionFactory, poolConfig);
         genericKeyedObjectPool.setSwallowedExceptionListener(new SwallowedExceptionListener() {
 
@@ -480,7 +480,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
      */
     @Override
     protected void execute() {
-        Collection<ModbusSlave> slaves = new HashSet<ModbusSlave>();
+        Collection<ModbusSlave> slaves = new HashSet<>();
         synchronized (slaves) {
             slaves.addAll(modbusSlaves.values());
         }
@@ -516,8 +516,8 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
                 return;
             }
             Enumeration<String> keys = config.keys();
-            Map<String, EndpointPoolConfiguration> slavePoolConfigs = new HashMap<String, EndpointPoolConfiguration>();
-            Map<ModbusSlaveEndpoint, EndpointPoolConfiguration> endpointPoolConfigs = new HashMap<ModbusSlaveEndpoint, EndpointPoolConfiguration>();
+            Map<String, EndpointPoolConfiguration> slavePoolConfigs = new HashMap<>();
+            Map<ModbusSlaveEndpoint, EndpointPoolConfiguration> endpointPoolConfigs = new HashMap<>();
             while (keys.hasMoreElements()) {
                 final String key = keys.nextElement();
                 final String value = (String) config.get(key);

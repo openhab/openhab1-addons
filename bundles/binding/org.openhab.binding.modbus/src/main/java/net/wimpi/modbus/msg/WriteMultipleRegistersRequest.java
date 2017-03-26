@@ -57,7 +57,7 @@ public final class WriteMultipleRegistersRequest extends ModbusRequest {
      * Constructs a new <tt>WriteMultipleRegistersRequest</tt>
      * instance with a given reference and values to be written.
      * <p>
-     * 
+     *
      * @param ref the reference number of the register
      *            to read from.
      * @param registers the registers to be written.
@@ -112,7 +112,7 @@ public final class WriteMultipleRegistersRequest extends ModbusRequest {
      * Sets the reference of the register to writing to
      * with this <tt>WriteMultipleRegistersRequest</tt>.
      * <p>
-     * 
+     *
      * @param ref the reference of the register
      *            to start writing to as <tt>int</tt>.
      */
@@ -125,7 +125,7 @@ public final class WriteMultipleRegistersRequest extends ModbusRequest {
      * writing to with this
      * <tt>WriteMultipleRegistersRequest</tt>.
      * <p>
-     * 
+     *
      * @return the reference of the register
      *         to start writing to as <tt>int</tt>.
      */
@@ -137,7 +137,7 @@ public final class WriteMultipleRegistersRequest extends ModbusRequest {
      * Sets the registers to be written with this
      * <tt>WriteMultipleRegistersRequest</tt>.
      * <p>
-     * 
+     *
      * @param registers the registers to be written
      *            as <tt>Register[]</tt>.
      */
@@ -150,7 +150,7 @@ public final class WriteMultipleRegistersRequest extends ModbusRequest {
      * Returns the registers to be written with this
      * <tt>WriteMultipleRegistersRequest</tt>.
      * <p>
-     * 
+     *
      * @return the registers to be written as <tt>Register[]</tt>.
      */
     public Register[] getRegisters() {
@@ -162,7 +162,7 @@ public final class WriteMultipleRegistersRequest extends ModbusRequest {
      * the given position (relative to the reference
      * used in the request).
      * <p>
-     * 
+     *
      * @param index the relative index of the <tt>Register</tt>.
      *
      * @return the register as <tt>Register</tt>.
@@ -184,7 +184,7 @@ public final class WriteMultipleRegistersRequest extends ModbusRequest {
      * the given position (relative to the reference
      * used in the request) interpreted as unsigned short.
      * <p>
-     * 
+     *
      * @param index the relative index of the register
      *            for which the value should be retrieved.
      *
@@ -201,7 +201,7 @@ public final class WriteMultipleRegistersRequest extends ModbusRequest {
      * Returns the number of bytes representing the
      * values to be written.
      * <p>
-     * 
+     *
      * @return the number of bytes to be written
      *         as <tt>int</tt>.
      */
@@ -212,7 +212,7 @@ public final class WriteMultipleRegistersRequest extends ModbusRequest {
     /**
      * Returns the number of words to be written.
      * <p>
-     * 
+     *
      * @return the number of words to be written
      *         as <tt>int</tt>.
      */

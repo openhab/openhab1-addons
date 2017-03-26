@@ -11,7 +11,7 @@ package net.wimpi.modbus.net;
 public interface ModbusSlaveConnection {
     /**
      * Connects the connection to the endpoint
-     * 
+     *
      * @return whether connection was successfull
      * @throws Exception on any connection errors
      */
