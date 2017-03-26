@@ -18,6 +18,7 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
@@ -135,15 +136,17 @@ public abstract class ModbusSlave {
      * writes data to Modbus device corresponding to OpenHAB command
      * works only with types "coil" and "holding"
      *
-     * @param command OpenHAB command received
+     * @param command openHAB command received
      * @param config
+     * @param readRegister
+     * @param writeRegister
      */
-    public void executeCommand(Command command, ModbusBindingConfig config) {
+    public void executeCommand(Command command, ModbusBindingConfig config, int readRegister, int writeRegister) {
         try {
             if (ModbusBindingProvider.TYPE_COIL.equals(getType())) {
-                setCoil(command, config);
+                setCoil(command, config, readRegister, writeRegister);
             } else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {
-                setRegister(command, config);
+                setRegister(command, config, readRegister, writeRegister);
             }
         } catch (Exception e) {
             // Error already logged, just continue as normal
@@ -182,9 +185,8 @@ public abstract class ModbusSlave {
      * @throws ModbusException ModbusIOException on IO errors, ModbusSlaveException with protocol level exceptions
      * @throws ModbusUnexpectedTransactionIdException when response transaction id does not match the request
      */
-    private void setCoil(Command command, ModbusBindingConfig config)
+    private void setCoil(Command command, ModbusBindingConfig config, int readRegister, int writeRegister)
             throws ModbusConnectionException, ModbusException, ModbusUnexpectedTransactionIdException {
-        int writeRegister = config.writeIndex;
         boolean b = translateCommand2Boolean(command);
         doSetCoil(getStart() + writeRegister, b);
     }
@@ -198,10 +200,9 @@ public abstract class ModbusSlave {
      * @throws ModbusException ModbusIOException on IO errors, ModbusSlaveException with protocol level exceptions
      * @throws ModbusUnexpectedTransactionIdException when response transaction id does not match the request
      */
-    protected void setRegister(Command command, ModbusBindingConfig config)
+    protected void setRegister(Command command, ModbusBindingConfig config, int readIndex, int writeRegister)
             throws ModbusConnectionException, ModbusException, ModbusUnexpectedTransactionIdException {
-        int readIndex = config.readIndex;
-        int writeRegister = getStart() + config.writeIndex;
+        writeRegister += getStart();
 
         Register newValue;
         if (command instanceof IncreaseDecreaseType) {
@@ -242,6 +243,13 @@ public abstract class ModbusSlave {
                 newValue.setValue(1);
             } else if (command.equals(OpenClosedType.CLOSED)) {
                 newValue.setValue(0);
+            }
+        } else if (command instanceof StopMoveType) {
+            newValue = new SimpleRegister();
+            if (command.equals(StopMoveType.MOVE)) {
+                newValue.setValue(0);
+            } else if (command.equals(StopMoveType.STOP)) {
+                newValue.setValue(1);
             }
         } else {
             logger.warn("Item {} received unsupported command: {}. Not setting register.", config.getItemName(),

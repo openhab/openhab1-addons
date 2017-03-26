@@ -13,6 +13,7 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
@@ -73,10 +74,13 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
         if (item.getClass() == NumberItem.class) {
             return;
         }
+        if (item.getClass() == RollershutterItem.class) {
+            return;
+        }
 
-        throw new BindingConfigParseException(
-                "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
-                        + "', only Switch, Contact or Number are allowed - please check your *.items configuration");
+        throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
+                + item.getClass().getSimpleName()
+                + "', only Switch, Rollershutter, Contact or Number are allowed - please check your *.items configuration");
     }
 
     /**

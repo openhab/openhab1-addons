@@ -39,7 +39,11 @@ import org.openhab.binding.modbus.internal.pooling.ModbusSlaveEndpoint;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StopMoveType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -183,7 +187,20 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
             if (provider.providesBindingFor(itemName)) {
                 ModbusBindingConfig config = provider.getConfig(itemName);
                 ModbusSlave slave = modbusSlaves.get(config.slaveName);
-                slave.executeCommand(command, config);
+                /* we need to handle rollershutter commands in a different way */
+                if (config.getItemClass() == RollershutterItem.class) {
+                    if (command instanceof StopMoveType) {
+                        /* the second write register assigns the stop_move condition */
+                        slave.executeCommand(command, config, config.readIndex, config.writeIndex + 1);
+                        return;
+                    }
+                    if (command instanceof UpDownType) {
+                        /* wont read from percent read register */
+                        slave.executeCommand(command, config, config.readIndex + 1, config.writeIndex);
+                        return;
+                    }
+                }
+                slave.executeCommand(command, config, config.readIndex, config.writeIndex);
             }
         }
     }
@@ -222,7 +239,10 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
                 double tmpValue = ((DecimalType) newState).doubleValue() * rawDataMultiplier;
                 newState = new DecimalType(String.valueOf(tmpValue));
             }
-
+            if (config.getItemClass() == RollershutterItem.class) {
+                int tmpValue = ((DecimalType) newState).intValue();
+                newState = new PercentType(String.valueOf(tmpValue));
+            }
             if (slave.isUpdateUnchangedItems() || !newState.equals(config.getState())) {
                 eventPublisher.postUpdate(itemName, newState);
                 config.setState(newState);
