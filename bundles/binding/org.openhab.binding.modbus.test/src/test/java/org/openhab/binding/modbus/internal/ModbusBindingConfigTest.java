@@ -181,17 +181,6 @@ public class ModbusBindingConfigTest {
                                         new ItemIOConnection("slave2", 98, IOType.COMMAND, "*",
                                                 new Transformation("", "REGEX", "\",.=*[:]),"), "uint16") },
                                 null },
-                        // // extended, unexpected "type" (commented as type not supported as of now)
-                        // new Object[] { new StringItem("item2"),
-                        // "<[slave1:99:type=INVALID,trigger=*,transformation=TRANSFORMATION,valueType=int32]",
-                        // null, null,
-                        // new BindingConfigParseException(
-                        // "Parsing of item 'item2' configuration
-                        // '<[slave1:99:type=INVALID,trigger=*,transformation=TRANSFORMATION,valueType=int32]' "
-                        // + "(as part of the whole config
-                        // '<[slave1:99:type=INVALID,trigger=*,transformation=TRANSFORMATION,valueType=int32]') "
-                        // + "failed: java.lang.IllegalArgumentException "
-                        // + "Could not convert 'INVALID' to one of [STATE, COMMAND]") },
                         // invalid valuetype
                         new Object[] { new StringItem("item2"), "<[slave1:99:trigger=*,valueType=invalidValueType]",
                                 null, null,
@@ -208,15 +197,6 @@ public class ModbusBindingConfigTest {
                                                 + "config '<[slave1:99:foobarKey=*]') failed: "
                                                 + "org.openhab.model.item.binding.BindingConfigParseException Unexpected token "
                                                 + "'foobarKey=*, expecting key to be one of: type, trigger, transformation, valueType") },
-                        // // default type (commented as type not supported as of now)
-                        // new Object[] { new StringItem("item2"),
-                        // "<[slave1:99:trigger=*,transformation=JS(getValue.js),valueType=int32]\t ,
-                        // >[slave3:97:trigger=ThisIsTrigger,transformation=\"FOOBAR(=\\\",.*[:]),)\",valueType=float32]",
-                        // new ItemIOConnection[] { new ItemIOConnection("slave1", 99, IOType.STATE, "*",
-                        // new Transformation("", "JS", "getValue.js"), "int32") },
-                        // new ItemIOConnection[] { new ItemIOConnection("slave3", 97, IOType.COMMAND,
-                        // "ThisIsTrigger", new Transformation("", "FOOBAR", "=\",.*[:]),"), "float32") },
-                        // null },
                         // all defaults
                         new Object[] { new StringItem("item2"), "<[slave1:101]",
                                 new ItemIOConnection[] { new ItemIOConnection("slave1", 101, IOType.STATE) },
