@@ -88,7 +88,7 @@ public class ReadCoilsAndDiscreteTestCase extends TestCaseSupport {
      */
     public ReadCoilsAndDiscreteTestCase(ServerType serverType, boolean nonZeroOffset, String type,
             Class<Register> storeClass, String spiAddRegisterMethodName, Class<?> addRegisterArgClass)
-                    throws NoSuchMethodException, SecurityException {
+            throws NoSuchMethodException, SecurityException {
         this.serverType = serverType;
         this.nonZeroOffset = nonZeroOffset;
         this.type = type;

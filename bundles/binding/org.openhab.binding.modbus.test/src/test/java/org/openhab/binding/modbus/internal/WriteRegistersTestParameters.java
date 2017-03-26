@@ -280,7 +280,7 @@ public class WriteRegistersTestParameters extends TestCaseSupport {
                 // ModbusBindingProvider.VALUE_TYPE_INT8,
                 // ModbusBindingProvider.VALUE_TYPE_UINT8,
                 // ModbusBindingProvider.VALUE_TYPE_BIT,
-        }, new Command[] { new DecimalType(5.0) }));
+                }, new Command[] { new DecimalType(5.0) }));
     }
 
     /**
