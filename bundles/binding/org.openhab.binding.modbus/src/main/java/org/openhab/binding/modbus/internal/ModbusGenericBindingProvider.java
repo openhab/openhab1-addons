@@ -68,7 +68,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
         } else {
             logger.debug(
                     "Item '{}' is of type '{}'. Please make sure that transformation is "
-                            + "in place to convert to polled data to a format understood "
+                            + "in place to convert the polled data to a format understood "
                             + "by the item. Furthermore, make sure that commands are converted to "
                             + "DecimalType or any command accepted by Switch, Contact or Number items.",
                     item.getName(), item.getClass().getSimpleName());
