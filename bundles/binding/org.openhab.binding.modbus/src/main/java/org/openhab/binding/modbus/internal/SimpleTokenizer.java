@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringEscapeUtils;
  * See tests for details
  *
  * @author Sami Salonen
+ * @since 1.10.0
  *
  */
 public class SimpleTokenizer {
