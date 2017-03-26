@@ -61,7 +61,7 @@ public final class WriteMultipleRegistersResponse extends ModbusResponse {
      * Sets the reference of the register to start writing to
      * with this <tt>WriteMultipleRegistersResponse</tt>.
      * <p>
-     * 
+     *
      * @param ref the reference of the register
      *            to start writing to as <tt>int</tt>.
      */
@@ -74,7 +74,7 @@ public final class WriteMultipleRegistersResponse extends ModbusResponse {
      * writing to with this
      * <tt>WriteMultipleRegistersResponse</tt>.
      * <p>
-     * 
+     *
      * @return the reference of the register
      *         to start writing to as <tt>int</tt>.
      */
@@ -85,7 +85,7 @@ public final class WriteMultipleRegistersResponse extends ModbusResponse {
     /**
      * Returns the number of bytes that have been written.
      * <p>
-     * 
+     *
      * @return the number of bytes that have been read
      *         as <tt>int</tt>.
      */
@@ -98,7 +98,7 @@ public final class WriteMultipleRegistersResponse extends ModbusResponse {
      * The returned value should be half of
      * the byte count of the response.
      * <p>
-     * 
+     *
      * @return the number of words that have been read
      *         as <tt>int</tt>.
      */
@@ -109,7 +109,7 @@ public final class WriteMultipleRegistersResponse extends ModbusResponse {
     /**
      * Sets the number of words that have been returned.
      * <p>
-     * 
+     *
      * @param count the number of words as <tt>int</tt>.
      */
     private void setWordCount(int count) {

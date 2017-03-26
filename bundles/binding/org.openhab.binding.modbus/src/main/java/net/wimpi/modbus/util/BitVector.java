@@ -40,7 +40,7 @@ public final class BitVector {
      * Constructs a new <tt>BitVector</tt> instance
      * with a given size.
      * <p>
-     * 
+     *
      * @param size the number of bits the <tt>BitVector</tt>
      *            should be able to hold.
      */
@@ -94,7 +94,7 @@ public final class BitVector {
      * Returns the <tt>byte[]</tt> which is used to store
      * the bits of this <tt>BitVector</tt>.
      * <p>
-     * 
+     *
      * @return the <tt>byte[]</tt> used to store the bits.
      */
     public final byte[] getBytes() {
@@ -105,7 +105,7 @@ public final class BitVector {
      * Sets the <tt>byte[]</tt> which stores
      * the bits of this <tt>BitVector</tt>.
      * <p>
-     * 
+     *
      * @param data a <tt>byte[]</tt>.
      */
     public final void setBytes(byte[] data) {
@@ -116,7 +116,7 @@ public final class BitVector {
      * Sets the <tt>byte[]</tt> which stores
      * the bits of this <tt>BitVector</tt>.
      * <p>
-     * 
+     *
      * @param data a <tt>byte[]</tt>.
      */
     public final void setBytes(byte[] data, int size) {
@@ -128,7 +128,7 @@ public final class BitVector {
      * Returns the state of the bit at the given index of this
      * <tt>BitVector</tt>.
      * <p>
-     * 
+     *
      * @param index the index of the bit to be returned.
      *
      * @return true if the bit at the specified index is set,
@@ -146,7 +146,7 @@ public final class BitVector {
      * Sets the state of the bit at the given index of
      * this <tt>BitVector</tt>.
      * <p>
-     * 
+     *
      * @param index the index of the bit to be set.
      * @param b true if the bit should be set, false if it should be reset.
      *
@@ -165,7 +165,7 @@ public final class BitVector {
      * Returns the number of bits in this <tt>BitVector</tt>
      * as <tt>int</tt>.
      * <p>
-     * 
+     *
      * @return the number of bits in this <tt>BitVector</tt>.
      */
     public final int size() {
@@ -174,7 +174,7 @@ public final class BitVector {
 
     /**
      * Forces the number of bits in this <tt>BitVector</tt>.
-     * 
+     *
      * @param size
      * @throws IllegalArgumentException if the size exceeds
      *             the byte[] store size multiplied by 8.
@@ -191,7 +191,7 @@ public final class BitVector {
      * Returns the number of bytes used to store the
      * collection of bits as <tt>int</tt>.
      * <p>
-     * 
+     *
      * @return the number of bits in this <tt>BitVector</tt>.
      */
     public final int byteSize() {
@@ -226,7 +226,7 @@ public final class BitVector {
      * Returns the index of the byte in the the byte array
      * that contains the given bit.
      * <p>
-     * 
+     *
      * @param index the index of the bit.
      *
      * @return the index of the byte where the given bit is stored.
@@ -247,7 +247,7 @@ public final class BitVector {
      * Returns the index of the given bit in the byte
      * where it it stored.
      * <p>
-     * 
+     *
      * @param index the index of the bit.
      *
      * @return the bit index relative to the position in the byte

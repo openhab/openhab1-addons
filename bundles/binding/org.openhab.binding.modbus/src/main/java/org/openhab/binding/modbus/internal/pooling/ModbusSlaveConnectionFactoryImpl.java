@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -63,9 +63,9 @@ public class ModbusSlaveConnectionFactoryImpl
     }
 
     private static final Logger logger = LoggerFactory.getLogger(ModbusSlaveConnectionFactoryImpl.class);
-    private volatile Map<ModbusSlaveEndpoint, EndpointPoolConfiguration> endpointPoolConfigs = new ConcurrentHashMap<ModbusSlaveEndpoint, EndpointPoolConfiguration>();
-    private volatile Map<ModbusSlaveEndpoint, Long> lastPassivateMillis = new ConcurrentHashMap<ModbusSlaveEndpoint, Long>();
-    private volatile Map<ModbusSlaveEndpoint, Long> lastConnectMillis = new ConcurrentHashMap<ModbusSlaveEndpoint, Long>();
+    private volatile Map<ModbusSlaveEndpoint, EndpointPoolConfiguration> endpointPoolConfigs = new ConcurrentHashMap<>();
+    private volatile Map<ModbusSlaveEndpoint, Long> lastPassivateMillis = new ConcurrentHashMap<>();
+    private volatile Map<ModbusSlaveEndpoint, Long> lastConnectMillis = new ConcurrentHashMap<>();
 
     private InetAddress getInetAddress(ModbusIPSlaveEndpoint key) {
         try {
@@ -188,7 +188,7 @@ public class ModbusSlaveConnectionFactoryImpl
     }
 
     public void applyEndpointPoolConfigs(Map<ModbusSlaveEndpoint, EndpointPoolConfiguration> endpointPoolConfigs) {
-        this.endpointPoolConfigs = new ConcurrentHashMap<ModbusSlaveEndpoint, EndpointPoolConfiguration>(
+        this.endpointPoolConfigs = new ConcurrentHashMap<>(
                 endpointPoolConfigs);
     }
 

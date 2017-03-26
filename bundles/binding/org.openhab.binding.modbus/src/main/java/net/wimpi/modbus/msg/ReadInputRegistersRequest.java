@@ -57,7 +57,7 @@ public final class ReadInputRegistersRequest extends ModbusRequest {
      * instance with a given reference and count of words
      * to be read.
      * <p>
-     * 
+     *
      * @param ref the reference number of the register
      *            to read from.
      * @param count the number of words to be read.
@@ -101,7 +101,7 @@ public final class ReadInputRegistersRequest extends ModbusRequest {
      * Sets the reference of the register to start reading
      * from with this <tt>ReadInputRegistersRequest</tt>.
      * <p>
-     * 
+     *
      * @param ref the reference of the register
      *            to start reading from.
      */
@@ -115,7 +115,7 @@ public final class ReadInputRegistersRequest extends ModbusRequest {
      * reading from with this
      * <tt>ReadInputRegistersRequest</tt>.
      * <p>
-     * 
+     *
      * @return the reference of the register
      *         to start reading from as <tt>int</tt>.
      */
@@ -127,7 +127,7 @@ public final class ReadInputRegistersRequest extends ModbusRequest {
      * Sets the number of words to be read with this
      * <tt>ReadInputRegistersRequest</tt>.
      * <p>
-     * 
+     *
      * @param count the number of words to be read.
      */
     public void setWordCount(int count) {
@@ -139,7 +139,7 @@ public final class ReadInputRegistersRequest extends ModbusRequest {
      * Returns the number of words to be read with this
      * <tt>ReadInputRegistersRequest</tt>.
      * <p>
-     * 
+     *
      * @return the number of words to be read as
      *         <tt>int</tt>.
      */

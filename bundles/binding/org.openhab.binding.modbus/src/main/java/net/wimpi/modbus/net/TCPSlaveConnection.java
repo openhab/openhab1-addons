@@ -24,9 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.wimpi.modbus.Modbus;
+import net.wimpi.modbus.io.ModbusSocketBasedTransportFactory;
 import net.wimpi.modbus.io.ModbusTCPTransport;
 import net.wimpi.modbus.io.ModbusTransport;
-import net.wimpi.modbus.io.ModbusSocketBasedTransportFactory;
 
 /**
  * Class that implements a TCPSlaveConnection.
@@ -47,7 +47,7 @@ public class TCPSlaveConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(TCPSlaveConnection.class);
 
-    //instance attributes
+    // instance attributes
     private Socket m_Socket;
     private int m_Timeout = Modbus.DEFAULT_TIMEOUT;
     private boolean m_Connected;
@@ -68,11 +68,11 @@ public class TCPSlaveConnection {
         } catch (IOException ex) {
             final String errMsg = "Socket invalid";
             logger.debug(errMsg);
-            //@commentstart@
+            // @commentstart@
             throw new IllegalStateException(errMsg);
-            //@commentend@
+            // @commentend@
         }
-    }//constructor
+    }// constructor
 
     public TCPSlaveConnection(Socket socket) {
         this(socket, new ModbusTCPTransportFactory());
@@ -82,16 +82,18 @@ public class TCPSlaveConnection {
      * Closes this <tt>TCPSlaveConnection</tt>.
      */
     public void close() {
-        if(m_Connected) {
+        if (m_Connected) {
             try {
                 m_ModbusTransport.close();
                 m_Socket.close();
             } catch (IOException ex) {
-                if(Modbus.debug) ex.printStackTrace();
+                if (Modbus.debug) {
+                    ex.printStackTrace();
+                }
             }
             m_Connected = false;
         }
-    }//close
+    }// close
 
     /**
      * Returns the <tt>ModbusTransport</tt> associated with this
@@ -101,7 +103,7 @@ public class TCPSlaveConnection {
      */
     public ModbusTransport getModbusTransport() {
         return m_ModbusTransport;
-    }//getIO
+    }// getIO
 
     /**
      * Prepares the associated <tt>ModbusTransport</tt> of this
@@ -118,7 +120,7 @@ public class TCPSlaveConnection {
             throw new IllegalStateException("socket cannot be re-set");
         }
         m_Connected = true;
-    }//prepareIO
+    }// prepareIO
 
     /**
      * Returns the timeout for this <tt>TCPMasterConnection</tt>.
@@ -127,7 +129,7 @@ public class TCPSlaveConnection {
      */
     public int getTimeout() {
         return m_Timeout;
-    }//getReceiveTimeout
+    }// getReceiveTimeout
 
     /**
      * Sets the timeout for this <tt>TCPSlaveConnection</tt>.
@@ -139,9 +141,9 @@ public class TCPSlaveConnection {
         try {
             m_Socket.setSoTimeout(m_Timeout);
         } catch (IOException ex) {
-            //handle?
+            // handle?
         }
-    }//setReceiveTimeout
+    }// setReceiveTimeout
 
     /**
      * Returns the destination port of this
@@ -151,7 +153,7 @@ public class TCPSlaveConnection {
      */
     public int getPort() {
         return m_Socket.getLocalPort();
-    }//getPort
+    }// getPort
 
     /**
      * Returns the destination <tt>InetAddress</tt> of this
@@ -161,7 +163,7 @@ public class TCPSlaveConnection {
      */
     public InetAddress getAddress() {
         return m_Socket.getLocalAddress();
-    }//getAddress
+    }// getAddress
 
     /**
      * Tests if this <tt>TCPMasterConnection</tt> is connected.
@@ -170,6 +172,6 @@ public class TCPSlaveConnection {
      */
     public boolean isConnected() {
         return m_Connected;
-    }//isConnected
+    }// isConnected
 
-}//class TCPSlaveConnection
+}// class TCPSlaveConnection

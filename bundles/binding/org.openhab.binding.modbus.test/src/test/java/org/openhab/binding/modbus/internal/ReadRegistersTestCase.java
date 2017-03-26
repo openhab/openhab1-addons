@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -48,7 +48,7 @@ public class ReadRegistersTestCase extends TestCaseSupport {
 
     @Parameters
     public static Collection<Object[]> parameters() {
-        List<Object[]> allParameters = new ArrayList<Object[]>();
+        List<Object[]> allParameters = new ArrayList<>();
         List<Object[]> baseParameters = Arrays.asList(new Object[][] {
                 { false, ModbusBindingProvider.TYPE_INPUT, SimpleInputRegister.class, "addInputRegister",
                         InputRegister.class },
@@ -58,7 +58,7 @@ public class ReadRegistersTestCase extends TestCaseSupport {
                 { true, ModbusBindingProvider.TYPE_HOLDING, SimpleRegister.class, "addRegister", Register.class } });
         for (ServerType serverType : TEST_SERVERS) {
             for (Object[] params : baseParameters) {
-                ArrayList<Object> paramsWithServer = new ArrayList<Object>();
+                ArrayList<Object> paramsWithServer = new ArrayList<>();
                 paramsWithServer.add(serverType);
                 paramsWithServer.addAll(Arrays.asList(params));
                 allParameters.add(paramsWithServer.toArray());
@@ -75,12 +75,12 @@ public class ReadRegistersTestCase extends TestCaseSupport {
     private String spiAddRegisterMethodName;
     private Class<?> addRegisterArgClass;
 
+    /**
+     * Return value converted to bytes
+     *
+     * Bytes are returned in most significant bit (MSB) order
+     */
     private byte[] int32AsRegisters(int value) throws IOException {
-        /**
-         * Return value converted to bytes (CDAB)
-         *
-         * Bytes are returned in most significant bit (MSB) order
-         */
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         dos.writeInt(value); // writes all 4 bytes as MSB order
@@ -107,12 +107,13 @@ public class ReadRegistersTestCase extends TestCaseSupport {
         return byteArray;
     }
 
+    /**
+     * Return value converted to bytes
+     *
+     * Bytes are returned in most significant bit (MSB) order
+     */
     private byte[] float32AsRegisters(float value) throws IOException {
-        /**
-         * Return value converted to bytes
-         *
-         * Bytes are returned in most significant bit (MSB) order
-         */
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         dos.writeFloat(value); // writes all 4 bytes as MSB order

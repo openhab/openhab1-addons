@@ -60,7 +60,7 @@ public class AtomicCounter {
 
     /**
      * Returns the value of this <tt>AtomicInteger</tt>.
-     * 
+     *
      * @return the actual value.
      */
     public synchronized int get() {

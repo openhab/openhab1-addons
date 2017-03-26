@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,10 +9,10 @@
 package org.openhab.binding.modbus.internal;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.apache.commons.pool2.KeyedObjectPool;
 import org.openhab.binding.modbus.ModbusBindingProvider;
-import org.openhab.binding.modbus.internal.ModbusGenericBindingProvider.ModbusBindingConfig;
 import org.openhab.binding.modbus.internal.pooling.ModbusSlaveEndpoint;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -20,6 +20,7 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,14 +137,17 @@ public abstract class ModbusSlave {
      * works only with types "coil" and "holding"
      *
      * @param command OpenHAB command received
-     * @param config
+     * @param writeIndex
+     * @param readIndex read index to use for commands that require previously polled value
+     *
      */
-    public void executeCommand(Command command, ModbusBindingConfig config) {
+    public void executeCommand(String itemName, Command command, int writeIndex,
+            Optional<State> previouslyPolledState) {
         try {
             if (ModbusBindingProvider.TYPE_COIL.equals(getType())) {
-                setCoil(command, config);
+                setCoil(command, writeIndex);
             } else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {
-                setRegister(command, config);
+                setRegister(itemName, command, writeIndex, previouslyPolledState);
             }
         } catch (Exception e) {
             // Error already logged, just continue as normal
@@ -154,7 +158,7 @@ public abstract class ModbusSlave {
      * Calculates boolean value that will be written to the device as a result of OpenHAB command
      * Used with item bound to "coil" type slaves
      *
-     * @param command OpenHAB command received by the item
+     * @param command OpenHAB command received by the item. OnOffType, OpenClosedType and DecimalType are handled.
      * @return new boolean value to be written to the device
      */
     protected static boolean translateCommand2Boolean(Command command) {
@@ -170,6 +174,10 @@ public abstract class ModbusSlave {
         if (command.equals(OpenClosedType.CLOSED)) {
             return false;
         }
+        if (command instanceof DecimalType) {
+            // Transformation might return DecimalType commands even for coil items
+            return !command.equals(DecimalType.ZERO);
+        }
         throw new IllegalArgumentException("command not supported");
     }
 
@@ -177,16 +185,16 @@ public abstract class ModbusSlave {
      * Performs physical write to device when slave type is "coil"
      *
      * @param command command received from OpenHAB
-     * @param config
+     * @param writeIndex
      * @throws ModbusConnectionException when connection cannot be established
      * @throws ModbusException ModbusIOException on IO errors, ModbusSlaveException with protocol level exceptions
      * @throws ModbusUnexpectedTransactionIdException when response transaction id does not match the request
      */
-    private void setCoil(Command command, ModbusBindingConfig config)
+    private void setCoil(Command command, int writeIndex)
             throws ModbusConnectionException, ModbusException, ModbusUnexpectedTransactionIdException {
-        int writeRegister = config.writeIndex;
+        int coilOffset = writeIndex;
         boolean b = translateCommand2Boolean(command);
-        doSetCoil(getStart() + writeRegister, b);
+        doSetCoil(getStart() + coilOffset, b);
     }
 
     /**
@@ -198,54 +206,42 @@ public abstract class ModbusSlave {
      * @throws ModbusException ModbusIOException on IO errors, ModbusSlaveException with protocol level exceptions
      * @throws ModbusUnexpectedTransactionIdException when response transaction id does not match the request
      */
-    protected void setRegister(Command command, ModbusBindingConfig config)
+    protected void setRegister(String itemName, Command command, int writeIndex, Optional<State> previouslyPolledState)
             throws ModbusConnectionException, ModbusException, ModbusUnexpectedTransactionIdException {
-        int readIndex = config.readIndex;
-        int writeRegister = getStart() + config.writeIndex;
+        int writeRegister = getStart() + writeIndex;
 
         Register newValue;
-        if (command instanceof IncreaseDecreaseType) {
-            newValue = readCachedRegisterValue(readIndex);
-            if (newValue == null) {
-                logger.warn("Not polled value for item {}. Cannot process command {}", config.getItemName(), command);
+        if (command instanceof IncreaseDecreaseType || command instanceof UpDownType) {
+            if (!previouslyPolledState.isPresent()) {
+                logger.warn("Not polled value for item {}. Cannot process command {}", itemName, command);
                 return;
             }
-            if (command.equals(IncreaseDecreaseType.INCREASE)) {
-                newValue.setValue(newValue.getValue() + 1);
-            } else if (command.equals(IncreaseDecreaseType.DECREASE)) {
-                newValue.setValue(newValue.getValue() - 1);
-            }
-        } else if (command instanceof UpDownType) {
-            newValue = readCachedRegisterValue(readIndex);
-            if (newValue == null) {
-                logger.warn("Not polled value for item {}. Cannot process command {}", config.getItemName(), command);
+            State prevState = previouslyPolledState.get();
+
+            if (!(prevState instanceof Number)) {
+                logger.warn("Previously polled value ({}) is not number, cannot process command {}",
+                        previouslyPolledState, command);
                 return;
             }
-            if (command.equals(UpDownType.UP)) {
-                newValue.setValue(newValue.getValue() + 1);
-            } else if (command.equals(UpDownType.DOWN)) {
-                newValue.setValue(newValue.getValue() - 1);
+            int prevValue = ((Number) prevState).intValue();
+            newValue = new SimpleRegister();
+            if (command.equals(IncreaseDecreaseType.INCREASE) || command.equals(UpDownType.UP)) {
+                newValue.setValue(prevValue + 1);
+            } else if (command.equals(IncreaseDecreaseType.DECREASE) || command.equals(UpDownType.DOWN)) {
+                newValue.setValue(prevValue - 1);
             }
         } else if (command instanceof DecimalType) {
             newValue = new SimpleRegister();
             newValue.setValue(((DecimalType) command).intValue());
-        } else if (command instanceof OnOffType) {
+        } else if (command instanceof OnOffType || command instanceof OpenClosedType) {
             newValue = new SimpleRegister();
-            if (command.equals(OnOffType.ON)) {
+            if (command.equals(OnOffType.ON) || command.equals(OpenClosedType.OPEN)) {
                 newValue.setValue(1);
-            } else if (command.equals(OnOffType.OFF)) {
-                newValue.setValue(0);
-            }
-        } else if (command instanceof OpenClosedType) {
-            newValue = new SimpleRegister();
-            if (command.equals(OpenClosedType.OPEN)) {
-                newValue.setValue(1);
-            } else if (command.equals(OpenClosedType.CLOSED)) {
+            } else if (command.equals(OnOffType.OFF) || command.equals(OpenClosedType.CLOSED)) {
                 newValue.setValue(0);
             }
         } else {
-            logger.warn("Item {} received unsupported command: {}. Not setting register.", config.getItemName(),
-                    command);
+            logger.warn("Item {} received unsupported command: {}. Not setting register.", itemName, command);
             return;
         }
 
@@ -261,17 +257,6 @@ public abstract class ModbusSlave {
         logger.debug("ModbusSlave ({}): FC{} ref={} value={}", name, request.getFunctionCode(), writeRegister,
                 newValue.getValue());
         executeWriteRequest(request);
-    }
-
-    private Register readCachedRegisterValue(int readIndex) {
-        if (storage == null) {
-            return null;
-        }
-        Register newValue = null;
-        synchronized (storage) {
-            newValue = (Register) ((InputRegister[]) storage)[readIndex];
-        }
-        return newValue;
     }
 
     /**
@@ -329,6 +314,8 @@ public abstract class ModbusSlave {
                 throw e;
             }
             ModbusResponse response = transaction.getResponse();
+            logger.trace("ModbusSlave ({}): response for write (FC={}) {}", name, response.getFunctionCode(),
+                    response.getHexMessage());
             if ((response.getTransactionID() != transaction.getTransactionID()) && !response.isHeadless()) {
                 logger.warn(
                         "ModbusSlave ({}): Transaction id of the response does not match request {}.  Endpoint {}. Connection: {}. Ignoring response.",
@@ -518,6 +505,8 @@ public abstract class ModbusSlave {
                         name, request, endpoint, connection);
                 throw new ModbusUnexpectedTransactionIdException();
             }
+            logger.trace("ModbusSlave ({}): response for read (FC={}) {}", name, response.getFunctionCode(),
+                    response.getHexMessage());
         } finally {
             returnConnection(endpoint, connection);
         }

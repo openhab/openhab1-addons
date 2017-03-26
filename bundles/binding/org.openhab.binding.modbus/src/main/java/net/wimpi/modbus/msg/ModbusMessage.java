@@ -38,7 +38,7 @@ public interface ModbusMessage extends Transportable {
      * The identifier is a 2-byte (short) non negative
      * integer value valid in the range of 0-65535.
      * <p>
-     * 
+     *
      * @return the transaction identifier as <tt>int</tt>.
      */
     public int getTransactionID();
@@ -49,7 +49,7 @@ public interface ModbusMessage extends Transportable {
      * The identifier is a 2-byte (short) non negative
      * integer value valid in the range of 0-65535.
      * <p>
-     * 
+     *
      * @return the protocol identifier as <tt>int</tt>.
      */
     public int getProtocolID();
@@ -58,7 +58,7 @@ public interface ModbusMessage extends Transportable {
      * Returns the length of the data appended
      * after the protocol header.
      * <p>
-     * 
+     *
      * @return the data length as <tt>int</tt>.
      */
     public int getDataLength();
@@ -69,7 +69,7 @@ public interface ModbusMessage extends Transportable {
      * The identifier is a 1-byte non negative
      * integer value valid in the range of 0-255.
      * <p>
-     * 
+     *
      * @return the unit identifier as <tt>int</tt>.
      */
     public int getUnitID();
@@ -83,7 +83,7 @@ public interface ModbusMessage extends Transportable {
      * classes their values are specified in
      * <tt>net.wimpi.modbus.Modbus</tt>.
      * <p>
-     * 
+     *
      * @return the function code as <tt>int</tt>.
      *
      * @see net.wimpi.modbus.Modbus
@@ -98,7 +98,7 @@ public interface ModbusMessage extends Transportable {
      * allowing to log the communication in a manner used
      * in the specification document.
      * <p>
-     * 
+     *
      * @return the <i>raw</i> message as <tt>String</tt>
      *         containing a hexadecimal series of bytes.
      *
