@@ -22,6 +22,7 @@ import org.openhab.core.types.State;
  *
  *
  * @author Sami Salonen
+ * @since 1.10.0
  *
  */
 public class ItemIOConnection {

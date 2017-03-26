@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * Inspired from other openHAB binding "Transformation" classes.
  *
  * @author Sami Salonen
+ * @since 1.10.0
  *
  */
 public class Transformation {
@@ -55,7 +56,7 @@ public class Transformation {
     public static final Transformation IDENTITY_TRANSFORMATION = new Transformation(TRANSFORM_DEFAULT, null, null);
     private static final TransformationHelperWrapper DEFAULT_TRANSFORMATION_HELPER = new TransformationHelperWrapperImpl();
 
-    /** RegEx to extract a parse a function String <code>'(.*?)\((.*)\)'</code> */
+    /** RegEx to extract and parse a function String <code>'(.*?)\((.*)\)'</code> */
     private static final Pattern EXTRACT_FUNCTION_PATTERN = Pattern.compile("(?<service>.*?)\\((?<arg>.*)\\)");
 
     /**
