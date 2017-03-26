@@ -145,7 +145,7 @@ This gives more freedom to the user. Among other things it enables
 - mark item as read-only (received openHAB commands are not processed)
 - mark item as write-only (polled data do not change the item state)
 - overriding `valueType` per-item basis (allows to read many registers at once and then interpret them using different value types)
-- processing only certain command (on write)
+- processing only certain commands (on write)
 - processing only certain state updates (on read) based on value
 
 The extended format looks like:
@@ -417,7 +417,7 @@ When the binding interprets and converts polled input registers (`input`) or hol
 - 2b. if the item is Number: the value is used as is
 - 3. transformation is done to the value, if configured. The transformation output (string) is parsed to state using item's accepted state types (e.g. number, or CLOSED/OPEN).
 
-The logic for converting to the read read registers to number goes as below. Different procedure is taken depending on `valuetype`. 
+Polled registers from the Modbus slave are converted to openHAB state. The exact conversion logic depends on `valuetype` as described below.
 
 Note that _first register_ refers to register with address `start` (as defined in the slave definition), _second register_ refers to register with address `start + 1` etc. The _index_ refers to item read index, e.g. item `Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}` has 5 as read index.
 
