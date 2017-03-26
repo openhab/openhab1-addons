@@ -102,13 +102,14 @@ public class ModbusBindingConfig implements BindingConfig {
     /**
      * Constructor for config string
      *
-     * Config can needs to of the following basic formats
+     * Following simple formats are supported
      *
      * - slaveName:index
      * - slaveName:<readIndex:>writeIndex
      *
      *
-     * Extended format (inspired by http binding configuration format)
+     * In addition, extended format allows user to configure some additional details (inspired by http binding
+     * configuration format):
      * - <[slaveName:readIndex:trigger=TRIGGER,transformation=TRANSFORMATION,valueType=VALUETYPE],>[slaveName:
      * readIndex:trigger=TRIGGER,transformation=TRANSFORMATION,valueType=
      * VALUETYPE]
