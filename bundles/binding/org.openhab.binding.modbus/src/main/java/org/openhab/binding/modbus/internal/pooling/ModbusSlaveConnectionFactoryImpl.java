@@ -190,8 +190,7 @@ public class ModbusSlaveConnectionFactoryImpl
     }
 
     public void applyEndpointPoolConfigs(Map<ModbusSlaveEndpoint, EndpointPoolConfiguration> endpointPoolConfigs) {
-        this.endpointPoolConfigs = new ConcurrentHashMap<>(
-                endpointPoolConfigs);
+        this.endpointPoolConfigs = new ConcurrentHashMap<>(endpointPoolConfigs);
     }
 
     private void tryConnect(ModbusSlaveEndpoint endpoint, PooledObject<ModbusSlaveConnection> obj,
