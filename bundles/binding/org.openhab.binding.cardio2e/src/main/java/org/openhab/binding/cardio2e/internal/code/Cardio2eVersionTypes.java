@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2017, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,7 +19,7 @@ package org.openhab.binding.cardio2e.internal.code;
  * Example: C=2.40S.512, M=2.2, P=1.00, S=1111 -> Cardio2e COMPLETE VERSION=2.40S.512-2.2-1.00-1111
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @Since 1.7.0
+ * @Since 1.10.0
  */
 
 

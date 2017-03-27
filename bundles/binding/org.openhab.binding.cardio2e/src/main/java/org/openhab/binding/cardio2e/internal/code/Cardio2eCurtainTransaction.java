@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2017, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,7 @@ package org.openhab.binding.cardio2e.internal.code;
  * Cardio2e Binding structured curtain transaction model (only for newest Cardio2e versions). 
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @Since 1.7.0
+ * @Since 1.10.0
  */
 
 public class Cardio2eCurtainTransaction extends Cardio2eTransaction{
