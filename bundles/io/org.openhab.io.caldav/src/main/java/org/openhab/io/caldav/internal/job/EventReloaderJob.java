@@ -63,6 +63,7 @@ import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.Summary;
 
 public class EventReloaderJob implements Job {
     public static final String KEY_CONFIG = "config";
@@ -354,7 +355,8 @@ public class EventReloaderJob implements Job {
         org.joda.time.DateTime lastModifedVEventOverAll = null;
         for (CalendarComponent comp : vEventComponents) {
             VEvent vEvent = (VEvent) comp;
-            log.trace("loading event: " + vEvent.getUid().getValue() + ":" + vEvent.getSummary().getValue());
+            Summary vEventSummary = vEvent.getSummary();
+            log.trace("loading event: {}:{}", vEvent.getUid().getValue(), vEventSummary == null ? "(none)" : vEventSummary.getValue());
             // fallback, because 'LastModified' in VEvent is optional
             org.joda.time.DateTime lastModifedVEvent = lastResourceChangeFS;
             if (vEvent.getLastModified() != null) {
@@ -375,13 +377,13 @@ public class EventReloaderJob implements Job {
                                     .isAfter(org.joda.time.DateTime.now().plusMinutes(config.getReloadMinutes()))) {
                         // the event is calculated as long as the next reload
                         // interval can handle this
-                        log.trace("skipping resource processing {}, not changed", filename);
+                        log.trace("skipping resource processing. File {} has not changed.", filename);
                         continue;
                     }
 
                     if (eventContainer.isHistoricEvent()) {
                         // no more upcoming events, do nothing
-                        log.trace("skipping resource processing {}, not changed", filename);
+                        log.trace("skipping resource processing. File {} is historic.", filename);
                         continue;
                     }
                 }
@@ -392,16 +394,20 @@ public class EventReloaderJob implements Job {
             periods = periods.normalise();
 
             String eventId = vEvent.getUid().getValue();
-            final String eventName = vEvent.getSummary().getValue();
+            final String eventName = vEventSummary == null ? "(none)" : vEventSummary.getValue();
+            log.debug("Processing event '{}'", eventName);
 
             // no more upcoming events
             if (periods.size() > 0) {
                 if (vEvent.getConsumedTime(new net.fortuna.ical4j.model.Date(),
                         new net.fortuna.ical4j.model.Date(org.joda.time.DateTime.now().plusYears(10).getMillis()))
                         .size() == 0) {
-                    log.trace("event will never be occur (historic): {}", eventName);
+                    log.trace("event will never occur (historic): {}", eventName);
                     eventContainer.setHistoricEvent(true);
                 }
+            }
+            else {
+                log.debug("No periods exist for event '{}'", eventName);
             }
 
             // expecting this is for every vEvent inside a calendar equals
@@ -413,6 +419,7 @@ public class EventReloaderJob implements Job {
                 org.joda.time.DateTime start = getDateTime("start", p.getStart(), p.getRangeStart());
                 org.joda.time.DateTime end = getDateTime("end", p.getEnd(), p.getRangeEnd());
 
+                log.trace("Processing period {} - {}", start, end);
                 CalDavEvent event = new CalDavEvent(eventName, vEvent.getUid().getValue(), config.getKey(), start, end);
                 event.setLastChanged(lastModifedVEvent);
                 if (vEvent.getLocation() != null) {
@@ -423,21 +430,18 @@ public class EventReloaderJob implements Job {
                 }
                 event.getCategoryList().addAll(readCategory(vEvent));
                 event.setFilename(filename);
-                log.trace("adding event: " + event.getShortName());
+                log.trace("adding event: {}", event.getShortName());
                 eventContainer.getEventList().add(event);
-
             }
         }
         if (lastModifedVEventOverAll != null && !config.isLastModifiedFileTimeStampValid()) {
             eventContainer.setLastChanged(lastModifedVEventOverAll);
             log.debug("changing eventcontainer last modified to {}", lastModifedVEventOverAll);
         }
-        // if (!eventContainer.getEventList().isEmpty()) {
         CalDavLoaderImpl.instance.addEventToMap(eventContainer, true);
         if (!readFromFile) {
             Util.storeToDisk(config.getKey(), filename, calendar);
         }
-        // }
     }
 
     /**
