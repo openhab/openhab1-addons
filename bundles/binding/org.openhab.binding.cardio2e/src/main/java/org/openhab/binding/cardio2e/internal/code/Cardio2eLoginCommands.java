@@ -9,38 +9,35 @@
 
 package org.openhab.binding.cardio2e.internal.code;
 
-
 /**
- * Enumerates the various LoginCommands for Cardio2e binding
- * Also provides Cardio2e string communication protocol symbol conversion
+ * Enumerates the various LoginCommands for Cardio2e binding Also provides
+ * Cardio2e string communication protocol symbol conversion
  * 
  * @author Manuel Alberto Guerrero Díaz
  * @Since 1.10.0
  */
 
-
 public enum Cardio2eLoginCommands {
-	
+
 	LOGIN {
 		{
 			symbol = 'I';
 		}
 	},
-	
-	LOGOUT {  //Logout is obsolete: only provided for legacy compatibility.
+
+	LOGOUT { // Logout is obsolete: only provided for legacy compatibility.
 		{
 			symbol = 'O';
 		}
 	};
-	
+
 	public char symbol;
-	
+
 	public static Cardio2eLoginCommands fromString(String loginCommand) {
 
 		if ("".equals(loginCommand)) {
 			return null;
-		}
-		else {
+		} else {
 			loginCommand = loginCommand.toUpperCase();
 		}
 
@@ -50,17 +47,19 @@ public enum Cardio2eLoginCommands {
 			}
 		}
 
-		throw new IllegalArgumentException("invalid loginCommand '" + loginCommand + "'");
+		throw new IllegalArgumentException("invalid loginCommand '"
+				+ loginCommand + "'");
 	}
-	
+
 	public static Cardio2eLoginCommands fromSymbol(char loginCommand) {
-			for (Cardio2eLoginCommands type : Cardio2eLoginCommands.values()) {
+		for (Cardio2eLoginCommands type : Cardio2eLoginCommands.values()) {
 			if (type.symbol == loginCommand) {
 				return type;
 			}
 		}
 
-		throw new IllegalArgumentException("invalid loginCommand '" + loginCommand + "'");
+		throw new IllegalArgumentException("invalid loginCommand '"
+				+ loginCommand + "'");
 	}
-	
+
 }

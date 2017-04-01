@@ -9,38 +9,35 @@
 
 package org.openhab.binding.cardio2e.internal.code;
 
-
 /**
- * Enumerates the various RelayStates for Cardio2e binding
- * Also provides Cardio2e string communication protocol symbol conversion
+ * Enumerates the various RelayStates for Cardio2e binding Also provides
+ * Cardio2e string communication protocol symbol conversion
  * 
  * @author Manuel Alberto Guerrero Díaz
  * @Since 1.10.0
  */
 
-
 public enum Cardio2eRelayStates {
-	
-	OPENED { //Opened relay is equal to appliance ON
+
+	OPENED { // Opened relay is equal to appliance ON
 		{
 			symbol = 'O';
 		}
 	},
-	
-	CLOSED { //Opened is equal to appliance OFF
+
+	CLOSED { // Opened is equal to appliance OFF
 		{
 			symbol = 'C';
 		}
 	};
-	
+
 	public char symbol;
-	
+
 	public static Cardio2eRelayStates fromString(String relayState) {
 
 		if ("".equals(relayState)) {
 			return null;
-		}
-		else {
+		} else {
 			relayState = relayState.toUpperCase();
 		}
 
@@ -50,17 +47,19 @@ public enum Cardio2eRelayStates {
 			}
 		}
 
-		throw new IllegalArgumentException("invalid relayState '" + relayState + "'");
+		throw new IllegalArgumentException("invalid relayState '" + relayState
+				+ "'");
 	}
-	
+
 	public static Cardio2eRelayStates fromSymbol(char relayState) {
-			for (Cardio2eRelayStates type : Cardio2eRelayStates.values()) {
+		for (Cardio2eRelayStates type : Cardio2eRelayStates.values()) {
 			if (type.symbol == relayState) {
 				return type;
 			}
 		}
 
-		throw new IllegalArgumentException("invalid relayState '" + relayState + "'");
+		throw new IllegalArgumentException("invalid relayState '" + relayState
+				+ "'");
 	}
-	
+
 }

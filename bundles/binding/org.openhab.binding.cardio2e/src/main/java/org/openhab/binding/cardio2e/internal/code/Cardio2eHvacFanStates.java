@@ -9,38 +9,35 @@
 
 package org.openhab.binding.cardio2e.internal.code;
 
-
 /**
- * Enumerates the various HvacFanStates for Cardio2e binding
- * Also provides Cardio2e string communication protocol symbol conversion
+ * Enumerates the various HvacFanStates for Cardio2e binding Also provides
+ * Cardio2e string communication protocol symbol conversion
  * 
  * @author Manuel Alberto Guerrero Díaz
  * @Since 1.10.0
  */
 
-
 public enum Cardio2eHvacFanStates {
-	
+
 	STOP {
 		{
 			symbol = 'S';
 		}
 	},
-	
+
 	RUNNING {
 		{
 			symbol = 'R';
 		}
 	};
-	
+
 	public char symbol;
-	
+
 	public static Cardio2eHvacFanStates fromString(String hvacFanState) {
 
 		if ("".equals(hvacFanState)) {
 			return null;
-		}
-		else {
+		} else {
 			hvacFanState = hvacFanState.toUpperCase();
 		}
 
@@ -50,17 +47,19 @@ public enum Cardio2eHvacFanStates {
 			}
 		}
 
-		throw new IllegalArgumentException("invalid hvacFanState '" + hvacFanState + "'");
+		throw new IllegalArgumentException("invalid hvacFanState '"
+				+ hvacFanState + "'");
 	}
-	
+
 	public static Cardio2eHvacFanStates fromSymbol(char hvacFanState) {
-			for (Cardio2eHvacFanStates type : Cardio2eHvacFanStates.values()) {
+		for (Cardio2eHvacFanStates type : Cardio2eHvacFanStates.values()) {
 			if (type.symbol == hvacFanState) {
 				return type;
 			}
 		}
 
-		throw new IllegalArgumentException("invalid hvacFanState '" + hvacFanState + "'");
+		throw new IllegalArgumentException("invalid hvacFanState '"
+				+ hvacFanState + "'");
 	}
-	
+
 }

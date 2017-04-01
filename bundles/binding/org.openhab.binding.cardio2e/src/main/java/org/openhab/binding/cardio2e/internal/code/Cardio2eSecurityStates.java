@@ -9,38 +9,35 @@
 
 package org.openhab.binding.cardio2e.internal.code;
 
-
 /**
- * Enumerates the various SecurityStates for Cardio2e binding
- * Also provides Cardio2e string communication protocol symbol conversion
+ * Enumerates the various SecurityStates for Cardio2e binding Also provides
+ * Cardio2e string communication protocol symbol conversion
  * 
  * @author Manuel Alberto Guerrero Díaz
  * @Since 1.10.0
  */
 
-
 public enum Cardio2eSecurityStates {
-	
+
 	ARMED {
 		{
 			symbol = 'A';
 		}
 	},
-	
+
 	DISARMED {
 		{
 			symbol = 'D';
 		}
 	};
-	
+
 	public char symbol;
-	
+
 	public static Cardio2eSecurityStates fromString(String securityState) {
 
 		if ("".equals(securityState)) {
 			return null;
-		}
-		else {
+		} else {
 			securityState = securityState.toUpperCase();
 		}
 
@@ -50,17 +47,19 @@ public enum Cardio2eSecurityStates {
 			}
 		}
 
-		throw new IllegalArgumentException("invalid securityState '" + securityState + "'");
+		throw new IllegalArgumentException("invalid securityState '"
+				+ securityState + "'");
 	}
-	
+
 	public static Cardio2eSecurityStates fromSymbol(char securityState) {
-			for (Cardio2eSecurityStates type : Cardio2eSecurityStates.values()) {
+		for (Cardio2eSecurityStates type : Cardio2eSecurityStates.values()) {
 			if (type.symbol == securityState) {
 				return type;
 			}
 		}
 
-		throw new IllegalArgumentException("invalid securityState '" + securityState + "'");
+		throw new IllegalArgumentException("invalid securityState '"
+				+ securityState + "'");
 	}
-	
+
 }

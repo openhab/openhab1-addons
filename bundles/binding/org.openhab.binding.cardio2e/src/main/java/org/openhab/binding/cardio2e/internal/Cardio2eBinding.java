@@ -51,19 +51,19 @@ import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-	
 
 /**
- * Implement this class if you are going create an actively polling service
- * like querying a Website/Device.
+ * Implement this class if you are going create an actively polling service like
+ * querying a Website/Device.
  * 
  * @author Manuel Alberto Guerrero Díaz
  * @since 1.10.0
  */
-public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvider> {
+public class Cardio2eBinding extends
+		AbstractActiveBinding<Cardio2eBindingProvider> {
 
-	private static final Logger logger = 
-		LoggerFactory.getLogger(Cardio2eBinding.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(Cardio2eBinding.class);
 	private String port;
 	private String programCode;
 	private String securityCode;
@@ -83,43 +83,47 @@ public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvid
 	private long lastDateTimeRequestTimestamp = 0;
 	private static final long DATE_TIME_GET_MIN_DELAY = 30000;
 
-
 	/**
-	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is set in the activate()
-	 * method and must not be accessed anymore once the deactivate() method was called or before activate()
-	 * was called.
+	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is
+	 * set in the activate() method and must not be accessed anymore once the
+	 * deactivate() method was called or before activate() was called.
 	 */
 	@SuppressWarnings("unused")
 	private BundleContext bundleContext;
 
-	
-	/** 
+	/**
 	 * the refresh interval which is used to poll values from the Cardio2e
 	 * server (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 30000;
-	
-	
+
 	public Cardio2eBinding() {
 	}
-		
-	
+
 	/**
-	 * Called by the SCR to activate the component with its configuration read from CAS
+	 * Called by the SCR to activate the component with its configuration read
+	 * from CAS
 	 * 
-	 * @param bundleContext BundleContext of the Bundle that defines this component
-	 * @param configuration Configuration properties for this component obtained from the ConfigAdmin service
+	 * @param bundleContext
+	 *            BundleContext of the Bundle that defines this component
+	 * @param configuration
+	 *            Configuration properties for this component obtained from the
+	 *            ConfigAdmin service
 	 */
-	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
+	public void activate(final BundleContext bundleContext,
+			final Map<String, Object> configuration) {
 		this.bundleContext = bundleContext;
 
-		logger.debug("activate");	
+		logger.debug("activate");
 		initializeCardio2eBinding(configuration);
 	}
-	
+
 	/**
-	 * Called by the SCR when the configuration of a binding has been changed through the ConfigAdmin service.
-	 * @param configuration Updated configuration properties
+	 * Called by the SCR when the configuration of a binding has been changed
+	 * through the ConfigAdmin service.
+	 * 
+	 * @param configuration
+	 *            Updated configuration properties
 	 */
 	public void modified(final Map<String, Object> configuration) {
 		// update the internal configuration accordingly
@@ -128,32 +132,35 @@ public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvid
 		purgeCardio2eBinding();
 		initializeCardio2eBinding(configuration);
 	}
-	
+
 	/**
-	 * Called by the SCR to deactivate the component when either the configuration is removed or
-	 * mandatory references are no longer satisfied or the component has simply been stopped.
-	 * @param reason Reason code for the deactivation:<br>
-	 * <ul>
-	 * <li> 0 – Unspecified
-     * <li> 1 – The component was disabled
-     * <li> 2 – A reference became unsatisfied
-     * <li> 3 – A configuration was changed
-     * <li> 4 – A configuration was deleted
-     * <li> 5 – The component was disposed
-     * <li> 6 – The bundle was stopped
-     * </ul>
+	 * Called by the SCR to deactivate the component when either the
+	 * configuration is removed or mandatory references are no longer satisfied
+	 * or the component has simply been stopped.
+	 * 
+	 * @param reason
+	 *            Reason code for the deactivation:<br>
+	 *            <ul>
+	 *            <li>0 – Unspecified
+	 *            <li>1 – The component was disabled
+	 *            <li>2 – A reference became unsatisfied
+	 *            <li>3 – A configuration was changed
+	 *            <li>4 – A configuration was deleted
+	 *            <li>5 – The component was disposed
+	 *            <li>6 – The bundle was stopped
+	 *            </ul>
 	 */
-	
+
 	public void deactivate(final int reason) {
 		this.bundleContext = null;
-		// deallocate resources here that are no longer needed and 
+		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
 		logger.debug("deactivate");
 		purgeCardio2eBinding();
 	}
-	
+
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected long getRefreshInterval() {
@@ -161,32 +168,35 @@ public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvid
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected String getName() {
 		return "Cardio2e Refresh Service";
 	}
-	
+
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
 		logger.debug("execute() method is called!");
 		if (loggedIn) {
-			//Cardio 2é date and time cyclic ask code used for progressive update only
-			if ((datetimeMaxOffset >= 0) && (pendingDateTimeUpdate.getDateTime() != null)) {
-            	getCardioDateTime();
-            }
+			// Cardio 2é date and time cyclic ask code used for progressive
+			// update only
+			if ((datetimeMaxOffset >= 0)
+					&& (pendingDateTimeUpdate.getDateTime() != null)) {
+				getCardioDateTime();
+			}
 		}
 	}
 
-	public void initializeCardio2eBinding(final Map<String, Object> configuration) {
+	public void initializeCardio2eBinding(
+			final Map<String, Object> configuration) {
 		int minDelayBetweenReceivingAndSending = 0;
 		int minDelayBetweenSendings = 0;
-		// Set default values 
+		// Set default values
 		port = null;
 		programCode = "00000";
 		securityCode = null;
@@ -198,71 +208,92 @@ public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvid
 		testMode = false;
 		Cardio2eTransactionParser.filterUnnecessaryCommand = false;
 		Cardio2eTransactionParser.filterUnnecessaryReverseModeUpdate = true;
-		Cardio2eLightingTransaction.setSmartSendingEnabledClass (false);
-		Cardio2eRelayTransaction.setSmartSendingEnabledClass (false);
-		Cardio2eHvacControlTransaction.setSmartSendingEnabledClass (false);
-		Cardio2eDateTimeTransaction.setSmartSendingEnabledClass (false);
-		Cardio2eScenarioTransaction.setSmartSendingEnabledClass (false);
-		Cardio2eSecurityTransaction.setSmartSendingEnabledClass (false);
-		Cardio2eZonesBypassTransaction.setSmartSendingEnabledClass (false);
-		Cardio2eCurtainTransaction.setSmartSendingEnabledClass (false);
-		//Load config values
+		Cardio2eLightingTransaction.setSmartSendingEnabledClass(false);
+		Cardio2eRelayTransaction.setSmartSendingEnabledClass(false);
+		Cardio2eHvacControlTransaction.setSmartSendingEnabledClass(false);
+		Cardio2eDateTimeTransaction.setSmartSendingEnabledClass(false);
+		Cardio2eScenarioTransaction.setSmartSendingEnabledClass(false);
+		Cardio2eSecurityTransaction.setSmartSendingEnabledClass(false);
+		Cardio2eZonesBypassTransaction.setSmartSendingEnabledClass(false);
+		Cardio2eCurtainTransaction.setSmartSendingEnabledClass(false);
+		// Load config values
 		String portString = (String) configuration.get("port");
 		if (StringUtils.isNotBlank(portString)) {
 			port = portString;
-            logger.debug("Serial port set from config file: " + port);
+			logger.debug("Serial port set from config file: " + port);
 		}
-		if (port != null){
-			String programcodeString = (String) configuration.get("programcode");
+		if (port != null) {
+			String programcodeString = (String) configuration
+					.get("programcode");
 			if (StringUtils.isNotBlank(programcodeString)) {
 				programCode = programcodeString;
-	            logger.debug("Program code updated from config file");
+				logger.debug("Program code updated from config file");
 			}
-			
-			String securitycodeString = (String) configuration.get("securitycode");
+
+			String securitycodeString = (String) configuration
+					.get("securitycode");
 			if (StringUtils.isNotBlank(securitycodeString)) {
 				securityCode = securitycodeString;
-	            logger.debug("Security code updated from config file");
+				logger.debug("Security code updated from config file");
 			}
-			
+
 			String zonesString = (String) configuration.get("zones");
 			if (StringUtils.isNotBlank(zonesString)) {
 				zoneStateDetection = Boolean.parseBoolean(zonesString);
-				logger.debug("Zone state detection " + (zoneStateDetection ? "enabled" : "disabled") + " in config file");
+				logger.debug("Zone state detection "
+						+ (zoneStateDetection ? "enabled" : "disabled")
+						+ " in config file");
 			}
-			
-			String zoneUnchangedMinRefreshDelayString = (String) configuration.get("zoneUnchangedMinRefreshDelay");
+
+			String zoneUnchangedMinRefreshDelayString = (String) configuration
+					.get("zoneUnchangedMinRefreshDelay");
 			if (StringUtils.isNotBlank(zoneUnchangedMinRefreshDelayString)) {
-				zoneUnchangedMinRefreshDelay = Long.parseLong(zoneUnchangedMinRefreshDelayString);
-	            logger.debug("Zone state unchanged minimum refresh delay updated to " + zoneUnchangedMinRefreshDelayString + " milliseconds from config file");
+				zoneUnchangedMinRefreshDelay = Long
+						.parseLong(zoneUnchangedMinRefreshDelayString);
+				logger.debug("Zone state unchanged minimum refresh delay updated to "
+						+ zoneUnchangedMinRefreshDelayString
+						+ " milliseconds from config file");
 			}
-	
-			String datetimeMaxOffsetString = (String) configuration.get("datetimeMaxOffset");
+
+			String datetimeMaxOffsetString = (String) configuration
+					.get("datetimeMaxOffset");
 			if (StringUtils.isNotBlank(datetimeMaxOffsetString)) {
 				datetimeMaxOffset = Short.parseShort(datetimeMaxOffsetString);
 				if (datetimeMaxOffset < -1) {
 					logger.debug("Date and time direct update selected from config file (always sends updates, no filters, even if current date and time of Cardio 2é matches the update)");
 				} else {
 					if (datetimeMaxOffset > 0) {
-			            logger.debug("Date and time maximum offset updated to " + datetimeMaxOffsetString + " minutes from config file");
+						logger.debug("Date and time maximum offset updated to "
+								+ datetimeMaxOffsetString
+								+ " minutes from config file");
 					} else {
-						if (datetimeMaxOffset == 0) logger.debug("Date and time maximum offset disabled from config file");
-						if (datetimeMaxOffset == -1) logger.debug("Date and time both, progressive update and maximum offset, disabled from config file");
+						if (datetimeMaxOffset == 0)
+							logger.debug("Date and time maximum offset disabled from config file");
+						if (datetimeMaxOffset == -1)
+							logger.debug("Date and time both, progressive update and maximum offset, disabled from config file");
 					}
 				}
 			}
-			
-			String firstUpdateWillSetDatetimeString = (String) configuration.get("firstUpdateWillSetDatetime");
+
+			String firstUpdateWillSetDatetimeString = (String) configuration
+					.get("firstUpdateWillSetDatetime");
 			if (StringUtils.isNotBlank(firstUpdateWillSetDatetimeString)) {
-				firstUpdateWillSetDatetime = Boolean.parseBoolean(firstUpdateWillSetDatetimeString);
-	            logger.debug("In the configuration file was " + (firstUpdateWillSetDatetime ? "enabled" : "disabled") + " that the first update always sets the date and time");
+				firstUpdateWillSetDatetime = Boolean
+						.parseBoolean(firstUpdateWillSetDatetimeString);
+				logger.debug("In the configuration file was "
+						+ (firstUpdateWillSetDatetime ? "enabled" : "disabled")
+						+ " that the first update always sets the date and time");
 			}
-	
-			String allowedDatetimeUpdateHourString = (String) configuration.get("allowedDatetimeUpdateHour");
+
+			String allowedDatetimeUpdateHourString = (String) configuration
+					.get("allowedDatetimeUpdateHour");
 			if (StringUtils.isNotBlank(allowedDatetimeUpdateHourString)) {
-				allowedDatetimeUpdateHour = Short.parseShort(allowedDatetimeUpdateHourString);
-				if ((allowedDatetimeUpdateHour >= 0) && (allowedDatetimeUpdateHour <= 23)) {
-					logger.debug("Allowed date and time update hour set to '" + allowedDatetimeUpdateHour + "' in config file");
+				allowedDatetimeUpdateHour = Short
+						.parseShort(allowedDatetimeUpdateHourString);
+				if ((allowedDatetimeUpdateHour >= 0)
+						&& (allowedDatetimeUpdateHour <= 23)) {
+					logger.debug("Allowed date and time update hour set to '"
+							+ allowedDatetimeUpdateHour + "' in config file");
 				} else {
 					allowedDatetimeUpdateHour = -1;
 					logger.debug("Allowed date and time update hour limit disabled in config file");
@@ -272,72 +303,109 @@ public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvid
 			String testmodeString = (String) configuration.get("testmode");
 			if (StringUtils.isNotBlank(testmodeString)) {
 				testMode = Boolean.parseBoolean(testmodeString);
-	            logger.debug("Test mode " + (testMode ? "enabled" : "disabled") + " in config file");
+				logger.debug("Test mode " + (testMode ? "enabled" : "disabled")
+						+ " in config file");
 			}
-	
-			String minDelayBetweenReceivingAndSendingString = (String) configuration.get("minDelayBetweenReceivingAndSending");
-			if (StringUtils.isNotBlank(minDelayBetweenReceivingAndSendingString)) {
-				minDelayBetweenReceivingAndSending = Integer.parseInt(minDelayBetweenReceivingAndSendingString);
-	            if (minDelayBetweenReceivingAndSending > 0) logger.debug("Minimum delay between receiving and sending updated to " + minDelayBetweenReceivingAndSending +" ms. from config file");
+
+			String minDelayBetweenReceivingAndSendingString = (String) configuration
+					.get("minDelayBetweenReceivingAndSending");
+			if (StringUtils
+					.isNotBlank(minDelayBetweenReceivingAndSendingString)) {
+				minDelayBetweenReceivingAndSending = Integer
+						.parseInt(minDelayBetweenReceivingAndSendingString);
+				if (minDelayBetweenReceivingAndSending > 0)
+					logger.debug("Minimum delay between receiving and sending updated to "
+							+ minDelayBetweenReceivingAndSending
+							+ " ms. from config file");
 			}
-	
-			String minDelayBetweenSendingsString = (String) configuration.get("minDelayBetweenSendings");
+
+			String minDelayBetweenSendingsString = (String) configuration
+					.get("minDelayBetweenSendings");
 			if (StringUtils.isNotBlank(minDelayBetweenSendingsString)) {
-				minDelayBetweenSendings = Integer.parseInt(minDelayBetweenSendingsString);
-	            if (minDelayBetweenSendings > 0) logger.debug("Minimum delay between sendings updated to " + minDelayBetweenSendings +" ms. from config file");
+				minDelayBetweenSendings = Integer
+						.parseInt(minDelayBetweenSendingsString);
+				if (minDelayBetweenSendings > 0)
+					logger.debug("Minimum delay between sendings updated to "
+							+ minDelayBetweenSendings + " ms. from config file");
 			}
-	
-			String filterUnnecessaryCommandString = (String) configuration.get("filterUnnecessaryCommand");
+
+			String filterUnnecessaryCommandString = (String) configuration
+					.get("filterUnnecessaryCommand");
 			if (StringUtils.isNotBlank(filterUnnecessaryCommandString)) {
-				Cardio2eTransactionParser.filterUnnecessaryCommand = Boolean.parseBoolean(filterUnnecessaryCommandString);
-	            logger.debug("Filter unnecessary command " + (Cardio2eTransactionParser.filterUnnecessaryCommand ? "enabled" : "disabled") + " in config file");
+				Cardio2eTransactionParser.filterUnnecessaryCommand = Boolean
+						.parseBoolean(filterUnnecessaryCommandString);
+				logger.debug("Filter unnecessary command "
+						+ (Cardio2eTransactionParser.filterUnnecessaryCommand ? "enabled"
+								: "disabled") + " in config file");
 			}
-	
-			String filterUnnecessaryReverseModeUpdateFilterString = (String) configuration.get("filterUnnecessaryReverseModeUpdate");
-			if (StringUtils.isNotBlank(filterUnnecessaryReverseModeUpdateFilterString)) {
-				Cardio2eTransactionParser.filterUnnecessaryReverseModeUpdate = Boolean.parseBoolean(filterUnnecessaryReverseModeUpdateFilterString);
-	            logger.debug("Filter unnecessary reverse mode update " + (Cardio2eTransactionParser.filterUnnecessaryReverseModeUpdate ? "enabled" : "disabled") + " in config file");
+
+			String filterUnnecessaryReverseModeUpdateFilterString = (String) configuration
+					.get("filterUnnecessaryReverseModeUpdate");
+			if (StringUtils
+					.isNotBlank(filterUnnecessaryReverseModeUpdateFilterString)) {
+				Cardio2eTransactionParser.filterUnnecessaryReverseModeUpdate = Boolean
+						.parseBoolean(filterUnnecessaryReverseModeUpdateFilterString);
+				logger.debug("Filter unnecessary reverse mode update "
+						+ (Cardio2eTransactionParser.filterUnnecessaryReverseModeUpdate ? "enabled"
+								: "disabled") + " in config file");
 			}
-	
-			String smartSendingEnabledObjectTypesString = (String) configuration.get("smartSendingEnabledObjectTypes");
+
+			String smartSendingEnabledObjectTypesString = (String) configuration
+					.get("smartSendingEnabledObjectTypes");
 			if (StringUtils.isNotBlank(smartSendingEnabledObjectTypesString)) {
-				smartSendingEnabledObjectTypesString = smartSendingEnabledObjectTypesString.toUpperCase();
-				if (smartSendingEnabledObjectTypesString.contains(Cardio2eObjectTypes.LIGHTING.name())) {
-					Cardio2eLightingTransaction.setSmartSendingEnabledClass (true);
+				smartSendingEnabledObjectTypesString = smartSendingEnabledObjectTypesString
+						.toUpperCase();
+				if (smartSendingEnabledObjectTypesString
+						.contains(Cardio2eObjectTypes.LIGHTING.name())) {
+					Cardio2eLightingTransaction
+							.setSmartSendingEnabledClass(true);
 					logger.debug("Smart sending enabled for LIGHTING object type in config file");
 				}
-				if (smartSendingEnabledObjectTypesString.contains(Cardio2eObjectTypes.RELAY.name())) {
-					Cardio2eRelayTransaction.setSmartSendingEnabledClass (true);
+				if (smartSendingEnabledObjectTypesString
+						.contains(Cardio2eObjectTypes.RELAY.name())) {
+					Cardio2eRelayTransaction.setSmartSendingEnabledClass(true);
 					logger.debug("Smart sending enabled for RELAY object type in config file");
 				}
-				if (smartSendingEnabledObjectTypesString.contains(Cardio2eObjectTypes.HVAC_CONTROL.name())) {
-					Cardio2eHvacControlTransaction.setSmartSendingEnabledClass (true);
+				if (smartSendingEnabledObjectTypesString
+						.contains(Cardio2eObjectTypes.HVAC_CONTROL.name())) {
+					Cardio2eHvacControlTransaction
+							.setSmartSendingEnabledClass(true);
 					logger.debug("Smart sending enabled for HVAC_CONTROL object type in config file");
 				}
-				if (smartSendingEnabledObjectTypesString.contains(Cardio2eObjectTypes.DATE_AND_TIME.name())) {
-					Cardio2eDateTimeTransaction.setSmartSendingEnabledClass (true);
+				if (smartSendingEnabledObjectTypesString
+						.contains(Cardio2eObjectTypes.DATE_AND_TIME.name())) {
+					Cardio2eDateTimeTransaction
+							.setSmartSendingEnabledClass(true);
 					logger.debug("Smart sending enabled for DATE_AND_TIME object type in config file");
 				}
-				if (smartSendingEnabledObjectTypesString.contains(Cardio2eObjectTypes.SCENARIO.name())) {
-					Cardio2eScenarioTransaction.setSmartSendingEnabledClass (true);
+				if (smartSendingEnabledObjectTypesString
+						.contains(Cardio2eObjectTypes.SCENARIO.name())) {
+					Cardio2eScenarioTransaction
+							.setSmartSendingEnabledClass(true);
 					logger.debug("Smart sending enabled for SCENARIO object type in config file");
 				}
-				if (smartSendingEnabledObjectTypesString.contains(Cardio2eObjectTypes.SECURITY.name())) {
-					Cardio2eSecurityTransaction.setSmartSendingEnabledClass (true);
+				if (smartSendingEnabledObjectTypesString
+						.contains(Cardio2eObjectTypes.SECURITY.name())) {
+					Cardio2eSecurityTransaction
+							.setSmartSendingEnabledClass(true);
 					logger.debug("Smart sending enabled for SECURITY object type in config file");
 				}
-				if (smartSendingEnabledObjectTypesString.contains(Cardio2eObjectTypes.ZONES_BYPASS.name())) {
-					Cardio2eZonesBypassTransaction.setSmartSendingEnabledClass (true);
+				if (smartSendingEnabledObjectTypesString
+						.contains(Cardio2eObjectTypes.ZONES_BYPASS.name())) {
+					Cardio2eZonesBypassTransaction
+							.setSmartSendingEnabledClass(true);
 					logger.debug("Smart sending enabled for ZONES_BYPASS object type in config file");
 				}
-				if (smartSendingEnabledObjectTypesString.contains(Cardio2eObjectTypes.CURTAIN.name())) {
-					Cardio2eCurtainTransaction.setSmartSendingEnabledClass (true);				
+				if (smartSendingEnabledObjectTypesString
+						.contains(Cardio2eObjectTypes.CURTAIN.name())) {
+					Cardio2eCurtainTransaction
+							.setSmartSendingEnabledClass(true);
 					logger.debug("Smart sending enabled for CURTAIN object type in config file");
 				}
 			}
-	
+
 			// read further config parameters here ...
-		
+
 			com = new Cardio2eCom();
 			decoder = new Cardio2eDecoder();
 			receivedDataListener = new ReceivedDataListener();
@@ -347,30 +415,35 @@ public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvid
 			com.testMode = testMode;
 			decoder.decodeZonesStateTransaction = zoneStateDetection;
 			com.setSerialPort(port);
-			if (minDelayBetweenReceivingAndSending > 0) com.setMinDelayBetweenReceivingAndSending(minDelayBetweenReceivingAndSending);
-			if (minDelayBetweenSendings > 0) com.setMinDelayBetweenSendings(minDelayBetweenSendings);
+			if (minDelayBetweenReceivingAndSending > 0)
+				com.setMinDelayBetweenReceivingAndSending(minDelayBetweenReceivingAndSending);
+			if (minDelayBetweenSendings > 0)
+				com.setMinDelayBetweenSendings(minDelayBetweenSendings);
 
 			try {
-				com.sendTransaction(new Cardio2eLoginTransaction(programCode)); //Login request
+				com.sendTransaction(new Cardio2eLoginTransaction(programCode)); // Login
+																				// request
 			} catch (Exception e) {
 				logger.error("Failed to send login request." + e);
 			}
 
-			if (testMode) loggedIn = true;
-			
+			if (testMode)
+				loggedIn = true;
+
 			setProperlyConfigured(true);
-			
+
 			logger.debug("Cardio2e binding activated");
-		} else logger.debug("Cardio2e binding can not be activated because no serial port is set in config file");
+		} else
+			logger.debug("Cardio2e binding cannot be activated because no serial port is set in config file");
 	}
 
 	public void purgeCardio2eBinding() {
-		if (com != null){
+		if (com != null) {
 			com.disconnect();
 			loggedIn = false;
 			executedDatetimeUpdate = false;
 			pendingDateTimeUpdate.setDateTime(null);
-	        com.removeReceivedDataListener(receivedDataListener);
+			com.removeReceivedDataListener(receivedDataListener);
 			decoder.removeDecodedTransactionListener(decodedTransactionListener);
 			decodedTransactionListener = null;
 			receivedDataListener = null;
@@ -380,165 +453,233 @@ public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvid
 			logger.debug("Cardio2e binding deactivated");
 		}
 	}
-	
+
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
 		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
+		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		//logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
-		logger.debug("internalReceiveCommand() is called, with itemName '" + itemName + "' and Command '" + command + "'!");
+		// logger.debug("internalReceiveCommand({},{}) is called!", itemName,
+		// command);
+		logger.debug("internalReceiveCommand() is called, with itemName '"
+				+ itemName + "' and Command '" + command + "'!");
 		if (loggedIn) {
 			Cardio2eTransaction transaction;
 			Cardio2eBindingConfig config = null;
 			boolean reverseOrder;
 			Cardio2eBindingProvider provider = null;
 			if (!providers.isEmpty()) {
-				provider = providers.iterator().next(); //Multiple providers are not supported, so will use first available provider
-	            logger.debug("Checking provider with names {}", provider.getItemNames());
-	            transaction = null;
+				provider = providers.iterator().next(); // Multiple providers
+														// are not supported, so
+														// will use first
+														// available provider
+				logger.debug("Checking provider with names {}",
+						provider.getItemNames());
+				transaction = null;
 				reverseOrder = false;
-				if (command instanceof UpDownType) { // Rollershutter hardware security patch for pair of relay control (reverse config order to do stop down before up)
-	            	if ((UpDownType) command == UpDownType.UP) {
-	            		reverseOrder = true;
-	            	}
-	            }
+				if (command instanceof UpDownType) { // Rollershutter hardware
+														// security patch for
+														// pair of relay control
+														// (reverse config order
+														// to do stop down
+														// before up)
+					if ((UpDownType) command == UpDownType.UP) {
+						reverseOrder = true;
+					}
+				}
 				if (reverseOrder) { // Get config in reverse o normal order
-            		config = provider.getReverseOrderConfig(itemName);
-	            } else {
-		            config = provider.getConfig(itemName);	            	
-	            }
+					config = provider.getReverseOrderConfig(itemName);
+				} else {
+					config = provider.getConfig(itemName);
+				}
 				for (Cardio2eBindingConfigItem configItem : config) {
-		            try {
-		            	synchronized (configItem.transaction) {
-		            		transaction = configItem.transaction.deepClone();
-		            	}
-			            if (!(configItem.reverseMode)) {
-			            	switch (transaction.getObjectType()) { 
-			            	case SECURITY:
-			            	case SCENARIO:
-					            Cardio2eTransactionParser.commandToTransaction(command, transaction, securityCode);		            				            		
-			            		break;
-			            	case DATE_AND_TIME:
-			            		pendingDateTimeUpdate.setDateTime(null);
-					            logger.debug("Cancelled any date and time update task");			
-			            	default:
-					            Cardio2eTransactionParser.commandToTransaction(command, transaction, null);		            		
-			            	}
-			            	if (transaction.mustBeSent) {
-			            		transaction.primitiveStringTransaction = transaction.toString();
-					            com.sendTransaction(transaction);
-				            	logger.debug("Added '" + transaction.primitiveStringTransaction.substring(0, transaction.primitiveStringTransaction.length() - 1) + "' to Cardio 2é RS-232 send queue");
-			            	} else {
-			            		logger.debug("No command sent to Cardio 2è because it is not necessary to send current object value again");
-			            	}
-			            } else {
-				            logger.debug("No command sent to Cardio 2è because item is configured as 'reverse mode'");
-			            }
+					try {
+						synchronized (configItem.transaction) {
+							transaction = configItem.transaction.deepClone();
+						}
+						if (!(configItem.reverseMode)) {
+							switch (transaction.getObjectType()) {
+							case SECURITY:
+							case SCENARIO:
+								Cardio2eTransactionParser.commandToTransaction(
+										command, transaction, securityCode);
+								break;
+							case DATE_AND_TIME:
+								pendingDateTimeUpdate.setDateTime(null);
+								logger.debug("Cancelled any date and time update task");
+							default:
+								Cardio2eTransactionParser.commandToTransaction(
+										command, transaction, null);
+							}
+							if (transaction.mustBeSent) {
+								transaction.primitiveStringTransaction = transaction
+										.toString();
+								com.sendTransaction(transaction);
+								logger.debug("Added '"
+										+ transaction.primitiveStringTransaction
+												.substring(
+														0,
+														transaction.primitiveStringTransaction
+																.length() - 1)
+										+ "' to Cardio 2é RS-232 send queue");
+							} else {
+								logger.debug("No command sent to Cardio 2è because it is not necessary to send current object value again");
+							}
+						} else {
+							logger.debug("No command sent to Cardio 2è because item is configured as 'reverse mode'");
+						}
 					} catch (Exception e) {
 						logger.error("Error processing command. " + e);
 					}
 				}
-	        } else {
-	        	logger.error("No command will sent to Cardio 2è because no provider is available");
-	        }
+			} else {
+				logger.error("No command will sent to Cardio 2è because no provider is available");
+			}
 		} else {
 			logger.error("Can not send command to Cardio 2è because we are not logged in");
 		}
 	}
-	
+
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
 		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
+		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		//logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
-		logger.debug("internalReceiveUpdate() is called, with itemName '" + itemName + "' and State '" + newState + "'!");
+		// logger.debug("internalReceiveUpdate({},{}) is called!", itemName,
+		// newState);
+		logger.debug("internalReceiveUpdate() is called, with itemName '"
+				+ itemName + "' and State '" + newState + "'!");
 		if (loggedIn) {
 			Cardio2eTransaction transaction;
 			Cardio2eBindingProvider provider = null;
 			if (!providers.isEmpty()) {
-				provider = providers.iterator().next(); //Multiple providers are not supported, so will use first available provider
-	            logger.debug("Checking provider with names {}", provider.getItemNames());
-	            transaction = null;
-				for (Cardio2eBindingConfigItem configItem : provider.getConfig(itemName)) {
+				provider = providers.iterator().next(); // Multiple providers
+														// are not supported, so
+														// will use first
+														// available provider
+				logger.debug("Checking provider with names {}",
+						provider.getItemNames());
+				transaction = null;
+				for (Cardio2eBindingConfigItem configItem : provider
+						.getConfig(itemName)) {
 					try {
-			            if (configItem.reverseMode) {           	
-			            	synchronized (configItem) {
-			            		transaction = configItem.transaction.deepClone();
-					            Cardio2eTransactionParser.stateToTransaction(newState, transaction);
-				            	if (transaction.mustBeSent) {
-						            configItem.setPendingUpdates(configItem.getPendingUpdates() + 1);
-				            		transaction.primitiveStringTransaction = transaction.toString();
-						            com.sendTransaction(transaction);
-					            	logger.debug("Added '" + transaction.primitiveStringTransaction.substring(0, transaction.primitiveStringTransaction.length() - 1) + "' to Cardio 2é RS-232 send queue");
-			            		} else {
-			            			logger.debug("No state sent to Cardio 2è because it is not necessary to send current object value again");
-			            		}
-			            	}
-			            } else {
-			            	if (configItem.transaction.getObjectType() == Cardio2eObjectTypes.DATE_AND_TIME) {
-			            		DateTimeType newDateTimeState = (DateTimeType) newState;
-			            		if ((allowedDatetimeUpdateHour == -1) || (newDateTimeState.getCalendar().get(Calendar.HOUR_OF_DAY) == allowedDatetimeUpdateHour) || ((firstUpdateWillSetDatetime) && (!executedDatetimeUpdate))) {
-			            			//Allow date and time update if allowedDatetimeUpdateHour is -1 or allowedDatetimeUpdateHour is newState hour (or first update when firstUpdateWillSetDatetime)
-				            		if ((datetimeMaxOffset <= -2) || ((firstUpdateWillSetDatetime) && (!executedDatetimeUpdate))) {
-				            			//Direct update
-				            			executedDatetimeUpdate = true;
-				            			pendingDateTimeUpdate.setDateTime(null);		            			
-				            			transaction = new Cardio2eDateTimeTransaction(Cardio2eTransactionTypes.SET);
-							            Cardio2eTransactionParser.stateToTransaction(newDateTimeState, transaction);		            			
-					            		transaction.primitiveStringTransaction = transaction.toString();
-							            com.sendTransaction(transaction);	            		
-						            	logger.debug("Added '" + transaction.primitiveStringTransaction.substring(0, transaction.primitiveStringTransaction.length() - 1) + "' to Cardio 2é RS-232 send queue");
-				            		} else {
-				            			 //Will ask Cardio 2é for current date and time (GET transaction). When Cardio answers, will send new value (SET) if offset is less than datetimeMaxOffset.
-				            			pendingDateTimeUpdate.setDateTime((DateTimeType) newDateTimeState);
-				            			logger.debug("Executing date and time update task. Now will ask Cardio for current date and time...");
-				            			getCardioDateTime();
-				            		}
-			            		} else {
-			            			logger.debug("Date and time update ignored because time is not betwen " + allowedDatetimeUpdateHour + ":00 and " + allowedDatetimeUpdateHour + ":59");
-			            		}
-			            	} else {
-			            		logger.debug("No state sent to Cardio 2è because item is not configured as 'reverse mode'");
-			            	}
-			            }
+						if (configItem.reverseMode) {
+							synchronized (configItem) {
+								transaction = configItem.transaction
+										.deepClone();
+								Cardio2eTransactionParser.stateToTransaction(
+										newState, transaction);
+								if (transaction.mustBeSent) {
+									configItem.setPendingUpdates(configItem
+											.getPendingUpdates() + 1);
+									transaction.primitiveStringTransaction = transaction
+											.toString();
+									com.sendTransaction(transaction);
+									logger.debug("Added '"
+											+ transaction.primitiveStringTransaction
+													.substring(
+															0,
+															transaction.primitiveStringTransaction
+																	.length() - 1)
+											+ "' to Cardio 2é RS-232 send queue");
+								} else {
+									logger.debug("No state sent to Cardio 2è because it is not necessary to send current object value again");
+								}
+							}
+						} else {
+							if (configItem.transaction.getObjectType() == Cardio2eObjectTypes.DATE_AND_TIME) {
+								DateTimeType newDateTimeState = (DateTimeType) newState;
+								if ((allowedDatetimeUpdateHour == -1)
+										|| (newDateTimeState.getCalendar().get(
+												Calendar.HOUR_OF_DAY) == allowedDatetimeUpdateHour)
+										|| ((firstUpdateWillSetDatetime) && (!executedDatetimeUpdate))) {
+									// Allow date and time update if
+									// allowedDatetimeUpdateHour is -1 or
+									// allowedDatetimeUpdateHour is newState
+									// hour (or first update when
+									// firstUpdateWillSetDatetime)
+									if ((datetimeMaxOffset <= -2)
+											|| ((firstUpdateWillSetDatetime) && (!executedDatetimeUpdate))) {
+										// Direct update
+										executedDatetimeUpdate = true;
+										pendingDateTimeUpdate.setDateTime(null);
+										transaction = new Cardio2eDateTimeTransaction(
+												Cardio2eTransactionTypes.SET);
+										Cardio2eTransactionParser
+												.stateToTransaction(
+														newDateTimeState,
+														transaction);
+										transaction.primitiveStringTransaction = transaction
+												.toString();
+										com.sendTransaction(transaction);
+										logger.debug("Added '"
+												+ transaction.primitiveStringTransaction
+														.substring(
+																0,
+																transaction.primitiveStringTransaction
+																		.length() - 1)
+												+ "' to Cardio 2é RS-232 send queue");
+									} else {
+										// Will ask Cardio 2é for current date
+										// and time (GET transaction). When
+										// Cardio answers, will send new value
+										// (SET) if offset is less than
+										// datetimeMaxOffset.
+										pendingDateTimeUpdate
+												.setDateTime((DateTimeType) newDateTimeState);
+										logger.debug("Executing date and time update task. Now will ask Cardio for current date and time...");
+										getCardioDateTime();
+									}
+								} else {
+									logger.debug("Date and time update ignored because time is not betwen "
+											+ allowedDatetimeUpdateHour
+											+ ":00 and "
+											+ allowedDatetimeUpdateHour + ":59");
+								}
+							} else {
+								logger.debug("No state sent to Cardio 2è because item is not configured as 'reverse mode'");
+							}
+						}
 					} catch (Exception e) {
 						logger.error("Error processing state. " + e);
 					}
 				}
-	        } else {
-	        	logger.error("No state will sent to Cardio 2è because no provider is available");
-	        }
+			} else {
+				logger.error("No state will sent to Cardio 2è because no provider is available");
+			}
 		} else {
 			logger.error("Can not send state to Cardio 2è because we are not logged in");
 		}
 	}
 
 	private void getCardioDateTime() {
-		if ((datetimeMaxOffset < 0) || ((System.currentTimeMillis() - lastDateTimeRequestTimestamp) >= DATE_TIME_GET_MIN_DELAY)) {
+		if ((datetimeMaxOffset < 0)
+				|| ((System.currentTimeMillis() - lastDateTimeRequestTimestamp) >= DATE_TIME_GET_MIN_DELAY)) {
 			lastDateTimeRequestTimestamp = System.currentTimeMillis();
 			try {
-            	logger.debug("Date and time update in course...");
-				com.sendTransaction(new Cardio2eDateTimeTransaction(Cardio2eTransactionTypes.GET));	            		
-	        	logger.debug("Added GET date and time request to Cardio 2é RS-232 send queue");
+				logger.debug("Date and time update in course...");
+				com.sendTransaction(new Cardio2eDateTimeTransaction(
+						Cardio2eTransactionTypes.GET));
+				logger.debug("Added GET date and time request to Cardio 2é RS-232 send queue");
 			} catch (Exception e) {
 				logger.error("Failed to send GET date and time request." + e);
 			}
 		}
 	}
-	
+
 	private class LiveDateTime {
 		private DateTimeType dateTime = null;
-		private long timestamp; 
-		public LiveDateTime(){
+		private long timestamp;
+
+		public LiveDateTime() {
 		}
+
 		public void setDateTime(DateTimeType dateTime) {
 			synchronized (this) {
 				timestamp = System.currentTimeMillis();
@@ -557,31 +698,42 @@ public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvid
 				DateTimeType dateTimeUpdate = null;
 				if (this.dateTime != null) {
 					dateTimeUpdate = new DateTimeType();
-					dateTimeUpdate.getCalendar().setTimeInMillis(this.dateTime.getCalendar().getTimeInMillis() + (System.currentTimeMillis() - timestamp));
+					dateTimeUpdate.getCalendar().setTimeInMillis(
+							this.dateTime.getCalendar().getTimeInMillis()
+									+ (System.currentTimeMillis() - timestamp));
 				}
 				return dateTimeUpdate;
 			}
 		}
 	}
-	
+
 	private class ReceivedDataListener implements Cardio2eComEventListener {
-		public ReceivedDataListener(){
+		public ReceivedDataListener() {
 		}
+
 		public void receivedData(Cardio2eReceivedDataEvent e) {
 			decoder.decodeReceivedCardio2eStream(e.getReceivedData());
 		}
+
 		public void isConnected(Cardio2eConnectionEvent e) {
-			logger.debug("Cardio is " + (e.getIsConnected() ? "CONNECTED" : "DISCONNECTED") + ".");
+			logger.debug("Cardio is "
+					+ (e.getIsConnected() ? "CONNECTED" : "DISCONNECTED") + ".");
 		}
 	}
 
-	private class DecodedTransactionListener implements Cardio2eDecodedTransactionListener {
-		public DecodedTransactionListener(){
+	private class DecodedTransactionListener implements
+			Cardio2eDecodedTransactionListener {
+		public DecodedTransactionListener() {
 		}
+
 		public void decodedTransaction(Cardio2eDecodedTransactionEvent e) {
 			Cardio2eTransaction transaction = e.getDecodedTransaction();
 			String primitiveReceivedTransaction = transaction.primitiveStringTransaction;
-			primitiveReceivedTransaction = primitiveReceivedTransaction.substring(0, primitiveReceivedTransaction.length() - 1); //Removes end transaction char
+			primitiveReceivedTransaction = primitiveReceivedTransaction
+					.substring(0, primitiveReceivedTransaction.length() - 1); // Removes
+																				// end
+																				// transaction
+																				// char
 			Cardio2eBindingConfig config;
 			Command command;
 			State newState;
@@ -589,7 +741,7 @@ public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvid
 			switch (transaction.getTransactionType()) {
 			case INFORMATION:
 				switch (transaction.getObjectType()) {
-				case LOGIN: //@I P E
+				case LOGIN: // @I P E
 					loggedIn = true;
 					logger.info("Cardio login succeed.");
 					break;
@@ -597,246 +749,446 @@ public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvid
 					Cardio2eLightingTransaction receivedLightingTransaction;
 					Cardio2eLightingTransaction configLightingTransaction;
 					for (Cardio2eBindingProvider provider : providers) {
-						Map<String, BindingConfig> matchBindingConfigs = provider.getMatchBindingConfigs(transaction);
-			            for (String itemName : matchBindingConfigs.keySet()) {	            	
+						Map<String, BindingConfig> matchBindingConfigs = provider
+								.getMatchBindingConfigs(transaction);
+						for (String itemName : matchBindingConfigs.keySet()) {
 							try {
-								config = (Cardio2eBindingConfig) matchBindingConfigs.get(itemName);
+								config = (Cardio2eBindingConfig) matchBindingConfigs
+										.get(itemName);
 								for (Cardio2eBindingConfigItem configItem : config) {
 									receivedLightingTransaction = (Cardio2eLightingTransaction) transaction;
 									configLightingTransaction = (Cardio2eLightingTransaction) configItem.transaction;
-									configLightingTransaction.setLightIntensity(receivedLightingTransaction.getLightIntensity()); //stores last received light intensity (example: for increase / decrease commands)
+									configLightingTransaction
+											.setLightIntensity(receivedLightingTransaction
+													.getLightIntensity()); // stores
+																			// last
+																			// received
+																			// light
+																			// intensity
+																			// (example:
+																			// for
+																			// increase
+																			// /
+																			// decrease
+																			// commands)
 									if (configItem.reverseMode) {
-										int pendingUpdates = configItem.getPendingUpdates();
+										int pendingUpdates = configItem
+												.getPendingUpdates();
 										if (pendingUpdates > 0) {
-											configItem.setPendingUpdates(pendingUpdates - 1);
+											configItem
+													.setPendingUpdates(pendingUpdates - 1);
 										} else if (loggedIn) {
-											command = Cardio2eTransactionParser.transactionToCommand(configLightingTransaction, provider.getItem (itemName));
-											logger.debug("Sending LIGHT #" + configLightingTransaction.getObjectNumber() + " " + command + " command to the bus.");
-								            eventPublisher.postCommand(itemName, command);										
+											command = Cardio2eTransactionParser
+													.transactionToCommand(
+															configLightingTransaction,
+															provider.getItem(itemName));
+											logger.debug("Sending LIGHT #"
+													+ configLightingTransaction
+															.getObjectNumber()
+													+ " " + command
+													+ " command to the bus.");
+											eventPublisher.postCommand(
+													itemName, command);
 										}
 									} else {
-										newState = Cardio2eTransactionParser.transactionToState(configLightingTransaction, provider.getItem (itemName));
-										logger.debug("Sending LIGHT #" + configLightingTransaction.getObjectNumber() + " " + newState + " " + " state to the bus.");
-							            eventPublisher.postUpdate(itemName, newState);							
+										newState = Cardio2eTransactionParser
+												.transactionToState(
+														configLightingTransaction,
+														provider.getItem(itemName));
+										logger.debug("Sending LIGHT #"
+												+ configLightingTransaction
+														.getObjectNumber()
+												+ " " + newState + " "
+												+ " state to the bus.");
+										eventPublisher.postUpdate(itemName,
+												newState);
 									}
 								}
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction." + ex);
+								logger.error("Error processing received transaction."
+										+ ex);
 							}
-			            }
-			        }
+						}
+					}
 					break;
 				case RELAY:
 					Cardio2eRelayTransaction receivedRelayTransaction;
 					Cardio2eRelayTransaction configRelayTransaction;
 					for (Cardio2eBindingProvider provider : providers) {
-						Map<String, BindingConfig> matchBindingConfigs = provider.getMatchBindingConfigs(transaction);
-			            for (String itemName : matchBindingConfigs.keySet()) {	            	
+						Map<String, BindingConfig> matchBindingConfigs = provider
+								.getMatchBindingConfigs(transaction);
+						for (String itemName : matchBindingConfigs.keySet()) {
 							try {
-								config = (Cardio2eBindingConfig) matchBindingConfigs.get(itemName);
+								config = (Cardio2eBindingConfig) matchBindingConfigs
+										.get(itemName);
 								for (Cardio2eBindingConfigItem configItem : config) {
 									configRelayTransaction = (Cardio2eRelayTransaction) configItem.transaction;
 									receivedRelayTransaction = (Cardio2eRelayTransaction) transaction;
-									configRelayTransaction.setRelayState(receivedRelayTransaction.getRelayState());
+									configRelayTransaction
+											.setRelayState(receivedRelayTransaction
+													.getRelayState());
 									if (configItem.reverseMode) {
 										if (configItem.getPendingUpdates() > 0) {
-											configItem.setPendingUpdates(configItem.getPendingUpdates() - 1);
-										} else if (loggedIn){
-											command = Cardio2eTransactionParser.transactionToCommand(configRelayTransaction, provider.getItem (itemName));
-											logger.debug("Sending RELAY #" + configRelayTransaction.getObjectNumber() + " " + command + " command to the bus.");
-								            eventPublisher.postCommand(itemName, command);
+											configItem
+													.setPendingUpdates(configItem
+															.getPendingUpdates() - 1);
+										} else if (loggedIn) {
+											command = Cardio2eTransactionParser
+													.transactionToCommand(
+															configRelayTransaction,
+															provider.getItem(itemName));
+											logger.debug("Sending RELAY #"
+													+ configRelayTransaction
+															.getObjectNumber()
+													+ " " + command
+													+ " command to the bus.");
+											eventPublisher.postCommand(
+													itemName, command);
 										}
-									} else if ((configRelayTransaction.getRelayON()) || (!configRelayTransaction.getBlindMode())){	//Relay blind mode do not report OFF states					
-										newState = Cardio2eTransactionParser.transactionToState(configRelayTransaction, provider.getItem (itemName));
-										logger.debug("Sending RELAY #" + configRelayTransaction.getObjectNumber() + " " + newState + " state to the bus.");
-							            eventPublisher.postUpdate(itemName, newState);
+									} else if ((configRelayTransaction
+											.getRelayON())
+											|| (!configRelayTransaction
+													.getBlindMode())) { // Relay
+																		// blind
+																		// mode
+																		// do
+																		// not
+																		// report
+																		// OFF
+																		// states
+										newState = Cardio2eTransactionParser
+												.transactionToState(
+														configRelayTransaction,
+														provider.getItem(itemName));
+										logger.debug("Sending RELAY #"
+												+ configRelayTransaction
+														.getObjectNumber()
+												+ " " + newState
+												+ " state to the bus.");
+										eventPublisher.postUpdate(itemName,
+												newState);
 									}
 								}
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction." + ex);
+								logger.error("Error processing received transaction."
+										+ ex);
 							}
-			            }
-			        }
+						}
+					}
 					break;
 				case HVAC_TEMPERATURE:
 					Cardio2eHvacTemperatureTransaction receivedHvacTemperatureTransaction;
 					for (Cardio2eBindingProvider provider : providers) {
-						Map<String, BindingConfig> matchBindingConfigs = provider.getMatchBindingConfigs(transaction);
-			            for (String itemName : matchBindingConfigs.keySet()) {	            	
+						Map<String, BindingConfig> matchBindingConfigs = provider
+								.getMatchBindingConfigs(transaction);
+						for (String itemName : matchBindingConfigs.keySet()) {
 							try {
 								receivedHvacTemperatureTransaction = (Cardio2eHvacTemperatureTransaction) transaction;
-								newState = Cardio2eTransactionParser.transactionToState(receivedHvacTemperatureTransaction, provider.getItem (itemName));
-								logger.debug("Sending HVAC_TEMPERATURE #" + receivedHvacTemperatureTransaction.getObjectNumber() + " " + newState + " state to the bus.");
-					            eventPublisher.postUpdate(itemName, newState);									
+								newState = Cardio2eTransactionParser
+										.transactionToState(
+												receivedHvacTemperatureTransaction,
+												provider.getItem(itemName));
+								logger.debug("Sending HVAC_TEMPERATURE #"
+										+ receivedHvacTemperatureTransaction
+												.getObjectNumber() + " "
+										+ newState + " state to the bus.");
+								eventPublisher.postUpdate(itemName, newState);
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction." + ex);
+								logger.error("Error processing received transaction."
+										+ ex);
 							}
-			            }
-			        }
+						}
+					}
 					break;
 				case HVAC_CONTROL:
 					Cardio2eHvacControlTransaction receivedHvacControlTransaction;
 					Cardio2eHvacControlTransaction configHvacControlTransaction;
 					for (Cardio2eBindingProvider provider : providers) {
-						Map<String, BindingConfig> matchBindingConfigs = provider.getMatchBindingConfigs(transaction);
-			            for (String itemName : matchBindingConfigs.keySet()) {	            	
+						Map<String, BindingConfig> matchBindingConfigs = provider
+								.getMatchBindingConfigs(transaction);
+						for (String itemName : matchBindingConfigs.keySet()) {
 							try {
-								config = (Cardio2eBindingConfig) matchBindingConfigs.get(itemName);
+								config = (Cardio2eBindingConfig) matchBindingConfigs
+										.get(itemName);
 								for (Cardio2eBindingConfigItem configItem : config) {
 									receivedHvacControlTransaction = (Cardio2eHvacControlTransaction) transaction;
-					            	synchronized (configItem.transaction) {
+									synchronized (configItem.transaction) {
 										configHvacControlTransaction = (Cardio2eHvacControlTransaction) configItem.transaction;
-										configHvacControlTransaction.setHvacHeatingSetPoint(receivedHvacControlTransaction.getHvacHeatingSetPoint());
-										configHvacControlTransaction.setHvacCoolingSetPoint(receivedHvacControlTransaction.getHvacCoolingSetPoint());
-										configHvacControlTransaction.setHvacFanState(receivedHvacControlTransaction.getHvacFanState());
-										configHvacControlTransaction.setHvacSystemMode(receivedHvacControlTransaction.getHvacSystemMode());
-					            	}
-									newState = Cardio2eTransactionParser.transactionToState(configHvacControlTransaction, provider.getItem (itemName));
-									logger.debug("Sending HVAC #" + configHvacControlTransaction.getObjectNumber() + (configHvacControlTransaction.singleHvacSystemMode==null ? "" : " " + (configHvacControlTransaction.singleHvacSystemMode==Cardio2eHvacSystemModes.OFF ? "FAN" : configHvacControlTransaction.singleHvacSystemMode)) + " " + newState + " state to the bus.");
-						            eventPublisher.postUpdate(itemName, newState);							
+										configHvacControlTransaction
+												.setHvacHeatingSetPoint(receivedHvacControlTransaction
+														.getHvacHeatingSetPoint());
+										configHvacControlTransaction
+												.setHvacCoolingSetPoint(receivedHvacControlTransaction
+														.getHvacCoolingSetPoint());
+										configHvacControlTransaction
+												.setHvacFanState(receivedHvacControlTransaction
+														.getHvacFanState());
+										configHvacControlTransaction
+												.setHvacSystemMode(receivedHvacControlTransaction
+														.getHvacSystemMode());
+									}
+									newState = Cardio2eTransactionParser
+											.transactionToState(
+													configHvacControlTransaction,
+													provider.getItem(itemName));
+									logger.debug("Sending HVAC #"
+											+ configHvacControlTransaction
+													.getObjectNumber()
+											+ (configHvacControlTransaction.singleHvacSystemMode == null ? ""
+													: " "
+															+ (configHvacControlTransaction.singleHvacSystemMode == Cardio2eHvacSystemModes.OFF ? "FAN"
+																	: configHvacControlTransaction.singleHvacSystemMode))
+											+ " " + newState
+											+ " state to the bus.");
+									eventPublisher.postUpdate(itemName,
+											newState);
 								}
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction." + ex);
+								logger.error("Error processing received transaction."
+										+ ex);
 							}
-			            }
-			        }
+						}
+					}
 					break;
 				case ZONES:
 					Cardio2eZonesTransaction receivedZonesTransaction;
 					Cardio2eZonesTransaction configZonesTransaction;
 					for (Cardio2eBindingProvider provider : providers) {
-						Map<String, BindingConfig> matchBindingConfigs = provider.getMatchBindingConfigs(transaction);
-			            for (String itemName : matchBindingConfigs.keySet()) {	            	
+						Map<String, BindingConfig> matchBindingConfigs = provider
+								.getMatchBindingConfigs(transaction);
+						for (String itemName : matchBindingConfigs.keySet()) {
 							try {
-								config = (Cardio2eBindingConfig) matchBindingConfigs.get(itemName);
+								config = (Cardio2eBindingConfig) matchBindingConfigs
+										.get(itemName);
 								for (Cardio2eBindingConfigItem configItem : config) {
 									configZonesTransaction = (Cardio2eZonesTransaction) configItem.transaction;
 									receivedZonesTransaction = (Cardio2eZonesTransaction) transaction;
-									short configZoneNumber = configZonesTransaction.getObjectNumber();
-									short receivedFirstZoneNumber = receivedZonesTransaction.getObjectNumber();								
+									short configZoneNumber = configZonesTransaction
+											.getObjectNumber();
+									short receivedFirstZoneNumber = receivedZonesTransaction
+											.getObjectNumber();
 									if (configZoneNumber >= receivedFirstZoneNumber) {
-										Cardio2eZoneStates[] receivedZoneStates = receivedZonesTransaction.getZoneStates();
-										int receivedZoneNumberOffset = (configZoneNumber-receivedFirstZoneNumber); 
-										if (receivedZoneStates.length>receivedZoneNumberOffset) {
-											Cardio2eZoneStates receivedZoneState = receivedZoneStates[(configZoneNumber-receivedFirstZoneNumber)];
-											long timestamp = System.currentTimeMillis();
-											if ((configZonesTransaction.getZoneState() != receivedZoneState) || ((timestamp - configItem.lastStateSentTimestamp) >= zoneUnchangedMinRefreshDelay)) {
-												configZonesTransaction.setZoneState(receivedZoneState);
-												newState = Cardio2eTransactionParser.transactionToState(configZonesTransaction, provider.getItem (itemName));
-												logger.debug("Sending ZONE #" + configZonesTransaction.getObjectNumber() + " " + newState + " state to the bus.");
-									            eventPublisher.postUpdate(itemName, newState);
-									            configItem.lastStateSentTimestamp = timestamp;
+										Cardio2eZoneStates[] receivedZoneStates = receivedZonesTransaction
+												.getZoneStates();
+										int receivedZoneNumberOffset = (configZoneNumber - receivedFirstZoneNumber);
+										if (receivedZoneStates.length > receivedZoneNumberOffset) {
+											Cardio2eZoneStates receivedZoneState = receivedZoneStates[(configZoneNumber - receivedFirstZoneNumber)];
+											long timestamp = System
+													.currentTimeMillis();
+											if ((configZonesTransaction
+													.getZoneState() != receivedZoneState)
+													|| ((timestamp - configItem.lastStateSentTimestamp) >= zoneUnchangedMinRefreshDelay)) {
+												configZonesTransaction
+														.setZoneState(receivedZoneState);
+												newState = Cardio2eTransactionParser
+														.transactionToState(
+																configZonesTransaction,
+																provider.getItem(itemName));
+												logger.debug("Sending ZONE #"
+														+ configZonesTransaction
+																.getObjectNumber()
+														+ " " + newState
+														+ " state to the bus.");
+												eventPublisher.postUpdate(
+														itemName, newState);
+												configItem.lastStateSentTimestamp = timestamp;
 											}
 										}
 									}
 								}
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction." + ex);
+								logger.error("Error processing received transaction."
+										+ ex);
 							}
-			            }
-			        }
+						}
+					}
 					break;
 				case ZONES_BYPASS:
 					Cardio2eZonesBypassTransaction receivedZonesBypassTransaction;
 					Cardio2eZonesBypassTransaction configZonesBypassTransaction;
 					for (Cardio2eBindingProvider provider : providers) {
-						Map<String, BindingConfig> matchBindingConfigs = provider.getMatchBindingConfigs(transaction);
-			            for (String itemName : matchBindingConfigs.keySet()) {	            	
+						Map<String, BindingConfig> matchBindingConfigs = provider
+								.getMatchBindingConfigs(transaction);
+						for (String itemName : matchBindingConfigs.keySet()) {
 							try {
-								config = (Cardio2eBindingConfig) matchBindingConfigs.get(itemName);
+								config = (Cardio2eBindingConfig) matchBindingConfigs
+										.get(itemName);
 								for (Cardio2eBindingConfigItem configItem : config) {
 									configZonesBypassTransaction = (Cardio2eZonesBypassTransaction) configItem.transaction;
 									receivedZonesBypassTransaction = (Cardio2eZonesBypassTransaction) transaction;
-									short configZoneBypassNumber = configZonesBypassTransaction.getObjectNumber();
-									short receivedFirstZoneBypassNumber = receivedZonesBypassTransaction.getObjectNumber();								
+									short configZoneBypassNumber = configZonesBypassTransaction
+											.getObjectNumber();
+									short receivedFirstZoneBypassNumber = receivedZonesBypassTransaction
+											.getObjectNumber();
 									if (configZoneBypassNumber >= receivedFirstZoneBypassNumber) {
-										Cardio2eZoneBypassStates[] receivedZoneBypassStates = receivedZonesBypassTransaction.getZoneBypassStates();
-										int receivedZoneBypassNumberOffset = (configZoneBypassNumber-receivedFirstZoneBypassNumber); 
-										if (receivedZoneBypassStates.length>receivedZoneBypassNumberOffset) {
-											Cardio2eZoneBypassStates receivedZoneBypassState = receivedZoneBypassStates[(configZoneBypassNumber-receivedFirstZoneBypassNumber)];
-											long timestamp = System.currentTimeMillis();
-											if ((configZonesBypassTransaction.getZoneBypassState() != receivedZoneBypassState) || ((timestamp - configItem.lastStateSentTimestamp) >= zoneUnchangedMinRefreshDelay)) {
-												configZonesBypassTransaction.setZoneBypassState(receivedZoneBypassState);
-												newState = Cardio2eTransactionParser.transactionToState(configZonesBypassTransaction, provider.getItem (itemName));
-												logger.debug("Sending ZONE #" + configZonesBypassTransaction.getObjectNumber() + " " + newState + " state to the bus.");
-									            eventPublisher.postUpdate(itemName, newState);
-									            configItem.lastStateSentTimestamp = timestamp;
+										Cardio2eZoneBypassStates[] receivedZoneBypassStates = receivedZonesBypassTransaction
+												.getZoneBypassStates();
+										int receivedZoneBypassNumberOffset = (configZoneBypassNumber - receivedFirstZoneBypassNumber);
+										if (receivedZoneBypassStates.length > receivedZoneBypassNumberOffset) {
+											Cardio2eZoneBypassStates receivedZoneBypassState = receivedZoneBypassStates[(configZoneBypassNumber - receivedFirstZoneBypassNumber)];
+											long timestamp = System
+													.currentTimeMillis();
+											if ((configZonesBypassTransaction
+													.getZoneBypassState() != receivedZoneBypassState)
+													|| ((timestamp - configItem.lastStateSentTimestamp) >= zoneUnchangedMinRefreshDelay)) {
+												configZonesBypassTransaction
+														.setZoneBypassState(receivedZoneBypassState);
+												newState = Cardio2eTransactionParser
+														.transactionToState(
+																configZonesBypassTransaction,
+																provider.getItem(itemName));
+												logger.debug("Sending ZONE #"
+														+ configZonesBypassTransaction
+																.getObjectNumber()
+														+ " " + newState
+														+ " state to the bus.");
+												eventPublisher.postUpdate(
+														itemName, newState);
+												configItem.lastStateSentTimestamp = timestamp;
 											}
 										}
 									}
 								}
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction." + ex);
+								logger.error("Error processing received transaction."
+										+ ex);
 							}
-			            }
-			        }
+						}
+					}
 					break;
 				case SECURITY:
 					Cardio2eSecurityTransaction receivedSecurityTransaction;
 					for (Cardio2eBindingProvider provider : providers) {
-						Map<String, BindingConfig> matchBindingConfigs = provider.getMatchBindingConfigs(transaction);
-			            for (String itemName : matchBindingConfigs.keySet()) {
-			            	if (provider.getItem (itemName).getAcceptedDataTypes().contains(OnOffType.class)){ //Only sends states to Switch Items 
+						Map<String, BindingConfig> matchBindingConfigs = provider
+								.getMatchBindingConfigs(transaction);
+						for (String itemName : matchBindingConfigs.keySet()) {
+							if (provider.getItem(itemName)
+									.getAcceptedDataTypes()
+									.contains(OnOffType.class)) { // Only sends
+																	// states to
+																	// Switch
+																	// Items
 								try {
 									receivedSecurityTransaction = (Cardio2eSecurityTransaction) transaction;
-									newState = Cardio2eTransactionParser.transactionToState(receivedSecurityTransaction, provider.getItem (itemName));
-									logger.debug("Sending SECURITY armed " + newState + " state to the bus.");
-						            eventPublisher.postUpdate(itemName, newState);
+									newState = Cardio2eTransactionParser
+											.transactionToState(
+													receivedSecurityTransaction,
+													provider.getItem(itemName));
+									logger.debug("Sending SECURITY armed "
+											+ newState + " state to the bus.");
+									eventPublisher.postUpdate(itemName,
+											newState);
 								} catch (Exception ex) {
-									logger.error("Error processing received transaction." + ex);
+									logger.error("Error processing received transaction."
+											+ ex);
 								}
-			            	}
-			            }
-			        }
+							}
+						}
+					}
 					break;
 				case DATE_AND_TIME:
-					//No updates will be sent to the openhab bus.
+					// No updates will be sent to the openhab bus.
 					boolean canCleanpendingDateTimeUpdate = true;
 					synchronized (pendingDateTimeUpdate) {
 						try {
-							DateTimeType storedUpdate = pendingDateTimeUpdate.getDateTime();
-							if (storedUpdate!= null) {
-								DateTimeType pendingUpdate = pendingDateTimeUpdate.getUpdatedDateTime();
+							DateTimeType storedUpdate = pendingDateTimeUpdate
+									.getDateTime();
+							if (storedUpdate != null) {
+								DateTimeType pendingUpdate = pendingDateTimeUpdate
+										.getUpdatedDateTime();
 								Cardio2eDateTimeTransaction receivedDateTimeTransaction = (Cardio2eDateTimeTransaction) transaction;
 								Cardio2eDateTimeTransaction newDateTimeTransaction = new Cardio2eDateTimeTransaction();
-								Cardio2eTransactionParser.stateToTransaction(pendingUpdate, newDateTimeTransaction);
-					            logger.debug("Received date and time from Cardio 2é : '" + newDateTimeTransaction.getDateTime().toString() + "'");									
-					            logger.debug("Received date and time state from bus : '" + storedUpdate.toString() + "'");									
-					            logger.debug("Updated target value would should be  : '" + pendingUpdate.toString() + "'");									
-								if (receivedDateTimeTransaction.getDateTime().toDate().equals(newDateTimeTransaction.getDateTime().toDate())) {
-									//New and received transactions dates are equals, will not send new datetime 
-						            logger.debug("Cardio 2é current date and time match new updated state, so we will not send it");
+								Cardio2eTransactionParser.stateToTransaction(
+										pendingUpdate, newDateTimeTransaction);
+								logger.debug("Received date and time from Cardio 2é : '"
+										+ newDateTimeTransaction.getDateTime()
+												.toString() + "'");
+								logger.debug("Received date and time state from bus : '"
+										+ storedUpdate.toString() + "'");
+								logger.debug("Updated target value would should be  : '"
+										+ pendingUpdate.toString() + "'");
+								if (receivedDateTimeTransaction
+										.getDateTime()
+										.toDate()
+										.equals(newDateTimeTransaction
+												.getDateTime().toDate())) {
+									// New and received transactions dates are
+									// equals, will not send new datetime
+									logger.debug("Cardio 2é current date and time match new updated state, so we will not send it");
 									pendingDateTimeUpdate.setDateTime(null);
 								} else {
-									//There is a different pendingDateTimeUpdate and offset is not greater than datetimeMaxOffset (or datetimeMaxOffset<=0) will update Cardio 2é date and time
+									// There is a different
+									// pendingDateTimeUpdate and offset is not
+									// greater than datetimeMaxOffset (or
+									// datetimeMaxOffset<=0) will update Cardio
+									// 2é date and time
 									long dateTimeOffset = 0;
-									if (datetimeMaxOffset > 0) dateTimeOffset = Math.abs(receivedDateTimeTransaction.getDateTime().toDate().getTime() - newDateTimeTransaction.getDateTime().toDate().getTime())/60000;
-									if ((datetimeMaxOffset <= 0) || (dateTimeOffset <= datetimeMaxOffset)) {
+									if (datetimeMaxOffset > 0)
+										dateTimeOffset = Math
+												.abs(receivedDateTimeTransaction
+														.getDateTime().toDate()
+														.getTime()
+														- newDateTimeTransaction
+																.getDateTime()
+																.toDate()
+																.getTime()) / 60000;
+									if ((datetimeMaxOffset <= 0)
+											|| (dateTimeOffset <= datetimeMaxOffset)) {
 										newDateTimeTransaction.smartSendingEnabledTransaction = true;
 										newDateTimeTransaction.smartSendingEnqueueFirst = true;
-							            if (datetimeMaxOffset > 0) logger.debug("Date and time " + dateTimeOffset + " minutes offset is OK (maximum is " + datetimeMaxOffset);
-										if ((datetimeMaxOffset >= 0) && (receivedDateTimeTransaction.getDateTime().toDate().before(newDateTimeTransaction.getDateTime().toDate()))) {
-											//Progressive update is enabled, and received date is before than new one: will do a progressive update, minute by minute
+										if (datetimeMaxOffset > 0)
+											logger.debug("Date and time "
+													+ dateTimeOffset
+													+ " minutes offset is OK (maximum is "
+													+ datetimeMaxOffset);
+										if ((datetimeMaxOffset >= 0)
+												&& (receivedDateTimeTransaction
+														.getDateTime().toDate()
+														.before(newDateTimeTransaction
+																.getDateTime()
+																.toDate()))) {
+											// Progressive update is enabled,
+											// and received date is before than
+											// new one: will do a progressive
+											// update, minute by minute
 											Date receivedDatePlusMinute = new Date();
-											receivedDatePlusMinute.setTime((receivedDateTimeTransaction.getDateTime().toDate().getTime() + 60000));
-											newDateTimeTransaction.getDateTime().fromDate(receivedDatePlusMinute);
+											receivedDatePlusMinute
+													.setTime((receivedDateTimeTransaction
+															.getDateTime()
+															.toDate().getTime() + 60000));
+											newDateTimeTransaction
+													.getDateTime()
+													.fromDate(
+															receivedDatePlusMinute);
 											canCleanpendingDateTimeUpdate = false;
-								            logger.debug("Doing progressive aproach: will advance one minute");								
+											logger.debug("Doing progressive aproach: will advance one minute");
 										}
-										newDateTimeTransaction.primitiveStringTransaction = newDateTimeTransaction.toString();
-							            com.sendTransaction(newDateTimeTransaction);
-							            logger.debug("Sent '" + newDateTimeTransaction.primitiveStringTransaction.substring(0, newDateTimeTransaction.primitiveStringTransaction.length() - 1) + "'");
+										newDateTimeTransaction.primitiveStringTransaction = newDateTimeTransaction
+												.toString();
+										com.sendTransaction(newDateTimeTransaction);
+										logger.debug("Sent '"
+												+ newDateTimeTransaction.primitiveStringTransaction
+														.substring(
+																0,
+																newDateTimeTransaction.primitiveStringTransaction
+																		.length() - 1)
+												+ "'");
 									} else {
-							            logger.debug("Date and time " + dateTimeOffset + " minutes offset is too much (maximum is " + datetimeMaxOffset + "). New date and time will be discarded");			
+										logger.debug("Date and time "
+												+ dateTimeOffset
+												+ " minutes offset is too much (maximum is "
+												+ datetimeMaxOffset
+												+ "). New date and time will be discarded");
 									}
 								}
 							}
 						} catch (Exception ex) {
-							logger.error("Error processing received transaction." + ex);
+							logger.error("Error processing received transaction."
+									+ ex);
 						} finally {
 							if (canCleanpendingDateTimeUpdate) {
 								pendingDateTimeUpdate.setDateTime(null);
-					            logger.debug("Finished date and time update task");			
+								logger.debug("Finished date and time update task");
 							}
 						}
 					}
@@ -845,55 +1197,103 @@ public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvid
 					Cardio2eCurtainTransaction receivedCurtainTransaction;
 					Cardio2eCurtainTransaction configCurtainTransaction;
 					for (Cardio2eBindingProvider provider : providers) {
-						Map<String, BindingConfig> matchBindingConfigs = provider.getMatchBindingConfigs(transaction);
-			            for (String itemName : matchBindingConfigs.keySet()) {	            	
+						Map<String, BindingConfig> matchBindingConfigs = provider
+								.getMatchBindingConfigs(transaction);
+						for (String itemName : matchBindingConfigs.keySet()) {
 							try {
-								config = (Cardio2eBindingConfig) matchBindingConfigs.get(itemName);
+								config = (Cardio2eBindingConfig) matchBindingConfigs
+										.get(itemName);
 								for (Cardio2eBindingConfigItem configItem : config) {
 									receivedCurtainTransaction = (Cardio2eCurtainTransaction) transaction;
 									configCurtainTransaction = (Cardio2eCurtainTransaction) configItem.transaction;
-									configCurtainTransaction.setClosingPercentage(receivedCurtainTransaction.getClosingPercentage()); //stores last received closing percentage
+									configCurtainTransaction
+											.setClosingPercentage(receivedCurtainTransaction
+													.getClosingPercentage()); // stores
+																				// last
+																				// received
+																				// closing
+																				// percentage
 									if (configItem.reverseMode) {
-										int pendingUpdates = configItem.getPendingUpdates();
+										int pendingUpdates = configItem
+												.getPendingUpdates();
 										if (pendingUpdates > 0) {
-											configItem.setPendingUpdates(pendingUpdates - 1);
+											configItem
+													.setPendingUpdates(pendingUpdates - 1);
 										} else if (loggedIn) {
-											command = Cardio2eTransactionParser.transactionToCommand(configCurtainTransaction, provider.getItem (itemName));
-											logger.debug("Sending CURTAIN #" + configCurtainTransaction.getObjectNumber() + " " + command + " command to the bus.");
-								            eventPublisher.postCommand(itemName, command);										
+											command = Cardio2eTransactionParser
+													.transactionToCommand(
+															configCurtainTransaction,
+															provider.getItem(itemName));
+											logger.debug("Sending CURTAIN #"
+													+ configCurtainTransaction
+															.getObjectNumber()
+													+ " " + command
+													+ " command to the bus.");
+											eventPublisher.postCommand(
+													itemName, command);
 										}
 									} else {
-										newState = Cardio2eTransactionParser.transactionToState(configCurtainTransaction, provider.getItem (itemName));
-										logger.debug("Sending CURTAIN #" + configCurtainTransaction.getObjectNumber() + " " + newState + " " + " state to the bus.");
-							            eventPublisher.postUpdate(itemName, newState);							
+										newState = Cardio2eTransactionParser
+												.transactionToState(
+														configCurtainTransaction,
+														provider.getItem(itemName));
+										logger.debug("Sending CURTAIN #"
+												+ configCurtainTransaction
+														.getObjectNumber()
+												+ " " + newState + " "
+												+ " state to the bus.");
+										eventPublisher.postUpdate(itemName,
+												newState);
 									}
 								}
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction." + ex);
+								logger.error("Error processing received transaction."
+										+ ex);
 							}
-			            }
-			        }
+						}
+					}
 					break;
 				default:
-					logger.debug("No actions defined for received " + transaction.getObjectType() + " information type transactions");
+					logger.debug("No actions defined for received "
+							+ transaction.getObjectType()
+							+ " information type transactions");
 				}
 				break;
 			case ACK:
-				logger.debug("ACK: " + transaction.getObjectType() + " transaction ACCEPTED.");
-				if (transaction.getObjectType()==Cardio2eObjectTypes.SECURITY){ //Reports NO error code for security object NACK
+				logger.debug("ACK: " + transaction.getObjectType()
+						+ " transaction ACCEPTED.");
+				if (transaction.getObjectType() == Cardio2eObjectTypes.SECURITY) { // Reports
+																					// NO
+																					// error
+																					// code
+																					// for
+																					// security
+																					// object
+																					// NACK
 					for (Cardio2eBindingProvider provider : providers) {
-						Map<String, BindingConfig> matchBindingConfigs = provider.getMatchBindingConfigs(transaction);
-			            for (String itemName : matchBindingConfigs.keySet()) {	            	
-			            	if (provider.getItem(itemName).getAcceptedDataTypes().contains(DecimalType.class)){ //Only sends NACK NO error value to Number Items 
-				            	try {
+						Map<String, BindingConfig> matchBindingConfigs = provider
+								.getMatchBindingConfigs(transaction);
+						for (String itemName : matchBindingConfigs.keySet()) {
+							if (provider.getItem(itemName)
+									.getAcceptedDataTypes()
+									.contains(DecimalType.class)) { // Only
+																	// sends
+																	// NACK NO
+																	// error
+																	// value to
+																	// Number
+																	// Items
+								try {
 									logger.debug("Sending SECURITY NO error code (ZERO) state to the bus.");
-						            eventPublisher.postUpdate(itemName, DecimalType.ZERO);
+									eventPublisher.postUpdate(itemName,
+											DecimalType.ZERO);
 								} catch (Exception ex) {
-									logger.error("Error reporting error code for SECURITY NACK transaction." + ex);
+									logger.error("Error reporting error code for SECURITY NACK transaction."
+											+ ex);
 								}
 							}
-			            }
-			        }					
+						}
+					}
 				}
 				break;
 			case NACK:
@@ -901,34 +1301,66 @@ public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvid
 				case LOGIN:
 				case DATE_AND_TIME:
 				case SCENARIO:
-					logger.debug("NACK: " + transaction.getObjectType() + " transaction NOT ACCEPTED. " + transaction.getErrorCodeDescription() + ".");
+					logger.debug("NACK: " + transaction.getObjectType()
+							+ " transaction NOT ACCEPTED. "
+							+ transaction.getErrorCodeDescription() + ".");
 					break;
 				default:
-					if (transaction.getObjectType()==Cardio2eObjectTypes.SECURITY){ //Reports error code for security object NACK
+					if (transaction.getObjectType() == Cardio2eObjectTypes.SECURITY) { // Reports
+																						// error
+																						// code
+																						// for
+																						// security
+																						// object
+																						// NACK
 						Cardio2eSecurityTransaction receivedSecurityTransaction;
 						for (Cardio2eBindingProvider provider : providers) {
-							Map<String, BindingConfig> matchBindingConfigs = provider.getMatchBindingConfigs(transaction);
-				            for (String itemName : matchBindingConfigs.keySet()) {	            	
-				            	if (provider.getItem (itemName).getAcceptedDataTypes().contains(DecimalType.class)){ //Only sends NACK error values to Number Items 
-					            	try {
+							Map<String, BindingConfig> matchBindingConfigs = provider
+									.getMatchBindingConfigs(transaction);
+							for (String itemName : matchBindingConfigs.keySet()) {
+								if (provider.getItem(itemName)
+										.getAcceptedDataTypes()
+										.contains(DecimalType.class)) { // Only
+																		// sends
+																		// NACK
+																		// error
+																		// values
+																		// to
+																		// Number
+																		// Items
+									try {
 										receivedSecurityTransaction = (Cardio2eSecurityTransaction) transaction;
-										newState = Cardio2eTransactionParser.transactionToState(receivedSecurityTransaction, provider.getItem (itemName));
-										logger.debug("Sending SECURITY NACK error code " + newState + " to the bus.");
-							            eventPublisher.postUpdate(itemName, newState);
+										newState = Cardio2eTransactionParser
+												.transactionToState(
+														receivedSecurityTransaction,
+														provider.getItem(itemName));
+										logger.debug("Sending SECURITY NACK error code "
+												+ newState + " to the bus.");
+										eventPublisher.postUpdate(itemName,
+												newState);
 									} catch (Exception ex) {
-										logger.error("Error reporting error code for SECURITY NACK transaction." + ex);
+										logger.error("Error reporting error code for SECURITY NACK transaction."
+												+ ex);
 									}
 								}
-				            }
-				        }
+							}
+						}
 					}
-					try { //Ask current state to Cardio 2é
-						if (transaction.getObjectNumber()==-1){
-							logger.debug("NACK: " + transaction.getObjectType() + " transaction NOT ACCEPTED. " + transaction.getErrorCodeDescription() + ". Will not ask for current state because no object information received.");
+					try { // Ask current state to Cardio 2é
+						if (transaction.getObjectNumber() == -1) {
+							logger.debug("NACK: "
+									+ transaction.getObjectType()
+									+ " transaction NOT ACCEPTED. "
+									+ transaction.getErrorCodeDescription()
+									+ ". Will not ask for current state because no object information received.");
 						} else {
-							logger.debug("NACK: " + transaction.getObjectType() + " transaction NOT ACCEPTED. " + transaction.getErrorCodeDescription() + ". Will ask for current state.");
-							transaction.setTransactionType(Cardio2eTransactionTypes.GET);
-				            com.sendTransaction(transaction);
+							logger.debug("NACK: " + transaction.getObjectType()
+									+ " transaction NOT ACCEPTED. "
+									+ transaction.getErrorCodeDescription()
+									+ ". Will ask for current state.");
+							transaction
+									.setTransactionType(Cardio2eTransactionTypes.GET);
+							com.sendTransaction(transaction);
 						}
 					} catch (Exception en) {
 						logger.error("Error requesting current state. " + en);
@@ -936,9 +1368,11 @@ public class Cardio2eBinding extends AbstractActiveBinding<Cardio2eBindingProvid
 				}
 				break;
 			default:
-				logger.debug("No actions defined for received " + transaction.getTransactionType() + " type transactions");
+				logger.debug("No actions defined for received "
+						+ transaction.getTransactionType()
+						+ " type transactions");
 			}
-		}		
+		}
 	}
 
 }

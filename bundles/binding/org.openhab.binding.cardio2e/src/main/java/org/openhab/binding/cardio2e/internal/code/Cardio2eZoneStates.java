@@ -9,50 +9,47 @@
 
 package org.openhab.binding.cardio2e.internal.code;
 
-
 /**
- * Enumerates the various ZoneStates for Cardio2e binding
- * Also provides Cardio2e string communication protocol symbol conversion
+ * Enumerates the various ZoneStates for Cardio2e binding Also provides Cardio2e
+ * string communication protocol symbol conversion
  * 
  * @author Manuel Alberto Guerrero Díaz
  * @Since 1.10.0
  */
 
-
 public enum Cardio2eZoneStates {
-	
+
 	NORMAL {
 		{
 			symbol = 'N';
 		}
 	},
-	
+
 	OPEN {
 		{
 			symbol = 'O';
 		}
 	},
-	
+
 	CLOSED {
 		{
 			symbol = 'C';
 		}
 	},
-	
+
 	ERROR {
 		{
 			symbol = 'E';
 		}
 	};
-	
+
 	public char symbol;
-	
+
 	public static Cardio2eZoneStates fromString(String zoneState) {
 
 		if ("".equals(zoneState)) {
 			return null;
-		}
-		else {
+		} else {
 			zoneState = zoneState.toUpperCase();
 		}
 
@@ -62,17 +59,19 @@ public enum Cardio2eZoneStates {
 			}
 		}
 
-		throw new IllegalArgumentException("invalid zoneState '" + zoneState + "'");
+		throw new IllegalArgumentException("invalid zoneState '" + zoneState
+				+ "'");
 	}
-	
+
 	public static Cardio2eZoneStates fromSymbol(char zoneState) {
-			for (Cardio2eZoneStates type : Cardio2eZoneStates.values()) {
+		for (Cardio2eZoneStates type : Cardio2eZoneStates.values()) {
 			if (type.symbol == zoneState) {
 				return type;
 			}
 		}
 
-		throw new IllegalArgumentException("invalid zoneState '" + zoneState + "'");
+		throw new IllegalArgumentException("invalid zoneState '" + zoneState
+				+ "'");
 	}
-	
+
 }

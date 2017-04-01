@@ -18,12 +18,12 @@ import java.util.EventObject;
  * @Since 1.10.0
  */
 
-
 public class Cardio2eDecodedTransactionEvent extends EventObject {
 	private static final long serialVersionUID = 1L;
 	private Cardio2eTransaction decodedTransaction = null;
 
-	public Cardio2eDecodedTransactionEvent(Object source, Cardio2eTransaction decodedTransaction) {
+	public Cardio2eDecodedTransactionEvent(Object source,
+			Cardio2eTransaction decodedTransaction) {
 		super(source);
 		this.decodedTransaction = decodedTransaction;
 	}

@@ -16,9 +16,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-
 /**
- * Cardio2e Binding structured transaction model 
+ * Cardio2e Binding structured transaction model
  * 
  * @author Manuel Alberto Guerrero Díaz
  * @Since 1.10.0
@@ -29,7 +28,7 @@ public class Cardio2eTransaction implements Cloneable, Serializable {
 	public static final char CARDIO2E_START_TRANSACTION_INITIATOR = '@';
 	public static final char CARDIO2E_END_TRANSACTION_CHARACTER = '\r';
 	public static final short CARDIO2E_MIN_OBJECT_NUMBER = 1;
-	public static final short CARDIO2E_MAX_OBJECT_NUMBER = 160;	
+	public static final short CARDIO2E_MAX_OBJECT_NUMBER = 160;
 	public static final short CARDIO2E_MAX_LIGHT_NUMBER = 160;
 	public static final byte CARDIO2E_MIN_LIGHTING_INTENSITY = 0;
 	public static final byte CARDIO2E_MAX_LIGHTING_INTENSITY = 100;
@@ -45,14 +44,31 @@ public class Cardio2eTransaction implements Cloneable, Serializable {
 	public static final short CARDIO2E_MAX_CURTAIN_NUMBER = 80;
 	public static final byte CARDIO2E_MIN_CURTAIN_OPENING_PERCENTAGE = 0;
 	public static final byte CARDIO2E_MAX_CURTAIN_OPENING_PERCENTAGE = 100;
-	public String primitiveStringTransaction = null; //In this variable can store a primitive sent / received string transaction.
-	public boolean isDataComplete = false; //A decoder object will set isDataComplete = true when decode process is successfully complete. Auto set to false on any object data set.  
-	public boolean mustBeSent = false; //Signals whether this transaction is mandatory to be sent.
-	public boolean smartSendingEnabledTransaction = false; // Signals whether the transaction is smart sending enabled.
-	public boolean smartSendingEnqueueFirst = false; // Signals whether the transaction will be enqueued as the first element of the send FIFO buffer (absolute priority).
+	public String primitiveStringTransaction = null; // In this variable can
+														// store a primitive
+														// sent / received
+														// string transaction.
+	public boolean isDataComplete = false; // A decoder object will set
+											// isDataComplete = true when decode
+											// process is successfully complete.
+											// Auto set to false on any object
+											// data set.
+	public boolean mustBeSent = false; // Signals whether this transaction is
+										// mandatory to be sent.
+	public boolean smartSendingEnabledTransaction = false; // Signals whether
+															// the transaction
+															// is smart sending
+															// enabled.
+	public boolean smartSendingEnqueueFirst = false; // Signals whether the
+														// transaction will be
+														// enqueued as the first
+														// element of the send
+														// FIFO buffer (absolute
+														// priority).
 	private Cardio2eTransactionTypes transactionType;
 	private Cardio2eObjectTypes objectType;
-	private short objectNumber = -1; // -1=Not set, for no object number transaction encoding.
+	private short objectNumber = -1; // -1=Not set, for no object number
+										// transaction encoding.
 	private int errorCode = -1; // -1=Not set (no error).
 
 	public Cardio2eTransaction() {
@@ -72,7 +88,8 @@ public class Cardio2eTransaction implements Cloneable, Serializable {
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(this);
 
-			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ByteArrayInputStream bais = new ByteArrayInputStream(
+					baos.toByteArray());
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return (Cardio2eTransaction) ois.readObject();
 		} catch (IOException e) {
@@ -82,10 +99,14 @@ public class Cardio2eTransaction implements Cloneable, Serializable {
 		}
 	}
 
-	public String toString(){ //Method toString will be used to encode object data to Cardio2e stream string type transaction. In this super class, no complete data will be available, so toString will returns null.
+	public String toString() { // Method toString will be used to encode object
+								// data to Cardio2e stream string type
+								// transaction. In this super class, no complete
+								// data will be available, so toString will
+								// returns null.
 		return null;
 	}
-	
+
 	public Cardio2eTransactionTypes getTransactionType() {
 		return transactionType;
 	}
@@ -110,14 +131,15 @@ public class Cardio2eTransaction implements Cloneable, Serializable {
 
 	public void setObjectNumber(short objectNumber) {
 		isDataComplete = false;
-		if ((objectNumber >= CARDIO2E_MIN_OBJECT_NUMBER) && (objectNumber <= CARDIO2E_MAX_OBJECT_NUMBER)) {
+		if ((objectNumber >= CARDIO2E_MIN_OBJECT_NUMBER)
+				&& (objectNumber <= CARDIO2E_MAX_OBJECT_NUMBER)) {
 			this.objectNumber = objectNumber;
-		}
-		else{
-			throw new IllegalArgumentException("invalid objectNumber '" + objectNumber + "'");
+		} else {
+			throw new IllegalArgumentException("invalid objectNumber '"
+					+ objectNumber + "'");
 		}
 	}
-	
+
 	public int getErrorCode() {
 		return errorCode;
 	}
@@ -127,9 +149,9 @@ public class Cardio2eTransaction implements Cloneable, Serializable {
 		this.errorCode = errorCode;
 	}
 
-	public String getErrorCodeDescription(){
+	public String getErrorCodeDescription() {
 		String description = "Unknown error or no error";
-		switch (errorCode){
+		switch (errorCode) {
 		case 1:
 			description = "Object type specified by the transaction is not recognized";
 			break;
@@ -151,53 +173,74 @@ public class Cardio2eTransaction implements Cloneable, Serializable {
 			description = "Transaction is refused because security is armed";
 			break;
 		case 8:
-			description = "This zone can not be ignored";
+			description = "This zone cannot be ignored";
 			break;
 		case 16:
-			description = "Security can not be armed because there are open zones";
+			description = "Security cannot be armed because there are open zones";
 			break;
 		case 17:
-			description = "Security can not be armed because there is a power problem";
+			description = "Security cannot be armed because there is a power problem";
 			break;
 		case 18:
-			description = "Security can not be armed for an unknown reason";
+			description = "Security cannot be armed for an unknown reason";
 			break;
 		}
 		return description;
 	}
 
-	public boolean isDataVerified() { //Returns true if object data matches with Cardio2e data specs and data is congruent.
-		return ((transactionType != null)&&(objectType != null));
+	public boolean isDataVerified() { // Returns true if object data matches
+										// with Cardio2e data specs and data is
+										// congruent.
+		return ((transactionType != null) && (objectType != null));
 	}
 
-	public boolean isLike(Cardio2eTransaction transaction) { //Returns true if "transaction" matches ObjectType and ObjectNumber (same Cardio 2é system object).
+	public boolean isLike(Cardio2eTransaction transaction) { // Returns true if
+																// "transaction"
+																// matches
+																// ObjectType
+																// and
+																// ObjectNumber
+																// (same Cardio
+																// 2é system
+																// object).
 		Boolean isLikeMe = false;
 		Cardio2eObjectTypes myObjectType = getObjectType();
 		if (transaction.getObjectType() == myObjectType) {
-			if ((myObjectType == Cardio2eObjectTypes.ZONES) || (myObjectType == Cardio2eObjectTypes.ZONES_BYPASS) || (myObjectType == Cardio2eObjectTypes.DATE_AND_TIME) || (myObjectType == Cardio2eObjectTypes.LOGIN) || (myObjectType == Cardio2eObjectTypes.VERSION)) {
-				isLikeMe = true;	
+			if ((myObjectType == Cardio2eObjectTypes.ZONES)
+					|| (myObjectType == Cardio2eObjectTypes.ZONES_BYPASS)
+					|| (myObjectType == Cardio2eObjectTypes.DATE_AND_TIME)
+					|| (myObjectType == Cardio2eObjectTypes.LOGIN)
+					|| (myObjectType == Cardio2eObjectTypes.VERSION)) {
+				isLikeMe = true;
 			} else {
 				isLikeMe = (transaction.getObjectNumber() == getObjectNumber());
 			}
 		}
-		return isLikeMe;	
+		return isLikeMe;
 	}
 
 	public static boolean getSmartSendingEnabledClass() {
-		//By default returns false.
-		//This function has been replaced in SmartSending enabled subclasses in order to signal when it is enabled.
+		// By default returns false.
+		// This function has been replaced in SmartSending enabled subclasses in
+		// order to signal when it is enabled.
 		return false;
 	}
-	
-	public boolean isSmartSendingEnabled() { //Returns true if this transaction or its class is smart sending enabled.
-		//By default returns false.
-		return false;	
+
+	public boolean isSmartSendingEnabled() { // Returns true if this transaction
+												// or its class is smart sending
+												// enabled.
+		// By default returns false.
+		return false;
 	}
 
 	public boolean smartSendingCanReplaceLikeMe() {
-		//By default returns false.
-		//This function has been replaced in Cardio2eLightingTransaction, Cardio2eRelayTransaction and Cardio2eCurtainTransaction subclasses in order to return true.
-		//When returns true, smart sending will can delete the transactions like this from the send buffer and add a new transaction that replaces them.
-		return false;	
-	}	
+		// By default returns false.
+		// This function has been replaced in Cardio2eLightingTransaction,
+		// Cardio2eRelayTransaction and Cardio2eCurtainTransaction subclasses in
+		// order to return true.
+		// When returns true, smart sending will can delete the transactions
+		// like this from the send buffer and add a new transaction that
+		// replaces them.
+		return false;
+	}
 }

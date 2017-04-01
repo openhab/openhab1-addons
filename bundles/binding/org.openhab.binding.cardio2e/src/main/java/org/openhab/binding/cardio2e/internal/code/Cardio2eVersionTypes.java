@@ -9,28 +9,26 @@
 
 package org.openhab.binding.cardio2e.internal.code;
 
-
 /**
- * Enumerates the various VersionTypes for Cardio2e binding
- * Also provides Cardio2e string communication protocol symbol conversion
+ * Enumerates the various VersionTypes for Cardio2e binding Also provides
+ * Cardio2e string communication protocol symbol conversion
  * 
- * Note: We unknown what each type of version means. The complete Cardio2e version
- * is a string as C-M-P-S.
- * Example: C=2.40S.512, M=2.2, P=1.00, S=1111 -> Cardio2e COMPLETE VERSION=2.40S.512-2.2-1.00-1111
+ * Note: We unknown what each type of version means. The complete Cardio2e
+ * version is a string as C-M-P-S. Example: C=2.40S.512, M=2.2, P=1.00, S=1111
+ * -> Cardio2e COMPLETE VERSION=2.40S.512-2.2-1.00-1111
  * 
  * @author Manuel Alberto Guerrero Díaz
  * @Since 1.10.0
  */
 
-
 public enum Cardio2eVersionTypes {
-	
+
 	C {
 		{
 			symbol = 'C';
 		}
 	},
-	
+
 	M {
 		{
 			symbol = 'M';
@@ -42,21 +40,20 @@ public enum Cardio2eVersionTypes {
 			symbol = 'P';
 		}
 	},
-	
+
 	S {
 		{
 			symbol = 'S';
 		}
 	};
-	
+
 	public char symbol;
-	
+
 	public static Cardio2eVersionTypes fromString(String versionType) {
 
 		if ("".equals(versionType)) {
 			return null;
-		}
-		else {
+		} else {
 			versionType = versionType.toUpperCase();
 		}
 
@@ -66,17 +63,19 @@ public enum Cardio2eVersionTypes {
 			}
 		}
 
-		throw new IllegalArgumentException("invalid versionType '" + versionType + "'");
+		throw new IllegalArgumentException("invalid versionType '"
+				+ versionType + "'");
 	}
-	
+
 	public static Cardio2eVersionTypes fromSymbol(char versionType) {
-			for (Cardio2eVersionTypes type : Cardio2eVersionTypes.values()) {
+		for (Cardio2eVersionTypes type : Cardio2eVersionTypes.values()) {
 			if (type.symbol == versionType) {
 				return type;
 			}
 		}
 
-		throw new IllegalArgumentException("invalid versionType '" + versionType + "'");
+		throw new IllegalArgumentException("invalid versionType '"
+				+ versionType + "'");
 	}
-	
+
 }

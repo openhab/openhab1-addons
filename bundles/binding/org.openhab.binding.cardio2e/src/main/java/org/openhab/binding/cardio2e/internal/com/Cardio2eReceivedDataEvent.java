@@ -18,7 +18,6 @@ import java.util.EventObject;
  * @Since 1.10.0
  */
 
-
 public class Cardio2eReceivedDataEvent extends EventObject {
 	private static final long serialVersionUID = 1L;
 	private String receivedData = null;

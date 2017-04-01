@@ -9,62 +9,59 @@
 
 package org.openhab.binding.cardio2e.internal.code;
 
-
 /**
- * Enumerates the various HvacSystemModes for Cardio2e binding
- * Also provides Cardio2e string communication protocol symbol conversion
+ * Enumerates the various HvacSystemModes for Cardio2e binding Also provides
+ * Cardio2e string communication protocol symbol conversion
  * 
  * @author Manuel Alberto Guerrero Díaz
  * @Since 1.10.0
  */
 
-
 public enum Cardio2eHvacSystemModes {
-	
+
 	AUTO {
 		{
 			symbol = 'A';
 		}
 	},
-	
+
 	HEATING {
 		{
 			symbol = 'H';
 		}
 	},
-	
+
 	COOLING {
 		{
 			symbol = 'C';
 		}
 	},
-	
+
 	OFF {
 		{
 			symbol = 'O';
 		}
 	},
-	
+
 	ECONOMY {
 		{
 			symbol = 'E';
 		}
 	},
-	
+
 	NORMAL {
 		{
 			symbol = 'N';
 		}
 	};
-	
+
 	public char symbol;
-	
+
 	public static Cardio2eHvacSystemModes fromString(String hvacSystemMode) {
 
 		if ("".equals(hvacSystemMode)) {
 			return null;
-		}
-		else {
+		} else {
 			hvacSystemMode = hvacSystemMode.toUpperCase();
 		}
 
@@ -74,17 +71,19 @@ public enum Cardio2eHvacSystemModes {
 			}
 		}
 
-		throw new IllegalArgumentException("invalid hvacSystemMode '" + hvacSystemMode + "'");
+		throw new IllegalArgumentException("invalid hvacSystemMode '"
+				+ hvacSystemMode + "'");
 	}
-	
+
 	public static Cardio2eHvacSystemModes fromSymbol(char hvacSystemMode) {
-			for (Cardio2eHvacSystemModes type : Cardio2eHvacSystemModes.values()) {
+		for (Cardio2eHvacSystemModes type : Cardio2eHvacSystemModes.values()) {
 			if (type.symbol == hvacSystemMode) {
 				return type;
 			}
 		}
 
-		throw new IllegalArgumentException("invalid hvacSystemMode '" + hvacSystemMode + "'");
+		throw new IllegalArgumentException("invalid hvacSystemMode '"
+				+ hvacSystemMode + "'");
 	}
-	
+
 }

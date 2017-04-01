@@ -18,7 +18,6 @@ import java.util.EventObject;
  * @Since 1.10.0
  */
 
-
 public class Cardio2eConnectionEvent extends EventObject {
 	private static final long serialVersionUID = 1L;
 	private boolean isConnected;
