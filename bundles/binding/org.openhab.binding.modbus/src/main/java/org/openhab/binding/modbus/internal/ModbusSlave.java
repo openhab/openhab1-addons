@@ -294,33 +294,41 @@ public abstract class ModbusSlave {
             throws ModbusConnectionException, ModbusException, ModbusUnexpectedTransactionIdException {
         ModbusSlaveEndpoint endpoint = getEndpoint();
         ModbusSlaveConnection connection = null;
+        ModbusResponse response;
+        int requestTransactionID;
         try {
             connection = getConnection(endpoint);
             if (connection == null) {
                 logger.warn("ModbusSlave ({}): not connected -- aborting request {}", name, request);
                 throw new ModbusConnectionException(endpoint);
             }
-            transaction.setRequest(request);
-            try {
-                transaction.execute();
-            } catch (Exception e) {
-                // Note, one could catch ModbusIOException and ModbusSlaveException if more detailed
-                // exception handling is required. For now, all exceptions are handled the same way with writes.
-                logger.error("ModbusSlave ({}): error when executing write request ({}): {}", name, request,
-                        e.getMessage());
-                invalidate(endpoint, connection);
-                // set connection to null such that it is not returned to pool
-                connection = null;
-                throw e;
-            }
-            ModbusResponse response = transaction.getResponse();
-            logger.trace("ModbusSlave ({}): response for write (FC={}) {}", name, response.getFunctionCode(),
-                    response.getHexMessage());
-            if ((response.getTransactionID() != transaction.getTransactionID()) && !response.isHeadless()) {
-                logger.warn(
-                        "ModbusSlave ({}): Transaction id of the response does not match request {}.  Endpoint {}. Connection: {}. Ignoring response.",
-                        name, request, endpoint, connection);
-                throw new ModbusUnexpectedTransactionIdException();
+            synchronized (transaction) {
+                transaction.setRequest(request);
+                try {
+                    logger.trace(
+                            "Executing modbus request {} using transaction {} (global transaction id before increment {}) to write data",
+                            transaction.getRequest(), transaction, transaction.getTransactionID());
+                    transaction.execute();
+                } catch (Exception e) {
+                    // Note, one could catch ModbusIOException and ModbusSlaveException if more detailed
+                    // exception handling is required. For now, all exceptions are handled the same way with writes.
+                    logger.error("ModbusSlave ({}): error when executing write request ({}): {}", name, request,
+                            e.getMessage());
+                    invalidate(endpoint, connection);
+                    // set connection to null such that it is not returned to pool
+                    connection = null;
+                    throw e;
+                }
+                response = transaction.getResponse();
+                logger.trace("ModbusSlave ({}): response for write (FC={}) {}", name, response.getFunctionCode(),
+                        response.getHexMessage());
+                requestTransactionID = transaction.getRequest().getTransactionID();
+                if ((response.getTransactionID() != requestTransactionID) && !response.isHeadless()) {
+                    logger.warn(
+                            "ModbusSlave ({}): Transaction id of the response ({}) does not match request {} id {}.  Endpoint {}. Connection: {}. Ignoring response.",
+                            name, response.getTransactionID(), request, requestTransactionID, endpoint, connection);
+                    throw new ModbusUnexpectedTransactionIdException();
+                }
             }
         } finally {
             returnConnection(endpoint, connection);
@@ -476,6 +484,7 @@ public abstract class ModbusSlave {
         ModbusSlaveEndpoint endpoint = getEndpoint();
         ModbusSlaveConnection connection = null;
         ModbusResponse response = null;
+        int requestTransactionID;
         try {
             connection = getConnection(endpoint);
             if (connection == null) {
@@ -484,26 +493,32 @@ public abstract class ModbusSlave {
                 throw new ModbusConnectionException(endpoint);
             }
             request.setUnitID(getId());
-            transaction.setRequest(request);
+            synchronized (transaction) {
+                transaction.setRequest(request);
+                try {
+                    logger.trace(
+                            "Executing modbus request {} using transaction {} (global  transaction id before increment {}) to read data",
+                            transaction.getRequest(), transaction, transaction.getTransactionID());
+                    transaction.execute();
+                } catch (ModbusException e) {
+                    logger.error(
+                            "ModbusSlave ({}): Error getting modbus data for request {}. Error: {}. Endpoint {}. Connection: {}",
+                            name, request, e.getMessage(), endpoint, connection);
+                    invalidate(endpoint, connection);
+                    // Invalidated connections should not be returned
+                    connection = null;
+                    throw e;
+                }
 
-            try {
-                transaction.execute();
-            } catch (ModbusException e) {
-                logger.error(
-                        "ModbusSlave ({}): Error getting modbus data for request {}. Error: {}. Endpoint {}. Connection: {}",
-                        name, request, e.getMessage(), endpoint, connection);
-                invalidate(endpoint, connection);
-                // Invalidated connections should not be returned
-                connection = null;
-                throw e;
-            }
+                requestTransactionID = transaction.getRequest().getTransactionID();
+                response = transaction.getResponse();
 
-            response = transaction.getResponse();
-            if ((response.getTransactionID() != transaction.getTransactionID()) && !response.isHeadless()) {
-                logger.warn(
-                        "ModbusSlave ({}): Transaction id of the response does not match request {}.  Endpoint {}. Connection: {}. Ignoring response.",
-                        name, request, endpoint, connection);
-                throw new ModbusUnexpectedTransactionIdException();
+                if ((response.getTransactionID() != requestTransactionID) && !response.isHeadless()) {
+                    logger.warn(
+                            "ModbusSlave ({}): Transaction id of the response ({}) does not match request {} id {}.  Endpoint {}. Connection: {}. Ignoring response.",
+                            name, response.getTransactionID(), request, requestTransactionID, endpoint, connection);
+                    throw new ModbusUnexpectedTransactionIdException();
+                }
             }
             logger.trace("ModbusSlave ({}): response for read (FC={}) {}", name, response.getFunctionCode(),
                     response.getHexMessage());

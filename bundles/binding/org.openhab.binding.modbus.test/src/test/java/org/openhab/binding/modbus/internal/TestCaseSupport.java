@@ -98,7 +98,7 @@ public class TestCaseSupport {
     /**
      * Max time to wait for connections/requests from client
      */
-    protected static final int MAX_WAIT_REQUESTS_MILLIS = 1000;
+    protected int MAX_WAIT_REQUESTS_MILLIS = 1000;
 
     /**
      * The server runs in single thread, only one connection is accepted at a time.

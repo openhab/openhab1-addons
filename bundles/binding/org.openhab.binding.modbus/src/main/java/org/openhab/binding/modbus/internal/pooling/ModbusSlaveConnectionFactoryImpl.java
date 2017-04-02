@@ -123,6 +123,8 @@ public class ModbusSlaveConnectionFactoryImpl
 
     @Override
     public void destroyObject(ModbusSlaveEndpoint endpoint, final PooledObject<ModbusSlaveConnection> obj) {
+        logger.trace("destroyObject for connection {} and endpoint {} -> closing the connection", obj.getObject(),
+                endpoint);
         obj.getObject().resetConnection();
     }
 
@@ -188,8 +190,7 @@ public class ModbusSlaveConnectionFactoryImpl
     }
 
     public void applyEndpointPoolConfigs(Map<ModbusSlaveEndpoint, EndpointPoolConfiguration> endpointPoolConfigs) {
-        this.endpointPoolConfigs = new ConcurrentHashMap<>(
-                endpointPoolConfigs);
+        this.endpointPoolConfigs = new ConcurrentHashMap<>(endpointPoolConfigs);
     }
 
     private void tryConnect(ModbusSlaveEndpoint endpoint, PooledObject<ModbusSlaveConnection> obj,
