@@ -118,9 +118,12 @@ public class EpsonProjectorDevice {
     }
 
     public enum ColorMode {
+        CINEMANIGHT(0x05),
         DYNAMIC(0x06),
         NATURAL(0x07),
+        HD(0x09),
         XVCOLOR(0x0B),
+        SILVER(0x0A),
         LIVINGROOM(0x0C),
         THX(0x13),
         CINEMA(0x15),
