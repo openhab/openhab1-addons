@@ -37,9 +37,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An MQTTBrokerConnection represents a single client connection to a MQTT
+ * An MQTTBrokerConnection represents a single client connection to an MQTT
  * broker. The connection is configured by the MQTTService with properties from
- * the openhab.cfg file.
+ * openhab configuration.
  *
  * When a connection to an MQTT broker is lost, it will try to reconnect every
  * 60 seconds.
@@ -54,33 +54,20 @@ public class MqttBrokerConnection implements MqttCallback {
     private static final int RECONNECT_FREQUENCY = 60000;
 
     private String name;
-
     private String url;
-
     private String user;
-
     private String password;
-
     private int qos = 0;
-
     private boolean retain = false;
-
     private boolean async = true;
-
     private MqttWillAndTestament lastWill;
-
     private String clientId;
-
+    private boolean allowLongerClientIds = false;
     private MqttClient client;
-
     private boolean started;
-
     private List<MqttMessageConsumer> consumers = new CopyOnWriteArrayList<MqttMessageConsumer>();
-
     private List<MqttMessageProducer> producers = new CopyOnWriteArrayList<MqttMessageProducer>();
-
     private Timer reconnectTimer;
-
     private int keepAliveInterval = 60;
 
     /**
@@ -267,6 +254,17 @@ public class MqttBrokerConnection implements MqttCallback {
     }
 
     /**
+     * Set the allowLongerClientIds property.
+     *
+     * @param value
+     *            true to allow the use of Client IDs up to 65535 characters
+     *            long; false otherwise
+     */
+    public void setAllowLongerClientIds(boolean value) {
+        this.allowLongerClientIds = value;
+    }
+
+    /**
      * Open an MQTT client connection.
      * 
      * @throws Exception
@@ -282,7 +280,13 @@ public class MqttBrokerConnection implements MqttCallback {
 
         if (client == null) {
             if (StringUtils.isBlank(clientId) || clientId.length() > 23) {
-                clientId = MqttClient.generateClientId();
+                if (StringUtils.isBlank(clientId)) {
+                    clientId = MqttClient.generateClientId();
+                } else {
+                    if (clientId.length() > 23 && !allowLongerClientIds) {
+                        clientId = MqttClient.generateClientId();
+                    }
+                }
             }
 
             String tmpDir = System.getProperty("java.io.tmpdir") + "/" + name;
@@ -588,12 +592,13 @@ public class MqttBrokerConnection implements MqttCallback {
     }
 
     /**
-     * Set the keep alive interval. The default interval is 60 seconds.
-     * If no heartbeat is received within this timeframe, the connection
-     * will be considered dead. Set this to a higher value on systems which may
-     * not always be able to process the heartbeat in time.
+     * Set the keep alive interval. The default interval is 60 seconds. If no
+     * heartbeat is received within this timeframe, the connection will be
+     * considered dead. Set this to a higher value on systems which may not
+     * always be able to process the heartbeat in time.
      * 
-     * @param keepAliveInterval interval in seconds
+     * @param keepAliveInterval
+     *            interval in seconds
      */
     public void setKeepAliveInterval(int keepAliveInterval) {
         this.keepAliveInterval = keepAliveInterval;
