@@ -32,6 +32,8 @@ public class EpsonProjectorDevice {
         FULL(0x40),
         ZOOM(0x50),
         WIDE(0x70),
+        ANAMORPHIC(0x80),
+        SQUEEZE(0x90),
         ERROR(0xFF);
 
         private int value;
@@ -116,11 +118,19 @@ public class EpsonProjectorDevice {
     }
 
     public enum ColorMode {
+        CINEMANIGHT(0x05),
         DYNAMIC(0x06),
         NATURAL(0x07),
+        HD(0x09),
         XVCOLOR(0x0B),
+        SILVER(0x0A),
         LIVINGROOM(0x0C),
+        THX(0x13),
         CINEMA(0x15),
+        CINEMA-3D(0x17),
+        DYNAMIC-3D(0x18),
+        THX-3D(0x19),
+        BWCINEMA(0x20),
         ERROR(0xFF);
 
         private int value;
