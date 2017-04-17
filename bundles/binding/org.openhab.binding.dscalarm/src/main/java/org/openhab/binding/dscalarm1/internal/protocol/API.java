@@ -6,18 +6,18 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.dscalarm.internal.protocol;
+package org.openhab.binding.dscalarm1.internal.protocol;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
-import org.openhab.binding.dscalarm.internal.DSCAlarmEventListener;
-import org.openhab.binding.dscalarm.internal.connector.DSCAlarmConnector;
-import org.openhab.binding.dscalarm.internal.connector.DSCAlarmConnectorType;
-import org.openhab.binding.dscalarm.internal.connector.DSCAlarmInterfaceType;
-import org.openhab.binding.dscalarm.internal.connector.SerialConnector;
-import org.openhab.binding.dscalarm.internal.connector.TCPConnector;
+import org.openhab.binding.dscalarm1.internal.DSCAlarmEventListener;
+import org.openhab.binding.dscalarm1.internal.connector.DSCAlarmConnector;
+import org.openhab.binding.dscalarm1.internal.connector.DSCAlarmConnectorType;
+import org.openhab.binding.dscalarm1.internal.connector.DSCAlarmInterfaceType;
+import org.openhab.binding.dscalarm1.internal.connector.SerialConnector;
+import org.openhab.binding.dscalarm1.internal.connector.TCPConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

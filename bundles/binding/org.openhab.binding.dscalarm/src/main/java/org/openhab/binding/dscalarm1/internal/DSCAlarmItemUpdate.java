@@ -6,17 +6,17 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.dscalarm.internal;
+package org.openhab.binding.dscalarm1.internal;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openhab.binding.dscalarm.DSCAlarmBindingConfig;
-import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceType;
-import org.openhab.binding.dscalarm.internal.model.Keypad;
-import org.openhab.binding.dscalarm.internal.model.Panel;
-import org.openhab.binding.dscalarm.internal.model.Partition;
-import org.openhab.binding.dscalarm.internal.model.Zone;
+import org.openhab.binding.dscalarm1.DSCAlarmBindingConfig;
+import org.openhab.binding.dscalarm1.internal.model.DSCAlarmDeviceType;
+import org.openhab.binding.dscalarm1.internal.model.Keypad;
+import org.openhab.binding.dscalarm1.internal.model.Panel;
+import org.openhab.binding.dscalarm1.internal.model.Partition;
+import org.openhab.binding.dscalarm1.internal.model.Zone;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.slf4j.Logger;

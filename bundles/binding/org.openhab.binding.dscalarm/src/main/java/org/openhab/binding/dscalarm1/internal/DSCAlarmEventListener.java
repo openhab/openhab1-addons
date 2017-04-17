@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.dscalarm.internal;
+package org.openhab.binding.dscalarm1.internal;
 
 import java.util.EventListener;
 import java.util.EventObject;

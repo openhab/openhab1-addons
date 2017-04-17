@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.dscalarm.internal;
+package org.openhab.binding.dscalarm1.internal;
 
 import java.util.Collections;
 import java.util.Dictionary;
@@ -15,15 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.openhab.binding.dscalarm.DSCAlarmActionProvider;
-import org.openhab.binding.dscalarm.DSCAlarmBindingConfig;
-import org.openhab.binding.dscalarm.DSCAlarmBindingProvider;
-import org.openhab.binding.dscalarm.internal.connector.DSCAlarmConnectorType;
-import org.openhab.binding.dscalarm.internal.connector.DSCAlarmInterfaceType;
-import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceType;
-import org.openhab.binding.dscalarm.internal.protocol.API;
-import org.openhab.binding.dscalarm.internal.protocol.APICode;
-import org.openhab.binding.dscalarm.internal.protocol.APIMessage;
+import org.openhab.binding.dscalarm1.DSCAlarmActionProvider;
+import org.openhab.binding.dscalarm1.DSCAlarmBindingConfig;
+import org.openhab.binding.dscalarm1.DSCAlarmBindingProvider;
+import org.openhab.binding.dscalarm1.internal.connector.DSCAlarmConnectorType;
+import org.openhab.binding.dscalarm1.internal.connector.DSCAlarmInterfaceType;
+import org.openhab.binding.dscalarm1.internal.model.DSCAlarmDeviceType;
+import org.openhab.binding.dscalarm1.internal.protocol.API;
+import org.openhab.binding.dscalarm1.internal.protocol.APICode;
+import org.openhab.binding.dscalarm1.internal.protocol.APIMessage;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;

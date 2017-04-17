@@ -10,7 +10,7 @@ package org.openhab.action.dscalarm.internal;
 
 import java.util.Dictionary;
 
-import org.openhab.binding.dscalarm.DSCAlarmActionProvider;
+import org.openhab.binding.dscalarm1.DSCAlarmActionProvider;
 import org.openhab.core.scriptengine.action.ActionService;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
