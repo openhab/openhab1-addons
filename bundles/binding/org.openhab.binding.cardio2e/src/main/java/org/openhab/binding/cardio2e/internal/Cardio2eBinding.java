@@ -11,6 +11,7 @@ package org.openhab.binding.cardio2e.internal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 import org.openhab.binding.cardio2e.Cardio2eBindingProvider;
 import org.openhab.binding.cardio2e.internal.Cardio2eGenericBindingProvider.Cardio2eBindingConfig;
@@ -92,8 +93,8 @@ public class Cardio2eBinding extends
 	private BundleContext bundleContext;
 
 	/**
-	 * the refresh interval which is used to poll values from the Cardio2e
-	 * server (optional, defaults to 60000ms)
+	 * The refresh interval that is used to periodically request date and time
+	 * values from Cardio2e (fixed value set to 30000ms)
 	 */
 	private long refreshInterval = 30000;
 
@@ -217,27 +218,28 @@ public class Cardio2eBinding extends
 		Cardio2eZonesBypassTransaction.setSmartSendingEnabledClass(false);
 		Cardio2eCurtainTransaction.setSmartSendingEnabledClass(false);
 		// Load config values
-		String portString = (String) configuration.get("port");
+		String portString = Objects.toString(configuration.get("port"), null);
 		if (StringUtils.isNotBlank(portString)) {
 			port = portString;
 			logger.debug("Serial port set from config file: " + port);
 		}
 		if (port != null) {
-			String programcodeString = (String) configuration
-					.get("programcode");
+			String programcodeString = Objects.toString(
+					configuration.get("programcode"), null);
 			if (StringUtils.isNotBlank(programcodeString)) {
 				programCode = programcodeString;
 				logger.debug("Program code updated from config file");
 			}
 
-			String securitycodeString = (String) configuration
-					.get("securitycode");
+			String securitycodeString = Objects.toString(
+					configuration.get("securitycode"), null);
 			if (StringUtils.isNotBlank(securitycodeString)) {
 				securityCode = securitycodeString;
 				logger.debug("Security code updated from config file");
 			}
 
-			String zonesString = (String) configuration.get("zones");
+			String zonesString = Objects.toString(configuration.get("zones"),
+					null);
 			if (StringUtils.isNotBlank(zonesString)) {
 				zoneStateDetection = Boolean.parseBoolean(zonesString);
 				logger.debug("Zone state detection "
@@ -245,8 +247,8 @@ public class Cardio2eBinding extends
 						+ " in config file");
 			}
 
-			String zoneUnchangedMinRefreshDelayString = (String) configuration
-					.get("zoneUnchangedMinRefreshDelay");
+			String zoneUnchangedMinRefreshDelayString = Objects.toString(
+					configuration.get("zoneUnchangedMinRefreshDelay"), null);
 			if (StringUtils.isNotBlank(zoneUnchangedMinRefreshDelayString)) {
 				zoneUnchangedMinRefreshDelay = Long
 						.parseLong(zoneUnchangedMinRefreshDelayString);
@@ -255,8 +257,8 @@ public class Cardio2eBinding extends
 						+ " milliseconds from config file");
 			}
 
-			String datetimeMaxOffsetString = (String) configuration
-					.get("datetimeMaxOffset");
+			String datetimeMaxOffsetString = Objects.toString(
+					configuration.get("datetimeMaxOffset"), null);
 			if (StringUtils.isNotBlank(datetimeMaxOffsetString)) {
 				datetimeMaxOffset = Short.parseShort(datetimeMaxOffsetString);
 				if (datetimeMaxOffset < -1) {
@@ -275,8 +277,8 @@ public class Cardio2eBinding extends
 				}
 			}
 
-			String firstUpdateWillSetDatetimeString = (String) configuration
-					.get("firstUpdateWillSetDatetime");
+			String firstUpdateWillSetDatetimeString = Objects.toString(
+					configuration.get("firstUpdateWillSetDatetime"), null);
 			if (StringUtils.isNotBlank(firstUpdateWillSetDatetimeString)) {
 				firstUpdateWillSetDatetime = Boolean
 						.parseBoolean(firstUpdateWillSetDatetimeString);
@@ -285,8 +287,8 @@ public class Cardio2eBinding extends
 						+ " that the first update always sets the date and time");
 			}
 
-			String allowedDatetimeUpdateHourString = (String) configuration
-					.get("allowedDatetimeUpdateHour");
+			String allowedDatetimeUpdateHourString = Objects.toString(
+					configuration.get("allowedDatetimeUpdateHour"), null);
 			if (StringUtils.isNotBlank(allowedDatetimeUpdateHourString)) {
 				allowedDatetimeUpdateHour = Short
 						.parseShort(allowedDatetimeUpdateHourString);
@@ -300,15 +302,17 @@ public class Cardio2eBinding extends
 				}
 			}
 
-			String testmodeString = (String) configuration.get("testmode");
+			String testmodeString = Objects.toString(
+					configuration.get("testmode"), null);
 			if (StringUtils.isNotBlank(testmodeString)) {
 				testMode = Boolean.parseBoolean(testmodeString);
 				logger.debug("Test mode " + (testMode ? "enabled" : "disabled")
 						+ " in config file");
 			}
 
-			String minDelayBetweenReceivingAndSendingString = (String) configuration
-					.get("minDelayBetweenReceivingAndSending");
+			String minDelayBetweenReceivingAndSendingString = Objects.toString(
+					configuration.get("minDelayBetweenReceivingAndSending"),
+					null);
 			if (StringUtils
 					.isNotBlank(minDelayBetweenReceivingAndSendingString)) {
 				minDelayBetweenReceivingAndSending = Integer
@@ -319,8 +323,8 @@ public class Cardio2eBinding extends
 							+ " ms. from config file");
 			}
 
-			String minDelayBetweenSendingsString = (String) configuration
-					.get("minDelayBetweenSendings");
+			String minDelayBetweenSendingsString = Objects.toString(
+					configuration.get("minDelayBetweenSendings"), null);
 			if (StringUtils.isNotBlank(minDelayBetweenSendingsString)) {
 				minDelayBetweenSendings = Integer
 						.parseInt(minDelayBetweenSendingsString);
@@ -329,8 +333,8 @@ public class Cardio2eBinding extends
 							+ minDelayBetweenSendings + " ms. from config file");
 			}
 
-			String filterUnnecessaryCommandString = (String) configuration
-					.get("filterUnnecessaryCommand");
+			String filterUnnecessaryCommandString = Objects.toString(
+					configuration.get("filterUnnecessaryCommand"), null);
 			if (StringUtils.isNotBlank(filterUnnecessaryCommandString)) {
 				Cardio2eTransactionParser.filterUnnecessaryCommand = Boolean
 						.parseBoolean(filterUnnecessaryCommandString);
@@ -339,8 +343,9 @@ public class Cardio2eBinding extends
 								: "disabled") + " in config file");
 			}
 
-			String filterUnnecessaryReverseModeUpdateFilterString = (String) configuration
-					.get("filterUnnecessaryReverseModeUpdate");
+			String filterUnnecessaryReverseModeUpdateFilterString = Objects
+					.toString(configuration
+							.get("filterUnnecessaryReverseModeUpdate"), null);
 			if (StringUtils
 					.isNotBlank(filterUnnecessaryReverseModeUpdateFilterString)) {
 				Cardio2eTransactionParser.filterUnnecessaryReverseModeUpdate = Boolean
@@ -350,8 +355,8 @@ public class Cardio2eBinding extends
 								: "disabled") + " in config file");
 			}
 
-			String smartSendingEnabledObjectTypesString = (String) configuration
-					.get("smartSendingEnabledObjectTypes");
+			String smartSendingEnabledObjectTypesString = Objects.toString(
+					configuration.get("smartSendingEnabledObjectTypes"), null);
 			if (StringUtils.isNotBlank(smartSendingEnabledObjectTypesString)) {
 				smartSendingEnabledObjectTypesString = smartSendingEnabledObjectTypesString
 						.toUpperCase();
