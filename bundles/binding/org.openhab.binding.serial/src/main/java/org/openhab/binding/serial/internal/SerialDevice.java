@@ -66,6 +66,8 @@ public class SerialDevice implements SerialPortEventListener {
     class ItemType {
         String pattern;
         boolean base64;
+        String onString;
+        String offString;
         Class<?> type;
     }
 
@@ -73,7 +75,8 @@ public class SerialDevice implements SerialPortEventListener {
         return configMap.isEmpty();
     }
 
-    public void addConfig(String itemName, Class<?> type, String pattern, boolean base64) {
+    public void addConfig(String itemName, Class<?> type, String pattern, boolean base64, String onString,
+            String offString) {
         if (configMap == null) {
             configMap = new HashMap<String, ItemType>();
         }
@@ -82,6 +85,8 @@ public class SerialDevice implements SerialPortEventListener {
         typeItem.pattern = pattern;
         typeItem.base64 = base64;
         typeItem.type = type;
+        typeItem.onString = onString;
+        typeItem.offString = offString;
 
         configMap.put(itemName, typeItem);
     }
@@ -117,9 +122,25 @@ public class SerialDevice implements SerialPortEventListener {
         return port;
     }
 
+    public String getOnString(String itemName) {
+        if (configMap.get(itemName) != null) {
+            return configMap.get(itemName).onString;
+        }
+
+        return "";
+    }
+
+    public String getOffString(String itemName) {
+        if (configMap.get(itemName) != null) {
+            return configMap.get(itemName).offString;
+        }
+
+        return "";
+    }
+
     /**
      * Initialize this device and open the serial port
-     * 
+     *
      * @throws InitializationException if port can not be opened
      */
     @SuppressWarnings("rawtypes")
@@ -260,9 +281,15 @@ public class SerialDevice implements SerialPortEventListener {
                                     }
                                     eventPublisher.postUpdate(entry.getKey(), new StringType(result));
 
-                                } else if (entry.getValue().type == SwitchItem.class && result.trim().isEmpty()) {
-                                    eventPublisher.postUpdate(entry.getKey(), OnOffType.ON);
-                                    eventPublisher.postUpdate(entry.getKey(), OnOffType.OFF);
+                                } else if (entry.getValue().type == SwitchItem.class) {
+                                    if (result.trim().isEmpty()) {
+                                        eventPublisher.postUpdate(entry.getKey(), OnOffType.ON);
+                                        eventPublisher.postUpdate(entry.getKey(), OnOffType.OFF);
+                                    } else if (result.equals(getOnString(entry.getKey()))) {
+                                        eventPublisher.postUpdate(entry.getKey(), OnOffType.ON);
+                                    } else if (result.equals(getOffString(entry.getKey()))) {
+                                        eventPublisher.postUpdate(entry.getKey(), OnOffType.OFF);
+                                    }
                                 }
                             }
                         }
@@ -278,7 +305,7 @@ public class SerialDevice implements SerialPortEventListener {
 
     /**
      * Sends a string to the serial port of this device
-     * 
+     *
      * @param msg the string to send
      */
     public void writeString(String msg) {

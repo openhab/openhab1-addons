@@ -19,6 +19,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
@@ -106,6 +107,12 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
             SerialDevice serialDevice = serialDevices.get(itemMap.get(itemName));
             if (command instanceof StringType) {
                 serialDevice.writeString(command.toString());
+            } else if (command instanceof OnOffType) {
+                if (command == OnOffType.ON) {
+                    serialDevice.writeString(serialDevice.getOnString(itemName));
+                } else {
+                    serialDevice.writeString(serialDevice.getOffString(itemName));
+                }
             }
         }
     }
@@ -145,25 +152,30 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
     public void processBindingConfiguration(String context, Item item, String bindingConfig)
             throws BindingConfigParseException {
 
-        int indexOf = bindingConfig.indexOf(',');
-        String serialPart = bindingConfig;
         String pattern = null;
         boolean base64 = false;
+        String onCommand = null;
+        String offCommand = null;
 
-        if (indexOf != -1) {
-            String substring = bindingConfig.substring(indexOf + 1);
-            serialPart = bindingConfig.substring(0, indexOf);
+        String[] split = bindingConfig.split(",");
+        if (split.length > 0) {
+            for (int i = 1; i < split.length; i++) {
+                String part = split[i];
+                String substring = part.substring(0, part.length());
 
-            if (substring.startsWith("REGEX(")) {
-                pattern = substring.substring(6, substring.length() - 1);
-            }
-
-            if (substring.equals("BASE64")) {
-                base64 = true;
+                if (substring.startsWith("REGEX(")) {
+                    pattern = substring.substring(6, substring.length() - 1);
+                } else if (substring.equals("BASE64")) {
+                    base64 = true;
+                } else if (substring.startsWith("ON(")) {
+                    onCommand = substring.substring(3, substring.length() - 1);
+                } else if (substring.startsWith("OFF(")) {
+                    offCommand = substring.substring(4, substring.length() - 1);
+                }
             }
         }
 
-        String portConfig[] = serialPart.split("@");
+        String portConfig[] = split[0].split("@");
 
         String port = portConfig[0];
         int baudRate = 0;
@@ -193,7 +205,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
             serialDevices.put(port, serialDevice);
         }
 
-        serialDevice.addConfig(item.getName(), item.getClass(), pattern, base64);
+        serialDevice.addConfig(item.getName(), item.getClass(), pattern, base64, onCommand, offCommand);
 
         Set<String> itemNames = contextMap.get(context);
         if (itemNames == null) {
