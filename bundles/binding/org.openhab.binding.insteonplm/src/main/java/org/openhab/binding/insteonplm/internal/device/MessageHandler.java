@@ -973,7 +973,7 @@ public abstract class MessageHandler {
 
         private int extractValue(Msg msg, int group) throws FieldException {
             String lowByte = getStringParameter("low_byte", "");
-            if (!lowByte.equals("")) {
+            if (lowByte.equals("")) {
                 logger.error("{} handler misconfigured, missing low_byte!", nm());
                 return 0;
             }
