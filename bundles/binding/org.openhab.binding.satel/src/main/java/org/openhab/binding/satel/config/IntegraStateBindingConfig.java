@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openhab.binding.satel.SatelBindingConfig;
+import org.openhab.binding.satel.command.ClearTroublesCommand;
 import org.openhab.binding.satel.command.ControlObjectCommand;
 import org.openhab.binding.satel.command.IntegraStateCommand;
 import org.openhab.binding.satel.command.SatelCommand;
@@ -26,6 +27,8 @@ import org.openhab.binding.satel.internal.types.OutputState;
 import org.openhab.binding.satel.internal.types.PartitionControl;
 import org.openhab.binding.satel.internal.types.PartitionState;
 import org.openhab.binding.satel.internal.types.StateType;
+import org.openhab.binding.satel.internal.types.TroubleMemoryState;
+import org.openhab.binding.satel.internal.types.TroubleState;
 import org.openhab.binding.satel.internal.types.ZoneControl;
 import org.openhab.binding.satel.internal.types.ZoneState;
 import org.openhab.core.items.Item;
@@ -103,16 +106,24 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
             case DOORS:
                 stateType = iterator.nextOfType(DoorsState.class, "doors state type");
                 break;
+            case TROUBLE:
+                stateType = iterator.nextOfType(TroubleState.class, "trouble state type");
+                break;
+            case TROUBLE_MEMORY:
+                stateType = iterator.nextOfType(TroubleMemoryState.class, "trouble memory state type");
+                break;
         }
 
         // parse object number, if provided
         if (iterator.hasNext()) {
             try {
+                int objectNumberMax = 8 * stateType.getBytesCount(true);
                 String[] objectNumbersStr = iterator.next().split(",");
                 objectNumbers = new int[objectNumbersStr.length];
                 for (int i = 0; i < objectNumbersStr.length; ++i) {
                     int objectNumber = Integer.parseInt(objectNumbersStr[i]);
-                    if (objectNumber < 1 || objectNumber > 256) {
+                    // range from parsed state type (number of state bytes)
+                    if (objectNumber < 1 || objectNumber > objectNumberMax) {
                         throw new BindingConfigParseException(
                                 String.format("Invalid object number: %s", bindingConfig));
                     }
@@ -136,7 +147,7 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
         }
 
         IntegraStateEvent stateEvent = (IntegraStateEvent) event;
-        if (stateEvent.getStateType() != this.stateType) {
+        if (!stateEvent.hasDataForState(this.stateType)) {
             return null;
         }
 
@@ -145,9 +156,9 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
             boolean invertState = hasOptionEnabled(Options.INVERT_STATE)
                     && (this.stateType.getObjectType() == ObjectType.ZONE
                             || this.stateType.getObjectType() == ObjectType.OUTPUT);
-            return booleanToState(item, stateEvent.isSet(bitNbr) ^ invertState);
+            return booleanToState(item, stateEvent.isSet(this.stateType, bitNbr) ^ invertState);
         } else if (this.objectNumbers.length == 0) {
-            int statesSet = stateEvent.statesSet();
+            int statesSet = stateEvent.statesSet(this.stateType);
             if (item instanceof NumberItem) {
                 return new DecimalType(statesSet);
             } else {
@@ -157,11 +168,11 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
             // roller shutter support
             int upBitNbr = this.objectNumbers[0] - 1;
             int downBitNbr = this.objectNumbers[1] - 1;
-            if (stateEvent.isSet(upBitNbr)) {
-                if (!stateEvent.isSet(downBitNbr)) {
+            if (stateEvent.isSet(this.stateType, upBitNbr)) {
+                if (!stateEvent.isSet(this.stateType, downBitNbr)) {
                     return UpDownType.UP;
                 }
-            } else if (stateEvent.isSet(downBitNbr)) {
+            } else if (stateEvent.isSet(this.stateType, downBitNbr)) {
                 return UpDownType.DOWN;
             }
         }
@@ -259,6 +270,16 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
                             // do nothing for other types of state
                             break;
                     }
+
+                case TROUBLE:
+                case TROUBLE_MEMORY:
+                    // clear troubles
+                    if (switchOn) {
+                        return null;
+                    } else {
+                        return new ClearTroublesCommand(userCode);
+                    }
+
             }
         } else if (this.stateType.getObjectType() == ObjectType.OUTPUT && this.objectNumbers.length == 2) {
             // roller shutter support
