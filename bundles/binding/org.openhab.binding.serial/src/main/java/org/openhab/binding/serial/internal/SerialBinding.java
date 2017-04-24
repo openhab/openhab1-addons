@@ -17,10 +17,13 @@ import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -109,9 +112,19 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                 serialDevice.writeString(command.toString());
             } else if (command instanceof OnOffType) {
                 if (command == OnOffType.ON) {
-                    serialDevice.writeString(serialDevice.getOnString(itemName));
+                    serialDevice.writeString(serialDevice.getOnCommand(itemName));
                 } else {
-                    serialDevice.writeString(serialDevice.getOffString(itemName));
+                    serialDevice.writeString(serialDevice.getOffCommand(itemName));
+                }
+            } else if (command instanceof UpDownType) {
+                if (command == UpDownType.UP) {
+                    serialDevice.writeString(serialDevice.getUpCommand(itemName));
+                } else {
+                    serialDevice.writeString(serialDevice.getDownCommand(itemName));
+                }
+            } else if (command instanceof StopMoveType) {
+                if (command == StopMoveType.STOP) {
+                    serialDevice.writeString(serialDevice.getStopCommand(itemName));
                 }
             }
         }
@@ -138,7 +151,8 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof StringItem || item instanceof NumberItem)) {
+        if (!(item instanceof SwitchItem || item instanceof StringItem || item instanceof NumberItem
+                || item instanceof RollershutterItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
                     + "', only Switch-, Number- and StringItems are allowed - please check your *.items configuration");
@@ -156,6 +170,9 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         boolean base64 = false;
         String onCommand = null;
         String offCommand = null;
+        String upCommand = null;
+        String downCommand = null;
+        String stopCommand = null;
 
         String[] split = bindingConfig.split(",");
         if (split.length > 0) {
@@ -171,6 +188,12 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                     onCommand = substring.substring(3, substring.length() - 1);
                 } else if (substring.startsWith("OFF(")) {
                     offCommand = substring.substring(4, substring.length() - 1);
+                } else if (substring.startsWith("UP(")) {
+                    upCommand = substring.substring(3, substring.length() - 1);
+                } else if (substring.startsWith("DOWN(")) {
+                    downCommand = substring.substring(5, substring.length() - 1);
+                } else if (substring.startsWith("STOP(")) {
+                    stopCommand = substring.substring(5, substring.length() - 1);
                 }
             }
         }
@@ -201,11 +224,14 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
             } catch (Throwable e) {
                 throw new BindingConfigParseException("Could not open serial port " + port + ": " + e.getMessage());
             }
-            itemMap.put(item.getName(), port);
+
             serialDevices.put(port, serialDevice);
         }
 
-        serialDevice.addConfig(item.getName(), item.getClass(), pattern, base64, onCommand, offCommand);
+        itemMap.put(item.getName(), port);
+
+        serialDevice.addConfig(item.getName(), item.getClass(), pattern, base64, onCommand, offCommand, upCommand,
+                downCommand, stopCommand);
 
         Set<String> itemNames = contextMap.get(context);
         if (itemNames == null) {

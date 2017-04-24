@@ -21,13 +21,16 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationService;
+import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,8 +69,11 @@ public class SerialDevice implements SerialPortEventListener {
     class ItemType {
         String pattern;
         boolean base64;
-        String onString;
-        String offString;
+        String onCommand;
+        String offCommand;
+        String upCommand;
+        String downCommand;
+        String stopCommand;
         Class<?> type;
     }
 
@@ -75,8 +81,8 @@ public class SerialDevice implements SerialPortEventListener {
         return configMap.isEmpty();
     }
 
-    public void addConfig(String itemName, Class<?> type, String pattern, boolean base64, String onString,
-            String offString) {
+    public void addConfig(String itemName, Class<?> type, String pattern, boolean base64, String onCommand,
+            String offCommand, String upCommand, String downCommand, String stopCommand) {
         if (configMap == null) {
             configMap = new HashMap<String, ItemType>();
         }
@@ -85,8 +91,11 @@ public class SerialDevice implements SerialPortEventListener {
         typeItem.pattern = pattern;
         typeItem.base64 = base64;
         typeItem.type = type;
-        typeItem.onString = onString;
-        typeItem.offString = offString;
+        typeItem.onCommand = onCommand;
+        typeItem.offCommand = offCommand;
+        typeItem.upCommand = upCommand;
+        typeItem.downCommand = downCommand;
+        typeItem.stopCommand = stopCommand;
 
         configMap.put(itemName, typeItem);
     }
@@ -122,17 +131,41 @@ public class SerialDevice implements SerialPortEventListener {
         return port;
     }
 
-    public String getOnString(String itemName) {
+    public String getOnCommand(String itemName) {
         if (configMap.get(itemName) != null) {
-            return configMap.get(itemName).onString;
+            return configMap.get(itemName).onCommand;
         }
 
         return "";
     }
 
-    public String getOffString(String itemName) {
+    public String getOffCommand(String itemName) {
         if (configMap.get(itemName) != null) {
-            return configMap.get(itemName).offString;
+            return configMap.get(itemName).offCommand;
+        }
+
+        return "";
+    }
+
+    public String getUpCommand(String itemName) {
+        if (configMap.get(itemName) != null) {
+            return configMap.get(itemName).upCommand;
+        }
+
+        return "";
+    }
+
+    public String getDownCommand(String itemName) {
+        if (configMap.get(itemName) != null) {
+            return configMap.get(itemName).downCommand;
+        }
+
+        return "";
+    }
+
+    public String getStopCommand(String itemName) {
+        if (configMap.get(itemName) != null) {
+            return configMap.get(itemName).stopCommand;
         }
 
         return "";
@@ -258,18 +291,23 @@ public class SerialDevice implements SerialPortEventListener {
                                         try {
                                             String value = transformationService.transform(entry.getValue().pattern,
                                                     result);
-                                            if (entry.getValue().type.equals(NumberItem.class)) {
-                                                try {
-                                                    eventPublisher.postUpdate(entry.getKey(), new DecimalType(value));
-                                                } catch (NumberFormatException e) {
-                                                    logger.warn(
-                                                            "Unable to convert regex result '{}' for item {} to number",
-                                                            new String[] { result, entry.getKey() });
-                                                }
-                                            } else {
-                                                eventPublisher.postUpdate(entry.getKey(), new StringType(value));
-                                            }
 
+                                            try {
+                                                State state = null;
+
+                                                if (entry.getValue().type.equals(NumberItem.class)) {
+                                                    state = new DecimalType(value);
+                                                } else if (entry.getValue().type == RollershutterItem.class) {
+                                                    state = new PercentType(value);
+                                                } else {
+                                                    state = new StringType(value);
+                                                }
+
+                                                eventPublisher.postUpdate(entry.getKey(), state);
+                                            } catch (NumberFormatException e) {
+                                                logger.warn("Unable to convert regex result '{}' for item {} to number",
+                                                        new String[] { result, entry.getKey() });
+                                            }
                                         } catch (TransformationException e) {
                                             logger.error("Unable to transform!", e);
                                         }
@@ -285,10 +323,20 @@ public class SerialDevice implements SerialPortEventListener {
                                     if (result.trim().isEmpty()) {
                                         eventPublisher.postUpdate(entry.getKey(), OnOffType.ON);
                                         eventPublisher.postUpdate(entry.getKey(), OnOffType.OFF);
-                                    } else if (result.equals(getOnString(entry.getKey()))) {
+                                    } else if (result.equals(getOnCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), OnOffType.ON);
-                                    } else if (result.equals(getOffString(entry.getKey()))) {
+                                    } else if (result.equals(getOffCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), OnOffType.OFF);
+                                    }
+                                } else if (entry.getValue().type == RollershutterItem.class) {
+                                    if (result.trim().isEmpty()) {
+                                        eventPublisher.postUpdate(entry.getKey(), new PercentType(50));
+                                    } else if (result.equals(getUpCommand(entry.getKey()))) {
+                                        eventPublisher.postUpdate(entry.getKey(), PercentType.HUNDRED);
+                                    } else if (result.equals(getDownCommand(entry.getKey()))) {
+                                        eventPublisher.postUpdate(entry.getKey(), PercentType.ZERO);
+                                    } else if (result.equals(getStopCommand(entry.getKey()))) {
+                                        eventPublisher.postUpdate(entry.getKey(), new PercentType(50));
                                     }
                                 }
                             }
