@@ -303,6 +303,7 @@ public class InsteonDevice {
             // not status features
             for (DeviceFeature f : m_features.values()) {
                 if (!f.isStatusFeature()) {
+                    logger.debug("----- applying message to feature: {}", f.getName());
                     if (f.handleMessage(msg, fromPort)) {
                         // handled a reply to a query,
                         // mark it as processed
