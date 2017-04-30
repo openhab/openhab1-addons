@@ -155,6 +155,11 @@ Example entry:
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
+     <feature_group name="ext_group" type="ExtStatusGroup">
+          <feature name="ledbrightness">LEDBrightness</feature>
+	  <feature name="ramprate">RampRate</feature>
+     </feature_group>
+
  </device>
 
  <device productKey="F00.00.02">
@@ -163,6 +168,9 @@ Example entry:
      <feature name="switch">GenericSwitch</feature>
      <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
+     <feature_group name="ext_group" type="ExtStatusGroup">
+          <feature name="ledbrightness">LEDBrightness</feature>
+     </feature_group>
  </device>
 
  <device productKey="F00.00.03">
