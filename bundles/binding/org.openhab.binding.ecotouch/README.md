@@ -37,10 +37,13 @@ where `<eventType>` is one of the following values:
 | Außentemperatur | temperature_outside | number |  | 
 | Außentemperatur gemittelt über 1h | temperature_outside_1h | number |  | 
 | Außentemperatur gemittelt über 24h | temperature_outside_24h | number |  | 
-| Quelleneintrittstemperatur | temperature_source_in | number |  | 
-| Quellenaustrittstemperatur | temperature_source_out | number |  | 
+| Quelleneintrittstemperatur | temperature_source_in | number |  | Ai1 Geo only |
+| Quellenaustrittstemperatur | temperature_source_out | number |  | Ai1 Geo only | 
+| Umgebungstemperatur | temperature_surrounding | number |  | Ai1 Air only |
 | Verdampfungstemperatur | temperature_evaporation | number |  | 
-| Sauggastemperatur | temperature_suction | number |  | 
+| Sauggastemperatur | temperature_suction | number | | Ai1 Geo only | 
+| Sauggas | temperature_suction_air | number |  | Ai1 Air only |
+| Ölsumpf | temperature_sump | number |  | Ai1 Air only |
 | Verdampfungsdruck | pressure_evaporation | number |  | 
 | Temperatur Rücklauf Soll | temperature_return_set | number |  | 
 | Temperatur Rücklauf | temperature_return | number |  | 
@@ -98,7 +101,7 @@ where `<eventType>` is one of the following values:
 | Handabschaltung Kühlbetrieb | enable_cooling | switch | yes | 
 | Handabschaltung Warmwasserbetrieb | enable_warmwater | switch | yes | 
 | Handabschaltung Pool_Heizbetrieb | enable_pool | switch | yes | 
-| Status der Wärmepumpenkomponenten | state | number |  | 
+| Status der Wärmepumpenkomponenten | state | number |  | State as a number, see below for possible mapping. |
 | Status Quellenpumpe | state_sourcepump | switch |  | 
 | Status Heizungsumwälzpumpe | state_heatingpump | switch |  | 
 | Status Freigabe Regelung EDV / Magnetventil | state_evd | switch |  | 
@@ -122,6 +125,28 @@ where `<eventType>` is one of the following values:
 | Handschaltung Kühlventil | manual_coolvalve |  | yes | (H-0-A)
 | Handschaltung Vierwegeventil | manual_4wayvalve |  | yes | (H-0-A)
 | Handschaltung Multiausgang Ext. | manual_multiext |  | yes | (H-0-A)
+
+### Mappings
+
+Heatpump event type "state" can be mapped to strings. Different heatpump models seem to have slightly different state values.
+Mappings for the Ai1 Geo have been coppied from [here](http://www.haustechnikdialog.de/Forum/t/173357/Waterkotte-via-Ethernet-OpenHAB-und-Android-App?page=6).
+
+| State | Ai1 Geo | Ai1 Air	|
+| ----- | ----- | ----- |
+| 0 | aus	| aus |
+| 1 | nur Solepumpe 1	| |
+| 2 | nur Heizkreispumpe 2 | Standby |
+| 3 | unbekannt | |
+| 7 | unbekannt | |
+| 10 | | Heizbetrieb |
+| 15 | Heizbetrieb | |
+| 131 | Naturkühlung | |
+| 256 | Vorlauf Warmwasser | Vorlauf Warmwasser |
+| 258 | Nachlauf Warmwasser | Nachlauf Warmwasser |
+| 259 | unbekannt 259 vor WW Bereitung | |
+| 263 | unbekannt 263 vor WW Bereitung | |
+| 266 | | Warmwasserbereitung |
+| 271 | Warmwasserbereitung | |
 
 
 ## Examples
