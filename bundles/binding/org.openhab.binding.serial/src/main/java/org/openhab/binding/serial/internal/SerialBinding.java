@@ -24,7 +24,6 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
-import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -69,8 +68,6 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 
     private EventPublisher eventPublisher = null;
 
-    private TransformationService transformationService;
-
     public void setEventPublisher(EventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
 
@@ -84,20 +81,6 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 
         for (SerialDevice serialDevice : serialDevices.values()) {
             serialDevice.setEventPublisher(null);
-        }
-    }
-
-    public void setTransformationService(TransformationService transformationService) {
-        this.transformationService = transformationService;
-        for (SerialDevice serialDevice : serialDevices.values()) {
-            serialDevice.setTransformationService(transformationService);
-        }
-    }
-
-    public void unsetTransformationService(TransformationService transformationService) {
-        this.transformationService = null;
-        for (SerialDevice serialDevice : serialDevices.values()) {
-            serialDevice.setTransformationService(null);
         }
     }
 
@@ -174,31 +157,39 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         String downCommand = null;
         String stopCommand = null;
 
-        String[] split = bindingConfig.split(",");
-        if (split.length > 0) {
-            for (int i = 1; i < split.length; i++) {
-                String part = split[i];
-                String substring = part.substring(0, part.length());
+        int parameterSplitterAt = bindingConfig.indexOf(",");
 
-                if (substring.startsWith("REGEX(")) {
-                    pattern = substring.substring(6, substring.length() - 1);
-                } else if (substring.equals("BASE64")) {
-                    base64 = true;
-                } else if (substring.startsWith("ON(")) {
-                    onCommand = substring.substring(3, substring.length() - 1);
-                } else if (substring.startsWith("OFF(")) {
-                    offCommand = substring.substring(4, substring.length() - 1);
-                } else if (substring.startsWith("UP(")) {
-                    upCommand = substring.substring(3, substring.length() - 1);
-                } else if (substring.startsWith("DOWN(")) {
-                    downCommand = substring.substring(5, substring.length() - 1);
-                } else if (substring.startsWith("STOP(")) {
-                    stopCommand = substring.substring(5, substring.length() - 1);
+        if (parameterSplitterAt > 0) {
+            String[] split = bindingConfig.substring(parameterSplitterAt + 1, bindingConfig.length() - 1).split("\\),");
+            if (split.length > 0) {
+                for (int i = 0; i < split.length; i++) {
+                    String substring = split[i];
+
+                    if (substring.startsWith("REGEX(")) {
+                        pattern = substring.substring(6, substring.length());
+                    } else if (substring.equals("BASE64")) {
+                        base64 = true;
+                    } else if (substring.startsWith("ON(")) {
+                        onCommand = substring.substring(3, substring.length());
+                    } else if (substring.startsWith("OFF(")) {
+                        offCommand = substring.substring(4, substring.length());
+                    } else if (substring.startsWith("UP(")) {
+                        upCommand = substring.substring(3, substring.length());
+                    } else if (substring.startsWith("DOWN(")) {
+                        downCommand = substring.substring(5, substring.length());
+                    } else if (substring.startsWith("STOP(")) {
+                        stopCommand = substring.substring(5, substring.length());
+                    }
                 }
             }
         }
 
-        String portConfig[] = split[0].split("@");
+        String portConfig[];
+        if (parameterSplitterAt > 0) {
+            portConfig = bindingConfig.substring(0, parameterSplitterAt).split("@");
+        } else {
+            portConfig = bindingConfig.split("@");
+        }
 
         String port = portConfig[0];
         int baudRate = 0;
@@ -215,7 +206,6 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                 serialDevice = new SerialDevice(port);
             }
 
-            serialDevice.setTransformationService(transformationService);
             serialDevice.setEventPublisher(eventPublisher);
             try {
                 serialDevice.initialize();

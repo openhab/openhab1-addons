@@ -29,7 +29,6 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationException;
-import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +41,7 @@ import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
 /**
- * This class represents a serial device that is linked to exactly one String item and/or Switch item.
+ * This class represents a serial device that is linked to one or many String, Number, Switch or Rollershutter items
  *
  * @author Kai Kreuzer
  *
@@ -55,7 +54,6 @@ public class SerialDevice implements SerialPortEventListener {
     private int baud = 9600;
 
     private EventPublisher eventPublisher;
-    private TransformationService transformationService;
 
     private CommPortIdentifier portId;
     private SerialPort serialPort;
@@ -102,6 +100,12 @@ public class SerialDevice implements SerialPortEventListener {
 
     public void removeConfig(String itemName) {
         if (configMap != null) {
+            ItemType type = configMap.get(itemName);
+            if (type.pattern != null) {
+                // For duplicate patterns - it will be added to cache next time it is required
+                RegexPatternMatcher.removePattern(type.pattern);
+            }
+
             configMap.remove(itemName);
         }
     }
@@ -121,10 +125,6 @@ public class SerialDevice implements SerialPortEventListener {
 
     public void unsetEventPublisher(EventPublisher eventPublisher) {
         this.eventPublisher = null;
-    }
-
-    public void setTransformationService(TransformationService transformationService) {
-        this.transformationService = transformationService;
     }
 
     public String getPort() {
@@ -280,27 +280,24 @@ public class SerialDevice implements SerialPortEventListener {
                     if (eventPublisher != null) {
                         if (configMap != null && !configMap.isEmpty()) {
                             for (Entry<String, ItemType> entry : configMap.entrySet()) {
-
+                                String pattern = entry.getValue().pattern;
                                 // use pattern
-                                if (entry.getValue().pattern != null) {
+                                if (pattern != null) {
+                                    try {
+                                        String[] matches = RegexPatternMatcher.getMatches(pattern, result);
 
-                                    if (transformationService == null) {
-                                        logger.error("No transformation service available!");
-
-                                    } else {
-                                        try {
-                                            String value = transformationService.transform(entry.getValue().pattern,
-                                                    result);
+                                        for (int i = 0; i < matches.length; i++) {
+                                            String match = matches[i];
 
                                             try {
                                                 State state = null;
 
                                                 if (entry.getValue().type.equals(NumberItem.class)) {
-                                                    state = new DecimalType(value);
+                                                    state = new DecimalType(match);
                                                 } else if (entry.getValue().type == RollershutterItem.class) {
-                                                    state = new PercentType(value);
+                                                    state = new PercentType(match);
                                                 } else {
-                                                    state = new StringType(value);
+                                                    state = new StringType(match);
                                                 }
 
                                                 eventPublisher.postUpdate(entry.getKey(), state);
@@ -308,11 +305,10 @@ public class SerialDevice implements SerialPortEventListener {
                                                 logger.warn("Unable to convert regex result '{}' for item {} to number",
                                                         new String[] { result, entry.getKey() });
                                             }
-                                        } catch (TransformationException e) {
-                                            logger.error("Unable to transform!", e);
                                         }
+                                    } catch (TransformationException e) {
+                                        logger.error("Unable to transform!", e);
                                     }
-
                                 } else if (entry.getValue().type == StringItem.class) {
                                     if (entry.getValue().base64) {
                                         result = Base64.encodeBase64String(result.getBytes());
