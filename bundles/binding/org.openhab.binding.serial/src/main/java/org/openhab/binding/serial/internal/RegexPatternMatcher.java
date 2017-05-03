@@ -75,7 +75,8 @@ public class RegexPatternMatcher {
      * Returns array of strings that match given regular expression.
      * If expression is not known the compiled pattern is cached in pattern cache
      *
-     * @param regExpression regular expression to match or a substitution in form of "s/<regex>/result/g"
+     * @param regExpression regular expression to match or a substitution in form of "s/<regex>/result/g" (replace all)
+     *            or "s/<regex>/result/" (replace first)
      * @param source text to search in
      * @return
      * @throws TransformationException if regExpression or source is null
@@ -88,7 +89,7 @@ public class RegexPatternMatcher {
 
         logger.debug("about to transform '{}' by the function '{}'", source, regExpression);
 
-        // Check if RegEx is a substitution (s/<regex>/result/g)
+        // Check if RegEx is a substitution (s/<regex>/result/g) or (s/<regex>/result/)
         if (isSubtitution(regExpression)) {
             Matcher substMatcher = SUBST_PATTERN.matcher(regExpression);
             if (substMatcher.matches()) {
