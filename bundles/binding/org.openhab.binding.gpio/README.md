@@ -68,10 +68,10 @@ _NOTE: These options are optional, in most circumstances you don't have to speci
 Allowed item types are `Contact` and `Switch`. Type `Contact` is used for input pins, `Switch` - for output pins. The configuration string is following:
 
 ```
-gpio="pin:PIN_NUMBER [debounce:DEBOUNCE_INTERVAL] [activelow:yes|no] [force:yes|no]"
+gpio="pin:PIN_NUMBER [debounce:DEBOUNCE_INTERVAL] [activelow:yes|no] [force:yes|no] [initialValue:high|low]"
 ```
 
-Key-value pairs are separated by space; their order isn't important. Character's case is also insignificant. Key-value pair `pin` is mandatory, `debounce` and `activelow` are optional. If omitted `activelow` is set to `no`, `debounce` - to global option in configuration file (`debounce`) or 0 (zero) if neither is specified. 
+Key-value pairs are separated by space; their order isn't important. Character's case is also insignificant. Key-value pair `pin` is mandatory, `debounce`, `activelow` and `initialValue` are optional. If omitted `activelow` is set to `no`, `debounce` - to global option in configuration file (`debounce`) or 0 (zero) if neither is specified, `initialValue` is set to LOW. 
 
 `PIN_NUMBER` is the number of the GPIO pin as seen by the kernel (not necessarily the same as the physical pin number).  
 
@@ -79,13 +79,15 @@ Key-value pairs are separated by space; their order isn't important. Character's
 
 When `activelow` is set to `no` (or omitted) the pins behaves normally: output pins will be set `high` on `ON` command and `low` on `OFF`, input pins will generate `OPEN` event when they are `high` and `CLOSED` when are `low`. However, if `activelow` is set to `yes` the logic is inverted: when `ON` command is sent to output pin it will be set to `low`, on `OFF` command - to `high`. Input pins will generate `OPEN` event when they are `low` and `CLOSED` event on `high`.
 
+`initialValue` is the state of the pin which is set during initialization. It is applicable ony for oputput pins (item Switch) and can be HIGH or LOW.
+
 The "force" option can be used to forcefully get hold of the configured pin even if it is currently in use, so it automatically gets unexported and exported again.
 
 Examples:
 
 ```
 Switch LED "LED" { gpio="pin:1" }
-Switch NormallyClosedRelay "Normally Closed Relay" { gpio="pin:2 activelow:yes" }
+Switch NormallyClosedRelay "Normally Closed Relay" { gpio="pin:2 activelow:yes initialValue:high" }
 Contact NormallyOpenPushButton "Normally Open Push Button" { gpio="pin:3 debounce:10" }
 Contact PIR "PIR" { gpio="pin:4 activelow:yes" }
 Contact NormallyClosedPushButton "Normally Closed Push Button" { gpio="pin:5 debounce:10 activelow:yes" }
