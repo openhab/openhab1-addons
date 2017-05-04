@@ -158,8 +158,9 @@ public class DenonConnector {
                 }
             });
             listener.start();
+        } else {
+            getInitialState();
         }
-        getInitialState();
     }
 
     /**
