@@ -26,7 +26,7 @@ public class SerialParameterValidator {
 
     /**
      * validating the given baudRate
-     * 
+     *
      * @param baudRate value to be checked
      * @return whether if the value is valid or not
      */

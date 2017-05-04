@@ -194,7 +194,7 @@ public class FastByteArrayInputStream extends InputStream {
     /**
      * Re-positions this stream to the position at
      * the time the mark method was last called this <tt>FastByteArrayInputStream</tt>.
-     * 
+     *
      * @throws IOException if the readlimit was exceeded.
      */
     @Override

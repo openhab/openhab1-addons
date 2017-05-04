@@ -25,10 +25,10 @@ public enum SwegonVentilationCommandType {
     T1("T1", NumberItem.class), // Temperature sensor, outdoor air
     T2("T2", NumberItem.class), // Temperature sensor, supply air
     T3("T3", NumberItem.class), // Temperature sensor, extract air
-    T4("T4", NumberItem.class), // Temperature sensor, supply air, reheating
+    T4("T4", NumberItem.class), // Temperature sensor, supply air, re-heating
     T5("T5", NumberItem.class),
     T6("T6", NumberItem.class), // The freeze protection sensor of the water-heated air heater
-    T7("T7", NumberItem.class), // Excess temperature sensor for the preheating air heater
+    T7("T7", NumberItem.class), // Excess temperature sensor for the pre-heating air heater
     T8("T8", NumberItem.class), // Temperature sensor, exhaust air, freeze protection
     OUTDOOR_TEMP("OutdoorTemperature", NumberItem.class), // T1
     SUPPLY_TEMP("SupplyAirTemperature", NumberItem.class), // T2
@@ -42,7 +42,47 @@ public enum SwegonVentilationCommandType {
     EFFICIENCY_EXTRACT("EfficiencyExtract", NumberItem.class),
     FAN_SPEED("FanSpeed", NumberItem.class),
     PREHEAT_STATE("PreheatState", SwitchItem.class),
-    REHEAT_STATE("ReheatState", SwitchItem.class),;
+    REHEAT_STATE("ReheatState", SwitchItem.class),
+    CO2("CO2", NumberItem.class),
+    HUMIDITY("Humidity", NumberItem.class),
+    OPERATING_MODE("OperatingMode", NumberItem.class),
+    UNIT_STATE("UnitState", NumberItem.class),
+    HEATING_STATE("HeatingState", SwitchItem.class),
+    COOLING_STATE("CoolingState", SwitchItem.class),
+    BYBASS_STATE("BybassState", SwitchItem.class),
+    FREEZE_PROTECTION_STATE("FreezeProtectionState", SwitchItem.class),
+    PREHEATING_STATE("PreheatingState", SwitchItem.class),
+    CHILLING_STATE("ChillingState", SwitchItem.class),
+    PREHEATER_OVERHEAT_STATE("PreheaterOverheatState", SwitchItem.class),
+    REHEATING_STATE("ReheatingState", SwitchItem.class),
+    FIREPLACE_FUNCTION_STATE("FireplaceFunctionState", SwitchItem.class),
+    UNDERPRESSURE_COMPENSATION_STATE("UnderpressureCompensationState", SwitchItem.class),
+    EXTERNAL_BOOST_STATE("ExternalBoostState", SwitchItem.class),
+    HUMIDITY_BOOST_STATE("HumidityBoostState", SwitchItem.class),
+    CO2_BOOST_STATE("CO2State", SwitchItem.class),
+    DEFROSTING_STATE("DefrostingState", SwitchItem.class),
+    DEFROST_STARTER_MODE("DefrostingStarterMode", NumberItem.class),
+    TF_STOP_STATE("TFStopState", SwitchItem.class),
+    EXTERNAL_BOOST_FUNCTION_STATE("ExternalBoostFunctionState", SwitchItem.class),
+    EXTERNAL_FIREPLACE_FUNCTION_STATE("ExternalFireplaceFunctionState", SwitchItem.class),
+    FILTER_GUARD_STATUS("FilterGuardStatus", SwitchItem.class),
+    IR_FREEZE_PROTECTION_STATUS("IRFreezeProctionStatus", SwitchItem.class),
+    EMERGENCY_STOP_STATE("EmergencyStopState", SwitchItem.class),
+    REHEATING_FREEZING_ALARM("ReheatingFreezingAlarm", SwitchItem.class),
+    REHEATING_OVERHEAT_ALARM("ReheatingOverheatAlarm", SwitchItem.class),
+    IR_SENSOR_FAILURE("IRSensorFailure", SwitchItem.class),
+    SUPPLY_FAN_FAILURE("SupplyFanFailure", SwitchItem.class),
+    EXTRACT_FAN_FAILURE("ExtractFanFailure", SwitchItem.class),
+    TEMPERATURE_DEVIATION_FAILURE("TemperatureDeviationFailure", SwitchItem.class),
+    EFFICINECY_ALARM("EfficiencyAlarm", SwitchItem.class),
+    FILTER_GUARD_ALARM("FilterGuardAlarm", SwitchItem.class),
+    SERVICE_REMINDER("ServiceReminder", SwitchItem.class),
+    TEMPERATURE_FAILURE("TemperatureFailure", SwitchItem.class),
+    AFTERHEATING_SETPOINT_SUPPLY_AIR_REGULATED("AfterheatingSetpointSupplyAirRegulated", NumberItem.class),
+    AFTERHEATING_SETPOINT_ROOM_REGULATED("AfterheatingSetpointRoomRegulated", NumberItem.class),
+    SUPPLY_FAN_VIRTUAL_SPEED("SupplyFanVirtualSpeed", NumberItem.class),
+    EXTRACT_FAN_VIRTUAL_SPEED("ExtractFanVirtualSpeed", NumberItem.class),
+    UNIT_STATUS("UnitStatus", NumberItem.class);
 
     private final String text;
     private Class<? extends Item> itemClass;
@@ -63,7 +103,7 @@ public enum SwegonVentilationCommandType {
 
     /**
      * Procedure to validate command type string.
-     * 
+     *
      * @param commandTypeText
      *            command string e.g. T1
      * @return true if item is valid.
@@ -92,7 +132,7 @@ public enum SwegonVentilationCommandType {
 
     /**
      * Procedure to convert command type string to command type class.
-     * 
+     *
      * @param commandTypeText
      *            command string e.g. T1
      * @return corresponding command type.

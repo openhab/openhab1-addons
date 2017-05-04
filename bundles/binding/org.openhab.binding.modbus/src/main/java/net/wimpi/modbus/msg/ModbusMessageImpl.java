@@ -78,7 +78,7 @@ public abstract class ModbusMessageImpl implements ModbusMessage {
      * The identifier should be a 2-byte (short) non negative
      * integer value valid in the range of 0-65535.<br>
      * <p>
-     * 
+     *
      * @param tid the transaction identifier as <tt>int</tt>.
      */
     public void setTransactionID(int tid) {
@@ -98,7 +98,7 @@ public abstract class ModbusMessageImpl implements ModbusMessage {
      * The identifier should be a 2-byte (short) non negative
      * integer value valid in the range of 0-65535.<br>
      * <p>
-     * 
+     *
      * @param pid the protocol identifier as <tt>int</tt>.
      */
     public void setProtocolID(int pid) {
@@ -121,7 +121,7 @@ public abstract class ModbusMessageImpl implements ModbusMessage {
      * of each and every message. Thus this message will
      * append two (2) to the passed in integer value.
      * <p>
-     * 
+     *
      * @param length the data length as <tt>int</tt>.
      */
     public void setDataLength(int length) {

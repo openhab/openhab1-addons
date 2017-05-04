@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -43,7 +43,7 @@ public class SimultaneousReadWriteTestCase extends TestCaseSupport {
 
     @Parameters
     public static List<Object[]> parameters() {
-        List<Object[]> parameters = new ArrayList<Object[]>();
+        List<Object[]> parameters = new ArrayList<>();
         for (ServerType serverType : TestCaseSupport.TEST_SERVERS) {
             parameters.add(new Object[] { serverType, new short[] { 5, 5, 5, 5, 5 }, ModbusBindingProvider.TYPE_HOLDING,
                     ModbusBindingProvider.VALUE_TYPE_INT16, new DecimalType(5.0) });

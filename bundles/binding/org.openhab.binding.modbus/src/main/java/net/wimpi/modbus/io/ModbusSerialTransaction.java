@@ -177,10 +177,8 @@ public class ModbusSerialTransaction implements ModbusTransaction {
             synchronized (m_IO) {
                 int tries = 0;
 
-                // toggle the id
-                m_Request.setTransactionID(c_TransactionID.increment());
-
                 do {
+                    m_Request.setTransactionID(c_TransactionID.increment());
                     try {
                         if (m_TransDelayMS > 0) {
                             try {
@@ -189,6 +187,7 @@ public class ModbusSerialTransaction implements ModbusTransaction {
                                 logger.error("InterruptedException: {}", ex.getMessage());
                             }
                         }
+
                         // write request message
                         m_IO.writeMessage(m_Request);
                         // read response message
@@ -202,16 +201,19 @@ public class ModbusSerialTransaction implements ModbusTransaction {
                                 m_Request.getTransactionID(), m_SerialCon.getParameters());
                         if (tries >= m_Retries) {
                             logger.error(
-                                    "execute reached max tries {}, throwing last error: {}. Request: {}. Serial parameters: {}",
-                                    m_Retries, e.getMessage(), m_Request, m_SerialCon.getParameters());
+                                    "execute reached max tries {}, throwing last error: {}. Request: {} (unit id {} & transaction {}). Serial parameters: {}",
+                                    m_Retries, e.getMessage(), m_Request, m_Request.getUnitID(),
+                                    m_Request.getTransactionID(), m_SerialCon.getParameters());
                             throw e;
                         }
                         Thread.sleep(m_RetryDelayMillis);
                     }
                 } while (true);
                 if (tries > 0) {
-                    logger.info("execute eventually succeeded with {} re-tries. Request: {}. Serial parameters: {}",
-                            tries, m_Request, m_SerialCon.getParameters());
+                    logger.info(
+                            "execute eventually succeeded with {} re-tries. Request: {} (unit id {} & transaction id {}). Serial parameters: {}",
+                            tries, m_Request, m_Request.getUnitID(), m_Request.getTransactionID(),
+                            m_SerialCon.getParameters());
                 }
             }
 

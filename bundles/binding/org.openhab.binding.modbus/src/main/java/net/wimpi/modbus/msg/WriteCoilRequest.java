@@ -57,7 +57,7 @@ public final class WriteCoilRequest extends ModbusRequest {
      * instance with a given reference and state to
      * be written.
      * <p>
-     * 
+     *
      * @param ref the reference number of the register
      *            to read from.
      * @param b true if the coil should be set of
@@ -106,7 +106,7 @@ public final class WriteCoilRequest extends ModbusRequest {
      * that should be written to with this
      * <tt>ReadCoilsRequest</tt>.
      * <p>
-     * 
+     *
      * @param ref the reference of the coil's register.
      */
     public void setReference(int ref) {
@@ -119,7 +119,7 @@ public final class WriteCoilRequest extends ModbusRequest {
      * that should be written to with this
      * <tt>ReadCoilsRequest</tt>.
      * <p>
-     * 
+     *
      * @return the reference of the coil's register.
      */
     public int getReference() {
@@ -130,7 +130,7 @@ public final class WriteCoilRequest extends ModbusRequest {
      * Sets the state that should be written
      * with this <tt>WriteCoilRequest</tt>.
      * <p>
-     * 
+     *
      * @param b true if the coil should be set of
      *            false if it should be unset.
      */
@@ -143,7 +143,7 @@ public final class WriteCoilRequest extends ModbusRequest {
      * Returns the state that should be written
      * with this <tt>WriteCoilRequest</tt>.
      * <p>
-     * 
+     *
      * @return true if the coil should be set of
      *         false if it should be unset.
      */

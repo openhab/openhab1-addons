@@ -116,7 +116,7 @@ public final class ModbusUtil {
      * Converts the register (a 16 bit value) into an unsigned short.
      * The value returned is:
      * <p>
-     * 
+     *
      * <pre>
      * <code>(((a &amp; 0xff) &lt;&lt; 8) | (b &amp; 0xff))
      * </code>
@@ -139,7 +139,7 @@ public final class ModbusUtil {
      * The byte values in the register, in the order
      * shown, are:
      * <p/>
-     * 
+     *
      * <pre>
      * <code>
      * (byte)(0xff &amp; (v &gt;&gt; 8))
@@ -166,7 +166,7 @@ public final class ModbusUtil {
      * a <tt>short</tt>.
      * The value returned is:
      * <p/>
-     * 
+     *
      * <pre>
      * <code>
      * (short)((a &lt;&lt; 8) | (b &amp; 0xff))
@@ -188,7 +188,7 @@ public final class ModbusUtil {
      * into a <tt>short</tt>.
      * The value returned is:
      * <p/>
-     * 
+     *
      * <pre>
      * <code>
      * (short)((a &lt;&lt; 8) | (b &amp; 0xff))
@@ -212,7 +212,7 @@ public final class ModbusUtil {
      * The byte values in the register, in the order
      * shown, are:
      * <p/>
-     * 
+     *
      * <pre>
      * <code>
      * (byte)(0xff &amp; (v &gt;&gt; 8))
@@ -234,7 +234,7 @@ public final class ModbusUtil {
      * Converts a byte[4] binary int value to a primitive int.<br>
      * The value returned is:
      * <p>
-     * 
+     *
      * <pre>
      * <code>
      * (((a &amp; 0xff) &lt;&lt; 24) | ((b &amp; 0xff) &lt;&lt; 16) |

@@ -12,7 +12,7 @@ The openHAB digitalSTROM binding allows interaction with digitalSTROM devices.
 
 <!-- /MarkdownTOC -->
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/oh2/digitalstrom/readme.html).
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/digitalstrom/readme.html).
 
  
 ## Prerequisites

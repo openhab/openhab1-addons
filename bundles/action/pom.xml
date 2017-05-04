@@ -22,6 +22,7 @@
     <module>org.openhab.action.pushsafer</module>
     <module>org.openhab.action.squeezebox</module>
     <module>org.openhab.action.twitter</module>
+    <module>org.openhab.action.ciscospark</module>
     <module>org.openhab.action.xbmc</module>
     <module>org.openhab.action.xmpp</module>
     <module>org.openhab.action.xpl</module>

@@ -4,7 +4,7 @@ The aim of this binding is to allow the connection from openHAB to MAX! devices 
 
 A lot of credit must go to the [FHEM project](http://fhem.de/fhem.html): without their implementation of the MAX interface with CUL this would be taking a lot longer to implement!
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/oh2/max/readme.html).
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/max/readme.html).
 
 ## Status
 

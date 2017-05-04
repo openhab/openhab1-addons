@@ -1,6 +1,8 @@
 # AKM868 Binding
 
-This binding is for users coming from the proprietary homeautomation-system "IP-Symcon". If you have bought some hardware from them, you can use this binding to enable your AKM868 presence detection system. The following hardware was used to do presence detection with the AKM-868 controller and a OVO868-tracker for your key-ring:
+This binding is for users coming from the proprietary homeautomation-system "IP-Symcon". If you have bought some hardware from them, you can use this binding to enable your AKM868 presence detection system.
+
+The following hardware was used to do presence detection with the AKM-868 controller and a OVO868-tracker for your key-ring:
 
 ![AKM-Module](https://raw.githubusercontent.com/openhab/openhab1-addons/master/bundles/binding/org.openhab.binding.akm868/src/main/resources/AKM868.png) 
 ![LAN-T Module](https://raw.githubusercontent.com/openhab/openhab1-addons/master/bundles/binding/org.openhab.binding.akm868/src/main/resources/LAN-T868.png)

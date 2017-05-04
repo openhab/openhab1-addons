@@ -29,4 +29,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-Activator: org.openhab.binding.fatekplc.internal.FatekPLCActivator
 Bundle-ClassPath: .,
- lib/jfatek-1.1.0.jar
+ lib/jfatek-2.0.0.jar

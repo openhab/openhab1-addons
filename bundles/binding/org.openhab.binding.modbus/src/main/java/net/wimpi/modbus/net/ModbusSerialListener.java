@@ -17,8 +17,6 @@
 
 package net.wimpi.modbus.net;
 
-import java.net.Socket;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,15 +37,15 @@ import net.wimpi.modbus.util.SerialParameters;
  * @version @version@ (@date@)
  */
 public class ModbusSerialListener {
-	
-  public static class SerialConnectionFactoryImpl implements SerialConnectionFactory {
 
-		@Override
-		public SerialConnection create(SerialParameters parameters) {
-			return new SerialConnection(parameters); 
-		}
+    public static class SerialConnectionFactoryImpl implements SerialConnectionFactory {
 
-	  }
+        @Override
+        public SerialConnection create(SerialParameters parameters) {
+            return new SerialConnection(parameters);
+        }
+
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(ModbusSerialListener.class);
     // Members
@@ -66,10 +64,10 @@ public class ModbusSerialListener {
         m_SerialCon = m_ConnectionFactory.create(params);
         logger.trace("Created connection");
         listen();
-    }//constructor
-    
+    }// constructor
+
     public ModbusSerialListener(SerialParameters params) {
-          this(params, new SerialConnectionFactoryImpl());
+        this(params, new SerialConnectionFactoryImpl());
     }
 
     /**

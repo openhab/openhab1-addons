@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,15 +9,10 @@
 package org.openhab.binding.modbus.internal;
 
 import org.openhab.binding.modbus.ModbusBindingProvider;
-import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.types.State;
-import org.openhab.core.types.UnDefType;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -66,17 +61,18 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
         if (item.getClass() == SwitchItem.class) {
             return;
-        }
-        if (item.getClass() == ContactItem.class) {
+        } else if (item.getClass() == ContactItem.class) {
             return;
-        }
-        if (item.getClass() == NumberItem.class) {
+        } else if (item.getClass() == NumberItem.class) {
             return;
+        } else {
+            logger.debug(
+                    "Item '{}' is of type '{}'. Please make sure that transformation is "
+                            + "in place to convert the polled data to a format understood "
+                            + "by the item. Furthermore, make sure that commands are converted to "
+                            + "DecimalType or any command accepted by Switch, Contact or Number items.",
+                    item.getName(), item.getClass().getSimpleName());
         }
-
-        throw new BindingConfigParseException(
-                "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
-                        + "', only Switch, Contact or Number are allowed - please check your *.items configuration");
     }
 
     /**
@@ -116,144 +112,6 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
     @Override
     public ModbusBindingConfig getConfig(String name) {
         return (ModbusBindingConfig) bindingConfigs.get(name);
-    }
-
-    /**
-     * ModbusBindingConfig stores configuration of the item bound to Modbus
-     *
-     * @author dbkrasn
-     * @since 1.1.0
-     */
-    public class ModbusBindingConfig implements BindingConfig {
-
-        /**
-         * Index to read, relative to start
-         */
-        int readIndex;
-        /**
-         * Index to write, relative to start
-         */
-        int writeIndex;
-
-        /**
-         * Name of the ModbusSlave instance to read/write data
-         */
-        String slaveName;
-        /**
-         * State of Item. Initialized to null so that
-         * UnDefType.UNDEF (which might be transmitted
-         * in case of errors)
-         * is considered unequal to the initial value.
-         */
-        private State state = null;
-
-        public State getState() {
-            return state;
-        }
-
-        public void setState(State state) {
-            this.state = state;
-        }
-
-        /**
-         * Name of Item
-         */
-
-        private Class<? extends Item> itemClass = null;
-
-        public Class<? extends Item> getItemClass() {
-            return itemClass;
-        }
-
-        private String itemName = null;
-
-        public String getItemName() {
-            return itemName;
-        }
-
-        /**
-         * Calculates new item state based on the new boolean value, current item state and item class
-         * Used with item bound to "coil" type slaves
-         *
-         * Returns UnDefType.UNDEF for Number and other "uncompatible" item types
-         *
-         * @param b new boolean value
-         * @param c class of the current item state
-         * @param itemClass class of the item
-         *
-         * @return new item state
-         */
-        protected State translateBoolean2State(boolean b) {
-
-            Class<? extends State> c = null;
-            if (state == null) {
-                c = UnDefType.class;
-            } else {
-                c = state.getClass();
-            }
-
-            if (c == UnDefType.class && itemClass == SwitchItem.class) {
-                return b ? OnOffType.ON : OnOffType.OFF;
-            } else if (c == UnDefType.class && itemClass == ContactItem.class) {
-                return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-            } else if (c == OnOffType.class && itemClass == SwitchItem.class) {
-                return b ? OnOffType.ON : OnOffType.OFF;
-            } else if (c == OpenClosedType.class && itemClass == SwitchItem.class) {
-                return b ? OnOffType.ON : OnOffType.OFF;
-            } else if (c == OnOffType.class && itemClass == ContactItem.class) {
-                return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-            } else if (c == OpenClosedType.class && itemClass == ContactItem.class) {
-                return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-            } else {
-                // Number items
-                return UnDefType.UNDEF;
-            }
-        }
-
-        /**
-         * Constructor for config object
-         *
-         * @param item
-         * @param config
-         * @throws BindingConfigParseException if
-         */
-        ModbusBindingConfig(Item item, String config) throws BindingConfigParseException {
-            itemClass = item.getClass();
-            state = item.getState();
-
-            try {
-                String[] items = config.split(":");
-                slaveName = items[0];
-                if (items.length == 2) {
-                    readIndex = Integer.valueOf(items[1]);
-                    writeIndex = Integer.valueOf(items[1]);
-                } else if (items.length == 3) {
-                    assignRegisters(items[1]);
-                    assignRegisters(items[2]);
-                } else {
-                    throw new BindingConfigParseException("Invalid number of registers in item configuration");
-                }
-            } catch (Exception e) {
-                throw new BindingConfigParseException(e.getMessage());
-            }
-        }
-
-        /**
-         * Parses register reference string and assigns values to readRegister and writeRegister
-         *
-         * @param item
-         * @throws BindingConfigParseException if register description is invalid
-         */
-        private void assignRegisters(String item) throws BindingConfigParseException {
-            if (item.startsWith("<")) {
-                readIndex = Integer.valueOf(item.substring(1, item.length()));
-            } else if (item.startsWith(">")) {
-                writeIndex = Integer.valueOf(item.substring(1, item.length()));
-            } else {
-                throw new BindingConfigParseException("Register references should be either :X or :<X:>Y");
-            }
-        }
-
     }
 
     @Override

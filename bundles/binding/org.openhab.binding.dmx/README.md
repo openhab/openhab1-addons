@@ -14,7 +14,7 @@ sending commands to a DMX device.
 The following device interface bundles are available:
 - org.openhab.binding.dmx.artnet : An interface using Artnet (since 1.4.0)
 - org.openhab.binding.dmx.ola : An interface using
-[OLA](http://opendmx.net/index.php/OLA) as a bridge. This interface only
+[OLA](https://www.openlighting.org/ola/) as a bridge. This interface only
 supports localhost bindings.
 
 
@@ -166,7 +166,7 @@ install OLA on a Raspberry Pi running Raspbian Wheezy and configure it for
 use with an Entec Open DMX USB dongle.
 
 For detailed instructions on how to install and configure OLA on different
-platforms or with different devices, consult the [OLA wiki](http://opendmx.net/index.php/Download_%26_Install_OLA).  
+platforms or with different devices, consult the [OLA documentation](https://www.openlighting.org/ola/getting-started/downloads/).  
 
 ### Installing OLA binaries
 
@@ -189,7 +189,7 @@ When prompted whether to start OLA at boot, select Yes.
 ### Configuring OLA devices
 
 OLA can bind to many different protocols and devices (check
-[here](http://opendmx.net/index.php/Open_Lighting_Architecture) for a full
+[here](https://www.openlighting.org/ola/) for a full
 list of supported protocols and devices).  In a typical setup, only a
 single device is needed.  To optimize performance, it is recommended to disable
 all other devices and protocols which are not used.  

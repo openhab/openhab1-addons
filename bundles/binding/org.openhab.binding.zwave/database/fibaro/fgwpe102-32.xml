@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>FGWPE102</Model>
+	<Label lang="en">Metered Wall Plug Switch (Z-Wave+)</Label>
+	
+	<CommandClasses>
+	
+        <Class>
+            <id>0x00</id>           <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>           <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x22</id>           <!-- APPLICATION_STATUS -->
+        </Class>
+        <Class>
+            <id>0x25</id>           <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x31</id>           <!-- SENSOR_MULTILEVEL -->
+        </Class>
+		<Class>
+            <id>0x32</id>           <!-- METER -->
+		</Class>
+		<Class>
+            <id>0x56</id>           <!-- CRC_16_ENCAP -->
+		</Class>
+		<Class>
+		    <id>0x70</id>           <!-- CONFIGURATION -->
+		</Class>
+        <Class>
+            <id>0x71</id>           <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>           <!-- MANUFACTURER_SPECIFIC -->
+        </Class> 
+		<Class>
+		    <id>0x85</id>           <!-- ASSOCIATION -->
+		</Class>
+		<Class>
+		    <id>0x86</id>           <!-- VERSION -->
+		</Class>
+		
+	</CommandClasses>
+
+	<Configuration>
+	
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">“Always On” mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Inactive</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Activated</Label>
+			</Item>
+			<Help lang="en"><![CDATA[In this mode Wall Plug will turn on connected device permanently and will stop reacting to attempts of turning it off (through Z-Wave network
+or pushing the B-button).<BR/>
+“Always On” function turns the Wall Plug into a power and energy meter. Connected device will not be turned off upon receiving an alarm frame from another Z-Wave device (parameter 31 will be ignored).<BR/>
+In “Always on” mode, connected device may be turned off after exceeding the power defined in parameter 3 or in case of detecting current greater than 110% of rated current. In such cases, connected
+device can be turned on again by pushing the B-button or sending a control frame. By default, overload protection is inactive.<BR/>
+Default setting: INACTIVE]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Remember device status before the power failure</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Device remains switched of</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Device restores the state from before the power failure</Label>
+			</Item>
+			<Help lang="en"><![CDATA[This parameter determines how the Wall Plug will react in the event of power supply failure (e.g. power outage or taking out from the
+electrical outlet). <BR/>
+After the power supply is back on, the Wall Plug can be restored to previous state or remain switched off.<BR/>
+This parameter is ignored in "Always On" mode - the device automatically turns ON after plugging it into the socket.<BR/>
+Default setting: 1<BR/>
+Available settings:<BR/>
+0 - Device remains switched of<BR/>
+1 - Device restores the state from before the power failure]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>3</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Minimum>10</Minimum>
+			<Maximum>30000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Overload safety switch</Label>
+			<Help lang="en"><![CDATA[This function allows to turn off the controlled device in case of exceeding the defined power. Controlled device will be turned off even
+if “Always On” function is active (parameter 1).<BR/>
+Controlled device can be turned back on via B-button or sending a control frame. By default this function is inactive.<BR/>
+Default setting: 0<BR/>
+Available settings:<BR/>
+0 - function inactive<BR/>
+1 - 10-30000 (1.0-3000.0W, step 0.1W) - power threshold]]>
+			</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>10</Index>
+			<Type>byte</Type>
+			<Default>80</Default>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">High priority power report</Label>
+			<Help lang="en"><![CDATA[This parameter determines the minimum percentage change in active power that will result in sending power report to the main controller
+with the highest priority in the Z-Wave network.<BR/>
+By default, the Wall Plug immediately sends the power report if the power load changes by 80%.<BR/>
+Available settings:<BR/>
+Default setting: 80 (%)<BR/>
+1-99 - power change in percent<BR/>
+100 - reports are disabled]]>
+			</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>15</Default>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Standard power report</Label>
+			<Help lang="en"><![CDATA[This parameter determines the minimum percentage change in active power that will result in sending power report to the main controller<BR/>
+Compared to parameter 10, the maximum number of reports sent is reduced (parameter 12) to 5 in a specified time interval. In addition, the reports are not sent in mode, which may result in overloading the Z-Wave network.<BR/>
+By default changes in power load may be reported up to 5 times per 30 seconds, when power load changes by 15%.<BR/>
+Default setting: 15 (%)<BR/>
+Available settings:<BR/>
+1-99 - power change in percent<BR/>
+100 - reports are disabled]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>12</Index>
+			<Type>short</Type>
+			<Default>30</Default>
+			<Minimum>5</Minimum>
+			<Maximum>600</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Power reporting interval</Label>
+			<Help lang="en"><![CDATA[This parameter defines the time interval of sending at most 5 standard power reports when the power changes by the value set in parameter
+11. The higher the value of parameter 12, the fewer reports the device will send.<BR/>
+Default setting: 30 (s)<BR/>
+Available settings: 5-600 (in seconds)]]>
+			</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>13</Index>
+			<Type>short</Type>
+			<Default>10</Default>
+			<Minimum>0</Minimum>
+			<Maximum>500</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Energy reporting threshold</Label>
+			<Help lang="en"><![CDATA[This parameter specifies the minimum change in energy consumption (in relation to the previously reported), that will result in sending a new report.<BR/>
+Default setting: 10 (0.1kWh)<BR/>
+Available settings:<BR/>
+0 - energy reports inactive<BR/>
+1-500 (0.01-5kWh, step 0.01kWh) - threshold<BR/>]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>14</Index>
+			<Type>short</Type>
+			<Default>3600</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32400</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Power and energy periodic reports</Label>
+			<Help lang="en"><![CDATA[This parameter defines time period between independent reports sent when changes in power load have not been recorded or if changes are insignificant. By default reports are sent every hour<BR/>
+Default seting: 3600 (1h)<BR/>
+Available settings:<BR/>
+0 - periodic reports inactive<BR/>
+5-32400 (in seconds)<BR/>]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>15</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Measuring energy consumed by the Wall Plug itself</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Inactive</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Activated</Label>
+			</Item>
+			<Help lang="en"><![CDATA[This parameter determines whether power metering should include the amount of power consumed by the Wall Plug itself. Results are being added to the value of power consumed by controlled device.<BR/>
+Default setting: INACTIVE<BR/>
+Available settings:<BR/>
+0 - function inactive<BR/>
+1 - function activated]]>
+			</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>20</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Control of "On/Off (Button)" association group (2) devices</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Control as the Wall Plug</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Control opposite to the Wall Plug</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Controlling devices with the B-Button. This parameter is inactive in “Always On” mode (parameter 1).<BR/>
+Control as the Wall Plug:<BR/>
+- Switching the Wall Plug on – switch the devices on (parameter 24)<BR/>
+- Switching the Wall Plug off – switch the devices off (parameter 24)<BR/>
+Control opposite to the Wall Plug:<BR/>
+- Switching the Wall Plug on – switch the devices of<BR/>
+- Switching the Wall Plug off – switch the devices on<BR/>
+Default setting: Control as the Wall Plug<BR/>
+Available settings:<BR/>
+0 - control as the Wall Plug<BR/>
+1 - control opposite to the Wall Plug]]>
+			</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>21</Index>
+			<Type>short</Type>
+			<Default>300</Default>
+			<Minimum>0</Minimum>
+			<Maximum>24900</Maximum>
+			<Size>2</Size>
+			<Label lang="en">DOWN value - "On/Off (Power)" association group (3)</Label>
+			<Help lang="en"><![CDATA[Lower power threshold, used in parameter 23. DOWN value cannot be higher than a value specified in parameter 22.<BR/>
+Default setting: 300 (30 W)<BR/>
+Available settings: 0-24900 (0.0-2490.0W, step 0.1W)<BR/>]]>
+			</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>22</Index>
+			<Type>short</Type>
+			<Default>500</Default>
+			<Minimum>100</Minimum>
+			<Maximum>25000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">UP value - "On/Off (Power)" association group (3)</Label>
+			<Help lang="en"><![CDATA[Upper power threshold, used in parameter 23. UP value cannot be lower than a value specified in parameter 21.<BR/>
+Default setting: 500 (50 W)<BR/>
+Available settings: 0-25000 (0.0-2500.0W, step 0.1W)<BR/>]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>23</Index>
+			<Type>list</Type>
+			<Default>6</Default>
+			<Size>1</Size>
+			<Label lang="en">The response after exceeding defined power values</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Turn devices ON when power below DOWN</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Turn devices OFF when power below DOWN</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Turn devices ON when power above UP</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Turn devices OFF when power above UP</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Turn devices ON when power below DOWN and OFF when power above UP</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Turn devices OFF when power below DOWN and ON when power above UP</Label>
+			</Item>
+			<Help lang="en"><![CDATA[This parameter defines the way that 3rd association group devices are controlled. Depends on the actual measured power (as parameters 21 and 22 settings).<BR/>
+Default setting: 6<BR/>
+Available settings:<BR/>
+1 - Turn the associated devices ON, once the power drops below DOWN value (parameter 21)<BR/>
+2 - Turn the associated devices OFF, once the power drops below DOWN value (parameter 21)<BR/>
+3 - Turn the associated devices ON, once the power rises above UP value (parameter 22)<BR/>
+4 - Turn the associated devices OFF, once the power rises above UP value (parameter 22)<BR/>
+5 - 1 and 4 combined. Turn the associated devices ON, once the power drops below DOWN value (parameter 21). Turn the associated devices OFF, once the power rises above UP value (parameter 22).<BR/>
+6 - 2 and 3 combined. Turn the associated devices OFF, once the power drops below DOWN value (parameter 21). Turn the associated devices ON, once the power rises above UP value (parameter 22).]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>24</Index>
+			<Type>byte</Type>
+			<Default>255</Default>
+			<Minimum>0</Minimum>
+			<Maximum>99</Maximum>
+			<Size>2</Size>
+			<Label lang="en">SWITCH ON value - "On/Off" association groups</Label>
+			<Help lang="en"><![CDATA[The value of BASIC SET command frame sent to the devices associated in "On/Off" association groups (2, 3).<BR/>
+"On/Off (Button)” association group - in accordance with parameter 20.<BR/>
+"On/Off (Power)” association group - in accordance with parameter 23.<BR/>
+Default setting: 255<BR/>
+Available settings: 0-99 or 255]]>
+			</Help>
+		</Parameter>
+
+
+		<Parameter>
+			<Index>30</Index>
+			<Type>byte</Type>
+			<Default>63</Default>
+			<Minimum>0</Minimum>
+			<Maximum>63</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Active alarms</Label>
+			<Help lang="en"><![CDATA[Define Z-Wave network alarms to which the Wall Plug will respond.<BR/>
+Default setting: 63 (all)<BR/>
+Available settings:<BR/>
+1 - general alarm<BR/>
+2 - smoke alarm<BR/>
+4 - CO alarm<BR/>
+8 - CO2 alarm<BR/>
+16 - high temperature alarm<BR/>
+32 - flood alarm]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>31</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>50</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Response to alarm frames</Label>
+			<Help lang="en"><![CDATA[This parameter defines how the Wall Plug will respond to alarms (device’s status change).<BR/>
+In case of values 1 or 2 the Wall Plug is operating normally and LED ring signals an alarm through time defined in parameter 32 or until the alarm is cancelled.<BR/>
+In case of values 5 to 50 the Wall Plug does not report status change, power changes, ignores BASIC SET command frames. After time defined in parameter 32 or after the alarm cancellation, connected device is set to the previous state.<BR/>
+Default setting: 0<BR/>
+Available settings:<BR/>
+0 - no reaction<BR/>
+1 - turn connected device on<BR/>
+2 - turn connected device of<BR/>
+5-50 (0.5-5.0s, step 0.1s) - cyclically change device]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>32</Index>
+			<Type>short</Type>
+			<Default>600</Default>
+			<Minimum>1</Minimum>
+			<Maximum>32400</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Alarm state duration</Label>
+			<Help lang="en"><![CDATA[This parameter specifies the duration of alarm state. If a device sending an alarm frame through the Z-Wave network sets alarm duration as well, this settings are ignored.<BR/>
+Default setting: 600 (10 min)<BR/>
+Available settings: 1-32400 (in seconds)]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>40</Index>
+			<Type>short</Type>
+			<Default>2500</Default>
+			<Minimum>1000</Minimum>
+			<Maximum>30000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Power load for violet colour</Label>
+			<Help lang="en"><![CDATA[This parameter determines maximum active power value, which when exceeded, causes the LED ring flash violet. Function is active only when parameter 41 is set to 1 or 2.<BR/>
+Default setting: 25000 (2500W)<BR/>
+Available settings: 1000-30000 (100.0-3000.0W, step 0.1W)]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>41</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">LED ring colour when controlled device is on</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Illumination turned off completely</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Colour changes continuously depending on active power</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Colour changes in steps depending on active power</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">White</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Red</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Green</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Blue</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Yellow</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Cyan</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">Magenta</Label>
+			</Item>
+			<Help lang="en"><![CDATA[When set to 1 or 2, LED ring colour will change depending on active power and parameter 40. Other colours are set permanently and do not depend on power consumption.]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>42</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">LED ring colour when controlled device is off</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Illumination turned off completely</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">LED ring is illuminated with a colour corresponding to the last measured power, before the controlled device was turned of</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">White</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Red</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Green</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Blue</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Yellow</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Cyan</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">Magenta</Label>
+			</Item>
+			<Help lang="en"><![CDATA[This parameter defines the illumination colour after turning off.]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>43</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">LED ring colour at the Z-Wave network alarm detection</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Illumination turned off completely</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">No change in colour. LED ring colour is determined by settings of parameters 41 or 42</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">LED ring flashes red/blue/white</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">White</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Red</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Green</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Blue</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Yellow</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Cyan</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">Magenta</Label>
+			</Item>
+			<Help lang="en"><![CDATA[This parameter defines the illumination colour in case of Z-Wave alarm.]]>
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>50</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Associations in Z-Wave network security mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">None of the groups sent as secure</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">2nd group sent as secure</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">3rd group sent as secure</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">2nd and 3rd group sent as secure</Label>
+			</Item>
+			<Help lang="en"><![CDATA[This parameter defines how commands are sent in specified association groups: as secure or non-secure. Parameter is active only in Z-Wave network security mode. This parameter does not apply to 1st "Lifeline" group.]]>
+			</Help>
+		</Parameter>
+
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Controller Updates</Label>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Group 1</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Group 2</Label>
+		</Group>
+
+	</Associations>
+</Product>

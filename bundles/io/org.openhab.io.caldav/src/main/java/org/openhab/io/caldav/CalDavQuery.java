@@ -108,7 +108,7 @@ public class CalDavQuery {
     public void setFilterName(String filterName) {
         this.filterName = filterName;
     }
-    
+
     public List<String> getFilterCategory() {
         return filterCategory;
     }
@@ -119,11 +119,9 @@ public class CalDavQuery {
 
     @Override
     public String toString() {
-        return "CalDavQuery [calendarIds=" + calendarIds + ", from=" + from
-                + ", to=" + to + ", sort=" + sort + ", filterName=" + filterName + "]";
+        return "CalDavQuery [calendarIds=" + calendarIds + ", from=" + from + ", to=" + to + ", sort=" + sort
+                + ", filterName=" + filterName + "]";
     }
-
-
 
     public enum Sort {
         ASCENDING,

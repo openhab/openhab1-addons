@@ -16,10 +16,8 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 import org.openhab.model.item.binding.BindingConfigParseException;
-
-import com.github.s4u.jfatek.registers.Reg;
-import com.github.s4u.jfatek.registers.RegValue;
-
+import org.simplify4u.jfatek.registers.Reg;
+import org.simplify4u.jfatek.registers.RegValue;
 
 /**
  * Common implementation for Percent items.

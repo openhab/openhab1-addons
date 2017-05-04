@@ -55,7 +55,7 @@ public final class ReadInputDiscretesResponse extends ModbusResponse {
      * instance with a given count of input discretes
      * (i.e. bits).
      * <b>
-     * 
+     *
      * @param count the number of bits to be read.
      */
     public ReadInputDiscretesResponse(int count) {
@@ -67,7 +67,7 @@ public final class ReadInputDiscretesResponse extends ModbusResponse {
      * Returns the number of bits (i.e. input discretes)
      * read with the request.
      * <p>
-     * 
+     *
      * @return the number of bits that have been read.
      */
     public int getBitCount() {
@@ -90,7 +90,7 @@ public final class ReadInputDiscretesResponse extends ModbusResponse {
      * Returns the <tt>BitVector</tt> that stores
      * the collection of bits that have been read.
      * <p>
-     * 
+     *
      * @return the <tt>BitVector</tt> holding the
      *         bits that have been read.
      */
@@ -102,7 +102,7 @@ public final class ReadInputDiscretesResponse extends ModbusResponse {
      * Convenience method that returns the state
      * of the bit at the given index.
      * <p>
-     * 
+     *
      * @param index the index of the input discrete
      *            for which the status should be returned.
      *

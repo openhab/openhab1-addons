@@ -123,13 +123,10 @@ public class CalDavConfig {
 
     @Override
     public String toString() {
-        return "CalDavConfig [key=" + key + ", username=" + username
-                + ", password=" + password + ", url=" + url
-                + ", reloadMinutes=" + reloadMinutes + ", preloadMinutes="
-                + preloadMinutes + ", disableCertificateVerification="
-                + disableCertificateVerification
-                + ", lastModifiedFileTimeStampValid="
-                + lastModifiedFileTimeStampValid + "]";
+        return "CalDavConfig [key=" + key + ", username=" + username + ", password=" + password + ", url=" + url
+                + ", reloadMinutes=" + reloadMinutes + ", preloadMinutes=" + preloadMinutes
+                + ", disableCertificateVerification=" + disableCertificateVerification
+                + ", lastModifiedFileTimeStampValid=" + lastModifiedFileTimeStampValid + "]";
     }
 
 }

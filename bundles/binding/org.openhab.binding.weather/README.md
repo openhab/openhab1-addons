@@ -16,13 +16,14 @@ There is also a binding specifically openHAB 2 [here](http://docs.openhab.org/ad
 	- [Configuration Example](#configuration-example)
 - [Item Configuration](#item-configuration)
 	- [Number formatting](#number-formatting)
+	- [Units](#units)
 	- [Unit conversion](#unit-conversion)
 	- [Examples](#examples)
 	- [Forecast](#forecast)
 	- [Data accuracy](#data-accuracy)
 	- [Common Id](#common-id)
 - [Html Layouts](#html-layouts)
-	- [Html Layout Gallery](#html-layout-gallery)
+	- [HTML Layout Gallery](#html-layout-gallery)
 - [Debugging and Tracing](#debugging-and-tracing)
 - [Troubleshooting](#troubleshooting)
 - [Downloads](#downloads)
@@ -287,18 +288,21 @@ Number   Station_Latitude     "Station Latitude [%.6f]"  {weather="locationId=ho
 Number   Station_Longitude    "Station Longitude [%.6f]" {weather="locationId=home, type=station, property=longitude, scale=6"}
 
 ```
+
 ### Forecast
+
 All bindings can also be used for forecasts. You only have to add the forecast day in the item.  
 Display tomorrows min and max temperature forecast:
+
 ```
 Number   Temp_Min         "Temperature min [%.2f °C]"   {weather="locationId=home, forecast=1, type=temperature, property=min"}
 Number   Temp_Max         "Temperature max [%.2f °C]"   {weather="locationId=home, forecast=1, type=temperature, property=max"}
 ```
-0 = todays forecast  
-1 = tomorrows forecast  
-and so on  
+
+0 = todays forecast, 1 = tomorrows forecast, and so on.
 
 Each provider sends different forecast days. 
+
 - ForecastIo: 8 days (0-7)
 - OpenWeatherMap: 5 days (0-4)
 - WorldWeatherOnline: 5 days (0-4)
@@ -385,7 +389,7 @@ Webview url="/weather?locationId=home&layout=example&iconset=colorful" height=7
 
 (This does not work for OpenHAB2 and this page needs an update for how to use this on OH2)
 
-### Html Layout Gallery
+### HTML Layout Gallery
 
 I would like to create a weather layout gallery. If you have a great looking html weather layout you want it to share, just [send it to me](mailto:gerrieg.openhab@icloud.com) an i will put it on this wiki page.
 

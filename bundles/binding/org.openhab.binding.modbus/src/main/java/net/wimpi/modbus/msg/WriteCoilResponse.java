@@ -66,7 +66,7 @@ public final class WriteCoilResponse extends ModbusResponse {
      * Sets the state that has been returned
      * in the raw response.
      * <p>
-     * 
+     *
      * @param b true if the coil should be set of
      *            false if it should be unset.
      */
@@ -78,7 +78,7 @@ public final class WriteCoilResponse extends ModbusResponse {
      * Gets the state that has been returned
      * in this <tt>WriteCoilRequest</tt>.
      * <p>
-     * 
+     *
      * @return true if the coil is set, false if unset.
      */
     public boolean getCoil() {
@@ -89,7 +89,7 @@ public final class WriteCoilResponse extends ModbusResponse {
      * Returns the reference of the register of the coil
      * that has been written to with the request.
      * <p>
-     * 
+     *
      * @return the reference of the coil's register.
      */
     public int getReference() {
@@ -100,7 +100,7 @@ public final class WriteCoilResponse extends ModbusResponse {
      * Sets the reference of the register of the coil
      * that has been written to with the request.
      * <p>
-     * 
+     *
      * @param ref the reference of the coil's register.
      */
     private void setReference(int ref) {

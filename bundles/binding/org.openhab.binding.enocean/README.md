@@ -44,15 +44,19 @@ The EEP Profiles below are already supported. If your device is not listed, plea
 - eep = F6:02:02
 - channel = A / B
 - parameter =
-    - I: The I button (normally the one with the solid arrow sign) was pressed (Switch, pressed=Update to ON, released=Update to OFF)
-    - O: The O button (normally the one with the empty arrow sign) was pressed (Switch, pressed=Update to ON, released=Update to OFF)
+    - I: The I button (normally the bottom one with the solid arrow sign) was pressed (Switch, pressed=Update to ON, released=Update to OFF)
+    - O: The O button (normally the top one with the empty arrow sign) was pressed (Switch, pressed=Update to ON, released=Update to OFF)
 
 Be aware that the parameters are still under discussion and can be subject to change.
 
 #### Examples
 
 ```
-Switch Button_Up { enocean="{id=00:00:00:00, eep=F6:02:01, channel=B, parameter=I}" }
+Switch Button01top    "Switch left top"     <wallswitch> { enocean="{id=00:00:00:00, eep=F6:02:01, channel=A, parameter=O}" }
+Switch Button01bottom "Switch left bottom"  <wallswitch> { enocean="{id=00:00:00:00, eep=F6:02:01, channel=A, parameter=I}" }
+Switch Button02top    "Switch right top"    <wallswitch> { enocean="{id=00:00:00:00, eep=F6:02:01, channel=B, parameter=O}" }
+Switch Button02bottom "Switch right bottom" <wallswitch> { enocean="{id=00:00:00:00, eep=F6:02:01, channel=B, parameter=I}" }
+
 ```
 
 - pressed: ON
@@ -115,5 +119,23 @@ Number UG_Flur_Temp "Temperature [%.1f °C]" <temperature> { enocean="{id=00:00:
 
 
 ```
-Number mySwitch "Test Switch" <contact> { enocean="{id=00:00:00:00, eep=D5:00:01, parameter=CONTACT_STATE:closed}" }
+Contact mySwitch "Test Switch" <contact> { enocean="{id=00:00:00:00, eep=D5:00:01, parameter=CONTACT_STATE}" }
+```
+
+### sitemap example
+
+```
+sitemap enocean label="Enocean"
+{
+    Frame label="Rocker Switch" {
+        Switch item=Button01top
+        Switch item=Button01bottom
+        Switch item=Button02top
+        Switch item=Button02bottom
+    }
+    Frame label="Contact" {
+        Text item=mySwitch
+    }
+
+}
 ```

@@ -41,10 +41,12 @@
                                 <artifact><file>src/main/resources/conf/culintertechno.cfg</file><type>cfg</type><classifier>culintertechno</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/denon.cfg</file><type>cfg</type><classifier>denon</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/dmx.cfg</file><type>cfg</type><classifier>dmx</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/dropbox.cfg</file><type>cfg</type><classifier>dropbox</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/dsmr.cfg</file><type>cfg</type><classifier>dsmr</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ebus.cfg</file><type>cfg</type><classifier>ebus</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ecobee.cfg</file><type>cfg</type><classifier>ecobee</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ecotouch.cfg</file><type>cfg</type><classifier>ecotouch</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/ekey.cfg</file><type>cfg</type><classifier>ekey</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/enphaseenergy.cfg</file><type>cfg</type><classifier>enphaseenergy</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/enocean.cfg</file><type>cfg</type><classifier>enocean</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/epsonprojector.cfg</file><type>cfg</type><classifier>epsonprojector</classifier></artifact>
@@ -103,6 +105,7 @@
                                 <artifact><file>src/main/resources/conf/owserver.cfg</file><type>cfg</type><classifier>owserver</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/panasonictv.cfg</file><type>cfg</type><classifier>panasonictv</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pebble.cfg</file><type>cfg</type><classifier>pebble</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/piface.cfg</file><type>cfg</type><classifier>piface</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/plex.cfg</file><type>cfg</type><classifier>plex</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/plugwise.cfg</file><type>cfg</type><classifier>plugwise</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/powermax.cfg</file><type>cfg</type><classifier>powermax</classifier></artifact>
