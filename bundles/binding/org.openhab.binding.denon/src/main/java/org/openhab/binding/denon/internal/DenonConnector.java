@@ -202,8 +202,34 @@ public class DenonConnector {
      * basic configuration info (like the number of zones)
      */
     public void getInitialState() {
-        setConfigProperties();
-        updateState();
+        if (connection.isTelnet()) {
+            requestState();
+        } else {
+            setConfigProperties();
+            updateState();
+        }
+    }
+
+    /**
+     * Sends a series of state query commands over the telnet connection
+     */
+    private void requestState() {
+        // Run in new thread to not delay the set up of the binding. Handling responses is done in the listener thread.
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (String cmd : Arrays.asList("PW?", "MS?", "MV?", "ZM?", "MU?", "SI?", "Z2?", "Z2MU?", "Z3", "Z3MU?",
+                        "NSE")) {
+                    internSendCommandTelnet(cmd);
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        logger.trace("Interrupted while requesting state", e);
+                    }
+                }
+
+            }
+        }).start();
     }
 
     /**
@@ -402,6 +428,18 @@ public class DenonConnector {
             return;
         }
 
+        if (connection.isTelnet()) {
+            internSendCommandTelnet(command);
+        } else {
+            internSendCommandHttp(command);
+        }
+    }
+
+    private void internSendCommandTelnet(String command) {
+        listener.sendCommand(command);
+    }
+
+    private void internSendCommandHttp(String command) {
         try {
             String url = cmdUrl + URLEncoder.encode(command, Charset.defaultCharset().displayName());
             logger.trace("Calling url {}", url);
