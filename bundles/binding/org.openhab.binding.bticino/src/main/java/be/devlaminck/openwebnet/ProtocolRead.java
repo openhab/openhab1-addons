@@ -22,34 +22,64 @@ import org.slf4j.LoggerFactory;
  * Fcrisciani released as EPL
  * (https://github.com/fcrisciani/java-myhome-library)
  *
- * @author Tom De Vlaminck
+ * @author Tom De Vlaminck, LAGO Moreno
  * @serial 1.0
  * @since 1.7.0
  */
 public class ProtocolRead {
-    private String m_message = "";
 
-    private static final Logger logger = LoggerFactory.getLogger(ProtocolRead.class);
+	// ------------------------------------------------------------------------
 
-    private Map<String, String> m_properties = new HashMap<String, String>();
+	private static final Logger logger = LoggerFactory.getLogger(ProtocolRead.class);
 
-    public ProtocolRead(String p_message) {
-        m_message = p_message;
-        logger.info("Instance created for message [" + p_message + "]");
-    }
+	// ------------------------------------------------------------------------
 
-    public void addProperty(String p_key, String p_value) {
-        // TODO Auto-generated method stub
-        logger.info("addProperty Key : " + p_key + ", Value : " + p_value);
-        m_properties.put(p_key, p_value);
-    }
+	private String message = null;
+	private Map<String, String> properties = new HashMap<String, String>();
 
-    public String getProperty(String p_key) {
-        return (m_properties.get(p_key));
-    }
+	// ------------------------------------------------------------------------
 
-    @Override
-    public String toString() {
-        return ("ProtocolRead, Message[" + m_message + "]");
-    }
+	/**
+	 * Create a protocol read with specified message
+	 * 
+	 * @param message
+	 */
+	public ProtocolRead(String message) {
+		this.message = message;
+		logger.info("Instance created for message [" + message + "]");
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Add a key value property to message
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void addProperty(String key, String value) {
+		properties.put(key, value);
+		logger.info("addProperty Key : " + key + ", Value : " + value);
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Get the property with specified key
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public String getProperty(String key) {
+		return properties.get(key);
+	}
+
+	// ------------------------------------------------------------------------
+
+	@Override
+	public String toString() {
+		return ("ProtocolRead, Message[" + this.message + "]");
+	}
+
+	// ------------------------------------------------------------------------
 }
