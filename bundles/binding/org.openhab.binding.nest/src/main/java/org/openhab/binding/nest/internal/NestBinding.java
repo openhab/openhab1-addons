@@ -196,6 +196,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
         }
 
         DataModel newDataModel = dmres;
+        DataModel olDataModel2 = this.oldDataModel
         this.oldDataModel = newDataModel;
 
         // Iterate through bindings and update all inbound values.
@@ -204,17 +205,21 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
                 if (provider.isInBound(itemName)) {
                     final String property = provider.getProperty(itemName);
                     final State newState = getState(newDataModel, property);
+                    final State oldState = getState(OldDataModel2, property);
 
-                    logger.trace("Updating itemName '{}' with newState '{}'", itemName, newState);
 
-                    /*
-                     * we need to make sure that we won't send out this event to Nest again, when receiving it on the
-                     * openHAB bus
-                     */
-                    ignoreEventList.add(new Update(itemName, newState));
-                    logger.trace("Added event (item='{}', newState='{}') to the ignore event list (size={})", itemName,
+                    if (newState != oldState) {
+                        logger.trace("Updating itemName '{}' with newState '{}'", itemName, newState);
+
+                        /*
+                        * we need to make sure that we won't send out this event to Nest again, when receiving it on the
+                        * openHAB bus
+                        */
+                        ignoreEventList.add(new Update(itemName, newState));
+                        logger.trace("Added event (item='{}', newState='{}') to the ignore event list (size={})", itemName,
                             newState, ignoreEventList.size());
-                    this.eventPublisher.postUpdate(itemName, newState);
+                        this.eventPublisher.postUpdate(itemName, newState);
+                    }
                 }
             }
         }
