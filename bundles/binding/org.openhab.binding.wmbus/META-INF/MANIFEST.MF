@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Wireless MBus Binding
+Bundle-SymbolicName: org.openhab.binding.wmbus
+Bundle-Version: 1.3.0.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: gnu.io,
+ org.apache.commons.io,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.event,
+ org.slf4j
+Export-Package: org.openhab.binding.wmbus.internal
+Service-Component: OSGI-INF/wmbusbinding.xml
+Bundle-ClassPath: .
+Bundle-Activator: org.openhab.binding.wmbus.internal.WMBusActivator
+
