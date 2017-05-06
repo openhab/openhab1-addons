@@ -113,12 +113,17 @@ public final class Util {
     }
 
     public static Sardine getConnection(CalDavConfig config) {
+        String key = config.getKey();
+        String url = config.getUrl();
+        String userName = config.getUsername();
+        String password = config.getPassword();
+
         if (config.isDisableCertificateVerification()) {
-            if (config.getUrl().startsWith(HTTP_URL_PREFIX)) {
+            if (url.startsWith(HTTP_URL_PREFIX)) {
                 log.error("do not use '{}' if no ssl is used", CalDavLoaderImpl.PROP_DISABLE_CERTIFICATE_VERIFICATION);
             }
             log.trace("connecting to caldav '{}' with disabled certificate verification (url={}, username={}, password={})", 
-                    config.getKey(), config.getUrl(), config.getUsername(), config.getPassword());
+                    key, url, userName, password);
             HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setHostnameVerifier(new AllowAllHostnameVerifier());
             try {
                 httpClientBuilder.setSslcontext(new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
@@ -128,26 +133,26 @@ public final class Util {
                     }
                 }).build());
             } catch (KeyManagementException e) {
-                log.error("error verifying certificate", e);
+                log.warn("Error verifying certificate", e);
             } catch (NoSuchAlgorithmException e) {
-                log.error("error verifying certificate", e);
+                log.warn("Error verifying certificate", e);
             } catch (KeyStoreException e) {
-                log.error("error verifying certificate", e);
+                log.warn("Error verifying certificate", e);
             }
-            if (StringUtils.isEmpty(config.getUsername()) && StringUtils.isEmpty(config.getPassword())) {
-                log.trace("connecting without credentials for '{}'", config.getKey());
+            if (StringUtils.isEmpty(userName) && StringUtils.isEmpty(password)) {
+                log.trace("connecting without credentials for '{}'", key);
                 return new SardineImpl(httpClientBuilder);
             } else {
-                return new SardineImpl(httpClientBuilder, config.getUsername(), config.getPassword());
+                return new SardineImpl(httpClientBuilder, userName, password);
             }
         } else {
             log.trace("connecting to caldav '{}' (url={}, username={}, password={})", 
-                    config.getKey(), config.getUrl(), config.getUsername(), config.getPassword());
-            if (StringUtils.isEmpty(config.getUsername()) && StringUtils.isEmpty(config.getPassword())) {
-                log.trace("connecting without credentials for '{}'", config.getKey());
+                    key, url, userName, password);
+            if (StringUtils.isEmpty(userName) && StringUtils.isEmpty(password)) {
+                log.trace("connecting without credentials for '{}'", key);
                 return new SardineImpl();
             } else {
-                return new SardineImpl(config.getUsername(), config.getPassword());
+                return new SardineImpl(userName, password);
             }
         }
     }

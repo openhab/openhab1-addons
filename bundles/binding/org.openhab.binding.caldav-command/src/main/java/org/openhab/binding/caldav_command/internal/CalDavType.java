@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,20 +12,20 @@ package org.openhab.binding.caldav_command.internal;
  * Item type.
  * Actions which can be performed on items.
  *
- * @author Robert
+ * @author Robert Delbrück
  * @since 1.8.0
  */
 public enum CalDavType {
     /**
-     * get the value from the event (triggered at BEGIN or END
+     * Get the value from the event (triggered at BEGIN or END).
      */
     VALUE,
     /**
-     * get the date when the item will be next switched
+     * Get the date when the item will next be switched.
      */
     DATE,
     /**
-     * disables the event triggered execution
+     * Disables the event triggered execution.
      */
     DISABLE
 }

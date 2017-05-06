@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,19 +14,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Extension of the default OSGi bundle activator
+ * Extension of the default OSGi bundle activator.
  *
  * @author Robert Delbrück
  * @since 1.8.0
  */
 public final class CalDavActivator implements BundleActivator {
-
     private static Logger logger = LoggerFactory.getLogger(CalDavActivator.class);
-
     private static BundleContext context;
 
     /**
-     * Called whenever the OSGi framework starts our bundle
+     * Called whenever the OSGi framework starts our bundle.
      */
     @Override
     public void start(BundleContext bc) throws Exception {
@@ -35,7 +33,7 @@ public final class CalDavActivator implements BundleActivator {
     }
 
     /**
-     * Called whenever the OSGi framework stops our bundle
+     * Called whenever the OSGi framework stops our bundle.
      */
     @Override
     public void stop(BundleContext bc) throws Exception {
@@ -51,5 +49,4 @@ public final class CalDavActivator implements BundleActivator {
     public static BundleContext getContext() {
         return context;
     }
-
 }
