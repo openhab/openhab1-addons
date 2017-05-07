@@ -129,7 +129,7 @@ where `<eventType>` is one of the following values:
 ### Mappings
 
 Heatpump event type "state" can be mapped to strings. Different heatpump models seem to have slightly different state values.
-Mappings for the Ai1 Geo have been coppied from [here](http://www.haustechnikdialog.de/Forum/t/173357/Waterkotte-via-Ethernet-OpenHAB-und-Android-App?page=6).
+Mappings for the Ai1 Geo have been copied from [here](http://www.haustechnikdialog.de/Forum/t/173357/Waterkotte-via-Ethernet-OpenHAB-und-Android-App?page=6).
 
 | State | Ai1 Geo | Ai1 Air	|
 | ----- | ----- | ----- |
