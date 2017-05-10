@@ -48,6 +48,8 @@ Number items can be used only if `<object_number>` is not given, and the number 
 | doors     | defines doors |
 | status    | defines a status item |
 | module    | defines connection status item |
+| trouble   | defines a trouble |
+| trouble_memory | defines memory of a trouble |
 
 
 ### Valid state_type values for "zone" objects
@@ -96,7 +98,7 @@ Number items can be used only if `<object_number>` is not given, and the number 
 
 | Type        | Notes |
 |-------------|-------|
-| opened      | ON command opens the doors. |
+| opened      | ON command opens the door. |
 | opened_long |  |
 
 
@@ -120,6 +122,118 @@ Number items can be used only if `<object_number>` is not given, and the number 
 | connected | status of connection to the module |
 | connected_since | date and time when current connection has been established |
 | connection_errors | number of consecutive connection errors; clears on successful connection |
+
+
+### Valid `state_type` values for "trouble" objects
+
+| Type | Notes |
+|------|-------|
+| technical_zone | object number range: 1-128 |
+| expander_ac | object number range: 1-64 |
+| expander_batt | object number range: 1-64 |
+| expander_nobatt | object number range: 1-64 |
+| system | object number range: 1-24, see table below  |
+| ptsa_ac | AC trouble of CA-64 PTSA modules, object number range: 1-8 |
+| ptsa_batt | BATT trouble of CA-64 PTSA modules, object number range: 1-8 |
+| ptsa_nobatt | NO BATT trouble of CA-64 PTSA modules, object number range: 1-8 |
+| ethm1 | object number range: 1-8 |
+| proximity_a | object number range: 1-64 |
+| proximity_b | object number range: 1-64 |
+| expander_overload | object number range: 1-64 |
+| jammed_acu100 | object number range: 1-16 |
+| device_lobatt | object number range: 1-120 |
+| device_nocomm | object number range: 1-120 |
+| output_nocomm | object number range: 1-120 |
+| expander_nocomm | object number range: 1-64 |
+| expander_switcherooed | object number range: 1-64 |
+| keypad_nocomm | object number range: 1-8 |
+| keypad_switcherooed | object number range: 1-8 |
+| ethm1_nolan | object number range: 1-8 |
+| expander_tamper | object number range: 1-64 |
+| keypad_tamper | object number range: 1-8 |
+| keypad_init | object number range: 1-8 |
+| auxiliary_stm | object number range: 1-8 |
+| master_keyfob | object number range: 1-8 |
+| user_keyfob | object number range: 1-240 |
+| device_lobatt1 | for Integra 256 Plus - last 120 devices, object number range: 1-120 |
+| device_nocomm1 | for Integra 256 Plus - last 120 devices, object number range: 1-120 |
+| output_nocomm1 | for Integra 256 Plus - last 120 devices, object number range: 1-120 |
+| technical_zone1 | for Integra 256 Plus - zones 129..256, object number range: 1-128 |
+
+
+### Valid `state_type` values for "trouble_memory" objects
+
+| Type | Notes |
+|------|-------|
+| technical_zone | object number range: 1-128 |
+| expander_ac | object number range: 1-64 |
+| expander_batt | object number range: 1-64 |
+| expander_nobatt | object number range: 1-64 |
+| system | object number range: 1-24, see table below  |
+| ptsa_ac | AC trouble of CA-64 PTSA modules, object number range: 1-8 |
+| ptsa_batt | BATT trouble of CA-64 PTSA modules, object number range: 1-8 |
+| ptsa_nobatt | NO BATT trouble of CA-64 PTSA modules, object number range: 1-8 |
+| ethm1 | object number range: 1-8 |
+| proximity_a | object number range: 1-64 |
+| proximity_b | object number range: 1-64 |
+| expander_overload | object number range: 1-64 |
+| jammed_acu100 | object number range: 1-16 |
+| lcd_restart | object number range: 1-8 |
+| expander_restart | object number range: 1-64 |
+| device_lobatt | object number range: 1-120 |
+| device_nocomm | object number range: 1-120 |
+| output_nocomm | object number range: 1-120 |
+| expander_nocomm | object number range: 1-64 |
+| expander_switcherooed | object number range: 1-64 |
+| keypad_nocomm | object number range: 1-8 |
+| keypad_switcherooed | object number range: 1-8 |
+| ethm1_nolan | object number range: 1-8 |
+| expander_tamper | object number range: 1-64 |
+| keypad_tamper | object number range: 1-8 |
+| keypad_init | object number range: 1-8 |
+| auxiliary_stm | object number range: 1-8 |
+| long_violation | object number range: 1-128 |
+| no_violation | object number range: 1-128 |
+| zone_tamper | object number range: 1-128 |
+| technical_zone1 | for Integra 256 Plus - zones 129..256, object number range: 1-128 |
+| user_keyfob | object number range: 1-240 |
+| device_lobatt1 | for Integra 256 Plus - last 120 devices, object number range: 1-120 |
+| device_nocomm1 | for Integra 256 Plus - last 120 devices, object number range: 1-120 |
+| output_nocomm1 | for Integra 256 Plus - last 120 devices, object number range: 1-120 |
+| long_violation1 | for Integra 256 Plus - zones 129..256, object number range: 1-128 |
+| no_violation1 | for Integra 256 Plus - zones 129..256, object number range: 1-128 |
+| zone_tamper1 | for Integra 256 Plus - zones 129..256, object number range: 1-128 |
+
+
+### System troubles
+
+| Number | Description |
+|------|-------------|
+| 1 | OUT1 trouble |
+| 2 | OUT2 trouble |
+| 3 | OUT3 trouble |
+| 4 | OUT4 trouble |
+| 5 | +KPD trouble |
+| 6 | +EX1 or +EX2 trouble |
+| 7 | BATT trouble |
+| 8 | AC trouble |
+| 9 | DT1 trouble |
+| 10 | DT2 trouble |
+| 11 | DTM trouble |
+| 12 | RTC trouble |
+| 13 | no DTR signal |
+| 14 | no BATT present |
+| 15 | external modem initialization trouble |
+| 16 | external model command (ATE0V1Q0H0S0=0) trouble |
+| 17 | no voltage on telephone line (INTEGRA 24, 32, 64 and 128) |
+| 17 | auxiliary ST processor trouble (INTEGRA 128-WRL) |
+| 18 | bad signal on telephone line |
+| 19 | no signal on telephone line |
+| 20 | monitoring to station 1 trouble |
+| 21 | monitoring to station 2 trouble |
+| 22 | EEPROM or access to RTC trouble |
+| 23 | RAM memory trouble |
+| 24 | INTEGRA main panel restart memory |
 
 
 ### Valid options
@@ -400,7 +514,7 @@ To control Integra partitions and outputs, you need to provide security code of 
 
 ### Disarming and clearing alarms
 
-Although this binding allows you to configure disarming a partition and clearing alarms for a partion, this should be used only in cases when security is not the priority. Don't forget both these operations can be executed in openHAB without specifying a user code, which is required to disarm or clear alarms using Integra panel. Consider adding a keypad in your sitemap to temporarily change user code to execute sensitive operations. You can find such keypad in the [examples](#examples) section.
+Although this binding allows you to configure disarming a partition and clearing alarms for a partition, this should be used only in cases when security is not the priority. Don't forget both these operations can be executed in openHAB without specifying a user code, which is required to disarm or clear alarms using Integra panel. Consider adding a keypad in your sitemap to temporarily change user code to execute sensitive operations. You can find such keypad in the [examples](#examples) section.
 
 ## Media
 
@@ -408,4 +522,4 @@ Although this binding allows you to configure disarming a partition and clearing
 
 ## Future
 
-* troubles support (detailed)
+* OH2 version
