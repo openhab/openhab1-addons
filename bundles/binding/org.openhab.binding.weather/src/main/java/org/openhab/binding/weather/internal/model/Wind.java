@@ -25,7 +25,7 @@ public class Wind {
     @ProviderMappings({
             @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.wind_kph"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "avewind.kph"),
-            @Provider(name = ProviderName.OPENWEATHERMAP, property = "speed"),
+            @Provider(name = ProviderName.OPENWEATHERMAP, property = "speed", converter = ConverterType.WIND_MPS),
             @Provider(name = ProviderName.FORECASTIO, property = "windSpeed", converter = ConverterType.WIND_MPS),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "windspeedKmph"),
             @Provider(name = ProviderName.YAHOO, property = "wind.speed"),
