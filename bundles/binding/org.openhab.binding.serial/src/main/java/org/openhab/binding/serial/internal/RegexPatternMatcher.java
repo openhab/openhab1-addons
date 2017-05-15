@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
  * Pattern matcher to match and cache patterns
  *
  * @author Marek Halmo
+ * @SInCE 1.10.0
  * @see RegexPatternMatcher#getMatches getMatches()
  *
  */
@@ -43,7 +44,7 @@ public class RegexPatternMatcher {
 
     /**
      * Returns true if given regExpression is a substitution pattern
-     * This fact is indicated by giving
+     * This fact is indicated by patternCache containing "null" for given pattern
      *
      * @param regExpression
      * @return
@@ -54,7 +55,7 @@ public class RegexPatternMatcher {
     }
 
     /**
-     * Caches given regexpression, if the expression is substitution pattern it marks is as substitution
+     * Caches given regExpression. If the expression is a substitution pattern, it marks it as a substitution.
      *
      * @return
      */
@@ -84,7 +85,7 @@ public class RegexPatternMatcher {
      */
     public static String[] getMatches(String regExpression, String source) throws TransformationException {
         if (regExpression == null || source == null) {
-            throw new TransformationException("the given parameters 'regex' and 'source' must not be null");
+            throw new TransformationException("The given parameters 'regex' and 'source' must not be null");
         }
 
         logger.debug("about to transform '{}' by the function '{}'", source, regExpression);

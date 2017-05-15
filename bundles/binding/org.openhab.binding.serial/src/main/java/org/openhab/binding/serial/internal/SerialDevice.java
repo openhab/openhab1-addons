@@ -20,12 +20,15 @@ import java.util.TooManyListenersException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationException;
@@ -72,6 +75,7 @@ public class SerialDevice implements SerialPortEventListener {
         String upCommand;
         String downCommand;
         String stopCommand;
+        String format;
         Class<?> type;
     }
 
@@ -80,7 +84,7 @@ public class SerialDevice implements SerialPortEventListener {
     }
 
     public void addConfig(String itemName, Class<?> type, String pattern, boolean base64, String onCommand,
-            String offCommand, String upCommand, String downCommand, String stopCommand) {
+            String offCommand, String upCommand, String downCommand, String stopCommand, String format) {
         if (configMap == null) {
             configMap = new HashMap<String, ItemType>();
         }
@@ -94,6 +98,7 @@ public class SerialDevice implements SerialPortEventListener {
         typeItem.upCommand = upCommand;
         typeItem.downCommand = downCommand;
         typeItem.stopCommand = stopCommand;
+        typeItem.format = format;
 
         configMap.put(itemName, typeItem);
     }
@@ -166,6 +171,14 @@ public class SerialDevice implements SerialPortEventListener {
     public String getStopCommand(String itemName) {
         if (configMap.get(itemName) != null) {
             return configMap.get(itemName).stopCommand;
+        }
+
+        return "";
+    }
+
+    public String getFormat(String itemName) {
+        if (configMap.get(itemName) != null) {
+            return configMap.get(itemName).format;
         }
 
         return "";
@@ -307,7 +320,7 @@ public class SerialDevice implements SerialPortEventListener {
                                             }
                                         }
                                     } catch (TransformationException e) {
-                                        logger.error("Unable to transform!", e);
+                                        logger.warn("Unable to transform!", e);
                                     }
                                 } else if (entry.getValue().type == StringItem.class) {
                                     if (entry.getValue().base64) {
@@ -324,7 +337,17 @@ public class SerialDevice implements SerialPortEventListener {
                                     } else if (result.equals(getOffCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), OnOffType.OFF);
                                     }
-                                } else if (entry.getValue().type == RollershutterItem.class) {
+                                } else if (entry.getValue().type == ContactItem.class) {
+                                    if (result.trim().isEmpty()) {
+                                        eventPublisher.postUpdate(entry.getKey(), OpenClosedType.CLOSED);
+                                        eventPublisher.postUpdate(entry.getKey(), OpenClosedType.OPEN);
+                                    } else if (result.equals(getOnCommand(entry.getKey()))) {
+                                        eventPublisher.postUpdate(entry.getKey(), OpenClosedType.CLOSED);
+                                    } else if (result.equals(getOffCommand(entry.getKey()))) {
+                                        eventPublisher.postUpdate(entry.getKey(), OpenClosedType.OPEN);
+                                    }
+                                } else if (entry.getValue().type == RollershutterItem.class
+                                        || entry.getValue().type == DimmerItem.class) {
                                     if (result.trim().isEmpty()) {
                                         eventPublisher.postUpdate(entry.getKey(), new PercentType(50));
                                     } else if (result.equals(getUpCommand(entry.getKey()))) {
