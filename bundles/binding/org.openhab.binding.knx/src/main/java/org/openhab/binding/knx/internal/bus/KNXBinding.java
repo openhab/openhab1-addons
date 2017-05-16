@@ -108,7 +108,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
         logger.trace("Received command (item='{}', command='{}')", itemName, command.toString());
-        if (!isEcho(itemName, command)) {
+        if (!KNXConnection.getCompatibilityOH2() && !isEcho(itemName, command)) {
             writeToKNX(itemName, command);
         }
     }

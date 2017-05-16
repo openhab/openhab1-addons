@@ -66,6 +66,9 @@ public class KNXConnection implements ManagedService {
     /** the KNX bus address to use as local sourceaddress in KNX bus */
     private static String sLocalSourceAddr = "0.0.0";
 
+    /** Compatibility Mode for openHAB 2 */
+    private static boolean sCompatibilityOH2 = false;
+
     /** the KNX bus address to use as local sourceaddress in KNX bus */
     private static boolean sIgnoreLocalSourceEvents = false;
 
@@ -131,7 +134,7 @@ public class KNXConnection implements ManagedService {
     /**
      * Returns the KNXNetworkLink for talking to the KNX bus.
      * The link can be null, if it has not (yet) been established successfully.
-     * 
+     *
      * @return the KNX network link
      */
     public static synchronized ProcessCommunicator getCommunicator() {
@@ -167,7 +170,7 @@ public class KNXConnection implements ManagedService {
 
     /**
      * Tries to connect either by IP or serial bus, depending on supplied config data.
-     * 
+     *
      * @return true if connection was established, false otherwise
      */
     public static synchronized boolean connect() {
@@ -320,7 +323,7 @@ public class KNXConnection implements ManagedService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
      */
     @Override
@@ -332,6 +335,11 @@ public class KNXConnection implements ManagedService {
             String readingBusAddrString = (String) config.get("busaddr");
             if (StringUtils.isNotBlank(readingBusAddrString)) {
                 sLocalSourceAddr = readingBusAddrString;
+            }
+
+            String compatOH2String = (String) config.get("compatibilityOH2");
+            if (StringUtils.isNotBlank(compatOH2String)) {
+                sCompatibilityOH2 = compatOH2String.equalsIgnoreCase("true");
             }
 
             String readingIgnLocEv = (String) config.get("ignorelocalevents");
@@ -465,6 +473,10 @@ public class KNXConnection implements ManagedService {
 
     public static String getLocalSourceAddr() {
         return sLocalSourceAddr;
+    }
+
+    public static boolean getCompatibilityOH2() {
+        return sCompatibilityOH2;
     }
 
     public static boolean getIgnoreLocalSourceEvents() {
