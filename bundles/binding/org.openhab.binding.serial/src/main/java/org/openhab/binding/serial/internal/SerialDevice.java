@@ -86,7 +86,7 @@ public class SerialDevice implements SerialPortEventListener {
     public void addConfig(String itemName, Class<?> type, String pattern, boolean base64, String onCommand,
             String offCommand, String upCommand, String downCommand, String stopCommand, String format) {
         if (configMap == null) {
-            configMap = new HashMap<String, ItemType>();
+            configMap = new HashMap<>();
         }
 
         ItemType typeItem = new ItemType();
@@ -107,7 +107,8 @@ public class SerialDevice implements SerialPortEventListener {
         if (configMap != null) {
             ItemType type = configMap.get(itemName);
             if (type.pattern != null) {
-                // For duplicate patterns - it will be added to cache next time it is required
+                // We can safely remove any pattern
+                // If there are any duplicates, they will be added to cache next time they are requested
                 RegexPatternMatcher.removePattern(type.pattern);
             }
 

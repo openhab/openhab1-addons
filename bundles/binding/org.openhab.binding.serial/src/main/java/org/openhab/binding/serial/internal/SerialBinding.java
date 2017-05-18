@@ -56,7 +56,7 @@ import org.openhab.model.item.binding.BindingConfigReader;
  */
 public class SerialBinding extends AbstractEventSubscriber implements BindingConfigReader {
 
-    private Map<String, SerialDevice> serialDevices = new HashMap<String, SerialDevice>();
+    private Map<String, SerialDevice> serialDevices = new HashMap<>();
 
     /**
      * stores information about the which items are associated to which port. The map has this content structure:
@@ -67,7 +67,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
     /**
      * stores information about the context of items. The map has this content structure: context -> Set of itemNames
      */
-    private Map<String, Set<String>> contextMap = new HashMap<String, Set<String>>();
+    private Map<String, Set<String>> contextMap = new HashMap<>();
 
     private EventPublisher eventPublisher = null;
 
@@ -141,9 +141,9 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
         if (!(item instanceof SwitchItem || item instanceof StringItem || item instanceof NumberItem
                 || item instanceof RollershutterItem || item instanceof ContactItem || item instanceof DimmerItem)) {
-            throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
+            throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
-                    + "', only Switch-, Number- and StringItems are allowed - please check your *.items configuration");
+                    + "', only Switch-, Number-, Rollershutter-, Contact-, Dimmer- and StringItems are allowed - please check your *.items configuration");
         }
     }
 
@@ -167,27 +167,25 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 
         if (parameterSplitterAt > 0) {
             String[] split = bindingConfig.substring(parameterSplitterAt + 1, bindingConfig.length() - 1).split("\\),");
-            if (split.length > 0) {
-                for (int i = 0; i < split.length; i++) {
-                    String substring = split[i];
+            for (int i = 0; i < split.length; i++) {
+                String substring = split[i];
 
-                    if (substring.startsWith("REGEX(")) {
-                        pattern = substring.substring(6, substring.length());
-                    } else if (substring.startsWith("FORMAT(")) {
-                        format = substring.substring(7, substring.length());
-                    } else if (substring.equals("BASE64")) {
-                        base64 = true;
-                    } else if (substring.startsWith("ON(")) {
-                        onCommand = substring.substring(3, substring.length());
-                    } else if (substring.startsWith("OFF(")) {
-                        offCommand = substring.substring(4, substring.length());
-                    } else if (substring.startsWith("UP(")) {
-                        upCommand = substring.substring(3, substring.length());
-                    } else if (substring.startsWith("DOWN(")) {
-                        downCommand = substring.substring(5, substring.length());
-                    } else if (substring.startsWith("STOP(")) {
-                        stopCommand = substring.substring(5, substring.length());
-                    }
+                if (substring.startsWith("REGEX(")) {
+                    pattern = substring.substring(6, substring.length());
+                } else if (substring.startsWith("FORMAT(")) {
+                    format = substring.substring(7, substring.length());
+                } else if (substring.equals("BASE64")) {
+                    base64 = true;
+                } else if (substring.startsWith("ON(")) {
+                    onCommand = substring.substring(3, substring.length());
+                } else if (substring.startsWith("OFF(")) {
+                    offCommand = substring.substring(4, substring.length());
+                } else if (substring.startsWith("UP(")) {
+                    upCommand = substring.substring(3, substring.length());
+                } else if (substring.startsWith("DOWN(")) {
+                    downCommand = substring.substring(5, substring.length());
+                } else if (substring.startsWith("STOP(")) {
+                    stopCommand = substring.substring(5, substring.length());
                 }
             }
         }
