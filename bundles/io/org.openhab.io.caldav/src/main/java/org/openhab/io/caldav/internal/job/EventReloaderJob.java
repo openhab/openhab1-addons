@@ -341,7 +341,9 @@ public class EventReloaderJob implements Job {
         eventContainer.setLastChanged(lastResourceChangeFS);
 
         org.joda.time.DateTime loadFrom = org.joda.time.DateTime.now().minusMinutes(config.getHistoricLoadMinutes());
+        log.trace("loadFrom = {}", loadFrom);
         org.joda.time.DateTime loadTo = org.joda.time.DateTime.now().plusMinutes(config.getPreloadMinutes());
+        log.trace("loadTo = {}", loadTo);
 
         final ComponentList<CalendarComponent> vEventComponents = calendar.getComponents(Component.VEVENT);
         if (vEventComponents.size() == 0) {
@@ -416,6 +418,7 @@ public class EventReloaderJob implements Job {
             eventContainer.setCalculatedUntil(loadTo);
 
             for (Period p : periods) {
+                log.debug("Processing periods...");
                 org.joda.time.DateTime start = getDateTime("start", p.getStart(), p.getRangeStart());
                 org.joda.time.DateTime end = getDateTime("end", p.getEnd(), p.getRangeEnd());
 

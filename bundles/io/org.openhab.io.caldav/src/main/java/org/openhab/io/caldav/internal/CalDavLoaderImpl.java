@@ -541,83 +541,86 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
 
     @Override
     public List<CalDavEvent> getEvents(final CalDavQuery query) {
-        log.trace("quering events for filter: {}", query);
+        log.trace("Querying events for filter: {}", query);
         final ArrayList<CalDavEvent> eventList = new ArrayList<CalDavEvent>();
 
-        if (query.getCalendarIds() != null) {
-            for (String calendarId : query.getCalendarIds()) {
-                final CalendarRuntime eventRuntime = EventStorage.getInstance().getEventCache().get(calendarId);
-                if (eventRuntime == null) {
-                    log.debug("calendar id {} not found", calendarId);
-                    continue;
-                }
+        if (query.getCalendarIds() == null) {
+            log.debug("No calendar IDs found in query. Unable to get events.");
+            return eventList;
+        }
 
-                for (EventContainer eventContainer : eventRuntime.getEventMap().values()) {
-                    for (CalDavEvent calDavEvent : eventContainer.getEventList()) {
-                        if (query.getFrom() != null) {
-                            if (calDavEvent.getEnd().isBefore(query.getFrom())) {
-                                continue;
-                            }
-                        }
-                        if (query.getTo() != null) {
-                            if (calDavEvent.getStart().isAfter(query.getTo())) {
-                                continue;
-                            }
-                        }
-                        if (query.getFilterName() != null) {
-                            if (!calDavEvent.getName().matches(query.getFilterName())) {
-                                continue;
-                            }
-                        }
-                        if (query.getFilterCategory() != null) {
-                            log.trace("processing filter category");
-                            if (calDavEvent.getCategoryList() == null) {
-                                log.trace("not found event category for event {}", calDavEvent.getId());
-                                continue;
-                            } else {
-                                log.trace("processing event category");
-                                boolean eventCategoriesMatchFilterCategories = false;
-                                if (query.getFilterCategoryMatchesAny()) {
-                                    log.trace("filter-category-any encountered");
-                                    int filterCategoriesIndex = 0;
-                                    List<String> filterCategories = query.getFilterCategory();
-                                    List<String> eventCategories = calDavEvent.getCategoryList();
-                                    log.trace("comparing filter '{}' to event categories '{}' from event {}",
-                                            filterCategories, eventCategories, calDavEvent.getId());
-                                    // browse filter categories, which are not null
-                                    while (eventCategoriesMatchFilterCategories == false
-                                            && filterCategoriesIndex < filterCategories.size()) {
-                                        int eventCategoriesIndex = 0;
-                                        // browse event categories, which can be null
-                                        while (eventCategoriesMatchFilterCategories == false
-                                                && eventCategoriesIndex < eventCategories.size()) {
-                                            if (eventCategories.get(eventCategoriesIndex)
-                                                    .equalsIgnoreCase(filterCategories.get(filterCategoriesIndex))) {
-                                                log.debug("filter category {} matches event category {}",
-                                                        filterCategories.get(filterCategoriesIndex),
-                                                        eventCategories.get(eventCategoriesIndex));
-                                                eventCategoriesMatchFilterCategories = true;
-                                            }
-                                            eventCategoriesIndex++;
-                                        }
+        for (String calendarId : query.getCalendarIds()) {
+            final CalendarRuntime eventRuntime = EventStorage.getInstance().getEventCache().get(calendarId);
+            if (eventRuntime == null) {
+                log.debug("calendar id {} not found", calendarId);
+                continue;
+            }
 
-                                        filterCategoriesIndex++;
-                                    }
-                                } else {
-                                    log.trace("filter-category encountered");
-                                    eventCategoriesMatchFilterCategories = calDavEvent.getCategoryList()
-                                            .containsAll(query.getFilterCategory());
-                                }
-
-                                if (!eventCategoriesMatchFilterCategories) {
-                                    continue;
-                                }
-                            }
-                        } else {
-                            log.trace("not found any filter category");
+            for (EventContainer eventContainer : eventRuntime.getEventMap().values()) {
+                for (CalDavEvent calDavEvent : eventContainer.getEventList()) {
+                    if (query.getFrom() != null) {
+                        if (calDavEvent.getEnd().isBefore(query.getFrom())) {
+                            continue;
                         }
-                        eventList.add(calDavEvent);
                     }
+                    if (query.getTo() != null) {
+                        if (calDavEvent.getStart().isAfter(query.getTo())) {
+                            continue;
+                        }
+                    }
+                    if (query.getFilterName() != null) {
+                        if (!calDavEvent.getName().matches(query.getFilterName())) {
+                            continue;
+                        }
+                    }
+                    if (query.getFilterCategory() != null) {
+                        log.trace("processing filter category");
+                        if (calDavEvent.getCategoryList() == null) {
+                            log.trace("not found event category for event {}", calDavEvent.getId());
+                            continue;
+                        } else {
+                            log.trace("processing event category");
+                            boolean eventCategoriesMatchFilterCategories = false;
+                            if (query.getFilterCategoryMatchesAny()) {
+                                log.trace("filter-category-any encountered");
+                                int filterCategoriesIndex = 0;
+                                List<String> filterCategories = query.getFilterCategory();
+                                List<String> eventCategories = calDavEvent.getCategoryList();
+                                log.trace("comparing filter '{}' to event categories '{}' from event {}",
+                                        filterCategories, eventCategories, calDavEvent.getId());
+                                // browse filter categories, which are not null
+                                while (eventCategoriesMatchFilterCategories == false
+                                        && filterCategoriesIndex < filterCategories.size()) {
+                                    int eventCategoriesIndex = 0;
+                                    // browse event categories, which can be null
+                                    while (eventCategoriesMatchFilterCategories == false
+                                            && eventCategoriesIndex < eventCategories.size()) {
+                                        if (eventCategories.get(eventCategoriesIndex)
+                                                .equalsIgnoreCase(filterCategories.get(filterCategoriesIndex))) {
+                                            log.debug("filter category {} matches event category {}",
+                                                    filterCategories.get(filterCategoriesIndex),
+                                                    eventCategories.get(eventCategoriesIndex));
+                                            eventCategoriesMatchFilterCategories = true;
+                                        }
+                                        eventCategoriesIndex++;
+                                    }
+
+                                    filterCategoriesIndex++;
+                                }
+                            } else {
+                                log.trace("filter-category encountered");
+                                eventCategoriesMatchFilterCategories = calDavEvent.getCategoryList()
+                                        .containsAll(query.getFilterCategory());
+                            }
+
+                            if (!eventCategoriesMatchFilterCategories) {
+                                continue;
+                            }
+                        }
+                    } else {
+                        log.trace("not found any filter category");
+                    }
+                    eventList.add(calDavEvent);
                 }
             }
         }
@@ -641,5 +644,4 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
         log.debug("return event list for {} with {} entries", query, eventList.size());
         return eventList;
     }
-
 }
