@@ -973,6 +973,39 @@ public enum EcoTouchTags {
         }
     },
 
+    // German: Umgebung
+    TYPE_TEMPERATURE_SURROUNDING {
+        {
+            command = "temperature_surrounding";
+            itemClass = NumberItem.class;
+            tagName = "I2020";
+            type = Type.Analog;
+            divisor = 100;
+        }
+    },
+
+    // German: Sauggas
+    TYPE_TEMPERATURE_SUCTION_AIR {
+        {
+            command = "temperature_suction_air";
+            itemClass = NumberItem.class;
+            tagName = "I2021";
+            type = Type.Analog;
+            divisor = 100;
+        }
+    },
+
+    // German: Ölsumpf
+    TYPE_TEMPERATURE_SUMP {
+        {
+            command = "temperature_sump";
+            itemClass = NumberItem.class;
+            tagName = "I2023";
+            type = Type.Analog;
+            divisor = 100;
+        }
+    },
+
     ;
 
     /**
@@ -1001,10 +1034,17 @@ public enum EcoTouchTags {
      * The format of the response of the heat pump
      */
     Type type = Type.Analog;
+
     /**
      * If \c type is Type.Bitfield, this determines the bit number (0-based)
      */
     int bitnum = 0;
+
+    /**
+     * If type is {@link Type#Analog} this is used as divisor for the scaled integer.
+     * Defaults to 10 and should be a power of 10 (e.g. 10, 100, 1000).
+     */
+    int divisor = 10;
 
     /**
      * @return command name (uses in *.items files)
@@ -1021,7 +1061,7 @@ public enum EcoTouchTags {
     }
 
     /**
-     * @return type: how to interprete the response from the heat pump
+     * @return type: how to interpret the response from the heat pump
      */
     public Type getType() {
         return type;
@@ -1033,6 +1073,13 @@ public enum EcoTouchTags {
      */
     public int getBitNum() {
         return bitnum;
+    }
+
+    /**
+     * @return Divisor for scaled integer analog values.
+     */
+    public int getDivisor() {
+        return divisor;
     }
 
     public Class<? extends Item> getItemClass() {
