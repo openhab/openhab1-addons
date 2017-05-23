@@ -16,15 +16,17 @@ import java.util.Set;
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
-import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -54,7 +56,7 @@ import org.openhab.model.item.binding.BindingConfigReader;
  */
 public class SerialBinding extends AbstractEventSubscriber implements BindingConfigReader {
 
-    private Map<String, SerialDevice> serialDevices = new HashMap<String, SerialDevice>();
+    private Map<String, SerialDevice> serialDevices = new HashMap<>();
 
     /**
      * stores information about the which items are associated to which port. The map has this content structure:
@@ -65,11 +67,9 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
     /**
      * stores information about the context of items. The map has this content structure: context -> Set of itemNames
      */
-    private Map<String, Set<String>> contextMap = new HashMap<String, Set<String>>();
+    private Map<String, Set<String>> contextMap = new HashMap<>();
 
     private EventPublisher eventPublisher = null;
-
-    private TransformationService transformationService;
 
     public void setEventPublisher(EventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
@@ -84,20 +84,6 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 
         for (SerialDevice serialDevice : serialDevices.values()) {
             serialDevice.setEventPublisher(null);
-        }
-    }
-
-    public void setTransformationService(TransformationService transformationService) {
-        this.transformationService = transformationService;
-        for (SerialDevice serialDevice : serialDevices.values()) {
-            serialDevice.setTransformationService(transformationService);
-        }
-    }
-
-    public void unsetTransformationService(TransformationService transformationService) {
-        this.transformationService = null;
-        for (SerialDevice serialDevice : serialDevices.values()) {
-            serialDevice.setTransformationService(null);
         }
     }
 
@@ -126,6 +112,8 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                 if (command == StopMoveType.STOP) {
                     serialDevice.writeString(serialDevice.getStopCommand(itemName));
                 }
+            } else if (command instanceof PercentType) {
+                serialDevice.writeString(command.format(serialDevice.getFormat(itemName)));
             }
         }
     }
@@ -152,10 +140,10 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
         if (!(item instanceof SwitchItem || item instanceof StringItem || item instanceof NumberItem
-                || item instanceof RollershutterItem)) {
-            throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
+                || item instanceof RollershutterItem || item instanceof ContactItem || item instanceof DimmerItem)) {
+            throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
-                    + "', only Switch-, Number- and StringItems are allowed - please check your *.items configuration");
+                    + "', only Switch-, Number-, Rollershutter-, Contact-, Dimmer- and StringItems are allowed - please check your *.items configuration");
         }
     }
 
@@ -173,32 +161,41 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         String upCommand = null;
         String downCommand = null;
         String stopCommand = null;
+        String format = null;
 
-        String[] split = bindingConfig.split(",");
-        if (split.length > 0) {
-            for (int i = 1; i < split.length; i++) {
-                String part = split[i];
-                String substring = part.substring(0, part.length());
+        int parameterSplitterAt = bindingConfig.indexOf(",");
+
+        if (parameterSplitterAt > 0) {
+            String[] split = bindingConfig.substring(parameterSplitterAt + 1, bindingConfig.length() - 1).split("\\),");
+            for (int i = 0; i < split.length; i++) {
+                String substring = split[i];
 
                 if (substring.startsWith("REGEX(")) {
-                    pattern = substring.substring(6, substring.length() - 1);
+                    pattern = substring.substring(6, substring.length());
+                } else if (substring.startsWith("FORMAT(")) {
+                    format = substring.substring(7, substring.length());
                 } else if (substring.equals("BASE64")) {
                     base64 = true;
                 } else if (substring.startsWith("ON(")) {
-                    onCommand = substring.substring(3, substring.length() - 1);
+                    onCommand = substring.substring(3, substring.length());
                 } else if (substring.startsWith("OFF(")) {
-                    offCommand = substring.substring(4, substring.length() - 1);
+                    offCommand = substring.substring(4, substring.length());
                 } else if (substring.startsWith("UP(")) {
-                    upCommand = substring.substring(3, substring.length() - 1);
+                    upCommand = substring.substring(3, substring.length());
                 } else if (substring.startsWith("DOWN(")) {
-                    downCommand = substring.substring(5, substring.length() - 1);
+                    downCommand = substring.substring(5, substring.length());
                 } else if (substring.startsWith("STOP(")) {
-                    stopCommand = substring.substring(5, substring.length() - 1);
+                    stopCommand = substring.substring(5, substring.length());
                 }
             }
         }
 
-        String portConfig[] = split[0].split("@");
+        String portConfig[];
+        if (parameterSplitterAt > 0) {
+            portConfig = bindingConfig.substring(0, parameterSplitterAt).split("@");
+        } else {
+            portConfig = bindingConfig.split("@");
+        }
 
         String port = portConfig[0];
         int baudRate = 0;
@@ -215,7 +212,6 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                 serialDevice = new SerialDevice(port);
             }
 
-            serialDevice.setTransformationService(transformationService);
             serialDevice.setEventPublisher(eventPublisher);
             try {
                 serialDevice.initialize();
@@ -231,7 +227,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         itemMap.put(item.getName(), port);
 
         serialDevice.addConfig(item.getName(), item.getClass(), pattern, base64, onCommand, offCommand, upCommand,
-                downCommand, stopCommand);
+                downCommand, stopCommand, format);
 
         Set<String> itemNames = contextMap.get(context);
         if (itemNames == null) {
