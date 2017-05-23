@@ -173,6 +173,26 @@
         </Parameter>
 
         <Parameter>
+          <Index>83</Index>
+          <Type>byte</Type>
+          <Default>14524637</Default>
+          <Minimum>0</Minimum>
+          <Maximum>16777215</Maximum>
+          <Size>3</Size>
+          <Label lang="en">RGB value when it is in Night light mode</Label>
+        </Parameter>
+
+        <Parameter>
+          <Index>84</Index>
+          <Type>byte</Type>
+          <Default>3289650</Default>
+          <Minimum>0</Minimum>
+          <Maximum>6513507</Maximum>
+          <Size>3</Size>
+          <Label lang="en">LED brightness in Energy Mode</Label>
+        </Parameter>
+
+        <Parameter>
             <Index>90</Index>
             <Label lang="en">Enable items 91 and 92</Label>
             <Type>list</Type>
@@ -370,6 +390,111 @@
         </Parameter>
 
         <Parameter>
+          <Index>101</Index>
+          <Label lang="en">Which reports to send to G1.</Label>
+          <Type>list</Type>
+          <Default>4</Default>
+          <Minimum>0</Minimum>
+          <Maximum>15</Maximum>
+          <WriteOnly>false</WriteOnly>
+          <Size>4</Size>
+          <Item>
+            <Value>0</Value>
+            <Label lang="en">Report Voltage</Label>
+          </Item>
+          <Item>
+            <Value>1</Value>
+            <Label lang="en">Report Current</Label>
+          </Item>
+          <Item>
+            <Value>2</Value>
+            <Label lang="en">Report Watts</Label>
+          </Item>
+          <Item>
+            <Value>3</Value>
+            <Label lang="en">Report kWh</Label>
+          </Item>
+          <Item>
+            <Value>15</Value>
+            <Label lang="en">Report All</Label>
+          </Item>
+        </Parameter>
+
+        <Parameter>
+          <Index>102</Index>
+          <Label lang="en">Which reports to send to G2.</Label>
+          <Type>list</Type>
+          <Default>3</Default>
+          <Minimum>0</Minimum>
+          <Maximum>15</Maximum>
+          <WriteOnly>false</WriteOnly>
+          <Size>4</Size>
+          <Item>
+            <Value>0</Value>
+            <Label lang="en">Report Voltage</Label>
+          </Item>
+          <Item>
+            <Value>1</Value>
+            <Label lang="en">Report Current</Label>
+          </Item>
+          <Item>
+            <Value>2</Value>
+            <Label lang="en">Report Watts</Label>
+          </Item>
+          <Item>
+            <Value>3</Value>
+            <Label lang="en">Report kWh</Label>
+          </Item>
+          <Item>
+            <Value>15</Value>
+            <Label lang="en">Report All</Label>
+          </Item>
+        </Parameter>
+
+        <Parameter>
+          <Index>103</Index>
+          <Label lang="en">Which reports to send to G3.</Label>
+          <Type>list</Type>
+          <Default>
+          </Default>
+          <Minimum>0</Minimum>
+          <Maximum>15</Maximum>
+          <WriteOnly>false</WriteOnly>
+          <Size>4</Size>
+          <Item>
+            <Value>0</Value>
+            <Label lang="en">Report Voltage</Label>
+          </Item>
+          <Item>
+            <Value>1</Value>
+            <Label lang="en">Report Current</Label>
+          </Item>
+          <Item>
+            <Value>2</Value>
+            <Label lang="en">Report Watts</Label>
+          </Item>
+          <Item>
+            <Value>3</Value>
+            <Label lang="en">Report kWh</Label>
+          </Item>
+          <Item>
+            <Value>15</Value>
+            <Label lang="en">Report All</Label>
+          </Item>
+        </Parameter>
+
+        <Parameter>
+          <Index>110</Index>
+          <Label lang="en">Set 111‐113 to default. </Label>
+          <Type>short</Type>
+          <Default></Default>
+          <Minimum>0</Minimum>
+          <Maximum>1</Maximum>
+          <WriteOnly>true</WriteOnly>
+          <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
             <Index>111</Index>
             <Label lang="en">Time interval for sending to group 1</Label>
             <Type>short</Type>
@@ -410,6 +535,16 @@
             <Help><![CDATA[Group 3 automatic update interval
 <p>The time interval of sending Report group 1 (Valid values 0x01-0xFFFFFFFF).</p> <p>Default value is 600</p> <p>Note: Only up to 0x7fffffff is currently supported</p>
             ]]></Help>
+        </Parameter>
+
+        <Parameter>
+          <Index>113</Index>
+          <Label lang="en">Time interval for sending to group 3</Label>
+          <Type>short</Type>
+          <Default>600</Default>
+          <Minimum>1</Minimum>
+          <Maximum>2147483647</Maximum>
+          <Size>4</Size>
         </Parameter>
 
         <Parameter>
