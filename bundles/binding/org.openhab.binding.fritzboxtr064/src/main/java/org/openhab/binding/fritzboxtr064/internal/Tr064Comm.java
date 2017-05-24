@@ -194,6 +194,8 @@ public class Tr064Comm {
                 // if input is mac address, replace "-" with ":" as fbox wants
                 if (itemMap.getItemCommand().equals("maconline")) {
                     dataInValue = dataInValue.replaceAll("-", ":");
+                } else if (itemMap.getItemCommand().equals("powerplug")) {
+                    dataInValue = dataInValue.replaceAll("-", " ");
                 }
                 beDataNode.addTextNode(dataInValue); // add data which should be requested from fbox for this service
             }
@@ -228,6 +230,9 @@ public class Tr064Comm {
             if (nlDataOutNodes != null && nlDataOutNodes.getLength() > 0) {
                 // extract value from soap response
                 value = nlDataOutNodes.item(0).getTextContent();
+                if (itemMap.getItemCommand().equals("powerplug")) {
+                    value = value.toString().equalsIgnoreCase("on") ? "1" : "0";
+                }
             } else {
                 logger.error("FritzBox returned unexpected response. Could not find expected datavalue {} in response.",
                         itemMap.getReadDataOutName());
@@ -281,11 +286,20 @@ public class Tr064Comm {
                 String dataInValueAdd = itemConfig[1]; // additional parameter to set e.g. id of TAM to set
                 QName dataNode = new QName(itemMap.getWriteDataInNameAdditional()); // name of additional para to set
                 SOAPElement beDataNode = bodyData.addChildElement(dataNode);
+                if (itemMap.getItemCommand().equals("powerplug")) {
+                    dataInValueAdd = dataInValueAdd.replaceAll("-", " ");
+                }
                 beDataNode.addTextNode(dataInValueAdd); // add value which should be set
             }
 
-            // convert String command into numeric
-            String setDataInValue = cmd.toString().equalsIgnoreCase("on") ? "1" : "0";
+            String setDataInValue = "";
+            if (itemMap.getItemCommand().equals("powerplug")){
+                setDataInValue = cmd.toString().equalsIgnoreCase("on") ? "ON" : "OFF";
+            }
+            else {
+                // convert String command into numeric
+                setDataInValue = cmd.toString().equalsIgnoreCase("on") ? "1" : "0";
+            }
             QName dataNode = new QName(itemMap.getWriteDataInName()); // service specific node name
             SOAPElement beDataNode = bodyData.addChildElement(dataNode);
             beDataNode.addTextNode(setDataInValue); // add data which should be requested from fbox for this service
@@ -853,6 +867,14 @@ public class Tr064Comm {
             }
         });
         _alItemMap.add(imMissedCalls);
+
+        // Fritz!DECT 200 smart power plug
+        ItemMap imPowerPlugSwitch = new ItemMap("powerplug", "GetSpecificDeviceInfos", "urn:X_AVM-DE_Homeauto-com:serviceId:X_AVM-DE_Homeauto1",
+                "NewAIN", "NewSwitchState");
+        imPowerPlugSwitch.setWriteServiceCommand("SetSwitch");
+        imPowerPlugSwitch.setWriteDataInName("NewSwitchState");
+        imPowerPlugSwitch.setWriteDataInNameAdditional("NewAIN"); // additional Parameter to set
+        _alItemMap.add(imPowerPlugSwitch);
 
     }
 
