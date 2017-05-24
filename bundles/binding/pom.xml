@@ -196,5 +196,6 @@
     <module>org.openhab.binding.plclogo</module>
     <module>org.openhab.binding.km200</module>
     <module>org.openhab.binding.diyonxbee</module>
+    <module>org.openhab.binding.isy</module>
   </modules>
 </project>
