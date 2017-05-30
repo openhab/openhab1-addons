@@ -19,24 +19,23 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface ISYBindingProvider extends BindingProvider {
 
-	/**
-	 * Returns a Device/Node Address from a Item name in the *.items file
-	 * 
-	 * @param itemName
-	 *            configured Item name in the *.items file with a ISY binding
-	 * @return ISY binding of the *.items file
-	 */
-	public ISYBindingConfig getBindingConfigFromItemName(String itemName);
+    /**
+     * Returns a Device/Node Address from a Item name in the *.items file
+     * 
+     * @param itemName
+     *            configured Item name in the *.items file with a ISY binding
+     * @return ISY binding of the *.items file
+     */
+    public ISYBindingConfig getBindingConfigFromItemName(String itemName);
 
-	/**
-	 * Returns a Device/Node Address from a Item name in the *.items file
-	 * 
-	 * @param address
-	 *            configured address in the *.items file with a ISY binding
-	 * @param cmd
-	 *            Control name of ISY control
-	 * @return Collection of matching ISY bindings of the *.items file
-	 */
-	public Collection<ISYBindingConfig> getBindingConfigFromAddress(
-			String address, String cmd);
+    /**
+     * Returns a Device/Node Address from a Item name in the *.items file
+     * 
+     * @param address
+     *            configured address in the *.items file with a ISY binding
+     * @param cmd
+     *            Control name of ISY control
+     * @return Collection of matching ISY bindings of the *.items file
+     */
+    public Collection<ISYBindingConfig> getBindingConfigFromAddress(String address, String cmd);
 }
