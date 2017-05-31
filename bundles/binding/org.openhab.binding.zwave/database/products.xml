@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
     <Manufacturer>
         <Id>0175</Id>
@@ -1323,6 +1323,23 @@
             <Model>ZW112</Model>
             <Label lang="en">Door/Window Sensor 6</Label>
             <ConfigFile>aeon/zw112.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>0002</Type>
+                <Id>0061</Id>
+            </Reference>
+            <Reference>
+                <Type>0102</Type>
+                <Id>0061</Id>
+            </Reference>
+            <Reference>
+                <Type>0202</Type>
+                <Id>0061</Id>
+            </Reference>
+            <Model>ZW097</Model>
+            <Label lang="en">Dry Contact Sensor</Label>
+            <ConfigFile>aeon/zw097.xml</ConfigFile>
         </Product>
     </Manufacturer>
     <Manufacturer>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZW097</Model>
+    <Label lang="en">Dry Contact Sensor</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x30</id>             <!-- SENSOR_BINARY -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x82</id>             <!-- HAIL -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0xEF</id>             <!-- MARK -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Send Sensor binary report on open/close events</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">On for opened, Off for closed</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Off for opened, On for closed</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Enable wake up 10 minutes when power on</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">No</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Yes</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Send Basic Set on open/close event</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">On for opened, Off for closed</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Off for opened, On for closed</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>39</Index>
+            <Label lang="en">Send battery report when less than percentage</Label>
+            <Type>short</Type>
+            <Default>10</Default>
+            <Minimum>10</Minimum>
+            <Maximum>50</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>111</Index>
+            <Label lang="en">Set the interval time of battery report</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2147483647</Maximum>
+            <Size>4</Size>
+            <Help><![CDATA[Value is specified in number of seconds.
+<p>Values greater than 10 will be rounded up to the nearest 4 minutes (10 through 240 = 4 minutes, 241 through 480 = 8 minutes, etc.)</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>122</Index>
+            <Label lang="en">Notification type to send</Label>
+            <Type>list</Type>
+            <Default>6</Default>
+            <Minimum>1</Minimum>
+            <Maximum>11</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Smoke alarm</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">CO alarm</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">CO2 alarm</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Heat alarm</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Water alarm</Label>
+            </Item>
+            <Item>
+                <Value>6</Value>
+                <Label lang="en">Access control</Label>
+            </Item>
+            <Item>
+                <Value>7</Value>
+                <Label lang="en">Home security</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">Power management</Label>
+            </Item>
+            <Item>
+                <Value>9</Value>
+                <Label lang="en">System</Label>
+            </Item>
+            <Item>
+                <Value>10</Value>
+                <Label lang="en">Emergency alarm</Label>
+            </Item>
+            <Item>
+                <Value>11</Value>
+                <Label lang="en">Timer ended</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Group 1</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>
