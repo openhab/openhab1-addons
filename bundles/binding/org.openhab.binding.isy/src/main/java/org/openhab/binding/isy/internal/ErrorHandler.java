@@ -32,7 +32,7 @@ public class ErrorHandler implements ErrorEventListener {
     private void offLine(final int status, Object device) {
         String err = Errors.getErrorMessage(status);
 
-        this.logger.warn("Warning: " + status + (err == null ? " " : err));
+        this.logger.warn("Warning: {} {}", status, (err == null ? " " : err));
 
         if (UDClientStatus.isBusy()) {
             return;
@@ -56,27 +56,17 @@ public class ErrorHandler implements ErrorEventListener {
 
     private void humanInterventionRequired(final int status, final String msg) {
         String err = Errors.getErrorMessage(status);
-        this.logger.error("Human Intervention Required: " + status + (err == null ? " " : err));
-        if (msg != null) {
-            this.logger.error(msg);
-        }
+        this.logger.warn("Human Intervention Required: {} {} {}", status, (err == null ? " " : err), (msg == null ? " " : msg) );
     }
 
     private void warning(final int status, final String msg) {
         String err = Errors.getErrorMessage(status);
-
-        this.logger.warn("Warning: " + status + (err == null ? " " : err));
-        if (msg != null) {
-            this.logger.warn(msg);
-        }
+        this.logger.warn("Warning: {} {} {}", status, (err == null ? " " : err), (msg == null ? " " : msg) );
     }
 
     private void fatalError(final int status, final String msg) {
         String err = Errors.getErrorMessage(status);
-        this.logger.error("Fatal Error: " + status + (err == null ? " " : err));
-        if (msg != null) {
-            this.logger.error(msg);
-        }
+        this.logger.warn("ISY Fatal Error: {} {} {}", status, (err == null ? " " : err), (msg == null ? " " : msg) );
     }
 
     /**
@@ -109,7 +99,7 @@ public class ErrorHandler implements ErrorEventListener {
             case 903/* System Not Initialized; Restart! */:
             case 905/* Subscription Failed; The device might need reboot! */:
             case 1020/* Couldn't create the event handler socket */:
-                fatalError(status, "Exit the applciation; might have to reboot ISY");
+                fatalError(status, "Exit the application; might have to reboot ISY");
                 break;
 
             case 781/* no such session */:

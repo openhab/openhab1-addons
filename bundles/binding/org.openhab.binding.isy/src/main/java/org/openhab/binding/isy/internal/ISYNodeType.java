@@ -9,7 +9,7 @@
 package org.openhab.binding.isy.internal;
 
 /**
- * This is the node types in ISY that are supported / translated.
+ * These are the node types in ISY that are supported / translated.
  * 
  * @author Jon Bullen
  * @since 1.10.0

@@ -155,7 +155,6 @@ public class InsteonClient extends ISYInsteonClient {
             return;
         }
 
-        //
         if (this.logger.isDebugEnabled()) {
             this.logger.debug("Supported controls:");
             try {
@@ -191,7 +190,7 @@ public class InsteonClient extends ISYInsteonClient {
                     this.logger.info("Authenticated");
                 }
             } catch (NoDeviceException ne) {
-                this.logger.error("No device", ne);
+                this.logger.warn("No device", ne);
             }
         } else {
             device.subscribeToEvents(true);

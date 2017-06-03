@@ -57,7 +57,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider> 
     private InsteonClient insteonClient;
 
     /**
-     * Constructor, nothing to see here.
+     * Constructor.
      */
     public ISYActiveBinding() {
     }
@@ -70,8 +70,6 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider> 
     public void activate(final Map<Object, Object> config) {
 
         runtimeConfiguration = new ISYActiveBindingConfig(config);
-
-        setProperlyConfigured(true);
 
         // create the Insteon client using their SDK
         //
@@ -93,6 +91,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider> 
                 throw new RuntimeException(e);
             }
         }
+        setProperlyConfigured(true);
     }
 
     /**
@@ -101,8 +100,6 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider> 
     public void modified(final Map<Object, Object> config) {
 
         runtimeConfiguration = new ISYActiveBindingConfig(config);
-
-        setProperlyConfigured(true);
 
         // create the Insteon client using their SDK
         //
@@ -129,6 +126,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider> 
                 throw new RuntimeException(e);
             }
         }
+        setProperlyConfigured(true);
     }
 
     /**
@@ -145,7 +143,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider> 
     }
 
     /**
-     * @{inheritDoc
+     * @{inheritDoc}
      */
     @Override
     protected long getRefreshInterval() {
@@ -153,7 +151,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider> 
     }
 
     /**
-     * @{inheritDoc
+     * @{inheritDoc}
      */
     @Override
     protected String getName() {
@@ -161,7 +159,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider> 
     }
 
     /**
-     * @{inheritDoc
+     * @{inheritDoc}
      */
     @Override
     protected void execute() {
@@ -172,7 +170,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider> 
     }
 
     /**
-     * @{inheritDoc
+     * @{inheritDoc}
      */
     @Override
     protected void internalReceiveCommand(final String itemName, final Command command) {
@@ -394,7 +392,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider> 
     }
 
     /**
-     * This will look though items that have a binding to the ISY unit and
+     * This will look through items that have a binding to the ISY unit and
      * return a collection of them to be checked using the address. This allows
      * a many to one relationship of a item in ISY to OpenHab items.
      *

@@ -158,11 +158,9 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider im
                 case "type":
                     if ("thermostat".equalsIgnoreCase(value)) {
                         type = ISYNodeType.THERMOSTAT;
-                    }
-                    if ("lock".equalsIgnoreCase(value)) {
+                    } else if ("lock".equalsIgnoreCase(value)) {
                         type = ISYNodeType.LOCK;
-                    }
-                    if ("heartbeat".equalsIgnoreCase(value)) {
+                    } else if ("heartbeat".equalsIgnoreCase(value)) {
                         type = ISYNodeType.HEARTBEAT;
                     }
                     break;

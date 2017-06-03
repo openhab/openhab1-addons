@@ -72,12 +72,12 @@ public class ISYActiveBindingConfig {
             try {
                 this.port = Integer.parseInt((String) config.get("port"));
             } catch (NumberFormatException ne) {
-                this.logger.error("Not a valid port number");
+                this.logger.warn("Not a valid port number");
                 throw new RuntimeException("Not a valid port number", ne);
             }
 
             if (this.port < 0 || this.port > 65535) {
-                this.logger.error("Port out of range (0-65535)");
+                this.logger.warn("Port out of range (0-65535)");
                 throw new NumberFormatException("Invalid port");
             }
 
