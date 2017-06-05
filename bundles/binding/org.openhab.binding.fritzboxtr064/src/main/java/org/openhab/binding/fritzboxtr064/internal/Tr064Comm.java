@@ -12,8 +12,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -89,11 +89,11 @@ public class Tr064Comm {
     private String _user = null;
     private String _pw = null;
 
-    // all services fbox offers
-    private ArrayList<Tr064Service> _alServices = null;
+    // all services fbox offers mapped by service id
+    private Map<String, Tr064Service> _allServices = null;
 
     // mappig table for mapping item command to tr064 parameters
-    private ArrayList<ItemMap> _alItemMap = null;
+    private Map<String, ItemMap> _allItemMap = null;
 
     // http client object used to communicate with fbox (needed for reading/writing soap requests)
     private CloseableHttpClient _httpClient = null;
@@ -103,8 +103,8 @@ public class Tr064Comm {
         this._url = _url;
         this._user = user;
         this._pw = pass;
-        _alServices = new ArrayList<Tr064Service>();
-        _alItemMap = new ArrayList<ItemMap>();
+        _allServices = new HashMap<>();
+        _allItemMap = new HashMap<>();
         init();
     }
 
@@ -143,10 +143,10 @@ public class Tr064Comm {
         if (_httpClient == null) {
             _httpClient = createTr064HttpClient(_url); // create http client used for communication
         }
-        if (_alServices.isEmpty()) { // no services are known yet?
+        if (_allServices.isEmpty()) { // no services are known yet?
             readAllServices(); // can be done w/out item mappings and w/out auth
         }
-        if (_alItemMap.isEmpty()) { // no mappings present yet?
+        if (_allItemMap.isEmpty()) { // no mappings present yet?
             generateItemMappings();
         }
     }
@@ -543,17 +543,8 @@ public class Tr064Comm {
      * @return found itemMap object if found, or null
      */
     private ItemMap determineItemMappingByItemCommand(String itemCommand) {
-        ItemMap foundMapping = null;
+        ItemMap foundMapping = _allItemMap.get(itemCommand);
 
-        // iterate over all itemMappings to find proper mapping for requested item command
-        Iterator<ItemMap> itMap = _alItemMap.iterator();
-        while (itMap.hasNext()) {
-            ItemMap currentMap = itMap.next();
-            if (itemCommand.equals(currentMap.getItemCommand())) {
-                foundMapping = currentMap;
-                break;
-            }
-        }
         if (foundMapping == null) {
             logger.error("No mapping found for item command {}", itemCommand);
         }
@@ -567,17 +558,8 @@ public class Tr064Comm {
      * @return the found service or null
      */
     private Tr064Service determineServiceByItemMapping(ItemMap mapping) {
-        Tr064Service foundService = null;
+        Tr064Service foundService = _allServices.get(mapping.getServiceId());
 
-        // search which service matches the item mapping
-        Iterator<Tr064Service> it = _alServices.iterator();
-        while (it.hasNext()) {
-            Tr064Service currentService = it.next();
-            if (currentService.getServiceId().contains(mapping.getServiceId())) {
-                foundService = currentService;
-                break;
-            }
-        }
         if (foundService == null) {
             logger.warn("No tr064 service found for service id {}", mapping.getServiceId());
         }
@@ -610,7 +592,7 @@ public class Tr064Comm {
                 logger.debug("Could not parse service {}", currentNode.getTextContent());
                 e.printStackTrace();
             }
-            _alServices.add(trS);
+            _allServices.put(trS.getServiceId(), trS);
         }
     }
 
@@ -623,7 +605,7 @@ public class Tr064Comm {
      */
     private void generateItemMappings() {
         // services available from fbox. Needed for e.g. wifi select 5GHz/Guest Wifi
-        if (_alServices.isEmpty()) { // no services are known yet?
+        if (_allServices.isEmpty()) { // no services are known yet?
             readAllServices();
         }
 
@@ -671,12 +653,12 @@ public class Tr064Comm {
                 return value;
             }
         });
-        _alItemMap.add(imMacOnline);
+        addItemMap(imMacOnline);
 
-        _alItemMap.add(new ItemMap("modelName", "GetInfo", "DeviceInfo-com:serviceId:DeviceInfo1", "", "NewModelName"));
-        _alItemMap.add(new ItemMap("wanip", "GetExternalIPAddress",
-                "urn:WANPPPConnection-com:serviceId:WANPPPConnection1", "", "NewExternalIPAddress"));
-        _alItemMap.add(new ItemMap("externalWanip", "GetExternalIPAddress",
+        addItemMap(new ItemMap("modelName", "GetInfo", "DeviceInfo-com:serviceId:DeviceInfo1", "", "NewModelName"));
+        addItemMap(new ItemMap("wanip", "GetExternalIPAddress", "urn:WANPPPConnection-com:serviceId:WANPPPConnection1",
+                "", "NewExternalIPAddress"));
+        addItemMap(new ItemMap("externalWanip", "GetExternalIPAddress",
                 "urn:WANIPConnection-com:serviceId:WANIPConnection1", "", "NewExternalIPAddress"));
 
         // Wifi 2,4GHz
@@ -684,7 +666,7 @@ public class Tr064Comm {
                 "urn:WLANConfiguration-com:serviceId:WLANConfiguration1", "", "NewEnable");
         imWifi24Switch.setWriteServiceCommand("SetEnable");
         imWifi24Switch.setWriteDataInName("NewEnable");
-        _alItemMap.add(imWifi24Switch);
+        addItemMap(imWifi24Switch);
 
         // wifi 5GHz
         ItemMap imWifi50Switch = new ItemMap("wifi50Switch", "GetInfo",
@@ -704,8 +686,8 @@ public class Tr064Comm {
 
         if (svc5GHzWifi != null && svcGuestWifi != null) { // WLANConfiguration3+2 present -> guest wifi + 5Ghz present
             // prepared properly, only needs to be added
-            _alItemMap.add(imWifi50Switch);
-            _alItemMap.add(imWifiGuestSwitch);
+            addItemMap(imWifi50Switch);
+            addItemMap(imWifiGuestSwitch);
             logger.debug("Found 2,4 Ghz, 5Ghz and Guest Wifi");
         }
 
@@ -713,7 +695,7 @@ public class Tr064Comm {
                                                            // available but Guest Wifi
             // remap itemMap for Guest Wifi from 3 to 2
             imWifiGuestSwitch.setServiceId("urn:WLANConfiguration-com:serviceId:WLANConfiguration2");
-            _alItemMap.add(imWifiGuestSwitch);// only add guest wifi, no 5Ghz
+            addItemMap(imWifiGuestSwitch);// only add guest wifi, no 5Ghz
             logger.debug("Found 2,4 Ghz and Guest Wifi");
         }
         if (svc5GHzWifi == null && svcGuestWifi == null) { // WLANConfiguration3+2 not present > no 5Ghz Wifi or Guest
@@ -725,7 +707,7 @@ public class Tr064Comm {
         // itemcommand is dummy: not a real item
         ItemMap imPhonebook = new ItemMap("phonebook", "GetPhonebook",
                 "urn:X_AVM-DE_OnTel-com:serviceId:X_AVM-DE_OnTel1", "NewPhonebookID", "NewPhonebookURL");
-        _alItemMap.add(imPhonebook);
+        addItemMap(imPhonebook);
 
         // TAM (telephone answering machine) Switch
         ItemMap imTamSwitch = new ItemMap("tamSwitch", "GetInfo", "urn:X_AVM-DE_TAM-com:serviceId:X_AVM-DE_TAM1",
@@ -733,7 +715,7 @@ public class Tr064Comm {
         imTamSwitch.setWriteServiceCommand("SetEnable");
         imTamSwitch.setWriteDataInName("NewEnable");
         imTamSwitch.setWriteDataInNameAdditional("NewIndex"); // additional Parameter to set
-        _alItemMap.add(imTamSwitch);
+        addItemMap(imTamSwitch);
 
         // New Messages per TAM ID
         // two requests needed: First gets URL to download tam info from, 2nd contains info of messages
@@ -790,7 +772,7 @@ public class Tr064Comm {
                 return value;
             }
         });
-        _alItemMap.add(imTamNewMessages);
+        addItemMap(imTamNewMessages);
 
         // Missed calls
         // two requests: 1st fetches URL to download call list, 2nd fetches xml call list
@@ -856,8 +838,12 @@ public class Tr064Comm {
                 return value;
             }
         });
-        _alItemMap.add(imMissedCalls);
+        addItemMap(imMissedCalls);
 
+    }
+
+    private void addItemMap(ItemMap itemMap) {
+        _allItemMap.put(itemMap.getItemCommand(), itemMap);
     }
 
     /***
