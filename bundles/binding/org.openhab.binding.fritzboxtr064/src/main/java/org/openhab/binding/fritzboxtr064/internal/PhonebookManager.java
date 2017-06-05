@@ -117,7 +117,7 @@ public class PhonebookManager {
      */
     public Document downloadPhonebook(int id) {
         logger.info("Downloading phonebook ID {}", id);
-        String phoneBookUrl = _tr064comm.getTr064Value("phonebook:" + id);
+        String phoneBookUrl = _tr064comm.getTr064Value(new ItemConfiguration("phonebook", String.valueOf(id)));
         Document phoneBook = _tr064comm.getFboxXmlResponse(phoneBookUrl);
         logger.debug("Downloaded Phonebook:");
         logger.trace(Helper.documentToString(phoneBook));

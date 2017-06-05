@@ -45,6 +45,9 @@ This binding can be configured in the file `services/fritzboxtr064.cfg`.
 
 ```
 String  fboxName            "FBox Model [%s]"           {fritzboxtr064="modelName"}
+String  fboxManufacturer    "FBox Manufacturer [%s]"    {fritzboxtr064="manufacturerName"}
+String  fboxSerial          "FBox Serial [%s]"          {fritzboxtr064="serialNumber"}
+String  fboxVersion         "FBox Version [%s]"         {fritzboxtr064="softwareVersion"}
 # get wan ip if FritzBox establishes the internet connection (e. g. via DSL)
 String  fboxWanIP           "FBox WAN IP [%s]"          {fritzboxtr064="wanip"}
 # get wan ip if FritzBox uses internet connection of external router
