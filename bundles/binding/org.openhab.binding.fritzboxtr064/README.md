@@ -23,6 +23,7 @@ It has been tested on:
 * enabling/disabling telephone answering machines (TAMs) 
 * getting new messages per TAM
 * getting missed calls for the last x days
+* getting DSL statistics for monitoring connection quality
 
 ## Prerequisites
 
@@ -56,6 +57,22 @@ Switch  fboxWifi24          "2,4GHz Wifi"               {fritzboxtr064="wifi24Sw
 Switch  fboxWifi50          "5,0GHz Wifi"               {fritzboxtr064="wifi50Switch"}
 Switch  fboxGuestWifi       "Guest Wifi"                {fritzboxtr064="wifiGuestSwitch"}
 Contact cFboxMacOnline      "Presence (WiFi) [%s]"      {fritzboxtr064="maconline:11-11-11-11-11-11" }
+
+# DSL statistics
+
+Contact fboxDslEnable       "FBox DSL Enable [%s]"      {fritzboxtr064="dslEnable"}
+String  fboxDslStatus       "FBox DSL Status [%s]"      {fritzboxtr064="dslStatus"}
+Number  fboxDslUpstreamCurrRate "DSL Upstream Current [%s mbit/s]" {fritzboxtr064="dslUpstreamCurrRate"}
+Number  fboxDslDownstreamCurrRate "DSL Downstream Current [%s mbit/s]" {fritzboxtr064="dslDownstreamCurrRate"}
+Number  fboxDslUpstreamMaxRate "DSL Upstream Max [%s mbit/s]" {fritzboxtr064="dslUpstreamMaxRate"}
+Number  fboxDslDownstreamMaxRate "DSL Downstream Max [%s mbit/s]" {fritzboxtr064="dslDownstreamMaxRate"}
+Number  fboxDslUpstreamNoiseMargin "DSL Upstream Noise Margin [%s dB*10]" {fritzboxtr064="dslUpstreamNoiseMargin"}
+Number  fboxDslDownstreamNoiseMargin "DSL Downstream Noise Margin [%s dB*10]" {fritzboxtr064="dslDownstreamNoiseMargin"}
+Number  fboxDslUpstreamAttenuation "DSL Upstream Attenuation [%s dB*10]" {fritzboxtr064="dslUpstreamAttenuation"}
+Number  fboxDslDownstreamAttenuation "DSL Downstream Attenuation [%s dB*10]" {fritzboxtr064="dslDownstreamAttenuation"}
+Number  fboxDslFECErrors "DSL FEC Errors [%s]" {fritzboxtr064="dslFECErrors"}
+Number  fboxDslHECErrors "DSL HEC Errors [%s]" {fritzboxtr064="dslHECErrors"}
+Number  fboxDslCRCErrors "DSL CRC Errors [%s]" {fritzboxtr064="dslCRCErrors"}
 
 # only when using call monitor
 Switch  fboxRinging         "Phone ringing [%s]"                {fritzboxtr064="callmonitor_ringing" }

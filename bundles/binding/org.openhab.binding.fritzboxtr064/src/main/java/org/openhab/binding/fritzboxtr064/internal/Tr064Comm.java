@@ -661,6 +661,16 @@ public class Tr064Comm {
         addItemMap(new SingleItemMap("externalWanip", "GetExternalIPAddress",
                 "urn:WANIPConnection-com:serviceId:WANIPConnection1", "", "NewExternalIPAddress"));
 
+        // DSL Status
+        addItemMap(new MultiItemMap(
+                Arrays.asList("dslEnable", "dslStatus", "dslUpstreamCurrRate", "dslDownstreamCurrRate",
+                        "dslUpstreamMaxRate", "dslDownstreamMaxRate", "dslUpstreamNoiseMargin",
+                        "dslDownstreamNoiseMargin", "dslUpstreamAttenuation", "dslDownstreamAttenuation"),
+                "GetInfo", "urn:WANDSLIfConfig-com:serviceId:WANDSLInterfaceConfig1",
+                name -> name.replace("dsl", "New")));
+        addItemMap(new MultiItemMap(Arrays.asList("dslFECErrors", "dslHECErrors", "dslCRCErrors"), "GetStatisticsTotal",
+                "urn:WANDSLIfConfig-com:serviceId:WANDSLInterfaceConfig1", name -> name.replace("dsl", "New")));
+
         // Wifi 2,4GHz
         SingleItemMap imWifi24Switch = new SingleItemMap("wifi24Switch", "GetInfo",
                 "urn:WLANConfiguration-com:serviceId:WLANConfiguration1", "", "NewEnable");
