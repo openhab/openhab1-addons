@@ -50,6 +50,7 @@
     <module>org.openhab.binding.modbus.test</module>
     <module>org.openhab.binding.plcbus</module>
     <module>org.openhab.binding.dmx</module>
+    <module>org.openhab.binding.dmx.e131</module>
     <module>org.openhab.binding.dmx.ola</module>
     <module>org.openhab.binding.dmx.lib485</module>
     <module>org.openhab.binding.dmx.artnet</module>
