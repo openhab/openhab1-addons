@@ -155,7 +155,7 @@
                         </excludes>
                         <useDefaultExcludes>true</useDefaultExcludes>
                         <properties>
-                            <year>2016</year>
+                            <year>2017</year>
                         </properties>
                         <encoding>UTF-8</encoding>
                     </configuration>
@@ -240,13 +240,6 @@
         <repository>
             <id>p2-smarthome</id>
             <url>http://download.eclipse.org/smarthome/updates-stable</url>
-            <layout>p2</layout>
-        </repository>
-
-        <!-- openHAB core p2 repository -->
-        <repository>
-            <id>p2-openhab-core</id>
-            <url>https://dl.bintray.com/openhab/p2/openhab-core/${ohc.version}</url>
             <layout>p2</layout>
         </repository>
 
