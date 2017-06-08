@@ -11,8 +11,6 @@
 -->
 <features name="${project.artifactId}-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
 
-  <repository>mvn:de.maggu2810.kat.features/apache-httpcomponents/${kat.version}/xml/features</repository>
-
   <!-- action -->
 
   <feature name="openhab-action-ecobee" description="Ecobee Action" version="${project.version}">
