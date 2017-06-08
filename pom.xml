@@ -6,10 +6,16 @@
         <maven>3.0</maven>
     </prerequisites>
 
-    <groupId>org.openhab</groupId>
-    <artifactId>openhab</artifactId>
+    <parent>
+        <groupId>org.openhab</groupId>
+        <artifactId>pom-tycho</artifactId>
+        <version>2.1.0-SNAPSHOT</version>
+        <relativePath></relativePath>
+    </parent>
+
+    <artifactId>pom-addons1</artifactId>
     <version>1.10.0-SNAPSHOT</version>
-    <name>openHAB</name>
+    <name>openHAB 1 Add-ons</name>
 
     <organization>
         <name>openHAB.org</name>
@@ -37,17 +43,10 @@
     <description>This is the open Home Automation Bus (openHAB)</description>
 
     <properties>
-        <ohdr.version>1.0.12</ohdr.version>
-        <ohc.version>2.1.x</ohc.version>
+        <ohcp2.version>2.1.x</ohcp2.version>
 
-        <tycho-version>1.0.0</tycho-version>
-        <tycho-groupid>org.eclipse.tycho</tycho-groupid>
-
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <wagon.version>1.0-beta-2</wagon.version>
-
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+		<!-- we deactivate the static analysis tool as the openHAB 1 code does not comply to these rules -->
+		<skipChecks>true</skipChecks>
 
         <repo.url>https://api.bintray.com/maven/openhab/mvn/openhab1-addons/;publish=1</repo.url>
 
@@ -71,67 +70,9 @@
     </modules>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>${tycho-groupid}</groupId>
-                <artifactId>tycho-maven-plugin</artifactId>
-                <version>${tycho-version}</version>
-                <extensions>true</extensions>
-            </plugin>
-            <plugin>
-                <groupId>${tycho-groupid}</groupId>
-                <artifactId>target-platform-configuration</artifactId>
-                <version>${tycho-version}</version>
-                <configuration>
-                    <resolver>p2</resolver>
-                    <ignoreTychoRepositories>true</ignoreTychoRepositories>
-                    <pomDependencies>consider</pomDependencies>
-                    <environments>
-                        <environment>
-                            <os>linux</os>
-                            <ws>gtk</ws>
-                            <arch>x86</arch>
-                        </environment>
-                        <environment>
-                            <os>linux</os>
-                            <ws>gtk</ws>
-                            <arch>x86_64</arch>
-                        </environment>
-                        <environment>
-                            <os>win32</os>
-                            <ws>win32</ws>
-                            <arch>x86</arch>
-                        </environment>
-                        <environment>
-                            <os>macosx</os>
-                            <ws>cocoa</ws>
-                            <arch>x86_64</arch>
-                        </environment>
-                    </environments>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>${tycho-groupid}</groupId>
-                <artifactId>tycho-packaging-plugin</artifactId>
-                <version>${tycho-version}</version>
-                <configuration>
-                    <strictVersions>false</strictVersions>
-                </configuration>
-            </plugin>
-        </plugins>
 
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>${tycho-groupid}</groupId>
-                    <artifactId>tycho-compiler-plugin</artifactId>
-                    <version>${tycho-version}</version>
-                    <configuration>
-                        <encoding>UTF-8</encoding>
-                        <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
-                    </configuration>
-                </plugin>
                 <plugin>
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
@@ -194,8 +135,36 @@
         </pluginManagement>
     </build>
 
+    <pluginRepositories>
+      <pluginRepository>
+            <id>jcenter</id>
+            <name>JCenter Repository</name>
+            <url>https://jcenter.bintray.com/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+      </pluginRepository>
+      <pluginRepository>
+          <id>artifactory</id>
+          <name>JFrog Artifactory Repository</name>
+          <url>https://openhab.jfrog.io/openhab/libs-release</url>
+          <releases>
+              <enabled>true</enabled>
+              <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+              <enabled>false</enabled>
+          </snapshots>
+      </pluginRepository>
+    </pluginRepositories>
+
     <repositories>
-        <!-- openHAB releases -->
+        
+        <!-- releases -->
         <repository>
             <id>jcenter</id>
             <name>JCenter Repository</name>
@@ -210,9 +179,9 @@
         </repository>
 
         <repository>
-            <id>openhab-bintray</id>
-            <name>Bintray Repository for openHAB</name>
-            <url>https://dl.bintray.com/openhab/mvn/</url>
+            <id>openhab-artifactory-release</id>
+            <name>JFrog Artifactory Repository</name>
+            <url>https://openhab.jfrog.io/openhab/libs-release</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>never</updatePolicy>
@@ -222,11 +191,11 @@
             </snapshots>
         </repository>
 
-        <!-- openHAB snapshots -->
+        <!-- snapshots -->
         <repository>
-            <id>jfrog</id>
-            <name>JFrog OSS Repository</name>
-            <url>http://oss.jfrog.org/libs-snapshot/</url>
+            <id>openhab-artifactory-snapshot</id>
+            <name>JFrog Artifactory Repository</name>
+            <url>https://openhab.jfrog.io/openhab/libs-snapshot</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -239,7 +208,14 @@
         <!-- SmartHome p2 repository -->
         <repository>
             <id>p2-smarthome</id>
-            <url>http://download.eclipse.org/smarthome/updates-stable</url>
+            <url>https://openhab.jfrog.io/openhab/eclipse-smarthome-stable</url>
+            <layout>p2</layout>
+        </repository>
+
+        <!-- openHAB core p2 repository -->
+        <repository>
+            <id>p2-openhab-core</id>
+            <url>https://dl.bintray.com/openhab/p2/openhab-core/${ohcp2.version}</url>
             <layout>p2</layout>
         </repository>
 
