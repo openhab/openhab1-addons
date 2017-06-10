@@ -95,12 +95,36 @@ Each format string starts with '%' followed by an optional index e.g. `2$`, wher
 
 ## HTTP headers
 
-It is possible to define optional HTTP headers which will be sent during the HTTP method call.  Those optional headers can be added to the url in the form `header1=value1&header2=value2....` This headers string should be enclosed in curly brackets right after the url itself (before the separation colon).
+It is possible to define optional HTTP headers which will be sent during the HTTP method call. Those optional headers can be added to the url in the form `header1=value1&header2=value2...`. This headers string should be enclosed in curly brackets right after the url itself (before the separation colon).
 
 Example:
 
 ```
 http="<[https://www.flukso.net/api/sensor/xxxx?interval=daily{X-Token=mytoken&X-version=1.0}:60000:REGEX(.*?<title>(.*?)</title>(.*))]"
+```
+
+## HTTP Basic authentication
+
+It is possible to use optional HTTP Basic authentication to provide a username and password when making a request. There is a very good article on Wikipedia for [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication).
+
+### URL encoding
+
+Prepend `username:password@` to the hostname in the url.
+
+Example:
+
+```
+http="<[http://username:password@sample.com]"
+```
+
+### Authorization header
+
+When your username or password contains reserved characters like an `@` or a `:` symbol you should encode the username and password in Base64 and use a HTTP header. The headers's value is the base64-encoding of `username:password` (which results in `dXNlcm5hbWU6cGFzc3dvcmQ=`). There is an online decoder/encoder [here](https://www.base64encode.org/).
+
+Example:
+
+```
+http="<[http://sample.com{Authorization=Basic dXNlcm5hbWU6cGFzc3dvcmQ=}]"
 ```
 
 ## Handling JSON
