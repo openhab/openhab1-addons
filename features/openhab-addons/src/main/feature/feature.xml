@@ -404,6 +404,14 @@
     <configfile finalname="${openhab.conf}/services/lgtv.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/lgtv</configfile>
   </feature>
 
+  <feature name="openhab-binding-maxcul1" description="MAX! CUL Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>      
+    <feature>openhab-transport-cul1</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.maxcul/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/maxcul.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/maxcul</configfile>
+  </feature>
+
   <feature name="openhab-binding-mochadx101" description="MochadX10 Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
