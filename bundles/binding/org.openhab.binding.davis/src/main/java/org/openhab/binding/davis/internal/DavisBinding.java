@@ -13,6 +13,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -42,7 +44,7 @@ import gnu.io.UnsupportedCommOperationException;
  * @author Trathnigg Thomas
  * @since 1.6.0
  */
-public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>implements ManagedService {
+public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(DavisBinding.class);
 
@@ -54,6 +56,15 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>imp
 
     private static final int BUF_LENGTH = 256;
 
+    static private String typeSerial = "SERIAL";
+    static private String typeIP = "IP";
+    private boolean typeIsSerial = true;
+
+    private Socket ipSocket;
+    private String hostName;
+    private int portNumber = 22222;
+    private long serialSleepResponse = 200;
+    private long ipSleepResponse = 1000;
     private String port;
     private SerialPort serialPort;
     private InputStream inputStream;
@@ -139,50 +150,107 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>imp
             if (StringUtils.isNotBlank(refreshIntervalString)) {
                 refreshInterval = Long.parseLong(refreshIntervalString);
             }
-            String newPort = (String) config.get("port"); //$NON-NLS-1$
-            if (StringUtils.isNotBlank(newPort) && !newPort.equals(port)) {
-                port = newPort;
+            String serialSleepResponseString = (String) config.get("serialSleepResponse");
+            if (StringUtils.isNotBlank(serialSleepResponseString)) {
+                serialSleepResponse = Long.parseLong(serialSleepResponseString);
+            }
+            String ipSleepResponseString = (String) config.get("ipSleepResponse");
+            if (StringUtils.isNotBlank(ipSleepResponseString)) {
+                ipSleepResponse = Long.parseLong(ipSleepResponseString);
+            }
+            boolean typeProperlyConfigured = true;
+            String newType = (String) config.get("type");
+            if (StringUtils.isNotBlank(newType)) {
+                if (typeSerial.equals(newType)) {
+                    typeIsSerial = true;
+                } else if (typeIP.equals(newType)) {
+                    typeIsSerial = false;
+                } else {
+                    typeProperlyConfigured = false;
+                }
+            }
+
+            boolean doSet = false;
+
+            if (typeProperlyConfigured && typeIsSerial) {
+                String newPort = (String) config.get("port"); //$NON-NLS-1$
+                if (StringUtils.isNotBlank(newPort) && !newPort.equals(port)) {
+                    port = newPort;
+                    doSet = true;
+                }
+            } else if (typeProperlyConfigured && !typeIsSerial) {
+                String newHostName = (String) config.get("hostName"); //$NON-NLS-1$
+                String newPortNumber = (String) config.get("portNumber"); //$NON-NLS-1$
+
+                if (StringUtils.isNotBlank(newHostName) && !newHostName.equals(hostName)) {
+                    hostName = newHostName;
+                    doSet = true;
+                }
+
+                if (StringUtils.isNotBlank(newPortNumber)) {
+                    int newPortNumberInt = Integer.parseInt(newPortNumber);
+                    if (newPortNumberInt != portNumber) {
+                        portNumber = newPortNumberInt;
+                        doSet = true;
+                    }
+                }
+            }
+            if (doSet) {
                 setProperlyConfigured(true);
             }
         }
     }
 
     public void openPort() throws InitializationException {
-        CommPortIdentifier portIdentifier;
-
-        try {
-            portIdentifier = CommPortIdentifier.getPortIdentifier(port);
+        if (typeIsSerial) {
+            CommPortIdentifier portIdentifier;
 
             try {
-                serialPort = portIdentifier.open("openhab", 3000);
-                serialPort.setSerialPortParams(19200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-                        SerialPort.PARITY_NONE);
-                // serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
-                serialPort.enableReceiveTimeout(100);
-                serialPort.enableReceiveThreshold(1);
-                inputStream = new DataInputStream(new BufferedInputStream(serialPort.getInputStream()));
-                outputStream = serialPort.getOutputStream();
-                logger.debug("port opened: " + port);
-            } catch (PortInUseException e) {
-                throw new InitializationException(e);
-            } catch (UnsupportedCommOperationException e) {
-                throw new InitializationException(e);
-            } catch (IOException e) {
-                throw new InitializationException(e);
-            }
+                portIdentifier = CommPortIdentifier.getPortIdentifier(port);
 
-        } catch (NoSuchPortException e) {
-            StringBuilder sb = new StringBuilder();
-            Enumeration portList = CommPortIdentifier.getPortIdentifiers();
-            while (portList.hasMoreElements()) {
-                CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
-                if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                    sb.append(id.getName() + "\n");
+                try {
+                    serialPort = portIdentifier.open("openhab", 3000);
+                    serialPort.setSerialPortParams(19200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+                            SerialPort.PARITY_NONE);
+                    // serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN |
+                    // SerialPort.FLOWCONTROL_RTSCTS_OUT);
+                    serialPort.enableReceiveTimeout(100);
+                    serialPort.enableReceiveThreshold(1);
+                    inputStream = new DataInputStream(new BufferedInputStream(serialPort.getInputStream()));
+                    outputStream = serialPort.getOutputStream();
+                    logger.debug("port opened: " + port);
+                } catch (PortInUseException e) {
+                    throw new InitializationException(e);
+                } catch (UnsupportedCommOperationException e) {
+                    throw new InitializationException(e);
+                } catch (IOException e) {
+                    throw new InitializationException(e);
                 }
-            }
 
-            throw new InitializationException(
-                    "Serial port '" + port + "' could not be found. Available ports are:\n" + sb.toString());
+            } catch (NoSuchPortException e) {
+                StringBuilder sb = new StringBuilder();
+                Enumeration portList = CommPortIdentifier.getPortIdentifiers();
+                while (portList.hasMoreElements()) {
+                    CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
+                    if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+                        sb.append(id.getName() + "\n");
+                    }
+                }
+
+                throw new InitializationException(
+                        "Serial port '" + port + "' could not be found. Available ports are:\n" + sb.toString());
+            }
+        } else {
+            try {
+                ipSocket = new Socket(hostName, portNumber);
+                inputStream = ipSocket.getInputStream();
+                outputStream = ipSocket.getOutputStream();
+                logger.debug("ipSocket opened: " + hostName + " on port " + portNumber);
+            } catch (UnknownHostException e) {
+                throw new InitializationException("UnknownHost '" + hostName);
+            } catch (IOException e) {
+                throw new InitializationException("IO error with '" + hostName + " on port " + portNumber);
+            }
         }
     }
 
@@ -197,8 +265,17 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>imp
         } catch (IOException e) {
             e.printStackTrace();
         }
-        serialPort.close();
-        logger.debug("port closed: " + port);
+        if (typeIsSerial) {
+            serialPort.close();
+            logger.debug("port closed: " + port);
+        } else {
+            try {
+                ipSocket.close();
+                logger.debug("ipSocket closed: " + hostName + " on port " + portNumber);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     protected void resetAfterError() {
@@ -240,9 +317,14 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>imp
             try {
                 // add wait states around reading the stream, so that
                 // interrupted transmissions are merged
-                Thread.sleep(200);
+                if (typeIsSerial) {
+                    Thread.sleep(serialSleepResponse);
+                } else {
+                    Thread.sleep(ipSleepResponse);
+                }
             } catch (InterruptedException e) {
                 // ignore interruption
+                logger.debug("InterruptedException");
             }
 
         } while (inputStream.available() > 0);
