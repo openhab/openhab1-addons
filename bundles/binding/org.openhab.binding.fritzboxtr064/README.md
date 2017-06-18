@@ -23,7 +23,7 @@ It has been tested on:
 * enabling/disabling telephone answering machines (TAMs) 
 * getting new messages per TAM
 * getting missed calls for the last x days
-* getting DSL statistics for monitoring connection quality
+* getting DSL/WAN statistics for monitoring connection quality
 
 ## Prerequisites
 
@@ -57,6 +57,15 @@ Switch  fboxWifi24          "2,4GHz Wifi"               {fritzboxtr064="wifi24Sw
 Switch  fboxWifi50          "5,0GHz Wifi"               {fritzboxtr064="wifi50Switch"}
 Switch  fboxGuestWifi       "Guest Wifi"                {fritzboxtr064="wifiGuestSwitch"}
 Contact cFboxMacOnline      "Presence (WiFi) [%s]"      {fritzboxtr064="maconline:11-11-11-11-11-11" }
+
+# WAN statistics
+
+String  fboxWanAccessType "FBox WAN access type [%s]" {fritzboxtr064="wanWANAccessType"}
+Number  fboxWanLayer1UpstreamMaxBitRate "FBox WAN us max bit rate [%s]" {fritzboxtr064="wanLayer1UpstreamMaxBitRate"}
+Number  fboxWanLayer1DownstreamMaxBitRate "FBox WAN ds max bit rate [%s]" {fritzboxtr064="wanLayer1DownstreamMaxBitRate"}
+String  fboxWanPhysicalLinkStatus "FBox WAN physical link status [%s]" {fritzboxtr064="wanPhysicalLinkStatus"}
+Number  fboxWanTotalBytesSent "WAN total bytes sent [%s]" {fritzboxtr064="wanTotalBytesSent"}
+Number  fboxWanTotalBytesReceived "WAN total bytes received [%s]" {fritzboxtr064="wanTotalBytesReceived"}
 
 # DSL statistics
 

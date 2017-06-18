@@ -661,6 +661,17 @@ public class Tr064Comm {
         addItemMap(new SingleItemMap("externalWanip", "GetExternalIPAddress",
                 "urn:WANIPConnection-com:serviceId:WANIPConnection1", "", "NewExternalIPAddress"));
 
+        // WAN Status
+        addItemMap(new MultiItemMap(
+                Arrays.asList("wanWANAccessType", "wanLayer1UpstreamMaxBitRate", "wanLayer1DownstreamMaxBitRate",
+                        "wanPhysicalLinkStatus"),
+                "GetCommonLinkProperties", "urn:WANCIfConfig-com:serviceId:WANCommonInterfaceConfig1",
+                name -> name.replace("wan", "New")));
+        addItemMap(new SingleItemMap("wanTotalBytesSent", "GetTotalBytesSent",
+                "urn:WANCIfConfig-com:serviceId:WANCommonInterfaceConfig1", "", "NewTotalBytesSent"));
+        addItemMap(new SingleItemMap("wanTotalBytesReceived", "GetTotalBytesReceived",
+                "urn:WANCIfConfig-com:serviceId:WANCommonInterfaceConfig1", "", "NewTotalBytesReceived"));
+
         // DSL Status
         addItemMap(new MultiItemMap(
                 Arrays.asList("dslEnable", "dslStatus", "dslUpstreamCurrRate", "dslDownstreamCurrRate",
