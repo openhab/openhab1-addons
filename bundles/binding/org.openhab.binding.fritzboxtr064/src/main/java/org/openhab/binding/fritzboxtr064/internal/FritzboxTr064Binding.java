@@ -217,9 +217,9 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
                 eventPublisher.postUpdate(itemName, newState);
             } else if (itemType.isAssignableFrom(NumberItem.class)) { // number items e.g. TAM messages
                 // tr064 retrieves only Strings, trying to parse value returned
-                int val = 0;
+                long val = 0;
                 try {
-                    val = Integer.parseInt(tr064result);
+                    val = Long.parseLong(tr064result);
                 } catch (NumberFormatException ex) {
                     val = -1; // indicate error as -1
                 }
