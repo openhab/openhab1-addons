@@ -46,8 +46,9 @@ public class Pushover {
     private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
     private final static String UTF_8_ENCODING = "UTF-8";
 
-    private final static String API_RETURN_ROOT_TAG = "hash";
+    private final static String API_RETURN_ROOT_TAG = "response";
     private final static String API_RETURN_STATUS_TAG = "status";
+    private final static String API_RETURN_INFO_TAG = "info";
     private final static String API_RETURN_ERROR_TAG = "error";
     private final static String API_RETURN_STATUS_SUCCESS = "1";
 
@@ -375,8 +376,13 @@ public class Pushover {
         Element root = doc.getDocumentElement();
 
         if (API_RETURN_ROOT_TAG.equals(root.getTagName())) {
-            NodeList statusList = root.getElementsByTagName(API_RETURN_STATUS_TAG);
+            final NodeList infoList = root.getElementsByTagName(API_RETURN_INFO_TAG);
+            for (int i = 0; i < infoList.getLength(); i++) {
+                final Element info = (Element) infoList.item(i);
+                logger.warn("Received info message from Pushover: {}", info.getFirstChild().getNodeValue());
+            }
 
+            NodeList statusList = root.getElementsByTagName(API_RETURN_STATUS_TAG);
             for (int i = 0; i < statusList.getLength(); i++) {
                 Element value = (Element) statusList.item(i);
                 if (API_RETURN_STATUS_SUCCESS.equals(value.getFirstChild().getNodeValue())) {
