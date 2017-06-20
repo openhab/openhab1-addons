@@ -88,7 +88,7 @@ Number temperature "temp [%.1f]" {mqtt="<[publicweatherservice:london-city/tempe
 Number waterConsumption "consum [%d]" {mqtt="<[mybroker:myHome/watermeter:state:XSLT(parse_water_message.xslt)]"} 
 Switch doorbell "bell [%s]" {mqtt="<[mybroker:myHome/doorbell:command:ON]"}
 Number mfase1 "mfase1 [%.3f]" {mqtt="<[flukso:sensor/9cf3d75543fa82a4662fe70df5bf4fde/gauge:state:REGEX(.*,(.*),.*)]"}
-Number humidity "humidity [%.1f%%] {mqtt="<[broker:weatherstation/readings:state:JS(convertPercent.js):humidity=.*]"}
+Number humidity "humidity [%.1f%%]" {mqtt="<[broker:weatherstation/readings:state:JS(convertPercent.js):humidity=.*]"}
 ```
 
 ## Item Configuration for Outbound Messages
