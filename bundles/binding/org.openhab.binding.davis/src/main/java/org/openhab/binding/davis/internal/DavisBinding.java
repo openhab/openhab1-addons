@@ -56,16 +56,33 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
 
     private static final int BUF_LENGTH = 256;
 
-    static private String typeSerial = "SERIAL";
-    static private String typeIP = "IP";
     private boolean typeIsSerial = true;
 
-    private Socket ipSocket;
-    private String hostName;
-    private int portNumber = 22222;
-    private long serialSleepResponse = 200;
-    private long ipSleepResponse = 1000;
+    /**
+     * serial port name of the davis weather station, in case of SERIAL communication
+     */
     private String port;
+
+    private Socket ipSocket;
+
+    /**
+     * hostName of the davis weather station, in case of IP communication
+     */
+    private String hostName;
+
+    /**
+     * ipPortNumber of the davis weather station, in case of IP communication (davis settings, fixed)
+     */
+    private int ipPortNumber = 22222;
+
+    /**
+     * waitTime before reading response, default value are is different according communication type
+     */
+    private long readResponseWaitTime;
+
+    private long defaultSerialReadResponseWaitTime = 200;
+    private long defaultIpReadResponseWaitTime = 1000;
+
     private SerialPort serialPort;
     private InputStream inputStream;
     private OutputStream outputStream;
@@ -150,52 +167,43 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
             if (StringUtils.isNotBlank(refreshIntervalString)) {
                 refreshInterval = Long.parseLong(refreshIntervalString);
             }
-            String serialSleepResponseString = (String) config.get("serialSleepResponse");
-            if (StringUtils.isNotBlank(serialSleepResponseString)) {
-                serialSleepResponse = Long.parseLong(serialSleepResponseString);
-            }
-            String ipSleepResponseString = (String) config.get("ipSleepResponse");
-            if (StringUtils.isNotBlank(ipSleepResponseString)) {
-                ipSleepResponse = Long.parseLong(ipSleepResponseString);
-            }
-            boolean typeProperlyConfigured = true;
-            String newType = (String) config.get("type");
-            if (StringUtils.isNotBlank(newType)) {
-                if (typeSerial.equals(newType)) {
+
+            String newPort = (String) config.get("port"); //$NON-NLS-1$
+            String newHostName = (String) config.get("hostName"); //$NON-NLS-1$
+
+            if (StringUtils.isNotBlank(newPort) && StringUtils.isNotBlank(newHostName)) {
+                logger.error(
+                        "both properties port and hostname configured, only one can be set according communication type serial (port) or IP (hostname)");
+                setProperlyConfigured(false);
+            } else {
+                if (StringUtils.isNotBlank(newPort)) {
                     typeIsSerial = true;
-                } else if (typeIP.equals(newType)) {
-                    typeIsSerial = false;
-                } else {
-                    typeProperlyConfigured = false;
-                }
-            }
-
-            boolean doSet = false;
-
-            if (typeProperlyConfigured && typeIsSerial) {
-                String newPort = (String) config.get("port"); //$NON-NLS-1$
-                if (StringUtils.isNotBlank(newPort) && !newPort.equals(port)) {
                     port = newPort;
-                    doSet = true;
+                    readResponseWaitTime = defaultSerialReadResponseWaitTime;
                 }
-            } else if (typeProperlyConfigured && !typeIsSerial) {
-                String newHostName = (String) config.get("hostName"); //$NON-NLS-1$
-                String newPortNumber = (String) config.get("portNumber"); //$NON-NLS-1$
-
-                if (StringUtils.isNotBlank(newHostName) && !newHostName.equals(hostName)) {
+                if (StringUtils.isNotBlank(newHostName)) {
+                    typeIsSerial = false;
                     hostName = newHostName;
-                    doSet = true;
+                    readResponseWaitTime = defaultIpReadResponseWaitTime;
                 }
 
-                if (StringUtils.isNotBlank(newPortNumber)) {
-                    int newPortNumberInt = Integer.parseInt(newPortNumber);
-                    if (newPortNumberInt != portNumber) {
-                        portNumber = newPortNumberInt;
-                        doSet = true;
+                String readResponseWaitTimeString = (String) config.get("readResponseWaitTime");
+                if (StringUtils.isNotBlank(readResponseWaitTimeString)) {
+                    try {
+                        readResponseWaitTime = Long.parseLong(readResponseWaitTimeString);
+                    } catch (NumberFormatException e) {
+                        logger.warn("ignoring property 'readResponseWaitTime', not numeric");
                     }
                 }
-            }
-            if (doSet) {
+
+                if (typeIsSerial) {
+                    logger.info("ProperlyConfigured on port " + port + " with readResponseWaitTime on "
+                            + readResponseWaitTime);
+                } else {
+                    logger.info("ProperlyConfigured with hostName " + hostName + " with readResponseWaitTime on "
+                            + readResponseWaitTime);
+                }
+
                 setProperlyConfigured(true);
             }
         }
@@ -242,14 +250,14 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
             }
         } else {
             try {
-                ipSocket = new Socket(hostName, portNumber);
+                ipSocket = new Socket(hostName, ipPortNumber);
                 inputStream = ipSocket.getInputStream();
                 outputStream = ipSocket.getOutputStream();
-                logger.debug("ipSocket opened: " + hostName + " on port " + portNumber);
+                logger.debug("ipSocket opened: " + hostName + " on port " + ipPortNumber);
             } catch (UnknownHostException e) {
                 throw new InitializationException("UnknownHost '" + hostName);
             } catch (IOException e) {
-                throw new InitializationException("IO error with '" + hostName + " on port " + portNumber);
+                throw new InitializationException("IO error with '" + hostName + " on port " + ipPortNumber);
             }
         }
     }
@@ -271,7 +279,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
         } else {
             try {
                 ipSocket.close();
-                logger.debug("ipSocket closed: " + hostName + " on port " + portNumber);
+                logger.debug("ipSocket closed: " + hostName + " on port " + ipPortNumber);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -317,11 +325,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
             try {
                 // add wait states around reading the stream, so that
                 // interrupted transmissions are merged
-                if (typeIsSerial) {
-                    Thread.sleep(serialSleepResponse);
-                } else {
-                    Thread.sleep(ipSleepResponse);
-                }
+                Thread.sleep(readResponseWaitTime);
             } catch (InterruptedException e) {
                 // ignore interruption
                 logger.debug("InterruptedException");

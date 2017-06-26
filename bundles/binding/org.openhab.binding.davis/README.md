@@ -1,6 +1,6 @@
 # Davis Binding
 
-The openHAB Davis binding supports reading data from Davis weather stations.  Most Davis weather stations should be supported. Connection type may be SERIAL or IP, configured in property 'type'.
+The openHAB Davis binding supports reading data from Davis weather stations.  Most Davis weather stations should be supported. Connection type may be SERIAL (serial port given in property 'port') or IP (hostName property).
 
 The binding is based on the [Serial Communication Reference Manual](http://www.google.at/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0CCQQFjAA&url=http%3A%2F%2Fwww.davisnet.com%2Fsupport%2Fweather%2Fdownload%2FVantageSerialProtocolDocs_v261.pdf&ei=yns1VLO9B9Pe7Ab9hYDgDQ&usg=AFQjCNEUP_O6jjV3tHaxc7_faaLKWAtw2g&sig2=0YuJy45Qmk76RlffOqayuA&bvm=bv.76943099,d.ZGU) from Davis.
 
@@ -9,15 +9,13 @@ The binding is based on the [Serial Communication Reference Manual](http://www.g
 
 The binding can be configured in the file `services/davis.cfg`.
 
-| Property            | Default | Required | Description                                          |
-|---------------------|---------|:--------:|------------------------------------------------------|
-| refresh             | 10000   | No       | The refresh interval (in milliseconds)               |
-| type                | SERIAL  | No       | Weather station connection type ( SERIAL | IP )      |
-| port                |         | No       | The serial port of the Weather station ( SERIAL)     |
-| serialSleepResponse |   200   | No       | Wait time for response (in milliseconds) ( SERIAL )  |
-| hostName            |         | No       | HostName of the Weather station ( IP)                |
-| portNumber          | 22222   | No       | IP PortNumber of the Weather station ( IP )          |
-| ipSleepResponse     |  1000   | No       | Wait time for response (in milliseconds) ( IP )      |
+| Property             | Default  | Required | Description                                          |
+|----------------------|----------|:--------:|------------------------------------------------------|
+| refresh              | 10000    | No       | The refresh interval (in milliseconds)               |
+| port                 |          | No       | The serial port of the Weather station               |
+| hostName             |          | No       | HostName of the Weather station                      |
+| readResponseWaitTime | 200|1000 | No       | Wait time for response (in milliseconds)             |
+|                      |          |          |    200 in case of serial - 1000 for IP               |
 
 
 
