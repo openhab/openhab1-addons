@@ -63,6 +63,7 @@
                                 <artifact><file>src/main/resources/conf/homematic.cfg</file><type>cfg</type><classifier>homematic</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/horizon.cfg</file><type>cfg</type><classifier>horizon</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/http.cfg</file><type>cfg</type><classifier>http</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/iec6205621meter.cfg</file><type>cfg</type><classifier>iec6205621meter</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ihc.cfg</file><type>cfg</type><classifier>ihc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/influxdb.cfg</file><type>cfg</type><classifier>influxdb</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/insteonplm.cfg</file><type>cfg</type><classifier>insteonplm</classifier></artifact>
