@@ -171,20 +171,25 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
             String newPort = (String) config.get("port"); //$NON-NLS-1$
             String newHostName = (String) config.get("hostName"); //$NON-NLS-1$
 
-            if (StringUtils.isNotBlank(newPort) && StringUtils.isNotBlank(newHostName)) {
-                logger.error(
-                        "both properties port and hostname configured, only one can be set according communication type serial (port) or IP (hostname)");
+            if (StringUtils.isBlank(newPort) && StringUtils.isBlank(newHostName)) {
+                logger.error("neither port neither hostname configured, no communication possible");
                 setProperlyConfigured(false);
             } else {
+                if (StringUtils.isNotBlank(newPort) && StringUtils.isNotBlank(newHostName)) {
+                    logger.warn(
+                            "both properties port and hostname configured, only one should be set according communication type serial (port) or IP (hostname)");
+                }
+
                 if (StringUtils.isNotBlank(newPort)) {
                     typeIsSerial = true;
                     port = newPort;
                     readResponseWaitTime = defaultSerialReadResponseWaitTime;
-                }
-                if (StringUtils.isNotBlank(newHostName)) {
+                } else if (StringUtils.isNotBlank(newHostName)) {
                     typeIsSerial = false;
                     hostName = newHostName;
                     readResponseWaitTime = defaultIpReadResponseWaitTime;
+                } else {
+                    // not possible, already treated above
                 }
 
                 String readResponseWaitTimeString = (String) config.get("readResponseWaitTime");
@@ -197,15 +202,16 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
                 }
 
                 if (typeIsSerial) {
-                    logger.info("ProperlyConfigured on port " + port + " with readResponseWaitTime on "
-                            + readResponseWaitTime);
+                    logger.info("ProperlyConfigured on port {} with readResponseWaitTime on ", port,
+                            readResponseWaitTime);
                 } else {
-                    logger.info("ProperlyConfigured with hostName " + hostName + " with readResponseWaitTime on "
-                            + readResponseWaitTime);
+                    logger.info("ProperlyConfigured with hostName {} with readResponseWaitTime on ", hostName,
+                            readResponseWaitTime);
                 }
 
                 setProperlyConfigured(true);
             }
+
         }
     }
 
@@ -220,13 +226,11 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
                     serialPort = portIdentifier.open("openhab", 3000);
                     serialPort.setSerialPortParams(19200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
                             SerialPort.PARITY_NONE);
-                    // serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN |
-                    // SerialPort.FLOWCONTROL_RTSCTS_OUT);
                     serialPort.enableReceiveTimeout(100);
                     serialPort.enableReceiveThreshold(1);
                     inputStream = new DataInputStream(new BufferedInputStream(serialPort.getInputStream()));
                     outputStream = serialPort.getOutputStream();
-                    logger.debug("port opened: " + port);
+                    logger.debug("port opened: {}", port);
                 } catch (PortInUseException e) {
                     throw new InitializationException(e);
                 } catch (UnsupportedCommOperationException e) {
@@ -253,11 +257,11 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
                 ipSocket = new Socket(hostName, ipPortNumber);
                 inputStream = ipSocket.getInputStream();
                 outputStream = ipSocket.getOutputStream();
-                logger.debug("ipSocket opened: " + hostName + " on port " + ipPortNumber);
+                logger.debug("ipSocket opened: {} on port {}", hostName, ipPortNumber);
             } catch (UnknownHostException e) {
-                throw new InitializationException("UnknownHost '" + hostName);
+                throw new InitializationException("Unknown Host '" + hostName);
             } catch (IOException e) {
-                throw new InitializationException("IO error with '" + hostName + " on port " + ipPortNumber);
+                throw new InitializationException("I/O error with '" + hostName + " on port " + ipPortNumber);
             }
         }
     }
@@ -275,13 +279,13 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
         }
         if (typeIsSerial) {
             serialPort.close();
-            logger.debug("port closed: " + port);
+            logger.debug("port closed: {}", port);
         } else {
             try {
                 ipSocket.close();
-                logger.debug("ipSocket closed: " + hostName + " on port " + ipPortNumber);
+                logger.debug("ipSocket closed: {} on port {}", hostName, ipPortNumber);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.debug("I/O error when closing ip communication", e);
             }
         }
     }
@@ -296,7 +300,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
             byte[] buf = readResponse();
             expectString(buf, "\n\rOK\n\r");
         } catch (IOException e1) {
-            logger.warn("IO Exception reset after Error: " + e1);
+            logger.warn("IO Exception reset after Error: {}", e1);
             closePort();
             try {
                 openPort();
@@ -333,7 +337,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
 
         } while (inputStream.available() > 0);
         String string = new String(responseBlock);
-        logger.debug("RX: " + escape(string));
+        logger.debug("RX: {}", escape(string));
         return responseBlock;
     }
 
@@ -401,7 +405,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
                 System.arraycopy(responseBlock, offset, inputBuf, 0, responseLength);
 
                 String string = new String(inputBuf);
-                logger.debug("parsing: " + escape(string));
+                logger.debug("parsing: {}", escape(string));
                 // aus response alle werte dekodieren für es ein item gibt -> postUpdate
                 Set<DavisValueType> valueTypes = DavisValueType.getValueTypesByCommandType(commandType);
                 for (DavisValueType valueType : valueTypes) {
@@ -424,7 +428,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
     }
 
     protected void writeString(String string) throws IOException {
-        logger.debug("TX: " + escape(string));
+        logger.debug("TX: {}", escape(string));
         outputStream.write(string.getBytes());
         outputStream.flush();
     }
