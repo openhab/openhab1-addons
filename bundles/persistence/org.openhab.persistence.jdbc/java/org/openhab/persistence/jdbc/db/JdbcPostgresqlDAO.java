@@ -54,7 +54,7 @@ public class JdbcPostgresqlDAO extends JdbcBaseDAO {
         SQL_IF_TABLE_EXISTS = "SELECT * FROM PG_TABLES WHERE TABLENAME='#searchTable#'";
         SQL_CREATE_ITEMS_TABLE_IF_NOT = "CREATE TABLE IF NOT EXISTS #itemsManageTable# (itemid SERIAL NOT NULL, #colname# #coltype# NOT NULL, CONSTRAINT #itemsManageTable#_pkey PRIMARY KEY (itemid))";
         SQL_CREATE_NEW_ENTRY_IN_ITEMS_TABLE = "INSERT INTO items (itemname) SELECT itemname FROM #itemsManageTable# UNION VALUES ('#itemname#') EXCEPT SELECT itemname FROM items";
-        SQL_GET_ITEM_TABLES = "SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE' AND table_schema='public' AND NOT table_name=#itemsManageTable#";
+        SQL_GET_ITEM_TABLES = "SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE' AND table_schema='public' AND NOT table_name='#itemsManageTable#'";
         // http://stackoverflow.com/questions/17267417/how-do-i-do-an-upsert-merge-insert-on-duplicate-update-in-postgresql
         // for later use, PostgreSql > 9.5 to prevent PRIMARY key violation use:
         // SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( NOW(), CAST( ? as #dbType#) ) ON
