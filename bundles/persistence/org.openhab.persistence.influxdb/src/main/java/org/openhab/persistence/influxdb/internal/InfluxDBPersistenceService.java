@@ -82,6 +82,11 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     private static final String DIGITAL_VALUE_OFF = "0";
     private static final String DIGITAL_VALUE_ON = "1";
     private static final String VALUE_COLUMN_NAME = "value";
+    private static final String VALUE_COLUMN_STRING_NAME = "value-string";
+    private static final String VALUE_COLUMN_INTEGER_NAME = "value-integer";
+    private static final String VALUE_COLUMN_DOUBLE_NAME = "value-double";
+    private static final String TYPE_COLUMN_NAME = "type-name";
+    private static final String ITEM_NAME_TAG = "item-name";
     private ItemRegistry itemRegistry;
     private InfluxDB influxDB;
     private static final Logger logger = LoggerFactory.getLogger(InfluxDBPersistenceService.class);
@@ -92,6 +97,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     private String user;
     private String password;
     private String retentionPolicy;
+    private String measurementName;
     private boolean isProperlyConfigured;
     private boolean connected;
 
@@ -136,6 +142,14 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
             retentionPolicy = DEFAULT_RETENTION_POLICY;
             logger.debug("using default retentionPolicy {}", DEFAULT_RETENTION_POLICY);
         }
+
+        measurementName = (String) config.get("measurement");
+        if (isBlank(measurementName)) {
+            logger.debug("Using default storage schema");
+        } else {
+            logger.debug("Putting all values in central measurement");
+        }
+
         isProperlyConfigured = true;
 
         connect();
@@ -242,10 +256,18 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
             state = item.getState();
             logger.trace("Tried to get item from item class {}, state is {}", item.getClass(), state.toString());
         }
-        Object value = stateToObject(state);
-        logger.trace("storing {} in influxdb value {}, {}", name, value, item);
-        Point point = Point.measurement(name).field(VALUE_COLUMN_NAME, value).time(System.currentTimeMillis(), timeUnit)
-                .build();
+
+        Point point;
+        if (isBlank(measurementName)) {
+            Object value = stateToObject(state);
+            logger.trace("storing {} in influxdb value {}, {}", name, value, item);
+            point = Point.measurement(name).field(VALUE_COLUMN_NAME, value).time(System.currentTimeMillis(), timeUnit)
+                    .build();
+        } else {
+            point = stateToPoint(item);
+            logger.trace("storing point {}", point);
+        }
+
         try {
             influxDB.write(dbName, retentionPolicy, point);
         } catch (RuntimeException e) {
@@ -286,6 +308,8 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
 
         if (filter.getItemName() != null) {
             query.append('"').append(filter.getItemName()).append('"');
+        } else if (!isBlank(measurementName)) {
+            query.append('"').append(measurementName).append('"');
         } else {
             query.append("/.*/");
         }
@@ -295,9 +319,14 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
                 filter.getItemName(), filter.getOrdering().toString(), filter.getState(), filter.getOperator(),
                 filter.getBeginDate(), filter.getEndDate(), filter.getPageSize(), filter.getPageNumber());
 
-        if ((filter.getState() != null && filter.getOperator() != null) || filter.getBeginDate() != null
-                || filter.getEndDate() != null) {
+        if ((!isBlank(measurementName) || filter.getState() != null && filter.getOperator() != null)
+                || filter.getBeginDate() != null || filter.getEndDate() != null) {
             query.append(" where ");
+
+            if (!isBlank(measurementName)) {
+                query.append(ITEM_NAME_TAG).append(" ").append("=").append(" ").append(measurementName).append(" ");
+            }
+
             boolean foundState = false;
             boolean foundBeginDate = false;
             if (filter.getState() != null && filter.getOperator() != null) {
@@ -382,6 +411,15 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
                                 timestampColumn = i;
                             } else if (columnName.equals(VALUE_COLUMN_NAME)) {
                                 valueColumn = i;
+                            } else if (columnName.equals(TYPE_COLUMN_NAME)) {
+                                String column_name = valuess.get(i).toString();
+                                for (int a = 0; a < columns.size(); a++) {
+                                    String columTypeName = columns.get(a);
+                                    if (columTypeName.equals(column_name)) {
+                                        valueColumn = a;
+                                        break;
+                                    }
+                                }
                             }
                         }
                         if (valueColumn == null || timestampColumn == null) {
@@ -573,4 +611,56 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
         }
         return buf.toString(); // latitude, longitude, altitude
     }
+
+    private Point stateToPoint(Item item) {
+        Point point;
+        State state = item.getState();
+        if (state instanceof HSBType) {
+            point = Point.measurement(this.measurementName).tag(ITEM_NAME_TAG, item.getName())
+                    .addField(VALUE_COLUMN_STRING_NAME, ((HSBType) state).toString())
+                    .addField(TYPE_COLUMN_NAME, VALUE_COLUMN_STRING_NAME).time(System.currentTimeMillis(), timeUnit)
+                    .build();
+            logger.debug("got HSBType value {}", point);
+        } else if (state instanceof PointType) {
+            point = Point.measurement(this.measurementName).tag(ITEM_NAME_TAG, item.getName())
+                    .addField(VALUE_COLUMN_STRING_NAME, point2String((PointType) state))
+                    .addField(TYPE_COLUMN_NAME, VALUE_COLUMN_STRING_NAME).time(System.currentTimeMillis(), timeUnit)
+                    .build();
+            logger.debug("got PointType value {}", point);
+        } else if (state instanceof DecimalType) {
+            point = Point.measurement(this.measurementName).tag(ITEM_NAME_TAG, item.getName())
+                    .addField(VALUE_COLUMN_DOUBLE_NAME, ((DecimalType) state).doubleValue())
+                    .addField(TYPE_COLUMN_NAME, VALUE_COLUMN_DOUBLE_NAME).time(System.currentTimeMillis(), timeUnit)
+                    .build();
+            logger.debug("got DecimalType value {}", point);
+        } else if (state instanceof OnOffType) {
+            int value = (OnOffType) state == OnOffType.ON ? 1 : 0;
+            point = Point.measurement(this.measurementName).tag(ITEM_NAME_TAG, item.getName())
+                    .addField(VALUE_COLUMN_INTEGER_NAME, value).addField(TYPE_COLUMN_NAME, VALUE_COLUMN_INTEGER_NAME)
+                    .time(System.currentTimeMillis(), timeUnit).build();
+            logger.debug("got OnOffType value {}", point);
+        } else if (state instanceof OpenClosedType) {
+            int value = (OpenClosedType) state == OpenClosedType.OPEN ? 1 : 0;
+            point = Point.measurement(this.measurementName).tag(ITEM_NAME_TAG, item.getName())
+                    .addField(VALUE_COLUMN_INTEGER_NAME, value).addField(TYPE_COLUMN_NAME, VALUE_COLUMN_INTEGER_NAME)
+                    .time(System.currentTimeMillis(), timeUnit).build();
+            logger.debug("got OpenClosedType value {}", point);
+        } else if (state instanceof DateTimeType) {
+            long value = ((DateTimeType) state).getCalendar().getTime().getTime();
+            point = Point.measurement(this.measurementName).tag(ITEM_NAME_TAG, item.getName())
+                    .addField(VALUE_COLUMN_INTEGER_NAME, value).addField(TYPE_COLUMN_NAME, VALUE_COLUMN_INTEGER_NAME)
+                    .time(System.currentTimeMillis(), timeUnit).build();
+
+            logger.debug("got DateTimeType value {}", point);
+        } else {
+            point = Point.measurement(this.measurementName).tag(ITEM_NAME_TAG, item.getName())
+                    .addField(VALUE_COLUMN_STRING_NAME, state.toString())
+                    .addField(TYPE_COLUMN_NAME, VALUE_COLUMN_STRING_NAME).time(System.currentTimeMillis(), timeUnit)
+                    .build();
+
+            logger.debug("got String value {}", point);
+        }
+        return point;
+    }
+
 }
