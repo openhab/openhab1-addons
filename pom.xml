@@ -50,7 +50,7 @@
     <description>This is the open Home Automation Bus (openHAB)</description>
 
     <properties>
-
+        <oh2.version>${project.parent.version}</oh2.version>
 		<!-- we deactivate the static analysis tool as the openHAB 1 code does not comply to these rules -->
 		<report.fail.on.error>false</report.fail.on.error>
 

@@ -86,7 +86,7 @@
                                 <descriptor>mvn:org.eclipse.smarthome/esh-core/${esh.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.eclipse.smarthome/esh-tp/${esh.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.eclipse.smarthome/esh-ext/${esh.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.openhab.core/openhab-core/${ohc.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.openhab.core/openhab-core/${oh2.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.openhab.addons/openhab-addons/${project.version}/xml/features</descriptor>
                             </descriptors>
                             <distribution>org.apache.karaf.features:framework</distribution>
