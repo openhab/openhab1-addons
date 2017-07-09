@@ -3394,6 +3394,15 @@
             <Label lang="en">Wall Controller</Label>
             <ConfigFile>popp/009303.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0004</Type>
+                <Id>0011</Id>
+            </Reference>
+            <Model>POPE700168</Model>
+            <Label lang="en">POPP Rain-Sensor</Label>
+            <ConfigFile>popp/pope700168.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>0169</Id>
