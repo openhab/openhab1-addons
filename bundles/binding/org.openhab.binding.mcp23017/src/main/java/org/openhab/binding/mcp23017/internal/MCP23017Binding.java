@@ -79,8 +79,14 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
     private int pollingInterval = 50;
 
     public MCP23017Binding() {
-        // ask for non privileged access (run without root)
-        GpioUtil.enableNonPrivilegedAccess();
+        try {
+            // ask for non privileged access (run without root)
+            GpioUtil.enableNonPrivilegedAccess();
+        } catch (UnsatisfiedLinkError e) {
+            logger.error("MCP23017 Binding needs to be run a Raspberry Pi - deactivating it here.");
+            gpio = null;
+            return;
+        }
         // now create a controller
         gpio = GpioFactory.getInstance();
     }
@@ -151,7 +157,9 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
         // should be reset when activating this binding again
         logger.debug("mcp23017 deactivated");
         mcpProviders.clear();
-        gpio.shutdown();
+        if (gpio != null) {
+            gpio.shutdown();
+        }
     }
 
     /**
@@ -200,6 +208,10 @@ public class MCP23017Binding extends AbstractActiveBinding<MCP23017BindingProvid
 
     @Override
     public void bindingChanged(BindingProvider provider, String itemName) {
+        if (gpio == null) {
+            // we are not properly initialized
+            return;
+        }
         if (provider instanceof MCP23017BindingProvider) {
             String allItemNames = Arrays.toString(provider.getItemNames().toArray());
             if (provider.getItemNames().contains(itemName)) {
