@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -62,17 +62,13 @@ import com.dropbox.core.DbxWriteMode;
 
 /**
  * The {@link DropboxSynchronizer} is able to synchronize contents of your Dropbox
- * to the local file system and vice versa. There three synchronization modes
- * available: local to dropbox (which is the default mode), dropbox to local and
+ * to the local file system and vice versa. There are three synchronization modes
+ * available: local to dropbox (which is the default mode), dropbox to local, and
  * bidirectional.
- *
- * Note: The {@link DropboxSynchronizer} must be authorized against Dropbox one
- * time. Watch the logfile for the URL to open in your Browser and allow openHAB
- * to connect to a predefined App-Folder (see <a
- * href="https://www.dropbox.com/developers/apps">Dropbox Documentation</a> for more information).
  *
  * @author Thomas.Eichstaedt-Engelen - Initial Contribution
  * @author Theo Weiss - add smarthome.userdata support
+ * @author Chris Carman - add support for personalAccessToken
  * @since 1.0.0
  */
 public class DropboxSynchronizer implements ManagedService {
@@ -86,7 +82,10 @@ public class DropboxSynchronizer implements ManagedService {
     private static final String DROPBOX_ENTRIES_FILE_NAME = File.separator + "dropbox-entries.dbx";
     private static final String AUTH_FILE_NAME = File.separator + "authfile.dbx";
 
-    /** holds the id of the last synchronisation cursor. This is needed to define the delta to download from Dropbox. */
+    /**
+     * Holds the id of the last synchronisation cursor. This is needed to
+     * define the delta to download from Dropbox.
+     */
     private static String lastCursor = null;
     private static String lastHash = null;
 
@@ -94,40 +93,52 @@ public class DropboxSynchronizer implements ManagedService {
     //// BOTH the AppKey AND the AppSecret; if all 3 are defined, then the
     //// personalAccessToken will be used and the others ignored.
 
-    /** a user's personal access token retrieved from configuration only; null by default */
+    /**
+     * A user's personal access token retrieved from configuration only;
+     * null by default
+     */
     private static String personalAccessToken;
 
     /// AppKey and AppSecret:
     /// These are legacy attributes from when there was an official openHAB Dropbox app.
     /// These should not generally be used, as they are more difficult to set up than
     /// the newer method via personalAccessToken.
+    ///
+    /// Note: When using these two attributes, the user must watch the logfile during
+    /// the startup of OpenHAB to get the URL to open in a Browser to allow the plugin
+    /// to connect to a predefined App-Folder (see
+    /// <a href="https://www.dropbox.com/developers/apps">Dropbox Documentation</a>
+    /// for more information).
 
-    /** the configured AppKey (optional; see notes above) */
-    private static String appKey;
+    /** The configured AppKey (optional; see notes above) */
+    private static String appKey = "NotARealKey";
 
-    /** the configured AppSecret (optional; see notes above) */
-    private static String appSecret;
+    /** The configured AppSecret (optional; see notes above) */
+    private static String appSecret = "NotARealSecret";
 
     /** The default directory to download files from Dropbox to (currently '.') */
     private static final String DEFAULT_CONTENT_DIR = getConfigDirFolder();
 
     /**
-     * the base directory to synchronize with openHAB (defaults to
+     * The base directory to synchronize with openHAB (defaults to
      * DEFAULT_CONTENT_DIR)
      */
     private static String contentDir = DEFAULT_CONTENT_DIR;
 
-    /** the base directory for the .dbx files */
+    /** The base directory for the .dbx files */
     public final static String DBX_FOLDER = getUserDbxDataFolder();
 
-    /** the configured synchronization mode (defaults to LOCAL_TO_DROPBOX) */
+    /** The configured synchronization mode (defaults to LOCAL_TO_DROPBOX) */
     private static DropboxSyncMode syncMode = DropboxSyncMode.LOCAL_TO_DROPBOX;
 
-    /** the upload interval as a Cron Expression (optional; defaults to '0 0 2 * * ?', which means once a day at 2am) */
+    /**
+     * The upload interval as a Cron Expression (optional; defaults to
+     * '0 0 2 * * ?', which means once a day at 2 a.m.) */
     private static String uploadInterval = "0 0 2 * * ?";
 
     /**
-     * the download interval as a Cron Expression (optional; defaults to '0 0/5 * * * ?' which means every 5 minutes)
+     * The download interval as a Cron Expression (optional; defaults to
+     * '0 0/5 * * * ?', which means every 5 minutes)
      */
     private static String downloadInterval = "0 0/5 * * * ?";
 
@@ -137,20 +148,22 @@ public class DropboxSynchronizer implements ManagedService {
             "/configurations.*");
 
     /**
-     * defines a comma separated list of regular expressions which matches the filenames to upload to Dropbox (optional;
-     * defaults to '/configurations.*, /logs/.*, /etc/.*')
+     * Defines a comma separated list of regular expressions which matches the
+     * filenames to upload to Dropbox (optional; defaults to '/configurations.*,
+     * /logs/.*, /etc/.*')
      */
     private static List<String> uploadFilterElements = DEFAULT_UPLOAD_FILE_FILTER;
 
     /**
-     * defines a comma separated list of regular expressions which matches the filenames to download from Dropbox
-     * (optional; defaults to '/configurations.*')
+     * Defines a comma separated list of regular expressions which matches the
+     * filenames to download from Dropbox (optional; defaults to '/configurations.*')
      */
     private static List<String> downloadFilterElements = DEFAULT_DOWNLOAD_FILE_FILTER;
 
     /**
-     * operates the Synchronizer in fake mode which avoids sending files to or from Dropbox. This is meant
-     * as a test mode for the filter settings. (optional; defaults to false)
+     * Operates the Synchronizer in fake mode which avoids sending files to or
+     * from Dropbox. This is meant as a test mode for the filter settings.
+     * (optional; defaults to false)
      */
     private static boolean fakeMode = false;
 
@@ -158,7 +171,8 @@ public class DropboxSynchronizer implements ManagedService {
 
     private static DropboxSynchronizer instance = null;
 
-    private static final DbxAppInfo appInfo = new DbxAppInfo(DropboxSynchronizer.appKey, DropboxSynchronizer.appSecret);
+    private static final DbxAppInfo appInfo =
+        new DbxAppInfo(DropboxSynchronizer.appKey, DropboxSynchronizer.appSecret);
 
     private final static DbxRequestConfig requestConfig = new DbxRequestConfig("openHAB/1.0",
             Locale.getDefault().toString());
@@ -225,7 +239,7 @@ public class DropboxSynchronizer implements ManagedService {
 
     /**
      * Finishes the OAuth authorization process by taking the given {@code token} and creating
-     * an accessToken out of it. The authorization process is a multi step process which is
+     * an accessToken out of it. The authorization process is a multi-step process which is
      * described in the Wiki in detail.
      * 
      * @throws DbxException if there are technical or application level errors
@@ -308,7 +322,7 @@ public class DropboxSynchronizer implements ManagedService {
     /**
      * Synchronizes all changes from the local filesystem into Dropbox. Changes
      * are identified by the files' <code>lastModified</code> attribute. If there
-     * are less files locally the additional files will be deleted from the
+     * are less files locally, the additional files will be deleted from the
      * Dropbox. New files will be uploaded or overwritten if they exist already.
      * 
      * @throws DbxException if there are technical or application level
@@ -328,9 +342,9 @@ public class DropboxSynchronizer implements ManagedService {
             lastHash = metadata.hash;
 
             // TODO: TEE: we could think about writing the 'lastHash' to a file?
-            // let's see what daily use brings whether this a necessary feature!
+            // let's see what daily use brings whether this is a necessary feature!
         } else {
-            logger.trace("Dropbox entry file '{}' exists -> extract content", dropboxEntryFile.getPath());
+            logger.trace("Dropbox entry file '{}' exists; extract content", dropboxEntryFile.getPath());
             dropboxEntries = extractDropboxEntries(dropboxEntryFile);
         }
 
@@ -343,14 +357,14 @@ public class DropboxSynchronizer implements ManagedService {
         for (java.util.Map.Entry<String, Long> entry : localEntries.entrySet()) {
             if (dropboxEntries.containsKey(entry.getKey())) {
                 if (entry.getValue().compareTo(dropboxEntries.get(entry.getKey())) > 0) {
-                    logger.trace("Local file '{}' is newer - upload to Dropbox!", entry.getKey());
+                    logger.trace("Local file '{}' is newer; upload to Dropbox!", entry.getKey());
                     if (!fakeMode) {
                         uploadFile(client, entry.getKey(), true);
                     }
                     isChanged = true;
                 }
             } else {
-                logger.trace("Local file '{}' doesn't exist in Dropbox - upload to Dropbox!", entry.getKey());
+                logger.trace("Local file '{}' doesn't exist in Dropbox; upload to Dropbox!", entry.getKey());
                 if (!fakeMode) {
                     uploadFile(client, entry.getKey(), false);
                 }
@@ -442,7 +456,7 @@ public class DropboxSynchronizer implements ManagedService {
                 if (lineComponents.length == 2) {
                     dropboxEntries.put(lineComponents[0], Long.valueOf(lineComponents[1]));
                 } else {
-                    logger.trace("Couldn't parse line '{}' - it does not contain two elements delimited by '{}'", line,
+                    logger.trace("Couldn't parse line '{}'; it does not contain two elements delimited by '{}'", line,
                             FIELD_DELIMITER);
                 }
             }
@@ -527,7 +541,7 @@ public class DropboxSynchronizer implements ManagedService {
         try {
             DbxWriteMode mode = overwrite ? DbxWriteMode.force() : DbxWriteMode.add();
             DbxEntry.File uploadedFile = client.uploadFile(dropboxPath, mode, file.length(), inputStream);
-            logger.debug("Successfully uploaded file '{}'. New revision is '{}'", uploadedFile, uploadedFile.rev);
+            logger.debug("Successfully uploaded file '{}'. New revision is '{}'.", uploadedFile, uploadedFile.rev);
         } finally {
             inputStream.close();
         }
