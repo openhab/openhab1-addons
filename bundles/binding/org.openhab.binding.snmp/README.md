@@ -77,7 +77,7 @@ Switch Switch_POEEnable2 "PoE WiFi Enable [%s]"  { snmp="<[192.168.2.111:public:
 String switch1p01desc "switch1 port 01 description [%s]" { snmp="<[192.168.3.222:public:.1.3.6.1.4.1.11863.1.1.3.2.1.1.1.1.2.1:10000]" }
 ```
 
-The above configuration readings the state of the Power-over-Ethernet on a Netgear switch, and allow changing the state of the power. In this configuration, it allows reading back the status, and turning on and off the power of a powered WiFi Access Point. The String item shows the port description of a TP-Link Switch.
+The above configuration reads the state of the Power-over-Ethernet on a Netgear switch, and allow changing the state of the power. In this configuration, it allows reading back the status, and turning on and off the power of a powered WiFi Access Point. The String item shows the port description of a TP-Link Switch.
 
 In case your Switch item stays uninitialized, you may need to add a mapping to translate the value (like 0 or 1) to ON and OFF.
 
