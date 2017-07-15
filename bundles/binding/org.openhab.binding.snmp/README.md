@@ -30,7 +30,7 @@ Don't forget to restart `snmpd` after reconfiguring by issuing `/etc/init.d/snmp
 
 ## Item Configuration
 
-The binding accepts Number, String and Switch items. Setting values is supported via Switch items and you can oly set Integer values.
+The binding accepts Number, String and Switch items. Setting values is supported via Switch items and you can only set Integer values.
 
 The syntax for the SNMP binding configuration string depending on whether you are using SNMP GET, SET or TRAP:
 
@@ -74,9 +74,10 @@ items/snmpdemo.items
 ```
 Number Switch_POEState2  "PoE WiFi State  [%s]"  { snmp="<[192.168.2.111:public:.1.3.6.1.4.1.4526.11.16.1.1.1.6.1.2:10000]" }
 Switch Switch_POEEnable2 "PoE WiFi Enable [%s]"  { snmp="<[192.168.2.111:public:.1.3.6.1.4.1.4526.11.16.1.1.1.3.1.2:10000] >[OFF:192.168.2.111:private:.1.3.6.1.4.1.4526.11.16.1.1.1.3.1.2:2] >[ON:192.168.2.111:private:.1.3.6.1.4.1.4526.11.16.1.1.1.3.1.2:1]" }
+String switch1p01desc "switch1 port 01 description [%s]" { snmp="<[192.168.3.222:public:.1.3.6.1.4.1.11863.1.1.3.2.1.1.1.1.2.1:10000]" }
 ```
 
-The above configuration readings the state of the Power-over-Ethernet on a Netgear switch, and allow changing the state of the power. In this configuration, it allows reading back the status, and turning on and off the power of a powered WiFi Access Point.
+The above configuration readings the state of the Power-over-Ethernet on a Netgear switch, and allow changing the state of the power. In this configuration, it allows reading back the status, and turning on and off the power of a powered WiFi Access Point. The String item shows the port description of a TP-Link Switch.
 
 In case your Switch item stays uninitialized, you may need to add a mapping to translate the value (like 0 or 1) to ON and OFF.
 
@@ -91,11 +92,3 @@ transform/SwitchState.map
 1=OFF
 -=undefined
 ```
-
-This configration displays the port description of port 1 a TP-Link SG-3424 Switch:
-```
-String switch1p01desc "switch1 port 01 [%s]" { snmp="<[192.168.2.111:public:.1.3.6.1.4.1.11863.1.1.3.2.1.1.1.1.2.1:10000]" }
-```
-
-
-
