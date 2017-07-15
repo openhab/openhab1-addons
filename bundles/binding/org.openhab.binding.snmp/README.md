@@ -30,7 +30,7 @@ Don't forget to restart `snmpd` after reconfiguring by issuing `/etc/init.d/snmp
 
 ## Item Configuration
 
-The binding accepts Number and Switch items only.
+The binding accepts Number, String and Switch items. Setting values is supported via Switch items and you can oly set Integer values.
 
 The syntax for the SNMP binding configuration string depending on whether you are using SNMP GET, SET or TRAP:
 
@@ -91,3 +91,11 @@ transform/SwitchState.map
 1=OFF
 -=undefined
 ```
+
+This configration displays the port description of port 1 a TP-Link SG-3424 Switch:
+```
+String switch1p01desc "switch1 port 01 [%s]" { snmp="<[192.168.2.111:public:.1.3.6.1.4.1.11863.1.1.3.2.1.1.1.1.2.1:10000]" }
+```
+
+
+
