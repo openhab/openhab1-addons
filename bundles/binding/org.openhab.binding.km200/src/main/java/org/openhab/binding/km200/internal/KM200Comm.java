@@ -11,6 +11,7 @@ package org.openhab.binding.km200.internal;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -138,6 +139,8 @@ class KM200Comm {
      */
     public byte[] getDataFromService(String service) {
         byte[] responseBodyB64 = null;
+        int maxNbrGets = 3;
+        int statusCode = 0;
         // Create an instance of HttpClient.
         if (client == null) {
             client = new HttpClient();
@@ -155,17 +158,25 @@ class KM200Comm {
             method.addRequestHeader("User-Agent", "TeleHeater/2.2.3");
 
             try {
-                // Execute the method.
-                int statusCode = client.executeMethod(method);
-                // Check the status and the forbidden 403 Error.
-                if (statusCode != HttpStatus.SC_OK) {
-                    String statusLine = method.getStatusLine().toString();
-                    if (statusLine.contains(" 403 ")) {
-                        byte[] test = new byte[1];
-                        return test;
-                    } else {
-                        logger.error("HTTP GET failed: {}", method.getStatusLine());
-                        return null;
+                for (int i = 0; i < maxNbrGets && statusCode != HttpStatus.SC_OK; i++) {
+                    // Execute the method.
+                    statusCode = client.executeMethod(method);
+                    // Check the status
+                    switch (statusCode) {
+                        case HttpStatus.SC_OK:
+                            break;
+                        case HttpStatus.SC_INTERNAL_SERVER_ERROR:
+                            /* Unknown problem with the device, wait and try again */
+                            logger.warn("HTTP GET failed: 500, internal server error, repeating.. ");
+                            Thread.sleep(2000L);
+                            continue;
+                        case HttpStatus.SC_FORBIDDEN:
+                            /* Service is available but not readable */
+                            byte[] test = new byte[1];
+                            return test;
+                        default:
+                            logger.error("HTTP GET failed: {}", method.getStatusLine());
+                            return null;
                     }
                 }
                 device.setCharSet(method.getResponseCharSet());
@@ -173,11 +184,11 @@ class KM200Comm {
                 responseBodyB64 = ByteStreams.toByteArray(method.getResponseBodyAsStream());
 
             } catch (HttpException e) {
-                logger.error("Fatal protocol violation: {}", e);
-                e.printStackTrace();
+                logger.error("Fatal protocol violation: {}", e.getMessage());
+            } catch (InterruptedException e) {
+                logger.error("Sleep was interrupted: {}", e.getMessage());
             } catch (IOException e) {
-                logger.error("Fatal transport error: {}", e);
-                e.printStackTrace();
+                logger.error("Fatal transport error: {}", e.getMessage());
             } finally {
                 // Release the connection.
                 method.releaseConnection();
@@ -234,8 +245,7 @@ class KM200Comm {
         try {
             decodedB64 = Base64.decodeBase64(encoded);
         } catch (Exception e) {
-            logger.error("Message is not in valid Base64 scheme: {}", e);
-            e.printStackTrace();
+            logger.error("Message is not in valid Base64 scheme: {}", e.getMessage());
             return null;
         }
         try {
@@ -279,8 +289,7 @@ class KM200Comm {
             try {
                 encryptedDataB64 = Base64.encodeBase64(encryptedData);
             } catch (Exception e) {
-                logger.error("Base64encoding not possible: {}", e);
-                e.printStackTrace();
+                logger.error("Base64encoding not possible: {}", e.getMessage());
             }
             return encryptedDataB64;
         } catch (UnsupportedEncodingException | GeneralSecurityException e) {
@@ -328,7 +337,7 @@ class KM200Comm {
                 type = nodeRoot.getString("type");
                 id = nodeRoot.getString("id");
             } else {
-                logger.error("Get empty reply");
+                logger.warn("Get empty reply");
                 return;
             }
 
@@ -346,101 +355,114 @@ class KM200Comm {
             logger.debug("Typ: {}", type);
 
             newObject = new KM200CommObject(id, type, writeable, recordable);
-            newObject.setJSONData(decodedData.toString());
+            newObject.setJSONData(decodedData);
 
-            /* Check whether the type is a single value containing a string value */
-            if (type.equals("stringValue")) {
-                Object valObject = null;
-                logger.debug("initDevice: type string value: {}", decodedData.toString());
-                valObject = new String(nodeRoot.getString("value"));
-                newObject.setValue(valObject);
-                if (nodeRoot.has("allowedValues")) {
-                    List<String> valParas = new ArrayList<String>();
-                    JSONArray paras = nodeRoot.getJSONArray("allowedValues");
-                    for (int i = 0; i < paras.length(); i++) {
-                        String subJSON = (String) paras.get(i);
-                        valParas.add(subJSON);
+            Object valObject = null;
+            switch (type) {
+                case "stringValue": /* Check whether the type is a single value containing a string value */
+                    logger.debug("initDevice: type string value: {}", decodedData);
+                    valObject = new String(nodeRoot.getString("value"));
+                    newObject.setValue(valObject);
+                    if (nodeRoot.has("allowedValues")) {
+                        List<String> valParas = new ArrayList<String>();
+                        JSONArray paras = nodeRoot.getJSONArray("allowedValues");
+                        for (int i = 0; i < paras.length(); i++) {
+                            String subJSON = (String) paras.get(i);
+                            valParas.add(subJSON);
+                        }
+                        newObject.setValueParameter(valParas);
                     }
-                    newObject.setValueParameter(valParas);
-                }
-                device.serviceMap.put(id, newObject);
+                    device.serviceMap.put(id, newObject);
+                    break;
 
-            } else if (type
-                    .equals("floatValue")) { /* Check whether the type is a single value containing a float value */
-                Object valObject = null;
-                logger.debug("initDevice: type float value: {}", decodedData.toString());
-                valObject = new Float(nodeRoot.getDouble("value"));
-                newObject.setValue(valObject);
-                if (nodeRoot.has("minValue") && nodeRoot.has("maxValue")) {
-                    List<Float> valParas = new ArrayList<Float>();
-                    valParas.add(new Float(nodeRoot.getDouble("minValue")));
-                    valParas.add(new Float(nodeRoot.getDouble("maxValue")));
-                    newObject.setValueParameter(valParas);
-                }
-                device.serviceMap.put(id, newObject);
+                case "floatValue": /* Check whether the type is a single value containing a float value */
+                    logger.debug("initDevice: type float value: {}", decodedData);
+                    valObject = nodeRoot.getBigDecimal("value");
+                    newObject.setValue(valObject);
+                    if (nodeRoot.has("minValue") && nodeRoot.has("maxValue")) {
+                        List<BigDecimal> valParas = new ArrayList<BigDecimal>();
+                        valParas.add(nodeRoot.getBigDecimal("minValue"));
+                        valParas.add(nodeRoot.getBigDecimal("maxValue"));
+                        newObject.setValueParameter(valParas);
+                    }
+                    device.serviceMap.put(id, newObject);
+                    break;
 
-            } else if (type.equals("switchProgram")) { /* Check whether the type is a switchProgram */
-                logger.debug("initDevice: type switchProgram {}", decodedData.toString());
-                KM200SwitchProgramService sPService = new KM200SwitchProgramService();
-                sPService.setMaxNbOfSwitchPoints(nodeRoot.getInt("maxNbOfSwitchPoints"));
-                sPService.setMaxNbOfSwitchPointsPerDay(nodeRoot.getInt("maxNbOfSwitchPointsPerDay"));
-                sPService.setSwitchPointTimeRaster(nodeRoot.getInt("switchPointTimeRaster"));
-                JSONObject propObject = nodeRoot.getJSONObject("setpointProperty");
-                sPService.setSetpointProperty(propObject.getString("id"));
-                sPService.updateSwitches(nodeRoot);
-                newObject.setValueParameter(sPService);
-                newObject.setJSONData(decodedData.toString());
-                device.serviceMap.put(id, newObject);
-                device.virtualList.add(newObject);
+                case "switchProgram": /* Check whether the type is a switchProgram */
+                    logger.debug("initDevice: type switchProgram {}", decodedData);
+                    KM200SwitchProgramService sPService = new KM200SwitchProgramService();
+                    sPService.setMaxNbOfSwitchPoints(nodeRoot.getInt("maxNbOfSwitchPoints"));
+                    sPService.setMaxNbOfSwitchPointsPerDay(nodeRoot.getInt("maxNbOfSwitchPointsPerDay"));
+                    sPService.setSwitchPointTimeRaster(nodeRoot.getInt("switchPointTimeRaster"));
+                    JSONObject propObject = nodeRoot.getJSONObject("setpointProperty");
+                    sPService.setSetpointProperty(propObject.getString("id"));
+                    sPService.updateSwitches(nodeRoot);
+                    newObject.setValueParameter(sPService);
+                    newObject.setJSONData(decodedData);
+                    device.serviceMap.put(id, newObject);
+                    device.virtualList.add(newObject);
+                    break;
 
-            } else if (type.equals("errorList")) { /* Check whether the type is a errorList */
-                logger.debug("initDevice: type errorList: {}", decodedData.toString());
-                JSONArray errorValues = nodeRoot.getJSONArray("values");
-                newObject.setValue(errorValues);
-                /* have to be completed */
+                case "errorList": /* Check whether the type is a errorList */
+                    logger.debug("initDevice: type errorList: {}", decodedData);
+                    KM200ErrorService eService = new KM200ErrorService();
+                    eService.updateErrors(nodeRoot);
+                    newObject.setValueParameter(eService);
+                    newObject.setJSONData(decodedData);
+                    device.serviceMap.put(id, newObject);
+                    device.virtualList.add(newObject);
+                    break;
 
-            } else if (type.equals("refEnum")) { /* Check whether the type is a refEnum */
-                logger.debug("initDevice: type refEnum: {}", decodedData.toString());
-                device.serviceMap.put(id, newObject);
-                JSONArray refers = nodeRoot.getJSONArray("references");
-                for (int i = 0; i < refers.length(); i++) {
-                    JSONObject subJSON = refers.getJSONObject(i);
-                    id = subJSON.getString("id");
-                    initObjects(id);
-                }
+                case "refEnum": /* Check whether the type is a refEnum */
+                    logger.debug("initDevice: type refEnum: {}", decodedData);
+                    device.serviceMap.put(id, newObject);
+                    JSONArray refers = nodeRoot.getJSONArray("references");
+                    for (int i = 0; i < refers.length(); i++) {
+                        JSONObject subJSON = refers.getJSONObject(i);
+                        id = subJSON.getString("id");
+                        initObjects(id);
+                    }
+                    break;
 
-            } else if (type.equals("moduleList")) { /* Check whether the type is a moduleList */
-                logger.debug("initDevice: type moduleList: {}", decodedData.toString());
-                device.serviceMap.put(id, newObject);
-                JSONArray vals = nodeRoot.getJSONArray("values");
-                for (int i = 0; i < vals.length(); i++) {
-                    JSONObject subJSON = vals.getJSONObject(i);
-                    id = subJSON.getString("id");
-                    initObjects(id);
-                }
+                case "moduleList": /* Check whether the type is a moduleList */
+                    logger.debug("initDevice: type moduleList: {}", decodedData);
+                    device.serviceMap.put(id, newObject);
+                    JSONArray vals = nodeRoot.getJSONArray("values");
+                    for (int i = 0; i < vals.length(); i++) {
+                        JSONObject subJSON = vals.getJSONObject(i);
+                        id = subJSON.getString("id");
+                        initObjects(id);
+                    }
+                    break;
 
-            } else if (type.equals("yRecording")) { /* Check whether the type is a yRecording */
-                logger.debug("initDevice: type yRecording: {}", decodedData.toString());
-                device.serviceMap.put(id, newObject);
-                /* have to be completed */
+                case "yRecording": /* Check whether the type is a yRecording */
+                    logger.debug("initDevice: type yRecording: {}", decodedData);
+                    device.serviceMap.put(id, newObject);
+                    /* have to be completed */
+                    break;
 
-            } else if (type.equals("systeminfo")) { /* Check whether the type is a systeminfo */
-                logger.debug("initDevice: type systeminfo: {}", decodedData.toString());
-                JSONArray sInfo = nodeRoot.getJSONArray("values");
-                newObject.setValue(sInfo);
-                device.serviceMap.put(id, newObject);
-                /* have to be completed */
+                case "systeminfo": /* Check whether the type is a systeminfo */
+                    logger.debug("initDevice: type systeminfo: {}", decodedData);
+                    JSONArray sInfo = nodeRoot.getJSONArray("values");
+                    newObject.setValue(sInfo);
+                    device.serviceMap.put(id, newObject);
+                    /* have to be completed */
+                    break;
+                case "arrayData":
+                    logger.debug("initDevice: type arrayData: {}", decodedData);
+                    newObject.setJSONData(decodedData);
+                    device.serviceMap.put(id, newObject);
+                    /* have to be completed */
+                    break;
 
-            } else { /* Unknown type */
-                logger.info("initDevice: type unknown for service: {}",
-                        service.toString() + "Data:" + decodedData.toString());
-                device.serviceMap.put(id, newObject);
+                default: /* Unknown type */
+                    logger.info("initDevice: type unknown for service: {} Data: {}", service, decodedData);
+                    device.serviceMap.put(id, newObject);
             }
         } catch (
 
         JSONException e) {
-            logger.error("Parsingexception in JSON: {} data: {}", e, decodedData);
-            e.printStackTrace();
+            logger.error("Parsingexception in JSON: {} data: {}", e.getMessage(), decodedData);
         }
     }
 
@@ -458,14 +480,11 @@ class KM200Comm {
                 case "switchProgram":
                     KM200SwitchProgramService sPService = ((KM200SwitchProgramService) object.getValueParameter());
                     sPService.determineSwitchNames(device);
-                    newObject = new KM200CommObject(id + "/weekday", type, object.getWriteable(),
-                            object.getRecordable(), 1, id);
+                    newObject = new KM200CommObject(id + "/weekday", type, 1, 0, 1, id);
                     device.serviceMap.put(id + "/weekday", newObject);
-                    newObject = new KM200CommObject(id + "/nbrCycles", type, object.getWriteable(),
-                            object.getRecordable(), 1, id);
+                    newObject = new KM200CommObject(id + "/nbrCycles", type, 0, 0, 1, id);
                     device.serviceMap.put(id + "/nbrCycles", newObject);
-                    newObject = new KM200CommObject(id + "/cycle", type, object.getWriteable(), object.getRecordable(),
-                            1, id);
+                    newObject = new KM200CommObject(id + "/cycle", type, 1, 0, 1, id);
                     device.serviceMap.put(id + "/cycle", newObject);
                     logger.debug("On: {}  Of: {}", id + "/" + sPService.getPositiveSwitch(),
                             id + "/" + sPService.getNegativeSwitch());
@@ -477,8 +496,34 @@ class KM200Comm {
                     device.serviceMap.put(id + "/" + sPService.getNegativeSwitch(), newObject);
 
                     break;
+                case "errorList":
+                    newObject = new KM200CommObject(id + "/nbrErrors", type, 0, 0, 1, id);
+                    device.serviceMap.put(id + "/nbrErrors", newObject);
+                    newObject = new KM200CommObject(id + "/error", type, 1, 0, 1, id);
+                    device.serviceMap.put(id + "/error", newObject);
+                    newObject = new KM200CommObject(id + "/errorString", type, 0, 0, 1, id);
+                    device.serviceMap.put(id + "/errorString", newObject);
+                    break;
             }
         }
+    }
+
+    /**
+     * This function checks whether the service has a replacement parameter
+     *
+     */
+    public String checkParameterReplacement(KM200BindingProvider provider, String item) {
+        String service = provider.getService(item);
+        if (provider.getParameter(item).containsKey("current")) {
+            String currentService = provider.getParameter(item).get("current");
+            if (device.serviceMap.containsKey(currentService)) {
+                if (device.serviceMap.get(currentService).getServiceType().equals("stringValue")) {
+                    String val = (String) device.serviceMap.get(currentService).getValue();
+                    return (service.replace("__current__", val));
+                }
+            }
+        }
+        return service;
     }
 
     /**
@@ -491,9 +536,10 @@ class KM200Comm {
             String type = null;
             byte[] recData = null;
             KM200CommObject object = null;
-            String service = provider.getService(item);
+            String service = checkParameterReplacement(provider, item);
+
             Class<? extends Item> itemType = provider.getItemType(item);
-            logger.debug("Check state of: {} type: {} item: {}", service, type, itemType.getName().toString());
+            logger.debug("Check state of: {} type: {} item: {}", service, type, itemType.getName());
             if (device.blacklistMap.contains(service)) {
                 logger.debug("Service on blacklist: {}", service);
                 return null;
@@ -501,12 +547,12 @@ class KM200Comm {
             if (device.serviceMap.containsKey(service)) {
                 object = device.serviceMap.get(service);
                 if (object.getReadable() == 0) {
-                    logger.error("Service is listed as protected (reading is not possible): {}", service);
+                    logger.warn("Service is listed as protected (reading is not possible): {}", service);
                     return null;
                 }
                 type = object.getServiceType();
             } else {
-                logger.error("Service is not in the determined device service list: {}", service);
+                logger.warn("Service is not in the determined device service list: {}", service);
                 return null;
             }
             /* For using of virtual services only one receive on the parent service is needed */
@@ -537,10 +583,10 @@ class KM200Comm {
                     throw new RuntimeException("Decoding of the KM200 message is not possible!");
                 }
                 if (object.getVirtual() == 1) {
-                    device.serviceMap.get(object.getParent()).setJSONData(decodedData.toString());
+                    device.serviceMap.get(object.getParent()).setJSONData(decodedData);
                     device.serviceMap.get(object.getParent()).setUpdated(true);
                 } else {
-                    object.setJSONData(decodedData.toString());
+                    object.setJSONData(decodedData);
                 }
                 object.setUpdated(true);
 
@@ -565,7 +611,7 @@ class KM200Comm {
         JSONObject nodeRoot = null;
         State state = null;
         Class<? extends Item> itemType = provider.getItemType(item);
-        String service = provider.getService(item);
+        String service = checkParameterReplacement(provider, item);
         KM200CommObject object = device.serviceMap.get(service);
         logger.debug("parseJSONData service: {}, data: {}", service, decodedData);
         /* Now parsing of the JSON String depending on its type and the type of binding item */
@@ -573,122 +619,152 @@ class KM200Comm {
             if (decodedData.length() > 0) {
                 nodeRoot = new JSONObject(decodedData);
             } else {
-                logger.error("Get empty reply");
+                logger.warn("Get empty reply");
                 return null;
             }
-            /* Check whether the type is a single value containing a string value */
-            if (type.equals("stringValue")) {
-                logger.debug("initDevice: type string value: {}", decodedData.toString());
-                String val = nodeRoot.getString("value");
-                /* SwitchItem Binding */
-                if (itemType.isAssignableFrom(SwitchItem.class)) {
-                    if (provider.getParameter(item).containsKey("on")) {
-                        if (val.equals(provider.getParameter(item).get("off"))) {
-                            state = OnOffType.OFF;
-                        } else if (val.equals(provider.getParameter(item).get("on"))) {
-                            state = OnOffType.ON;
+
+            switch (type) {
+                case "stringValue": /* Check whether the type is a single value containing a string value */
+                    logger.debug("initDevice: type string value: {}", decodedData);
+                    String sVal = nodeRoot.getString("value");
+                    device.serviceMap.get(service).setValue(sVal);
+                    /* SwitchItem Binding */
+                    if (itemType.isAssignableFrom(SwitchItem.class)) {
+                        if (provider.getParameter(item).containsKey("on")) {
+                            if (sVal.equals(provider.getParameter(item).get("off"))) {
+                                state = OnOffType.OFF;
+                            } else if (sVal.equals(provider.getParameter(item).get("on"))) {
+                                state = OnOffType.ON;
+                            }
+                        } else {
+                            logger.warn("Switch-Item only on configured on/off string values: {}", decodedData);
+                            return null;
                         }
+
+                        /* NumberItem Binding */
+                    } else if (itemType.isAssignableFrom(NumberItem.class)) {
+                        try {
+                            state = new DecimalType(Float.parseFloat(sVal));
+                        } catch (NumberFormatException e) {
+                            logger.error(
+                                    "Conversion of the string value to Decimal wasn't possible, data: {} error: {}",
+                                    decodedData, e);
+                            return null;
+                        }
+                        /* DateTimeItem Binding */
+                    } else if (itemType.isAssignableFrom(DateTimeItem.class)) {
+                        try {
+                            state = new DateTimeType(sVal);
+                        } catch (IllegalArgumentException e) {
+                            logger.error(
+                                    "Conversion of the string value to DateTime wasn't possible, data: {} error: {}",
+                                    decodedData, e);
+                            return null;
+                        }
+
+                        /* StringItem Binding */
+                    } else if (itemType.isAssignableFrom(StringItem.class)) {
+                        state = new StringType(sVal);
+
                     } else {
-                        logger.error("Switch-Item only on configured on/off string values: {}", decodedData.toString());
-                        return null;
-                    }
-
-                    /* NumberItem Binding */
-                } else if (itemType.isAssignableFrom(NumberItem.class)) {
-                    try {
-                        state = new DecimalType(Float.parseFloat(val));
-                    } catch (NumberFormatException e) {
-                        logger.error("Conversion of the string value to Decimal wasn't possible, data: {} error: {}",
-                                decodedData.toString(), e);
-                        return null;
-                    }
-                    /* DateTimeItem Binding */
-                } else if (itemType.isAssignableFrom(DateTimeItem.class)) {
-                    try {
-                        state = new DateTimeType(val);
-                    } catch (IllegalArgumentException e) {
-                        logger.error("Conversion of the string value to DateTime wasn't possible, data: {} error: {}",
-                                decodedData.toString(), e);
-                        return null;
-                    }
-
-                    /* StringItem Binding */
-                } else if (itemType.isAssignableFrom(StringItem.class)) {
-
-                    state = new StringType(val);
-
-                } else {
-                    logger.error("Bindingtype not supported for string values: {}", itemType.getClass().toString());
-                    return null;
-                }
-
-                return state;
-
-            } else if (type
-                    .equals("floatValue")) { /* Check whether the type is a single value containing a float value */
-                logger.debug("state of type float value: {}", decodedData.toString());
-                Float val = new Float(nodeRoot.getDouble("value"));
-                /* NumberItem Binding */
-                if (itemType.isAssignableFrom(NumberItem.class)) {
-                    state = new DecimalType(val.floatValue());
-
-                    /* StringItem Binding */
-                } else if (itemType.isAssignableFrom(StringItem.class)) {
-                    state = new StringType(val.toString());
-                } else {
-                    logger.error("Bindingtype not supported for float values: {}", itemType.getClass().toString());
-                    return null;
-                }
-                return state;
-
-            } else if (type.equals("switchProgram")) { /* Check whether the type is a switchProgram */
-                KM200SwitchProgramService sPService = null;
-                logger.debug("state of type switchProgram: {}", decodedData.toString());
-                /* Get the KM200SwitchProgramService class object with all specific parameters */
-                if (object.getVirtual() == 0) {
-                    sPService = ((KM200SwitchProgramService) object.getValueParameter());
-                } else {
-                    sPService = ((KM200SwitchProgramService) device.serviceMap.get(object.getParent())
-                            .getValueParameter());
-                }
-                /* Update the switches insode the KM200SwitchProgramService */
-                sPService.updateSwitches(nodeRoot);
-
-                /* the parsing of switch program-services have to be outside, using json in strings */
-                if (object.getVirtual() == 1) {
-                    return this.getVirtualState(object, itemType, service);
-                } else {
-                    /* if access to the parent non virtual service the return the switchPoints jsonarray */
-                    if (itemType.isAssignableFrom(StringItem.class)) {
-                        state = new StringType(nodeRoot.getJSONArray("switchPoints").toString());
-                    } else {
-                        logger.error(
-                                "Bindingtype not supported for switchProgram, only json over strings supported: {}",
-                                itemType.getClass().toString());
+                        logger.warn("Bindingtype not supported for string values: {}", itemType.getClass());
                         return null;
                     }
                     return state;
-                }
 
-            } else if (type.equals("errorList")) { /* Check whether the type is a errorList */
-                logger.info("state of: type errorList is not supported yet: {}", decodedData.toString());
-                /* have to be completed */
+                case "floatValue": /* Check whether the type is a single value containing a float value */
+                    logger.debug("state of type float value: {}", decodedData);
+                    BigDecimal bdVal = nodeRoot.getBigDecimal("value");
+                    device.serviceMap.get(service).setValue(bdVal);
+                    /* NumberItem Binding */
+                    if (itemType.isAssignableFrom(NumberItem.class)) {
+                        state = new DecimalType(bdVal.floatValue());
 
-            } else if (type.equals("yRecording")) { /* Check whether the type is a yRecording */
-                logger.info("state of: type yRecording is not supported yet: {}", decodedData.toString());
-                /* have to be completed */
+                        /* StringItem Binding */
+                    } else if (itemType.isAssignableFrom(StringItem.class)) {
+                        state = new StringType(bdVal.toString());
+                    } else {
+                        logger.warn("Bindingtype not supported for float values: {}", itemType.getClass());
+                        return null;
+                    }
+                    return state;
 
-            } else if (type.equals("systeminfo")) { /* Check whether the type is a systeminfo */
-                logger.info("state of: type systeminfo is not supported yet: {}", decodedData.toString());
-                /* have to be completed */
+                case "switchProgram": /* Check whether the type is a switchProgram */
+                    KM200SwitchProgramService sPService = null;
+                    logger.debug("state of type switchProgram: {}", decodedData);
+                    /* Get the KM200SwitchProgramService class object with all specific parameters */
+                    if (object.getVirtual() == 0) {
+                        sPService = ((KM200SwitchProgramService) object.getValueParameter());
+                    } else {
+                        sPService = ((KM200SwitchProgramService) device.serviceMap.get(object.getParent())
+                                .getValueParameter());
+                    }
+                    /* Update the switches insode the KM200SwitchProgramService */
+                    sPService.updateSwitches(nodeRoot);
+
+                    /* the parsing of switch program-services have to be outside, using json in strings */
+                    if (object.getVirtual() == 1) {
+                        return this.getVirtualState(object, itemType, service);
+                    } else {
+                        /* if access to the parent non virtual service the return the switchPoints jsonarray */
+                        if (itemType.isAssignableFrom(StringItem.class)) {
+                            state = new StringType(nodeRoot.getJSONArray("switchPoints").toString());
+                        } else {
+                            logger.warn(
+                                    "Bindingtype not supported for switchProgram, only json over strings supported: {}",
+                                    itemType.getClass());
+                            return null;
+                        }
+                        return state;
+                    }
+
+                case "errorList": /* Check whether the type is a errorList */
+                    KM200ErrorService eService = null;
+                    logger.debug("state of type errorList: {}", decodedData);
+                    /* Get the KM200ErrorService class object with all specific parameters */
+                    if (object.getVirtual() == 0) {
+                        eService = ((KM200ErrorService) object.getValueParameter());
+                    } else {
+                        eService = ((KM200ErrorService) device.serviceMap.get(object.getParent()).getValueParameter());
+                    }
+                    /* Update the switches insode the KM200SwitchProgramService */
+                    eService.updateErrors(nodeRoot);
+
+                    /* the parsing of switch program-services have to be outside, using json in strings */
+                    if (object.getVirtual() == 1) {
+                        return this.getVirtualState(object, itemType, service);
+                    } else {
+                        /* if access to the parent non virtual service the return the switchPoints jsonarray */
+                        if (itemType.isAssignableFrom(StringItem.class)) {
+                            state = new StringType(nodeRoot.getJSONArray("values").toString());
+                        } else {
+                            logger.warn(
+                                    "Bindingtype not supported for error list, only json over strings is supported: {}",
+                                    itemType.getClass());
+                            return null;
+                        }
+                        return state;
+                    }
+
+                case "yRecording": /* Check whether the type is a yRecording */
+                    logger.info("state of: type yRecording is not supported yet: {}", decodedData);
+                    /* have to be completed */
+                    break;
+
+                case "systeminfo": /* Check whether the type is a systeminfo */
+                    logger.info("state of: type systeminfo is not supported yet: {}", decodedData);
+                    /* have to be completed */
+                    break;
+
+                case "arrayData": /* Check whether the type is a arrayData */
+                    logger.info("state of: type arrayData is not supported yet: {}", decodedData);
+                    /* have to be completed */
+                    break;
             }
-
         } catch (JSONException e) {
-            logger.error("Parsingexception in JSON, data: {} error: {} ", decodedData, e);
-            e.printStackTrace();
+            logger.error("Parsingexception in JSON, data: {} error: {} ", decodedData, e.getMessage());
         }
         return null;
-
     }
 
     /**
@@ -698,7 +774,7 @@ class KM200Comm {
     public State getVirtualState(KM200CommObject object, Class<? extends Item> itemType, String service) {
         State state = null;
         String type = object.getServiceType();
-        logger.debug("Check virtual state of: {} type: {} item: {}", service, type, itemType.getName().toString());
+        logger.debug("Check virtual state of: {} type: {} item: {}", service, type, itemType.getName());
 
         switch (type) {
             case "switchProgram":
@@ -714,7 +790,7 @@ class KM200Comm {
                         }
                         state = new StringType(val);
                     } else {
-                        logger.error("Bindingtype not supported for day service: {}", itemType.getClass().toString());
+                        logger.warn("Bindingtype not supported for day service: {}", itemType.getClass());
                         return null;
                     }
                 } else if (virtService.equals("nbrCycles")) {
@@ -725,11 +801,9 @@ class KM200Comm {
                         }
                         state = new DecimalType(val);
                     } else {
-                        logger.error("Bindingtype not supported for nbrCycles service: {}",
-                                itemType.getClass().toString());
+                        logger.warn("Bindingtype not supported for nbrCycles service: {}", itemType.getClass());
                         return null;
                     }
-
                 } else if (virtService.equals("cycle")) {
                     if (itemType.isAssignableFrom(NumberItem.class)) {
                         Integer val = sPService.getActiveCycle();
@@ -738,7 +812,7 @@ class KM200Comm {
                         }
                         state = new DecimalType(val);
                     } else {
-                        logger.error("Bindingtype not supported for cycle service: {}", itemType.getClass().toString());
+                        logger.warn("Bindingtype not supported for cycle service: {}", itemType.getClass());
                         return null;
                     }
                 } else if (virtService.equals(sPService.getPositiveSwitch())) {
@@ -760,10 +834,9 @@ class KM200Comm {
                         rightNow.set(Calendar.MINUTE, minute);
                         state = new DateTimeType(rightNow);
                     } else {
-                        logger.error("Bindingtype not supported for cycle service: {}", itemType.getClass().toString());
+                        logger.warn("Bindingtype not supported for cycle service: {}", itemType.getClass());
                         return null;
                     }
-
                 } else if (virtService.equals(sPService.getNegativeSwitch())) {
                     if (itemType.isAssignableFrom(NumberItem.class)) {
                         Integer val = sPService.getActiveNegativeSwitch();
@@ -783,9 +856,54 @@ class KM200Comm {
                         rightNow.set(Calendar.MINUTE, minute);
                         state = new DateTimeType(rightNow);
                     } else {
-                        logger.error("Bindingtype not supported for cycle service: {}", itemType.getClass().toString());
+                        logger.warn("Bindingtype not supported for cycle service: {}", itemType.getClass());
                         return null;
                     }
+                }
+                break;
+            case "errorList":
+                KM200ErrorService eService = ((KM200ErrorService) device.serviceMap.get(object.getParent())
+                        .getValueParameter());
+                String[] nServicePath = service.split("/");
+                String nVirtService = nServicePath[nServicePath.length - 1];
+                /* Go through the parameters and read the values */
+                switch (nVirtService) {
+                    case "nbrErrors":
+                        if (itemType.isAssignableFrom(NumberItem.class)) {
+                            Integer val = eService.getNbrErrors();
+                            if (val == null) {
+                                return null;
+                            }
+                            state = new DecimalType(val);
+                        } else {
+                            logger.warn("Bindingtype not supported for error number service: {}", itemType.getClass());
+                            return null;
+                        }
+                        break;
+                    case "error":
+                        if (itemType.isAssignableFrom(NumberItem.class)) {
+                            Integer val = eService.getActiveError();
+                            if (val == null) {
+                                return null;
+                            }
+                            state = new DecimalType(val);
+                        } else {
+                            logger.warn("Bindingtype not supported for error service: {}", itemType.getClass());
+                            return null;
+                        }
+                        break;
+                    case "errorString":
+                        if (itemType.isAssignableFrom(StringItem.class)) {
+                            String val = eService.getErrorString();
+                            if (val == null) {
+                                return null;
+                            }
+                            state = new StringType(val);
+                        } else {
+                            logger.warn("Bindingtype not supported for error string service: {}", itemType.getClass());
+                            return null;
+                        }
+                        break;
                 }
                 break;
         }
@@ -799,13 +917,13 @@ class KM200Comm {
      */
     public byte[] sendProvidersState(KM200BindingProvider provider, String item, Command command) {
         synchronized (device) {
-            String service = provider.getService(item);
             String type = null;
             String dataToSend = null;
             KM200CommObject object = null;
             Class<? extends Item> itemType = provider.getItemType(item);
+            String service = checkParameterReplacement(provider, item);
 
-            logger.debug("Prepare item for send: {} type: {} item: {}", service, type, itemType.getName().toString());
+            logger.debug("Prepare item for send: {} type: {} item: {}", service, type, itemType.getName());
             if (device.blacklistMap.contains(service)) {
                 logger.debug("Service on blacklist: {}", service);
                 return null;
@@ -822,32 +940,35 @@ class KM200Comm {
                 return null;
             }
             /* The service is availible, set now the values depeding on the item and binding type */
-            logger.debug("state of: {} type: {}", command.toString(), type.toString());
+            logger.debug("state of: {} type: {}", command, type);
             /* Binding is a NumberItem */
             if (itemType.isAssignableFrom(NumberItem.class)) {
-                Float val = ((DecimalType) command).floatValue();
+                BigDecimal bdVal = ((DecimalType) command).toBigDecimal();
                 /* Check the capabilities of this service */
                 if (object.getValueParameter() != null) {
                     @SuppressWarnings("unchecked")
-                    List<Float> valParas = (List<Float>) object.getValueParameter();
-                    Float minVal = valParas.get(0);
-                    Float maxVal = valParas.get(1);
-                    if (val < minVal) {
-                        val = minVal;
+                    List<BigDecimal> valParas = (List<BigDecimal>) object.getValueParameter();
+                    BigDecimal minVal = valParas.get(0);
+                    BigDecimal maxVal = valParas.get(1);
+                    if (bdVal.compareTo(minVal) < 0) {
+                        bdVal = minVal;
                     }
-                    if (val > maxVal) {
-                        val = maxVal;
+                    if (bdVal.compareTo(maxVal) > 0) {
+                        bdVal = maxVal;
                     }
                 }
                 if (type.equals("floatValue")) {
-                    dataToSend = new JSONObject().put("value", val).toString();
+                    dataToSend = new JSONObject().put("value", bdVal).toString();
                 } else if (type.equals("stringValue")) {
-                    dataToSend = new JSONObject().put("value", val.toString()).toString();
+                    dataToSend = new JSONObject().put("value", bdVal.toString()).toString();
                 } else if (type.equals("switchProgram") && object.getVirtual() == 1) {
                     /* A switchProgram as NumberItem is always virtual */
                     dataToSend = sendVirtualState(object, itemType, service, command);
+                } else if (type.equals("errorList") && object.getVirtual() == 1) {
+                    /* A errorList as NumberItem is always virtual */
+                    dataToSend = sendVirtualState(object, itemType, service, command);
                 } else {
-                    logger.error("Not supported type for numberItem: {}", type.toString());
+                    logger.warn("Not supported type for numberItem: {}", type);
                 }
                 /* Binding is a StringItem */
             } else if (itemType.isAssignableFrom(StringItem.class)) {
@@ -857,7 +978,8 @@ class KM200Comm {
                     @SuppressWarnings("unchecked")
                     List<String> valParas = (List<String>) object.getValueParameter();
                     if (!valParas.contains(val)) {
-                        throw new IllegalArgumentException("Parameter is not in the service parameterlist:" + val);
+                        logger.warn("Parameter is not in the service parameterlist: {}", val);
+                        return null;
                     }
                 }
                 if (type.equals("stringValue")) {
@@ -874,12 +996,13 @@ class KM200Comm {
                             JSONArray userArray = new JSONArray(val);
                             dataToSend = userArray.toString();
                         } catch (Exception e) {
-                            logger.error("The input for the switchProgram is not a valid JSONArray : {}", e);
+                            logger.warn("The input for the switchProgram is not a valid JSONArray : {}",
+                                    e.getMessage());
                             return null;
                         }
                     }
                 } else {
-                    logger.error("Not supported type for stringItem: {}", type.toString());
+                    logger.warn("Not supported type for stringItem: {}", type);
                 }
 
                 /* Binding is a DateTimeItem */
@@ -890,7 +1013,7 @@ class KM200Comm {
                 } else if (type.equals("switchProgram")) {
                     dataToSend = sendVirtualState(object, itemType, service, command);
                 } else {
-                    logger.error("Not supported type for dateTimeItem: {}", type.toString());
+                    logger.warn("Not supported type for dateTimeItem: {}", type);
                 }
 
                 /* Binding is a SwitchItem */
@@ -903,17 +1026,17 @@ class KM200Comm {
                         val = provider.getParameter(item).get("on");
                     }
                 } else {
-                    logger.error("witch-Item only on configured on/off string values {}", command.toString());
+                    logger.warn("Switch-Item only on configured on/off string values {}", command);
                     return null;
                 }
                 if (type.equals("stringValue")) {
                     dataToSend = new JSONObject().put("value", val).toString();
                 } else {
-                    logger.error("Not supported type for SwitchItem:{}", type.toString());
+                    logger.warn("Not supported type for SwitchItem:{}", type);
                 }
 
             } else {
-                logger.error("Bindingtype not supported: {}", itemType.getClass().toString());
+                logger.warn("Bindingtype not supported: {}", itemType.getClass());
                 return null;
             }
             /* If some data is availible then we have to send it to device */
@@ -940,7 +1063,7 @@ class KM200Comm {
             Command command) {
         String dataToSend = null;
         String type = null;
-        logger.debug("Check virtual state of: {} type: {} item: {}", service, type, itemType.getName().toString());
+        logger.debug("Check virtual state of: {} type: {} item: {}", service, type, itemType.getName());
         object = device.serviceMap.get(service);
         KM200CommObject parObject = device.serviceMap.get(object.getParent());
         type = object.getServiceType();
@@ -979,20 +1102,32 @@ class KM200Comm {
                         dataToSend = sPService.getUpdatedJSONData(parObject);
                     }
                     break;
+                case "errorList":
+                    KM200ErrorService eService = ((KM200ErrorService) device.serviceMap.get(object.getParent())
+                            .getValueParameter());
+                    String[] nServicePath = service.split("/");
+                    String nVirtService = nServicePath[nServicePath.length - 1];
+                    if (nVirtService.equals("error")) {
+                        /* Only parameter changing without communication to device */
+                        eService.setActiveError(val);
+                    }
+                    break;
             }
         } else if (itemType.isAssignableFrom(DateTimeItem.class)) {
             Calendar cal = ((DateTimeType) command).getCalendar();
             KM200SwitchProgramService sPService = ((KM200SwitchProgramService) parObject.getValueParameter());
             String[] servicePath = service.split("/");
             String virtService = servicePath[servicePath.length - 1];
+            Integer minutes;
             if (virtService.equals(sPService.getPositiveSwitch())) {
-                Integer minutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
+                minutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
                 minutes = (minutes % sPService.getSwitchPointTimeRaster()) * sPService.getSwitchPointTimeRaster();
                 sPService.setActivePositiveSwitch(minutes);
                 /* Create a JSON Array from current switch configuration */
                 dataToSend = sPService.getUpdatedJSONData(parObject);
-            } else if (virtService.equals(sPService.getNegativeSwitch())) {
-                Integer minutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
+            }
+            if (virtService.equals(sPService.getNegativeSwitch())) {
+                minutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
                 minutes = (minutes % sPService.getSwitchPointTimeRaster()) * sPService.getSwitchPointTimeRaster();
                 sPService.setActiveNegativeSwitch(minutes);
                 /* Create a JSON Array from current switch configuration */

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>TZWP-100</Model>
+    <Label lang="en">Wall Plug Switch</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x75</id>             <!-- PROTECTION -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Countdown timer</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>254</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[Automatic turning off in minutes, 0 to disable
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Device status after power failure</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Always off</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Remember status</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Always on</Label>
+            </Item>
+            <Help><![CDATA[Define how the plug will react after the power supply is back on
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">LED indicator</Label>
+            <Type>short</Type>
+            <Default>100</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[Set the intensity of the LED indicator
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline - Plug status</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Control other devices</Label>
+            <Maximum>10</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

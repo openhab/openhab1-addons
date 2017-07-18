@@ -194,7 +194,6 @@ public class HttpGenericBindingProviderTest {
         Assert.assertTrue(config.get(HttpGenericBindingProvider.IN_BINDING_KEY).headers.containsKey("header2"));
         Assert.assertTrue(config.get(HttpGenericBindingProvider.IN_BINDING_KEY).headers.contains("value1"));
         Assert.assertTrue(config.get(HttpGenericBindingProvider.IN_BINDING_KEY).headers.contains("value2"));
-
     }
 
     @Test
@@ -285,6 +284,23 @@ public class HttpGenericBindingProviderTest {
                 config.get(HttpGenericBindingProvider.WILDCARD_COMMAND_KEY).url);
         Assert.assertEquals("I'm sorry, Dave, I'm afraid I can't do that.",
                 config.get(HttpGenericBindingProvider.WILDCARD_COMMAND_KEY).body);
+    }
+
+    @Test
+    public void testParseBindingConfigForBodyWithHeaders() throws BindingConfigParseException {
+        // method under test
+        String bindingConfig = ">[ON:POST:http://www.domain.org:1234/home/lights/23871/{header1=value1}:Up]";
+        HttpBindingConfig config = provider.parseBindingConfig(testItem, bindingConfig);
+
+        // asserts
+        Assert.assertEquals(true, config.containsKey(StringType.valueOf("ON")));
+        Assert.assertEquals("POST", config.get(StringType.valueOf("ON")).httpMethod);
+        Assert.assertEquals("http://www.domain.org:1234/home/lights/23871/", config.get(StringType.valueOf("ON")).url);
+        Assert.assertEquals("Up", config.get(StringType.valueOf("ON")).body);
+        Assert.assertNotNull(config.get(StringType.valueOf("ON")).headers);
+        Assert.assertEquals("{header1=value1}", config.get(StringType.valueOf("ON")).headers.toString());
+        Assert.assertTrue(config.get(StringType.valueOf("ON")).headers.containsKey("header1"));
+        Assert.assertTrue(config.get(StringType.valueOf("ON")).headers.contains("value1"));
     }
 
     class StringTestItem extends GenericItem {

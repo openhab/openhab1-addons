@@ -1,18 +1,14 @@
-## Introduction
+## FreeSWITCH Binding
 
-This is a Freeswitch binding for OpenHab.  
+The FreeSWITCH Binding connects to a FreeSWITCH instance and can report on current active calls as well as show unread voicemails and if a MWI is on.
 
-It connects to a freeswitch instance and can report on current active calls as well as show unread voicemails and if a MWI is on.
+You can also send any command to FreeSWITCH, see [Freeswitch Commands](http://wiki.freeswitch.org/wiki/Mod_commands) for more info.
 
-You can also send any command to freeswitch , see [Freeswitch Commands](http://wiki.freeswitch.org/wiki/Mod_commands) for more info.
+## Prerequisites
 
-## Installation 
+Make sure you have the FreeSWITCH ESL module listing on a public port, your event_socket.conf.xml in FreeSWITCH should look something like:
 
-Copy the binding (org.openhab.binding.freeswitch*.jar) to your addons directory.
-
-Make sure you have the freeswitch ESL module listing on a public port, your event_socket.conf.xml in freeswitch should look something like:
-
-```
+```xml
 <configuration name="event_socket.conf" description="Socket Client">
   <settings>
     <param name="nat-map" value="false"/>
@@ -24,40 +20,45 @@ Make sure you have the freeswitch ESL module listing on a public port, your even
 </configuration>
 ```
 
-In your openhab.cfg put the following entry with your freeswitch ESL config,
+## Binding Configuration
+
+This binding can be configured in the file `services/freeswitch.cfg`.
+
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| host     |         |   Yes    | host name or IP address of FreeSWITCH host |
+| port     |         |   Yes    | port number as specified in `listen-port` from `event_socket.conf.xml` described earlier |
+| password |         |   Yes    | password  as specified in `password` from `event_socket.conf.xml` described earlier |
+
+## Item Configuration
+
+This is a sample item entry for non filtered calls, any inbound call will be considered active, this is sufficient for most uses:
 
 ```
-########################## Freeswitch Action configuration #################################
-#
-freeswitch:host=freeswitch.yourdomain.com
-freeswitch:port=8021
-freeswitch:password=ClueCon
+Switch Incoming_Call  "Home Phone"                    (Phone) { freeswitch="active" }
+Call Active_Call      "Connected [to %1$s from %2$s]" (Phone) { freeswitch="active" }
+String Active_Call_ID "Caller ID [%s]"                (Phone) { freeswitch="active" }
 ```
 
-## Items
-
-this is a sample item entry for non filtered calls, any inbound call will be considered active, this is sufficient for most uses.
+This item is for a filtered call, only calls with an inbound direction and a destination number of 5555551212 will be matched:
 
 ```
-Switch Incoming_Call "Home Phone" (Phone) {freeswitch="active"}
-Call Active_Call     "Connected [to %1$s from %2$s]" (Phone) {freeswitch="active"}
-String Active_Call_ID "Caller ID [%s]" (Phone) {freeswitch="active"}
+Switch Incoming_Call  "Home Phone"                    (Phone) { freeswitch="active:Call-Direction:inbound,Caller-Destination-Number:5555551212" }
+Call Active_Call      "Connected [to %1$s from %2$s]" (Phone) { freeswitch="active:Call-Direction:inbound,Caller-Destination-Number:5555551212" }
+String Active_Call_ID "Caller ID [%s]"                (Phone) { freeswitch="active:Call-Direction:inbound,Caller-Destination-Number:5555551212" }
 ```
 
-This item is for a filtered call, only calls with an inbound direction and a destination number of 5555551212 will be matched
+For messages and message waiting indicator (MWI) the voice mail account is specified:
 
 ```
-Switch Incoming_Call "Home Phone" (Phone) {freeswitch="active:Call-Direction:inbound,Caller-Destination-Number:5555551212"}
-Call Active_Call     "Connected [to %1$s from %2$s]" (Phone)  {freeswitch="active:Call-Direction:inbound,Caller-Destination-Number:5555551212"}
-String Active_Call_ID "Caller ID [%s]" (Phone)  {freeswitch="active:Call-Direction:inbound,Caller-Destination-Number:5555551212"}
+Number Voice_Messages "Unread Messages [%d]" (Phone) {freeswitch="message_waiting:1000@pbx.mydomain.com"}
 ```
-For messages and message waiting indicator (MWI) the voice mail account is specified
 
-`Number Voice_Messages "Unread Messages [%d]" (Phone) {freeswitch="message_waiting:1000@pbx.mydomain.com"}`
+To send API commands to FreeSWITCH add a simple api item:
 
-To send api commands to Freeswitch add a simple api item
-
-`String FS_API	"FS API [%s]" (phone)	{freeswitch="api"}`
+```
+String FS_API  "FS API [%s]" (phone) {freeswitch="api"}
+```
 
 There are three supported protocol types, "active", "message_waiting" and "api"
 
@@ -86,4 +87,4 @@ There are three supported protocol types, "active", "message_waiting" and "api"
     * the conference info would be returned as a update to the item.
   * see [Freeswitch Commands](http://wiki.freeswitch.org/wiki/Mod_commands) for more info.
 
-message_waiting takes an extra argument which is the mailbox we want to check against.  This is usually the extention@domain 
+`message_waiting` takes an extra argument which is the mailbox we want to check against.  This is usually the extention@domain 

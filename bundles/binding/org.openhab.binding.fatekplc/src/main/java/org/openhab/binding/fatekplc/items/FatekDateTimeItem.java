@@ -20,9 +20,9 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.types.State;
 import org.openhab.model.item.binding.BindingConfigParseException;
-import com.github.s4u.jfatek.registers.Reg;
-import com.github.s4u.jfatek.registers.RegValue;
-import com.github.s4u.jfatek.registers.UnknownRegNameException;
+import org.simplify4u.jfatek.registers.Reg;
+import org.simplify4u.jfatek.registers.RegValue;
+import org.simplify4u.jfatek.registers.UnknownRegNameException;
 
 /**
  * DateTime item implementation.

@@ -15,6 +15,11 @@
         <parameter name="password" type="text" required="true">
             <label>MyQ Password</label>
         </parameter>
+        <parameter name="quickrefresh" type="integer">
+            <label>Quick Refresh interval</label>
+            <description>Data refresh interval after Event is trigger in milliseconds.</description>
+            <default>2000</default>
+        </parameter>
         <parameter name="refresh" type="integer">
             <label>Refresh interval</label>
             <description>Data refresh interval in milliseconds.</description>

@@ -446,6 +446,7 @@ public class Tr064Comm {
             if (slResponse.getStatusCode() == 401) {
                 logger.error(
                         "Could not read response from FritzBox. Unauthorized! Check User/PW in config. Create user for tr064 requests");
+                _httpClientContext.getTargetAuthState().reset();
                 return null;
             }
 
@@ -476,6 +477,7 @@ public class Tr064Comm {
             // Make sure connection is released. If error occurred make sure to print in log
             if (exceptionOccurred) {
                 logger.error("Releasing connection to FritzBox because of error!");
+                _httpClientContext.getTargetAuthState().reset();
             } else {
                 logger.debug("Releasing connection");
             }

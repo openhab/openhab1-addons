@@ -206,6 +206,12 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
      */
     @Override
     public void onResponse(ResponseEvent event) {
+        // Always cancel async request when response has been received
+        // otherwise a memory leak is created! Not canceling a request
+        // immediately can be useful when sending a request to a broadcast
+        // address.
+        ((Snmp) event.getSource()).cancel(event.getRequest(), this);
+
         dispatchPdu(event.getPeerAddress(), event.getResponse());
     }
 

@@ -61,7 +61,13 @@ public class SwegonVentilationDataParser {
 
         HashMap<SwegonVentilationCommandType, Integer> map = new HashMap<SwegonVentilationCommandType, Integer>();
 
-        map.put(SwegonVentilationCommandType.FAN_SPEED, data[3] & 0x0F);
+        int operatingMode = data[0];
+        int unitState = data[1];
+        int fanSpeed = data[3] & 0x0F;
+
+        map.put(SwegonVentilationCommandType.OPERATING_MODE, operatingMode);
+        map.put(SwegonVentilationCommandType.UNIT_STATE, unitState);
+        map.put(SwegonVentilationCommandType.FAN_SPEED, fanSpeed);
 
         return map;
     }
@@ -74,7 +80,15 @@ public class SwegonVentilationDataParser {
         int supplyTemp = data[1];
         int extractTemp = data[2];
         int supplyTempHeated = data[3];
+        int t5 = data[4];
+        int t6 = data[5];
+        int t7 = data[6];
         int exhaustTemp = data[7];
+        int co2 = data[8];
+        int rh = data[9];
+        int supplyFanSpeed = (data[10] & 0xFF) * 10;
+        int extractFanSpeed = (data[11] & 0xFF) * 10;
+        int efficiency = data[12];
 
         map.put(SwegonVentilationCommandType.T1, outdoorTemp);
         map.put(SwegonVentilationCommandType.OUTDOOR_TEMP, outdoorTemp);
@@ -86,24 +100,24 @@ public class SwegonVentilationDataParser {
         map.put(SwegonVentilationCommandType.SUPPLY_TEMP_HEATED, supplyTempHeated);
         map.put(SwegonVentilationCommandType.T8, exhaustTemp);
         map.put(SwegonVentilationCommandType.EXHAUST_TEMP, exhaustTemp);
-
-        map.put(SwegonVentilationCommandType.T5, (int) data[4]);
-        map.put(SwegonVentilationCommandType.T6, (int) data[5]);
-        map.put(SwegonVentilationCommandType.T7, (int) data[6]);
-
-        map.put(SwegonVentilationCommandType.SUPPLY_AIR_FAN_SPEED, (data[10] & 0xFF) * 10);
-        map.put(SwegonVentilationCommandType.EXTRACT_AIR_FAN_SPEED, (data[11] & 0xFF) * 10);
-        map.put(SwegonVentilationCommandType.EFFICIENCY, (int) data[12]);
+        map.put(SwegonVentilationCommandType.T5, t5);
+        map.put(SwegonVentilationCommandType.T6, t6);
+        map.put(SwegonVentilationCommandType.T7, t7);
+        map.put(SwegonVentilationCommandType.CO2, co2);
+        map.put(SwegonVentilationCommandType.HUMIDITY, rh);
+        map.put(SwegonVentilationCommandType.SUPPLY_AIR_FAN_SPEED, supplyFanSpeed);
+        map.put(SwegonVentilationCommandType.EXTRACT_AIR_FAN_SPEED, extractFanSpeed);
+        map.put(SwegonVentilationCommandType.EFFICIENCY, efficiency);
 
         // Calculate supply efficiency
-        int efficiency = (int) (((double) supplyTemp - (double) outdoorTemp)
+        int calcEfficiency = (int) (((double) supplyTemp - (double) outdoorTemp)
                 / ((double) extractTemp - (double) outdoorTemp) * 100);
-        map.put(SwegonVentilationCommandType.EFFICIENCY_SUPPLY, efficiency);
+        map.put(SwegonVentilationCommandType.EFFICIENCY_SUPPLY, calcEfficiency);
 
         // Calculate extract efficiency
-        efficiency = (int) (((double) extractTemp - (double) exhaustTemp)
+        calcEfficiency = (int) (((double) extractTemp - (double) exhaustTemp)
                 / ((double) extractTemp - (double) outdoorTemp) * 100);
-        map.put(SwegonVentilationCommandType.EFFICIENCY_EXTRACT, efficiency);
+        map.put(SwegonVentilationCommandType.EFFICIENCY_EXTRACT, calcEfficiency);
 
         return map;
     }
@@ -112,10 +126,50 @@ public class SwegonVentilationDataParser {
 
         HashMap<SwegonVentilationCommandType, Integer> map = new HashMap<SwegonVentilationCommandType, Integer>();
 
-        map.put(SwegonVentilationCommandType.REHEAT_STATE, (data[0] & 0x80) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.HEATING_STATE, (data[0] & 0x01) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.COOLING_STATE, (data[0] & 0x02) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.BYBASS_STATE, (data[0] & 0x04) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.FREEZE_PROTECTION_STATE, (data[0] & 0x08) > 0 ? 1 : 0);
         map.put(SwegonVentilationCommandType.PREHEAT_STATE, (data[0] & 0x10) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.PREHEATING_STATE, (data[0] & 0x10) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.CHILLING_STATE, (data[0] & 0x20) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.PREHEATER_OVERHEAT_STATE, (data[0] & 0x40) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.REHEAT_STATE, (data[0] & 0x80) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.REHEATING_STATE, (data[0] & 0x80) > 0 ? 1 : 0);
+
+        map.put(SwegonVentilationCommandType.FIREPLACE_FUNCTION_STATE, (data[1] & 0x01) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.UNDERPRESSURE_COMPENSATION_STATE, (data[1] & 0x02) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.EXTERNAL_BOOST_STATE, (data[1] & 0x04) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.HUMIDITY_BOOST_STATE, (data[1] & 0x08) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.CO2_BOOST_STATE, (data[1] & 0x10) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.DEFROSTING_STATE, (data[1] & 0x20) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.DEFROST_STARTER_MODE, (data[1] & 0x40));
+        map.put(SwegonVentilationCommandType.TF_STOP_STATE, (data[1] & 0x80) > 0 ? 1 : 0);
+
+        map.put(SwegonVentilationCommandType.EXTERNAL_BOOST_FUNCTION_STATE, (data[3] & 0x04) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.EXTERNAL_FIREPLACE_FUNCTION_STATE, (data[3] & 0x08) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.FILTER_GUARD_STATUS, (data[3] & 0x10) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.IR_FREEZE_PROTECTION_STATUS, (data[3] & 0x20) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.EMERGENCY_STOP_STATE, (data[3] & 0x80) > 0 ? 1 : 0);
+
+        map.put(SwegonVentilationCommandType.REHEATING_FREEZING_ALARM, (data[7] & 0x01) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.REHEATING_OVERHEAT_ALARM, (data[7] & 0x02) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.IR_SENSOR_FAILURE, (data[7] & 0x04) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.SUPPLY_FAN_FAILURE, (data[7] & 0x08) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.EXTRACT_FAN_FAILURE, (data[7] & 0x10) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.TEMPERATURE_DEVIATION_FAILURE, (data[7] & 0x20) > 0 ? 1 : 0);
+
+        map.put(SwegonVentilationCommandType.EFFICINECY_ALARM, (data[8] & 0x01) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.FILTER_GUARD_ALARM, (data[8] & 0x02) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.SERVICE_REMINDER, (data[8] & 0x04) > 0 ? 1 : 0);
+        map.put(SwegonVentilationCommandType.TEMPERATURE_FAILURE, (data[8] & 0x08) > 0 ? 1 : 0);
+
+        map.put(SwegonVentilationCommandType.AFTERHEATING_SETPOINT_SUPPLY_AIR_REGULATED, (int) data[10]);
+        map.put(SwegonVentilationCommandType.AFTERHEATING_SETPOINT_ROOM_REGULATED, (int) data[11]);
+        map.put(SwegonVentilationCommandType.SUPPLY_FAN_VIRTUAL_SPEED, (int) data[12]);
+        map.put(SwegonVentilationCommandType.EXTRACT_FAN_VIRTUAL_SPEED, (int) data[13]);
+        map.put(SwegonVentilationCommandType.UNIT_STATUS, (int) data[14]);
 
         return map;
     }
-
 }

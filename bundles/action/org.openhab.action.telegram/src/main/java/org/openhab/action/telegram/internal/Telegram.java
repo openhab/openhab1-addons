@@ -123,8 +123,10 @@ public class Telegram {
 
         } catch (HttpException e) {
             logger.error("Fatal protocol violation: {}", e.toString());
+            return false;
         } catch (IOException e) {
             logger.error("Fatal transport error: {}", e.toString());
+            return false;
         } finally {
             postMethod.releaseConnection();
         }
@@ -240,8 +242,10 @@ public class Telegram {
             }
         } catch (HttpException e) {
             logger.error("Fatal protocol violation: {}", e.toString());
+            return false;
         } catch (IOException e) {
             logger.error("Fatal transport error: {}", e.toString());
+            return false;
         } finally {
             postMethod.releaseConnection();
         }

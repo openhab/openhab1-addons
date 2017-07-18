@@ -15,6 +15,8 @@ package org.openhab.binding.satel.internal.types;
  * <li>PARTITION - group of zones and outputs</li>
  * <li>OUTPUT - outputs to various devices like sirens, relays, etc.</li>
  * <li>DOORS - inputs connected to reed switches mounted on doors</li>
+ * <li>TROUBLE - indication of a particular trouble</li>
+ * <li>TROUBLE_MEMORY - particular trouble state latched</li>
  * </ul>
  *
  * @author Krzysztof Goworek
@@ -24,5 +26,7 @@ public enum ObjectType {
     ZONE,
     PARTITION,
     OUTPUT,
-    DOORS;
+    DOORS,
+    TROUBLE,
+    TROUBLE_MEMORY;
 }

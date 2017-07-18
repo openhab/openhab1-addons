@@ -1,47 +1,49 @@
-## Introduction
+# Autelis Binding
 
-This is a OpenHab binding for Autelis pool controllers
-
-Autelis manufactures a network enabled pool interface for many popular pool systems.  See [the Autelis webiste](http://www.autelis.com) and the  [Autelis Command Protocol](http://www.autelis.com/wiki/index.php?title=Pool_Control_(PI)_HTTP_Command_Reference) for more information.
+Autelis manufactures a network enabled pool interface for many popular pool systems.  See the [Autelis website](http://www.autelis.com) and the [Autelis Command Protocol](http://www.autelis.com/wiki/index.php?title=Pool_Control_(PI)_HTTP_Command_Reference) for more information.
 
 The binding is fairly complete and supports the following functionality.
 
 * Read circuit, auxiliary, temperature, pump, chemistry and system values  
 * Control circuit, auxiliary lighting scenes, and temperature set points
 
-## Installation 
+There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/autelis/readme.html).
 
-Copy the binding jar (org.openhab.autelis*.jar) to the addons directory
+## Binding Configuration
 
-add the following to your openhab.cfg and comment out the relevant options
+The binding can be configured in the file `services/autelis.cfg`.
+
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| refresh  | 5000    |   No     | Refresh rate in milliseconds |
+| host     |         |   Yes    | Host (name or ip) to connect to |
+| port     | 80      |   No     | Port on which to connect to the host |
+| username |         |   if configured | User name for example `admin` |
+| password |         |   if configured | Password, for example `admin` |
+
+
+## Item Configuration
+
+The format is
+
 ```
-############################### Autelis Pool Control Binding #########################
-#
-# Host (name or ip) to connect to
-# optional port (default 80)
-# optional username and password (no default)
-# optional refresh rate in millis (default 5000)
-#
-#autelis:refresh=5000
-#autelis:host=poolcontrol
-#autelis:port=80
-#autelis:username=admin
-#autelis:password=admin
+{ autelis="parentNode.childElement" }
 ```
 
-## Items
-
-format is 
-`{autelis:"parentNode.childElement"}`
 or
-`{autelis:"lightscmd"}`
+
+```
+{ autelis="lightscmd" }
+```
 
 An example to get the system version would be:
 
-`{autelis="system.version"}`
+```
+{ autelis="system.version" }
+```
 
-* only 'equipment.*', 'temp.*' and 'lightscmd' items can be updated from openhab, everything else is read only.
-* For lighting commands the following strings can be sent to a item configured with "{autels:"lightscmd"}" (through a mapped push button for example) 
+* Only `equipment.*`, `temp.*` and `lightscmd` items can be updated from openHAB, everything else is read only.
+* For lighting commands, the following strings can be sent to an item configured with `{ autels="lightscmd"}` (through a mapped push button for example):
   * 'alloff, allon, csync, cset, cswim, party, romance, caribbean, american, sunset, royalty, blue, green, red, white, magenta, hold, recall`
 
 The following are a listing of possible values for the configuration string using a sample xml output from a Autelis controller:
@@ -126,33 +128,20 @@ The following are a listing of possible values for the configuration string usin
 	</chlor>
 ```
 
-## More Item Examples
+## Item Examples
 
 ```
 String PoolVersion	"Version [%s]" {autelis="system.version"}
-
 Number PoolSetPoint	"Pool SetPoint [%d]" {autelis="temp.poolsp"}
-
 Number PoolTemp	"Pool Temp [%d]" {autelis="temp.pooltemp"}
-
 Number PoolSpaTemp	"Spa Temp [%d]" {autelis="temp.spatemp"}
-
 Number PoolAirTemp	"Air Temp [%d]" {autelis="temp.airtemp"}
-
 Number PoolSpaSetPoint	"Spa SetPoint [%d]" {autelis="temp.spasp"}
-
 Number PoolChemSalt	"Salt Levels [%d]" {autelis="chlor.salt"}
-
 Switch PoolSpaMode  "Spa Mode [%s]" {autelis="equipment.circuit1"}
-
 Switch PoolMode  "Pool Mode [%s]" {autelis="equipment.circuit6"}
-
 Switch PoolWaterfall  "Waterfall [%s]" {autelis="equipment.circuit2"}
-
 Switch PoolSpaLight  "Spa Light [%s]" {autelis="equipment.circuit3"}
-
 Switch PoolLight  "Pool Light [%s]" {autelis="equipment.circuit4"}
-
 String PoolLightCmd	 {autelis="lightscmd"}
 ```
-

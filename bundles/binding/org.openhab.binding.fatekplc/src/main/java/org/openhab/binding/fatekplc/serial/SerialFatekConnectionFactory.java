@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.github.s4u.jfatek.io.FatekConfig;
-import com.github.s4u.jfatek.io.FatekConnection;
-import com.github.s4u.jfatek.io.FatekConnectionFactory;
+import org.simplify4u.jfatek.io.FatekConfig;
+import org.simplify4u.jfatek.io.FatekConnection;
+import org.simplify4u.jfatek.io.FatekConnectionFactory;
 
 /**
  * Serial connection for Fatek PLC binding.

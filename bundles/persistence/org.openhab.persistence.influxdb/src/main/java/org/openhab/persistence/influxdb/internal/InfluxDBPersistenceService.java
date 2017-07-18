@@ -26,6 +26,7 @@ import org.influxdb.dto.Pong;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult.Result;
 import org.influxdb.dto.QueryResult.Series;
+import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
@@ -501,6 +502,9 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
         if (itemRegistry != null) {
             try {
                 Item item = itemRegistry.getItem(itemName);
+                if (item instanceof GroupItem) {
+                    item = ((GroupItem) item).getBaseItem();
+                }
                 if (item instanceof ColorItem) {
                     logger.debug("objectToState found a ColorItem {}", valueStr);
                     return new HSBType(valueStr);

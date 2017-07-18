@@ -56,6 +56,7 @@ public class Temperature {
 
     @ProviderMappings({
             @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.feelslike_c"),
+            @Provider(name = ProviderName.FORECASTIO, property = "apparentTemperature"),
             @Provider(name = ProviderName.HAMWEATHER, property = "feelslikeC") })
     private Double feel;
 

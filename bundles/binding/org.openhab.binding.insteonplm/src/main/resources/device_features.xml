@@ -665,4 +665,137 @@
         <command-handler d1="0x02" ext="1" command="OnOffType">LightOnOffCommandHandler</command-handler>
         <poll-handler ext="0" cmd1="0x19" cmd2="0x01">FlexPollHandler</poll-handler>
 </feature>
+<feature name="VenstarCoolSetPoint">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- handles direct extended message after query -->
+	<message-handler cmd="0x2e" ext="1" match_cmd1="0x2e" match_cmd2="0x00" low_byte="userData6">NumberMsgHandler</message-handler>
+	<!-- handles direct ack after set point has been changed-->
+	<message-handler cmd="0x19" ext="0" match_cmd1="0x6c" low_byte="command2" factor="0.5">NumberMsgHandler</message-handler>
+	<!-- handles out-of band status messages -->
+	<message-handler cmd="0x71" ext="0" match_cmd1="0x71" low_byte="command2">NumberMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType" ext="1" cmd1="0x6c" factor="2" value="command2">NumberCommandHandler</command-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler> <!-- polled by ThermostatData1bGroup -->
+</feature>
+<feature name="VenstarHeatSetPoint">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- handles direct extended message after query -->
+	<message-handler cmd="0x2e" ext="1" match_cmd1="0x2e" match_cmd2="0x00" low_byte="userData7">NumberMsgHandler</message-handler>
+	<!-- handles direct ack after set point has been changed-->
+	<message-handler cmd="0x19" ext="0" match_cmd1="0x6d" low_byte="command2" factor="0.5">NumberMsgHandler</message-handler>
+	<!-- handles out-of band status messages -->
+	<message-handler cmd="0x72" ext="0" match_cmd1="0x72" low_byte="command2">NumberMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType" ext="1" cmd1="0x6d" factor="2" value="command2">NumberCommandHandler</command-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler> <!-- polled by ThermostatData1bGroup -->
+</feature>
+<feature name="VenstarSystemMode">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- handles direct extended message after query - use NumberMsgHandler because this adapator directly reports the correct number -->
+	<!-- 0=OFF, 1=HEAT, 2=COOL, 3= Auto, 4=Program 5=Program Heat 6=Program Cool -->
+	<message-handler cmd="0x2e" ext="1" match_cmd1="0x2e" match_cmd2="0x00" match_d2="0x01" low_byte="userData3">NumberMsgHandler</message-handler>
+	<!-- handles direct ack after system mode has been changed-->
+	<message-handler cmd="0x19" ext="0" match_cmd1="0x6b" low_byte="command2">ThermostatSystemModeReplyHandler</message-handler>
+	<!-- handles out-of band status messages -->
+	<message-handler cmd="0x70" ext="0" match_cmd1="0x70" low_byte="command2" mask="0x0f">NumberMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType" ext="1" cmd1="0x6b" value="command2">ThermostatSystemModeCommandHandler</command-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler> <!-- polled by ThermostatData1bGroup -->
+</feature>
+<feature name="VenstarFanMode">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- handles direct extended message after query mask for second bit -->
+	<message-handler cmd="0x2e" ext="1" match_cmd1="0x2e" match_cmd2="0x00" low_byte="userData9" mask="0x10" rshift="4">NumberMsgHandler</message-handler>
+	<!-- handles direct ack after fan mode has been changed-->
+	<message-handler cmd="0x19" ext="0" match_cmd1="0x6b" low_byte="command2">ThermostatFanModeReplyHandler</message-handler>
+	<!-- handles out-of band status messages -->
+	<message-handler cmd="0x70" ext="0" match_cmd1="0x70" low_byte="command2" mask="0xf0" rshift="4">NumberMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType" ext="1" cmd1="0x6b" value="command2">ThermostatFanModeCommandHandler</command-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler> <!-- polled by ThermostatData1bGroup -->
+</feature>
+<feature name="VenstarTemperatureFahrenheit"> <!-- All temperatures reported in units currently set on thermostat -->
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- handles direct extended message after query -->
+	<message-handler cmd="0x2e" ext="1" match_cmd1="0x2e" match_cmd2="0x00" match_d2="0x01" low_byte="userData5">NumberMsgHandler</message-handler>
+	<!-- handles direct ack after value has been changed-->
+	<message-handler cmd="0x19">TriggerPollMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType" ext="1" cmd1="0x2e" d1="0x01" d2="0x0b" value="userData3">NumberCommandHandler</command-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler> <!-- polled by ThermostatData1bGroup -->
+</feature>
+<feature name="VenstarHumidity">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- handles direct extended message after query -->
+	<message-handler cmd="0x2e" ext="1" match_cmd1="0x2e" match_cmd2="0x00" match_d2="0x01" low_byte="userData4">NumberMsgHandler</message-handler>
+	<!-- handles direct ack after value has been changed-->
+	<message-handler cmd="0x19">TriggerPollMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType" ext="1" cmd1="0x2e" d1="0x01" d2="0x0c" value="userData3">NumberCommandHandler</command-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler> <!-- polled by ThermostatData1bGroup -->
+</feature>
+<feature name="VenstarIsHeating">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- handles direct extended message after query -->
+	<message-handler cmd="0x2e" ext="1" match_cmd1="0x2e" match_cmd2="0x00" low_byte="userData8" mask="0x02" rshift="1">NumberMsgHandler</message-handler>
+	<!-- handles all-link broadcast message OFF -->
+	<message-handler cmd="0x13" ext="0" group="2" mask="0x00" low_byte="command1">NumberMsgHandler</message-handler>
+	<!-- handles all-link broadcast message ON -->
+	<message-handler cmd="0x11" ext="0" group="2" mask="0x01" low_byte="command1">NumberMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler> <!-- polled by ThermostatData1bGroup -->
+</feature>
+<feature name="VenstarIsCooling">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- handles direct extended message after query -->
+	<message-handler cmd="0x2e" ext="1" match_cmd1="0x2e" match_cmd2="0x00" low_byte="userData8" mask="0x01">NumberMsgHandler</message-handler>
+	<!-- handles all-link broadcast message OFF -->
+	<message-handler cmd="0x13" ext="0" group="1" mask="0x00" low_byte="command1">NumberMsgHandler</message-handler>
+	<!-- handles all-link broadcast message ON -->
+	<message-handler cmd="0x11" ext="0" group="1" mask="0x01" low_byte="command1">NumberMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler> <!-- polled by ThermostatData1bGroup -->
+</feature>
+<feature name="ReceiveBroadcast">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- handles out-of band status messages -->
+	<message-handler cmd="0x11" ext="0" match_cmd1="0x11" low_byte="group">NumberMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<poll-handler>NoPollHandler</poll-handler> <!-- broadcast messages only, no polling! -->
+</feature>
+<feature name="ExtStatusGroup"> <!-- does the polling for various quantities -->
+	<message-dispatcher>PollGroupDispatcher</message-dispatcher>
+	<poll-handler ext="2" cmd1="0x2e" cmd2="0x00" d1="0x01" d3="0x00" >FlexPollHandler</poll-handler>
+</feature>
+<feature name="LEDBrightness">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- handles direct extended message after query -->
+	<message-handler cmd="0x2e" ext="1" match_cmd1="0x2e" match_cmd2="0x00" match_d2="0x01" low_byte="userData9">NumberMsgHandler</message-handler>
+	<!-- handles direct ack after poll-->
+	<message-handler cmd="0x19">TriggerPollMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType" ext="1" cmd1="0x2e" d1="0x01" d2="0x07" factor="1" value="userData3">NumberCommandHandler</command-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler> <!-- polled by ExtStatusGroup -->
+</feature>
+<feature name="RampRate">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- handles direct extended message after query -->
+	<message-handler cmd="0x2e" ext="1" match_cmd1="0x2e" match_cmd2="0x00" match_d2="0x01" low_byte="userData7">NumberMsgHandler</message-handler>
+	<!-- handles direct ack after poll-->
+	<message-handler cmd="0x19">TriggerPollMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType" ext="1" cmd1="0x2e" d1="0x01" d2="0x05" factor="1" value="userData3">NumberCommandHandler</command-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler> <!-- polled by ExtStatusGroup -->
+</feature>
+
 </xml>

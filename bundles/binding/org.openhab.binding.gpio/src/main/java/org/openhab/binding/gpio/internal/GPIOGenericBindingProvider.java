@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Allowed item types in the configuration are "Switch" and "Contact".
  * "Switch" is used for output pins, "Contact" - input pins.
+ * 
  * </p>
  *
  * <p>
@@ -34,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * </p>
  * <p>
  * <code>
- * gpio="pin:PIN_NUMBER [debounce:DEBOUNCE_INTERVAL] [activelow:yes|no] [force:yes|no]"
+ * gpio="pin:PIN_NUMBER [debounce:DEBOUNCE_INTERVAL] [activelow:yes|no] [force:yes|no] [initialValue:high|low]"
  * </code>
  * </p>
  * <p>
@@ -45,11 +46,12 @@ import org.slf4j.LoggerFactory;
  * <br>
  * order of pairs isn't important, the same is valid for character's case
  * <br>
- * key "pin" is mandatory, "debounce", "activelow" and "force" are optional. If omitted
+ * key "pin" is mandatory, "debounce", "activelow", "force" and "initialValue" are optional. If omitted
  * "activelow" is set to "no", "debounce" - to global option in openHAB,
  * configuration file (gpio:debounce) or 0 (zero) if neither is specified
  * "force" - to global option in openHAB,
  * configuration file (gpio:force) or "no" if neither is specified
+ * "initialValue" - to LOW level
  * <br>
  * PIN_NUMBER is the number of the pin as seen by the kernel
  * <br>
@@ -68,7 +70,7 @@ import org.slf4j.LoggerFactory;
  * gpio="pin:49"<br>
  * gpio="pin:49 debounce:10"<br>
  * gpio="pin:49 activelow:yes"<br>
- * gpio="pin:49 force:yes"<br>
+ * gpio="pin:49 force:yes initialValue:high"<br>
  * gpio="pin:49 debounce:10 activelow:yes"</code>
  * </p>
  *
@@ -176,6 +178,17 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
                     throw new BindingConfigParseException("Unsupported value for activelow (" + value
                             + ") in configuration string '" + bindingConfig + "'");
                 }
+            } else if (key.compareToIgnoreCase("initialValue") == 0) {
+                if (value.compareToIgnoreCase("high") == 0) {
+                    config.direction = GPIOPin.DIRECTION_OUT_HIGH;
+                } else if (value.compareToIgnoreCase("low") == 0) {
+                    config.direction = GPIOPin.DIRECTION_OUT_LOW;
+                } else {
+                    logger.error("Unsupported value for initialValue (" + value + ") in configuration string '"
+                            + bindingConfig + "'");
+                    throw new BindingConfigParseException("Unsupported value for initialValue (" + value
+                            + ") in configuration string '" + bindingConfig + "'");
+                }
             } else {
                 logger.error("Unsupported key (" + key + ") in configuration string '" + bindingConfig + "'");
                 throw new BindingConfigParseException(
@@ -192,9 +205,6 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 
         if (item instanceof ContactItem) {
             config.direction = GPIOPin.DIRECTION_IN;
-        } else {
-            /* Item type 'Switch' */
-            config.direction = GPIOPin.DIRECTION_OUT;
         }
 
         addBindingConfig(item, config);
@@ -293,6 +303,6 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
          * Pin direction. If item type is <code>Switch</code> the pin
          * direction is out, if <code>Contact</code> - in
          */
-        public int direction;
+        public int direction = GPIOPin.DIRECTION_OUT_LOW;
     }
 }

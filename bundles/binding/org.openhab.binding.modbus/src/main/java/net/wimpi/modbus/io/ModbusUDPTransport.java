@@ -44,7 +44,7 @@ public class ModbusUDPTransport implements ModbusTransport {
      * Constructs a new <tt>ModbusTransport</tt> instance,
      * for a given <tt>UDPTerminal</tt>.
      * <p>
-     * 
+     *
      * @param terminal the <tt>UDPTerminal</tt> used for message transport.
      */
     public ModbusUDPTransport(UDPTerminal terminal) {

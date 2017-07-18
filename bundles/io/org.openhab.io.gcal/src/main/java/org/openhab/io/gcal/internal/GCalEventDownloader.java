@@ -107,7 +107,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
 
     @Override
     protected String getName() {
-        return "Google Calender Event-Downloader";
+        return "Google Calendar Event Downloader";
     }
 
     @Override
@@ -156,7 +156,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
      *         the amount of events to process.
      */
     private static Events downloadEventFeed() {
-        // TODO: teichsta: there could be more than one calender url in openHAB.cfg
+        // TODO: teichsta: there could be more than one calendar url in openHAB.cfg
         // for now we accept this limitation of downloading just one feed ...
 
         if (StringUtils.isBlank(calendar_name)) {
@@ -220,7 +220,7 @@ public class GCalEventDownloader extends AbstractActiveService implements Manage
         if (list != null && !list.isEmpty()) {
             Event referenceEvent = list.get(0);
             if (referenceEvent.getICalUID() == null || referenceEvent.getStart().toString().isEmpty()) {
-                logger.warn("calender entries are incomplete - please make sure to use the full calendar feed");
+                logger.warn("calendar entries are incomplete - please make sure to use the full calendar feed");
             }
 
         }

@@ -11,8 +11,6 @@
 -->
 <features name="${project.artifactId}-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
 
-  <repository>mvn:de.maggu2810.kat.features/apache-httpcomponents/${kat.version}/xml/features</repository>
-
   <!-- action -->
 
   <feature name="openhab-action-ecobee" description="Ecobee Action" version="${project.version}">
@@ -208,6 +206,13 @@
     <configfile finalname="${openhab.conf}/services/ecotouch.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecotouch</configfile>
   </feature>
 
+  <feature name="openhab-binding-ekey1" description="ekey Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.ekey/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/ekey.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ekey</configfile>
+  </feature>
+
   <feature name="openhab-binding-energenie1" description="Energenie Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -282,6 +287,7 @@
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.garadget/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/garadget.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/garadget</configfile>
   </feature>
 
   <feature name="openhab-binding-gc100ir1" description="GC100IR Binding" version="${project.version}">
@@ -317,6 +323,14 @@
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.http/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/http.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/http</configfile>
+  </feature>
+
+  <feature name="openhab-binding-iec6205621meter" description="IEC 62056-21 Meter" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.iec6205621meter/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/iec6205621meter.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/iec6205621meter</configfile>
   </feature>
 
   <feature name="openhab-binding-ihc1" description="IHC Binding" version="${project.version}">
@@ -364,6 +378,13 @@
     <configfile finalname="${openhab.conf}/services/jointspace.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jointspace</configfile>
   </feature>
 
+  <feature name="openhab-binding-km1001" description="KM200 Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.km200/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/km200.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/km200</configfile>
+  </feature>
+
   <feature name="openhab-binding-knx1" description="KNX Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -391,18 +412,19 @@
     <configfile finalname="${openhab.conf}/services/lgtv.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/lgtv</configfile>
   </feature>
 
+  <feature name="openhab-binding-maxcul1" description="MAX! CUL Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>      
+    <feature>openhab-transport-cul1</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.maxcul/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/maxcul.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/maxcul</configfile>
+  </feature>
+
   <feature name="openhab-binding-mochadx101" description="MochadX10 Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.mochadx10/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/mochadx10.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mochadx10</configfile>
-  </feature>
-
-  <feature name="openhab-binding-milight1" description="Milight Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.milight/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/milight.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/milight</configfile>
   </feature>
 
   <feature name="openhab-binding-mios1" description="MiOS Binding" version="${project.version}">
@@ -553,6 +575,13 @@
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.plex/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/plex.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/plex</configfile>
+  </feature>
+
+  <feature name="openhab-binding-piface1" description="Piface Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.piface/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/piface.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/piface</configfile>
   </feature>
 
   <feature name="openhab-binding-plugwise1" description="Plugwise Binding" version="${project.version}">
@@ -805,6 +834,13 @@
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.gcal/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/gcal.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/gcal</configfile>
+  </feature>
+
+  <feature name="openhab-misc-dropbox1" description="Dropbox Synchronization Service" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.dropbox/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/dropbox.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/dropbox</configfile>
   </feature>
 
   <!-- shared features, not end user facing -->

@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -93,7 +94,6 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
     }
 
     private final Meter createIec6205621MeterConfig(String name, MeterConfig config) {
-
         Meter reader = null;
         reader = new Meter(name, config);
         return reader;
@@ -116,7 +116,7 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
                         Map<String, DataSet> dataSets;
                         if ((dataSets = cache.get(meterName)) == null) {
                             if (logger.isDebugEnabled()) {
-                                logger.debug("Read meter: " + meterName + "; " + reader.getConfig().getSerialPort());
+                                logger.debug("Read meter: {}; {}", meterName, reader.getConfig().getSerialPort());
                             }
                             dataSets = reader.read();
                             cache.put(meterName, dataSets);
@@ -125,8 +125,8 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
                         if (obis != null && dataSets.containsKey(obis)) {
                             DataSet dataSet = dataSets.get(obis);
                             if (logger.isDebugEnabled()) {
-                                logger.debug("Updating item " + itemName + " with OBIS code " + obis + " and value "
-                                        + dataSet.getValue());
+                                logger.debug("Updating item {} with OBIS code {} and value {}", itemName, obis,
+                                        dataSet.getValue());
                             }
                             Class<? extends Item> itemType = provider.getItemType(itemName);
                             if (itemType.isAssignableFrom(NumberItem.class)) {
@@ -140,7 +140,6 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
                     }
                 }
             }
-
         }
     }
 
@@ -152,7 +151,6 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
         // the code being executed when a command was sent on the openHAB
         // event bus goes here. This method is only called if one of the
         // BindingProviders provide a binding for the given 'itemName'.
-        logger.debug("internalReceiveCommand() is called!");
     }
 
     /**
@@ -163,7 +161,6 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
         // the code being executed when a state was sent on the openHAB
         // event bus goes here. This method is only called if one of the
         // BindingProviders provide a binding for the given 'itemName'.
-        logger.debug("internalReceiveCommand() is called!");
     }
 
     protected void addBindingProvider(Iec6205621MeterBindingProvider bindingProvider) {
@@ -181,26 +178,23 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 
         if (config == null || config.isEmpty()) {
-            logger.warn("Empty or null configuration. Ignoring.");
             return;
         }
 
         Set<String> names = getNames(config);
 
         for (String name : names) {
-
-            String value = (String) config.get(name + ".serialPort");
+            String value = Objects.toString(config.get(name + ".serialPort"), null);
             String serialPort = value != null ? value : MeterConfig.DEFAULT_SERIAL_PORT;
 
-            value = (String) config.get(name + ".initMessage");
-            byte[] initMessage = value != null ? DatatypeConverter.parseHexBinary(value)
-                    : null;
+            value = Objects.toString(config.get(name + ".initMessage"), null);
+            byte[] initMessage = value != null ? DatatypeConverter.parseHexBinary(value) : null;
 
-            value = (String) config.get(name + ".baudRateChangeDelay");
+            value = Objects.toString(config.get(name + ".baudRateChangeDelay"), null);
             int baudRateChangeDelay = value != null ? Integer.valueOf(value)
                     : MeterConfig.DEFAULT_BAUD_RATE_CHANGE_DELAY;
 
-            value = (String) config.get(name + ".echoHandling");
+            value = Objects.toString(config.get(name + ".echoHandling"), null);
             boolean echoHandling = value != null ? Boolean.valueOf(value) : MeterConfig.DEFAULT_ECHO_HANDLING;
 
             Meter meterConfig = createIec6205621MeterConfig(name,
@@ -213,15 +207,15 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
             }
         }
 
-        if (config != null) {
-            // to override the default refresh interval one has to add a
-            // parameter to openhab.cfg like
-            // <bindingName>:refresh=<intervalInMs>
-            if (StringUtils.isNotBlank((String) config.get("refresh"))) {
-                refreshInterval = Long.parseLong((String) config.get("refresh"));
-            }
-            setProperlyConfigured(true);
+        // to override the default refresh interval one has to add a
+        // parameter to openhab.cfg like
+        // <bindingName>:refresh=<intervalInMs>
+        String refreshStr = Objects.toString(config.get("refresh"), null);
+        if (StringUtils.isNotBlank(refreshStr)) {
+            refreshInterval = Long.parseLong(refreshStr);
         }
+
+        setProperlyConfigured(true);
     }
 
     /**
@@ -246,8 +240,9 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
             Matcher meterMatcher = METER_CONFIG_PATTERN.matcher(key);
 
             if (!meterMatcher.matches()) {
-                logger.debug("given config key '" + key
-                        + "' does not follow the expected pattern '<meterName>.<serialPort|baudRateChangeDelay|echoHandling>'");
+                logger.debug(
+                        "given config key '{}' does not follow the expected pattern '<meterName>.<serialPort|baudRateChangeDelay|echoHandling>'",
+                        key);
                 continue;
             }
 
@@ -258,5 +253,4 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
         }
         return set;
     }
-
 }

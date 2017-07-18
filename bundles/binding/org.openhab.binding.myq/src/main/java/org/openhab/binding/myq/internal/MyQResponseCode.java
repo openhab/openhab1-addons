@@ -30,7 +30,7 @@ public enum MyQResponseCode {
     DEVICE_LEARNMODE(305, "The device is currently in Learn Mode."),
     DEVICE_NOT_RESPONDING(308, "The device is not responding. Please check that the device is powered and in range."),
     DEVICE_OFFLINE(309, "The gateway or hub is offline. Please check the power and network connections."),
-    UNKNOWN(-1, "Unknow resonse");
+    UNKNOWN(-1, "Unknown resonse");
 
     private int code;
     private String desc;

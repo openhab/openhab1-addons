@@ -46,7 +46,32 @@ public enum ZoneState implements StateType {
      * {@inheritDoc}
      */
     @Override
+    public int getPayloadLength(boolean extendedCmd) {
+        return extendedCmd ? 32 : 16;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ObjectType getObjectType() {
         return ObjectType.ZONE;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getStartByte() {
+        return 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getBytesCount(boolean extendedCmd) {
+        return getPayloadLength(extendedCmd);
+    }
+
 }

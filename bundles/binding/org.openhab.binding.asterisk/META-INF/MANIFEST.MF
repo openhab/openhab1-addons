@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Asterisk Binding
 Bundle-SymbolicName: org.openhab.binding.asterisk
-Bundle-Version: 1.9.0.qualifier
+Bundle-Version: 1.11.0.qualifier
 Bundle-Activator: org.openhab.binding.asterisk.internal.AsteriskActivator
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -27,4 +27,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.openhab.binding.asterisk
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/binding.xml
 Bundle-ClassPath: .,
- lib/asterisk-java-1.0.0-20090923.194527-626.jar
+ lib/asterisk-java-20150829.jar

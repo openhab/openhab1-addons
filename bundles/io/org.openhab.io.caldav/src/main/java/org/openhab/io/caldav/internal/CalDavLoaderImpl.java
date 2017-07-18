@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,9 +24,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.joda.time.DateTimeZone;
 import org.openhab.core.service.AbstractActiveService;
@@ -140,96 +142,106 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
 
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        if (config != null) {
-            CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
-
-            // just temporary
-            Map<String, CalDavConfig> configMap = new HashMap<String, CalDavConfig>();
-
-            Enumeration<String> iter = config.keys();
-            while (iter.hasMoreElements()) {
-                String key = iter.nextElement();
-                log.trace("configuration parameter: " + key);
-                if (key.equals("service.pid")) {
-                    continue;
-                } else if (key.equals(PROP_TIMEZONE)) {
-                    log.debug("overriding default timezone {} with {}", defaultTimeZone, config.get(key));
-                    defaultTimeZone = DateTimeZone.forID(config.get(key) + "");
-                    if (defaultTimeZone == null) {
-                        throw new ConfigurationException(PROP_TIMEZONE, "invalid timezone value: " + config.get(key));
-                    }
-                    log.debug("found timeZone: {}", defaultTimeZone);
-                    continue;
-                }
-                String[] keys = key.split(":");
-                if (keys.length != 2) {
-                    throw new ConfigurationException(key, "unknown identifier");
-                }
-                String id = keys[0];
-                String paramKey = keys[1];
-                CalDavConfig calDavConfig = configMap.get(id);
-                if (calDavConfig == null) {
-                    calDavConfig = new CalDavConfig();
-                    configMap.put(id, calDavConfig);
-                }
-                String value = config.get(key) + "";
-
-                calDavConfig.setKey(id);
-                if (paramKey.equals(PROP_USERNAME)) {
-                    calDavConfig.setUsername(value);
-                } else if (paramKey.equals(PROP_PASSWORD)) {
-                    calDavConfig.setPassword(value);
-                } else if (paramKey.equals(PROP_URL)) {
-                    calDavConfig.setUrl(value);
-                } else if (paramKey.equals(PROP_RELOAD_INTERVAL)) {
-                    calDavConfig.setReloadMinutes(Integer.parseInt(value));
-                } else if (paramKey.equals(PROP_PRELOAD_TIME)) {
-                    calDavConfig.setPreloadMinutes(Integer.parseInt(value));
-                } else if (paramKey.equals(PROP_HISTORIC_LOAD_TIME)) {
-                    calDavConfig.setHistoricLoadMinutes(Integer.parseInt(value));
-                } else if (paramKey.equals(PROP_LAST_MODIFIED_TIMESTAMP_VALID)) {
-                    calDavConfig.setLastModifiedFileTimeStampValid(BooleanUtils.toBoolean(value));
-                } else if (paramKey.equals(PROP_DISABLE_CERTIFICATE_VERIFICATION)) {
-                    calDavConfig.setDisableCertificateVerification(BooleanUtils.toBoolean(value));
-                } else if (paramKey.equals(PROP_CHARSET)) {
-                    try {
-                        Charset.forName(value);
-                        calDavConfig.setCharset(value);
-                    } catch (UnsupportedCharsetException e) {
-                        log.error("charset not valid: {}", value);
-                    }
-                }
-            }
-
-            // verify if all required parameters are set
-            for (String id : configMap.keySet()) {
-                if (configMap.get(id).getUrl() == null) {
-                    throw new ConfigurationException(PROP_URL, PROP_URL + " must be set");
-                }
-                if (configMap.get(id).getUsername() == null) {
-                    throw new ConfigurationException(PROP_USERNAME, PROP_USERNAME + " must be set");
-                }
-                if (configMap.get(id).getPassword() == null) {
-                    throw new ConfigurationException(PROP_PASSWORD, PROP_PASSWORD + " must be set");
-                }
-                log.trace("config for id '{}': {}", id, configMap.get(id));
-            }
-
-            // initialize event cache
-            for (CalDavConfig calDavConfig : configMap.values()) {
-                final CalendarRuntime eventRuntime = new CalendarRuntime();
-                eventRuntime.setConfig(calDavConfig);
-                File cachePath = Util.getCachePath(calDavConfig.getKey());
-                if (!cachePath.exists() && !cachePath.mkdirs()) {
-                    log.error("cannot create directory ({}) for calendar caching (missing rights?)",
-                            cachePath.getAbsoluteFile());
-                    continue;
-                }
-                EventStorage.getInstance().getEventCache().put(calDavConfig.getKey(), eventRuntime);
-            }
-
-            setProperlyConfigured(true);
+        if (config == null) {
+            log.debug("Update was called with a null configuration for CalDAV IO.");
+            return;
         }
+
+        log.debug("Update was called for CalDAV IO.");
+        CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
+        Map<String, CalDavConfig> configMap = new HashMap<String, CalDavConfig>();
+
+        Enumeration<String> iter = config.keys();
+        while (iter.hasMoreElements()) {
+            String key = iter.nextElement();
+
+            if (key.equals("service.pid")) {
+                continue;
+            }
+
+            log.trace("processing configuration parameter: {}", key);
+            if (key.equals(PROP_TIMEZONE)) {
+                String newTimeZoneStr = Objects.toString(config.get(key), null);
+                if (StringUtils.isBlank(newTimeZoneStr)) {
+                    log.info("The {} setting was configured with an empty value. Default value '{}' will be used instead.",
+                             PROP_TIMEZONE, defaultTimeZone);
+                    continue;
+                }
+                DateTimeZone newTimeZone = DateTimeZone.forID(newTimeZoneStr);
+                if (newTimeZone == null) {
+                    log.warn("Invalid timezone value: {}", newTimeZoneStr);
+                    throw new ConfigurationException(PROP_TIMEZONE, "Invalid timezone value: " + newTimeZoneStr);
+                }
+                log.debug("Overriding default timezone {} with {}", defaultTimeZone, newTimeZone);
+                defaultTimeZone = newTimeZone;
+                continue;
+            }
+
+            String[] keys = key.split(":");
+            if (keys.length != 2) {
+                log.warn("Unable to parse configuration parameter: {}", key);
+                throw new ConfigurationException("CalDAV IO", "Unable to parse configuration parameter: "+key);
+            }
+            String id = keys[0];
+            String paramKey = keys[1];
+            CalDavConfig calDavConfig = configMap.get(id);
+            if (calDavConfig == null) {
+                calDavConfig = new CalDavConfig();
+                configMap.put(id, calDavConfig);
+            }
+            String value = Objects.toString(config.get(key), null);
+
+            calDavConfig.setKey(id);
+            if (paramKey.equals(PROP_USERNAME)) {
+                calDavConfig.setUsername(value);
+            } else if (paramKey.equals(PROP_PASSWORD)) {
+                calDavConfig.setPassword(value);
+            } else if (paramKey.equals(PROP_URL)) {
+                calDavConfig.setUrl(value);
+            } else if (paramKey.equals(PROP_RELOAD_INTERVAL)) {
+                calDavConfig.setReloadMinutes(Integer.parseInt(value));
+            } else if (paramKey.equals(PROP_PRELOAD_TIME)) {
+                calDavConfig.setPreloadMinutes(Integer.parseInt(value));
+            } else if (paramKey.equals(PROP_HISTORIC_LOAD_TIME)) {
+                calDavConfig.setHistoricLoadMinutes(Integer.parseInt(value));
+            } else if (paramKey.equals(PROP_LAST_MODIFIED_TIMESTAMP_VALID)) {
+                calDavConfig.setLastModifiedFileTimeStampValid(BooleanUtils.toBoolean(value));
+            } else if (paramKey.equals(PROP_DISABLE_CERTIFICATE_VERIFICATION)) {
+                calDavConfig.setDisableCertificateVerification(BooleanUtils.toBoolean(value));
+            } else if (paramKey.equals(PROP_CHARSET)) {
+                try {
+                    Charset.forName(value);
+                    calDavConfig.setCharset(value);
+                } catch (UnsupportedCharsetException e) {
+                    log.warn("Character set not valid: {}", value);
+                }
+            }
+        }
+
+        // verify if all required parameters are set
+        for (String id : configMap.keySet()) {
+            if (StringUtils.isEmpty(configMap.get(id).getUrl())) {
+                log.warn("A URL must be configured for calendar '{}'", id);
+                throw new ConfigurationException("CalDAV IO", "A URL must be configured for calendar '" + id + "'");
+            }
+            log.trace("config for calendar '{}': {}", id, configMap.get(id));
+        }
+
+        // initialize event cache
+        for (CalDavConfig calDavConfig : configMap.values()) {
+            final CalendarRuntime eventRuntime = new CalendarRuntime();
+            eventRuntime.setConfig(calDavConfig);
+            File cachePath = Util.getCachePath(calDavConfig.getKey());
+            if (!cachePath.exists() && !cachePath.mkdirs()) {
+                log.warn("cannot create directory ({}) for calendar caching (missing rights?)",
+                        cachePath.getAbsoluteFile());
+                continue;
+            }
+            EventStorage.getInstance().getEventCache().put(calDavConfig.getKey(), eventRuntime);
+        }
+
+        log.info("CalDAV IO is properly configured.");
+        setProperlyConfigured(true);
     }
 
     public List<EventNotifier> getEventListenerList() {
@@ -529,83 +541,86 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
 
     @Override
     public List<CalDavEvent> getEvents(final CalDavQuery query) {
-        log.trace("quering events for filter: {}", query);
+        log.trace("Querying events for filter: {}", query);
         final ArrayList<CalDavEvent> eventList = new ArrayList<CalDavEvent>();
 
-        if (query.getCalendarIds() != null) {
-            for (String calendarId : query.getCalendarIds()) {
-                final CalendarRuntime eventRuntime = EventStorage.getInstance().getEventCache().get(calendarId);
-                if (eventRuntime == null) {
-                    log.debug("calendar id {} not found", calendarId);
-                    continue;
-                }
+        if (query.getCalendarIds() == null) {
+            log.debug("No calendar IDs found in query. Unable to get events.");
+            return eventList;
+        }
 
-                for (EventContainer eventContainer : eventRuntime.getEventMap().values()) {
-                    for (CalDavEvent calDavEvent : eventContainer.getEventList()) {
-                        if (query.getFrom() != null) {
-                            if (calDavEvent.getEnd().isBefore(query.getFrom())) {
-                                continue;
-                            }
-                        }
-                        if (query.getTo() != null) {
-                            if (calDavEvent.getStart().isAfter(query.getTo())) {
-                                continue;
-                            }
-                        }
-                        if (query.getFilterName() != null) {
-                            if (!calDavEvent.getName().matches(query.getFilterName())) {
-                                continue;
-                            }
-                        }
-                        if (query.getFilterCategory() != null) {
-                            log.trace("processing filter category");
-                            if (calDavEvent.getCategoryList() == null) {
-                                log.trace("not found event category for event {}", calDavEvent.getId());
-                                continue;
-                            } else {
-                                log.trace("processing event category");
-                                boolean eventCategoriesMatchFilterCategories = false;
-                                if (query.getFilterCategoryMatchesAny()) {
-                                    log.trace("filter-category-any encountered");
-                                    int filterCategoriesIndex = 0;
-                                    List<String> filterCategories = query.getFilterCategory();
-                                    List<String> eventCategories = calDavEvent.getCategoryList();
-                                    log.trace("comparing filter '{}' to event categories '{}' from event {}",
-                                            filterCategories, eventCategories, calDavEvent.getId());
-                                    // browse filter categories, which are not null
-                                    while (eventCategoriesMatchFilterCategories == false
-                                            && filterCategoriesIndex < filterCategories.size()) {
-                                        int eventCategoriesIndex = 0;
-                                        // browse event categories, which can be null
-                                        while (eventCategoriesMatchFilterCategories == false
-                                                && eventCategoriesIndex < eventCategories.size()) {
-                                            if (eventCategories.get(eventCategoriesIndex)
-                                                    .equalsIgnoreCase(filterCategories.get(filterCategoriesIndex))) {
-                                                log.debug("filter category {} matches event category {}",
-                                                        filterCategories.get(filterCategoriesIndex),
-                                                        eventCategories.get(eventCategoriesIndex));
-                                                eventCategoriesMatchFilterCategories = true;
-                                            }
-                                            eventCategoriesIndex++;
-                                        }
+        for (String calendarId : query.getCalendarIds()) {
+            final CalendarRuntime eventRuntime = EventStorage.getInstance().getEventCache().get(calendarId);
+            if (eventRuntime == null) {
+                log.debug("calendar id {} not found", calendarId);
+                continue;
+            }
 
-                                        filterCategoriesIndex++;
-                                    }
-                                } else {
-                                    log.trace("filter-category encountered");
-                                    eventCategoriesMatchFilterCategories = calDavEvent.getCategoryList()
-                                            .containsAll(query.getFilterCategory());
-                                }
-
-                                if (!eventCategoriesMatchFilterCategories) {
-                                    continue;
-                                }
-                            }
-                        } else {
-                            log.trace("not found any filter category");
+            for (EventContainer eventContainer : eventRuntime.getEventMap().values()) {
+                for (CalDavEvent calDavEvent : eventContainer.getEventList()) {
+                    if (query.getFrom() != null) {
+                        if (calDavEvent.getEnd().isBefore(query.getFrom())) {
+                            continue;
                         }
-                        eventList.add(calDavEvent);
                     }
+                    if (query.getTo() != null) {
+                        if (calDavEvent.getStart().isAfter(query.getTo())) {
+                            continue;
+                        }
+                    }
+                    if (query.getFilterName() != null) {
+                        if (!calDavEvent.getName().matches(query.getFilterName())) {
+                            continue;
+                        }
+                    }
+                    if (query.getFilterCategory() != null) {
+                        log.trace("processing filter category");
+                        if (calDavEvent.getCategoryList() == null) {
+                            log.trace("not found event category for event {}", calDavEvent.getId());
+                            continue;
+                        } else {
+                            log.trace("processing event category");
+                            boolean eventCategoriesMatchFilterCategories = false;
+                            if (query.getFilterCategoryMatchesAny()) {
+                                log.trace("filter-category-any encountered");
+                                int filterCategoriesIndex = 0;
+                                List<String> filterCategories = query.getFilterCategory();
+                                List<String> eventCategories = calDavEvent.getCategoryList();
+                                log.trace("comparing filter '{}' to event categories '{}' from event {}",
+                                        filterCategories, eventCategories, calDavEvent.getId());
+                                // browse filter categories, which are not null
+                                while (eventCategoriesMatchFilterCategories == false
+                                        && filterCategoriesIndex < filterCategories.size()) {
+                                    int eventCategoriesIndex = 0;
+                                    // browse event categories, which can be null
+                                    while (eventCategoriesMatchFilterCategories == false
+                                            && eventCategoriesIndex < eventCategories.size()) {
+                                        if (eventCategories.get(eventCategoriesIndex)
+                                                .equalsIgnoreCase(filterCategories.get(filterCategoriesIndex))) {
+                                            log.debug("filter category {} matches event category {}",
+                                                    filterCategories.get(filterCategoriesIndex),
+                                                    eventCategories.get(eventCategoriesIndex));
+                                            eventCategoriesMatchFilterCategories = true;
+                                        }
+                                        eventCategoriesIndex++;
+                                    }
+
+                                    filterCategoriesIndex++;
+                                }
+                            } else {
+                                log.trace("filter-category encountered");
+                                eventCategoriesMatchFilterCategories = calDavEvent.getCategoryList()
+                                        .containsAll(query.getFilterCategory());
+                            }
+
+                            if (!eventCategoriesMatchFilterCategories) {
+                                continue;
+                            }
+                        }
+                    } else {
+                        log.trace("not found any filter category");
+                    }
+                    eventList.add(calDavEvent);
                 }
             }
         }
@@ -629,5 +644,4 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
         log.debug("return event list for {} with {} entries", query, eventList.size());
         return eventList;
     }
-
 }

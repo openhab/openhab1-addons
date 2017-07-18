@@ -11,8 +11,6 @@
 -->
 <features name="${project.artifactId}-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
 
-  <repository>mvn:de.maggu2810.kat.features/apache-httpcomponents/${kat.version}/xml/features</repository>
-
   <!-- binding -->
 
   <feature name="openhab-binding-astro1" description="Astro Binding (1.x)" version="${project.version}">
@@ -34,6 +32,13 @@
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.homematic/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/homematic.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/homematic</configfile>
+  </feature>
+
+  <feature name="openhab-binding-milight1" description="Milight Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.milight/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/milight.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/milight</configfile>
   </feature>
 
   <feature name="openhab-binding-netatmo1" description="Netatmo Binding (1.x)" version="${project.version}">

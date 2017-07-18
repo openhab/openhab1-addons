@@ -404,6 +404,8 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
         // the logic below covers all possible command types and value types
         if (typeClass == DecimalType.class && value instanceof Float) {
             return new DecimalType((Float) value);
+        } else if (typeClass == DecimalType.class && value instanceof Double) {
+            return new DecimalType((Double) value);
         } else if (typeClass == OnOffType.class && value instanceof Boolean) {
             return ((Boolean) value).booleanValue() ? OnOffType.ON : OnOffType.OFF;
         } else if (typeClass == DateTimeType.class && value instanceof Calendar) {

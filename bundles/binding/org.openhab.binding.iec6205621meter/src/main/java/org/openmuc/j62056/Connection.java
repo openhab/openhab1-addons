@@ -36,6 +36,8 @@ import gnu.io.RXTXPort;
 import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 
+import org.apache.commons.codec.binary.Hex;
+
 public class Connection {
 
     private final String serialPortName;
@@ -316,7 +318,8 @@ public class Connection {
         if(protocolMode == 'B'|| protocolMode=='C'){
             if (baudRate == -1) {
                     throw new IOException(
-                                    "Syntax error in identification message received: unknown baud rate received." + bytesToHex(bytes));
+                        "Syntax error in identification message received: unknown baud rate received: (hex: "
+                        + Hex.encodeHexString(bytes) + ")");
             }
         }
                 
@@ -438,8 +441,8 @@ public class Connection {
 							startPosition++;
 						} else {
 							throw new IOException(
-                                    "STX (0x02) character is expected but not received as first byte of data message."
-                                            + bytesToHex(buffer));
+                                    "STX (0x02) character is expected but not received as first byte of data message. (hex: "
+                                            + Hex.encodeHexString(buffer) + ")");
 						}
 					}
 				}
@@ -453,13 +456,13 @@ public class Connection {
 		}
 
         if (buffer[endIndex + 1] != 0x0D) {
-            throw new IOException("CR (0x0D) character is expected but not received after data block of data message."
-                    + bytesToHex(buffer));
+            throw new IOException("CR (0x0D) character is expected but not received after data block of data message. (hex: "
+                    + Hex.encodeHexString(buffer) + ")");
         }
 
         if (buffer[endIndex + 2] != 0x0A) {
-            throw new IOException("LF (0x0A) character is expected but not received after data block of data message."
-                    + bytesToHex(buffer));
+            throw new IOException("LF (0x0A) character is expected but not received after data block of data message. (hex: "
+                    + Hex.encodeHexString(buffer) + ")");
         }
 
         List<DataSet> dataSets = new ArrayList<DataSet>();
@@ -478,8 +481,8 @@ public class Connection {
             }
             if (id == null) {
                 throw new IOException(
-                        "'(' (0x28) character is expected but not received inside data block of data message."
-                                + bytesToHex(buffer));
+                        "'(' (0x28) character is expected but not received inside data block of data message. (hex: "
+                                + Hex.encodeHexString(buffer) + ")");
             }
 
             String value = "";
@@ -513,8 +516,8 @@ public class Connection {
             }
             if (buffer[index - 1] != 0x29) {
                 throw new IOException(
-                        "')' (0x29) character is expected but not received inside data block of data message."
-                                + bytesToHex(buffer));
+                        "')' (0x29) character is expected but not received inside data block of data message. (hex: "
+                                + Hex.encodeHexString(buffer) + ")");
             }
 
             dataSets.add(new DataSet(id, value, unit));
@@ -570,35 +573,5 @@ public class Connection {
             }
         }
         return -1;
-    }
-    /**
-     * Converts a byte array to good readable string.
-     * 
-     * @param bytes
-     *            to be converted
-     * @return string representing the bytes
-     */
-    private String bytesToHex(byte[] bytes) {
-        int dwords = bytes.length / 4 + 1;
-        char[] hexChars = new char[bytes.length * 3 + dwords * 4];
-        int position = 0;
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            if (j % 4 == 0) {
-                String str = "(" + String.format("%02d", j) + ")";
-                char[] charArray = str.toCharArray();
-                for (char character : charArray) {
-                    hexChars[position] = character;
-                    position++;
-                }
-            }
-            hexChars[position] = hexArray[v >>> 4];
-            position++;
-            hexChars[position] = hexArray[v & 0x0F];
-            position++;
-            hexChars[position] = ' ';
-            position++;
-        }
-        return new String(hexChars);
     }
 }

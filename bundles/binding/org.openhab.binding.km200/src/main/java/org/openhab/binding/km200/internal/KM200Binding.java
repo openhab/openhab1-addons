@@ -176,8 +176,7 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
                     logger.debug(service.getDescription());
                     comm.initObjects(service.getDescription());
                 } catch (Exception e) {
-                    logger.error("Couldn't init service: {}", service);
-                    e.printStackTrace();
+                    logger.error("Couldn't init service: {} error: {}", service, e.getMessage());
                 }
             }
             /* Now init the virtual services */
@@ -185,8 +184,7 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
             try {
                 comm.initVirtualObjects();
             } catch (Exception e) {
-                logger.error("Couldn't init virtual services");
-                e.printStackTrace();
+                logger.error("Couldn't init virtual services: {}", e.getMessage());
             }
             /* Output all availible services in the log file */
             /* Now init the virtual services */
@@ -222,6 +220,7 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
 
         if (device != null) {
             String type = null;
+            String service = null;
             KM200BindingProvider provider = null;
             for (KM200BindingProvider tmpProvider : providers) {
                 type = tmpProvider.getType(item);
@@ -239,15 +238,17 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
             } catch (Exception e) {
                 logger.error("Could not send item state {}", e);
             }
-            synchronized (device) {
 
+            synchronized (device) {
+                service = comm.checkParameterReplacement(provider, item);
                 if (sendData != null) {
                     sendMap.put(item, sendData);
-                } else if (device.serviceMap.get(provider.getService(item)).getVirtual() == 1) {
-                    String parent = device.serviceMap.get(provider.getService(item)).getParent();
+                } else if (device.serviceMap.get(service).getVirtual() == 1) {
+                    String parent = device.serviceMap.get(service).getParent();
                     for (KM200BindingProvider tmpProvider : providers) {
                         for (String tmpItem : tmpProvider.getItemNames()) {
-                            if (parent.equals(device.serviceMap.get(tmpProvider.getService(tmpItem)).getParent())) {
+                            service = comm.checkParameterReplacement(tmpProvider, tmpItem);
+                            if (parent.equals(device.serviceMap.get(service).getParent())) {
                                 try {
                                     State state = comm.getProvidersState(tmpProvider, tmpItem);
                                     if (state != null) {
@@ -378,7 +379,7 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
                         if (provider == null) {
                             continue;
                         }
-                        String service = provider.getService(item);
+                        String service = comm.checkParameterReplacement(provider, item);
                         KM200CommObject object = device.serviceMap.get(service);
 
                         logger.debug("Sending: {}", provider.getService(item));
@@ -400,8 +401,8 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
 
                             for (KM200BindingProvider tmpProvider : providers) {
                                 for (String tmpItem : tmpProvider.getItemNames()) {
-                                    if (parent.equals(
-                                            device.serviceMap.get(tmpProvider.getService(tmpItem)).getParent())) {
+                                    String tmpService = comm.checkParameterReplacement(tmpProvider, tmpItem);
+                                    if (parent.equals(device.serviceMap.get(tmpService).getParent())) {
                                         try {
                                             state = comm.getProvidersState(tmpProvider, tmpItem);
                                             if (state != null) {
@@ -420,6 +421,25 @@ public class KM200Binding extends AbstractActiveBinding<KM200BindingProvider> im
                                 if (state != null) {
                                     eventPublisher.postUpdate(item, state);
                                 }
+                                /* Check whether the service is used as a parameter replacement */
+                                for (KM200BindingProvider tmpProvider : providers) {
+                                    for (String tmpItem : tmpProvider.getItemNames()) {
+                                        if (tmpProvider.getParameter(tmpItem).containsKey("current")) {
+                                            if (service.equals(tmpProvider.getParameter(tmpItem).get("current"))) {
+                                                try {
+                                                    state = comm.getProvidersState(tmpProvider, tmpItem);
+                                                    if (state != null) {
+                                                        eventPublisher.postUpdate(tmpItem, state);
+                                                    }
+                                                } catch (Exception e) {
+                                                    logger.error("Could not get updated item state, Error: {}", e);
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+
                             } catch (Exception e) {
                                 logger.error("Could not get item state, Error: {}", e);
                             }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -119,8 +119,8 @@ public class ErroringQueriesTestCase extends TestCaseSupport {
             // After 100ms the binding has not yet given up, i.e. no UNDEF posted to event bus
             verifyNoMoreInteractions(eventPublisher);
 
-            // After 100ms+300ms the timeout of 300ms has passed and UNDEF should have been posted
-            lock.await(300, TimeUnit.MILLISECONDS);
+            // After 100ms+300ms+margin 500ms the timeout of 300ms has passed and UNDEF should have been posted
+            lock.await(100 + 300 + 500, TimeUnit.MILLISECONDS);
             verify(eventPublisher).postUpdate("Item1", UnDefType.UNDEF);
             verifyNoMoreInteractions(eventPublisher);
         } finally {

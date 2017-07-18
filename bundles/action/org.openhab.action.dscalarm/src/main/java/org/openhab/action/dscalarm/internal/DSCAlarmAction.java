@@ -8,7 +8,7 @@
  */
 package org.openhab.action.dscalarm.internal;
 
-import org.openhab.binding.dscalarm.DSCAlarmActionProvider;
+import org.openhab.binding.dscalarm1.DSCAlarmActionProvider;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
 import org.slf4j.Logger;

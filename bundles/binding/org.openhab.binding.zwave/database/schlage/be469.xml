@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>BE469</Model>
+    <Label lang="en">Touchscreen Deadbolt</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x22</id>             <!-- APPLICATION_STATUS -->
+        </Class>
+        <Class>
+            <id>0x62</id>             <!-- DOOR_LOCK -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x98</id>             <!-- SECURITY -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Beeper</Label>
+            <Type>list</Type>
+            <Default>255</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable Beeper</Label>
+            </Item>
+            <Item>
+                <Value>255</Value>
+                <Label lang="en">Enable Beeper</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Vacation Mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable Vacation Mode</Label>
+            </Item>
+            <Item>
+                <Value>255</Value>
+                <Label lang="en">Enable Vacation Mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">Lock &amp; Leave</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Item>
+                <Value>255</Value>
+                <Label lang="en">Enable</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>7</Index>
+            <Label lang="en">Lock Specific Alarm Mode</Label>
+            <Help lang="en">BE469 Only</Help>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Alarm Off</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Alert</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Tamper</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Forced Entry</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>8</Index>
+            <Label lang="en">Lock Specific Alarm Alert Sensitivity</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>5</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Not Supported</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Most Sensitive</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">More Sensitive</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Medium Sensitivity</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Less Sensitive</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Least Sensitive</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>9</Index>
+            <Label lang="en">Lock Specific Alarm Tamper Sensitivity</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>5</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Not Supported</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Most Sensitive</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">More Sensitive</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Medium Sensitivity</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Less Sensitive</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Least Sensitive</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>10</Index>
+            <Label lang="en">Lock Specific Alarm Kick Sensitivity</Label>
+            <Help lang="en">BE469 Only</Help>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>5</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Not Supported</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Most Sensitive</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">More Sensitive</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Medium Sensitivity</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Less Sensitive</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Least Sensitive</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>11</Index>
+            <Label lang="en">Lock Specific Alarm Disable—Local Controls</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable Local Control</Label>
+            </Item>
+            <Item>
+                <Value>255</Value>
+                <Label lang="en">Enable Local Control</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>15</Index>
+            <Label lang="en">Auto Lock</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable Auto Lock</Label>
+            </Item>
+            <Item>
+                <Value>255</Value>
+                <Label lang="en">Enable Auto Lock</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>16</Index>
+            <Label lang="en">User Code PIN Length</Label>
+            <Help lang="en">User Code PIN length, a value between 4 and 8 (default 4)</Help>
+            <Type>list</Type>
+            <Default>4</Default>
+            <Minimum>4</Minimum>
+            <Maximum>8</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Four Digits</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Five Digits</Label>
+            </Item>
+            <Item>
+                <Value>6</Value>
+                <Label lang="en">Six Digits</Label>
+            </Item>
+            <Item>
+                <Value>7</Value>
+                <Label lang="en">Seven Digits</Label>
+            </Item>
+            <Item>
+                <Value>8</Value>
+                <Label lang="en">Eight Digits</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>18</Index>
+            <Label lang="en">Get Bootloader Version</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <ReadOnly>true</ReadOnly>
+            <Size>1</Size>
+        </Parameter>
+
+    </Configuration>
+
+</Product>
