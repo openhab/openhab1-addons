@@ -44,6 +44,11 @@ class Cardio2eTransactionParser {
 
 	protected static boolean filterUnnecessaryCommand;
 	protected static boolean filterUnnecessaryReverseModeUpdate;
+	
+	private static final String ON_OFF_TYPE_STRING = "OnOffType";
+	private static final String PERCENT_TYPE_STRING = "PercentType";
+	private static final String INCREASE_DECREASE_TYPE_STRING = "IncreaseDecreaseType";
+	private static final String UP_DOWN_TYPE_STRING = "UpDownType";
 
 	static void commandToTransaction(Command command,
 			Cardio2eTransaction transaction) {
@@ -59,7 +64,7 @@ class Cardio2eTransactionParser {
 			byte initialLightIntensityValue = lightingTransaction
 					.getLightIntensity();
 			switch (command.getClass().getSimpleName()) {
-			case "OnOffType":
+			case ON_OFF_TYPE_STRING:
 				lightingTransaction
 						.setTransactionType(Cardio2eTransactionTypes.SET);
 				if ((OnOffType) command == OnOffType.ON) {
@@ -70,7 +75,7 @@ class Cardio2eTransactionParser {
 					throw new IllegalArgumentException("invalid command '"
 							+ command + "'");
 				break;
-			case "IncreaseDecreaseType":
+			case INCREASE_DECREASE_TYPE_STRING:
 				lightingTransaction
 						.setTransactionType(Cardio2eTransactionTypes.SET);
 				if ((IncreaseDecreaseType) command == IncreaseDecreaseType.INCREASE) {
@@ -91,7 +96,7 @@ class Cardio2eTransactionParser {
 					throw new IllegalArgumentException("invalid command '"
 							+ command + "'");
 				break;
-			case "PercentType":
+			case PERCENT_TYPE_STRING:
 				lightingTransaction
 						.setTransactionType(Cardio2eTransactionTypes.SET);
 				PercentType percent = (PercentType) command;
@@ -285,13 +290,13 @@ class Cardio2eTransactionParser {
 			byte initialOpeningPercentageValue = curtainTransaction
 					.getOpeningPercentage();
 			switch (command.getClass().getSimpleName()) {
-			case "PercentType":
+			case PERCENT_TYPE_STRING:
 				curtainTransaction
 						.setTransactionType(Cardio2eTransactionTypes.SET);
 				PercentType percent = (PercentType) command;
 				curtainTransaction.setClosingPercentage(percent.byteValue());
 				break;
-			case "IncreaseDecreaseType":
+			case INCREASE_DECREASE_TYPE_STRING:
 				curtainTransaction
 						.setTransactionType(Cardio2eTransactionTypes.SET);
 				if ((IncreaseDecreaseType) command == IncreaseDecreaseType.INCREASE) {
@@ -312,7 +317,7 @@ class Cardio2eTransactionParser {
 					throw new IllegalArgumentException("invalid command '"
 							+ command + "'");
 				break;
-			case "UpDownType":
+			case UP_DOWN_TYPE_STRING:
 				curtainTransaction
 						.setTransactionType(Cardio2eTransactionTypes.SET);
 				if ((UpDownType) command == UpDownType.UP) {
@@ -346,7 +351,7 @@ class Cardio2eTransactionParser {
 			byte initialLightIntensityValue = lightingTransaction
 					.getLightIntensity();
 			switch (state.getClass().getSimpleName()) {
-			case "OnOffType":
+			case ON_OFF_TYPE_STRING:
 				lightingTransaction
 						.setTransactionType(Cardio2eTransactionTypes.SET);
 				if ((OnOffType) state == OnOffType.ON) {
@@ -357,7 +362,7 @@ class Cardio2eTransactionParser {
 					throw new IllegalArgumentException("invalid state '"
 							+ state + "'");
 				break;
-			case "PercentType":
+			case PERCENT_TYPE_STRING:
 				lightingTransaction
 						.setTransactionType(Cardio2eTransactionTypes.SET);
 				PercentType percent = (PercentType) state;
@@ -436,7 +441,7 @@ class Cardio2eTransactionParser {
 			Cardio2eCurtainTransaction curtainTransaction = (Cardio2eCurtainTransaction) transaction;
 			byte initialOpeningPercentageValue = curtainTransaction
 					.getOpeningPercentage();
-			if (state.getClass().getSimpleName().equals("PercentType")) {
+			if (state.getClass().getSimpleName().equals(PERCENT_TYPE_STRING)) {
 				curtainTransaction
 						.setTransactionType(Cardio2eTransactionTypes.SET);
 				PercentType percent = (PercentType) state;

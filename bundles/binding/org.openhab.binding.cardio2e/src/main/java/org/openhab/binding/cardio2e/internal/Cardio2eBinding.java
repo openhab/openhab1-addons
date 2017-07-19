@@ -128,8 +128,7 @@ public class Cardio2eBinding extends
 	 */
 	public void modified(final Map<String, Object> configuration) {
 		// update the internal configuration accordingly
-		logger.debug("modified");
-		logger.debug("Cardio2e binding will be deactivated and reactivated to apply new configuration...");
+		logger.debug("Configuration was been modified. Cardio2e binding will be deactivated and reactivated to apply new configuration...");
 		purgeCardio2eBinding();
 		initializeCardio2eBinding(configuration);
 	}
@@ -221,7 +220,7 @@ public class Cardio2eBinding extends
 		String portString = Objects.toString(configuration.get("port"), null);
 		if (StringUtils.isNotBlank(portString)) {
 			port = portString;
-			logger.debug("Serial port set from config file: " + port);
+			logger.debug("Serial port set from config file: {}", port);
 		}
 		if (port != null) {
 			String programcodeString = Objects.toString(
@@ -242,9 +241,8 @@ public class Cardio2eBinding extends
 					null);
 			if (StringUtils.isNotBlank(zonesString)) {
 				zoneStateDetection = Boolean.parseBoolean(zonesString);
-				logger.debug("Zone state detection "
-						+ (zoneStateDetection ? "enabled" : "disabled")
-						+ " in config file");
+				logger.debug("Zone state detection {} in config file",
+						(zoneStateDetection ? "enabled" : "disabled"));
 			}
 
 			String zoneUnchangedMinRefreshDelayString = Objects.toString(
@@ -252,9 +250,9 @@ public class Cardio2eBinding extends
 			if (StringUtils.isNotBlank(zoneUnchangedMinRefreshDelayString)) {
 				zoneUnchangedMinRefreshDelay = Long
 						.parseLong(zoneUnchangedMinRefreshDelayString);
-				logger.debug("Zone state unchanged minimum refresh delay updated to "
-						+ zoneUnchangedMinRefreshDelayString
-						+ " milliseconds from config file");
+				logger.debug(
+						"Zone state unchanged minimum refresh delay updated to {} milliseconds from config file",
+						zoneUnchangedMinRefreshDelayString);
 			}
 
 			String datetimeMaxOffsetString = Objects.toString(
@@ -265,9 +263,9 @@ public class Cardio2eBinding extends
 					logger.debug("Date and time direct update selected from config file (always sends updates, no filters, even if current date and time of Cardio 2é matches the update)");
 				} else {
 					if (datetimeMaxOffset > 0) {
-						logger.debug("Date and time maximum offset updated to "
-								+ datetimeMaxOffsetString
-								+ " minutes from config file");
+						logger.debug(
+								"Date and time maximum offset updated to {} minutes from config file",
+								datetimeMaxOffsetString);
 					} else {
 						if (datetimeMaxOffset == 0)
 							logger.debug("Date and time maximum offset disabled from config file");
@@ -282,9 +280,9 @@ public class Cardio2eBinding extends
 			if (StringUtils.isNotBlank(firstUpdateWillSetDatetimeString)) {
 				firstUpdateWillSetDatetime = Boolean
 						.parseBoolean(firstUpdateWillSetDatetimeString);
-				logger.debug("In the configuration file was "
-						+ (firstUpdateWillSetDatetime ? "enabled" : "disabled")
-						+ " that the first update always sets the date and time");
+				logger.debug(
+						"In the configuration file was {} that the first update always sets the date and time",
+						(firstUpdateWillSetDatetime ? "enabled" : "disabled"));
 			}
 
 			String allowedDatetimeUpdateHourString = Objects.toString(
@@ -294,8 +292,9 @@ public class Cardio2eBinding extends
 						.parseShort(allowedDatetimeUpdateHourString);
 				if ((allowedDatetimeUpdateHour >= 0)
 						&& (allowedDatetimeUpdateHour <= 23)) {
-					logger.debug("Allowed date and time update hour set to '"
-							+ allowedDatetimeUpdateHour + "' in config file");
+					logger.debug(
+							"Allowed date and time update hour set to '{}' in config file",
+							allowedDatetimeUpdateHour);
 				} else {
 					allowedDatetimeUpdateHour = -1;
 					logger.debug("Allowed date and time update hour limit disabled in config file");
@@ -306,8 +305,8 @@ public class Cardio2eBinding extends
 					configuration.get("testmode"), null);
 			if (StringUtils.isNotBlank(testmodeString)) {
 				testMode = Boolean.parseBoolean(testmodeString);
-				logger.debug("Test mode " + (testMode ? "enabled" : "disabled")
-						+ " in config file");
+				logger.debug("Test mode {} in config file",
+						(testMode ? "enabled" : "disabled"));
 			}
 
 			String minDelayBetweenReceivingAndSendingString = Objects.toString(
@@ -318,9 +317,9 @@ public class Cardio2eBinding extends
 				minDelayBetweenReceivingAndSending = Integer
 						.parseInt(minDelayBetweenReceivingAndSendingString);
 				if (minDelayBetweenReceivingAndSending > 0)
-					logger.debug("Minimum delay between receiving and sending updated to "
-							+ minDelayBetweenReceivingAndSending
-							+ " ms. from config file");
+					logger.debug(
+							"Minimum delay between receiving and sending updated to {} ms. from config file",
+							minDelayBetweenReceivingAndSending);
 			}
 
 			String minDelayBetweenSendingsString = Objects.toString(
@@ -329,8 +328,9 @@ public class Cardio2eBinding extends
 				minDelayBetweenSendings = Integer
 						.parseInt(minDelayBetweenSendingsString);
 				if (minDelayBetweenSendings > 0)
-					logger.debug("Minimum delay between sendings updated to "
-							+ minDelayBetweenSendings + " ms. from config file");
+					logger.debug(
+							"Minimum delay between sendings updated to {} ms. from config file",
+							minDelayBetweenSendings);
 			}
 
 			String filterUnnecessaryCommandString = Objects.toString(
@@ -338,9 +338,10 @@ public class Cardio2eBinding extends
 			if (StringUtils.isNotBlank(filterUnnecessaryCommandString)) {
 				Cardio2eTransactionParser.filterUnnecessaryCommand = Boolean
 						.parseBoolean(filterUnnecessaryCommandString);
-				logger.debug("Filter unnecessary command "
-						+ (Cardio2eTransactionParser.filterUnnecessaryCommand ? "enabled"
-								: "disabled") + " in config file");
+				logger.debug(
+						"Filter unnecessary command {} in config file",
+						(Cardio2eTransactionParser.filterUnnecessaryCommand ? "enabled"
+								: "disabled"));
 			}
 
 			String filterUnnecessaryReverseModeUpdateFilterString = Objects
@@ -350,9 +351,10 @@ public class Cardio2eBinding extends
 					.isNotBlank(filterUnnecessaryReverseModeUpdateFilterString)) {
 				Cardio2eTransactionParser.filterUnnecessaryReverseModeUpdate = Boolean
 						.parseBoolean(filterUnnecessaryReverseModeUpdateFilterString);
-				logger.debug("Filter unnecessary reverse mode update "
-						+ (Cardio2eTransactionParser.filterUnnecessaryReverseModeUpdate ? "enabled"
-								: "disabled") + " in config file");
+				logger.debug(
+						"Filter unnecessary reverse mode update {} in config file",
+						(Cardio2eTransactionParser.filterUnnecessaryReverseModeUpdate ? "enabled"
+								: "disabled"));
 			}
 
 			String smartSendingEnabledObjectTypesString = Objects.toString(
@@ -429,7 +431,7 @@ public class Cardio2eBinding extends
 				com.sendTransaction(new Cardio2eLoginTransaction(programCode)); // Login
 																				// request
 			} catch (Exception e) {
-				logger.error("Failed to send login request." + e);
+				logger.error("Failed to send login request. {}", e);
 			}
 
 			if (testMode)
@@ -467,10 +469,9 @@ public class Cardio2eBinding extends
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		// logger.debug("internalReceiveCommand({},{}) is called!", itemName,
-		// command);
-		logger.debug("internalReceiveCommand() is called, with itemName '"
-				+ itemName + "' and Command '" + command + "'!");
+		logger.debug(
+				"internalReceiveCommand() is called, with itemName '{}' and Command '{}'!",
+				itemName, command);
 		if (loggedIn) {
 			Cardio2eTransaction transaction;
 			Cardio2eBindingConfig config = null;
@@ -523,13 +524,13 @@ public class Cardio2eBinding extends
 								transaction.primitiveStringTransaction = transaction
 										.toString();
 								com.sendTransaction(transaction);
-								logger.debug("Added '"
-										+ transaction.primitiveStringTransaction
+								logger.debug(
+										"Added '{}' to Cardio 2é RS-232 send queue",
+										transaction.primitiveStringTransaction
 												.substring(
 														0,
 														transaction.primitiveStringTransaction
-																.length() - 1)
-										+ "' to Cardio 2é RS-232 send queue");
+																.length() - 1));
 							} else {
 								logger.debug("No command sent to Cardio 2è because it is not necessary to send current object value again");
 							}
@@ -537,7 +538,7 @@ public class Cardio2eBinding extends
 							logger.debug("No command sent to Cardio 2è because item is configured as 'reverse mode'");
 						}
 					} catch (Exception e) {
-						logger.error("Error processing command. " + e);
+						logger.error("Error processing command. {}", e);
 					}
 				}
 			} else {
@@ -556,10 +557,9 @@ public class Cardio2eBinding extends
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		// logger.debug("internalReceiveUpdate({},{}) is called!", itemName,
-		// newState);
-		logger.debug("internalReceiveUpdate() is called, with itemName '"
-				+ itemName + "' and State '" + newState + "'!");
+		logger.debug(
+				"internalReceiveUpdate() is called, with itemName '{}' and State '{}'!",
+				itemName, newState);
 		if (loggedIn) {
 			Cardio2eTransaction transaction;
 			Cardio2eBindingProvider provider = null;
@@ -586,13 +586,13 @@ public class Cardio2eBinding extends
 									transaction.primitiveStringTransaction = transaction
 											.toString();
 									com.sendTransaction(transaction);
-									logger.debug("Added '"
-											+ transaction.primitiveStringTransaction
+									logger.debug(
+											"Added '{}' to Cardio 2é RS-232 send queue",
+											transaction.primitiveStringTransaction
 													.substring(
 															0,
 															transaction.primitiveStringTransaction
-																	.length() - 1)
-											+ "' to Cardio 2é RS-232 send queue");
+																	.length() - 1));
 								} else {
 									logger.debug("No state sent to Cardio 2è because it is not necessary to send current object value again");
 								}
@@ -623,13 +623,13 @@ public class Cardio2eBinding extends
 										transaction.primitiveStringTransaction = transaction
 												.toString();
 										com.sendTransaction(transaction);
-										logger.debug("Added '"
-												+ transaction.primitiveStringTransaction
+										logger.debug(
+												"Added '{}' to Cardio 2é RS-232 send queue",
+												transaction.primitiveStringTransaction
 														.substring(
 																0,
 																transaction.primitiveStringTransaction
-																		.length() - 1)
-												+ "' to Cardio 2é RS-232 send queue");
+																		.length() - 1));
 									} else {
 										// Will ask Cardio 2é for current date
 										// and time (GET transaction). When
@@ -642,17 +642,17 @@ public class Cardio2eBinding extends
 										getCardioDateTime();
 									}
 								} else {
-									logger.debug("Date and time update ignored because time is not betwen "
-											+ allowedDatetimeUpdateHour
-											+ ":00 and "
-											+ allowedDatetimeUpdateHour + ":59");
+									logger.debug(
+											"Date and time update ignored because time is not betwen {}:00 and {}:59",
+											allowedDatetimeUpdateHour,
+											allowedDatetimeUpdateHour);
 								}
 							} else {
 								logger.debug("No state sent to Cardio 2è because item is not configured as 'reverse mode'");
 							}
 						}
 					} catch (Exception e) {
-						logger.error("Error processing state. " + e);
+						logger.error("Error processing state. {}", e);
 					}
 				}
 			} else {
@@ -673,7 +673,7 @@ public class Cardio2eBinding extends
 						Cardio2eTransactionTypes.GET));
 				logger.debug("Added GET date and time request to Cardio 2é RS-232 send queue");
 			} catch (Exception e) {
-				logger.error("Failed to send GET date and time request." + e);
+				logger.error("Failed to send GET date and time request. {}", e);
 			}
 		}
 	}
@@ -721,8 +721,8 @@ public class Cardio2eBinding extends
 		}
 
 		public void isConnected(Cardio2eConnectionEvent e) {
-			logger.debug("Cardio is "
-					+ (e.getIsConnected() ? "CONNECTED" : "DISCONNECTED") + ".");
+			logger.info("Cardio is {}.", (e.getIsConnected() ? "CONNECTED"
+					: "DISCONNECTED"));
 		}
 	}
 
@@ -742,11 +742,11 @@ public class Cardio2eBinding extends
 			Cardio2eBindingConfig config;
 			Command command;
 			State newState;
-			logger.debug("Decoded '" + primitiveReceivedTransaction + "'");
+			logger.debug("Decoded '{}'", primitiveReceivedTransaction);
 			switch (transaction.getTransactionType()) {
 			case INFORMATION:
 				switch (transaction.getObjectType()) {
-				case LOGIN: // @I P E
+				case LOGIN: // Decoded login confirmation "@I P E"
 					loggedIn = true;
 					logger.info("Cardio login succeed.");
 					break;
@@ -787,11 +787,11 @@ public class Cardio2eBinding extends
 													.transactionToCommand(
 															configLightingTransaction,
 															provider.getItem(itemName));
-											logger.debug("Sending LIGHT #"
-													+ configLightingTransaction
-															.getObjectNumber()
-													+ " " + command
-													+ " command to the bus.");
+											logger.debug(
+													"Sending LIGHT #{} {} command to the bus.",
+													configLightingTransaction
+															.getObjectNumber(),
+													command);
 											eventPublisher.postCommand(
 													itemName, command);
 										}
@@ -800,18 +800,19 @@ public class Cardio2eBinding extends
 												.transactionToState(
 														configLightingTransaction,
 														provider.getItem(itemName));
-										logger.debug("Sending LIGHT #"
-												+ configLightingTransaction
-														.getObjectNumber()
-												+ " " + newState + " "
-												+ " state to the bus.");
+										logger.debug(
+												"Sending LIGHT #{} {}  state to the bus.",
+												configLightingTransaction
+														.getObjectNumber(),
+												newState);
 										eventPublisher.postUpdate(itemName,
 												newState);
 									}
 								}
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction."
-										+ ex);
+								logger.error(
+										"Error processing received transaction. {}",
+										ex);
 							}
 						}
 					}
@@ -842,11 +843,11 @@ public class Cardio2eBinding extends
 													.transactionToCommand(
 															configRelayTransaction,
 															provider.getItem(itemName));
-											logger.debug("Sending RELAY #"
-													+ configRelayTransaction
-															.getObjectNumber()
-													+ " " + command
-													+ " command to the bus.");
+											logger.debug(
+													"Sending RELAY #{} {} command to the bus.",
+													configRelayTransaction
+															.getObjectNumber(),
+													command);
 											eventPublisher.postCommand(
 													itemName, command);
 										}
@@ -865,18 +866,19 @@ public class Cardio2eBinding extends
 												.transactionToState(
 														configRelayTransaction,
 														provider.getItem(itemName));
-										logger.debug("Sending RELAY #"
-												+ configRelayTransaction
-														.getObjectNumber()
-												+ " " + newState
-												+ " state to the bus.");
+										logger.debug(
+												"Sending RELAY #{} {} state to the bus.",
+												configRelayTransaction
+														.getObjectNumber(),
+												newState);
 										eventPublisher.postUpdate(itemName,
 												newState);
 									}
 								}
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction."
-										+ ex);
+								logger.error(
+										"Error processing received transaction. {}",
+										ex);
 							}
 						}
 					}
@@ -893,14 +895,15 @@ public class Cardio2eBinding extends
 										.transactionToState(
 												receivedHvacTemperatureTransaction,
 												provider.getItem(itemName));
-								logger.debug("Sending HVAC_TEMPERATURE #"
-										+ receivedHvacTemperatureTransaction
-												.getObjectNumber() + " "
-										+ newState + " state to the bus.");
+								logger.debug(
+										"Sending HVAC_TEMPERATURE #{} {} state to the bus.",
+										receivedHvacTemperatureTransaction
+												.getObjectNumber(), newState);
 								eventPublisher.postUpdate(itemName, newState);
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction."
-										+ ex);
+								logger.error(
+										"Error processing received transaction. {}",
+										ex);
 							}
 						}
 					}
@@ -936,21 +939,28 @@ public class Cardio2eBinding extends
 											.transactionToState(
 													configHvacControlTransaction,
 													provider.getItem(itemName));
-									logger.debug("Sending HVAC #"
-											+ configHvacControlTransaction
-													.getObjectNumber()
-											+ (configHvacControlTransaction.singleHvacSystemMode == null ? ""
-													: " "
-															+ (configHvacControlTransaction.singleHvacSystemMode == Cardio2eHvacSystemModes.OFF ? "FAN"
-																	: configHvacControlTransaction.singleHvacSystemMode))
-											+ " " + newState
-											+ " state to the bus.");
+									if (configHvacControlTransaction.singleHvacSystemMode == null) {
+										logger.debug(
+												"Sending HVAC #{} {} state to the bus.",
+												configHvacControlTransaction
+														.getObjectNumber(),
+												newState);
+									} else {
+										logger.debug(
+												"Sending HVAC #{} {} {} state to the bus.",
+												configHvacControlTransaction
+														.getObjectNumber(),
+												(configHvacControlTransaction.singleHvacSystemMode == Cardio2eHvacSystemModes.OFF ? "FAN"
+														: configHvacControlTransaction.singleHvacSystemMode),
+												newState);
+									}
 									eventPublisher.postUpdate(itemName,
 											newState);
 								}
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction."
-										+ ex);
+								logger.error(
+										"Error processing received transaction. {}",
+										ex);
 							}
 						}
 					}
@@ -989,11 +999,11 @@ public class Cardio2eBinding extends
 														.transactionToState(
 																configZonesTransaction,
 																provider.getItem(itemName));
-												logger.debug("Sending ZONE #"
-														+ configZonesTransaction
-																.getObjectNumber()
-														+ " " + newState
-														+ " state to the bus.");
+												logger.debug(
+														"Sending ZONE #{} {} state to the bus.",
+														configZonesTransaction
+																.getObjectNumber(),
+														newState);
 												eventPublisher.postUpdate(
 														itemName, newState);
 												configItem.lastStateSentTimestamp = timestamp;
@@ -1002,8 +1012,9 @@ public class Cardio2eBinding extends
 									}
 								}
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction."
-										+ ex);
+								logger.error(
+										"Error processing received transaction. {}",
+										ex);
 							}
 						}
 					}
@@ -1042,11 +1053,11 @@ public class Cardio2eBinding extends
 														.transactionToState(
 																configZonesBypassTransaction,
 																provider.getItem(itemName));
-												logger.debug("Sending ZONE #"
-														+ configZonesBypassTransaction
-																.getObjectNumber()
-														+ " " + newState
-														+ " state to the bus.");
+												logger.debug(
+														"Sending ZONE #{} {} state to the bus.",
+														configZonesBypassTransaction
+																.getObjectNumber(),
+														newState);
 												eventPublisher.postUpdate(
 														itemName, newState);
 												configItem.lastStateSentTimestamp = timestamp;
@@ -1055,8 +1066,9 @@ public class Cardio2eBinding extends
 									}
 								}
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction."
-										+ ex);
+								logger.error(
+										"Error processing received transaction. {}",
+										ex);
 							}
 						}
 					}
@@ -1079,8 +1091,9 @@ public class Cardio2eBinding extends
 											.transactionToState(
 													receivedSecurityTransaction,
 													provider.getItem(itemName));
-									logger.debug("Sending SECURITY armed "
-											+ newState + " state to the bus.");
+									logger.debug(
+											"Sending SECURITY armed {} state to the bus.",
+											newState);
 									eventPublisher.postUpdate(itemName,
 											newState);
 								} catch (Exception ex) {
@@ -1105,13 +1118,16 @@ public class Cardio2eBinding extends
 								Cardio2eDateTimeTransaction newDateTimeTransaction = new Cardio2eDateTimeTransaction();
 								Cardio2eTransactionParser.stateToTransaction(
 										pendingUpdate, newDateTimeTransaction);
-								logger.debug("Received date and time from Cardio 2é : '"
-										+ newDateTimeTransaction.getDateTime()
-												.toString() + "'");
-								logger.debug("Received date and time state from bus : '"
-										+ storedUpdate.toString() + "'");
-								logger.debug("Updated target value would should be  : '"
-										+ pendingUpdate.toString() + "'");
+								logger.debug(
+										"Received date and time from Cardio 2é : '{}'",
+										newDateTimeTransaction.getDateTime()
+												.toString());
+								logger.debug(
+										"Received date and time state from bus : '{}'",
+										storedUpdate.toString());
+								logger.debug(
+										"Updated target value would should be  : '{}'",
+										pendingUpdate.toString());
 								if (receivedDateTimeTransaction
 										.getDateTime()
 										.toDate()
@@ -1142,10 +1158,10 @@ public class Cardio2eBinding extends
 										newDateTimeTransaction.smartSendingEnabledTransaction = true;
 										newDateTimeTransaction.smartSendingEnqueueFirst = true;
 										if (datetimeMaxOffset > 0)
-											logger.debug("Date and time "
-													+ dateTimeOffset
-													+ " minutes offset is OK (maximum is "
-													+ datetimeMaxOffset);
+											logger.debug(
+													"Date and time {} minutes offset is OK (maximum is {} minutes)",
+													dateTimeOffset,
+													datetimeMaxOffset);
 										if ((datetimeMaxOffset >= 0)
 												&& (receivedDateTimeTransaction
 														.getDateTime().toDate()
@@ -1166,30 +1182,30 @@ public class Cardio2eBinding extends
 													.fromDate(
 															receivedDatePlusMinute);
 											canCleanpendingDateTimeUpdate = false;
-											logger.debug("Doing progressive aproach: will advance one minute");
+											logger.debug("Doing progressive aproach: will advance a minute");
 										}
 										newDateTimeTransaction.primitiveStringTransaction = newDateTimeTransaction
 												.toString();
 										com.sendTransaction(newDateTimeTransaction);
-										logger.debug("Sent '"
-												+ newDateTimeTransaction.primitiveStringTransaction
+										logger.debug(
+												"Sent '{}'",
+												newDateTimeTransaction.primitiveStringTransaction
 														.substring(
 																0,
 																newDateTimeTransaction.primitiveStringTransaction
-																		.length() - 1)
-												+ "'");
+																		.length() - 1));
 									} else {
-										logger.debug("Date and time "
-												+ dateTimeOffset
-												+ " minutes offset is too much (maximum is "
-												+ datetimeMaxOffset
-												+ "). New date and time will be discarded");
+										logger.debug(
+												"Date and time {} minutes offset is too much (maximum is {} minutes). New date and time will be discarded",
+												dateTimeOffset,
+												datetimeMaxOffset);
 									}
 								}
 							}
 						} catch (Exception ex) {
-							logger.error("Error processing received transaction."
-									+ ex);
+							logger.error(
+									"Error processing received transaction. {}",
+									ex);
 						} finally {
 							if (canCleanpendingDateTimeUpdate) {
 								pendingDateTimeUpdate.setDateTime(null);
@@ -1229,11 +1245,11 @@ public class Cardio2eBinding extends
 													.transactionToCommand(
 															configCurtainTransaction,
 															provider.getItem(itemName));
-											logger.debug("Sending CURTAIN #"
-													+ configCurtainTransaction
-															.getObjectNumber()
-													+ " " + command
-													+ " command to the bus.");
+											logger.debug(
+													"Sending CURTAIN #{} {} command to the bus.",
+													configCurtainTransaction
+															.getObjectNumber(),
+													command);
 											eventPublisher.postCommand(
 													itemName, command);
 										}
@@ -1242,31 +1258,32 @@ public class Cardio2eBinding extends
 												.transactionToState(
 														configCurtainTransaction,
 														provider.getItem(itemName));
-										logger.debug("Sending CURTAIN #"
-												+ configCurtainTransaction
-														.getObjectNumber()
-												+ " " + newState + " "
-												+ " state to the bus.");
+										logger.debug(
+												"Sending CURTAIN #{} {} state to the bus.",
+												configCurtainTransaction
+														.getObjectNumber(),
+												newState);
 										eventPublisher.postUpdate(itemName,
 												newState);
 									}
 								}
 							} catch (Exception ex) {
-								logger.error("Error processing received transaction."
-										+ ex);
+								logger.error(
+										"Error processing received transaction. {}",
+										ex);
 							}
 						}
 					}
 					break;
 				default:
-					logger.debug("No actions defined for received "
-							+ transaction.getObjectType()
-							+ " information type transactions");
+					logger.debug(
+							"No actions defined for received {} information type transactions",
+							transaction.getObjectType());
 				}
 				break;
 			case ACK:
-				logger.debug("ACK: " + transaction.getObjectType()
-						+ " transaction ACCEPTED.");
+				logger.debug("ACK: {} transaction ACCEPTED.",
+						transaction.getObjectType());
 				if (transaction.getObjectType() == Cardio2eObjectTypes.SECURITY) { // Reports
 																					// NO
 																					// error
@@ -1293,8 +1310,9 @@ public class Cardio2eBinding extends
 									eventPublisher.postUpdate(itemName,
 											DecimalType.ZERO);
 								} catch (Exception ex) {
-									logger.error("Error reporting error code for SECURITY NACK transaction."
-											+ ex);
+									logger.error(
+											"Error reporting error code for SECURITY NACK transaction. {}",
+											ex);
 								}
 							}
 						}
@@ -1306,9 +1324,9 @@ public class Cardio2eBinding extends
 				case LOGIN:
 				case DATE_AND_TIME:
 				case SCENARIO:
-					logger.debug("NACK: " + transaction.getObjectType()
-							+ " transaction NOT ACCEPTED. "
-							+ transaction.getErrorCodeDescription() + ".");
+					logger.debug("NACK: {} transaction NOT ACCEPTED. {}.",
+							transaction.getObjectType(),
+							transaction.getErrorCodeDescription());
 					break;
 				default:
 					if (transaction.getObjectType() == Cardio2eObjectTypes.SECURITY) { // Reports
@@ -1339,13 +1357,15 @@ public class Cardio2eBinding extends
 												.transactionToState(
 														receivedSecurityTransaction,
 														provider.getItem(itemName));
-										logger.debug("Sending SECURITY NACK error code "
-												+ newState + " to the bus.");
+										logger.debug(
+												"Sending SECURITY NACK error code {} to the bus.",
+												newState);
 										eventPublisher.postUpdate(itemName,
 												newState);
 									} catch (Exception ex) {
-										logger.error("Error reporting error code for SECURITY NACK transaction."
-												+ ex);
+										logger.error(
+												"Error reporting error code for SECURITY NACK transaction. {}",
+												ex);
 									}
 								}
 							}
@@ -1353,29 +1373,28 @@ public class Cardio2eBinding extends
 					}
 					try { // Ask current state to Cardio 2é
 						if (transaction.getObjectNumber() == -1) {
-							logger.debug("NACK: "
-									+ transaction.getObjectType()
-									+ " transaction NOT ACCEPTED. "
-									+ transaction.getErrorCodeDescription()
-									+ ". Will not ask for current state because no object information received.");
+							logger.debug(
+									"NACK: {} transaction NOT ACCEPTED. {}. Will not ask for current state because no object information received.",
+									transaction.getObjectType(),
+									transaction.getErrorCodeDescription());
 						} else {
-							logger.debug("NACK: " + transaction.getObjectType()
-									+ " transaction NOT ACCEPTED. "
-									+ transaction.getErrorCodeDescription()
-									+ ". Will ask for current state.");
+							logger.debug(
+									"NACK: {} transaction NOT ACCEPTED. {}. Will ask for current state.",
+									transaction.getObjectType(),
+									transaction.getErrorCodeDescription());
 							transaction
 									.setTransactionType(Cardio2eTransactionTypes.GET);
 							com.sendTransaction(transaction);
 						}
 					} catch (Exception en) {
-						logger.error("Error requesting current state. " + en);
+						logger.error("Error requesting current state. {}", en);
 					}
 				}
 				break;
 			default:
-				logger.debug("No actions defined for received "
-						+ transaction.getTransactionType()
-						+ " type transactions");
+				logger.debug(
+						"No actions defined for received {} type transactions",
+						transaction.getTransactionType());
 			}
 		}
 	}
