@@ -47,7 +47,6 @@ import org.openhab.binding.denon.internal.communication.entities.commands.AppCom
 import org.openhab.binding.denon.internal.communication.entities.commands.AppCommandResponse;
 import org.openhab.binding.denon.internal.communication.entities.commands.CommandRx;
 import org.openhab.binding.denon.internal.communication.entities.commands.CommandTx;
-import org.openhab.binding.denon.internal.communication.entities.types.VolumeType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
@@ -465,22 +464,13 @@ public class DenonConnector {
             String url = String.format("%s" + URL_ZONE_SECONDARY_LITE, statusUrl, i, i);
             logger.trace("Refreshing URL: {}", url);
             ZoneStatusLite zoneSecondary = getDocument(url, ZoneStatusLite.class);
-            if (zoneSecondary == null) {
-                logger.warn("Unable to get secondary zone information.");
-                return;
-            }
-
-            stateCache.put("Z" + i, zoneSecondary.getPower().getValue() ? OnOffType.ON : OnOffType.OFF);
-            VolumeType v = zoneSecondary.getMasterVolume();
-            if (v != null && v.getValue() != null) {
+            if (zoneSecondary != null) {
+                stateCache.put("Z" + i, zoneSecondary.getPower().getValue() ? OnOffType.ON : OnOffType.OFF);
                 stateCache.put("Z" + i + DenonProperty.ZONE_VOLUME.getCode(),
-                    new PercentType(v.getValue()));
+                        new PercentType(zoneSecondary.getMasterVolume().getValue()));
+                stateCache.put("Z" + i + DenonProperty.MUTE.getCode(),
+                        zoneSecondary.getMute().getValue() ? OnOffType.ON : OnOffType.OFF);
             }
-            else {
-                logger.debug("Not updating master volume for secondary zone. Value is null.");
-            }
-            stateCache.put("Z" + i + DenonProperty.MUTE.getCode(),
-                    zoneSecondary.getMute().getValue() ? OnOffType.ON : OnOffType.OFF);
         }
     }
 
