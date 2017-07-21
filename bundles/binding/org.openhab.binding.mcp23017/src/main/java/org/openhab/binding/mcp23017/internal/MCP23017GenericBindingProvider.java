@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -50,8 +50,8 @@ public class MCP23017GenericBindingProvider extends AbstractGenericBindingProvid
         /* Only 'Switch' and 'Contact' types are allowed */
         if (!((item instanceof SwitchItem) || (item instanceof ContactItem))) {
             String message = "Item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + "' ";
-            message = message + "while only 'Switch' or 'Contact' types are allowed";
-            logger.error("{}", message);
+                             + "while only 'Switch' or 'Contact' types are allowed";
+            logger.warn(message);
             throw new BindingConfigParseException(message);
         }
     }
@@ -228,5 +228,4 @@ public class MCP23017GenericBindingProvider extends AbstractGenericBindingProvid
     public PinMode getPinMode(String itemName) {
         return getConfig(itemName).getPinMode();
     }
-
 }
