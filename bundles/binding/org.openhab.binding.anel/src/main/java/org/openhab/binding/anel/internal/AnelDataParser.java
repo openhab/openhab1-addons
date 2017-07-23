@@ -51,6 +51,7 @@ public class AnelDataParser {
      * Source: <a
      * href="http://www.anel-elektronik.de/forum_new/viewtopic.php?f=16&t=207"
      * >Anel forum (German)</a>
+     *
      * <p>
      * It turned out that the HOME variant has a different format which contains
      * only the first 16 segments. If that is the case, the remaining fields of
@@ -58,7 +59,14 @@ public class AnelDataParser {
      * </p>
      * Source: <a href="https://github.com/openhab/openhab/issues/2068">Issue
      * 2068</a>
-     * 
+     *
+     * <p>
+     * With Firmware version 6.1, there are additional segments, so we must not check for exact length but we should
+     * rather check for at least the expected segments.
+     * </p>
+     * Source: <a href="https://github.com/openhab/openhab/issues/3068">Issue
+     * 3068</a>
+     *
      * @param data
      *            The data received from {@link AnelUDPConnector}.
      * @param state
@@ -71,9 +79,15 @@ public class AnelDataParser {
         final String string = new String(data);
         final String[] arr = string.split(":");
 
-        if (arr.length != 28 && arr.length != 26 && arr.length != 16) {
+        /*-
+         * HOME version apparently has length 16 (I don't own such a device), not sure which Firmware version;
+         * Firmware version < 6 has 26 segments;
+         * Firmware version 6.0 has 28 segments (type and power measurement are new);
+         * Firmware version 6.1 has 30 segments (sensor and xor encryption flag are new).
+         */
+        if (arr.length < 26 && arr.length != 16) {
             throw new IllegalArgumentException(
-                    "Data with 16, 26, or 28 values expected but " + arr.length + " received: " + string);
+                    "Data with 16 or at least 26 values expected but " + arr.length + " received: " + string);
         }
         if (!arr[0].equals("NET-PwrCtrl")) {
             throw new IllegalArgumentException("Data must start with 'NET-PwrCtrl' but it didn't: " + arr[0]);
@@ -128,6 +142,11 @@ public class AnelDataParser {
                 result.put(AnelCommandType.TEMPERATURE, new DecimalType(temperature));
                 state.temperature = temperature;
             }
+        }
+
+        // since Firmware 6.0
+        if (arr.length >= 28) {
+            // TODO: add support for power measurement
         }
 
         // maybe the device's name changed?!
