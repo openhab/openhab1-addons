@@ -188,6 +188,7 @@ public class Telegram {
             //flag an appropriate error
             if (getMethod.getResponseContentLength() == 0) {
                 logger.warn("Failed to retrieve an image. Fetched URL returned no data.");
+                return false;
             }
 
             imageFromURL = getMethod.getResponseBody();
