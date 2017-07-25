@@ -257,7 +257,7 @@ public class Telegram {
             logger.warn("HTTP protocol violation: {}", e);
             return false;
         } catch (IOException e) {
-            logger.error("Transport error: {}", e);
+            logger.warn("Transport error: {}", e);
             return false;
         } finally {
             postMethod.releaseConnection();
