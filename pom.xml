@@ -50,18 +50,17 @@
     <description>This is the open Home Automation Bus (openHAB)</description>
 
     <properties>
+        <!-- we deactivate the static analysis tool as the openHAB 1 code does not comply to these rules -->
+        <report.fail.on.error>false</report.fail.on.error>
 
-		<!-- we deactivate the static analysis tool as the openHAB 1 code does not comply to these rules -->
-		<report.fail.on.error>false</report.fail.on.error>
-
-		<!-- JDBC Databasedriver Versions -->
-		<derby.version>10.12.1.1</derby.version>
-		<h2.version>1.4.191</h2.version>
-		<hsqldb.version>2.3.3</hsqldb.version>
-		<mariadb.version>1.3.5</mariadb.version>
-		<mysql.version>5.1.38</mysql.version>
-		<postgresql.version>9.4.1212</postgresql.version>
-		<sqlite.version>3.16.1</sqlite.version>
+        <!-- JDBC Databasedriver Versions -->
+        <derby.version>10.12.1.1</derby.version>
+        <h2.version>1.4.191</h2.version>
+        <hsqldb.version>2.3.3</hsqldb.version>
+        <mariadb.version>1.3.5</mariadb.version>
+        <mysql.version>5.1.38</mysql.version>
+        <postgresql.version>9.4.1212</postgresql.version>
+        <sqlite.version>3.16.1</sqlite.version>
 
     </properties>
 
