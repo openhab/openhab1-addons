@@ -16,7 +16,7 @@
   <packaging>pom</packaging>
 
     <properties>
-        <ohc.version>2.0.0-SNAPSHOT</ohc.version>
+        <ohc.version>2.2.0-SNAPSHOT</ohc.version>
     </properties>
 
   <modules>
