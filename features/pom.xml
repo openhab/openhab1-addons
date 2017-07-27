@@ -15,15 +15,10 @@
 
   <packaging>pom</packaging>
 
-    <properties>
-        <ohc.version>2.2.0-SNAPSHOT</ohc.version>
-    </properties>
-
   <modules>
     <module>openhab-addons</module>
     <module>openhab-addons-legacy</module>
     <module>openhab-addons-external</module>
-    <module>openhab-addons-verify</module>
   </modules>
 
     <build>
