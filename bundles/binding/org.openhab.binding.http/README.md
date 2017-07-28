@@ -105,21 +105,11 @@ http="<[https://www.flukso.net/api/sensor/xxxx?interval=daily{X-Token=mytoken&X-
 
 ## HTTP Basic authentication
 
-It is possible to use optional HTTP Basic authentication to provide a username and password when making a request. There is a very good article on Wikipedia for [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication).
-
-### URL encoding
-
-Prepend `username:password@` to the hostname in the url.
-
-Example:
-
-```
-http="<[http://username:password@sample.com]"
-```
+It is possible to use optional HTTP Basic authentication to provide a username and password for a request. There is a very good article on Wikipedia for [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication). In the earlier days it was possible to prepend `username:password@` to the hostname in the url. The use of this format is deprecated since RFC 3986.
 
 ### Authorization header
 
-When your username or password contains reserved characters like an `@` or a `:` symbol you should encode the username and password in Base64 and use a HTTP header. The headers's value is the base64-encoding of `username:password` (which results in `dXNlcm5hbWU6cGFzc3dvcmQ=`). There is an online decoder/encoder [here](https://www.base64encode.org/).
+When your username or password contains reserved characters like an `@` or a `:` symbol you should encode the username and password in Base64 and use a HTTP header. The header's value is the base64-encoding of `username:password` (which results in `dXNlcm5hbWU6cGFzc3dvcmQ=`). There is an online decoder/encoder [here](https://www.base64encode.org/).
 
 Example:
 
