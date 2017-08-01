@@ -144,10 +144,8 @@ public class AnelDataParser {
             }
         }
 
-        // since Firmware 6.0
-        if (arr.length >= 28) {
-            // TODO: add support for power measurement
-        }
+        // since firmware 6.0, there is additional information in fields >= 26.
+        // like firmware version and power management; this may be added here.
 
         // maybe the device's name changed?!
         final String name = arr[1];
