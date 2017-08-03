@@ -127,8 +127,8 @@ public class Cardio2eBinding extends
 	 *            Updated configuration properties
 	 */
 	public void modified(final Map<String, Object> configuration) {
-		// update the internal configuration accordingly
-		logger.debug("Configuration was been modified. Cardio2e binding will be deactivated and reactivated to apply new configuration...");
+		// Update the internal configuration accordingly
+		logger.info("Configuration was been modified. Cardio2e binding will be deactivated and reactivated to apply new configuration...");
 		purgeCardio2eBinding();
 		initializeCardio2eBinding(configuration);
 	}
@@ -180,7 +180,7 @@ public class Cardio2eBinding extends
 	 */
 	@Override
 	protected void execute() {
-		// the frequently executed code (polling) goes here ...
+		// The frequently executed code (polling) goes here ...
 		logger.debug("execute() method is called!");
 		if (loggedIn) {
 			// Cardio 2é date and time cyclic ask code used for progressive
@@ -220,28 +220,28 @@ public class Cardio2eBinding extends
 		String portString = Objects.toString(configuration.get("port"), null);
 		if (StringUtils.isNotBlank(portString)) {
 			port = portString;
-			logger.debug("Serial port set from config file: {}", port);
+			logger.info("Serial port set from config file: {}", port);
 		}
 		if (port != null) {
 			String programcodeString = Objects.toString(
 					configuration.get("programcode"), null);
 			if (StringUtils.isNotBlank(programcodeString)) {
 				programCode = programcodeString;
-				logger.debug("Program code updated from config file");
+				logger.info("Program code updated from config file");
 			}
 
 			String securitycodeString = Objects.toString(
 					configuration.get("securitycode"), null);
 			if (StringUtils.isNotBlank(securitycodeString)) {
 				securityCode = securitycodeString;
-				logger.debug("Security code updated from config file");
+				logger.info("Security code updated from config file");
 			}
 
 			String zonesString = Objects.toString(configuration.get("zones"),
 					null);
 			if (StringUtils.isNotBlank(zonesString)) {
 				zoneStateDetection = Boolean.parseBoolean(zonesString);
-				logger.debug("Zone state detection {} in config file",
+				logger.info("Zone state detection {} in config file",
 						(zoneStateDetection ? "enabled" : "disabled"));
 			}
 
@@ -250,7 +250,7 @@ public class Cardio2eBinding extends
 			if (StringUtils.isNotBlank(zoneUnchangedMinRefreshDelayString)) {
 				zoneUnchangedMinRefreshDelay = Long
 						.parseLong(zoneUnchangedMinRefreshDelayString);
-				logger.debug(
+				logger.info(
 						"Zone state unchanged minimum refresh delay updated to {} milliseconds from config file",
 						zoneUnchangedMinRefreshDelayString);
 			}
@@ -260,17 +260,17 @@ public class Cardio2eBinding extends
 			if (StringUtils.isNotBlank(datetimeMaxOffsetString)) {
 				datetimeMaxOffset = Short.parseShort(datetimeMaxOffsetString);
 				if (datetimeMaxOffset < -1) {
-					logger.debug("Date and time direct update selected from config file (always sends updates, no filters, even if current date and time of Cardio 2é matches the update)");
+					logger.info("Date and time direct update selected from config file (always sends updates, no filters, even if current date and time of Cardio 2é matches the update)");
 				} else {
 					if (datetimeMaxOffset > 0) {
-						logger.debug(
+						logger.info(
 								"Date and time maximum offset updated to {} minutes from config file",
 								datetimeMaxOffsetString);
 					} else {
 						if (datetimeMaxOffset == 0)
-							logger.debug("Date and time maximum offset disabled from config file");
+							logger.info("Date and time maximum offset disabled from config file");
 						if (datetimeMaxOffset == -1)
-							logger.debug("Date and time both, progressive update and maximum offset, disabled from config file");
+							logger.info("Date and time both, progressive update and maximum offset, disabled from config file");
 					}
 				}
 			}
@@ -280,7 +280,7 @@ public class Cardio2eBinding extends
 			if (StringUtils.isNotBlank(firstUpdateWillSetDatetimeString)) {
 				firstUpdateWillSetDatetime = Boolean
 						.parseBoolean(firstUpdateWillSetDatetimeString);
-				logger.debug(
+				logger.info(
 						"In the configuration file was {} that the first update always sets the date and time",
 						(firstUpdateWillSetDatetime ? "enabled" : "disabled"));
 			}
@@ -292,12 +292,12 @@ public class Cardio2eBinding extends
 						.parseShort(allowedDatetimeUpdateHourString);
 				if ((allowedDatetimeUpdateHour >= 0)
 						&& (allowedDatetimeUpdateHour <= 23)) {
-					logger.debug(
+					logger.info(
 							"Allowed date and time update hour set to '{}' in config file",
 							allowedDatetimeUpdateHour);
 				} else {
 					allowedDatetimeUpdateHour = -1;
-					logger.debug("Allowed date and time update hour limit disabled in config file");
+					logger.info("Allowed date and time update hour limit disabled in config file");
 				}
 			}
 
@@ -305,7 +305,7 @@ public class Cardio2eBinding extends
 					configuration.get("testmode"), null);
 			if (StringUtils.isNotBlank(testmodeString)) {
 				testMode = Boolean.parseBoolean(testmodeString);
-				logger.debug("Test mode {} in config file",
+				logger.info("Test mode {} in config file",
 						(testMode ? "enabled" : "disabled"));
 			}
 
@@ -317,7 +317,7 @@ public class Cardio2eBinding extends
 				minDelayBetweenReceivingAndSending = Integer
 						.parseInt(minDelayBetweenReceivingAndSendingString);
 				if (minDelayBetweenReceivingAndSending > 0)
-					logger.debug(
+					logger.info(
 							"Minimum delay between receiving and sending updated to {} ms. from config file",
 							minDelayBetweenReceivingAndSending);
 			}
@@ -328,7 +328,7 @@ public class Cardio2eBinding extends
 				minDelayBetweenSendings = Integer
 						.parseInt(minDelayBetweenSendingsString);
 				if (minDelayBetweenSendings > 0)
-					logger.debug(
+					logger.info(
 							"Minimum delay between sendings updated to {} ms. from config file",
 							minDelayBetweenSendings);
 			}
@@ -338,7 +338,7 @@ public class Cardio2eBinding extends
 			if (StringUtils.isNotBlank(filterUnnecessaryCommandString)) {
 				Cardio2eTransactionParser.filterUnnecessaryCommand = Boolean
 						.parseBoolean(filterUnnecessaryCommandString);
-				logger.debug(
+				logger.info(
 						"Filter unnecessary command {} in config file",
 						(Cardio2eTransactionParser.filterUnnecessaryCommand ? "enabled"
 								: "disabled"));
@@ -351,7 +351,7 @@ public class Cardio2eBinding extends
 					.isNotBlank(filterUnnecessaryReverseModeUpdateFilterString)) {
 				Cardio2eTransactionParser.filterUnnecessaryReverseModeUpdate = Boolean
 						.parseBoolean(filterUnnecessaryReverseModeUpdateFilterString);
-				logger.debug(
+				logger.info(
 						"Filter unnecessary reverse mode update {} in config file",
 						(Cardio2eTransactionParser.filterUnnecessaryReverseModeUpdate ? "enabled"
 								: "disabled"));
@@ -366,55 +366,55 @@ public class Cardio2eBinding extends
 						.contains(Cardio2eObjectTypes.LIGHTING.name())) {
 					Cardio2eLightingTransaction
 							.setSmartSendingEnabledClass(true);
-					logger.debug("Smart sending enabled for LIGHTING object type in config file");
+					logger.info("Smart sending enabled for LIGHTING object type in config file");
 				}
 				if (smartSendingEnabledObjectTypesString
 						.contains(Cardio2eObjectTypes.RELAY.name())) {
 					Cardio2eRelayTransaction.setSmartSendingEnabledClass(true);
-					logger.debug("Smart sending enabled for RELAY object type in config file");
+					logger.info("Smart sending enabled for RELAY object type in config file");
 				}
 				if (smartSendingEnabledObjectTypesString
 						.contains(Cardio2eObjectTypes.HVAC_CONTROL.name())) {
 					Cardio2eHvacControlTransaction
 							.setSmartSendingEnabledClass(true);
-					logger.debug("Smart sending enabled for HVAC_CONTROL object type in config file");
+					logger.info("Smart sending enabled for HVAC_CONTROL object type in config file");
 				}
 				if (smartSendingEnabledObjectTypesString
 						.contains(Cardio2eObjectTypes.DATE_AND_TIME.name())) {
 					Cardio2eDateTimeTransaction
 							.setSmartSendingEnabledClass(true);
-					logger.debug("Smart sending enabled for DATE_AND_TIME object type in config file");
+					logger.info("Smart sending enabled for DATE_AND_TIME object type in config file");
 				}
 				if (smartSendingEnabledObjectTypesString
 						.contains(Cardio2eObjectTypes.SCENARIO.name())) {
 					Cardio2eScenarioTransaction
 							.setSmartSendingEnabledClass(true);
-					logger.debug("Smart sending enabled for SCENARIO object type in config file");
+					logger.info("Smart sending enabled for SCENARIO object type in config file");
 				}
 				if (smartSendingEnabledObjectTypesString
 						.contains(Cardio2eObjectTypes.SECURITY.name())) {
 					Cardio2eSecurityTransaction
 							.setSmartSendingEnabledClass(true);
-					logger.debug("Smart sending enabled for SECURITY object type in config file");
+					logger.info("Smart sending enabled for SECURITY object type in config file");
 				}
 				if (smartSendingEnabledObjectTypesString
 						.contains(Cardio2eObjectTypes.ZONES_BYPASS.name())) {
 					Cardio2eZonesBypassTransaction
 							.setSmartSendingEnabledClass(true);
-					logger.debug("Smart sending enabled for ZONES_BYPASS object type in config file");
+					logger.info("Smart sending enabled for ZONES_BYPASS object type in config file");
 				}
 				if (smartSendingEnabledObjectTypesString
 						.contains(Cardio2eObjectTypes.CURTAIN.name())) {
 					Cardio2eCurtainTransaction
 							.setSmartSendingEnabledClass(true);
-					logger.debug("Smart sending enabled for CURTAIN object type in config file");
+					logger.info("Smart sending enabled for CURTAIN object type in config file");
 				}
 			}
 
-			// read further config parameters here ...
+			// Read further config parameters here ...
 
 			com = new Cardio2eCom();
-			decoder = new Cardio2eDecoder();
+			decoder = com.decoder;
 			receivedDataListener = new ReceivedDataListener();
 			decodedTransactionListener = new DecodedTransactionListener();
 			com.addReceivedDataListener(receivedDataListener);
@@ -430,8 +430,8 @@ public class Cardio2eBinding extends
 			try {
 				com.sendTransaction(new Cardio2eLoginTransaction(programCode)); // Login
 																				// request
-			} catch (Exception e) {
-				logger.error("Failed to send login request. {}", e);
+			} catch (Exception ex) {
+				logger.warn("Failed to send login request: '{}'", ex.toString());
 			}
 
 			if (testMode)
@@ -441,7 +441,7 @@ public class Cardio2eBinding extends
 
 			logger.debug("Cardio2e binding activated");
 		} else
-			logger.debug("Cardio2e binding cannot be activated because no serial port is set in config file");
+			logger.warn("Cardio2e binding cannot be activated because no serial port is set in config file");
 	}
 
 	public void purgeCardio2eBinding() {
@@ -537,15 +537,16 @@ public class Cardio2eBinding extends
 						} else {
 							logger.debug("No command sent to Cardio 2è because item is configured as 'reverse mode'");
 						}
-					} catch (Exception e) {
-						logger.error("Error processing command. {}", e);
+					} catch (Exception ex) {
+						logger.warn("Error in processing command: '{}'",
+								ex.toString());
 					}
 				}
 			} else {
-				logger.error("No command will sent to Cardio 2è because no provider is available");
+				logger.warn("No command will sent to Cardio 2è because no provider is available");
 			}
 		} else {
-			logger.error("Can not send command to Cardio 2è because we are not logged in");
+			logger.warn("Can not send command to Cardio 2è because we are not logged in");
 		}
 	}
 
@@ -554,7 +555,7 @@ public class Cardio2eBinding extends
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
+		// The code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug(
@@ -568,7 +569,7 @@ public class Cardio2eBinding extends
 														// are not supported, so
 														// will use first
 														// available provider
-				logger.debug("Checking provider with names {}",
+				logger.debug("Checking provider with names '{}'",
 						provider.getItemNames());
 				transaction = null;
 				for (Cardio2eBindingConfigItem configItem : provider
@@ -651,15 +652,16 @@ public class Cardio2eBinding extends
 								logger.debug("No state sent to Cardio 2è because item is not configured as 'reverse mode'");
 							}
 						}
-					} catch (Exception e) {
-						logger.error("Error processing state. {}", e);
+					} catch (Exception ex) {
+						logger.warn("Error in processing state: '{}'",
+								ex.toString());
 					}
 				}
 			} else {
-				logger.error("No state will sent to Cardio 2è because no provider is available");
+				logger.warn("No state will sent to Cardio 2è because no provider is available");
 			}
 		} else {
-			logger.error("Can not send state to Cardio 2è because we are not logged in");
+			logger.warn("Can not send state to Cardio 2è because we are not logged in");
 		}
 	}
 
@@ -672,8 +674,9 @@ public class Cardio2eBinding extends
 				com.sendTransaction(new Cardio2eDateTimeTransaction(
 						Cardio2eTransactionTypes.GET));
 				logger.debug("Added GET date and time request to Cardio 2é RS-232 send queue");
-			} catch (Exception e) {
-				logger.error("Failed to send GET date and time request. {}", e);
+			} catch (Exception ex) {
+				logger.warn("Failed to send GET date and time request: '{}'",
+						ex.toString());
 			}
 		}
 	}
@@ -717,7 +720,6 @@ public class Cardio2eBinding extends
 		}
 
 		public void receivedData(Cardio2eReceivedDataEvent e) {
-			decoder.decodeReceivedCardio2eStream(e.getReceivedData());
 		}
 
 		public void isConnected(Cardio2eConnectionEvent e) {
@@ -733,16 +735,9 @@ public class Cardio2eBinding extends
 
 		public void decodedTransaction(Cardio2eDecodedTransactionEvent e) {
 			Cardio2eTransaction transaction = e.getDecodedTransaction();
-			String primitiveReceivedTransaction = transaction.primitiveStringTransaction;
-			primitiveReceivedTransaction = primitiveReceivedTransaction
-					.substring(0, primitiveReceivedTransaction.length() - 1); // Removes
-																				// end
-																				// transaction
-																				// char
 			Cardio2eBindingConfig config;
 			Command command;
 			State newState;
-			logger.debug("Decoded '{}'", primitiveReceivedTransaction);
 			switch (transaction.getTransactionType()) {
 			case INFORMATION:
 				switch (transaction.getObjectType()) {
@@ -765,7 +760,7 @@ public class Cardio2eBinding extends
 									configLightingTransaction = (Cardio2eLightingTransaction) configItem.transaction;
 									configLightingTransaction
 											.setLightIntensity(receivedLightingTransaction
-													.getLightIntensity()); // stores
+													.getLightIntensity()); // Stores
 																			// last
 																			// received
 																			// light
@@ -810,8 +805,8 @@ public class Cardio2eBinding extends
 									}
 								}
 							} catch (Exception ex) {
-								logger.error(
-										"Error processing received transaction. {}",
+								logger.warn(
+										"Error in processing decoded transaction: '{}'",
 										ex);
 							}
 						}
@@ -876,8 +871,8 @@ public class Cardio2eBinding extends
 									}
 								}
 							} catch (Exception ex) {
-								logger.error(
-										"Error processing received transaction. {}",
+								logger.warn(
+										"Error in processing decoded transaction: '{}'",
 										ex);
 							}
 						}
@@ -901,8 +896,8 @@ public class Cardio2eBinding extends
 												.getObjectNumber(), newState);
 								eventPublisher.postUpdate(itemName, newState);
 							} catch (Exception ex) {
-								logger.error(
-										"Error processing received transaction. {}",
+								logger.warn(
+										"Error in processing decoded transaction: '{}'",
 										ex);
 							}
 						}
@@ -958,8 +953,8 @@ public class Cardio2eBinding extends
 											newState);
 								}
 							} catch (Exception ex) {
-								logger.error(
-										"Error processing received transaction. {}",
+								logger.warn(
+										"Error in processing decoded transaction: '{}'",
 										ex);
 							}
 						}
@@ -1012,8 +1007,8 @@ public class Cardio2eBinding extends
 									}
 								}
 							} catch (Exception ex) {
-								logger.error(
-										"Error processing received transaction. {}",
+								logger.warn(
+										"Error in processing decoded transaction: '{}'",
 										ex);
 							}
 						}
@@ -1066,8 +1061,8 @@ public class Cardio2eBinding extends
 									}
 								}
 							} catch (Exception ex) {
-								logger.error(
-										"Error processing received transaction. {}",
+								logger.warn(
+										"Error in processing decoded transaction: '{}'",
 										ex);
 							}
 						}
@@ -1097,8 +1092,9 @@ public class Cardio2eBinding extends
 									eventPublisher.postUpdate(itemName,
 											newState);
 								} catch (Exception ex) {
-									logger.error("Error processing received transaction."
-											+ ex);
+									logger.warn(
+											"Error in processing decoded transaction: '{}'",
+											ex.toString());
 								}
 							}
 						}
@@ -1203,8 +1199,8 @@ public class Cardio2eBinding extends
 								}
 							}
 						} catch (Exception ex) {
-							logger.error(
-									"Error processing received transaction. {}",
+							logger.warn(
+									"Error in processing decoded transaction: '{}'",
 									ex);
 						} finally {
 							if (canCleanpendingDateTimeUpdate) {
@@ -1229,7 +1225,7 @@ public class Cardio2eBinding extends
 									configCurtainTransaction = (Cardio2eCurtainTransaction) configItem.transaction;
 									configCurtainTransaction
 											.setClosingPercentage(receivedCurtainTransaction
-													.getClosingPercentage()); // stores
+													.getClosingPercentage()); // Stores
 																				// last
 																				// received
 																				// closing
@@ -1268,8 +1264,8 @@ public class Cardio2eBinding extends
 									}
 								}
 							} catch (Exception ex) {
-								logger.error(
-										"Error processing received transaction. {}",
+								logger.warn(
+										"Error in processing decoded transaction: '{}'",
 										ex);
 							}
 						}
@@ -1282,8 +1278,6 @@ public class Cardio2eBinding extends
 				}
 				break;
 			case ACK:
-				logger.debug("ACK: {} transaction ACCEPTED.",
-						transaction.getObjectType());
 				if (transaction.getObjectType() == Cardio2eObjectTypes.SECURITY) { // Reports
 																					// NO
 																					// error
@@ -1310,8 +1304,8 @@ public class Cardio2eBinding extends
 									eventPublisher.postUpdate(itemName,
 											DecimalType.ZERO);
 								} catch (Exception ex) {
-									logger.error(
-											"Error reporting error code for SECURITY NACK transaction. {}",
+									logger.warn(
+											"Error in reporting no error code for SECURITY ACK transaction: '{}'",
 											ex);
 								}
 							}
@@ -1363,8 +1357,8 @@ public class Cardio2eBinding extends
 										eventPublisher.postUpdate(itemName,
 												newState);
 									} catch (Exception ex) {
-										logger.error(
-												"Error reporting error code for SECURITY NACK transaction. {}",
+										logger.warn(
+												"Error in reporting error code for SECURITY NACK transaction: '{}'",
 												ex);
 									}
 								}
@@ -1386,8 +1380,9 @@ public class Cardio2eBinding extends
 									.setTransactionType(Cardio2eTransactionTypes.GET);
 							com.sendTransaction(transaction);
 						}
-					} catch (Exception en) {
-						logger.error("Error requesting current state. {}", en);
+					} catch (Exception ex) {
+						logger.warn("Error in requesting current state: '{}'",
+								ex.toString());
 					}
 				}
 				break;

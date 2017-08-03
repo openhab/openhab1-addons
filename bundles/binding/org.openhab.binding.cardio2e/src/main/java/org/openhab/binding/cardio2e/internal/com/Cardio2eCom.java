@@ -18,9 +18,17 @@ import java.util.TimerTask;
 import java.util.Vector;
 import java.util.Enumeration;
 
+import org.openhab.binding.cardio2e.internal.Cardio2eBinding;
+import org.openhab.binding.cardio2e.internal.code.Cardio2eDecoder;
+import org.openhab.binding.cardio2e.internal.code.Cardio2eDecoder.Cardio2eDecodedTransactionListener;
+import org.openhab.binding.cardio2e.internal.code.Cardio2eDecodedTransactionEvent;
 import org.openhab.binding.cardio2e.internal.code.Cardio2eLoginCommands;
 import org.openhab.binding.cardio2e.internal.code.Cardio2eLoginTransaction;
+import org.openhab.binding.cardio2e.internal.code.Cardio2eObjectTypes;
 import org.openhab.binding.cardio2e.internal.code.Cardio2eTransaction;
+import org.openhab.binding.cardio2e.internal.code.Cardio2eTransactionTypes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
@@ -35,6 +43,8 @@ import jssc.SerialPortException;
  */
 
 public class Cardio2eCom {
+	private static final Logger logger = LoggerFactory
+			.getLogger(Cardio2eBinding.class);
 	private static final char CARDIO2E_END_TRANSACTION_TEST_CHARACTER = '\n'; // for
 																				// testMode
 																				// Cardio2eTransaction.CARDIO2E_END_TRANSACTION_CHARACTER
@@ -48,6 +58,9 @@ public class Cardio2eCom {
 																	// prevents
 																	// performance
 																	// issues.
+	private static final int MAX_SENDING_TRIES = 3; // Maximum tries for
+													// transaction sending until
+													// ACK/NACK is received
 	private int minDelayBetweenReceivingAndSending = 200; // Minimum delay in
 															// milliseconds that
 															// we must wait
@@ -62,6 +75,8 @@ public class Cardio2eCom {
 											// minDelayBetweenReceivingAndSending
 											// and minDelayBetweenSendings)
 	public boolean testMode = false;
+	public Cardio2eDecoder decoder = null;
+	private DecodedTransactionListener decodedTransactionListener = null;
 	private SerialPort serialPort = null;
 	private transient Vector<Cardio2eComEventListener> comEventListeners;
 	private volatile Timer timer = null;
@@ -70,14 +85,23 @@ public class Cardio2eCom {
 	private volatile Deque<Cardio2eTransaction> sendBuffer = new LinkedList<Cardio2eTransaction>();
 	private volatile long lastReceivedTimeStamp;
 	private volatile long lastSendTimeStamp;
+	private volatile Cardio2eTransaction nextSendingTransaction = null;
 
 	public Cardio2eCom() {
 		calculateSendingTimerCyclePeriod();
+		initializeDecodedTransactionListener();
 	}
 
 	public Cardio2eCom(String serialPort) {
 		calculateSendingTimerCyclePeriod();
+		initializeDecodedTransactionListener();
 		this.setSerialPort(serialPort);
+	}
+
+	private void initializeDecodedTransactionListener() {
+		decoder = new Cardio2eDecoder();
+		decodedTransactionListener = new DecodedTransactionListener();
+		decoder.addDecodedTransactionListener(decodedTransactionListener);
 	}
 
 	public interface Cardio2eComEventListener extends EventListener {
@@ -158,9 +182,9 @@ public class Cardio2eCom {
 						SerialPort.MASK_RXCHAR);
 			}
 		} catch (SerialPortException ex) {
-			// System.out.println("Can not open port т: " + ex);
-		} catch (Exception e) {
-			// System.out.println("Unknown error opening port: " + e);
+			logger.warn("Cannot open port: '{}'", ex.toString());
+		} catch (Exception ex) {
+			logger.warn("Unknown error in opening port: '{}'", ex.toString());
 		} finally {
 			signalIsConnected(isConnected());
 		}
@@ -218,8 +242,9 @@ public class Cardio2eCom {
 						sendBuffer.addLast(sendingTransaction);
 						transactionAdded = true;
 					}
-				} catch (Exception e) {
-					// System.out.println("Unknown error sending data: " + e);
+				} catch (Exception ex) {
+					logger.warn("Unknown error in sending data: '{}'",
+							ex.toString());
 				} finally {
 					if (transactionAdded)
 						cyclicSendControl(true); // If a transaction is added,
@@ -228,10 +253,10 @@ public class Cardio2eCom {
 													// if not was started yet
 				}
 			} else {
-				// System.out.println("Error sending data: port closed and cannot open");
+				logger.warn("Error in sending data: port closed and cannot open");
 			}
 		} else {
-			// System.out.println("Error sending data: transaction object cannot be null");
+			logger.warn("Error in sending data: transaction object cannot be null");
 		}
 	}
 
@@ -270,6 +295,7 @@ public class Cardio2eCom {
 	}
 
 	private void clearBuffer() { // Clear all sending request stored in buffer
+		cyclicSendControl(false);
 		sendBuffer.clear();
 	}
 
@@ -279,13 +305,14 @@ public class Cardio2eCom {
 				serialPort.removeEventListener();
 				clearBuffer();
 				tryLogout();
-				Thread.sleep(minDelayBetweenSendings * 2);
+				Thread.sleep(minDelayBetweenSendings * MAX_SENDING_TRIES * 2);
 				serialPort.closePort();
 				signalIsConnected(isConnected());
 			} catch (SerialPortException ex) {
-				// System.out.println("Can not close port т: " + ex);
-			} catch (Exception e) {
-				// System.out.println("Unknown error closing port т: " + e);
+				logger.warn("Cannot close port: '{}'", ex.toString());
+			} catch (Exception ex) {
+				logger.warn("Unknown error in closing port: '{}'",
+						ex.toString());
 			}
 			if (!isConnected()) {
 				timer.cancel();
@@ -323,8 +350,9 @@ public class Cardio2eCom {
 	private synchronized void tryLogout() throws InterruptedException {
 		// Note: Logout command is obsolete: only provided for legacy
 		// compatibility.
-		sendTransaction(new Cardio2eLoginTransaction(
-				Cardio2eLoginCommands.LOGOUT));
+		Cardio2eTransaction logoutTransaction = new Cardio2eLoginTransaction(
+				Cardio2eLoginCommands.LOGOUT);
+		sendTransaction(logoutTransaction);
 	}
 
 	private synchronized void cyclicSendControl(boolean enable) {
@@ -377,8 +405,115 @@ public class Cardio2eCom {
 		}
 		sendingTimerCyclePeriod = ((a < MIN_SENDING_TIMER_CYCLE_PERIOD) ? MIN_SENDING_TIMER_CYCLE_PERIOD
 				: a);
-		// System.out.println("Calculated Sending Timer Cycle Period is " +
-		// sendingTimerCyclePeriod);//Testing output
+		logger.trace("Calculated Sending Timer Cycle Period is {} ms.",
+				sendingTimerCyclePeriod);
+	}
+
+	private void processSend() {
+		if (nextSendingTransaction != null) { // Clear nextSendingTransaction if
+												// ACK received or maximum tries
+												// reached
+			String primitiveSentTransaction = nextSendingTransaction.primitiveStringTransaction;
+			primitiveSentTransaction = primitiveSentTransaction.substring(0,
+					primitiveSentTransaction.length() - 1); // Removes
+															// end
+															// transaction
+															// char
+			if ((nextSendingTransaction.receiptACK)
+					|| (nextSendingTransaction.sendingTries >= MAX_SENDING_TRIES)) {
+				try {
+					sendBuffer.remove(nextSendingTransaction);
+				} catch (Exception ex) {
+					logger.warn(
+							"Error in removing transaction from sending buffer: '{}'",
+							ex.toString());
+				} finally {
+					boolean discarded = !nextSendingTransaction.receiptACK;
+					nextSendingTransaction = null;
+					if (discarded)
+						logger.warn(
+								"Transaction '{}' was discarded, because it was sent {} times and no recepit ACK was received.",
+								primitiveSentTransaction, MAX_SENDING_TRIES);
+				}
+			} else {
+				logger.debug(
+						"No ACK was received for '{}'. Will send it again...",
+						primitiveSentTransaction);
+			}
+		}
+		if (nextSendingTransaction == null) { // Looking for the next
+												// transaction to send
+			nextSendingTransaction = sendBuffer.peekFirst();
+		}
+		if (nextSendingTransaction == null) {
+			cyclicSendControl(false);
+		} else {
+			try {
+				lastSendTimeStamp = System.currentTimeMillis(); // Stores
+																// time
+																// stamp
+																// for
+																// timing
+																// control
+				String stringTransaction = nextSendingTransaction.primitiveStringTransaction;
+				if (testMode) { // Adapts END transaction
+								// character to test console
+								// when test mode is enabled
+					stringTransaction = stringTransaction
+							.replace(
+									Cardio2eTransaction.CARDIO2E_END_TRANSACTION_CHARACTER,
+									Cardio2eCom.CARDIO2E_END_TRANSACTION_TEST_CHARACTER);
+				}
+				serialPort.writeString(stringTransaction);
+				stringTransaction = stringTransaction.substring(0,
+						stringTransaction.length() - 1); // Removes
+															// end
+															// transaction
+															// char
+				logger.debug("Sent '{}' to Cardio 2é", stringTransaction);
+			} catch (SerialPortException ex) {
+				logger.warn(
+						"There was an error on writing string to port: '{}'",
+						ex.toString());
+			} catch (Exception ex) {
+				logger.warn("Unexpected error in sending data: '{}'",
+						ex.toString());
+			} finally {
+				try {
+					if ((nextSendingTransaction.getTransactionType() != Cardio2eTransactionTypes.SET)
+							|| (nextSendingTransaction.getObjectType() == Cardio2eObjectTypes.LOGIN))
+							//|| (testMode))
+						nextSendingTransaction.receiptACK = true;	// Only
+																	// some SET
+																	// transactions
+																	// returns
+																	// ACK
+																	// (except
+																	// login),
+																	// so
+																	// ACK
+																	// is
+																	// forced
+																	// to all
+																	// others
+																	// transactions.
+																	// Is
+																	// also
+																	// forced
+																	// ACK
+																	// if
+																	// test
+																	// mode
+																	// is
+																	// enabled.
+					nextSendingTransaction.sendingTries++;
+				} catch (Exception ex) {
+					logger.warn(
+							"Unexpected error in processing send data: '{}'",
+							ex.toString());
+				}
+			}
+		}
 	}
 
 	private class PortReader implements SerialPortEventListener {
@@ -386,28 +521,32 @@ public class Cardio2eCom {
 		public void serialEvent(SerialPortEvent event) {
 			if (event.isRXCHAR() && event.getEventValue() > 0) {
 				try {
-					lastReceivedTimeStamp = System.currentTimeMillis(); // stores
+					lastReceivedTimeStamp = System.currentTimeMillis(); // Stores
 																		// time
 																		// stamp
 																		// for
 																		// timing
 																		// control
 					String data = serialPort.readString(event.getEventValue());
-					/*
-					 * System.out.print("Received response: " + receivedData+
-					 * "( ");//Testing output for (char a :
-					 * receivedData.toCharArray()){
-					 * System.out.print(String.format("%04x", (int) a)+" "); }
-					 * System.out.print(" )\n");
-					 */
-					signalReceivedData((testMode) ? data
-							.replace(
-									Cardio2eCom.CARDIO2E_END_TRANSACTION_TEST_CHARACTER,
-									Cardio2eTransaction.CARDIO2E_END_TRANSACTION_CHARACTER)
-							: data);
+					if (testMode) { // Adapts END transaction
+									// character to test console
+									// when test mode is enabled
+						data = data
+								.replace(
+										Cardio2eCom.CARDIO2E_END_TRANSACTION_TEST_CHARACTER,
+										Cardio2eTransaction.CARDIO2E_END_TRANSACTION_CHARACTER);
+					}
+					logger.trace("Received data from Cardio 2é: '{}'", data);
+					signalReceivedData(data);
+					decoder.decodeReceivedCardio2eStream(data);
 				} catch (SerialPortException ex) {
-					// System.out.println("Error in receiving string from COM-port: "
-					// + ex);
+					logger.warn(
+							"Error in receiving string from COM-port: '{}'",
+							ex.toString());
+				} catch (Exception ex) {
+					logger.warn(
+							"Error in processing string from COM-port: '{}'",
+							ex.toString());
 				}
 			}
 		}
@@ -415,39 +554,59 @@ public class Cardio2eCom {
 
 	private class CyclicSend extends TimerTask {
 		public synchronized void run() {
-			synchronized (sendBuffer) {
-				if (sendBuffer.isEmpty()) {
-					cyclicSendControl(false);
-				} else {
-					if ((lastReceivedTimeStamp + minDelayBetweenReceivingAndSending) <= (System
-							.currentTimeMillis())) {
-						if ((lastSendTimeStamp + minDelayBetweenSendings) <= (System
-								.currentTimeMillis())) { // Do send
-							try {
-								lastSendTimeStamp = System.currentTimeMillis(); // stores
-																				// time
-																				// stamp
-																				// for
-																				// timing
-																				// control
-								String data = sendBuffer.poll().primitiveStringTransaction;
-								String stringTransaction = ((testMode) ? data
-										.replace(
-												Cardio2eTransaction.CARDIO2E_END_TRANSACTION_CHARACTER,
-												Cardio2eCom.CARDIO2E_END_TRANSACTION_TEST_CHARACTER)
-										: data);
-								serialPort.writeString(stringTransaction);
-								// System.out.println("Sent "+stringTransaction);
-								// //Testing output
-							} catch (SerialPortException ex) {
-								// System.out.println("There is an error on writing string to port т: "
-								// + ex);
-							} catch (Exception ex) {
-								// System.out.println("Unexpected error sending data: "
-								// + ex);
+			if ((lastReceivedTimeStamp + minDelayBetweenReceivingAndSending) <= (System
+					.currentTimeMillis())) {
+				if ((lastSendTimeStamp + minDelayBetweenSendings) <= (System
+						.currentTimeMillis())) {
+					processSend();
+				}
+			}
+		}
+	}
+
+	private class DecodedTransactionListener implements
+			Cardio2eDecodedTransactionListener {
+		public DecodedTransactionListener() {
+		}
+
+		public void decodedTransaction(Cardio2eDecodedTransactionEvent e) {
+			Cardio2eTransaction transaction = e.getDecodedTransaction();
+			String primitiveReceivedTransaction = transaction.primitiveStringTransaction;
+			primitiveReceivedTransaction = primitiveReceivedTransaction
+					.substring(0, primitiveReceivedTransaction.length() - 1); // Removes
+																				// end
+																				// transaction
+																				// char
+			logger.debug("Decoded '{}'", primitiveReceivedTransaction);
+			Cardio2eTransaction lastSentTransaction = nextSendingTransaction;
+			if (lastSentTransaction != null) { // Checks receipt ACK (only if
+												// lastSentTransaction is not
+												// null and transaction type is
+												// "SET")
+				try {
+					if (lastSentTransaction.getTransactionType() == Cardio2eTransactionTypes.SET) {
+						if ((transaction.getTransactionType() == Cardio2eTransactionTypes.ACK)
+								|| (transaction.getTransactionType() == Cardio2eTransactionTypes.NACK)) {
+							if (lastSentTransaction.isLike(transaction)) {
+								lastSentTransaction.receiptACK = true;
+								String primitiveSentTransaction = lastSentTransaction.primitiveStringTransaction;
+								primitiveSentTransaction = primitiveSentTransaction
+										.substring(0, primitiveSentTransaction
+												.length() - 1); // Removes
+																// end
+																// transaction
+																// char
+								logger.debug(
+										"Receipt ACK: '{}' {} transaction RECEIVED.",
+										primitiveSentTransaction,
+										lastSentTransaction.getObjectType());
 							}
 						}
 					}
+				} catch (Exception ex) {
+					logger.warn(
+							"Unexpected error in checking sent transaction receipt ACK: '{}'",
+							ex.toString());
 				}
 			}
 		}

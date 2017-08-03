@@ -65,6 +65,11 @@ public class Cardio2eTransaction implements Cloneable, Serializable {
 														// element of the send
 														// FIFO buffer (absolute
 														// priority).
+	public boolean receiptACK = false; // Signals whether this transaction was
+										// acknowledge by Cardio 2é (ACK or NACK
+										// was received)
+	public byte sendingTries = 0; // Number of attempts to send this
+									// transaction
 	private Cardio2eTransactionTypes transactionType;
 	private Cardio2eObjectTypes objectType;
 	private short objectNumber = -1; // -1=Not set, for no object number
