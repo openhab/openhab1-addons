@@ -2021,6 +2021,19 @@
             <Label lang="en">Smoke Sensor</Label>
             <ConfigFile>fibaro/fgss101.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>1001</Type>
+                <Id>1000</Id>
+            </Reference>
+            <Reference>
+                <Type>1001</Type>
+                <Id>3000</Id>
+            </Reference>
+            <Model>FGKF601</Model>
+            <Label lang="en">Keyfob</Label>
+            <ConfigFile>fibaro/fgkf601.xml</ConfigFile>
+        </Product>
     </Manufacturer>
     <Manufacturer>
         <Id>011F</Id>
