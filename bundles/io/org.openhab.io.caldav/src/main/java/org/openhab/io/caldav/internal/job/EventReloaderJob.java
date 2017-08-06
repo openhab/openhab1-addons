@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,22 +101,22 @@ public class EventReloaderJob implements Job {
                                     new org.joda.time.DateTime(icsFile.lastModified()), fis, eventRuntime.getConfig(),
                                     new ArrayList<String>(), true);
                         } catch (IOException e) {
-                            log.error("cannot load events for file: " + icsFile, e);
+                            log.warn("Cannot load events for file: {}", icsFile, e);
                         } catch (ParserException e) {
-                            log.error("cannot load events for file: " + icsFile, e);
+                            log.warn("Cannot load events for file: {}", icsFile, e);
                         }
                     }
                     break;
                 }
             } catch (Throwable e) {
-                log.error("cannot load events", e);
+                log.warn("Cannot load events", e);
             } finally {
                 cachedEventsLoaded.put(config, true);
             }
         }
 
         try {
-            log.debug("loading events for config: " + config);
+            log.debug("loading events for config: {}", config);
             List<String> oldEventIds = new ArrayList<String>();
             for (EventContainer eventContainer : eventRuntime.getEventMap().values()) {
                 oldEventIds.add(eventContainer.getFilename());
@@ -126,7 +128,7 @@ public class EventReloaderJob implements Job {
                 if (log.isDebugEnabled()) {
                     for (int i = 0; i < eventContainer.getEventList().size(); i++) {
                         CalDavEvent elem = eventContainer.getEventList().get(i);
-                        log.debug("old eventlist contient l'evenement : {} -- deb : {} -- fin : {} -- lastchang {}",
+                        log.debug("old eventlist contains the event : {} -- deb : {} -- fin : {} -- lastchanged {}",
                                 elem.getName(), elem.getStart(), elem.getEnd(), elem.getLastChanged());
                     }
                 }
@@ -140,11 +142,9 @@ public class EventReloaderJob implements Job {
                 try {
                     notifier.calendarReloaded(config);
                 } catch (Exception e) {
-                    log.error("error while invoking listener", e);
+                    log.warn("Error while invoking listener", e);
                 }
             }
-
-            // printAllEvents();
 
             // print All scheduled jobs :
             if (log.isDebugEnabled()) {
@@ -169,12 +169,12 @@ public class EventReloaderJob implements Job {
             }
 
         } catch (SardineException e) {
-            log.error("error while loading calendar entries: {} ({} - {} )", e.getMessage(), e.getStatusCode(),
+            log.warn("Sardine error while loading calendar entries: {} ({} - {})", e.getMessage(), e.getStatusCode(),
                     e.getResponsePhrase(), e);
-            throw new JobExecutionException("error while loading calendar entries", e, false);
+            throw new JobExecutionException("Sardine error while loading calendar entries", e, false);
         } catch (Exception e) {
-            log.error("error while loading calendar entries: {}", e.getMessage(), e);
-            throw new JobExecutionException("error while loading calendar entries", e, false);
+            log.warn("Error while loading calendar entries: {}", e.getMessage(), e);
+            throw new JobExecutionException("Error while loading calendar entries", e, false);
         }
     }
 
@@ -184,7 +184,7 @@ public class EventReloaderJob implements Job {
         for (String filename : oldMap) {
             EventContainer eventContainer = eventRuntime.getEventContainerByFilename(filename);
             if (eventContainer == null) {
-                log.error("cannot find event container for filename: {}", filename);
+                log.warn("Cannot find event container for filename: {}", filename);
                 continue;
             }
 
@@ -202,7 +202,7 @@ public class EventReloaderJob implements Job {
                     boolean deleteJob = CalDavLoaderImpl.instance.getScheduler().deleteJob(JobKey.jobKey(jobId, group));
                     log.debug("old job ({}) deleted? {}", jobId, deleteJob);
                 } catch (SchedulerException e) {
-                    log.error("cannot delete job '{}'", jobId);
+                    log.warn("Cannot delete job '{}'", jobId, e);
                 }
             }
             eventContainer.getTimerMap().clear();
@@ -212,18 +212,16 @@ public class EventReloaderJob implements Job {
                     try {
                         notifier.eventRemoved(event);
                     } catch (Exception e) {
-                        log.error("error while invoking listener", e);
+                        log.warn("Error while invoking listener", e);
                     }
                 }
             }
 
             ConcurrentHashMap<String, EventContainer> eventContainerMap = eventRuntime.getEventMap();
-            if (eventContainer != null) {
-                this.removeFromDisk(eventContainer);
+            this.removeFromDisk(eventContainer);
 
-                log.debug("remove deleted event: {}", eventContainer.getEventId());
-                eventContainerMap.remove(eventContainer.getEventId());
-            }
+            log.debug("remove deleted event: {}", eventContainer.getEventId());
+            eventContainerMap.remove(eventContainer.getEventId());
         }
     }
 
@@ -247,7 +245,7 @@ public class EventReloaderJob implements Job {
 
         List<DavResource> list = sardine.list(config.getUrl(), 1, false);
 
-        log.trace("before load events : oldeventsid contains : {}", oldEventIds.toString());
+        log.trace("before load events : oldeventids contains : {}", oldEventIds);
 
         for (DavResource resource : list) {
             final String filename = Util.getFilename(resource.getName());
@@ -262,7 +260,7 @@ public class EventReloaderJob implements Job {
                 // ==>we must not have one of them remaining in oldEventIds var (bad chosen name, cause it's a list of
                 // oldEventContainers's filename, so with doubles possible)
                 // or the remaining jobs with this filename will get unscheduled on the "removeDeletedEvents(config,
-                // oldEventIds)" call (line 136)
+                // oldEventIds)" call
                 oldEventIds.removeAll(Arrays.asList(filename));
 
                 // must not be loaded
@@ -281,14 +279,14 @@ public class EventReloaderJob implements Job {
                                 .isAfter(org.joda.time.DateTime.now().plusMinutes(config.getReloadMinutes()))) {
                             // the event is calculated as long as the next reload
                             // interval can handle this
-                            log.trace("skipping resource {}, not changed (calculated until: {})", resource.getName(),
+                            log.trace("skipping resource {}; not changed. calculated until: {}", resource.getName(),
                                     eventContainer.getCalculatedUntil());
                             continue;
                         }
 
                         if (eventContainer.isHistoricEvent()) {
                             // no more upcoming events, do nothing
-                            log.trace("skipping resource {}, not changed (historic)", resource.getName());
+                            log.trace("skipping resource {}; not changed (historic)", resource.getName());
                             continue;
                         }
 
@@ -306,22 +304,28 @@ public class EventReloaderJob implements Job {
 
                 // prepare resource url
                 URL url = new URL(config.getUrl());
+                log.trace("Raw URL: {}", url);
                 String resourcePath = resource.getPath();
-                String escapedResource = resource.getName().replaceAll("/", "%2F");
-                resourcePath = resourcePath.replace(resource.getName(), escapedResource);
-                url = new URL(url.getProtocol(), url.getHost(), url.getPort(), resourcePath);
-
-                InputStream inputStream = sardine.get(url.toString().replaceAll(" ", "%20"));
+                URI uri;
+                try {
+                    uri = new URI(url.getProtocol(), null, url.getHost(), url.getPort(), resourcePath, null, null);
+                } catch(URISyntaxException e) {
+                    log.warn("Unable to load events; the provided string could not be parsed as a valid URI: '{}'", url);
+                    return;
+                }
+                url = uri.toURL();
+                log.trace("URL after encoding: {}", url);
+                InputStream inputStream = sardine.get(url.toString());
 
                 this.loadEvents(filename, lastResourceChangeFS, inputStream, config, oldEventIds, false);
             } catch (ParserException e) {
-                log.error("error parsing ics file: " + filename, e);
+                log.warn("Parser exception parsing ics file: {}", filename, e);
             } catch (SardineException e) {
-                log.error("error reading ics file: " + filename, e);
+                log.warn("Sardine exception reading ics file: {}", filename, e);
             }
         }
 
-        log.trace("after load events : oldeventsid contains : {}", oldEventIds.toString());
+        log.trace("after load events : oldeventids contains : {}", oldEventIds.toString());
     }
 
     public void loadEvents(String filename, org.joda.time.DateTime lastResourceChangeFS, final InputStream inputStream,
@@ -334,7 +338,6 @@ public class EventReloaderJob implements Job {
         final UnfoldingReader uin = new UnfoldingReader(in, 50, true);
         Calendar calendar = builder.build(uin);
         uin.close();
-        // log.trace("calendar: {}", calendar);
 
         EventContainer eventContainer = new EventContainer(config.getKey());
         eventContainer.setFilename(filename);
@@ -347,7 +350,7 @@ public class EventReloaderJob implements Job {
 
         final ComponentList<CalendarComponent> vEventComponents = calendar.getComponents(Component.VEVENT);
         if (vEventComponents.size() == 0) {
-            log.debug("could not find a VEVENT from calendar build, based on file {}", filename);
+            log.debug("could not find a VEVENT from calendar build based on file {}", filename);
             // no events inside
             if (!readFromFile) {
                 Util.storeToDisk(config.getKey(), filename, calendar);
@@ -371,7 +374,7 @@ public class EventReloaderJob implements Job {
                 if (lastModifedVEventOverAll == null || lastModifedVEvent.isAfter(lastModifedVEventOverAll)) {
                     lastModifedVEventOverAll = lastModifedVEvent;
                 }
-                if (eventContainer != null && !lastModifedVEvent.isBefore(eventContainer.getLastChanged())) {
+                if (!lastModifedVEvent.isBefore(eventContainer.getLastChanged())) {
                     // check if some timers or single (from repeating events) have
                     // to be created
                     if (eventContainer.getCalculatedUntil() != null && vEventComponents.size() == 1
