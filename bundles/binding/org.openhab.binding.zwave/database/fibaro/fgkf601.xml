@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>FGKF601</Model>
+    <Label lang="en">Keyfob</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x22</id>             <!-- APPLICATION_STATUS -->
+        </Class>
+        <Class>
+            <id>0x56</id>             <!-- CRC_16_ENCAP -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5B</id>             <!-- CENTRAL_SCENE -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x75</id>             <!-- PROTECTION -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x8E</id>             <!-- MULTI_INSTANCE_ASSOCIATION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Lock Mode - unlocking sequence</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>28086</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[0 - Lock Mode disabled, 9-28086 - unlocking sequence
+<p>This parameter allows to activate Lock Mode and set up unlocking sequence. Device will lock after time set in parameter 2 or after pressing and holding selected button. </p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Lock Mode - time to lock and locking button</Label>
+            <Type>short</Type>
+            <Default>60</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1791</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[0 - Lock Mode disabled, 5-1791 - calculated value
+<p>This parameter allows to set time that must elapse from the last press of the button to lock the device and locking button.</p> <p>Setting locking button will deactivate associations and scenes for pressing and holding the selected button.</p> <p>This parameter is irrelevant if parameter 1 is set to 0 (Lock Mode disable).</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">First scene sequence</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>28086</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[0 - 1st sequence disabled, 9-28086 - value of sequence
+<p>This parameter allows to set up sequence that activates scene with ID 7. See "Sequences" on page 10 for more information.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Second scene sequence</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>28086</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[0 - 2nd sequence disabled, 9-28086 - value of sequence
+<p>This parameter allows to set up sequence that activates scene with ID 8.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">Third scene sequence</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>28086</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[0 - 3rd sequence disabled, 9-28086 - value of sequence
+<p>This parameter allows to set up sequence that activates scene with ID 9.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>6</Index>
+            <Label lang="en">Fourth scene sequence</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>28086</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[0 - 4th sequence disabled, 9-28086 - value of sequence
+<p>This parameter allows to set up sequence that activates scene with ID 10. </p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>7</Index>
+            <Label lang="en">Fifth scene sequence</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>28086</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[0 - 5th sequence disabled, 9-28086 - value of sequence
+<p>This parameter allows to set up sequence that activates scene with ID 11. </p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>8</Index>
+            <Label lang="en">Sixth scene sequence</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>28086</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[0 - 6th sequence disabled, 9-28086 - value of sequence
+<p>This parameter allows to set up sequence that activates scene with ID 12.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>9</Index>
+            <Label lang="en">Sequences - timeout</Label>
+            <Type>short</Type>
+            <Default>10</Default>
+            <Minimum>5</Minimum>
+            <Maximum>30</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[5-30 (0.5-3s, 0.1s step) - time to lock
+<p>This parameter allows to set time that must elapse from the last click of the button to check if the sequence is valid.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>10</Index>
+            <Label lang="en">Single button associations - operating mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">single click switches state to opposite</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">single click => opposite, double click => max</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">single click turns on, double click turns off</Label>
+            </Item>
+            <Help><![CDATA[<p>This parameter allows to choose operating mode for single button associations. </p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>11</Index>
+            <Label lang="en">Value sent to □ association group</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[1-99 or 255 (last state)
+<p>This parameter allows to set value sent to devices in association group. It will result in turning multilevel devices on with set or last level. Value is irrelevant for simple on/off devices.</p> <p><strong>1-99</strong> - forcing level of associated devices<br /><strong>255</strong> - setting associated devices to the last remembered state or turning them on</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>12</Index>
+            <Label lang="en">Value sent to ○ association group  </Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[1-99 or 255 (last state)
+<p>This parameter allows to set value sent to devices in association group. It will result in turning multilevel devices on with set or last level. Value is irrelevant for simple on/off devices.</p> <p><strong>1-99</strong> - forcing level of associated devices<br /><strong>255</strong> - setting associated devices to the last remembered state or turning them on</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>13</Index>
+            <Label lang="en">Value sent to x association group  </Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[1-99 or 255 (last state)
+<p>This parameter allows to set value sent to devices in association group. It will result in turning multilevel devices on with set or last level. Value is irrelevant for simple on/off devices.</p> <p><strong>1-99</strong> - forcing level of associated devices<br /><strong>255</strong> - setting associated devices to the last remembered state or turning them on</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>14</Index>
+            <Label lang="en">Value sent to Δ association group</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[1-99 or 255 (last state)
+<p>This parameter allows to set value sent to devices in association group. It will result in turning multilevel devices on with set or last level. Value is irrelevant for simple on/off devices.</p> <p><strong>1-99</strong> - forcing level of associated devices<br /><strong>255</strong> - setting associated devices to the last remembered state or turning them on</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>15</Index>
+            <Label lang="en">Value sent to - association group  </Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[1-99 or 255 (last state)
+<p>This parameter allows to set value sent to devices in association group. It will result in turning multilevel devices on with set or last level. Value is irrelevant for simple on/off devices.</p> <p><strong>1-99</strong> - forcing level of associated devices<br /><strong>255</strong> - setting associated devices to the last remembered state or turning them on</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>16</Index>
+            <Label lang="en">Value sent to + association group</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[1-99 or 255 (last state)
+<p>This parameter allows to set value sent to devices in association group. It will result in turning multilevel devices on with set or last level. Value is irrelevant for simple on/off devices.</p> <p><strong>1-99</strong> - forcing level of associated devices<br /><strong>255</strong> - setting associated devices to the last remembered state or turning them on</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>17</Index>
+            <Label lang="en">Paired buttons association for □ and ○</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">paired buttons association inactive</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">paired buttons association active</Label>
+            </Item>
+            <Help><![CDATA[<p>This parameter allows to activate paired buttons association mode for □ and ○ buttons. Paired buttons are dependent and association are sent only to □ groups. ○ turns devices on and increases value, □ turns them off and decreases value.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>18</Index>
+            <Label lang="en">Paired buttons association for x and Δ</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">paired buttons association inactive</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">paired buttons association active</Label>
+            </Item>
+            <Help><![CDATA[<p>This parameter allows to activate paired buttons association mode for x and Δ buttons. Paired buttons are dependent and association are sent only to x groups. Δ turns devices on and increases value, x turns them off and decreases value.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>19</Index>
+            <Label lang="en">Paired buttons association for - and +</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">paired buttons association inactive</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">paired buttons association active</Label>
+            </Item>
+            <Help><![CDATA[<p>This parameter allows to activate paired buttons association mode for - and + buttons. Paired buttons are dependent and association are sent only to - groups. + turns devices on and increases value, - turns them off and decreases value. </p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>21</Index>
+            <Label lang="en">Scene activation for □ button</Label>
+            <Type>short</Type>
+            <Default>9</Default>
+            <Minimum>0</Minimum>
+            <Maximum>15</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[1 = 1 time, 2 = 2 times, 4 = 3 times, 8 = held down and released
+<p>This parameter determines which actions result in sending assigned scene IDs and attributes to the controller.</p> <p><strong>1</strong> - Key pressed 1 time<br /><strong>2</strong> - Key pressed 2 times<br /><strong>4</strong> - Key pressed 3 times<br /><strong>8</strong> - Key held down &amp; released</p> <p>Combine multiple actions by or'ing the values.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>22</Index>
+            <Label lang="en">Scene activation for ○ button</Label>
+            <Type>short</Type>
+            <Default>9</Default>
+            <Minimum>0</Minimum>
+            <Maximum>15</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[1 = 1 time, 2 = 2 times, 4 = 3 times, 8 = held down and released
+<p>This parameter determines which actions result in sending assigned scene IDs and attributes to the controller.</p> <p><strong>1</strong> - Key pressed 1 time<br /><strong>2</strong> - Key pressed 2 times<br /><strong>4</strong> - Key pressed 3 times<br /><strong>8</strong> - Key held down &amp; released</p> <p>Combine multiple actions by or'ing the values.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>23</Index>
+            <Label lang="en">Scene activation for x button  </Label>
+            <Type>short</Type>
+            <Default>9</Default>
+            <Minimum>0</Minimum>
+            <Maximum>15</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[1 = 1 time, 2 = 2 times, 4 = 3 times, 8 = held down and released
+<p>This parameter determines which actions result in sending assigned scene IDs and attributes to the controller.</p> <p><strong>1</strong> - Key pressed 1 time<br /><strong>2</strong> - Key pressed 2 times<br /><strong>4</strong> - Key pressed 3 times<br /><strong>8</strong> - Key held down &amp; released</p> <p>Combine multiple actions by or'ing the values.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>24</Index>
+            <Label lang="en">Scene activation for Δ button  </Label>
+            <Type>short</Type>
+            <Default>9</Default>
+            <Minimum>0</Minimum>
+            <Maximum>15</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[1 = 1 time, 2 = 2 times, 4 = 3 times, 8 = held down and released
+<p>This parameter determines which actions result in sending assigned scene IDs and attributes to the controller.</p> <p><strong>1</strong> - Key pressed 1 time<br /><strong>2</strong> - Key pressed 2 times<br /><strong>4</strong> - Key pressed 3 times<br /><strong>8</strong> - Key held down &amp; released</p> <p>Combine multiple actions by or'ing the values.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>25</Index>
+            <Label lang="en">Scene activation for - button  </Label>
+            <Type>short</Type>
+            <Default>9</Default>
+            <Minimum>0</Minimum>
+            <Maximum>15</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[1 = 1 time, 2 = 2 times, 4 = 3 times, 8 = held down and released
+<p>This parameter determines which actions result in sending assigned scene IDs and attributes to the controller.</p> <p><strong>1</strong> - Key pressed 1 time<br /><strong>2</strong> - Key pressed 2 times<br /><strong>4</strong> - Key pressed 3 times<br /><strong>8</strong> - Key held down &amp; released</p> <p>Combine multiple actions by or'ing the values.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>26</Index>
+            <Label lang="en">Scene activation for + button  </Label>
+            <Type>short</Type>
+            <Default>9</Default>
+            <Minimum>0</Minimum>
+            <Maximum>15</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[1 = 1 time, 2 = 2 times, 4 = 3 times, 8 = held down and released
+<p>This parameter determines which actions result in sending assigned scene IDs and attributes to the controller.</p> <p><strong>1</strong> - Key pressed 1 time<br /><strong>2</strong> - Key pressed 2 times<br /><strong>4</strong> - Key pressed 3 times<br /><strong>8</strong> - Key held down &amp; released</p> <p>Combine multiple actions by or'ing the values.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>29</Index>
+            <Label lang="en">Associations in Z-Wave network security mode</Label>
+            <Type>short</Type>
+            <Default>4095</Default>
+            <Minimum>0</Minimum>
+            <Maximum>4095</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[<p>Parameter defines how commands are sent in specified association groups: using Security Mode or not. Parameter is active only in Z-Wave network Security Mode. It does not apply to 1st “Lifeline” association group.</p> <p>Available settings:</p> <p><strong>1</strong> - 2nd group sent using Security Mode<br /><strong>2</strong> - 3rd group sent using Security Mode<br /><strong>4</strong> - 4th group sent using Security Mode<br /><strong>8</strong> - 5th group sent using Security Mode<br /><strong>16</strong> - 6th group sent using Security Mode<br /><strong>32</strong> - 7th group sent using Security Mode<br /><strong>64</strong> - 8th group sent using Security Mode<br /><strong>128</strong> - 9th group sent using Security Mode <br /><strong>256</strong> - 10th group sent using Security Mode<br /><strong>512</strong> - 11th group sent using Security Mode<br /><strong>1024</strong> - 12th group sent using Security Mode<br /><strong>2048</strong> - 13th group sent using Security Mode</p> <p>Set multiple values by or'ing the values together.</p>
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Square - On/Off</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Square - Multilevel</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>4</Index>
+            <Label lang="en">Circle - On/Off</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>5</Index>
+            <Label lang="en">Circle - Multilevel</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>6</Index>
+            <Label lang="en">Cross - On/Off</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>7</Index>
+            <Label lang="en">Cross - Multilevel</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>8</Index>
+            <Label lang="en">Triangle - On/Off</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>9</Index>
+            <Label lang="en">Triangle - Multilevel</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>10</Index>
+            <Label lang="en">Minus - On/Off</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>11</Index>
+            <Label lang="en">Minus - Multilevel</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>12</Index>
+            <Label lang="en">Plus - On/Off</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>13</Index>
+            <Label lang="en">Plus - Multilevel</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>
