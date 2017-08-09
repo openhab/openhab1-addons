@@ -46,7 +46,7 @@ public class PushResponse {
     private String senderName;
 
     @SerializedName("receiver_iden")
-    private String receiverIdentifer;
+    private String receiverIdentifier;
 
     @SerializedName("receiver_email")
     private String receiverEmail;
@@ -138,12 +138,12 @@ public class PushResponse {
         this.senderName = senderName;
     }
 
-    public String getReceiverIdentifer() {
-        return receiverIdentifer;
+    public String getReceiverIdentifier() {
+        return receiverIdentifier;
     }
 
-    public void setReceiverIdentifer(String receiverIdentifer) {
-        this.receiverIdentifer = receiverIdentifer;
+    public void setReceiverIdentifier(String receiverIdentifier) {
+        this.receiverIdentifier = receiverIdentifier;
     }
 
     public String getReceiverEmail() {
@@ -199,8 +199,8 @@ public class PushResponse {
         return "PushResponse {" + "active='" + active + '\'' + ", iden='" + iden + '\'' + ", type='" + type + '\''
                 + ", dismissed=" + dismissed + ", direction='" + direction + '\'' + ", senderIdentifier='"
                 + senderIdentifier + '\'' + ", senderEmail='" + senderEmail + '\'' + ", senderEmailNormalized='"
-                + senderEmailNormalized + '\'' + ", senderName='" + senderName + '\'' + ", receiverIdentifer='"
-                + receiverIdentifer + '\'' + ", receiverEmail='" + receiverEmail + '\'' + ", receiverEmailNormalized='"
+                + senderEmailNormalized + '\'' + ", senderName='" + senderName + '\'' + ", receiverIdentifier='"
+                + receiverIdentifier + '\'' + ", receiverEmail='" + receiverEmail + '\'' + ", receiverEmailNormalized='"
                 + receiverEmailNormalized + '\'' + ", title='" + title + '\'' + ", body='" + body + '\''
                 + ", errorCode='" + errorCode + '\'' + ", pushError=" + pushError + '}';
     }

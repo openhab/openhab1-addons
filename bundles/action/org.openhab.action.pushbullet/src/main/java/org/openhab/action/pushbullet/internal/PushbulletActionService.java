@@ -23,7 +23,7 @@ import static org.openhab.action.pushbullet.internal.PushbulletConstants.BOTS_KE
 import static org.openhab.action.pushbullet.internal.PushbulletConstants.DEFAULT_BOTNAME;
 
 /**
- * This class...
+ * This class registers an OSGi service for the Pushbullet action.
  *
  * @author Hakan Tandogan
  * @since 1.11.0
@@ -87,8 +87,9 @@ public class PushbulletActionService implements ActionService, ManagedService {
 
             PushbulletAPIConnector.logPushbulletBots();
 
-            // Actually, we should check whether there are more than zero bots configured...
-            isProperlyConfigured = true;
+            if (PushbulletAPIConnector.botCount() > 0) {
+                isProperlyConfigured = true;
+            }
         }
 
         logger.debug("Parsing configuration done, configuration is {}", isProperlyConfigured);

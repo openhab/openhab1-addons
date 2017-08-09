@@ -113,7 +113,7 @@ public class PushbulletAPIConnector {
 
         PushbulletBot bot = bots.get(botName);
         if (bot == null) {
-            logger.error("Unconfigured pushbullet bot, please check configuration");
+            logger.warn("Unconfigured pushbullet bot, please check configuration");
             return false;
         }
 
@@ -149,11 +149,11 @@ public class PushbulletAPIConnector {
 
             stream.close();
 
-            if (null == response.getPushError()) {
+            if ((null != response) && (null == response.getPushError())) {
                 result = true;
             }
         } catch (IOException e) {
-            logger.trace("IO problems pushing note: {}", e.getMessage());
+            logger.warn("IO problems pushing note: {}", e.getMessage());
         }
 
         return result;

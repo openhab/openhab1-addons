@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class...
+ * Extension of the default OSGi bundle activator for the Pushbullet notification service.
  *
  * @author Hakan Tandogan
  * @since 1.11.0
