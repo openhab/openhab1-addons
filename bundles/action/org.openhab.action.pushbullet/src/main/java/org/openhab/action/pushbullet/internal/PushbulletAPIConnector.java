@@ -36,7 +36,7 @@ import static org.openhab.action.pushbullet.internal.PushbulletConstants.TIMEOUT
  * for sending messages via the PushbulletAPIConnector mobile device push service..
  *
  * @author Hakan Tandogan
- * @since 1.10.0
+ * @since 1.11.0
  */
 public class PushbulletAPIConnector {
 

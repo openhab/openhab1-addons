@@ -14,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
  * This class represents errors in the response fetched from the API.
  *
  * @author Hakan Tandogan
- * @since 1.10.0
+ * @since 1.11.0
  */
 public class PushError {
 

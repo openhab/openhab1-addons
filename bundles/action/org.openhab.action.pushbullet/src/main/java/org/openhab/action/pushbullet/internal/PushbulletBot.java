@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  * <p>
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,7 @@ package org.openhab.action.pushbullet.internal;
  * This class is the model for a PushbulletAPIConnector bot, identified by its name and access token.
  *
  * @author Hakan Tandogan
- * @since 1.10.0
+ * @since 1.11.0
  */
 public class PushbulletBot {
 

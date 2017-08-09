@@ -14,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
  * This class represents the push request sent to the API.
  *
  * @author Hakan Tandogan
- * @since 1.10.0
+ * @since 1.11.0
  */
 public class Push {
 

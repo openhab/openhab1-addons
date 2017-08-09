@@ -26,7 +26,7 @@ import static org.openhab.action.pushbullet.internal.PushbulletConstants.DEFAULT
  * This class...
  *
  * @author Hakan Tandogan
- * @since 1.10.0
+ * @since 1.11.0
  */
 public class PushbulletActionService implements ActionService, ManagedService {
 

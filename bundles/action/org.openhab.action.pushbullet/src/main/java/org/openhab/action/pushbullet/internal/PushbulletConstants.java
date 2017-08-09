@@ -12,7 +12,7 @@ package org.openhab.action.pushbullet.internal;
  * This class contains the common constants used in the PushbulletAPIConnector binding
  *
  * @author Hakan Tandogan
- * @since 1.10.0
+ * @since 1.11.0
  */
 public class PushbulletConstants {
 
