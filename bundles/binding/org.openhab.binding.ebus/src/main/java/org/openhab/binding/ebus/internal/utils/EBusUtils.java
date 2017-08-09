@@ -312,19 +312,25 @@ public class EBusUtils {
             // process answer data and find data end pos.
             // (may moved because expanded bytes)
             if (nn2 > 0) {
-                for (int i = nn2Pos + 1; i < data.length - 3; i++) {
+
+                int u = 1;
+                while (u <= nn2) {
+                    int i = nn2Pos + u++;
                     byte b = data[i];
 
                     uc_crc = crc8_tab(b, uc_crc);
 
                     if (b != (byte) 0xA9) {
                         buffer.put(decodeEBusData(data, i));
+                    } else {
+                        nn2++;
                     }
                 }
             }
 
-            crc = data[data.length - 3];
-            buffer.put(data, data.length - 3, 3);
+            crcPos = nn2Pos + nn2 + 1;
+            crc = data[crcPos];
+            buffer.put(data, crcPos, 3);
 
             if (uc_crc == (byte) 0xAA && crc == (byte) 0xA9 && data[++crcPos] == (byte) 0x01) {
                 // replace with original value
