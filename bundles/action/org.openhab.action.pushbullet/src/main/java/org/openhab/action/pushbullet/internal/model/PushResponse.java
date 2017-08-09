@@ -196,23 +196,12 @@ public class PushResponse {
 
     @Override
     public String toString() {
-        return "PushResponse {" +
-                "active='" + active + '\'' +
-                ", iden='" + iden + '\'' +
-                ", type='" + type + '\'' +
-                ", dismissed=" + dismissed +
-                ", direction='" + direction + '\'' +
-                ", senderIdentifier='" + senderIdentifier + '\'' +
-                ", senderEmail='" + senderEmail + '\'' +
-                ", senderEmailNormalized='" + senderEmailNormalized + '\'' +
-                ", senderName='" + senderName + '\'' +
-                ", receiverIdentifer='" + receiverIdentifer + '\'' +
-                ", receiverEmail='" + receiverEmail + '\'' +
-                ", receiverEmailNormalized='" + receiverEmailNormalized + '\'' +
-                ", title='" + title + '\'' +
-                ", body='" + body + '\'' +
-                ", errorCode='" + errorCode + '\'' +
-                ", pushError=" + pushError +
-                '}';
+        return "PushResponse {" + "active='" + active + '\'' + ", iden='" + iden + '\'' + ", type='" + type + '\''
+                + ", dismissed=" + dismissed + ", direction='" + direction + '\'' + ", senderIdentifier='"
+                + senderIdentifier + '\'' + ", senderEmail='" + senderEmail + '\'' + ", senderEmailNormalized='"
+                + senderEmailNormalized + '\'' + ", senderName='" + senderName + '\'' + ", receiverIdentifer='"
+                + receiverIdentifer + '\'' + ", receiverEmail='" + receiverEmail + '\'' + ", receiverEmailNormalized='"
+                + receiverEmailNormalized + '\'' + ", title='" + title + '\'' + ", body='" + body + '\''
+                + ", errorCode='" + errorCode + '\'' + ", pushError=" + pushError + '}';
     }
 }

@@ -78,18 +78,20 @@ public class PushbulletAPIConnector {
     }
 
     @ActionDoc(text = "Sends a message to PushbulletAPIConnector")
-    public static boolean sendPushbulletNote(@ParamDoc(name = "botName", text = "Name of the bot sending the message") String botName,
-                                             @ParamDoc(name = "recipient", text = "recipient of the message") String recipient,
-                                             @ParamDoc(name = "title", text = "title of the message") String title,
-                                             @ParamDoc(name = "message", text = "the message to be sent") String message) {
+    public static boolean sendPushbulletNote(
+            @ParamDoc(name = "botName", text = "Name of the bot sending the message") String botName,
+            @ParamDoc(name = "recipient", text = "recipient of the message") String recipient,
+            @ParamDoc(name = "title", text = "title of the message") String title,
+            @ParamDoc(name = "message", text = "the message to be sent") String message) {
         logger.debug("Trying to send a note");
         return sendPush(botName, recipient, title, message, "note");
     }
 
     @ActionDoc(text = "Sends a message to PushbulletAPIConnector from the default bot")
-    public static boolean sendPushbulletNote(@ParamDoc(name = "recipient", text = "recipient of the message") String recipient,
-                                             @ParamDoc(name = "title", text = "title of the message") String title,
-                                             @ParamDoc(name = "message", text = "the message to be sent") String message) {
+    public static boolean sendPushbulletNote(
+            @ParamDoc(name = "recipient", text = "recipient of the message") String recipient,
+            @ParamDoc(name = "title", text = "title of the message") String title,
+            @ParamDoc(name = "message", text = "the message to be sent") String message) {
         logger.debug("Trying to send a note to the default bot");
         return sendPush(DEFAULT_BOTNAME, recipient, title, message, "note");
     }

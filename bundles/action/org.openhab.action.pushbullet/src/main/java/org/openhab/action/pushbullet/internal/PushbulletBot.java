@@ -30,14 +30,11 @@ public class PushbulletBot {
     }
 
     public String getToken() {
-        return  token;
+        return token;
     }
 
     @Override
     public String toString() {
-        return "PushbulletBot {" +
-                "name='" + name + '\'' +
-                ", token='" + token + '\'' +
-                '}';
+        return "PushbulletBot {" + "name='" + name + '\'' + ", token='" + token + '\'' + '}';
     }
 }

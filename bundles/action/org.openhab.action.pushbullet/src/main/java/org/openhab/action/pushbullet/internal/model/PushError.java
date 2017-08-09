@@ -64,11 +64,7 @@ public class PushError {
 
     @Override
     public String toString() {
-        return "PushError {" +
-                "type='" + type + '\'' +
-                ", message='" + message + '\'' +
-                ", param='" + param + '\'' +
-                ", cat='" + cat + '\'' +
-                '}';
+        return "PushError {" + "type='" + type + '\'' + ", message='" + message + '\'' + ", param='" + param + '\''
+                + ", cat='" + cat + '\'' + '}';
     }
 }

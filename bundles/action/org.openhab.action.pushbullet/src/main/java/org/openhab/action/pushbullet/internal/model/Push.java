@@ -64,11 +64,7 @@ public class Push {
 
     @Override
     public String toString() {
-        return "Push {" +
-                "title='" + title + '\'' +
-                ", body='" + body + '\'' +
-                ", type='" + type + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return "Push {" + "title='" + title + '\'' + ", body='" + body + '\'' + ", type='" + type + '\'' + ", email='"
+                + email + '\'' + '}';
     }
 }
