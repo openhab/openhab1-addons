@@ -10,6 +10,7 @@ Bundle-Activator: org.openhab.action.pushbullet.internal.PushbulletActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Pushbullet action of the open Home Automation Bus (openHAB)
 Import-Package: com.google.gson,
+ com.google.gson.annotations,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.eclipse.smarthome.io.net.http,
