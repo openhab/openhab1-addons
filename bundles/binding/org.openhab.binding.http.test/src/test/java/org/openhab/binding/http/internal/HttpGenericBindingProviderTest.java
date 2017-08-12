@@ -312,10 +312,8 @@ public class HttpGenericBindingProviderTest {
         // asserts
         Assert.assertEquals(true, config.containsKey(StringType.valueOf("ON")));
         Assert.assertEquals("POST", config.get(StringType.valueOf("ON")).httpMethod);
-        Assert.assertEquals("http://www.domain.org:1234/home/lights/7",
-                config.get(StringType.valueOf("ON")).url);
-        Assert.assertEquals("default",
-                config.get(StringType.valueOf("ON")).body);
+        Assert.assertEquals("http://www.domain.org:1234/home/lights/7", config.get(StringType.valueOf("ON")).url);
+        Assert.assertEquals("default", config.get(StringType.valueOf("ON")).body);
     }
 
     @Test
@@ -328,10 +326,8 @@ public class HttpGenericBindingProviderTest {
         // asserts
         Assert.assertEquals(true, config.containsKey(StringType.valueOf("OFF")));
         Assert.assertEquals("POST", config.get(StringType.valueOf("OFF")).httpMethod);
-        Assert.assertEquals("http://www.domain.org:1234/home/lights/23875/",
-                config.get(StringType.valueOf("OFF")).url);
-        Assert.assertEquals("MAP=ABBA",
-                config.get(StringType.valueOf("OFF")).transformation);
+        Assert.assertEquals("http://www.domain.org:1234/home/lights/23875/", config.get(StringType.valueOf("OFF")).url);
+        Assert.assertEquals("MAP=ABBA", config.get(StringType.valueOf("OFF")).transformation);
     }
 
     class StringTestItem extends GenericItem {
