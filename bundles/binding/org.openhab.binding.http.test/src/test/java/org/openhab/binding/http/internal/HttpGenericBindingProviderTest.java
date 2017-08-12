@@ -321,7 +321,6 @@ public class HttpGenericBindingProviderTest {
     @Test
     public void testParseBindingConfigForBodyWithMapTransform() throws BindingConfigParseException {
         String bindingConfig = ">[OFF:POST:http://www.domain.org:1234/home/lights/23875/:MAP(ABBA)]";
-        //REGEX(.*?<current_conditions>.*?<temp_c data=\\\"(.*?)\\\".*)
 
         // method under test
         HttpBindingConfig config = provider.parseBindingConfig(testItem, bindingConfig);
