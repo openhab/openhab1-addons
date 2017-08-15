@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>org.openhab.bundles</groupId>
+        <artifactId>binding</artifactId>
+        <version>1.11.0-SNAPSHOT</version>
+    </parent>
+
+    <name>openHAB aleoncean Binding</name>
+
+    <properties>
+        <bundle.symbolicName>org.openhab.binding.aleoncean</bundle.symbolicName>
+        <bundle.namespace>org.openhab.binding.aleoncean</bundle.namespace>
+        <deb.name>openhab-addon-binding-aleoncean</deb.name>
+        <deb.description>${project.name}</deb.description>
+    </properties>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.openhab.binding</groupId>
+    <artifactId>org.openhab.binding.aleoncean</artifactId>
+
+    <packaging>eclipse-plugin</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.vafer</groupId>
+                <artifactId>jdeb</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+    
+<licenses>
+        <license>
+            <name>Eclipse Public License, Version 1.0</name>
+            <url>http://www.eclipse.org/legal/epl-v10.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>aleon GmbH</name>
+        <url>https://www.aleon.eu</url>
+    </organization>
+  
+    <developers>
+        <developer>
+            <id>maggu2810</id>
+            <name>Markus Rathgeb</name>
+            <email>maggu2810@gmail.com</email>
+            <!--<url></url>-->
+            <organization>aleon GmbH</organization>
+            <organizationUrl>https://www.aleon.eu</organizationUrl>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/Berlin</timezone>
+            <properties>
+                <!--<picUrl></picUrl>-->
+                <!--<gtalk></gtalk>-->
+            </properties>
+        </developer>
+    </developers>
+    
+
+</project>
