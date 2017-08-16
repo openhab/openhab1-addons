@@ -113,8 +113,8 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                 scheduler = new StdSchedulerFactory().getScheduler();
                 this.removeAllJobs();
             } catch (SchedulerException e) {
-                log.error("cannot get job-scheduler", e);
-                throw new IllegalStateException("cannot get job-scheduler", e);
+                log.warn("Cannot get job scheduler", e);
+                throw new IllegalStateException("Cannot get job scheduler", e);
             }
 
             this.startLoading();
@@ -136,7 +136,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
         try {
             this.removeAllJobs();
         } catch (SchedulerException e) {
-            log.error("cannot remove jobs: " + e.getMessage(), e);
+            log.warn("Cannot remove jobs: {}", e.getMessage(), e);
         }
     }
 
@@ -288,7 +288,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                     try {
                         this.scheduler.deleteJob(JobKey.jobKey(timerKey));
                     } catch (SchedulerException e) {
-                        log.error("cannot cancel event with job-id: " + timerKey, e);
+                        log.warn("Cannot cancel event with job id: {}", timerKey, e);
                     }
                 }
                 eventContainerOld.getTimerMap().clear();
@@ -302,7 +302,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                         try {
                             notifier.eventRemoved(event);
                         } catch (Exception e) {
-                            log.error("error while invoking listener", e);
+                            log.warn("Error while invoking listener", e);
                         }
                     }
                 }
@@ -312,7 +312,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                         try {
                             notifier.eventLoaded(event);
                         } catch (Exception e) {
-                            log.error("error while invoking listener", e);
+                            log.warn("Error while invoking listener", e);
                         }
                     }
                 }
@@ -324,7 +324,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                             try {
                                 createJob(eventContainer, event, index);
                             } catch (SchedulerException e) {
-                                log.error("cannot create jobs for event '{}': ", event.getShortName(), e.getMessage());
+                                log.warn("Cannot create jobs for event '{}': {}", event.getShortName(), e.getMessage());
                             }
                         }
                         index++;
@@ -363,16 +363,16 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                             try {
                                 notifier.eventLoaded(event);
                             } catch (Exception e) {
-                                log.error("error while invoking listener", e);
+                                log.warn("Error while invoking listener", e);
                             }
                         }
                         if (createTimer) {
                             try {
-                                log.trace("creating job for event {} ", event.getShortName());
+                                log.trace("creating job for event {}", event.getShortName());
                                 createJob(eventContainerOld, event, eventContainerOld.getEventList().size() - 1);
                                 // -1 because we already added the event to eventContainerOld
                             } catch (SchedulerException e) {
-                                log.error("cannot create jobs for event '{}': ", event.getShortName(), e.getMessage());
+                                log.warn("Cannot create jobs for event '{}': {}", event.getShortName(), e.getMessage());
                             }
                         }
                     }
@@ -390,7 +390,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                     try {
                         notifier.eventLoaded(event);
                     } catch (Exception e) {
-                        log.error("error while invoking listener", e);
+                        log.warn("Error while invoking listener", e);
                     }
                 }
             }
@@ -401,7 +401,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                         try {
                             createJob(eventContainer, event, index);
                         } catch (SchedulerException e) {
-                            log.error("cannot create jobs for event: " + event.getShortName());
+                            log.warn("Cannot create jobs for event: {}", event.getShortName());
                         }
                     }
                     index++;
@@ -476,7 +476,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                 this.scheduler.scheduleJob(jobTrigger);
                 log.info("reload job scheduled for: {}", eventRuntime.getConfig().getKey());
             } catch (SchedulerException e) {
-                log.error("cannot schedule calendar-reloader", e);
+                log.warn("Cannot schedule calendar reloader", e);
             }
             // next event 10 seconds later
             i += 10;
@@ -505,10 +505,10 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                 .get(calDavEvent.getCalendarId());
         CalDavConfig config = calendarRuntime.getConfig();
         if (config == null) {
-            log.error("cannot find config for calendar id: {}", calDavEvent.getCalendarId());
+            log.warn("Cannot find config for calendar id: {}", calDavEvent.getCalendarId());
+            return;
         }
         Sardine sardine = Util.getConnection(config);
-
         Calendar calendar = Util.createCalendar(calDavEvent, defaultTimeZone);
 
         try {
@@ -518,7 +518,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                 try {
                     sardine.delete(fullIcsFile);
                 } catch (IOException e) {
-                    log.error("cannot remove old ics file: {}", fullIcsFile);
+                    log.warn("Cannot remove old ics file: {}", fullIcsFile);
                 }
             } else {
                 log.debug("event is new: {}", fullIcsFile);
@@ -533,9 +533,9 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
             eventContainer.setLastChanged(calDavEvent.getLastChanged());
             this.addEventToMap(eventContainer, false);
         } catch (UnsupportedEncodingException e) {
-            log.error("cannot write event", e);
+            log.warn("Cannot write event", e);
         } catch (IOException e) {
-            log.error("cannot write event", e);
+            log.warn("Cannot write event", e);
         }
     }
 
