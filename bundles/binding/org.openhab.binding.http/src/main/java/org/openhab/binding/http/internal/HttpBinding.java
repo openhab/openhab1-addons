@@ -422,7 +422,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 
                     // the config-key enumeration contains additional keys that we
                     // don't want to process here ...
-                    if (CONFIG_TIMEOUT.equals(key) || CONFIG_GRANULARITY.equals(key) || "service.pid".equals(key)) {
+                    if (CONFIG_TIMEOUT.equals(key) || CONFIG_GRANULARITY.equals(key) || CONFIG_FORMAT.equals(key) || "service.pid".equals(key)) {
                         continue;
                     }
 
