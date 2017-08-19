@@ -119,6 +119,14 @@ public class KNXConnection implements ManagedService {
     private static int sMaxRefreshQueueEntries = 10000;
 
     /**
+     * In openHAB 1.x calling postUpdate AND sendCommand was sent to KNX bus.
+     * While in openHAB2 in some scenarios this generates a lot of Echos and unwanted bus traffic.
+     * In openHAB2 default behavior postUpdate is ignored, calling postUpdate() in rules are no longer sent to the KNX
+     * bus.
+     */
+    private static Boolean sPostUpdateToKNX;
+
+    /**
      * Determines whether Network Address Translation (NAT) will be used for IP connections.
      *
      * Default value is <code>false</code>.
@@ -131,7 +139,7 @@ public class KNXConnection implements ManagedService {
     /**
      * Returns the KNXNetworkLink for talking to the KNX bus.
      * The link can be null, if it has not (yet) been established successfully.
-     * 
+     *
      * @return the KNX network link
      */
     public static synchronized ProcessCommunicator getCommunicator() {
@@ -167,7 +175,7 @@ public class KNXConnection implements ManagedService {
 
     /**
      * Tries to connect either by IP or serial bus, depending on supplied config data.
-     * 
+     *
      * @return true if connection was established, false otherwise
      */
     public static synchronized boolean connect() {
@@ -320,7 +328,7 @@ public class KNXConnection implements ManagedService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
      */
     @Override
@@ -408,6 +416,14 @@ public class KNXConnection implements ManagedService {
                             "Error when trying to read parameter 'maxRefreshQueueEntries' from configuration. '{}' is not a number: using default.",
                             maxRefreshQueueEntriesString);
                 }
+            }
+
+            String postUpdateToKNX = (String) config.get("postUpdateToKNX");
+            if (StringUtils.isNotBlank(postUpdateToKNX)) {
+                sPostUpdateToKNX = postUpdateToKNX.equalsIgnoreCase("true");
+            } else {
+                // if running in openHAB 2 environment postUpdate is ignored by default
+                sPostUpdateToKNX = getEnvironmentIsFelix();
             }
 
             String numberOfThreadsString = (String) config.get("numberOfThreads");
@@ -504,6 +520,13 @@ public class KNXConnection implements ManagedService {
         return sMaxRefreshQueueEntries;
     }
 
+    /**
+     * @return the sPostUpdateToKNX
+     */
+    public static boolean getPostUpdateToKNX() {
+        return sPostUpdateToKNX;
+    }
+
     private static final class ConnectTimerTask extends TimerTask {
         private final Timer timer;
 
@@ -525,5 +548,12 @@ public class KNXConnection implements ManagedService {
                 }
             }
         }
+    }
+
+    /** if true knx is started in openHAB 2 */
+    private static boolean getEnvironmentIsFelix() {
+        StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
+        sLogger.trace("getEnvironmentIsFelix = '{}'", stacktrace[5].getClassName());
+        return stacktrace[5].getClassName().contains("felix");
     }
 }
