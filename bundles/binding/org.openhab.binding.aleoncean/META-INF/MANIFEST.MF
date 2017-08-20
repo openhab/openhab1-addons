@@ -25,5 +25,4 @@ Export-Package: org.openhab.binding.aleoncean
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .,
- lib/aleoncean.jar
+Bundle-ClassPath: .
