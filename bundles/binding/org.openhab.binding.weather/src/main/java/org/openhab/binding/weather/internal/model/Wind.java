@@ -18,6 +18,7 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
  * Common provider model for wind data.
  *
  * @author Gerhard Riegler
+ * @author Christoph Weitkamp - Added mapping for OpenWeatherMap for channel 'gust'
  * @since 1.6.0
  */
 public class Wind {
@@ -52,6 +53,7 @@ public class Wind {
     @ProviderMappings({
             @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.wind_gust_kph"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "wind.gust"),
+            @Provider(name = ProviderName.OPENWEATHERMAP, property = "gust", converter = ConverterType.WIND_MPS),
             @Provider(name = ProviderName.HAMWEATHER, property = "windGustKPH"),
             @Provider(name = ProviderName.METEOBLUE, property = "wind_gust_max") })
     private Double gust;
