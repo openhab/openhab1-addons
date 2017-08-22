@@ -1,6 +1,6 @@
 # InfluxDB (0.9 and newer) Persistence
 
-This service allows you to persist and query states using the [InfluxDB](http://influxdb.org) time series database. The persisted values can be queried from within openHAB. There also are nice tools on the web for visualizing InfluxDB time series, such as [Grafana](http://grafana.org/).
+This service allows you to persist and query states using the [InfluxDB](http://influxdb.org) time series database. The persisted values can be queried from within openHAB. There also are nice tools on the web for visualizing InfluxDB time series, such as [Grafana](http://grafana.org/). 
 
 > There are two Influxdb persistence bundles which support different InfluxDB versions.  This service, named `influxdb`, supports InfluxDB 0.9 and newer, and the `influxdb08` service supports InfluxDB up to version 0.8.x.
 
