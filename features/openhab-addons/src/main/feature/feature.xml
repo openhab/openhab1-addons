@@ -505,13 +505,6 @@
     <configfile finalname="${openhab.conf}/services/neohub.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/neohub</configfile>
   </feature>
 
-  <feature name="openhab-binding-nest1" description="Nest Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.nest/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/nest.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/nest</configfile>
-  </feature>
-
   <feature name="openhab-binding-networkupstools1" description="Network UPS Tools Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
