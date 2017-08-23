@@ -248,7 +248,9 @@ public class WithingsAuthenticator implements ManagedService {
                 } else if ("tokensecret".equals(configKeyTail)) {
                     account.tokenSecret = value;
                 } else {
-                    throw new ConfigurationException(configKey, "The given configuration key is unknown!");
+                    String msg = "The configuration key '" + configKey + "' is not recognized and will be ignored.";
+                    logger.debug(msg);
+                    throw new ConfigurationException(configKey, msg);
                 }
             }
 
@@ -268,7 +270,7 @@ public class WithingsAuthenticator implements ManagedService {
                 printAuthenticationInfo(accountId);
             } else {
                 logger.warn(
-                        "Configuration details of Account '{}' are invalid please check openhab.cfg or withings.cfg.",
+                        "Configuration details of Account '{}' are invalid. Please check the configuration.",
                         accountId);
             }
         }
