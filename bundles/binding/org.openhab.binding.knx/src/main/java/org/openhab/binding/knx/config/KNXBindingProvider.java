@@ -30,7 +30,7 @@ public interface KNXBindingProvider extends BindingProvider {
 
     /**
      * This method returns the datapoint for an item, which corresponds to the given group address.
-     * 
+     *
      * @param itemName the item name for which the datapoint is requested
      * @param groupAddress a group address that is assigned to the datapoint in question
      * @return the datapoint for the item, which corresponds to the given group address
@@ -39,7 +39,7 @@ public interface KNXBindingProvider extends BindingProvider {
 
     /**
      * This method returns the datapoint for an item, which corresponds to the given type class.
-     * 
+     *
      * @param itemName the item name for which the datapoint is requested
      * @param typeClass the typeClass (e.g. OnOffType.class), which is mapped to the datapoint in question
      * @return the datapoint for the item, which is mapped to the given type class
@@ -48,7 +48,7 @@ public interface KNXBindingProvider extends BindingProvider {
 
     /**
      * This method determines, what openHAB items listen to a given group address.
-     * 
+     *
      * @param groupAddress the group address that the items listen to
      * @return all item names that listen to the given group address
      */
@@ -58,7 +58,7 @@ public interface KNXBindingProvider extends BindingProvider {
      * This method returns all datapoints, which accept a read request on the KNX bus,
      * i.e. their current status can be requested (which is not necessarily always possible
      * in KNX).
-     * 
+     *
      * @return all datapoints which accept a read request
      */
     public Iterable<Datapoint> getReadableDatapoints();
@@ -68,21 +68,23 @@ public interface KNXBindingProvider extends BindingProvider {
      * CommandGA or not. Returns <code>true</code> if <code>groupAddress</code>
      * is the first GA in the KNX configuration binding for a datapoint type and
      * <code>false</code> in all other cases.
-     * 
+     *
      * @param groupAddress the group address to check
-     * 
+     *
      * @return <code>true</code> if <code>groupAddress</code> is the first GA
      *         in the KNX configuration binding for a datapoint type and <code>false</code>
      *         in all other cases.
      */
     public boolean isCommandGA(final GroupAddress groupAddress);
 
+    public boolean isCommandGA(final String itemName);
+
     /**
      * Retrieves the auto refresh time in seconds for <code>dataPoint</code>.
      * <code>0</code> is returned if no auto refresh time is available.
-     * 
+     *
      * @param dataPoint the data point to check
-     * 
+     *
      * @return the auto refresh time in seconds if configured for
      *         <code>dataPoint</code> and <code>0</code> in all other cases.
      */
@@ -91,21 +93,21 @@ public interface KNXBindingProvider extends BindingProvider {
     /**
      * Checks whether the given <code>dataPoint</code> has a auto refresh time configured
      * or not.
-     * 
+     *
      * @param dataPoint the data point to check
-     * 
+     *
      * @return <code>true</code> if <code>dataPoint</code> has a auto refresh time
      *         configured and <code>false</code> in all other cases.
      */
     public boolean isAutoRefreshEnabled(Datapoint dataPoint);
-    
+
     /**
      * Determines if the given group address is marked for start-stop dimming.
+     *
+     * @param groupAddress the group address to check start-stop dimming for
      * 
-     * @param   groupAddress    the group address to check start-stop dimming for
-     *  
-     * @returns true, if the given group address is marked for start-stop dimming, false otherwise. 
+     * @returns true, if the given group address is marked for start-stop dimming, false otherwise.
      */
-    public boolean isStartStopGA(GroupAddress groupAddress);    
+    public boolean isStartStopGA(GroupAddress groupAddress);
 
 }
