@@ -302,16 +302,12 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
 
         List<HistoricItem> historicItems = new ArrayList<HistoricItem>();
 
-        StringBuffer query = new StringBuffer();
-        query.append("select ").append(VALUE_COLUMN_NAME).append(' ').append("from \"").append(retentionPolicy)
-                .append("\".");
+        StringBuffer query;
 
-        if (filter.getItemName() != null) {
-            query.append('"').append(filter.getItemName()).append('"');
-        } else if (!isBlank(measurementName)) {
-            query.append('"').append(measurementName).append('"');
+        if (!isBlank(measurementName)) {
+            query = getSingleMeasurementQuery(filter);
         } else {
-            query.append("/.*/");
+            query = getMultiMeasurementQuery(filter);
         }
 
         logger.trace(
@@ -321,17 +317,15 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
 
         if ((!isBlank(measurementName) || filter.getState() != null && filter.getOperator() != null)
                 || filter.getBeginDate() != null || filter.getEndDate() != null) {
-            query.append(" where ");
 
-            if (!isBlank(measurementName)) {
-                query.append(ITEM_NAME_TAG).append(" ").append("=").append(" ").append(measurementName).append(" ");
-            }
+            query.append(" and ");
 
             boolean foundState = false;
             boolean foundBeginDate = false;
             if (filter.getState() != null && filter.getOperator() != null) {
                 String value = stateToString(filter.getState());
                 if (value != null) {
+
                     foundState = true;
                     query.append(VALUE_COLUMN_NAME);
                     query.append(" ");
@@ -396,7 +390,8 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
             } else {
                 for (Series series : seriess) {
                     logger.trace("series {}", series.toString());
-                    String historicItemName = series.getName();
+                    // TODO: get name
+                    String historicItemName = filter.getItemName();
                     List<List<Object>> valuess = series.getValues();
                     if (valuess == null) {
                         logger.debug("query returned no values");
@@ -408,15 +403,19 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
                         for (int i = 0; i < columns.size(); i++) {
                             String columnName = columns.get(i);
                             if (columnName.equals(TIME_COLUMN_NAME)) {
+                                logger.debug("Time: {}", columnName);
                                 timestampColumn = i;
                             } else if (columnName.equals(VALUE_COLUMN_NAME)) {
                                 valueColumn = i;
                             } else if (columnName.equals(TYPE_COLUMN_NAME)) {
-                                String column_name = valuess.get(i).toString();
+                                logger.debug("Type: {}", columnName);
+                                String column_name = valuess.get(0).get(i).toString();
+                                logger.debug("Type-name: {}", column_name);
                                 for (int a = 0; a < columns.size(); a++) {
                                     String columTypeName = columns.get(a);
                                     if (columTypeName.equals(column_name)) {
                                         valueColumn = a;
+                                        logger.debug("Type-Index: {}", a);
                                         break;
                                     }
                                 }
@@ -429,7 +428,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
                             Double rawTime = (Double) valuess.get(i).get(timestampColumn);
                             Date time = new Date(rawTime.longValue());
                             State value = objectToState(valuess.get(i).get(valueColumn), historicItemName);
-                            logger.trace("adding historic item {}: time {} value {}", historicItemName, time, value);
+                            logger.debug("adding historic item {}: time {} value {}", historicItemName, time, value);
                             historicItems.add(new InfluxdbItem(historicItemName, value, time));
                         }
                     }
@@ -437,6 +436,29 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
             }
         }
         return historicItems;
+    }
+
+    private StringBuffer getSingleMeasurementQuery(FilterCriteria filter) {
+        StringBuffer query = new StringBuffer();
+        query.append("select ").append("*").append(" from \"").append(retentionPolicy).append("\".\"")
+                .append(measurementName).append("\" ");
+        if (filter.getItemName() != null) {
+            query.append("where \"").append(ITEM_NAME_TAG).append("\" = '").append(filter.getItemName()).append("' ");
+        }
+        return query;
+    }
+
+    private StringBuffer getMultiMeasurementQuery(FilterCriteria filter) {
+        StringBuffer query = new StringBuffer();
+        query.append("select ").append(VALUE_COLUMN_NAME).append(' ').append("from \"").append(retentionPolicy)
+                .append("\".");
+        if (filter.getItemName() != null) {
+            query.append('"').append(filter.getItemName()).append('"');
+        } else {
+            query.append("/.*/");
+        }
+
+        return query;
     }
 
     private String getTimeFilter(Date time) {
