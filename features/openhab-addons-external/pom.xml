@@ -91,6 +91,7 @@
                                 <artifact><file>src/main/resources/conf/sapp.cfg</file><type>cfg</type><classifier>sapp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/satel.cfg</file><type>cfg</type><classifier>satel</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/snmp.cfg</file><type>cfg</type><classifier>snmp</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/sonance.cfg</file><type>cfg</type><classifier>snmp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/swegonventilation.cfg</file><type>cfg</type><classifier>swegonventilation</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/systeminfo.cfg</file><type>cfg</type><classifier>systeminfo</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/tcp.cfg</file><type>cfg</type><classifier>tcp</classifier></artifact>
