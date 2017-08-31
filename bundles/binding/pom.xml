@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>bundles</artifactId>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>1.11.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -26,10 +26,13 @@
     <module>org.openhab.binding.networkhealth</module>
     <module>org.openhab.binding.exec</module>
     <module>org.openhab.binding.exec.test</module>
+    <module>org.openhab.binding.expire</module>
+    <module>org.openhab.binding.fatekplc</module>
     <module>org.openhab.binding.http</module>
     <module>org.openhab.binding.http.test</module>
     <module>org.openhab.binding.hue</module>
     <module>org.openhab.binding.fritzbox</module>
+    <module>org.openhab.binding.ddwrt</module>
     <module>org.openhab.binding.ntp</module>
     <module>org.openhab.binding.mpd</module>
     <module>org.openhab.binding.mystromecopower</module>
@@ -51,9 +54,9 @@
     <module>org.openhab.binding.dmx.lib485</module>
     <module>org.openhab.binding.dmx.artnet</module>
     <module>org.openhab.binding.dmx.test</module>
-	<module>org.openhab.binding.dsmr</module>
+    <module>org.openhab.binding.dsmr</module>
     <module>org.openhab.binding.rfxcom</module>
-    <!--module>org.openhab.binding.rfxcom.test</module-->
+    <module>org.openhab.binding.rfxcom.test</module>
     <module>org.openhab.binding.samsungac</module>
     <module>org.openhab.binding.samsungac.test</module>
     <module>org.openhab.binding.samsungtv</module>
@@ -150,9 +153,11 @@
     <module>org.openhab.binding.ecobee</module>
     <module>org.openhab.binding.autelis</module>
     <module>org.openhab.binding.nest</module>
+    <module>org.openhab.binding.powerdoglocalapi</module>
     <module>org.openhab.binding.satel</module>
     <module>org.openhab.binding.harmonyhub</module>
     <module>org.openhab.binding.plex</module>
+    <module>org.openhab.binding.wr3223</module>
     <module>org.openhab.binding.mochadx10</module>
     <module>org.openhab.binding.denon</module>
     <module>org.openhab.binding.mailcontrol</module>
@@ -184,5 +189,13 @@
     <module>org.openhab.binding.smarthomatic</module>
     <module>org.openhab.binding.gc100ir</module>
     <module>org.openhab.binding.powermax</module>
+    <module>org.openhab.binding.upb</module>
+    <module>org.openhab.binding.horizon</module>
+    <module>org.openhab.binding.mcp23017</module>
+    <module>org.openhab.binding.mcp3424</module>
+    <module>org.openhab.binding.plclogo</module>
+    <module>org.openhab.binding.km200</module>
+    <module>org.openhab.binding.diyonxbee</module>
+    <module>org.openhab.binding.isy</module>
   </modules>
 </project>

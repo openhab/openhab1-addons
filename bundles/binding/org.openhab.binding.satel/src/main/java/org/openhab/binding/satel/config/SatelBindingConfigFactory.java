@@ -37,7 +37,7 @@ public class SatelBindingConfigFactory {
 
     /**
      * Creates binding configuration class basing on given configuration string.
-     * 
+     *
      * @param bindingConfig
      *            configuration string
      * @return an instance of {@link SatelBindingConfig}

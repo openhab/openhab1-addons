@@ -178,7 +178,7 @@ public class JobScheduler {
         if (nextSeason == null) {
             nextSeason = DateTimeUtils.getFirstDayOfNextYear();
         }
-        schedule(nextSeason, "Season", new JobDataMap());
+        schedule(nextSeason, "Season", new JobDataMap(), SeasonJob.class);
     }
 
     /**
@@ -187,14 +187,14 @@ public class JobScheduler {
     public void scheduleItem(Calendar calendar, String itemName) {
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put("itemName", itemName);
-        schedule(calendar, itemName, jobDataMap);
+        schedule(calendar, itemName, jobDataMap, ItemJob.class);
     }
 
     /**
      * Schedules a job at the specified date/time, deletes a previously
      * scheduled job.
      */
-    private void schedule(Calendar calendar, String jobName, JobDataMap jobDataMap) {
+    private void schedule(Calendar calendar, String jobName, JobDataMap jobDataMap, Class<? extends Job> jobClass) {
         if (System.currentTimeMillis() < calendar.getTimeInMillis()) {
             try {
                 JobKey jobKey = new JobKey(jobName, JOB_GROUP);
@@ -203,7 +203,7 @@ public class JobScheduler {
                 }
                 Trigger trigger = newTrigger().withIdentity(jobName + "-Trigger", JOB_GROUP).startAt(calendar.getTime())
                         .build();
-                JobDetail jobDetail = newJob(ItemJob.class).withIdentity(jobKey).usingJobData(jobDataMap).build();
+                JobDetail jobDetail = newJob(jobClass).withIdentity(jobKey).usingJobData(jobDataMap).build();
                 scheduler.scheduleJob(jobDetail, trigger);
                 logger.debug("Scheduled job with name {} at {}", jobName, sdf.format(calendar.getTime()));
             } catch (SchedulerException ex) {

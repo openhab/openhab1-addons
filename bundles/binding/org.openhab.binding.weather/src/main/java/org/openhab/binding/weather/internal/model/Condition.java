@@ -24,7 +24,8 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
  */
 public class Condition {
 
-    @ProviderMappings({ @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.weather"),
+    @ProviderMappings({
+            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.weather"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "conditions"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "weather.description"),
             @Provider(name = ProviderName.FORECASTIO, property = "currently.summary"),
@@ -44,18 +45,23 @@ public class Condition {
             @Provider(name = ProviderName.YAHOO, property = "lastBuildDate", converter = ConverterType.FULL_UTC_DATE),
             @Provider(name = ProviderName.YAHOO, property = "forecast.date", converter = ConverterType.SIMPLE_DATE),
             @Provider(name = ProviderName.HAMWEATHER, property = "ob.timestamp", converter = ConverterType.UNIX_DATE),
-            @Provider(name = ProviderName.HAMWEATHER, property = "periods.timestamp", converter = ConverterType.UNIX_DATE) })
+            @Provider(name = ProviderName.HAMWEATHER, property = "periods.timestamp", converter = ConverterType.UNIX_DATE),
+            @Provider(name = ProviderName.METEOBLUE, property = "last_model_update", converter = ConverterType.JSON_DATE) })
     private Calendar observationTime;
 
-    @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "weather.id"),
+    @ProviderMappings({
+            @Provider(name = ProviderName.OPENWEATHERMAP, property = "weather.id"),
             @Provider(name = ProviderName.YAHOO, property = "code"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "weatherCode"),
-            @Provider(name = ProviderName.HAMWEATHER, property = "weatherPrimaryCoded", converter = ConverterType.MULTI_ID) })
+            @Provider(name = ProviderName.HAMWEATHER, property = "weatherPrimaryCoded", converter = ConverterType.MULTI_ID),
+            @Provider(name = ProviderName.METEOBLUE, property = "pictocode"),
+            @Provider(name = ProviderName.METEOBLUE, property = "pictocode_day") })
     private String id;
 
     private String commonId;
 
-    @ProviderMappings({ @Provider(name = ProviderName.FORECASTIO, property = "currently.icon"),
+    @ProviderMappings({
+            @Provider(name = ProviderName.FORECASTIO, property = "currently.icon"),
             @Provider(name = ProviderName.FORECASTIO, property = "daily.data.icon"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "icon"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.icon"),

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,12 +24,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.util.CompatibilityHints;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.joda.time.DateTimeZone;
 import org.openhab.core.service.AbstractActiveService;
@@ -61,6 +60,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.sardine.Sardine;
+
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.util.CompatibilityHints;
 
 /**
  * Loads all events from the configured calDAV servers. This is done with an
@@ -111,8 +113,8 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                 scheduler = new StdSchedulerFactory().getScheduler();
                 this.removeAllJobs();
             } catch (SchedulerException e) {
-                log.error("cannot get job-scheduler", e);
-                throw new IllegalStateException("cannot get job-scheduler", e);
+                log.warn("Cannot get job scheduler", e);
+                throw new IllegalStateException("Cannot get job scheduler", e);
             }
 
             this.startLoading();
@@ -120,7 +122,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
     }
 
     private void removeAllJobs() throws SchedulerException {
-        if(scheduler!=null) {
+        if (scheduler != null) {
             scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_RELOADER))));
             scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_START))));
             scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_END))));
@@ -134,106 +136,112 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
         try {
             this.removeAllJobs();
         } catch (SchedulerException e) {
-            log.error("cannot remove jobs: " + e.getMessage(), e);
+            log.warn("Cannot remove jobs: {}", e.getMessage(), e);
         }
     }
 
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        if (config != null) {
-            CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
-
-            // just temporary
-            Map<String, CalDavConfig> configMap = new HashMap<String, CalDavConfig>();
-
-            Enumeration<String> iter = config.keys();
-            while (iter.hasMoreElements()) {
-                String key = iter.nextElement();
-                log.trace("configuration parameter: " + key);
-                if (key.equals("service.pid")) {
-                    continue;
-                } else if (key.equals(PROP_TIMEZONE)) {
-                    log.debug("overriding default timezone {} with {}", defaultTimeZone, config.get(key));
-                    defaultTimeZone = DateTimeZone.forID(config.get(key) + "");
-                    if (defaultTimeZone == null) {
-                        throw new ConfigurationException(PROP_TIMEZONE, "invalid timezone value: " + config.get(key));
-                    }
-                    log.debug("found timeZone: {}", defaultTimeZone);
-                    continue;
-                }
-                String[] keys = key.split(":");
-                if (keys.length != 2) {
-                    throw new ConfigurationException(key, "unknown identifier");
-                }
-                String id = keys[0];
-                String paramKey = keys[1];
-                CalDavConfig calDavConfig = configMap.get(id);
-                if (calDavConfig == null) {
-                    calDavConfig = new CalDavConfig();
-                    configMap.put(id, calDavConfig);
-                }
-                String value = config.get(key) + "";
-
-                calDavConfig.setKey(id);
-                if (paramKey.equals(PROP_USERNAME)) {
-                    calDavConfig.setUsername(value);
-                } else if (paramKey.equals(PROP_PASSWORD)) {
-                    calDavConfig.setPassword(value);
-                } else if (paramKey.equals(PROP_URL)) {
-                    calDavConfig.setUrl(value);
-                } else if (paramKey.equals(PROP_RELOAD_INTERVAL)) {
-                    calDavConfig.setReloadMinutes(Integer.parseInt(value));
-                } else if (paramKey.equals(PROP_PRELOAD_TIME)) {
-                    calDavConfig.setPreloadMinutes(Integer.parseInt(value));
-                } else if (paramKey.equals(PROP_HISTORIC_LOAD_TIME)) {
-                    calDavConfig
-                            .setHistoricLoadMinutes(Integer.parseInt(value));
-                } else if (paramKey.equals(PROP_LAST_MODIFIED_TIMESTAMP_VALID)) {
-                    calDavConfig
-                            .setLastModifiedFileTimeStampValid(BooleanUtils.toBoolean(value));
-                } else if (paramKey
-                        .equals(PROP_DISABLE_CERTIFICATE_VERIFICATION)) {
-                    calDavConfig.setDisableCertificateVerification(BooleanUtils
-                            .toBoolean(value));
-                } else if (paramKey.equals(PROP_CHARSET)) {
-                    try {
-                        Charset.forName(value);
-                        calDavConfig.setCharset(value);
-                    } catch (UnsupportedCharsetException e) {
-                        log.error("charset not valid: {}", value);
-                    }
-                }
-            }
-
-            // verify if all required parameters are set
-            for (String id : configMap.keySet()) {
-                if (configMap.get(id).getUrl() == null) {
-                    throw new ConfigurationException(PROP_URL, PROP_URL + " must be set");
-                }
-                if (configMap.get(id).getUsername() == null) {
-                    throw new ConfigurationException(PROP_USERNAME, PROP_USERNAME + " must be set");
-                }
-                if (configMap.get(id).getPassword() == null) {
-                    throw new ConfigurationException(PROP_PASSWORD, PROP_PASSWORD + " must be set");
-                }
-                log.trace("config for id '{}': {}", id, configMap.get(id));
-            }
-
-            // initialize event cache
-            for (CalDavConfig calDavConfig : configMap.values()) {
-                final CalendarRuntime eventRuntime = new CalendarRuntime();
-                eventRuntime.setConfig(calDavConfig);
-                File cachePath = Util.getCachePath(calDavConfig.getKey());
-                if (!cachePath.exists() && !cachePath.mkdirs()) {
-                    log.error("cannot create directory ({}) for calendar caching (missing rights?)",
-                            cachePath.getAbsoluteFile());
-                    continue;
-                }
-                EventStorage.getInstance().getEventCache().put(calDavConfig.getKey(), eventRuntime);
-            }
-
-            setProperlyConfigured(true);
+        if (config == null) {
+            log.debug("Update was called with a null configuration for CalDAV IO.");
+            return;
         }
+
+        log.debug("Update was called for CalDAV IO.");
+        CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
+        Map<String, CalDavConfig> configMap = new HashMap<String, CalDavConfig>();
+
+        Enumeration<String> iter = config.keys();
+        while (iter.hasMoreElements()) {
+            String key = iter.nextElement();
+
+            if (key.equals("service.pid")) {
+                continue;
+            }
+
+            log.trace("processing configuration parameter: {}", key);
+            if (key.equals(PROP_TIMEZONE)) {
+                String newTimeZoneStr = Objects.toString(config.get(key), null);
+                if (StringUtils.isBlank(newTimeZoneStr)) {
+                    log.info("The {} setting was configured with an empty value. Default value '{}' will be used instead.",
+                             PROP_TIMEZONE, defaultTimeZone);
+                    continue;
+                }
+                DateTimeZone newTimeZone = DateTimeZone.forID(newTimeZoneStr);
+                if (newTimeZone == null) {
+                    log.warn("Invalid timezone value: {}", newTimeZoneStr);
+                    throw new ConfigurationException(PROP_TIMEZONE, "Invalid timezone value: " + newTimeZoneStr);
+                }
+                log.debug("Overriding default timezone {} with {}", defaultTimeZone, newTimeZone);
+                defaultTimeZone = newTimeZone;
+                continue;
+            }
+
+            String[] keys = key.split(":");
+            if (keys.length != 2) {
+                log.warn("Unable to parse configuration parameter: {}", key);
+                throw new ConfigurationException("CalDAV IO", "Unable to parse configuration parameter: "+key);
+            }
+            String id = keys[0];
+            String paramKey = keys[1];
+            CalDavConfig calDavConfig = configMap.get(id);
+            if (calDavConfig == null) {
+                calDavConfig = new CalDavConfig();
+                configMap.put(id, calDavConfig);
+            }
+            String value = Objects.toString(config.get(key), null);
+
+            calDavConfig.setKey(id);
+            if (paramKey.equals(PROP_USERNAME)) {
+                calDavConfig.setUsername(value);
+            } else if (paramKey.equals(PROP_PASSWORD)) {
+                calDavConfig.setPassword(value);
+            } else if (paramKey.equals(PROP_URL)) {
+                calDavConfig.setUrl(value);
+            } else if (paramKey.equals(PROP_RELOAD_INTERVAL)) {
+                calDavConfig.setReloadMinutes(Integer.parseInt(value));
+            } else if (paramKey.equals(PROP_PRELOAD_TIME)) {
+                calDavConfig.setPreloadMinutes(Integer.parseInt(value));
+            } else if (paramKey.equals(PROP_HISTORIC_LOAD_TIME)) {
+                calDavConfig.setHistoricLoadMinutes(Integer.parseInt(value));
+            } else if (paramKey.equals(PROP_LAST_MODIFIED_TIMESTAMP_VALID)) {
+                calDavConfig.setLastModifiedFileTimeStampValid(BooleanUtils.toBoolean(value));
+            } else if (paramKey.equals(PROP_DISABLE_CERTIFICATE_VERIFICATION)) {
+                calDavConfig.setDisableCertificateVerification(BooleanUtils.toBoolean(value));
+            } else if (paramKey.equals(PROP_CHARSET)) {
+                try {
+                    Charset.forName(value);
+                    calDavConfig.setCharset(value);
+                } catch (UnsupportedCharsetException e) {
+                    log.warn("Character set not valid: {}", value);
+                }
+            }
+        }
+
+        // verify if all required parameters are set
+        for (String id : configMap.keySet()) {
+            if (StringUtils.isEmpty(configMap.get(id).getUrl())) {
+                log.warn("A URL must be configured for calendar '{}'", id);
+                throw new ConfigurationException("CalDAV IO", "A URL must be configured for calendar '" + id + "'");
+            }
+            log.trace("config for calendar '{}': {}", id, configMap.get(id));
+        }
+
+        // initialize event cache
+        for (CalDavConfig calDavConfig : configMap.values()) {
+            final CalendarRuntime eventRuntime = new CalendarRuntime();
+            eventRuntime.setConfig(calDavConfig);
+            File cachePath = Util.getCachePath(calDavConfig.getKey());
+            if (!cachePath.exists() && !cachePath.mkdirs()) {
+                log.warn("cannot create directory ({}) for calendar caching (missing rights?)",
+                        cachePath.getAbsoluteFile());
+                continue;
+            }
+            EventStorage.getInstance().getEventCache().put(calDavConfig.getKey(), eventRuntime);
+        }
+
+        log.info("CalDAV IO is properly configured.");
+        setProperlyConfigured(true);
     }
 
     public List<EventNotifier> getEventListenerList() {
@@ -280,7 +288,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                     try {
                         this.scheduler.deleteJob(JobKey.jobKey(timerKey));
                     } catch (SchedulerException e) {
-                        log.error("cannot cancel event with job-id: " + timerKey, e);
+                        log.warn("Cannot cancel event with job id: {}", timerKey, e);
                     }
                 }
                 eventContainerOld.getTimerMap().clear();
@@ -294,7 +302,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                         try {
                             notifier.eventRemoved(event);
                         } catch (Exception e) {
-                            log.error("error while invoking listener", e);
+                            log.warn("Error while invoking listener", e);
                         }
                     }
                 }
@@ -304,7 +312,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                         try {
                             notifier.eventLoaded(event);
                         } catch (Exception e) {
-                            log.error("error while invoking listener", e);
+                            log.warn("Error while invoking listener", e);
                         }
                     }
                 }
@@ -316,14 +324,61 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                             try {
                                 createJob(eventContainer, event, index);
                             } catch (SchedulerException e) {
-                                log.error("cannot create jobs for event '{}': ", event.getShortName(), e.getMessage());
+                                log.warn("Cannot create jobs for event '{}': {}", event.getShortName(), e.getMessage());
                             }
                         }
                         index++;
                     }
                 }
             } else {
-                // event is already in map and not updated, ignoring
+                // event is already in map and not updated (eventContainerold and eventContainer have the same
+                // "lastchanged" date) : we need to reschedule possible new events from recurrent events
+                log.debug(
+                        "event is already in map and not updated, we NEED to update eventlist and schedule new events jobs");
+                ArrayList<CalDavEvent> eventsToAdd = new ArrayList<>();
+                for (CalDavEvent event : eventContainer.getEventList()) {
+                    boolean eventAlreadyKnown = false;
+                    for (CalDavEvent oldevent : eventContainerOld.getEventList()) {
+                        if (event.equals(oldevent)) {
+                            eventAlreadyKnown = true;
+                            log.trace("events match");
+                        } else {
+                            log.trace("eventsarenotequal : {} - {} - {} - {} - {}", event.getId(), event.getName(),
+                                    event.getStart(), event.getEnd(), event.getLastChanged());
+                            log.trace("eventsarenotequal : {} - {} - {} - {} - {}", oldevent.getId(),
+                                    oldevent.getName(), oldevent.getStart(), oldevent.getEnd(),
+                                    oldevent.getLastChanged());
+                        }
+                    }
+                    if (!eventAlreadyKnown) {
+                        eventsToAdd.add(event);
+                    }
+                }
+                // add only new events
+                for (CalDavEvent event : eventsToAdd) {
+                    if (event.getEnd().isAfterNow()) {
+                        eventContainerOld.getEventList().add(event);
+                        for (EventNotifier notifier : eventListenerList) {
+                            log.trace("notify listener... {}", notifier);
+                            try {
+                                notifier.eventLoaded(event);
+                            } catch (Exception e) {
+                                log.warn("Error while invoking listener", e);
+                            }
+                        }
+                        if (createTimer) {
+                            try {
+                                log.trace("creating job for event {}", event.getShortName());
+                                createJob(eventContainerOld, event, eventContainerOld.getEventList().size() - 1);
+                                // -1 because we already added the event to eventContainerOld
+                            } catch (SchedulerException e) {
+                                log.warn("Cannot create jobs for event '{}': {}", event.getShortName(), e.getMessage());
+                            }
+                        }
+                    }
+                }
+                // update eventcontainer's calculateduntil
+                eventContainerOld.setCalculatedUntil(eventContainer.getCalculatedUntil());
             }
         } else {
             // event is new
@@ -335,7 +390,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                     try {
                         notifier.eventLoaded(event);
                     } catch (Exception e) {
-                        log.error("error while invoking listener", e);
+                        log.warn("Error while invoking listener", e);
                     }
                 }
             }
@@ -346,7 +401,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                         try {
                             createJob(eventContainer, event, index);
                         } catch (SchedulerException e) {
-                            log.error("cannot create jobs for event: " + event.getShortName());
+                            log.warn("Cannot create jobs for event: {}", event.getShortName());
                         }
                     }
                     index++;
@@ -421,7 +476,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                 this.scheduler.scheduleJob(jobTrigger);
                 log.info("reload job scheduled for: {}", eventRuntime.getConfig().getKey());
             } catch (SchedulerException e) {
-                log.error("cannot schedule calendar-reloader", e);
+                log.warn("Cannot schedule calendar reloader", e);
             }
             // next event 10 seconds later
             i += 10;
@@ -450,10 +505,10 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                 .get(calDavEvent.getCalendarId());
         CalDavConfig config = calendarRuntime.getConfig();
         if (config == null) {
-            log.error("cannot find config for calendar id: {}", calDavEvent.getCalendarId());
+            log.warn("Cannot find config for calendar id: {}", calDavEvent.getCalendarId());
+            return;
         }
         Sardine sardine = Util.getConnection(config);
-
         Calendar calendar = Util.createCalendar(calDavEvent, defaultTimeZone);
 
         try {
@@ -463,7 +518,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                 try {
                     sardine.delete(fullIcsFile);
                 } catch (IOException e) {
-                    log.error("cannot remove old ics file: {}", fullIcsFile);
+                    log.warn("Cannot remove old ics file: {}", fullIcsFile);
                 }
             } else {
                 log.debug("event is new: {}", fullIcsFile);
@@ -478,53 +533,94 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
             eventContainer.setLastChanged(calDavEvent.getLastChanged());
             this.addEventToMap(eventContainer, false);
         } catch (UnsupportedEncodingException e) {
-            log.error("cannot write event", e);
+            log.warn("Cannot write event", e);
         } catch (IOException e) {
-            log.error("cannot write event", e);
+            log.warn("Cannot write event", e);
         }
     }
 
     @Override
     public List<CalDavEvent> getEvents(final CalDavQuery query) {
-        log.trace("quering events for filter: {}", query);
+        log.trace("Querying events for filter: {}", query);
         final ArrayList<CalDavEvent> eventList = new ArrayList<CalDavEvent>();
 
-        if (query.getCalendarIds() != null) {
-            for (String calendarId : query.getCalendarIds()) {
-                final CalendarRuntime eventRuntime = EventStorage.getInstance().getEventCache().get(calendarId);
-                if (eventRuntime == null) {
-                    log.debug("calendar id {} not found", calendarId);
-                    continue;
-                }
+        if (query.getCalendarIds() == null) {
+            log.debug("No calendar IDs found in query. Unable to get events.");
+            return eventList;
+        }
 
-                for (EventContainer eventContainer : eventRuntime.getEventMap().values()) {
-                    for (CalDavEvent calDavEvent : eventContainer.getEventList()) {
-                        if (query.getFrom() != null) {
-                            if (calDavEvent.getEnd().isBefore(query.getFrom())) {
-                                continue;
-                            }
+        for (String calendarId : query.getCalendarIds()) {
+            final CalendarRuntime eventRuntime = EventStorage.getInstance().getEventCache().get(calendarId);
+            if (eventRuntime == null) {
+                log.debug("calendar id {} not found", calendarId);
+                continue;
+            }
+
+            for (EventContainer eventContainer : eventRuntime.getEventMap().values()) {
+                for (CalDavEvent calDavEvent : eventContainer.getEventList()) {
+                    if (query.getFrom() != null) {
+                        if (calDavEvent.getEnd().isBefore(query.getFrom())) {
+                            continue;
                         }
-                        if (query.getTo() != null) {
-                            if (calDavEvent.getStart().isAfter(query.getTo())) {
-                                continue;
-                            }
-                        }
-                        if (query.getFilterName() != null) {
-                            if (!calDavEvent.getName().matches(query.getFilterName())) {
-                                continue;
-                            }
-                        }
-                        if (query.getFilterCategory() != null) {
-                            if (calDavEvent.getCategoryList() == null) {
-                                continue;
-                            } else {
-                                if (!calDavEvent.getCategoryList().containsAll(query.getFilterCategory())) {
-                                    continue;
-                                }
-                            }
-                        }
-                        eventList.add(calDavEvent);
                     }
+                    if (query.getTo() != null) {
+                        if (calDavEvent.getStart().isAfter(query.getTo())) {
+                            continue;
+                        }
+                    }
+                    if (query.getFilterName() != null) {
+                        if (!calDavEvent.getName().matches(query.getFilterName())) {
+                            continue;
+                        }
+                    }
+                    if (query.getFilterCategory() != null) {
+                        log.trace("processing filter category");
+                        if (calDavEvent.getCategoryList() == null) {
+                            log.trace("not found event category for event {}", calDavEvent.getId());
+                            continue;
+                        } else {
+                            log.trace("processing event category");
+                            boolean eventCategoriesMatchFilterCategories = false;
+                            if (query.getFilterCategoryMatchesAny()) {
+                                log.trace("filter-category-any encountered");
+                                int filterCategoriesIndex = 0;
+                                List<String> filterCategories = query.getFilterCategory();
+                                List<String> eventCategories = calDavEvent.getCategoryList();
+                                log.trace("comparing filter '{}' to event categories '{}' from event {}",
+                                        filterCategories, eventCategories, calDavEvent.getId());
+                                // browse filter categories, which are not null
+                                while (eventCategoriesMatchFilterCategories == false
+                                        && filterCategoriesIndex < filterCategories.size()) {
+                                    int eventCategoriesIndex = 0;
+                                    // browse event categories, which can be null
+                                    while (eventCategoriesMatchFilterCategories == false
+                                            && eventCategoriesIndex < eventCategories.size()) {
+                                        if (eventCategories.get(eventCategoriesIndex)
+                                                .equalsIgnoreCase(filterCategories.get(filterCategoriesIndex))) {
+                                            log.debug("filter category {} matches event category {}",
+                                                    filterCategories.get(filterCategoriesIndex),
+                                                    eventCategories.get(eventCategoriesIndex));
+                                            eventCategoriesMatchFilterCategories = true;
+                                        }
+                                        eventCategoriesIndex++;
+                                    }
+
+                                    filterCategoriesIndex++;
+                                }
+                            } else {
+                                log.trace("filter-category encountered");
+                                eventCategoriesMatchFilterCategories = calDavEvent.getCategoryList()
+                                        .containsAll(query.getFilterCategory());
+                            }
+
+                            if (!eventCategoriesMatchFilterCategories) {
+                                continue;
+                            }
+                        }
+                    } else {
+                        log.trace("not found any filter category");
+                    }
+                    eventList.add(calDavEvent);
                 }
             }
         }
@@ -548,5 +644,4 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
         log.debug("return event list for {} with {} entries", query, eventList.size());
         return eventList;
     }
-
 }

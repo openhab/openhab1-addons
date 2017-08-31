@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="ecobee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>Ecobee Binding</name>
+    <description>Monitor and control Ecobee thermostats and their remote sensors using the cloud-based API.</description>
+    <author>John Cocula</author>
+
+    <service-id>org.openhab.ecobee</service-id>
+
+    <config-description>
+        <parameter name="appkey" type="text" required="true">
+            <label>API Key</label>
+            <description>Private API key issued to you by Ecobee to use the API.</description>
+        </parameter>
+        <parameter name="scope" type="text" required="true">
+            <label>Scope</label>
+            <description>Application scope used when authorizing the binding (multiple allowed, comma-separated).</description>
+            <default>smartWrite</default>
+            <limitToOptions>false</limitToOptions>
+            <options>
+                <option value="smartRead">smartRead</option>
+                <option value="smartWrite">smartWrite</option>
+                <option value="ems">ems</option>
+            </options>
+        </parameter>
+        <parameter name="granularity" type="integer">
+            <label>Poll Granularity</label>
+            <description>Rate at which to check if poll is to run, in milliseconds.</description>
+            <default>5000</default>
+        </parameter>
+        <parameter name="refresh" type="integer">
+            <label>Refresh Interval</label>
+            <description>Data refresh interval in milliseconds.</description>
+            <default>180000</default>
+        </parameter>
+        <parameter name="quickpoll" type="integer">
+            <label>Quick Poll</label>
+            <description>Time in milliseconds to wait after successful update, command or action before refresh.</description>
+            <default>6000</default>
+        </parameter>
+        <parameter name="timeout" type="integer">
+            <label>HTTP Timeout</label>
+            <description>HTTP request timeout in milliseconds.</description>
+            <default>20000</default>
+        </parameter>
+        <parameter name="tempscale" type="text">
+            <label>Temperature Scale</label>
+            <description>Temperature scale to use when sending or receiving temperatures.</description>
+            <default>F</default>
+            <limitToOptions>true</limitToOptions>
+            <options>
+                <option value="F">Fahrenheit</option>
+                <option value="C">Celsius</option>
+            </options>
+        </parameter>
+    </config-description>
+</binding:binding>
+

@@ -70,17 +70,22 @@ public abstract class MessageDispatcher {
             int group = (msg.isCleanup() ? msg.getByte("command2") : a.getLowByte()) & 0xff;
             MessageHandler h = m_feature.getMsgHandlers().get(cmd1 & 0xFF);
             if (h == null) {
-                h = m_feature.getDefaultMsgHandler();
+                logger.debug("msg is not for this feature");
+                return true;
             }
-            logger.debug("all link message: {}", msg);
             if (!h.isDuplicate(msg)) {
-                logger.debug("all link message is no duplicate: {}/{}", h.matchesGroup(group), h.matches(msg));
                 if (h.matchesGroup(group) && h.matches(msg)) {
-                    logger.debug("{}:{}->{} cmd1:{} group {}/{}:{}", m_feature.getDevice().getAddress(),
+                    logger.debug("{}:{}->{} cmd1:{} group {}/{}", m_feature.getDevice().getAddress(),
                             m_feature.getName(), h.getClass().getSimpleName(), Utils.getHexByte(cmd1), group,
-                            h.getGroup(), msg);
+                            h.getGroup());
                     h.handleMessage(group, cmd1, msg, m_feature, port);
+                } else {
+                    logger.debug("message ignored because matches group: {} matches filter: {}",
+                                 h.matchesGroup(group), h.matches(msg));
                 }
+            } else {
+              logger.debug("message ignored as duplicate. Matches group: {} matches filter: {}",
+                           h.matchesGroup(group), h.matches(msg));
             }
         } catch (FieldException e) {
             logger.error("couldn't parse ALL_LINK message: {}", msg, e);

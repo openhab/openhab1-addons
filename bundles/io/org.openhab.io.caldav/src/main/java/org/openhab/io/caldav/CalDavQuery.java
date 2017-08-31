@@ -27,6 +27,7 @@ public class CalDavQuery {
     private Sort sort;
     private String filterName;
     private List<String> filterCategory;
+    private boolean filterCategoryMatchesAny = false;
 
     public CalDavQuery() {
         super();
@@ -92,6 +93,14 @@ public class CalDavQuery {
         this.sort = sort;
     }
 
+    public void setFilterCategoryMatchesAny(boolean filterCategoryMatchesAny) {
+        this.filterCategoryMatchesAny = filterCategoryMatchesAny;
+    }
+
+    public boolean getFilterCategoryMatchesAny() {
+        return filterCategoryMatchesAny;
+    }
+
     public String getFilterName() {
         return filterName;
     }
@@ -99,7 +108,7 @@ public class CalDavQuery {
     public void setFilterName(String filterName) {
         this.filterName = filterName;
     }
-    
+
     public List<String> getFilterCategory() {
         return filterCategory;
     }
@@ -110,11 +119,9 @@ public class CalDavQuery {
 
     @Override
     public String toString() {
-        return "CalDavQuery [calendarIds=" + calendarIds + ", from=" + from
-                + ", to=" + to + ", sort=" + sort + ", filterName=" + filterName + "]";
+        return "CalDavQuery [calendarIds=" + calendarIds + ", from=" + from + ", to=" + to + ", sort=" + sort
+                + ", filterName=" + filterName + "]";
     }
-
-
 
     public enum Sort {
         ASCENDING,

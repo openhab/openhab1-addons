@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB ModbusTCP Master Binding
 Bundle-SymbolicName: org.openhab.binding.modbus
-Bundle-Version: 1.9.0.qualifier
+Bundle-Version: 1.11.0.qualifier
 Bundle-Activator: org.openhab.binding.modbus.internal.ModbusActivator
 Bundle-Vendor: openHAB.org
 Import-Package: org.apache.commons.collections,
@@ -17,6 +17,7 @@ Import-Package: org.apache.commons.collections,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.core.service,
+ org.openhab.core.transform,
  org.openhab.core.types,
  org.openhab.library.tel.items,
  org.openhab.library.tel.types,
@@ -29,10 +30,10 @@ Import-Package: org.apache.commons.collections,
  org.quartz.impl,
  org.quartz.impl.matchers,
  org.quartz.utils,
- org.slf4j
+ org.slf4j,
+ gnu.io
 Export-Package: org.openhab.binding.modbus
 Service-Component: OSGI-INF/*.xml
 Bundle-ClassPath: .,
  lib/commons-pool2-2.4.2.jar
-Require-Bundle: org.openhab.io.transport.serial;bundle-version="1.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

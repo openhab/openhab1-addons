@@ -57,6 +57,9 @@ public class AcknowledgeMessage extends Message {
         }
     }
 
+    private static final Pattern SHORT_RESPONSE_PATTERN = Pattern.compile("(\\w{4})");
+    private static final Pattern EXTENDED_RESPONSE_PATTERN = Pattern.compile("(\\w{4})(\\w{16})");
+
     private ExtensionCode code;
     private String extendedMAC = "";
 
@@ -74,10 +77,6 @@ public class AcknowledgeMessage extends Message {
 
     @Override
     protected void parsePayLoad() {
-
-        Pattern SHORT_RESPONSE_PATTERN = Pattern.compile("(\\w{4})");
-        Pattern EXTENDED_RESPONSE_PATTERN = Pattern.compile("(\\w{4})(\\w{16})");
-
         Matcher shortMatcher = SHORT_RESPONSE_PATTERN.matcher(payLoad);
         Matcher extendedMatcher = EXTENDED_RESPONSE_PATTERN.matcher(payLoad);
 

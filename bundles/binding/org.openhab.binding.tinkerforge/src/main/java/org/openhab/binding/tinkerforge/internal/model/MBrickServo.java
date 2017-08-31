@@ -20,14 +20,16 @@ import com.tinkerforge.BrickServo;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickServo#getDeviceType <em>Device Type</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickServo()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickServo> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.MServo>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MTinkerBrickServo>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
+ *        <org.openhab.binding.tinkerforge.internal.model.MServo>"
  * @generated
  */
 public interface MBrickServo extends MDevice<BrickServo>, MSubDeviceHolder<MServo> {

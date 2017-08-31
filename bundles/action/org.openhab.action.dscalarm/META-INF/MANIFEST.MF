@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB DSC Alarm Action
 Bundle-SymbolicName: org.openhab.action.dscalarm
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.9.0.qualifier
+Bundle-Version: 1.11.0.qualifier
 Bundle-Activator: org.openhab.action.dscalarm.internal.DSCAlarmActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the DSC Alarm action of the open Home Automation Bus (openHAB)
@@ -18,7 +18,7 @@ Import-Package: org.openhab.core.items,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.slf4j,
- org.openhab.binding.dscalarm
+ org.openhab.binding.dscalarm1
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/action.xml

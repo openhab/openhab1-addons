@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.UnmarshalException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -46,6 +47,7 @@ import org.openhab.binding.denon.internal.communication.entities.commands.AppCom
 import org.openhab.binding.denon.internal.communication.entities.commands.AppCommandResponse;
 import org.openhab.binding.denon.internal.communication.entities.commands.CommandRx;
 import org.openhab.binding.denon.internal.communication.entities.commands.CommandTx;
+import org.openhab.binding.denon.internal.communication.entities.types.VolumeType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
@@ -216,7 +218,7 @@ public class DenonConnector {
             callback.updated(connection.getInstance(), state.getKey(), state.getValue());
         }
 
-        logger.trace("Refresh took {}ms", new Date().getTime() - start.getTime());
+        logger.trace("Refresh took {} ms", new Date().getTime() - start.getTime());
     }
 
     /**
@@ -449,7 +451,12 @@ public class DenonConnector {
             stateCache.put(DenonProperty.POWER_MAINZONE.getCode(),
                     mainZone.getPower().getValue() ? OnOffType.ON : OnOffType.OFF);
             stateCache.put(DenonProperty.MUTE.getCode(), mainZone.getMute().getValue() ? OnOffType.ON : OnOffType.OFF);
-            stateCache.put(DenonProperty.SURROUND_MODE.getCode(), new StringType(mainZone.getSurrMode().getValue()));
+            if (mainZone.getSurrMode() == null) {
+                logger.debug("Unable to get the SURROUND_MODE. MainZone update may not be correct.");
+            } else {
+                stateCache.put(DenonProperty.SURROUND_MODE.getCode(),
+                        new StringType(mainZone.getSurrMode().getValue()));
+            }
         }
     }
 
@@ -458,13 +465,22 @@ public class DenonConnector {
             String url = String.format("%s" + URL_ZONE_SECONDARY_LITE, statusUrl, i, i);
             logger.trace("Refreshing URL: {}", url);
             ZoneStatusLite zoneSecondary = getDocument(url, ZoneStatusLite.class);
-            if (zoneSecondary != null) {
-                stateCache.put("Z" + i, zoneSecondary.getPower().getValue() ? OnOffType.ON : OnOffType.OFF);
-                stateCache.put("Z" + i + DenonProperty.ZONE_VOLUME.getCode(),
-                        new PercentType(zoneSecondary.getMasterVolume().getValue()));
-                stateCache.put("Z" + i + DenonProperty.MUTE.getCode(),
-                        zoneSecondary.getMute().getValue() ? OnOffType.ON : OnOffType.OFF);
+            if (zoneSecondary == null) {
+                logger.warn("Unable to get secondary zone information.");
+                return;
             }
+
+            stateCache.put("Z" + i, zoneSecondary.getPower().getValue() ? OnOffType.ON : OnOffType.OFF);
+            VolumeType v = zoneSecondary.getMasterVolume();
+            if (v != null && v.getValue() != null) {
+                stateCache.put("Z" + i + DenonProperty.ZONE_VOLUME.getCode(),
+                    new PercentType(v.getValue()));
+            }
+            else {
+                logger.debug("Not updating master volume for secondary zone. Value is null.");
+            }
+            stateCache.put("Z" + i + DenonProperty.MUTE.getCode(),
+                    zoneSecondary.getMute().getValue() ? OnOffType.ON : OnOffType.OFF);
         }
     }
 
@@ -556,6 +572,7 @@ public class DenonConnector {
     private <T> T getDocument(String uri, Class<T> response) {
         try {
             String result = doHttpRequest("GET", uri, null);
+            logger.trace("result of getDocument for uri '{}':\r\n{}", uri, result);
 
             if (StringUtils.isNotBlank(result)) {
                 JAXBContext jc = JAXBContext.newInstance(response);
@@ -568,10 +585,12 @@ public class DenonConnector {
 
                 return obj;
             }
+        } catch (UnmarshalException e) {
+            logger.debug("Failed to unmarshal xml document: {}", e.getMessage());
         } catch (JAXBException e) {
-            logger.debug("Encoding error in get", e);
+            logger.debug("Unexpected error occurred during unmarshalling of document: {}", e.getMessage());
         } catch (XMLStreamException e) {
-            logger.debug("Communication error in get", e);
+            logger.debug("Communication error: {}", e.getMessage());
         }
 
         return null;

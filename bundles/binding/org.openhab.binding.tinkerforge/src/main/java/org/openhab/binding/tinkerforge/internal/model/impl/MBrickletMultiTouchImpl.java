@@ -52,33 +52,34 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getLogger
  *        <em>Logger</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getUid <em>Uid</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#isPoll <em>Poll</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getEnabledA
- *        <em>Enabled A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getUid
+ *        <em>Uid</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#isPoll
+ *        <em>Poll</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getEnabledA <em>Enabled
+ *        A</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getTinkerforgeDevice
  *        <em>Tinkerforge Device</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getIpConnection
- *        <em>Ip Connection</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getIpConnection <em>Ip
+ *        Connection</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getConnectedUid
  *        <em>Connected Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getPosition
  *        <em>Position</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getDeviceIdentifier
  *        <em>Device Identifier</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getName <em>Name</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getName
+ *        <em>Name</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getBrickd
  *        <em>Brickd</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getMsubdevices
  *        <em>Msubdevices</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getTfConfig
- *        <em>Tf Config</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getTfConfig <em>Tf
+ *        Config</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getDeviceType
  *        <em>Device Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getRecalibrate
@@ -86,7 +87,6 @@ import com.tinkerforge.TimeoutException;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getSensitivity
  *        <em>Sensitivity</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -430,10 +430,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -457,10 +456,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__UID, oldUid,
                     uid));
-        }
     }
 
     /**
@@ -484,10 +482,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -511,10 +508,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -538,10 +534,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setTinkerforgeDevice(BrickletMultiTouch newTinkerforgeDevice) {
         BrickletMultiTouch oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_MULTI_TOUCH__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
-        }
     }
 
     /**
@@ -565,10 +560,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -592,10 +586,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -619,10 +612,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -646,10 +638,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__DEVICE_IDENTIFIER,
                     oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
@@ -673,10 +664,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__NAME, oldName,
                     name));
-        }
     }
 
     /**
@@ -687,10 +677,21 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_MULTI_TOUCH__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_MULTI_TOUCH__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_MULTI_TOUCH__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -714,25 +715,20 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_MULTI_TOUCH__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__BRICKD, newBrickd,
                     newBrickd));
-        }
     }
 
     /**
@@ -744,8 +740,15 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     @Override
     public EList<MultiTouchDevice> getMsubdevices() {
         if (msubdevices == null) {
-            msubdevices = new EObjectContainmentWithInverseEList<MultiTouchDevice>(MSubDevice.class, this,
-                    ModelPackage.MBRICKLET_MULTI_TOUCH__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+            msubdevices = new EObjectContainmentWithInverseEList<MultiTouchDevice>(MultiTouchDevice.class, this,
+                    ModelPackage.MBRICKLET_MULTI_TOUCH__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK) {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public Class<?> getInverseFeatureClass() {
+                    return MSubDevice.class;
+                }
+            };
         }
         return msubdevices;
     }
@@ -773,11 +776,10 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -792,22 +794,18 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setTfConfig(BrickletMultiTouchConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
@@ -842,10 +840,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setRecalibrate(Boolean newRecalibrate) {
         Boolean oldRecalibrate = recalibrate;
         recalibrate = newRecalibrate;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__RECALIBRATE,
                     oldRecalibrate, recalibrate));
-        }
     }
 
     /**
@@ -869,10 +866,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public void setSensitivity(Short newSensitivity) {
         Short oldSensitivity = sensitivity;
         sensitivity = newSensitivity;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__SENSITIVITY,
                     oldSensitivity, sensitivity));
-        }
     }
 
     /**
@@ -976,9 +972,8 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_MULTI_TOUCH__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
             case ModelPackage.MBRICKLET_MULTI_TOUCH__MSUBDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMsubdevices()).basicAdd(otherEnd, msgs);
@@ -1050,7 +1045,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
             case ModelPackage.MBRICKLET_MULTI_TOUCH__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_MULTI_TOUCH__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_MULTI_TOUCH__MSUBDEVICES:
                 return getMsubdevices();
             case ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG:
@@ -1215,7 +1212,7 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
             case ModelPackage.MBRICKLET_MULTI_TOUCH__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_MULTI_TOUCH__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_MULTI_TOUCH__MSUBDEVICES:
                 return msubdevices != null && !msubdevices.isEmpty();
             case ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG:
@@ -1342,9 +1339,8 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

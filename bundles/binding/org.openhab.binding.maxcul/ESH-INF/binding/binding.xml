@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="nest"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+    <name>MAX! CUL Binding</name>
+    <description>The aim of this binding is to allow the connection from openHAB to MAX! devices (wall thermostat/radiator valves) using the [CUL USB dongle](http://busware.de/tiki-index.php?page=CUL) rather than the MAX!Cube.</description>
+    <author>Paul Hampson</author>    
+    <service-id>org.openhab.maxcul</service-id>
+    <config-description>
+        <parameter name="device" type="text" required="true">
+            <label>Serial port</label>
+            <description>Set the device of the CUL/CUN device (mandatory)
+                Example CUN with default port 2323: network:127.0.0.1
+                Example CUN with Port: network:127.0.0.1:2323
+                Example CUL with serial port: serial:/dev/ttyACM0 or serial:COM3
+            </description>
+            <limitToOptions>false</limitToOptions>
+            <options>
+                <option value="serial:/dev/ttyACM0">serial:/dev/ttyACM0</option>
+                <option value="serial:COM3">serial:COM3</option>
+                <option value="network:127.0.0.1">network:127.0.0.1</option>
+                <option value="network:127.0.0.1:2323">network:127.0.0.1:2323</option>
+            </options>
+        </parameter>
+        <parameter name="baudrate" type="integer" min="1" required="false">
+            <label>Serial port baudrate</label>
+            <description>Serial port baudrate.</description>
+            <limitToOptions>true</limitToOptions>
+            <options>
+                <option value="75">75</option>
+                <option value="110">110</option>
+                <option value="300">300</option>
+                <option value="1200">1200</option>
+                <option value="2400">2400</option>
+                <option value="4800">4800</option>
+                <option value="9600">9600</option>
+                <option value="19200">19200</option>
+                <option value="38400">38400</option>
+                <option value="57600">57600</option>
+                <option value="115200">115200</option>
+            </options>
+            <default>9600</default>
+            <advanced>true</advanced>
+        </parameter>
+        <parameter name="parity" type="text" required="false">
+            <label>Serial port parity</label>
+            <description>Serial port parity.</description>
+            <limitToOptions>true</limitToOptions>
+            <options>
+                <option value="EVEN">EVEN</option>
+                <option value="ODD">ODD</option>
+                <option value="MARK">MARK</option>
+                <option value="NONE">NONE</option>
+                <option value="SPACE">SPACE</option>
+            </options>
+            <default>EVEN</default>
+            <advanced>true</advanced>
+        </parameter>
+        <parameter name="timezone" type="text" required="false">
+            <label>Timezone</label>
+            <description>Set timezone you want the units to be set to.</description>
+            <default>Europe/London</default>
+        </parameter>
+    </config-description>
+</binding:binding>

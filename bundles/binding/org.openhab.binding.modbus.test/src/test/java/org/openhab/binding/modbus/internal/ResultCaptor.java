@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,7 +15,7 @@ import org.mockito.stubbing.Answer;
 
 public class ResultCaptor<T> implements Answer<T> {
 
-    private ArrayList<T> results = new ArrayList<T>();
+    private ArrayList<T> results = new ArrayList<>();
     private long waitMillis;
 
     public ResultCaptor(long waitMillis) {

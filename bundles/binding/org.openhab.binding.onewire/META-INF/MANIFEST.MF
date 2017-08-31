@@ -3,7 +3,7 @@ Private-Package: org.openhab.binding.onewire.internal
 Ignore-Package: org.openhab.binding.onewire.internal
 Bundle-Name: openHAB OneWire Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.9.0.qualifier
+Bundle-Version: 1.11.0.qualifier
 Bundle-Activator: org.openhab.binding.onewire.internal.OneWireActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
@@ -30,6 +30,7 @@ Bundle-SymbolicName: org.openhab.binding.onewire
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/org.owfs.jowfsclient-1.2.6.jar
 

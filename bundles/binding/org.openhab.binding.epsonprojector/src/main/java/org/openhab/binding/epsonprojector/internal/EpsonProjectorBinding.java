@@ -64,6 +64,10 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
 
     protected Map<String, DeviceConfig> deviceConfigCache = null;
 
+    private final int projectorStateUpdateInterval = 10000;
+    private OnOffType projectorState;
+    private long lastProjectorStateUpdateTime = 0;
+
     /**
      * RegEx to validate a config
      * <code>'^(.*?)\\.(host|port|serialPort)$'</code>
@@ -143,10 +147,8 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
                     String deviceId = provider.getDeviceId(itemName);
 
                     if (refreshOnlyWhenPowerOn) {
-                        OnOffType state = (OnOffType) queryDataFromDevice(deviceId, EpsonProjectorCommandType.POWER,
-                                SwitchItem.class);
-
-                        if (state != OnOffType.ON) {
+                        updateProjecterState(deviceId);
+                        if (projectorState != OnOffType.ON) {
                             logger.debug("projector power is OFF, skip refresh for item '{}'", itemName);
                             lastUpdateMap.put(itemName, System.currentTimeMillis());
                             return;
@@ -160,6 +162,10 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
 
                     State state = queryDataFromDevice(deviceId, commmandType, itemType);
 
+                    if (commmandType == EpsonProjectorCommandType.POWER) {
+                        updateProjecterStateVariable((OnOffType) state);
+                    }
+
                     if (state != null) {
                         eventPublisher.postUpdate(itemName, state);
                     } else {
@@ -170,6 +176,27 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
                 }
             }
         }
+    }
+
+    private void updateProjecterState(String deviceId) {
+        long age = System.currentTimeMillis() - lastProjectorStateUpdateTime;
+        boolean needsUpdate = age >= projectorStateUpdateInterval;
+
+        if (needsUpdate) {
+            logger.debug("Querying projector '{}' state", deviceId);
+            OnOffType newState = (OnOffType) queryDataFromDevice(deviceId, EpsonProjectorCommandType.POWER,
+                    SwitchItem.class);
+            updateProjecterStateVariable(newState);
+        }
+    }
+
+    private void updateProjecterStateVariable(OnOffType newState) {
+        if (newState != null) {
+            projectorState = newState;
+        } else {
+            projectorState = OnOffType.OFF;
+        }
+        lastProjectorStateUpdateTime = System.currentTimeMillis();
     }
 
     private State queryDataFromDevice(String deviceId, EpsonProjectorCommandType commmandType,

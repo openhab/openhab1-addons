@@ -18,10 +18,10 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.SwitchSensor#getSwitchState <em>Switch State</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getSwitchSensor()
  * @model interface="true" abstract="true"

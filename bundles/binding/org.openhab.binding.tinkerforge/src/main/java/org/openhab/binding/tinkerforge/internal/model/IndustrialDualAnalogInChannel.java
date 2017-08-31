@@ -21,19 +21,24 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel#getThreshold
  * <em>Threshold</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel#getChannelNum
- * <em>Channel Num</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel#getChannelNum <em>Channel
+ * Num</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getIndustrialDualAnalogInChannel()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MSubDevice<org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor
+ *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>
+ *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
 public interface IndustrialDualAnalogInChannel extends MSensor<DecimalValue>,
@@ -74,8 +79,8 @@ public interface IndustrialDualAnalogInChannel extends MSensor<DecimalValue>,
     BigDecimal getThreshold();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel#getThreshold
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel#getThreshold
      * <em>Threshold</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -104,9 +109,9 @@ public interface IndustrialDualAnalogInChannel extends MSensor<DecimalValue>,
     Short getChannelNum();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel#getChannelNum
-     * <em>Channel Num</em>}' attribute.
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel#getChannelNum <em>Channel
+     * Num</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 

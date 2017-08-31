@@ -65,7 +65,7 @@ public class EBusUtils {
 
     /**
      * CRC calculation with tab operations
-     * 
+     *
      * @param data The byte to crc check
      * @param crc_init The current crc result or another start value
      * @return The crc result
@@ -78,7 +78,7 @@ public class EBusUtils {
 
     /**
      * Convert to unsigned int
-     * 
+     *
      * @param v
      * @return
      */
@@ -88,7 +88,7 @@ public class EBusUtils {
 
     /**
      * CRC calculation
-     * 
+     *
      * @param data The byte to crc check
      * @param crcInit The current crc result or another start value
      * @param poly The polynom
@@ -122,7 +122,7 @@ public class EBusUtils {
 
     /**
      * Convert eBus Type BIT
-     * 
+     *
      * @param data
      * @param bit
      * @return The decoded value
@@ -134,7 +134,7 @@ public class EBusUtils {
     /**
      * Expands ebus-data bytes 0xAA and 0xA9 from byte data. All other bytes
      * are unchanged.
-     * 
+     *
      * @param data The received byte buffer
      * @param pos The position to check
      * @return The new value or the unchanged byte
@@ -152,7 +152,7 @@ public class EBusUtils {
 
     /**
      * Encodes the eBUS data to replace sync and 0x9A bytes
-     * 
+     *
      * @param data
      * @return
      */
@@ -162,7 +162,7 @@ public class EBusUtils {
             for (byte b : data) {
                 if (b == (byte) 0xAA) {
                     byteBuffer.write(new byte[] { (byte) 0xA9, (byte) 0x01 });
-                } else if (b == (byte) 0x9A) {
+                } else if (b == (byte) 0xA9) {
                     byteBuffer.write(new byte[] { (byte) 0xA9, (byte) 0x00 });
                 } else {
                     byteBuffer.write(b);
@@ -177,7 +177,7 @@ public class EBusUtils {
 
     /**
      * Check if the address is a valid master address.
-     * 
+     *
      * @param address
      * @return
      */
@@ -203,7 +203,7 @@ public class EBusUtils {
 
     /**
      * Processes a EBus received byte array, crc check, expand special bytes.
-     * 
+     *
      * @param data The received raw byte data
      * @return A valid object or null if the data was incorrect
      */
@@ -248,6 +248,11 @@ public class EBusUtils {
 
             int crcPos = nnPos + 1;
             byte crc = data[crcPos];
+
+            if (uc_crc == (byte) 0xAA && crc == (byte) 0xA9 && data[++crcPos] == (byte) 0x01) {
+                // replace with original value
+                crc = (byte) 0xAA;
+            }
 
             // check calculted crc with received crc
             if (crc != uc_crc) {
@@ -307,19 +312,30 @@ public class EBusUtils {
             // process answer data and find data end pos.
             // (may moved because expanded bytes)
             if (nn2 > 0) {
-                for (int i = nn2Pos + 1; i < data.length - 3; i++) {
+
+                int u = 1;
+                while (u <= nn2) {
+                    int i = nn2Pos + u++;
                     byte b = data[i];
 
                     uc_crc = crc8_tab(b, uc_crc);
 
                     if (b != (byte) 0xA9) {
                         buffer.put(decodeEBusData(data, i));
+                    } else {
+                        nn2++;
                     }
                 }
             }
 
-            crc = data[data.length - 3];
-            buffer.put(data, data.length - 3, 3);
+            crcPos = nn2Pos + nn2 + 1;
+            crc = data[crcPos];
+            buffer.put(data, crcPos, 3);
+
+            if (uc_crc == (byte) 0xAA && crc == (byte) 0xA9 && data[++crcPos] == (byte) 0x01) {
+                // replace with original value
+                crc = (byte) 0xAA;
+            }
 
             // check calculted crc with received crc
             if (crc != uc_crc) {
@@ -342,7 +358,7 @@ public class EBusUtils {
 
     /**
      * Generates a hex string representative of byte data
-     * 
+     *
      * @param data The source
      * @return The hex string
      */
@@ -352,7 +368,7 @@ public class EBusUtils {
 
     /**
      * Converts a hex string to byte array
-     * 
+     *
      * @param hexDumpString
      * @return
      */
@@ -362,7 +378,7 @@ public class EBusUtils {
 
     /**
      * FIXME: Badly programmed
-     * 
+     *
      * @param hexDumpString
      * @return
      */
@@ -372,7 +388,7 @@ public class EBusUtils {
 
     /**
      * Generates a string hex dump from a byte array
-     * 
+     *
      * @param data The source
      * @return The StringBuilder with hex dump
      */
@@ -393,7 +409,7 @@ public class EBusUtils {
 
     /**
      * Generates a string hex dump from a ByteBuffer
-     * 
+     *
      * @param data The source
      * @return The StringBuilder with hex dump
      */

@@ -19,9 +19,10 @@ import com.tinkerforge.BrickletLaserRangeFinder;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getDeviceType
- * <em>Device Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getDistanceAverageLength
  * <em>Distance Average Length</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getVelocityAverageLength
@@ -30,11 +31,14 @@ import com.tinkerforge.BrickletLaserRangeFinder;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getEnableLaserOnStartup
  * <em>Enable Laser On Startup</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLaserRangeFinder()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletLaserRangeFinder> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDevice> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletLaserRangeFinder>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
+ *        <org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDevice>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
+ *        <org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration>"
  * @generated
  */
 public interface MBrickletLaserRangeFinder extends MDevice<BrickletLaserRangeFinder>,
@@ -75,8 +79,8 @@ public interface MBrickletLaserRangeFinder extends MDevice<BrickletLaserRangeFin
     short getDistanceAverageLength();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getDistanceAverageLength
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getDistanceAverageLength
      * <em>Distance Average Length</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -106,8 +110,8 @@ public interface MBrickletLaserRangeFinder extends MDevice<BrickletLaserRangeFin
     short getVelocityAverageLength();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getVelocityAverageLength
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getVelocityAverageLength
      * <em>Velocity Average Length</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -167,8 +171,8 @@ public interface MBrickletLaserRangeFinder extends MDevice<BrickletLaserRangeFin
     Boolean getEnableLaserOnStartup();
 
     /**
-     * Sets the value of the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getEnableLaserOnStartup
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getEnableLaserOnStartup
      * <em>Enable Laser On Startup</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

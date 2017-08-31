@@ -107,7 +107,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 
     /**
      * Returns firmware revision of Integra connected to the module.
-     * 
+     *
      * @return version of Integra firmware
      */
     public String getIntegraVersion() {
@@ -154,10 +154,20 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
      * Stops communication by disconnecting from the module and stopping all
      * background tasks.
      */
-    public synchronized void close() {
+    public void close() {
+        // first we clear watchdog field in the object
+        CommunicationWatchdog watchdog = null;
         if (this.communicationWatchdog != null) {
-            this.communicationWatchdog.close();
-            this.communicationWatchdog = null;
+            synchronized (this) {
+                if (this.communicationWatchdog != null) {
+                    watchdog = this.communicationWatchdog;
+                    this.communicationWatchdog = null;
+                }
+            }
+        }
+        // then, if watchdog exists, we close it
+        if (watchdog != null) {
+            watchdog.close();
         }
     }
 
@@ -174,7 +184,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 
     /**
      * Enqueues specified command in send queue.
-     * 
+     *
      * @param cmd
      *            command to enqueue
      * @param force
@@ -209,7 +219,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
         }
     }
 
-    private SatelMessage readMessage() {
+    private SatelMessage readMessage() throws InterruptedException {
         try {
             InputStream is = this.channel.getInputStream();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -271,7 +281,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 
                 // if meanwhile thread has been interrupted, exit the loop
                 if (Thread.interrupted()) {
-                    return null;
+                    throw new InterruptedException();
                 }
             }
 
@@ -279,7 +289,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
             return SatelMessage.fromBytes(baos.toByteArray());
 
         } catch (IOException e) {
-            if (!Thread.interrupted()) {
+            if (!Thread.currentThread().isInterrupted()) {
                 logger.error("Unexpected exception occurred during reading a message", e);
             }
         }
@@ -303,7 +313,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
             return true;
 
         } catch (IOException e) {
-            if (!Thread.interrupted()) {
+            if (!Thread.currentThread().isInterrupted()) {
                 logger.error("Unexpected exception occurred during writing a message", e);
             }
         }
@@ -331,9 +341,10 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
     private void communicationLoop(TimeoutTimer timeoutTimer) {
         long reconnectionTime = 10 * 1000;
         boolean receivedResponse = false;
+        SatelCommand command = null;
 
         try {
-            while (!Thread.interrupted()) {
+            while (!Thread.currentThread().isInterrupted()) {
                 // connect, if not connected yet
                 if (this.channel == null) {
                     long connectStartTime = System.currentTimeMillis();
@@ -351,44 +362,41 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
                     }
                 }
 
-                SatelCommand command = this.sendQueue.take();
-                SatelMessage response = null;
-
+                // get next command and send it
+                command = this.sendQueue.take();
                 logger.debug("Sending message: {}", command.getRequest());
                 timeoutTimer.start();
                 boolean sent = this.writeMessage(command.getRequest());
                 timeoutTimer.stop();
-
-                if (sent) {
-                    command.setState(State.SENT);
-                    logger.trace("Waiting for response");
-                    timeoutTimer.start();
-                    response = this.readMessage();
-                    timeoutTimer.stop();
-                    if (response != null) {
-                        logger.debug("Got response: {}", response);
-
-                        if (!receivedResponse) {
-                            receivedResponse = true;
-                            // notify about connection success after first
-                            // response from the module
-                            this.dispatchEvent(new ConnectionStatusEvent(true));
-                        }
-
-                        if (command.handleResponse(this, response)) {
-                            command.setState(State.SUCCEEDED);
-                        } else {
-                            command.setState(State.FAILED);
-                        }
-                    }
-                }
-
-                // if either send or receive failed, exit thread
-                if (!sent || response == null) {
-                    command.setState(State.FAILED);
+                if (!sent) {
                     break;
                 }
+                command.setState(State.SENT);
 
+                // command sent, wait for response
+                logger.trace("Waiting for response");
+                timeoutTimer.start();
+                SatelMessage response = this.readMessage();
+                timeoutTimer.stop();
+                if (response == null) {
+                    break;
+                }
+                logger.debug("Got response: {}", response);
+
+                if (!receivedResponse) {
+                    receivedResponse = true;
+                    // notify about connection success after first
+                    // response from the module
+                    this.dispatchEvent(new ConnectionStatusEvent(true));
+                }
+
+                if (command.handleResponse(this, response)) {
+                    command.setState(State.SUCCEEDED);
+                } else {
+                    command.setState(State.FAILED);
+                }
+
+                command = null;
             }
         } catch (InterruptedException e) {
             // exit thread
@@ -398,6 +406,11 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
         } finally {
             // stop counting if thread interrupted
             timeoutTimer.stop();
+        }
+
+        // either send or receive failed
+        if (command != null) {
+            command.setState(State.FAILED);
         }
 
         disconnect();

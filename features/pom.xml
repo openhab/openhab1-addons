@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="MACROMAN"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>org.openhab</groupId>
-    <artifactId>openhab</artifactId>
-    <version>1.9.0-SNAPSHOT</version>
+    <artifactId>pom-addons1</artifactId>
+    <version>1.11.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -15,19 +15,10 @@
 
   <packaging>pom</packaging>
 
-    <properties>
-        <ohc.version>2.0.0-SNAPSHOT</ohc.version>
-        <esh.version>0.8.0-SNAPSHOT</esh.version>
-        <kat.version>1.4.1</kat.version>
-        <karaf.version>4.0.4</karaf.version>
-        <build.helper.maven.plugin.version>1.9.1</build.helper.maven.plugin.version>
-    </properties>
-
   <modules>
     <module>openhab-addons</module>
     <module>openhab-addons-legacy</module>
     <module>openhab-addons-external</module>
-    <module>openhab-addons-verify</module>
   </modules>
 
     <build>

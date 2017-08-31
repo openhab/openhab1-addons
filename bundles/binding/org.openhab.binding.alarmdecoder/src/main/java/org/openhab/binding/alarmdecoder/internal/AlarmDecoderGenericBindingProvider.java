@@ -136,7 +136,7 @@ public class AlarmDecoderGenericBindingProvider extends AbstractGenericBindingPr
 
     /**
      * Removes existing item configurations
-     * 
+     *
      * @param bcl array list of binding configs to be checked
      * @param item item to be checked for
      */
@@ -151,7 +151,7 @@ public class AlarmDecoderGenericBindingProvider extends AbstractGenericBindingPr
 
     /**
      * Parses binding configuration string
-     * 
+     *
      * @param bindingConfig
      * @return array with ["SEND", "TEXT"], or [type, address, feature + parameters]
      * @throws BindingConfigParseException if invalid binding string is found
@@ -215,13 +215,14 @@ public class AlarmDecoderGenericBindingProvider extends AbstractGenericBindingPr
 
     /**
      * Address validator
-     * 
+     *
      * @param type the known msg type of the configuration
      * @param addr the address string of the configuration
      * @return true if valid address for given type
      */
     static private boolean s_isValidAddress(ADMsgType type, String addr) {
         switch (type) {
+            case LRR:
             case KPM:
                 return (addr.matches("[0-9]+") || addr.equalsIgnoreCase("any"));
             case RFX:

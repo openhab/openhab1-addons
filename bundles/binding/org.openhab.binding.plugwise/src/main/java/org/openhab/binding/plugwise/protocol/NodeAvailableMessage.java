@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
  */
 public class NodeAvailableMessage extends Message {
 
+    private static final Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})");
+
     public NodeAvailableMessage(int sequenceNumber, String payLoad) {
         super(sequenceNumber, payLoad);
         type = MessageType.NODE_AVAILABLE;
@@ -33,8 +35,6 @@ public class NodeAvailableMessage extends Message {
 
     @Override
     protected void parsePayLoad() {
-        Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})");
-
         Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
         if (matcher.matches()) {
             MAC = matcher.group(1);

@@ -53,7 +53,7 @@ public final class ReadCoilsResponse extends ModbusResponse {
      * Constructs a new <tt>ReadCoilsResponse</tt>
      * instance with a given count of coils (i.e. bits).
      * <b>
-     * 
+     *
      * @param count the number of bits to be read.
      */
     public ReadCoilsResponse(int count) {
@@ -67,7 +67,7 @@ public final class ReadCoilsResponse extends ModbusResponse {
      * Returns the number of bits (i.e. coils)
      * read with the request.
      * <p>
-     * 
+     *
      * @return the number of bits that have been read.
      */
     public int getBitCount() {
@@ -82,7 +82,7 @@ public final class ReadCoilsResponse extends ModbusResponse {
      * Returns the <tt>BitVector</tt> that stores
      * the collection of bits that have been read.
      * <p>
-     * 
+     *
      * @return the <tt>BitVector</tt> holding the
      *         bits that have been read.
      */
@@ -94,7 +94,7 @@ public final class ReadCoilsResponse extends ModbusResponse {
      * Convenience method that returns the state
      * of the bit at the given index.
      * <p>
-     * 
+     *
      * @param index the index of the coil for which
      *            the status should be returned.
      *

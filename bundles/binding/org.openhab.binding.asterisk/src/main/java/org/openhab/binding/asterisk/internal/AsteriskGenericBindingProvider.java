@@ -49,7 +49,6 @@ public class AsteriskGenericBindingProvider extends AbstractGenericBindingProvid
     /**
      * {@inheritDoc}
      */
-    @Override
     public String getBindingType() {
         return "asterisk";
     }
@@ -78,7 +77,7 @@ public class AsteriskGenericBindingProvider extends AbstractGenericBindingProvid
             AsteriskBindingConfig config = parseBindingConfig(item, bindingConfig);
             addBindingConfig(item, config);
         } else {
-            logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
+            logger.warn("bindingConfig is NULL (item={}) -> processing bindingConfig aborted!", item);
         }
     }
 
@@ -93,27 +92,30 @@ public class AsteriskGenericBindingProvider extends AbstractGenericBindingProvid
      */
     protected AsteriskBindingConfig parseBindingConfig(Item item, String bindingConfig)
             throws BindingConfigParseException {
+        logger.debug("Binding config: {}", bindingConfig);
         try {
-            return new AsteriskBindingConfig(item.getClass(), AsteriskBindingTypes.fromString(bindingConfig));
+            return new AsteriskBindingConfig(item.getClass(), bindingConfig);
         } catch (IllegalArgumentException iae) {
             throw new BindingConfigParseException("'" + bindingConfig + "' is no valid binding type");
         }
     }
 
-    @Override
     public Class<? extends Item> getItemType(String itemName) {
         AsteriskBindingConfig config = (AsteriskBindingConfig) bindingConfigs.get(itemName);
         return config != null ? config.itemType : null;
     }
 
-    @Override
-    public AsteriskBindingTypes getType(String itemName) {
+    public String getType(String itemName) {
         AsteriskBindingConfig config = (AsteriskBindingConfig) bindingConfigs.get(itemName);
-        return config != null ? config.type : null;
+        return config.type;
     }
 
     @Override
-    public String[] getItemNamesByType(AsteriskBindingTypes type) {
+    public AsteriskBindingConfig getConfig(String name) {
+        return (AsteriskBindingConfig) bindingConfigs.get(name);
+    }
+
+    public String[] getItemNamesByType(String type) {
         Set<String> itemNames = new HashSet<String>();
         for (Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
             AsteriskBindingConfig fbConfig = (AsteriskBindingConfig) entry.getValue();
@@ -124,16 +126,83 @@ public class AsteriskGenericBindingProvider extends AbstractGenericBindingProvid
         return itemNames.toArray(new String[itemNames.size()]);
     }
 
-    static class AsteriskBindingConfig implements BindingConfig {
+    public class AsteriskBindingConfig implements BindingConfig {
 
         final Class<? extends Item> itemType;
-        final AsteriskBindingTypes type;
+        final String type;
 
-        public AsteriskBindingConfig(Class<? extends Item> itemType, AsteriskBindingTypes type) {
+        private final String callerId; // if null, any callerId is accepted
+        private final String extension; // if null, any extension is accepted
+        private final String digit;
+
+        public AsteriskBindingConfig(Class<? extends Item> itemType, String config) throws BindingConfigParseException {
             this.itemType = itemType;
-            this.type = type;
+
+            String[] splitConfig = config.split(":");
+
+            String eventType = splitConfig[0];
+
+            if (eventType.equals("active")) {
+                if (splitConfig.length == 1) {
+                    this.type = eventType;
+                    this.callerId = null;
+                    this.extension = null;
+                    this.digit = null;
+                } else if (splitConfig.length == 3) {
+                    this.type = eventType;
+                    this.callerId = validateExtParam(splitConfig[1]);
+                    this.extension = validateExtParam(splitConfig[2]);
+                    this.digit = null;
+                } else {
+                    throw new BindingConfigParseException("Invalid number of parameters for eventType 'active'");
+                }
+            } else if (eventType.equals("digit")) {
+                if (splitConfig.length == 4) {
+                    this.type = eventType;
+                    this.callerId = validateExtParam(splitConfig[1]);
+                    this.extension = validateExtParam(splitConfig[2]);
+
+                    String sDigit = splitConfig[3];
+                    if (sDigit.length() == 1) {
+                        if (sDigit.matches("[0-9*#]")) {
+                            this.digit = sDigit;
+                        } else {
+                            throw new BindingConfigParseException("Invalid digit for eventType 'digit'");
+                        }
+                    } else {
+                        throw new BindingConfigParseException("Only 1 digit can be specified for eventType 'digit'");
+                    }
+                } else {
+                    throw new BindingConfigParseException("Invalid number of parameters for eventType 'digit'");
+                }
+            } else {
+                throw new BindingConfigParseException("Unknown eventType");
+            }
+
         }
 
-    }
+        private String validateExtParam(String s) {
+            String res = null;
+            if (s.length() > 0) {
+                if (s.equals("*")) {
+                    res = null;
+                } else {
+                    res = s;
+                }
+            }
+            return res;
+        }
 
+        public String getCallerId() {
+            return this.callerId;
+        }
+
+        public String getExtension() {
+            return this.extension;
+        }
+
+        public String getDigit() {
+            return this.digit;
+        }
+    }
 }

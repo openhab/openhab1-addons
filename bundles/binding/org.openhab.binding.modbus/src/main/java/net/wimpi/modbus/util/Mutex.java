@@ -37,7 +37,7 @@ package net.wimpi.modbus.util;
  * potential concurrency, at the cost of additional complexity and
  * overhead that would normally make this worthwhile only in cases of
  * extreme contention.
- * 
+ *
  * <pre>
  * class Node {
  * Object item;

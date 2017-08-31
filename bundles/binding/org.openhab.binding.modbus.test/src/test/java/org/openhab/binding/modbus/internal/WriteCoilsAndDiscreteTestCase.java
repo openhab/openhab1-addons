@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,6 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,16 +37,6 @@ import net.wimpi.modbus.procimg.SimpleDigitalOut;
 @RunWith(Parameterized.class)
 public class WriteCoilsAndDiscreteTestCase extends TestCaseSupport {
 
-    /**
-     * Known issues
-     * 1. coil is not written if the binding "state" (BitVector) matches the command already
-     */
-    private void setExpectedFailures() {
-        boolean coilSameAsCommand = coilInitialValue ? Arrays.asList(ONE_COMMANDS).contains(command)
-                : Arrays.asList(ZERO_COMMANDS).contains(command);
-        expectingAssertionError = ((ModbusBindingProvider.TYPE_COIL.equals(type) && coilSameAsCommand));
-    }
-
     private static final int BIT_READ_COUNT = 2;
 
     private static Command[] ZERO_COMMANDS = new Command[] { OnOffType.OFF, OpenClosedType.CLOSED };
@@ -66,7 +55,7 @@ public class WriteCoilsAndDiscreteTestCase extends TestCaseSupport {
      * @return
      */
     private static ArrayList<Object[]> generateParameters(Object expectedValue, Command... commands) {
-        ArrayList<Object[]> parameters = new ArrayList<Object[]>();
+        ArrayList<Object[]> parameters = new ArrayList<>();
         for (ServerType serverType : TEST_SERVERS) {
             for (boolean discreteInputInitialValue : new Boolean[] { true, false }) {
                 for (boolean coilInitialValue : new Boolean[] { true, false }) {
@@ -99,7 +88,6 @@ public class WriteCoilsAndDiscreteTestCase extends TestCaseSupport {
     private int itemIndex;
     private Command command;
     private boolean expectedValue;
-    private boolean expectingAssertionError;
     private boolean coilInitialValue;
     private boolean discreteInitialValue;
 
@@ -132,7 +120,6 @@ public class WriteCoilsAndDiscreteTestCase extends TestCaseSupport {
         this.type = type;
         this.itemIndex = itemIndex;
         this.command = command;
-        setExpectedFailures();
         this.expectedValue = expectedValue;
 
     }
@@ -196,10 +183,6 @@ public class WriteCoilsAndDiscreteTestCase extends TestCaseSupport {
     }
 
     private void verifyRequests(boolean readRequestExpected) throws Exception {
-        // XXX: for test performance reasons, skipping failing tests
-        if (expectingAssertionError) {
-            return;
-        }
         try {
             ArrayList<ModbusRequest> requests = modbustRequestCaptor.getAllReturnValues();
             int expectedDOIndex = nonZeroOffset ? (itemIndex + 1) : itemIndex;
@@ -230,28 +213,15 @@ public class WriteCoilsAndDiscreteTestCase extends TestCaseSupport {
                 assertThat(writeRequest.getReference(), is(equalTo(expectedDOIndex)));
             }
         } catch (AssertionError e) {
-            if (expectingAssertionError) {
-                System.err.println(String.format(
-                        "Expected failure: discreteInitial=%s, coilInitial=%s, nonZeroOffset=%s, command=%s, itemIndex=%d, type=%s",
-                        discreteInitialValue, coilInitialValue, nonZeroOffset, command, itemIndex, type));
-                return;
-            } else {
-                System.err.println(String.format(
-                        "Unexpected assertion error: discreteInitial=%s, coilInitial=%s, nonZeroOffset=%s, command=%s, itemIndex=%d, type=%s",
-                        discreteInitialValue, coilInitialValue, nonZeroOffset, command, itemIndex, type));
-                throw new AssertionError("Got unexpected assertion error", e);
-            }
-        }
-        if (expectingAssertionError) {
             System.err.println(String.format(
-                    "Did not get assertion error (as expected): discreteInitial=%s, coilInitial=%s, nonZeroOffset=%s, command=%s, itemIndex=%d, type=%s",
+                    "Unexpected assertion error: discreteInitial=%s, coilInitial=%s, nonZeroOffset=%s, command=%s, itemIndex=%d, type=%s",
                     discreteInitialValue, coilInitialValue, nonZeroOffset, command, itemIndex, type));
-            throw new AssertionError("Did not get assertion error (as expected)");
-        } else {
-            System.err.println(String.format(
-                    "OK: discreteInitial=%s, coilInitial=%s, nonZeroOffset=%s, command=%s, itemIndex=%d, type=%s",
-                    discreteInitialValue, coilInitialValue, nonZeroOffset, command, itemIndex, type));
+            throw new AssertionError("Got unexpected assertion error", e);
+
         }
+        System.err.println(String.format(
+                "OK: discreteInitial=%s, coilInitial=%s, nonZeroOffset=%s, command=%s, itemIndex=%d, type=%s",
+                discreteInitialValue, coilInitialValue, nonZeroOffset, command, itemIndex, type));
     }
 
     private void initSpi() {

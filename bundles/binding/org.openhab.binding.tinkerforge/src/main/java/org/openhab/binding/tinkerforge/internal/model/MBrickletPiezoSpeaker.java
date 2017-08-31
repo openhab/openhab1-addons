@@ -19,15 +19,16 @@ import com.tinkerforge.BrickletPiezoSpeaker;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletPiezoSpeaker#getDeviceType <em>Device Type</em>}
  * </li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletPiezoSpeaker()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletPiezoSpeaker> org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletPiezoSpeaker>
+ *        org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor"
  * @generated
  */
 public interface MBrickletPiezoSpeaker extends MDevice<BrickletPiezoSpeaker>, ProgrammableSwitchActor {

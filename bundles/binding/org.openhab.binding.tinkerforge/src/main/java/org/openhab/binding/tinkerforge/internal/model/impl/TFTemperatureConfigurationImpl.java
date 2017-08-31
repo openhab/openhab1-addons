@@ -22,11 +22,11 @@ import org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFTemperatureConfigurationImpl#isSlowI2C
- * <em>Slow I2C</em>}</li>
- * </ul>
  * </p>
+ * <ul>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFTemperatureConfigurationImpl#isSlowI2C <em>Slow
+ * I2C</em>}</li>
+ * </ul>
  *
  * @generated
  */
@@ -95,10 +95,9 @@ public class TFTemperatureConfigurationImpl extends TFBaseConfigurationImpl impl
     public void setSlowI2C(boolean newSlowI2C) {
         boolean oldSlowI2C = slowI2C;
         slowI2C = newSlowI2C;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_TEMPERATURE_CONFIGURATION__SLOW_I2C,
                     oldSlowI2C, slowI2C));
-        }
     }
 
     /**
@@ -171,9 +170,8 @@ public class TFTemperatureConfigurationImpl extends TFBaseConfigurationImpl impl
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (slowI2C: ");

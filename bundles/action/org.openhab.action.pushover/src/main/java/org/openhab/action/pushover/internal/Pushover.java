@@ -46,8 +46,9 @@ public class Pushover {
     private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
     private final static String UTF_8_ENCODING = "UTF-8";
 
-    private final static String API_RETURN_ROOT_TAG = "hash";
+    private final static String API_RETURN_ROOT_TAG = "response";
     private final static String API_RETURN_STATUS_TAG = "status";
+    private final static String API_RETURN_INFO_TAG = "info";
     private final static String API_RETURN_ERROR_TAG = "error";
     private final static String API_RETURN_STATUS_SUCCESS = "1";
 
@@ -226,6 +227,8 @@ public class Pushover {
 
             if (!StringUtils.isEmpty(apiKey)) {
                 addEncodedParameter(data, MESSAGE_KEY_API_KEY, apiKey);
+            } else if (!StringUtils.isEmpty(defaultApiKey)) {
+                addEncodedParameter(data, MESSAGE_KEY_API_KEY, defaultApiKey);
             } else {
                 logger.error("Application API token not specified.");
                 return false;
@@ -233,6 +236,8 @@ public class Pushover {
 
             if (!StringUtils.isEmpty(user)) {
                 addEncodedParameter(data, MESSAGE_KEY_USER, user);
+            } else if (!StringUtils.isEmpty(defaultUser)) {
+                addEncodedParameter(data, MESSAGE_KEY_USER, defaultUser);
             } else {
                 logger.error("The user/group key was not specified.");
                 return false;
@@ -253,17 +258,28 @@ public class Pushover {
 
             if (!StringUtils.isEmpty(device)) {
                 addEncodedParameter(data, MESSAGE_KEY_DEVICE, device);
+            } else if (!StringUtils.isEmpty(defaultDevice)) {
+                addEncodedParameter(data, MESSAGE_KEY_DEVICE, defaultDevice);
             }
 
             if (!StringUtils.isEmpty(title)) {
                 addEncodedParameter(data, MESSAGE_KEY_TITLE, title);
+            } else if (!StringUtils.isEmpty(defaultTitle)) {
+                addEncodedParameter(data, MESSAGE_KEY_TITLE, defaultTitle);
             }
 
             if (!StringUtils.isEmpty(url)) {
                 if (url.length() <= API_MAX_URL_LENGTH) {
                     addEncodedParameter(data, MESSAGE_KEY_URL, url);
                 } else {
-                    logger.error("The url is greater than " + API_MAX_URL_LENGTH + " characters.");
+                    logger.error("The url is greater than {} characters.", API_MAX_URL_LENGTH);
+                    return false;
+                }
+            } else if (!StringUtils.isEmpty(defaultUrl)) {
+                if (defaultUrl.length() <= API_MAX_URL_LENGTH) {
+                    addEncodedParameter(data, MESSAGE_KEY_URL, defaultUrl);
+                } else {
+                    logger.error("The url is greater than {} characters.", API_MAX_URL_LENGTH);
                     return false;
                 }
             }
@@ -272,7 +288,14 @@ public class Pushover {
                 if (urlTitle.length() <= API_MAX_URL_TITLE_LENGTH) {
                     addEncodedParameter(data, MESSAGE_KEY_URL_TITLE, urlTitle);
                 } else {
-                    logger.error("The url title is greater than " + API_MAX_URL_TITLE_LENGTH + " characters.");
+                    logger.error("The url title is greater than {} characters.", API_MAX_URL_TITLE_LENGTH);
+                    return false;
+                }
+            } else if (!StringUtils.isEmpty(defaultUrlTitle)) {
+                if (defaultUrlTitle.length() <= API_MAX_URL_TITLE_LENGTH) {
+                    addEncodedParameter(data, MESSAGE_KEY_URL_TITLE, defaultUrlTitle);
+                } else {
+                    logger.error("The url title is greater than {} characters.", API_MAX_URL_TITLE_LENGTH);
                     return false;
                 }
             }
@@ -281,8 +304,8 @@ public class Pushover {
                 if (isValueInList(API_VALID_PRIORITY_LIST, priority)) {
                     addEncodedParameter(data, MESSAGE_KEY_PRIORITY, String.valueOf(priority));
                 } else {
-                    logger.warn("Invalid priority, skipping. Expected: " + Arrays.toString(API_VALID_PRIORITY_LIST)
-                            + ". Got: " + priority + ".");
+                    logger.warn("Invalid priority, skipping. Expected: {}. Got: {}.",
+                            Arrays.toString(API_VALID_PRIORITY_LIST), priority);
                 }
             } catch (Exception exp) {
                 logger.warn("Can't parse the priority value, skipping.");
@@ -290,22 +313,24 @@ public class Pushover {
 
             if (!StringUtils.isEmpty(sound)) {
                 addEncodedParameter(data, MESSAGE_KEY_SOUND, sound);
+            } else if (!StringUtils.isEmpty(defaultSound)) {
+                addEncodedParameter(data, MESSAGE_KEY_SOUND, defaultSound);
             }
 
             if (isValueInList(API_HIGH_PRIORITY_LIST, priority)) {
                 if (retry >= API_MIN_RETRY_SECONDS) {
                     addEncodedParameter(data, MESSAGE_KEY_RETRY, String.valueOf(retry));
                 } else {
-                    logger.warn("Retry value of " + retry + " is too small. Using default value of "
-                            + API_MIN_RETRY_SECONDS + ".");
+                    logger.warn("Retry value of {} is too small. Using default value of {}.", retry,
+                            API_MIN_RETRY_SECONDS);
                     addEncodedParameter(data, MESSAGE_KEY_RETRY, String.valueOf(API_MIN_RETRY_SECONDS));
                 }
 
                 if (expire <= API_MAX_EXPIRE_SECONDS) {
                     addEncodedParameter(data, MESSAGE_KEY_EXPIRE, String.valueOf(expire));
                 } else {
-                    logger.warn("Expire value of " + expire + " is too large. Using default value of "
-                            + API_MAX_EXPIRE_SECONDS + ".");
+                    logger.warn("Expire value of {} is too large. Using default value of {}.", expire,
+                            API_MAX_EXPIRE_SECONDS);
                     addEncodedParameter(data, MESSAGE_KEY_EXPIRE, String.valueOf(API_MAX_EXPIRE_SECONDS));
                 }
             }
@@ -314,7 +339,7 @@ public class Pushover {
             logger.debug("Executing post to " + API_URL + " with the following content: " + content);
             String response = HttpUtil.executeUrl("POST", API_URL, IOUtils.toInputStream(content), CONTENT_TYPE,
                     timeout);
-            logger.debug("Raw response: " + response);
+            logger.debug("Raw response: {}", response);
 
             try {
                 if (StringUtils.isEmpty(response)) {
@@ -326,11 +351,12 @@ public class Pushover {
                 if (StringUtils.isEmpty(responseMessage)) {
                     return true;
                 } else {
-                    logger.error("Received error message from Pushover: " + responseMessage);
+                    logger.error("Received error message from Pushover: {}", responseMessage);
                     return false;
                 }
             } catch (Exception e) {
-                logger.warn("Can't parse response from Pushover: " + response, e);
+                logger.warn("Can't parse response from Pushover.", e);
+                logger.debug("Raw response: {}", response);
                 return false;
             }
         } catch (Exception e) {
@@ -350,8 +376,13 @@ public class Pushover {
         Element root = doc.getDocumentElement();
 
         if (API_RETURN_ROOT_TAG.equals(root.getTagName())) {
-            NodeList statusList = root.getElementsByTagName(API_RETURN_STATUS_TAG);
+            final NodeList infoList = root.getElementsByTagName(API_RETURN_INFO_TAG);
+            for (int i = 0; i < infoList.getLength(); i++) {
+                final Element info = (Element) infoList.item(i);
+                logger.warn("Received info message from Pushover: {}", info.getFirstChild().getNodeValue());
+            }
 
+            NodeList statusList = root.getElementsByTagName(API_RETURN_STATUS_TAG);
             for (int i = 0; i < statusList.getLength(); i++) {
                 Element value = (Element) statusList.item(i);
                 if (API_RETURN_STATUS_SUCCESS.equals(value.getFirstChild().getNodeValue())) {

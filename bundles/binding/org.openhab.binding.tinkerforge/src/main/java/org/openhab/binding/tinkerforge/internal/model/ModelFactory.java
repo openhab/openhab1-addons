@@ -335,6 +335,16 @@ public interface ModelFactory extends EFactory {
     JoystickButton createJoystickButton();
 
     /**
+     * Returns a new object of class '<em>MBricklet Analog Out V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Analog Out V2</em>'.
+     * @generated
+     */
+    MBrickletAnalogOutV2 createMBrickletAnalogOutV2();
+
+    /**
      * Returns a new object of class '<em>MBrick Servo</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -363,6 +373,146 @@ public interface ModelFactory extends EFactory {
      * @generated
      */
     MBrickDC createMBrickDC();
+
+    /**
+     * Returns a new object of class '<em>MBrick Stepper</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBrick Stepper</em>'.
+     * @generated
+     */
+    MBrickStepper createMBrickStepper();
+
+    /**
+     * Returns a new object of class '<em>TF Brick Stepper Configuration</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>TF Brick Stepper Configuration</em>'.
+     * @generated
+     */
+    TFBrickStepperConfiguration createTFBrickStepperConfiguration();
+
+    /**
+     * Returns a new object of class '<em>MStepper Drive</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Drive</em>'.
+     * @generated
+     */
+    MStepperDrive createMStepperDrive();
+
+    /**
+     * Returns a new object of class '<em>MStepper Velocity</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Velocity</em>'.
+     * @generated
+     */
+    MStepperVelocity createMStepperVelocity();
+
+    /**
+     * Returns a new object of class '<em>MStepper Current</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Current</em>'.
+     * @generated
+     */
+    MStepperCurrent createMStepperCurrent();
+
+    /**
+     * Returns a new object of class '<em>MStepper Position</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Position</em>'.
+     * @generated
+     */
+    MStepperPosition createMStepperPosition();
+
+    /**
+     * Returns a new object of class '<em>MStepper Steps</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Steps</em>'.
+     * @generated
+     */
+    MStepperSteps createMStepperSteps();
+
+    /**
+     * Returns a new object of class '<em>MStepper Stack Voltage</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Stack Voltage</em>'.
+     * @generated
+     */
+    MStepperStackVoltage createMStepperStackVoltage();
+
+    /**
+     * Returns a new object of class '<em>MStepper External Voltage</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper External Voltage</em>'.
+     * @generated
+     */
+    MStepperExternalVoltage createMStepperExternalVoltage();
+
+    /**
+     * Returns a new object of class '<em>MStepper Consumption</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Consumption</em>'.
+     * @generated
+     */
+    MStepperConsumption createMStepperConsumption();
+
+    /**
+     * Returns a new object of class '<em>MStepper Under Voltage</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Under Voltage</em>'.
+     * @generated
+     */
+    MStepperUnderVoltage createMStepperUnderVoltage();
+
+    /**
+     * Returns a new object of class '<em>MStepper State</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper State</em>'.
+     * @generated
+     */
+    MStepperState createMStepperState();
+
+    /**
+     * Returns a new object of class '<em>MStepper Chip Temperature</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Chip Temperature</em>'.
+     * @generated
+     */
+    MStepperChipTemperature createMStepperChipTemperature();
+
+    /**
+     * Returns a new object of class '<em>MStepper Status Led</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MStepper Status Led</em>'.
+     * @generated
+     */
+    MStepperStatusLed createMStepperStatusLed();
 
     /**
      * Returns a new object of class '<em>MDual Relay Bricklet</em>'.
@@ -835,6 +985,16 @@ public interface ModelFactory extends EFactory {
     BrickletAccelerometerConfiguration createBrickletAccelerometerConfiguration();
 
     /**
+     * Returns a new object of class '<em>Bricklet OLED Configuration</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>Bricklet OLED Configuration</em>'.
+     * @generated
+     */
+    BrickletOLEDConfiguration createBrickletOLEDConfiguration();
+
+    /**
      * Returns a new object of class '<em>MServo</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -943,6 +1103,36 @@ public interface ModelFactory extends EFactory {
      * @generated
      */
     MBrickletTemperature createMBrickletTemperature();
+
+    /**
+     * Returns a new object of class '<em>MBricklet Thermocouple</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Thermocouple</em>'.
+     * @generated
+     */
+    MBrickletThermocouple createMBrickletThermocouple();
+
+    /**
+     * Returns a new object of class '<em>MBricklet UV Light</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet UV Light</em>'.
+     * @generated
+     */
+    MBrickletUVLight createMBrickletUVLight();
+
+    /**
+     * Returns a new object of class '<em>MBricklet CO2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet CO2</em>'.
+     * @generated
+     */
+    MBrickletCO2 createMBrickletCO2();
 
     /**
      * Returns a new object of class '<em>MBricklet Temperature IR</em>'.
@@ -1083,6 +1273,16 @@ public interface ModelFactory extends EFactory {
      * @generated
      */
     TFTemperatureConfiguration createTFTemperatureConfiguration();
+
+    /**
+     * Returns a new object of class '<em>TF Thermocouple Configuration</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>TF Thermocouple Configuration</em>'.
+     * @generated
+     */
+    TFThermocoupleConfiguration createTFThermocoupleConfiguration();
 
     /**
      * Returns a new object of class '<em>TF Object Temperature Configuration</em>'.
@@ -1303,6 +1503,26 @@ public interface ModelFactory extends EFactory {
      * @generated
      */
     MBrickletLCD20x4 createMBrickletLCD20x4();
+
+    /**
+     * Returns a new object of class '<em>MBricklet OLED12 8x64</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet OLED12 8x64</em>'.
+     * @generated
+     */
+    MBrickletOLED128x64 createMBrickletOLED128x64();
+
+    /**
+     * Returns a new object of class '<em>MBricklet OLE6 4x48</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet OLE6 4x48</em>'.
+     * @generated
+     */
+    MBrickletOLE64x48 createMBrickletOLE64x48();
 
     /**
      * Returns a new object of class '<em>MLCD2 0x4 Backlight</em>'.

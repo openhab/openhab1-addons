@@ -39,7 +39,7 @@ import net.wimpi.modbus.util.Mutex;
  */
 public class ModbusTCPTransaction implements ModbusTransaction {
 
-    private static final Logger logger = LoggerFactory.getLogger(ModbusSerialTransaction.class);
+    private static final Logger logger = LoggerFactory.getLogger(ModbusTCPTransaction.class);
 
     // class attributes
     private static AtomicCounter c_TransactionID = new AtomicCounter(Modbus.DEFAULT_TRANSACTION_ID);
@@ -200,9 +200,11 @@ public class ModbusTCPTransaction implements ModbusTransaction {
                     // toggle and set the id
                     m_Request.setTransactionID(c_TransactionID.increment());
                     // 3. write request, and read response
+                    logger.trace("Sending request with transaction ID {}: {}", m_Request.getTransactionID(), m_Request);
                     m_IO.writeMessage(m_Request);
                     // read response message
                     m_Response = m_IO.readResponse();
+                    logger.trace("Received response with transaction ID {}", m_Response.getTransactionID());
                     break;
                 } catch (ModbusIOException ex) {
                     tries++;
@@ -212,9 +214,9 @@ public class ModbusTCPTransaction implements ModbusTransaction {
                             m_Request.getTransactionID(), m_Connection.getAddress(), m_Connection.getPort());
                     if (tries >= m_Retries) {
                         logger.error(
-                                "execute reached max tries {}, throwing last error: {}. Request: {}. Address: {}:{}",
-                                m_Retries, ex.getMessage(), m_Request, m_Connection.getAddress(),
-                                m_Connection.getPort());
+                                "execute reached max tries {}, throwing last error: {}. Request: {} (unit id {} & transaction {}). Address: {}:{}",
+                                m_Retries, ex.getMessage(), m_Request, m_Request.getUnitID(),
+                                m_Request.getTransactionID(), m_Connection.getAddress(), m_Connection.getPort());
                         throw new ModbusIOException("Executing transaction failed (tried " + m_Retries + " times)");
                     }
                     Thread.sleep(m_RetryDelayMillis);
@@ -222,8 +224,10 @@ public class ModbusTCPTransaction implements ModbusTransaction {
             } while (true);
 
             if (tries > 0) {
-                logger.info("execute eventually succeeded with {} re-tries. Request: {}. Address: {}:{}", tries,
-                        m_Request, m_Connection.getAddress(), m_Connection.getPort());
+                logger.info(
+                        "execute eventually succeeded with {} re-tries. Request: {} (unit id {} & transaction {}). Address: {}:{}",
+                        tries, m_Request, m_Request.getUnitID(), m_Request.getTransactionID(),
+                        m_Connection.getAddress(), m_Connection.getPort());
             }
 
             // 5. deal with "application level" exceptions

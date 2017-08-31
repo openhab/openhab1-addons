@@ -37,7 +37,7 @@ public class SimpleRegister extends SynchronizedAbstractRegister implements Regi
 
     /**
      * Constructs a new <tt>SimpleRegister</tt> instance.
-     * 
+     *
      * @param b1 the first (hi) byte of the word.
      * @param b2 the second (low) byte of the word.
      */

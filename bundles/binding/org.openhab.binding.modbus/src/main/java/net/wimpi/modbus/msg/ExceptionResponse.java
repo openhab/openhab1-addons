@@ -74,7 +74,7 @@ public class ExceptionResponse extends ModbusResponse {
      * Returns the Modbus exception code of this
      * <tt>ExceptionResponse</tt>.
      * <p>
-     * 
+     *
      * @return the exception code as <tt>int</tt>.
      */
     public int getExceptionCode() {

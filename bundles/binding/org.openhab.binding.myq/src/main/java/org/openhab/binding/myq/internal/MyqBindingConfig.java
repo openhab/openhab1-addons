@@ -30,4 +30,6 @@ public class MyqBindingConfig implements BindingConfig {
 
     int deviceIndex;
     List<Class<? extends State>> acceptedDataTypes;
+
+    String attribute;
 }

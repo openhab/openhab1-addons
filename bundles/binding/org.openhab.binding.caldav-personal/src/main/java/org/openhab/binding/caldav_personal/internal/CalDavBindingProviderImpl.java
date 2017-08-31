@@ -45,11 +45,14 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
 
     private static final String REGEX_CALENDAR = "calendar:'?([A-Za-z-_]+(, ?[A-Za-z-_]+)*)'?";
     private static final String REGEX_TYPE = "type:'?([A-Za-z]+)'?";
-    private static final String REGEX_EVENT_NR = "eventNr:'?([0-9]+)'?"; 
+    private static final String REGEX_EVENT_NR = "eventNr:'?([0-9]+)'?";
     private static final String REGEX_VALUE = "value:'?([A-Za-z]+)'?";
     private static final String REGEX_FILTER_NAME = "filter-name:'?([A-Za-z\\.\\*\\+\\- \\|]+)'?";
     private static final String REGEX_FILTER_CATEGORY = "filter-category:'?([A-Za-z-_]+(, ?[A-Za-z-_]+)*)'?";
-    
+    private static final String REGEX_FILTER_CATEGORY_ANY = "filter-category-any:'?([A-Za-z-_]+(, ?[A-Za-z-_]+)*)'?";
+
+    private boolean categoriesFiltersAny = false;
+
     /**
      * {@inheritDoc}
      */
@@ -93,7 +96,7 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
                 calendar.add(str.trim());
             }
         }
-        
+
         String type = CalDavBindingProviderImpl.getConfigValue(bindingConfig, REGEX_TYPE);
         Type typeEnum = null;
         String eventNr = CalDavBindingProviderImpl.getConfigValue(bindingConfig, REGEX_EVENT_NR);
@@ -101,14 +104,29 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
         Value valueEnum = null;
         String filterName = CalDavBindingProviderImpl.getConfigValue(bindingConfig, REGEX_FILTER_NAME);
         String filterCategoryString = CalDavBindingProviderImpl.getConfigValue(bindingConfig, REGEX_FILTER_CATEGORY);
+        String filterCategoryAnyString = CalDavBindingProviderImpl.getConfigValue(bindingConfig,
+                REGEX_FILTER_CATEGORY_ANY);
         List<String> filterCategory = new ArrayList<String>();
+
+        if (filterCategoryString != null && filterCategoryAnyString != null) {
+            throw new BindingConfigParseException(
+                    bindingConfig + "filter-category and filter-category-any are mutually exclusive");
+        }
+
         if (filterCategoryString != null) {
             for (String str : filterCategoryString.split(",")) {
                 filterCategory.add(str.trim());
             }
         }
-        
-        logger.trace("found values: calendar={}, type={}, eventNr={}, value={}, filterName={}, filterCategory={}", 
+
+        if (filterCategoryAnyString != null) {
+            for (String str : filterCategoryAnyString.split(",")) {
+                filterCategory.add(str.trim());
+                categoriesFiltersAny = true;
+            }
+        }
+
+        logger.trace("found values: calendar={}, type={}, eventNr={}, value={}, filterName={}, filterCategory={}",
                 calendar, type, eventNr, value, filterName, filterCategory);
 
         if (calendar == null || calendar.size() == 0) {
@@ -149,11 +167,16 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
         }
 
         logger.debug("adding item: {}", item.getName());
-        this.addBindingConfig(item, new CalDavConfig(
-                calendar, typeEnum, NumberUtils.toInt(eventNr == null ? "0" : eventNr), valueEnum, filterName, filterCategory)
-        );
+        if (categoriesFiltersAny == false) {
+            this.addBindingConfig(item, new CalDavConfig(calendar, typeEnum,
+                    NumberUtils.toInt(eventNr == null ? "0" : eventNr), valueEnum, filterName, filterCategory));
+        } else {
+            this.addBindingConfig(item,
+                    new CalDavConfig(calendar, typeEnum, NumberUtils.toInt(eventNr == null ? "0" : eventNr), valueEnum,
+                            filterName, filterCategory, categoriesFiltersAny));
+        }
     }
-    
+
     public static String getConfigValue(String input, String regex) {
         Matcher matcher = Pattern.compile(regex).matcher(input);
         if (matcher.find()) {

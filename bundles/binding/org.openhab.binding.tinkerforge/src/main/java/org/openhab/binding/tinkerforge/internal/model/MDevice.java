@@ -23,18 +23,18 @@ import com.tinkerforge.IPConnection;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getTinkerforgeDevice
- *        <em>Tinkerforge Device</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getTinkerforgeDevice <em>Tinkerforge
+ *        Device</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getIpConnection <em>Ip Connection</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getConnectedUid <em>Connected Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getPosition <em>Position</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getDeviceIdentifier
- *        <em>Device Identifier</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getDeviceIdentifier <em>Device
+ *        Identifier</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getName <em>Name</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getBrickd <em>Brickd</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMDevice()
  * @model interface="true" abstract="true" TFBounds="org.openhab.binding.tinkerforge.internal.model.MTinkerforgeDevice"
@@ -88,8 +88,8 @@ public interface MDevice<TF extends Device> extends MBaseDevice {
     IPConnection getIpConnection();
 
     /**
-     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getIpConnection
-     * <em>Ip Connection</em>}' attribute.
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getIpConnection <em>Ip
+     * Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
@@ -217,8 +217,8 @@ public interface MDevice<TF extends Device> extends MBaseDevice {
 
     /**
      * Returns the value of the '<em><b>Brickd</b></em>' container reference.
-     * It is bidirectional and its opposite is '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getMdevices <em>Mdevices</em>}'.
+     * It is bidirectional and its opposite is
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getMdevices <em>Mdevices</em>}'.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Brickd</em>' container reference isn't clear,

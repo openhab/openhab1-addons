@@ -62,7 +62,7 @@ public final class WriteSingleRegisterResponse extends ModbusResponse {
      * Returns the value that has been returned in
      * this <tt>WriteSingleRegisterResponse</tt>.
      * <p>
-     * 
+     *
      * @return the value of the register.
      */
     public int getRegisterValue() {
@@ -73,7 +73,7 @@ public final class WriteSingleRegisterResponse extends ModbusResponse {
      * Sets the value that has been returned in the
      * response message.
      * <p>
-     * 
+     *
      * @param value the returned register value.
      */
     private void setRegisterValue(int value) {
@@ -84,7 +84,7 @@ public final class WriteSingleRegisterResponse extends ModbusResponse {
      * Returns the reference of the register
      * that has been written to.
      * <p>
-     * 
+     *
      * @return the reference of the written register.
      */
     public int getReference() {
@@ -95,7 +95,7 @@ public final class WriteSingleRegisterResponse extends ModbusResponse {
      * Sets the reference of the register that has
      * been written to.
      * <p>
-     * 
+     *
      * @param ref the reference of the written register.
      */
     private void setReference(int ref) {
@@ -121,10 +121,10 @@ public final class WriteSingleRegisterResponse extends ModbusResponse {
      * m_DataOut.writeShort(getReference());
      * m_DataOut.writeShort(getRegisterValue());
      * }//assembleData
-     * 
+     *
      * protected void readData(DataInputStream in)
      * throws EOFException, IOException {
-     * 
+     *
      * setReference(in.readUnsignedShort());
      * setRegisterValue(in.readUnsignedShort());
      * //update data length

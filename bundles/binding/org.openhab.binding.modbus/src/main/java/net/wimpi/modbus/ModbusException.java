@@ -37,7 +37,7 @@ public class ModbusException extends Exception {
      * Constructs a new <tt>ModbusException</tt>
      * instance with the given message.
      * <p>
-     * 
+     *
      * @param message the message describing this
      *            <tt>ModbusException</tt>.
      */

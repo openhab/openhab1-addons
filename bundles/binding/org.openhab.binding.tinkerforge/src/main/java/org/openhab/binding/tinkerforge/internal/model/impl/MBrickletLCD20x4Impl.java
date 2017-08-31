@@ -51,43 +51,43 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getLogger <em>Logger</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getLogger
+ *        <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getUid <em>Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#isPoll <em>Poll</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getEnabledA
- *        <em>Enabled A</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getEnabledA <em>Enabled
+ *        A</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getTinkerforgeDevice
  *        <em>Tinkerforge Device</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getIpConnection
- *        <em>Ip Connection</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getIpConnection <em>Ip
+ *        Connection</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getConnectedUid
  *        <em>Connected Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getPosition
  *        <em>Position</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getDeviceIdentifier
  *        <em>Device Identifier</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getName <em>Name</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getBrickd <em>Brickd</em>}
- *        </li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getText <em>Text</em>}
- *        </li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getName
+ *        <em>Name</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getBrickd
+ *        <em>Brickd</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getText
+ *        <em>Text</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getMsubdevices
  *        <em>Msubdevices</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getDeviceType
- *        <em>Device Type</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getDeviceType <em>Device
+ *        Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getPositionPrefix
  *        <em>Position Prefix</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getPositonSuffix
  *        <em>Positon Suffix</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#isDisplayErrors
  *        <em>Display Errors</em>}</li>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getErrorPrefix
- *        <em>Error Prefix</em>}</li>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getErrorPrefix <em>Error
+ *        Prefix</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -115,7 +115,7 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     /**
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute. <!--
      * begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @see #getUid()
      * @generated
      * @ordered
@@ -125,7 +125,7 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     /**
      * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute. <!--
      * begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @see #getUid()
      * @generated
      * @ordered
@@ -468,10 +468,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -493,9 +492,8 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -519,10 +517,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -544,10 +541,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -569,10 +565,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setTinkerforgeDevice(BrickletLCD20x4 newTinkerforgeDevice) {
         BrickletLCD20x4 oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__TINKERFORGE_DEVICE,
                     oldTinkerforgeDevice, tinkerforgeDevice));
-        }
     }
 
     /**
@@ -594,10 +589,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -619,10 +613,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -644,10 +637,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -669,10 +661,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__DEVICE_IDENTIFIER,
                     oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
@@ -694,10 +685,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__NAME, oldName,
                     name));
-        }
     }
 
     /**
@@ -707,10 +697,21 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LCD2_0X4__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LCD2_0X4__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LCD2_0X4__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -732,25 +733,20 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_LCD2_0X4__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__BRICKD, newBrickd,
                     newBrickd));
-        }
     }
 
     /**
@@ -764,8 +760,22 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * 
+     * @generated
+     */
+    public void setText(String newText) {
+        String oldText = text;
+        text = newText;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__TEXT, oldText,
+                    text));
+    }
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     *
      * @generated NOT
      */
     private void displayError(String msg) {
@@ -783,16 +793,189 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     }
 
     /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public EList<MLCDSubDevice> getMsubdevices() {
+        if (msubdevices == null) {
+            msubdevices = new EObjectContainmentWithInverseEList<MLCDSubDevice>(MLCDSubDevice.class, this,
+                    ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK) {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public Class<?> getInverseFeatureClass() {
+                    return MSubDevice.class;
+                }
+            };
+        }
+        return msubdevices;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      * 
+     * @generated
+     */
+    @Override
+    public String getPositionPrefix() {
+        return positionPrefix;
+    }
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public void setPositionPrefix(String newPositionPrefix) {
+        String oldPositionPrefix = positionPrefix;
+        positionPrefix = newPositionPrefix;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__POSITION_PREFIX,
+                    oldPositionPrefix, positionPrefix));
+    }
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public String getPositonSuffix() {
+        return positonSuffix;
+    }
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public void setPositonSuffix(String newPositonSuffix) {
+        String oldPositonSuffix = positonSuffix;
+        positonSuffix = newPositonSuffix;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__POSITON_SUFFIX,
+                    oldPositonSuffix, positonSuffix));
+    }
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public boolean isDisplayErrors() {
+        return displayErrors;
+    }
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public void setDisplayErrors(boolean newDisplayErrors) {
+        boolean oldDisplayErrors = displayErrors;
+        displayErrors = newDisplayErrors;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__DISPLAY_ERRORS,
+                    oldDisplayErrors, displayErrors));
+    }
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public String getErrorPrefix() {
+        return errorPrefix;
+    }
+
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     *
      * @generated NOT
      */
     @Override
-    public void setText(String newText) {
+    public void init() {
+        setEnabledA(new AtomicBoolean());
+        logger = LoggerFactory.getLogger(MBrickletLCD20x4Impl.class);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    @Override
+    public boolean clear() {
+        try {
+            tinkerforgeDevice.clearDisplay();
+            return true;
+        } catch (TimeoutException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+        } catch (NotConnectedException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+        }
+        return false;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    @Override
+    public void initSubDevices() {
+        ModelFactory factory = ModelFactory.eINSTANCE;
+        for (int i = 0; i < 4; i++) {
+            MLCD20x4Button mButton = factory.createMLCD20x4Button();
+            mButton.setUid(uid);
+            String subId = "button" + String.valueOf(i);
+            logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subId);
+            mButton.setSubId(subId);
+            mButton.init();
+            mButton.setMbrick(this);
+        }
+        MLCD20x4Backlight backlight = factory.createMLCD20x4Backlight();
+        backlight.setUid(uid);
+        String subId = "backlight";
+        logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subId);
+        backlight.setSubId(subId);
+        backlight.init();
+        backlight.setMbrick(this);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    @Override
+    public void write(String newText) {
         String oldText = text;
         text = newText;
         // TODO check if there are changes
-        logger.debug("setText: " + newText);
+        logger.debug("setText: {}", newText);
         try {
             if (text == null || text.equals("")) {
                 tinkerforgeDevice.clearDisplay();
@@ -855,170 +1038,8 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     }
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EList<MLCDSubDevice> getMsubdevices() {
-        if (msubdevices == null) {
-            msubdevices = new EObjectContainmentWithInverseEList<MLCDSubDevice>(MSubDevice.class, this,
-                    ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
-        }
-        return msubdevices;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public String getDeviceType() {
-        return deviceType;
-    }
-
-    /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public String getPositionPrefix() {
-        return positionPrefix;
-    }
-
-    /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public void setPositionPrefix(String newPositionPrefix) {
-        String oldPositionPrefix = positionPrefix;
-        positionPrefix = newPositionPrefix;
-        if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__POSITION_PREFIX,
-                    oldPositionPrefix, positionPrefix));
-        }
-    }
-
-    /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public String getPositonSuffix() {
-        return positonSuffix;
-    }
-
-    /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public void setPositonSuffix(String newPositonSuffix) {
-        String oldPositonSuffix = positonSuffix;
-        positonSuffix = newPositonSuffix;
-        if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__POSITON_SUFFIX,
-                    oldPositonSuffix, positonSuffix));
-        }
-    }
-
-    /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public boolean isDisplayErrors() {
-        return displayErrors;
-    }
-
-    /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public void setDisplayErrors(boolean newDisplayErrors) {
-        boolean oldDisplayErrors = displayErrors;
-        displayErrors = newDisplayErrors;
-        if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__DISPLAY_ERRORS,
-                    oldDisplayErrors, displayErrors));
-        }
-    }
-
-    /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public String getErrorPrefix() {
-        return errorPrefix;
-    }
-
-    /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
-     * @generated NOT
-     */
-    @Override
-    public void init() {
-        setEnabledA(new AtomicBoolean());
-        logger = LoggerFactory.getLogger(MBrickletLCD20x4Impl.class);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public boolean clear() {
-        // TODO: implement this method
-        // Ensure that you remove @generated or mark it @generated NOT
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated NOT
-     */
-    @Override
-    public void initSubDevices() {
-        ModelFactory factory = ModelFactory.eINSTANCE;
-        for (int i = 0; i < 4; i++) {
-            MLCD20x4Button mButton = factory.createMLCD20x4Button();
-            mButton.setUid(uid);
-            String subId = "button" + String.valueOf(i);
-            logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subId);
-            mButton.setSubId(subId);
-            mButton.init();
-            mButton.setMbrick(this);
-        }
-        MLCD20x4Backlight backlight = factory.createMLCD20x4Backlight();
-        backlight.setUid(uid);
-        String subId = "backlight";
-        logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subId);
-        backlight.setSubId(subId);
-        backlight.init();
-        backlight.setMbrick(this);
-    }
-
-    /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -1035,7 +1056,7 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     @Override
@@ -1053,9 +1074,8 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_LCD2_0X4__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
             case ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMsubdevices()).basicAdd(otherEnd, msgs);
@@ -1122,7 +1142,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
             case ModelPackage.MBRICKLET_LCD2_0X4__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_LCD2_0X4__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_LCD2_0X4__TEXT:
                 return getText();
             case ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES:
@@ -1294,7 +1316,7 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
             case ModelPackage.MBRICKLET_LCD2_0X4__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_LCD2_0X4__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_LCD2_0X4__TEXT:
                 return TEXT_EDEFAULT == null ? text != null : !TEXT_EDEFAULT.equals(text);
             case ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES:
@@ -1377,6 +1399,8 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public int eDerivedOperationID(int baseOperationID, Class<?> baseClass) {
         if (baseClass == MTextActor.class) {
             switch (baseOperationID) {
+                case ModelPackage.MTEXT_ACTOR___WRITE__STRING:
+                    return ModelPackage.MBRICKLET_LCD2_0X4___WRITE__STRING;
                 default:
                     return -1;
             }
@@ -1408,6 +1432,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
             case ModelPackage.MBRICKLET_LCD2_0X4___INIT_SUB_DEVICES:
                 initSubDevices();
                 return null;
+            case ModelPackage.MBRICKLET_LCD2_0X4___WRITE__STRING:
+                write((String) arguments.get(0));
+                return null;
             case ModelPackage.MBRICKLET_LCD2_0X4___ENABLE:
                 enable();
                 return null;
@@ -1425,9 +1452,8 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

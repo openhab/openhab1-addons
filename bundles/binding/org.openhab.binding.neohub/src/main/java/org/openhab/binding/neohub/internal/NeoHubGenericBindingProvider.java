@@ -83,7 +83,7 @@ public class NeoHubGenericBindingProvider extends AbstractGenericBindingProvider
         if (config.property == null) {
             throw new BindingConfigParseException(
                     "item '" + item.getName() + "' has to define an property (" + StringUtils.join(bindings, ", ")
-                            + ") value. unkown value: " + property + " - please check your *.items configuration");
+                            + ") value. unknown value: " + property + " - please check your *.items configuration");
 
         }
 

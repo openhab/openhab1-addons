@@ -20,15 +20,17 @@ import com.tinkerforge.BrickletTemperatureIR;
  *
  *        <p>
  *        The following features are supported:
- *        <ul>
- *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR#getDeviceType
- *        <em>Device Type</em>}</li>
- *        </ul>
  *        </p>
+ *        <ul>
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR#getDeviceType <em>Device
+ *        Type</em>}</li>
+ *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletTemperatureIR()
- * @model superTypes=
- *        "org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletTemperatureIR> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
+ *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletTemperatureIR>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
+ *        <org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice>"
  * @generated
  */
 public interface MBrickletTemperatureIR extends MDevice<BrickletTemperatureIR>, MSubDeviceHolder<MTemperatureIRDevice> {

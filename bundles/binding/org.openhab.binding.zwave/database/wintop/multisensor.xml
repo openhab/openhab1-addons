@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>Multisensor</Model>
+    <Label lang="en">Wintop Multi-sensor</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x30</id>             <!-- SENSOR_BINARY -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x60</id>             <!-- MULTI_INSTANCE -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Set to default</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Mode Timeout</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Switch off time</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Sensitivity</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>127</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">Mode</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>1</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>6</Index>
+            <Label lang="en">The temperature off set</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <Size>2</Size>
+        </Parameter>
+
+    </Configuration>
+
+</Product>

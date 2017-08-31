@@ -50,5 +50,4 @@ public interface Iec6205621MeterBindingProvider extends BindingProvider {
      * @return the type of the Item identified by {@code itemName}
      */
     Class<? extends Item> getItemType(String itemName);
-
 }

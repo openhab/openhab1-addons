@@ -13,6 +13,9 @@ import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.comfoair.ComfoAirBindingProvider;
@@ -35,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Holger Hees
  * @since 1.3.0
  */
-public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvider>implements ManagedService {
+public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvider> implements ManagedService {
 
     static final Logger logger = LoggerFactory.getLogger(ComfoAirBinding.class);
 
@@ -48,11 +51,14 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
 
     private ComfoAirConnector connector;
 
+    private ScheduledExecutorService scheduler;
+
     /**
      * @{inheritDoc
      */
     @Override
     public void activate() {
+        scheduler = Executors.newScheduledThreadPool(10);
     }
 
     /**
@@ -62,6 +68,15 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
     public void deactivate() {
         for (ComfoAirBindingProvider provider : providers) {
             provider.removeBindingChangeListener(this);
+        }
+
+        if (scheduler != null) {
+            scheduler.shutdown();
+            try {
+                scheduler.awaitTermination(5000, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                logger.warn("Unable to shutdown scheduler!");
+            }
         }
 
         providers.clear();
@@ -109,8 +124,8 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
 
             if (affectedReadCommands.size() > 0) {
                 // refresh 3 seconds later all affected items
-                Thread updateThread = new AffectedItemsUpdateThread(affectedReadCommands);
-                updateThread.start();
+                Runnable updateThread = new AffectedItemsUpdateThread(affectedReadCommands);
+                scheduler.schedule(updateThread, 3, TimeUnit.SECONDS);
             }
         }
     }
@@ -133,7 +148,7 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
     /**
      * send a command and send additional command which are affected by the
      * first command
-     *
+     * 
      * @param command
      */
     private void sendCommand(ComfoAirCommand command) {
@@ -215,13 +230,8 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
 
         @Override
         public void run() {
-            try {
-                sleep(3000);
-                for (ComfoAirCommand readCommand : this.affectedReadCommands) {
-                    sendCommand(readCommand);
-                }
-            } catch (InterruptedException e) {
-                // nothing to do ...
+            for (ComfoAirCommand readCommand : this.affectedReadCommands) {
+                sendCommand(readCommand);
             }
         }
     }

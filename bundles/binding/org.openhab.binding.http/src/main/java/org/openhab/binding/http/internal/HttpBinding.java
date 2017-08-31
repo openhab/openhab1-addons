@@ -8,43 +8,36 @@
  */
 package org.openhab.binding.http.internal;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.openhab.binding.http.internal.HttpGenericBindingProvider.CHANGED_COMMAND_KEY;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+
 import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.items.Item;
-import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.DateTimeItem;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.types.DateTimeType;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
-import org.openhab.core.types.TypeParser;
 import org.openhab.io.net.http.HttpUtil;
+
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,20 +48,26 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @author Pauli Anttila
  * @auther Ben Jones
+ * @author John Cocula
+ * @author Chris Carman
  * @since 0.6.0
  */
-public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>implements ManagedService {
+public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> implements ManagedService {
 
     static final Logger logger = LoggerFactory.getLogger(HttpBinding.class);
 
     protected static final String CONFIG_TIMEOUT = "timeout";
     protected static final String CONFIG_GRANULARITY = "granularity";
+    protected static final String CONFIG_FORMAT = "format";
 
     /** the timeout to use for connecting to a given host (defaults to 5000 milliseconds) */
     private int timeout = 5000;
 
     /** the interval to find new refresh candidates (defaults to 1000 milliseconds) */
     private int granularity = 1000;
+
+    /** whether to substitute time and/or state into the URL */
+    private boolean format = true;
 
     private Map<String, Long> lastUpdateMap = new HashMap<String, Long>();
 
@@ -141,7 +140,9 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
             for (String itemName : provider.getInBindingItemNames()) {
 
                 String url = provider.getUrl(itemName);
-                url = String.format(url, Calendar.getInstance().getTime());
+                if (format) {
+                    url = String.format(url, Calendar.getInstance().getTime());
+                }
 
                 Properties headers = provider.getHttpHeaders(itemName);
                 int refreshInterval = provider.getRefreshInterval(itemName);
@@ -189,12 +190,12 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
                             } else {
                                 transformedResponse = response;
                                 logger.warn(
-                                        "couldn't transform response because transformationService of type '{}' is unavailable",
+                                        "Couldn't transform response because transformationService of type '{}' is unavailable",
                                         transformationType);
                             }
                         } catch (TransformationException te) {
-                            logger.error("transformation throws exception [transformation=" + transformation
-                                    + ", response=" + response + "]", te);
+                            logger.error("Transformation '{}' threw an exception. [response={}]", transformation,
+                                    response, te);
 
                             // in case of an error we return the response without any
                             // transformation
@@ -203,11 +204,12 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
 
                         logger.debug("transformed response is '{}'", transformedResponse);
 
-                        Class<? extends Item> itemType = provider.getItemType(itemName);
-                        State state = createState(itemType, transformedResponse);
-
+                        State state = provider.getState(itemName, transformedResponse);
                         if (state != null) {
                             eventPublisher.postUpdate(itemName, state);
+                        } else {
+                            logger.debug("Couldn't create state for item '{}' from string '{}'", itemName,
+                                    transformedResponse);
                         }
                     }
 
@@ -241,38 +243,6 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
     }
 
     /**
-     * Returns a {@link State} which is inherited from the {@link Item}s
-     * accepted DataTypes. The call is delegated to the {@link TypeParser}. If
-     * <code>item</code> is <code>null</code> the {@link StringType} is used.
-     *
-     * @param itemType
-     * @param transformedResponse
-     *
-     * @return a {@link State} which type is inherited by the {@link TypeParser}
-     *         or a {@link StringType} if <code>item</code> is <code>null</code>
-     */
-    private State createState(Class<? extends Item> itemType, String transformedResponse) {
-        try {
-            if (itemType.isAssignableFrom(NumberItem.class)) {
-                return DecimalType.valueOf(transformedResponse);
-            } else if (itemType.isAssignableFrom(ContactItem.class)) {
-                return OpenClosedType.valueOf(transformedResponse);
-            } else if (itemType.isAssignableFrom(SwitchItem.class)) {
-                return OnOffType.valueOf(transformedResponse);
-            } else if (itemType.isAssignableFrom(RollershutterItem.class)) {
-                return PercentType.valueOf(transformedResponse);
-            } else if (itemType.isAssignableFrom(DateTimeItem.class)) {
-                return DateTimeType.valueOf(transformedResponse);
-            } else {
-                return StringType.valueOf(transformedResponse);
-            }
-        } catch (Exception e) {
-            logger.debug("Couldn't create state of type '{}' for value '{}'", itemType, transformedResponse);
-            return StringType.valueOf(transformedResponse);
-        }
-    }
-
-    /**
      * Finds the corresponding binding provider, replaces formatting markers
      * in the url (@see java.util.Formatter for further information) and executes
      * the formatted url.
@@ -286,16 +256,41 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
         HttpBindingProvider provider = findFirstMatchingBindingProvider(itemName, command);
 
         if (provider == null) {
-            logger.trace("doesn't find matching binding provider [itemName={}, command={}]", itemName, command);
+            logger.trace("Couldn't find matching binding provider [itemName={}, command={}]", itemName, command);
             return;
         }
 
         String httpMethod = provider.getHttpMethod(itemName, command);
         String url = provider.getUrl(itemName, command);
-        url = String.format(url, Calendar.getInstance().getTime(), value);
+        if (format) {
+            url = String.format(url, Calendar.getInstance().getTime(), value);
+        }
 
-        if (isNotBlank(httpMethod) && isNotBlank(url)) {
-            HttpUtil.executeUrl(httpMethod, url, provider.getHttpHeaders(itemName, command), null, null, timeout);
+        String body = provider.getBody(itemName, command);
+        InputStream stream = null;
+
+        if (StringUtils.isNotBlank(httpMethod) && StringUtils.isNotBlank(url)) {
+            if (httpMethod.equals("POST") && StringUtils.isNotBlank(body)) {
+                try {
+                    stream = IOUtils.toInputStream(body, "UTF-8");
+                } catch (IOException ioe) {
+                    logger.error("Failed to convert the specified body into an acceptable input stream.", ioe);
+                    logger.error("Body contents: {}", body);
+                }
+                logger.debug("Executing url '{}' via method {}, with body content '{}'", url, httpMethod, body);
+                HttpUtil.executeUrl(httpMethod, url, provider.getHttpHeaders(itemName, command), stream, "text/plain",
+                        timeout);
+            } else {
+                logger.debug("Executing url '{}' via method {}", url, httpMethod);
+                HttpUtil.executeUrl(httpMethod, url, provider.getHttpHeaders(itemName, command), null, null, timeout);
+            }
+        } else {
+            if (StringUtils.isBlank(httpMethod)) {
+                logger.error("The HTTP method specified was empty.");
+            }
+            if (StringUtils.isBlank(url)) {
+                logger.error("The URL specified was empty.");
+            }
         }
     }
 
@@ -402,14 +397,19 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
             itemCache.clear();
 
             if (config != null) {
-                String timeoutString = (String) config.get(CONFIG_TIMEOUT);
+                String timeoutString = Objects.toString(config.get(CONFIG_TIMEOUT), null);
                 if (StringUtils.isNotBlank(timeoutString)) {
                     timeout = Integer.parseInt(timeoutString);
                 }
 
-                String granularityString = (String) config.get(CONFIG_GRANULARITY);
+                String granularityString = Objects.toString(config.get(CONFIG_GRANULARITY), null);
                 if (StringUtils.isNotBlank(granularityString)) {
                     granularity = Integer.parseInt(granularityString);
+                }
+
+                String formatString = Objects.toString(config.get(CONFIG_FORMAT), null);
+                if (StringUtils.isNotBlank(formatString)) {
+                    format = formatString.equalsIgnoreCase("true");
                 }
 
                 // Parse page cache config
@@ -422,7 +422,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
 
                     // the config-key enumeration contains additional keys that we
                     // don't want to process here ...
-                    if (CONFIG_TIMEOUT.equals(key) || CONFIG_GRANULARITY.equals(key) || "service.pid".equals(key)) {
+                    if (CONFIG_TIMEOUT.equals(key) || CONFIG_GRANULARITY.equals(key) || CONFIG_FORMAT.equals(key) || "service.pid".equals(key)) {
                         continue;
                     }
 
@@ -447,7 +447,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
                     }
 
                     String configKey = matcher.group(2);
-                    String value = (String) config.get(key);
+                    String value = Objects.toString(config.get(key), null);
 
                     if ("url".equals(configKey)) {
                         matcher = EXTRACT_CACHE_CONFIG_URL.matcher(value);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,10 +9,10 @@
 package org.openhab.binding.modbus.internal;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.apache.commons.pool2.KeyedObjectPool;
 import org.openhab.binding.modbus.ModbusBindingProvider;
-import org.openhab.binding.modbus.internal.ModbusGenericBindingProvider.ModbusBindingConfig;
 import org.openhab.binding.modbus.internal.pooling.ModbusSlaveEndpoint;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -20,9 +20,11 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.wimpi.modbus.ModbusException;
 import net.wimpi.modbus.io.ModbusTransaction;
 import net.wimpi.modbus.msg.ModbusRequest;
 import net.wimpi.modbus.msg.ModbusResponse;
@@ -104,6 +106,7 @@ public abstract class ModbusSlave {
     private double rawDataMultiplier = 1.0;
 
     private Object storage;
+    private Exception readError;
     protected ModbusTransaction transaction = null;
 
     /**
@@ -113,13 +116,12 @@ public abstract class ModbusSlave {
      */
     private boolean updateUnchangedItems = false;
 
-    public boolean isUpdateUnchangedItems() {
-        return updateUnchangedItems;
-    }
-
-    public void setUpdateUnchangedItems(boolean updateUnchangedItems) {
-        this.updateUnchangedItems = updateUnchangedItems;
-    }
+    /**
+     * Does the binding post UNDEF update event when read fails
+     *
+     * default is "false"
+     */
+    private boolean postUndefinedOnReadError = false;
 
     /**
      * @param slave slave name from cfg file used for item binding
@@ -135,14 +137,20 @@ public abstract class ModbusSlave {
      * works only with types "coil" and "holding"
      *
      * @param command OpenHAB command received
-     * @param config
+     * @param writeIndex
+     * @param readIndex read index to use for commands that require previously polled value
+     *
      */
-    public void executeCommand(Command command, ModbusBindingConfig config) {
-        if (ModbusBindingProvider.TYPE_COIL.equals(getType())) {
-            setCoil(command, config);
-        }
-        if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {
-            setRegister(command, config);
+    public void executeCommand(String itemName, Command command, int writeIndex,
+            Optional<State> previouslyPolledState) {
+        try {
+            if (ModbusBindingProvider.TYPE_COIL.equals(getType())) {
+                setCoil(command, writeIndex);
+            } else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {
+                setRegister(itemName, command, writeIndex, previouslyPolledState);
+            }
+        } catch (Exception e) {
+            // Error already logged, just continue as normal
         }
     }
 
@@ -150,7 +158,7 @@ public abstract class ModbusSlave {
      * Calculates boolean value that will be written to the device as a result of OpenHAB command
      * Used with item bound to "coil" type slaves
      *
-     * @param command OpenHAB command received by the item
+     * @param command OpenHAB command received by the item. OnOffType, OpenClosedType and DecimalType are handled.
      * @return new boolean value to be written to the device
      */
     protected static boolean translateCommand2Boolean(Command command) {
@@ -166,6 +174,10 @@ public abstract class ModbusSlave {
         if (command.equals(OpenClosedType.CLOSED)) {
             return false;
         }
+        if (command instanceof DecimalType) {
+            // Transformation might return DecimalType commands even for coil items
+            return !command.equals(DecimalType.ZERO);
+        }
         throw new IllegalArgumentException("command not supported");
     }
 
@@ -173,12 +185,16 @@ public abstract class ModbusSlave {
      * Performs physical write to device when slave type is "coil"
      *
      * @param command command received from OpenHAB
-     * @param config
+     * @param writeIndex
+     * @throws ModbusConnectionException when connection cannot be established
+     * @throws ModbusException ModbusIOException on IO errors, ModbusSlaveException with protocol level exceptions
+     * @throws ModbusUnexpectedTransactionIdException when response transaction id does not match the request
      */
-    private void setCoil(Command command, ModbusBindingConfig config) {
-        int writeRegister = config.writeIndex;
+    private void setCoil(Command command, int writeIndex)
+            throws ModbusConnectionException, ModbusException, ModbusUnexpectedTransactionIdException {
+        int coilOffset = writeIndex;
         boolean b = translateCommand2Boolean(command);
-        doSetCoil(getStart() + writeRegister, b);
+        doSetCoil(getStart() + coilOffset, b);
     }
 
     /**
@@ -186,54 +202,46 @@ public abstract class ModbusSlave {
      *
      * @param command command received from OpenHAB
      * @param config
+     * @throws ModbusConnectionException when connection cannot be established
+     * @throws ModbusException ModbusIOException on IO errors, ModbusSlaveException with protocol level exceptions
+     * @throws ModbusUnexpectedTransactionIdException when response transaction id does not match the request
      */
-    protected void setRegister(Command command, ModbusBindingConfig config) {
-        int readIndex = config.readIndex;
-        int writeRegister = getStart() + config.writeIndex;
+    protected void setRegister(String itemName, Command command, int writeIndex, Optional<State> previouslyPolledState)
+            throws ModbusConnectionException, ModbusException, ModbusUnexpectedTransactionIdException {
+        int writeRegister = getStart() + writeIndex;
 
         Register newValue;
-        if (command instanceof IncreaseDecreaseType) {
-            newValue = readCachedRegisterValue(readIndex);
-            if (newValue == null) {
-                logger.warn("Not polled value for item {}. Cannot process command {}", config.getItemName(), command);
+        if (command instanceof IncreaseDecreaseType || command instanceof UpDownType) {
+            if (!previouslyPolledState.isPresent()) {
+                logger.warn("Not polled value for item {}. Cannot process command {}", itemName, command);
                 return;
             }
-            if (command.equals(IncreaseDecreaseType.INCREASE)) {
-                newValue.setValue(newValue.getValue() + 1);
-            } else if (command.equals(IncreaseDecreaseType.DECREASE)) {
-                newValue.setValue(newValue.getValue() - 1);
-            }
-        } else if (command instanceof UpDownType) {
-            newValue = readCachedRegisterValue(readIndex);
-            if (newValue == null) {
-                logger.warn("Not polled value for item {}. Cannot process command {}", config.getItemName(), command);
+            State prevState = previouslyPolledState.get();
+
+            if (!(prevState instanceof Number)) {
+                logger.warn("Previously polled value ({}) is not number, cannot process command {}",
+                        previouslyPolledState, command);
                 return;
             }
-            if (command.equals(UpDownType.UP)) {
-                newValue.setValue(newValue.getValue() + 1);
-            } else if (command.equals(UpDownType.DOWN)) {
-                newValue.setValue(newValue.getValue() - 1);
+            int prevValue = ((Number) prevState).intValue();
+            newValue = new SimpleRegister();
+            if (command.equals(IncreaseDecreaseType.INCREASE) || command.equals(UpDownType.UP)) {
+                newValue.setValue(prevValue + 1);
+            } else if (command.equals(IncreaseDecreaseType.DECREASE) || command.equals(UpDownType.DOWN)) {
+                newValue.setValue(prevValue - 1);
             }
         } else if (command instanceof DecimalType) {
             newValue = new SimpleRegister();
             newValue.setValue(((DecimalType) command).intValue());
-        } else if (command instanceof OnOffType) {
+        } else if (command instanceof OnOffType || command instanceof OpenClosedType) {
             newValue = new SimpleRegister();
-            if (command.equals(OnOffType.ON)) {
+            if (command.equals(OnOffType.ON) || command.equals(OpenClosedType.OPEN)) {
                 newValue.setValue(1);
-            } else if (command.equals(OnOffType.OFF)) {
-                newValue.setValue(0);
-            }
-        } else if (command instanceof OpenClosedType) {
-            newValue = new SimpleRegister();
-            if (command.equals(OpenClosedType.OPEN)) {
-                newValue.setValue(1);
-            } else if (command.equals(OpenClosedType.CLOSED)) {
+            } else if (command.equals(OnOffType.OFF) || command.equals(OpenClosedType.CLOSED)) {
                 newValue.setValue(0);
             }
         } else {
-            logger.warn("Item {} received unsupported command: {}. Not setting register.", config.getItemName(),
-                    command);
+            logger.warn("Item {} received unsupported command: {}. Not setting register.", itemName, command);
             return;
         }
 
@@ -251,17 +259,6 @@ public abstract class ModbusSlave {
         executeWriteRequest(request);
     }
 
-    private Register readCachedRegisterValue(int readIndex) {
-        if (storage == null) {
-            return null;
-        }
-        Register newValue = null;
-        synchronized (storage) {
-            newValue = (Register) ((InputRegister[]) storage)[readIndex];
-        }
-        return newValue;
-    }
-
     /**
      * @return slave name from cfg file
      */
@@ -274,33 +271,64 @@ public abstract class ModbusSlave {
      *
      * @param writeRegister
      * @param b
+     * @throws ModbusUnexpectedTransactionIdException
+     * @throws ModbusException
+     * @throws ModbusConnectionException
      */
-    public void doSetCoil(int writeRegister, boolean b) {
+    public void doSetCoil(int writeRegister, boolean b)
+            throws ModbusConnectionException, ModbusException, ModbusUnexpectedTransactionIdException {
         ModbusRequest request = new WriteCoilRequest(writeRegister, b);
         request.setUnitID(getId());
         logger.debug("ModbusSlave ({}): FC05 ref={} value={}", name, writeRegister, b);
         executeWriteRequest(request);
     }
 
-    private void executeWriteRequest(ModbusRequest request) {
+    /**
+     *
+     * @param request
+     * @throws ModbusConnectionException when connection cannot be established
+     * @throws ModbusException ModbusIOException on IO errors, ModbusSlaveException with protocol level exceptions
+     * @throws ModbusUnexpectedTransactionIdException when response transaction id does not match the request
+     */
+    private void executeWriteRequest(ModbusRequest request)
+            throws ModbusConnectionException, ModbusException, ModbusUnexpectedTransactionIdException {
         ModbusSlaveEndpoint endpoint = getEndpoint();
         ModbusSlaveConnection connection = null;
+        ModbusResponse response;
+        int requestTransactionID;
         try {
             connection = getConnection(endpoint);
             if (connection == null) {
                 logger.warn("ModbusSlave ({}): not connected -- aborting request {}", name, request);
-                return;
+                throw new ModbusConnectionException(endpoint);
             }
-            transaction.setRequest(request);
-            try {
-                transaction.execute();
-            } catch (Exception e) {
-                logger.error("ModbusSlave ({}): error when executing write request ({}): {}", name, request,
-                        e.getMessage());
-                invalidate(endpoint, connection);
-                // set connection to null such that it is not returned to pool
-                connection = null;
-                return;
+            synchronized (transaction) {
+                transaction.setRequest(request);
+                try {
+                    logger.trace(
+                            "Executing modbus request {} using transaction {} (global transaction id before increment {}) to write data",
+                            transaction.getRequest(), transaction, transaction.getTransactionID());
+                    transaction.execute();
+                } catch (Exception e) {
+                    // Note, one could catch ModbusIOException and ModbusSlaveException if more detailed
+                    // exception handling is required. For now, all exceptions are handled the same way with writes.
+                    logger.error("ModbusSlave ({}): error when executing write request ({}): {}", name, request,
+                            e.getMessage());
+                    invalidate(endpoint, connection);
+                    // set connection to null such that it is not returned to pool
+                    connection = null;
+                    throw e;
+                }
+                response = transaction.getResponse();
+                logger.trace("ModbusSlave ({}): response for write (FC={}) {}", name, response.getFunctionCode(),
+                        response.getHexMessage());
+                requestTransactionID = transaction.getRequest().getTransactionID();
+                if ((response.getTransactionID() != requestTransactionID) && !response.isHeadless()) {
+                    logger.warn(
+                            "ModbusSlave ({}): Transaction id of the response ({}) does not match request {} id {}.  Endpoint {}. Connection: {}. Ignoring response.",
+                            name, response.getTransactionID(), request, requestTransactionID, endpoint, connection);
+                    throw new ModbusUnexpectedTransactionIdException();
+                }
             }
         } finally {
             returnConnection(endpoint, connection);
@@ -361,53 +389,46 @@ public abstract class ModbusSlave {
         try {
 
             Object local = null;
-
-            if (ModbusBindingProvider.TYPE_COIL.equals(getType())) {
-                ModbusRequest request = new ReadCoilsRequest(getStart(), getLength());
-                if (this instanceof ModbusSerialSlave) {
-                    request.setHeadless();
+            Exception localReadError = null;
+            try {
+                if (ModbusBindingProvider.TYPE_COIL.equals(getType())) {
+                    ModbusRequest request = new ReadCoilsRequest(getStart(), getLength());
+                    if (this instanceof ModbusSerialSlave) {
+                        request.setHeadless();
+                    }
+                    ReadCoilsResponse response = (ReadCoilsResponse) getModbusData(request);
+                    local = response.getCoils();
+                } else if (ModbusBindingProvider.TYPE_DISCRETE.equals(getType())) {
+                    ModbusRequest request = new ReadInputDiscretesRequest(getStart(), getLength());
+                    ReadInputDiscretesResponse response = (ReadInputDiscretesResponse) getModbusData(request);
+                    local = response.getDiscretes();
+                } else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {
+                    ModbusRequest request = new ReadMultipleRegistersRequest(getStart(), getLength());
+                    ReadMultipleRegistersResponse response = (ReadMultipleRegistersResponse) getModbusData(request);
+                    local = response.getRegisters();
+                } else if (ModbusBindingProvider.TYPE_INPUT.equals(getType())) {
+                    ModbusRequest request = new ReadInputRegistersRequest(getStart(), getLength());
+                    ReadInputRegistersResponse response = (ReadInputRegistersResponse) getModbusData(request);
+                    local = response.getRegisters();
                 }
-                request.setUnitID(id);
-                ReadCoilsResponse response = (ReadCoilsResponse) getModbusData(request);
-                if (response == null) {
-                    // use debug level logging since getModbusData has already logged the reason
-                    logger.debug("Could not read from the slave");
-                    return;
-                }
-                local = response.getCoils();
-            } else if (ModbusBindingProvider.TYPE_DISCRETE.equals(getType())) {
-                ModbusRequest request = new ReadInputDiscretesRequest(getStart(), getLength());
-                ReadInputDiscretesResponse response = (ReadInputDiscretesResponse) getModbusData(request);
-                // use debug level logging since getModbusData has already logged the reason
-                if (response == null) {
-                    logger.debug("Could not read from the slave");
-                    return;
-                }
-                local = response.getDiscretes();
-            } else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {
-                ModbusRequest request = new ReadMultipleRegistersRequest(getStart(), getLength());
-                ReadMultipleRegistersResponse response = (ReadMultipleRegistersResponse) getModbusData(request);
-                // use debug level logging since getModbusData has already logged the reason
-                if (response == null) {
-                    logger.debug("Could not read from the slave");
-                    return;
-                }
-                local = response.getRegisters();
-            } else if (ModbusBindingProvider.TYPE_INPUT.equals(getType())) {
-                ModbusRequest request = new ReadInputRegistersRequest(getStart(), getLength());
-                ReadInputRegistersResponse response = (ReadInputRegistersResponse) getModbusData(request);
-                // use debug level logging since getModbusData has already logged the reason
-                if (response == null) {
-                    logger.debug("Could not read from the slave");
-                    return;
-                }
-                local = response.getRegisters();
+            } catch (ModbusException e) {
+                // Logging already done in getModbusData
+                localReadError = e;
+            } catch (ModbusConnectionException e) {
+                // Logging already done in getModbusData
+                localReadError = e;
+            } catch (ModbusUnexpectedTransactionIdException e) {
+                // Logging already done in getModbusData
+                localReadError = e;
             }
+
             if (storage == null) {
                 storage = local;
+                readError = localReadError;
             } else {
                 synchronized (storage) {
                     storage = local;
+                    readError = localReadError;
                 }
             }
             Collection<String> items = binding.getItemNames();
@@ -428,14 +449,25 @@ public abstract class ModbusSlave {
      * @param item item to update
      */
     private void updateItem(ModbusBinding binding, String item) {
-        if (ModbusBindingProvider.TYPE_COIL.equals(getType())
-                || ModbusBindingProvider.TYPE_DISCRETE.equals(getType())) {
-            binding.internalUpdateItem(name, (BitVector) storage, item);
+        if (readError == null) {
+            if (ModbusBindingProvider.TYPE_COIL.equals(getType())
+                    || ModbusBindingProvider.TYPE_DISCRETE.equals(getType())) {
+                binding.internalUpdateItem(name, (BitVector) storage, item);
+            } else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())
+                    || ModbusBindingProvider.TYPE_INPUT.equals(getType())) {
+                binding.internalUpdateItem(name, (InputRegister[]) storage, item);
+            }
+        } else {
+            binding.internalUpdateReadErrorItem(name, readError, item);
         }
-        if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())
-                || ModbusBindingProvider.TYPE_INPUT.equals(getType())) {
-            binding.internalUpdateItem(name, (InputRegister[]) storage, item);
-        }
+    }
+
+    public boolean isUpdateUnchangedItems() {
+        return updateUnchangedItems;
+    }
+
+    public void setUpdateUnchangedItems(boolean updateUnchangedItems) {
+        this.updateUnchangedItems = updateUnchangedItems;
     }
 
     /**
@@ -443,40 +475,53 @@ public abstract class ModbusSlave {
      *
      * @param request describes what data are requested from the device
      * @return response data
+     * @throws ModbusConnectionException when connection cannot be established
+     * @throws ModbusException ModbusIOException on IO errors, ModbusSlaveException with protocol level exceptions
+     * @throws ModbusUnexpectedTransactionIdException when response transaction id does not match the request
      */
-    private ModbusResponse getModbusData(ModbusRequest request) {
+    private ModbusResponse getModbusData(ModbusRequest request)
+            throws ModbusConnectionException, ModbusException, ModbusUnexpectedTransactionIdException {
         ModbusSlaveEndpoint endpoint = getEndpoint();
         ModbusSlaveConnection connection = null;
         ModbusResponse response = null;
+        int requestTransactionID;
         try {
             connection = getConnection(endpoint);
             if (connection == null) {
                 logger.warn("ModbusSlave ({}) not connected -- aborting read request {}. Endpoint {}", name, request,
                         endpoint);
-                return null;
+                throw new ModbusConnectionException(endpoint);
             }
             request.setUnitID(getId());
-            transaction.setRequest(request);
+            synchronized (transaction) {
+                transaction.setRequest(request);
+                try {
+                    logger.trace(
+                            "Executing modbus request {} using transaction {} (global  transaction id before increment {}) to read data",
+                            transaction.getRequest(), transaction, transaction.getTransactionID());
+                    transaction.execute();
+                } catch (ModbusException e) {
+                    logger.error(
+                            "ModbusSlave ({}): Error getting modbus data for request {}. Error: {}. Endpoint {}. Connection: {}",
+                            name, request, e.getMessage(), endpoint, connection);
+                    invalidate(endpoint, connection);
+                    // Invalidated connections should not be returned
+                    connection = null;
+                    throw e;
+                }
 
-            try {
-                transaction.execute();
-            } catch (Exception e) {
-                logger.error(
-                        "ModbusSlave ({}): Error getting modbus data for request {}. Error: {}. Endpoint {}. Connection: {}",
-                        name, request, e.getMessage(), endpoint, connection);
-                invalidate(endpoint, connection);
-                // Invalidated connections should not be returned
-                connection = null;
-                return null;
-            }
+                requestTransactionID = transaction.getRequest().getTransactionID();
+                response = transaction.getResponse();
 
-            response = transaction.getResponse();
-            if ((response.getTransactionID() != transaction.getTransactionID()) && !response.isHeadless()) {
-                logger.warn(
-                        "ModbusSlave ({}): Transaction id of the response does not match request {}.  Endpoint {}. Connection: {}. Ignoring response.",
-                        name, request, endpoint, connection);
-                return null;
+                if ((response.getTransactionID() != requestTransactionID) && !response.isHeadless()) {
+                    logger.warn(
+                            "ModbusSlave ({}): Transaction id of the response ({}) does not match request {} id {}.  Endpoint {}. Connection: {}. Ignoring response.",
+                            name, response.getTransactionID(), request, requestTransactionID, endpoint, connection);
+                    throw new ModbusUnexpectedTransactionIdException();
+                }
             }
+            logger.trace("ModbusSlave ({}): response for read (FC={}) {}", name, response.getFunctionCode(),
+                    response.getHexMessage());
         } finally {
             returnConnection(endpoint, connection);
         }
@@ -547,5 +592,13 @@ public abstract class ModbusSlave {
             throw new IllegalStateException("transaction not initialized!");
         }
         transaction.setRetryDelayMillis(retryDelayMillis);
+    }
+
+    public boolean isPostUndefinedOnReadError() {
+        return postUndefinedOnReadError;
+    }
+
+    public void setPostUndefinedOnReadError(boolean postUndefinedOnReadError) {
+        this.postUndefinedOnReadError = postUndefinedOnReadError;
     }
 }

@@ -3,12 +3,11 @@ Private-Package: org.openhab.binding.http.internal
 Ignore-Package: org.openhab.binding.http.internal
 Bundle-Name: openHAB HTTP Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.9.0.qualifier
+Bundle-Version: 1.11.0.qualifier
 Bundle-Activator: org.openhab.binding.http.internal.HttpActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Description: This is the HTTP binding of the open Home Aut
- omation Bus (openHAB)
+Bundle-Description: This is the HTTP binding of the open Home Automation Bus (openHAB)
 Import-Package: com.google.common.base,
  com.google.common.collect,
  org.apache.commons.collections,
@@ -33,4 +32,5 @@ Bundle-SymbolicName: org.openhab.binding.http
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/binding.xml
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .

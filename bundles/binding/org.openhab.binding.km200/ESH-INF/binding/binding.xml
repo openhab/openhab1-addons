@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="km200"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>KM200 Binding</name>
+    <description>The KM200 binding is communicating with a Buderus Logamatic web KM200 / KM100 / KM50. It is possible to receive and send parameters like string or float values.</description>
+    <author>Markus Eckhardt</author>
+    
+    <service-id>org.openhab.km200</service-id>
+
+    <config-description>
+        <parameter name="ip4_address" type="text" required="true">
+            <label>IP4 Address</label>
+            <context>network-address</context>
+            <description>IP4 Address of the KMXXX device</description>
+        </parameter>
+        <parameter name="PrivKey" type="text" required="false">
+           <label>Private Key</label>
+           <description>Option 1:Private en-/decryption key built from MD5Salt, GatewayPassword and PrivatePassword</description>
+         </parameter>
+        <parameter name="MD5Salt" type="text" required="false">
+            <label>MD5Salt</label>
+            <description>Option 2: MD5Salt for the building of the private key</description>
+        </parameter>
+        <parameter name="GatewayPassword" type="text" required="false">
+           <label>Gateway Password</label>
+           <context>password</context>
+           <description>Option 2: GatewayPassword for the building of the private key (Sticker on the device without '-')</description>
+        </parameter>
+        <parameter name="PrivatePassword" type="text" required="false">
+           <label>Private Password</label>
+           <context>password</context>
+           <description>Option 2: Private Password for the building of the private key (Set in the App)</description>
+         </parameter>
+    </config-description>
+
+</binding:binding>

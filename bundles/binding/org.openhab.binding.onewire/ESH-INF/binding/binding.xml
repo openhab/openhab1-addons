@@ -8,6 +8,8 @@
     <description>The OneWire bus system is a lightweight and cheap bus system mostly used for sensors like, temperature, humidity, counters and presence.</description>
     <author>Dennis Riegelbauer</author>
 
+    <service-id>org.openhab.onewire</service-id>
+
     <config-description>
         <parameter name="ip" type="text" required="true">
             <context>network-address</context>
