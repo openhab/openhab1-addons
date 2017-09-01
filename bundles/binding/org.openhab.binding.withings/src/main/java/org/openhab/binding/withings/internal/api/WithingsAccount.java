@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -36,10 +36,8 @@ import oauth.signpost.signature.HmacSha1MessageSigner;
 
 /**
  * This class holds the Withings Account Credentials. It can also load
- * and store the credentials the either the {@code openhab.cfg} (legacy)
- * or the {@code services/withings-ouath.cfg} file. Where to store values
- * is decided whether {@code openhab.cfg} contains already keys
- * starting with {@code withings-oauth} or not.
+ * and store the credentials to either the {@code openhab.cfg} (legacy)
+ * or the {@code services/withings.cfg} file.
  *
  * Note: We'd decided to reimplement {@code store} and {@code load} rather
  * than using the {@link java.util.Properties} class because our keys can
@@ -53,7 +51,7 @@ public final class WithingsAccount {
 
     private static final Logger logger = LoggerFactory.getLogger(WithingsAccount.class);
 
-    private static final String SERVICE_NAME = "withings-oauth";
+    private static final String SERVICE_NAME = "withings";
 
     private static final String CONFIG_DIR = "." + File.separator + "configurations";
 
@@ -126,7 +124,7 @@ public final class WithingsAccount {
 
         try {
             // store properties either to openhab.cfg (legacy) or
-            // services/withings-oauth.cfg
+            // services/withings.cfg
             if (isLegacyConfiguration()) {
                 file = new File(CONFIG_DIR + File.separator + "openhab.cfg");
                 // in legacy case each property has to be prefixed with
@@ -136,12 +134,13 @@ public final class WithingsAccount {
             }
 
             if (!file.exists()) {
+                logger.debug("Configuration file '{}' was not found. Creating it now...", file.getAbsolutePath());
                 file.getParentFile().mkdirs();
                 file.createNewFile();
             }
 
             // if an account different from the default account is used
-            // it get's prefixed separated by "."
+            // it gets prefixed separated by "."
             if (!WithingsAuthenticator.DEFAULT_ACCOUNT_ID.equals(accountId)) {
                 prefix += accountId + ".";
             }
@@ -154,15 +153,15 @@ public final class WithingsAccount {
 
             store(config, file);
 
-            logger.debug("Saved WithingsAccount to file '{}'.", file.getAbsolutePath());
+            logger.debug("Saved Withings account to file '{}'.", file.getAbsolutePath());
         } catch (IOException ioe) {
-            logger.error("Couldn't write WithingsAccount to file '{}'.", file.getAbsolutePath());
+            logger.warn("Couldn't write Withings account to file '{}'.", file.getAbsolutePath());
         }
     }
 
     /**
-     * Checks whether the Binding configuration has been store to
-     * openhab.cfg rather than the /services/withings-oauth.cfg dir
+     * Checks whether the Binding configuration has been stored to
+     * openhab.cfg rather than services/withings.cfg.
      * 
      * @return true, if there is a configuration key like "withings-oauth"
      *         in openhab.cfg and false in all other cases.
@@ -220,5 +219,4 @@ public final class WithingsAccount {
     public String toString() {
         return "WithingsAccount [userId=" + userId + ", token=" + token + ", tokenSecret=" + tokenSecret + "]";
     }
-
 }
