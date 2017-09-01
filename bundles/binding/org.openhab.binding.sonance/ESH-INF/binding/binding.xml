@@ -8,7 +8,7 @@
     <description>This binding integrates with Sonance DSP Amplifiers.</description>
     <author>Laurens Van Acker</author>
     
-    <service-id>org.openhab.Sonance</service-id>
+    <service-id>org.openhab.sonance</service-id>
 
     <config-description>
         <parameter name="refresh" type="integer">
