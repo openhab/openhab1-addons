@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -156,65 +156,66 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
                 long age = System.currentTimeMillis() - lastUpdateTimeStamp;
                 boolean needsUpdate = age >= refreshInterval;
 
-                if (needsUpdate) {
-
-                    String response = null;
-
-                    // check if special URL is used and data should get from
-                    // cache rather than directly from server
-                    if (isCacheConfig(url)) {
-                        logger.debug("item '{}' is fetched from cache", itemName);
-                        response = getCacheData(url);
-                    } else if (isValidUrl(url)) {
-                        logger.debug("item '{}' is about to be refreshed now", itemName);
-                        response = HttpUtil.executeUrl("GET", url, headers, null, null, timeout);
-                    } else {
-                        logger.debug("item '{}' is not a valid URL or is a cache id yet to be initialised ({})",
-                                itemName, url);
-                        continue;
-                    }
-
-                    if (response == null) {
-                        logger.error("No response received from '{}'", url);
-                    } else {
-                        String transformedResponse;
-                        try {
-                            String[] parts = splitTransformationConfig(transformation);
-                            String transformationType = parts[0];
-                            String transformationFunction = parts[1];
-
-                            TransformationService transformationService = TransformationHelper
-                                    .getTransformationService(HttpActivator.getContext(), transformationType);
-                            if (transformationService != null) {
-                                transformedResponse = transformationService.transform(transformationFunction, response);
-                            } else {
-                                transformedResponse = response;
-                                logger.warn(
-                                        "Couldn't transform response because transformationService of type '{}' is unavailable",
-                                        transformationType);
-                            }
-                        } catch (TransformationException te) {
-                            logger.error("Transformation '{}' threw an exception. [response={}]", transformation,
-                                    response, te);
-
-                            // in case of an error we return the response without any
-                            // transformation
-                            transformedResponse = response;
-                        }
-
-                        logger.debug("transformed response is '{}'", transformedResponse);
-
-                        State state = provider.getState(itemName, transformedResponse);
-                        if (state != null) {
-                            eventPublisher.postUpdate(itemName, state);
-                        } else {
-                            logger.debug("Couldn't create state for item '{}' from string '{}'", itemName,
-                                    transformedResponse);
-                        }
-                    }
-
-                    lastUpdateMap.put(itemName, System.currentTimeMillis());
+                if (!needsUpdate) {
+                    continue;
                 }
+
+                String response = null;
+
+                // check if special URL is used and data should get from
+                // cache rather than directly from server
+                if (isCacheConfig(url)) {
+                    logger.debug("item '{}' is fetched from cache", itemName);
+                    response = getCacheData(url);
+                } else if (isValidUrl(url)) {
+                    logger.debug("item '{}' is about to be refreshed now", itemName);
+                    response = HttpUtil.executeUrl("GET", url, headers, null, null, timeout);
+                } else {
+                    logger.debug("item '{}' is not a valid URL or is a cache id yet to be initialised ({})", itemName,
+                            url);
+                    continue;
+                }
+
+                if (response == null) {
+                    logger.error("No response received from '{}'", url);
+                    lastUpdateMap.put(itemName, System.currentTimeMillis());
+                    continue;
+                }
+
+                String transformedResponse;
+                try {
+                    String[] parts = splitTransformationConfig(transformation);
+                    String transformationType = parts[0];
+                    String transformationFunction = parts[1];
+
+                    TransformationService transformationService = TransformationHelper
+                            .getTransformationService(HttpActivator.getContext(), transformationType);
+                    if (transformationService != null) {
+                        transformedResponse = transformationService.transform(transformationFunction, response);
+                    } else {
+                        transformedResponse = response;
+                        logger.warn(
+                                "Couldn't transform response because transformationService of type '{}' is unavailable",
+                                transformationType);
+                    }
+                } catch (TransformationException te) {
+                    logger.warn("Transformation '{}' threw an exception. [response={}]", transformation, response, te);
+
+                    // in case of an error we return the response without any
+                    // transformation
+                    transformedResponse = response;
+                }
+
+                logger.debug("transformed response is '{}'", transformedResponse);
+
+                State state = provider.getState(itemName, transformedResponse);
+                if (state != null) {
+                    eventPublisher.postUpdate(itemName, state);
+                } else {
+                    logger.debug("Couldn't create state for item '{}' from string '{}'", itemName, transformedResponse);
+                }
+
+                lastUpdateMap.put(itemName, System.currentTimeMillis());
             }
         }
     }
@@ -267,6 +268,11 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
         }
 
         String body = provider.getBody(itemName, command);
+        String transform = provider.getTransformation(itemName, command);
+        if (transform != null) {
+            body = transform(transform, command.toString());
+            logger.debug("Using transformed command as body contents.");
+        }
         InputStream stream = null;
 
         if (StringUtils.isNotBlank(httpMethod) && StringUtils.isNotBlank(url)) {
@@ -274,8 +280,8 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
                 try {
                     stream = IOUtils.toInputStream(body, "UTF-8");
                 } catch (IOException ioe) {
-                    logger.error("Failed to convert the specified body into an acceptable input stream.", ioe);
-                    logger.error("Body contents: {}", body);
+                    logger.warn("Failed to convert the specified body into an acceptable input stream.", ioe);
+                    logger.debug("Body contents: {}", body);
                 }
                 logger.debug("Executing url '{}' via method {}, with body content '{}'", url, httpMethod, body);
                 HttpUtil.executeUrl(httpMethod, url, provider.getHttpHeaders(itemName, command), stream, "text/plain",
@@ -286,12 +292,55 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
             }
         } else {
             if (StringUtils.isBlank(httpMethod)) {
-                logger.error("The HTTP method specified was empty.");
+                logger.warn("The HTTP method specified was empty.");
             }
             if (StringUtils.isBlank(url)) {
-                logger.error("The URL specified was empty.");
+                logger.warn("The URL specified was empty.");
             }
         }
+    }
+
+    // Perform a transform
+    private String transform(String transform, String item) {
+        logger.debug("Transforming item '{}' using transform '{}'", item, transform);
+        if (transform == null || item == null) {
+            return item;
+        }
+
+        if (transform.equals("default")) {
+            return item;
+        }
+
+        String transformedResponse;
+        try {
+            String[] parts = transform.split("=");
+            if (parts.length < 2) {
+                logger.debug("Transform was not in the expected format. Can't transform.");
+                return item;
+            }
+            String transformationType = parts[0];
+            String transformationFunction = parts[1];
+
+            logger.debug("Transformation type: {}", transformationType);
+            logger.debug("Transformation function: {}", transformationFunction);
+            TransformationService transformationService = TransformationHelper
+                    .getTransformationService(HttpActivator.getContext(), transformationType);
+            if (transformationService != null) {
+                transformedResponse = transformationService.transform(transformationFunction, item);
+            } else {
+                logger.debug("Couldn't perform transform because transformationService of type '{}' is unavailable",
+                        transformationType);
+                return item;
+            }
+        } catch (TransformationException te) {
+            logger.warn("Transformation '{}' for item '{}' threw an exception.", transform, item, te);
+
+            // in case of an error we return the item untransformed
+            return item;
+        }
+
+        logger.debug("Transformation result: '{}'", transformedResponse);
+        return transformedResponse;
     }
 
     /**
@@ -325,10 +374,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
      * @return true if a valid HTTP request, false otherwise
      */
     private boolean isValidUrl(String url) {
-        if (StringUtils.startsWithIgnoreCase(url, "http://")) {
-            return true;
-        }
-        if (StringUtils.startsWithIgnoreCase(url, "https://")) {
+        if (StringUtils.startsWithIgnoreCase(url, "http://") || StringUtils.startsWithIgnoreCase(url, "https://")) {
             return true;
         }
 
@@ -429,8 +475,8 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
                     Matcher matcher = EXTRACT_CACHE_CONFIG_PATTERN.matcher(key);
 
                     if (!matcher.matches()) {
-                        logger.error("given config key '" + key
-                                + "' does not follow the expected pattern '<id>.<url|updateInterval>'");
+                        logger.warn("given config key '{}' does not follow the"
+                                + " expected pattern '<id>.<url|updateInterval>'", key);
                         continue;
                     }
 
