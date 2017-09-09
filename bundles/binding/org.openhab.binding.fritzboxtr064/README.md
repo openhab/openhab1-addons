@@ -45,7 +45,10 @@ This binding can be configured in the file `services/fritzboxtr064.cfg`.
 
 ```
 String  fboxName            "FBox Model [%s]"           {fritzboxtr064="modelName"}
+# get wan ip if FritzBox establishes the internet connection (e. g. via DSL)
 String  fboxWanIP           "FBox WAN IP [%s]"          {fritzboxtr064="wanip"}
+# get wan ip if FritzBox uses internet connection of external router
+String  fboxWanIPExternal   "FBox external WAN IP [%s]" {fritzboxtr064="externalWanip"}
 Switch  fboxWifi24          "2,4GHz Wifi"               {fritzboxtr064="wifi24Switch"}
 Switch  fboxWifi50          "5,0GHz Wifi"               {fritzboxtr064="wifi50Switch"}
 Switch  fboxGuestWifi       "Guest Wifi"                {fritzboxtr064="wifiGuestSwitch"}

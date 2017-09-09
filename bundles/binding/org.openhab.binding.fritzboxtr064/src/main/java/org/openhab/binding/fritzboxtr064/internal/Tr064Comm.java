@@ -676,6 +676,8 @@ public class Tr064Comm {
         _alItemMap.add(new ItemMap("modelName", "GetInfo", "DeviceInfo-com:serviceId:DeviceInfo1", "", "NewModelName"));
         _alItemMap.add(new ItemMap("wanip", "GetExternalIPAddress",
                 "urn:WANPPPConnection-com:serviceId:WANPPPConnection1", "", "NewExternalIPAddress"));
+        _alItemMap.add(new ItemMap("externalWanip", "GetExternalIPAddress",
+                "urn:WANIPConnection-com:serviceId:WANIPConnection1", "", "NewExternalIPAddress"));
 
         // Wifi 2,4GHz
         ItemMap imWifi24Switch = new ItemMap("wifi24Switch", "GetInfo",
