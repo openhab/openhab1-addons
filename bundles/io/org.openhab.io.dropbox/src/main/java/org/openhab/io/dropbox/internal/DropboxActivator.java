@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,24 +14,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Extension of the default OSGi bundle activator
+ * Extension of the default OSGi bundle activator.
  *
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
  */
 public class DropboxActivator implements BundleActivator {
 
-    private static Logger logger = LoggerFactory.getLogger(DropboxActivator.class);
-
-    private static BundleContext context;
+    private Logger logger;
+    private BundleContext context;
 
     /**
      * Called whenever the OSGi framework starts our bundle
      */
     @Override
     public void start(BundleContext bc) throws Exception {
+        logger = LoggerFactory.getLogger(DropboxActivator.class);
         context = bc;
-        logger.debug("Dropbox IO Bundle has been started.");
+        logger.debug("Dropbox I/O Bundle has been started.");
     }
 
     /**
@@ -40,7 +40,7 @@ public class DropboxActivator implements BundleActivator {
     @Override
     public void stop(BundleContext bc) throws Exception {
         context = null;
-        logger.debug("Dropbox IO Bundle has been stopped.");
+        logger.debug("Dropbox I/O Bundle has been stopped.");
     }
 
     /**
@@ -48,8 +48,7 @@ public class DropboxActivator implements BundleActivator {
      * 
      * @return the bundle context
      */
-    public static BundleContext getContext() {
+    public BundleContext getContext() {
         return context;
     }
-
 }
