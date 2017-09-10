@@ -429,6 +429,7 @@ public class DropboxService implements ManagedService {
         private DropboxSynchronizer synchronizer = null;
         private String accessToken = null;
         private DbxRequestConfig requestConfig = null;
+        private DbxClient client = null;
 
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {  
@@ -438,6 +439,11 @@ public class DropboxService implements ManagedService {
                     synchronizer = (DropboxSynchronizer)schedulerContext.get("synchronizer");
                     accessToken = schedulerContext.getString("accessToken");
                     requestConfig = (DbxRequestConfig)schedulerContext.get("requestConfig");
+                    client = (DbxClient)schedulerContext.get("dbxClient");
+                    if (client == null) {
+                        client = getClient(synchronizer);
+                        schedulerContext.put("dbxClient", client);
+                    }
                 } catch(SchedulerException e) {
                     logger.warn("Failed to get the scheduler context. Unable to execute!", e);
                     return;
@@ -446,17 +452,12 @@ public class DropboxService implements ManagedService {
 
             boolean isUpload = UPLOAD_JOB_KEY.compareTo(context.getJobDetail().getKey()) == 0;
                         
-            if (synchronizer != null) {
+            if (synchronizer != null && client != null) {
                 try {
-                    DbxClient client = getClient(synchronizer);
-                    if (client != null) {
-                        if (isUpload) {
-                            synchronizer.syncLocalToDropbox(client);
-                        } else {
-                            synchronizer.syncDropboxToLocal(client);
-                        }
+                    if (isUpload) {
+                        synchronizer.syncLocalToDropbox(client);
                     } else {
-                        logger.info("Couldn't create Dropbox client.");
+                        synchronizer.syncDropboxToLocal(client);
                     }
                 } catch (Exception e) {
                     logger.warn("Synchronizing data with Dropbox threw an exception", e);
