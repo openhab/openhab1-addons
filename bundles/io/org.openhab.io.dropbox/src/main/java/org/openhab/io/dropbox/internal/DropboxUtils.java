@@ -24,8 +24,7 @@ import org.slf4j.LoggerFactory;
  * @author Chris Carman - split from original DropboxSynchronizer
  * @since 1.11.0
  */
-public class DropboxUtils
-{
+public class DropboxUtils {
     private static Logger logger = LoggerFactory.getLogger(DropboxUtils.class);
 
     public static String readFile(File file) {
@@ -51,13 +50,13 @@ public class DropboxUtils
             logger.error("Couldn't write to file '{}'.", file.getPath(), e);
         }
     }
-    
+
     public static String getUserDbxDataFolder() {
         String progArg = System.getProperty("smarthome.userdata");
         if (progArg != null) {
             return progArg + File.separator + "dropbox";
         }
-        
+
         return ".";
     }
 
@@ -67,11 +66,11 @@ public class DropboxUtils
         if (smartHomeProgArg != null) {
             return smartHomeProgArg;
         }
-        
+
         if (openHABProgArg != null) {
             return openHABProgArg;
         }
-        
+
         return ".";
     }
 

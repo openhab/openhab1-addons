@@ -111,7 +111,8 @@ public class DropboxService implements ManagedService {
 
     /**
      * The upload interval as a Cron Expression (optional; defaults to
-     * '0 0 2 * * ?', which means once a day at 2 a.m.) */
+     * '0 0 2 * * ?', which means once a day at 2 a.m.)
+     */
     private String uploadInterval = "0 0 2 * * ?";
 
     /**
@@ -123,8 +124,7 @@ public class DropboxService implements ManagedService {
     private boolean isProperlyConfigured;
     private DbxAppInfo appInfo;
 
-    private DbxRequestConfig requestConfig = new DbxRequestConfig("openHAB/1.0",
-            Locale.getDefault().toString());
+    private DbxRequestConfig requestConfig = new DbxRequestConfig("openHAB/1.0", Locale.getDefault().toString());
 
     private DropboxSynchronizer instance;
 
@@ -275,12 +275,11 @@ public class DropboxService implements ManagedService {
 
         if (isBlank(personalAccessToken) && (isBlank(appKey) || isBlank(appSecret))) {
             throw new ConfigurationException("dropbox:authentication",
-                "The Dropbox authentication parameters are incorrect!  "
-                +"The parameter 'personalAccesstoken' must be set, or both of"
-                +" the parameters 'appkey' and 'appsecret' must be set. Please"
-                +" check your configuration.");
-        }
-        else if (isNotBlank(appKey) && isNotBlank(appSecret)) {
+                    "The Dropbox authentication parameters are incorrect!  "
+                            + "The parameter 'personalAccesstoken' must be set, or both of"
+                            + " the parameters 'appkey' and 'appsecret' must be set. Please"
+                            + " check your configuration.");
+        } else if (isNotBlank(appKey) && isNotBlank(appSecret)) {
             appInfo = new DbxAppInfo(appKey, appSecret);
         }
 
@@ -362,8 +361,8 @@ public class DropboxService implements ManagedService {
                 schedule(uploadInterval, true);
                 break;
             case BIDIRECTIONAL:
-                logger.debug("Scheduling BIDIRECTIONAL download interval: {}, upload interval: {}",
-                        downloadInterval, uploadInterval);
+                logger.debug("Scheduling BIDIRECTIONAL download interval: {}, upload interval: {}", downloadInterval,
+                        uploadInterval);
                 schedule(downloadInterval, false);
                 schedule(uploadInterval, true);
                 break;
@@ -432,26 +431,26 @@ public class DropboxService implements ManagedService {
         private DbxClient client = null;
 
         @Override
-        public void execute(JobExecutionContext context) throws JobExecutionException {  
+        public void execute(JobExecutionContext context) throws JobExecutionException {
             if (synchronizer == null) {
                 try {
                     SchedulerContext schedulerContext = context.getScheduler().getContext();
-                    synchronizer = (DropboxSynchronizer)schedulerContext.get("synchronizer");
+                    synchronizer = (DropboxSynchronizer) schedulerContext.get("synchronizer");
                     accessToken = schedulerContext.getString("accessToken");
-                    requestConfig = (DbxRequestConfig)schedulerContext.get("requestConfig");
-                    client = (DbxClient)schedulerContext.get("dbxClient");
+                    requestConfig = (DbxRequestConfig) schedulerContext.get("requestConfig");
+                    client = (DbxClient) schedulerContext.get("dbxClient");
                     if (client == null) {
                         client = getClient(synchronizer);
                         schedulerContext.put("dbxClient", client);
                     }
-                } catch(SchedulerException e) {
+                } catch (SchedulerException e) {
                     logger.warn("Failed to get the scheduler context. Unable to execute!", e);
                     return;
                 }
             }
 
             boolean isUpload = UPLOAD_JOB_KEY.compareTo(context.getJobDetail().getKey()) == 0;
-                        
+
             if (synchronizer != null && client != null) {
                 try {
                     if (isUpload) {

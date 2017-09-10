@@ -8,56 +8,29 @@
  */
 package org.openhab.io.dropbox.internal;
 
-import static org.apache.commons.lang.StringUtils.*;
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.TriggerBuilder.newTrigger;
-import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
-import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.Job;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxDelta;
 import com.dropbox.core.DbxDelta.Entry;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxEntry.WithChildren;
 import com.dropbox.core.DbxException;
-import com.dropbox.core.DbxRequestConfig;
-import com.dropbox.core.DbxWebAuthNoRedirect;
 import com.dropbox.core.DbxWriteMode;
 
 /**
@@ -79,15 +52,13 @@ public class DropboxSynchronizer {
     private final String LINE_DELIMITER = System.getProperty("line.separator");
     private final String DELTA_CURSOR_FILE_NAME = File.separator + "deltacursor.dbx";
     private final String DROPBOX_ENTRIES_FILE_NAME = File.separator + "dropbox-entries.dbx";
-    private final String AUTH_FILE_NAME = File.separator + "authfile.dbx";
 
     /** The default directory to which to download files from Dropbox */
     private final String DEFAULT_CONTENT_DIR = DropboxUtils.getConfigDirFolder();
 
-    private final List<String> DEFAULT_UPLOAD_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$",
-            "/configurations.*", "/logs/.*", "/etc/.*");
-    private final List<String> DEFAULT_DOWNLOAD_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$",
-            "/configurations.*");
+    private final List<String> DEFAULT_UPLOAD_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$", "/configurations.*",
+            "/logs/.*", "/etc/.*");
+    private final List<String> DEFAULT_DOWNLOAD_FILE_FILTER = Arrays.asList("^([^/]*/){1}[^/]*$", "/configurations.*");
 
     /**
      * Holds the id of the last synchronisation cursor. This is needed to
@@ -133,10 +104,9 @@ public class DropboxSynchronizer {
     }
 
     protected void setContentDir(String value) {
-        if (StringUtils.isBlank(value) ) {
+        if (StringUtils.isBlank(value)) {
             contentDir = DEFAULT_CONTENT_DIR;
-        }
-        else {
+        } else {
             contentDir = value;
         }
         logger.debug("contentdir: {}", contentDir);
@@ -145,8 +115,7 @@ public class DropboxSynchronizer {
     protected void setUploadFilterElements(List<String> value) {
         if (value != null) {
             uploadFilterElements = value;
-        }
-        else {
+        } else {
             uploadFilterElements = DEFAULT_UPLOAD_FILE_FILTER;
         }
     }
@@ -154,8 +123,7 @@ public class DropboxSynchronizer {
     protected void setDownloadFilterElements(List<String> value) {
         if (value != null) {
             downloadFilterElements = value;
-        }
-        else {
+        } else {
             downloadFilterElements = DEFAULT_DOWNLOAD_FILE_FILTER;
         }
     }
@@ -167,10 +135,10 @@ public class DropboxSynchronizer {
      * tries to recreate it from the file <code>deltacursor.dbx</code>. If
      * it is still <code>null</code> all files are downloaded from the specified
      * location.
-     * 
+     *
      * Note: Since we define Dropbox as data master we do not care about local
      * changes while downloading files!
-     * 
+     *
      * @throws DbxException if there are technical or application level
      *             errors in the Dropbox communication
      * @throws IOException
@@ -225,7 +193,7 @@ public class DropboxSynchronizer {
      * are identified by the files' <code>lastModified</code> attribute. If there
      * are less files locally, the additional files will be deleted from the
      * Dropbox. New files will be uploaded or overwritten if they exist already.
-     * 
+     *
      * @throws DbxException if there are technical or application level
      *             errors in the Dropbox communication
      * @throws IOException
@@ -430,10 +398,10 @@ public class DropboxSynchronizer {
      * TODO: TEE: Currently there is no way to change the attribute
      * 'lastModified' of the files to upload via Dropbox API. See the
      * discussion below for more details.
-     * 
+     *
      * Since this is a missing feature (from my point of view) we should
      * check the improvements of the API development on a regular basis.
-     * 
+     *
      * @see http://forums.dropbox.com/topic.php?id=22347
      */
     private void uploadFile(DbxClient client, String dropboxPath, boolean overwrite) throws DbxException, IOException {
