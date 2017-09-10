@@ -13,16 +13,15 @@ This service can be configured in the file `services/dropbox.cfg`.
 
 ### Authentication settings
 
-| Property            | Default        | Required | Description |
-|---------------------|----------------|:--------:|-------------|
-| personalAccessToken |                | Yes*     | The generated access token |
-| appkey              | NotARealKey    | Yes*     | A valid appkey             |
-| appsecret           | NotARealSecret | Yes*     | A valid appsecret          |
+| Property            | Default | Required | Description |
+|---------------------|---------|:--------:|-------------|
+| personalAccessToken |         | Yes*     | The generated access token |
+| appkey              |         | Yes*     | A valid appkey             |
+| appsecret           |         | Yes*     | A valid appsecret          |
 
 \* In order to authenticate with Dropbox, the configuration must include
 **either** the `personalAccessToken` or **BOTH** the `appkey` AND the
-`appsecret`.  The default values for the latter two are placeholders only
-and must be replaced.
+`appsecret`.
 
 The `personalAccessToken` is the newer method of authentication, and is
 a simpler process, but the `appkey`/`appsecret` method would theoretically
