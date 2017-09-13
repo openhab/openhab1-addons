@@ -81,6 +81,8 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
     protected AtomicBoolean waitingForAnswer = new AtomicBoolean(false);
     /** flag reading **/
     protected AtomicBoolean readingData = new AtomicBoolean(false);
+    /** Flag indicating try to open port that is not presented in the system **/
+    private boolean alreadyPortNotFound = false;
 
     /**
      * Constructor
@@ -136,11 +138,17 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
         } catch (NoSuchPortException ex) {
             portState.setState(PortStates.NOT_EXIST);
 
-            logger.warn("{} not found", this.toString());
-            logger.info("Available ports: " + getCommPortListString());
+            if (!alreadyPortNotFound) {
+                logger.warn("{} not found", this.toString());
+                logger.info("Available ports: " + getCommPortListString());
+
+                alreadyPortNotFound = true;
+            }
 
             return false;
         }
+
+        alreadyPortNotFound = false;
 
         if (portId != null) {
             // initialize serial port
