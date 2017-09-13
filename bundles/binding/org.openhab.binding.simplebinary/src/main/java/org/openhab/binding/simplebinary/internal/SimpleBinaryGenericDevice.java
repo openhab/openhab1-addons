@@ -823,7 +823,7 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
      */
     protected int processData(SimpleBinaryByteBuffer inBuffer, SimpleBinaryItemData lastSentData, Byte forcedDeviceId) {
 
-        int receivedID = -1;
+        int receivedID = 0;
 
         try {
             // flip buffer
@@ -1019,7 +1019,14 @@ public class SimpleBinaryGenericDevice implements SimpleBinaryIDevice {
                 if (eventPublisher != null) {
                     SimpleBinaryBinding.ignoreEventList
                             .add(new SimpleBinaryBinding.Update(((SimpleBinaryItem) itemData).name, state));
+
+                    // DeviceConfig dc = ((SimpleBinaryItem) itemData).getConfig().devices.get(this.deviceName,
+                    // deviceId);
+                    // if (dc != null && dc.dataDirection == DataDirectionFlow.INPUT) {
+                    // eventPublisher.postCommand(((SimpleBinaryItem) itemData).name, (Command) state);
+                    // } else {
                     eventPublisher.postUpdate(((SimpleBinaryItem) itemData).name, state);
+                    // }
                 }
 
                 // send data to other binded devices

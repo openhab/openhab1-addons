@@ -44,27 +44,21 @@ public class SimpleBinaryIPChannelInfoCollection extends LinkedList<SimpleBinary
         String channelIp = SimpleBinaryIPChannelInfo.retrieveAddress(channel).getAddress().getHostAddress();
 
         for (SimpleBinaryIPChannelInfo i : this) {
-            if (i.hasIpConfigured()) {
-                String ip = i.getIpConfigured();
-
+            if (i.getChannel() == null && i.hasIpConfigured()) {
                 // assign only locked connection
-                if (ip.equals(channelIp) && i.isIpLocked()) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Channel is locked and already exists");
-                    }
+                if (channelIp.equals(i.getIpConfigured())) {
                     i.assignChannel(channel, buffer, timeoutEvent);
 
                     deviceStates.setDeviceState(deviceName, i.getDeviceId(), DeviceStates.CONNECTED);
 
-                    return i;
-                    // assign configured connection
-                } else if (ip.equals(channelIp)) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Channel exist in client configuration");
+                        if (i.isIpLocked()) {
+                            logger.debug("Channel is locked and already exists");
+                        } else {
+                            logger.debug("Channel exist in client configuration and ID={} is expected",
+                                    i.getDeviceIdConfigured());
+                        }
                     }
-                    i.assignChannel(channel, buffer, timeoutEvent);
-
-                    deviceStates.setDeviceState(deviceName, i.getDeviceId(), DeviceStates.CONNECTED);
 
                     return i;
                 }
@@ -102,6 +96,7 @@ public class SimpleBinaryIPChannelInfoCollection extends LinkedList<SimpleBinary
     }
 
     public void addConfiguredChannel(int deviceID, String ipAddress, boolean isIpLocked) {
-        this.add(new SimpleBinaryIPChannelInfo(deviceID, ipAddress, isIpLocked, this));
+        this.add(new SimpleBinaryIPChannelInfo(deviceID, ipAddress, isIpLocked, this) {
+        });
     }
 }

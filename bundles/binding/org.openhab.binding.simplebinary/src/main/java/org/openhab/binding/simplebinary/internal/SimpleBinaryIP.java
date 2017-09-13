@@ -209,51 +209,87 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
                                     while (inBuffer.position() > 3) {
 
                                         // verify device first
-                                        if (!chInfo.isDeviceIdAlreadyReceived() && !chInfo.isIpLocked()) {
+                                        if (!chInfo.isDeviceIdAlreadyReceived()) {
                                             SimpleBinaryMessage r = verifyDataOnly(inBuffer);
 
                                             if (r != null) {
-                                                // received ID is not equal configured
-                                                if (chInfo.hasIdConfigured() && !chInfo.isIpLocked()
-                                                        && chInfo.getDeviceIdConfigured() != r.deviceId) {
-                                                    logger.error(
-                                                            "TCPserver - Device with IP {} has mismatch between configured({}) and connected({}) device ID's. "
-                                                                    + "Remove it from configuration, change device ID or mark it in configuration as locked.",
-                                                            chInfo.getIp(), chInfo.getDeviceIdConfigured(), r.deviceId);
+                                                // Device can be configured in 'tcpserverclientlist'
+                                                // * marked as 'IP locked' -> on this IP is my device ID doesn't matter
+                                                // * /wo 'IP lock' -> device with this ID must be connected from this IP
+                                                // Device is not configured in 'tcpserverclientlist'
+                                                // * is not in conflict with configured / connected devices -> can be
+                                                // serviced
 
-                                                    // send info to device
-                                                    sendDataOut(SimpleBinaryProtocol
-                                                            .compileDenyDataFrame((byte) r.deviceId, (byte) 0x1));
-                                                    // close channel
-                                                    closeChannel(chInfo);
+                                                if (logger.isDebugEnabled()) {
+                                                    logger.debug(
+                                                            "TCPserver - Channel {} - Starting assign ID process. From device ID={} received",
+                                                            chInfo.getIp(), r.deviceId);
+                                                }
 
-                                                    return;
-                                                } else if (!chInfo.assignDeviceId((byte) r.deviceId)) {
-                                                    logger.error(
-                                                            "TCPserver - DeviceID {} is already used by another connected device. This device will be ignored.",
-                                                            r.deviceId);
-                                                    // send info to device
-                                                    sendDataOut(SimpleBinaryProtocol
-                                                            .compileDenyDataFrame((byte) r.deviceId, (byte) 0x2));
-                                                    closeChannel(chInfo);
-                                                    return;
-                                                } else if (chInfo.hasIpMismatch()) {
-                                                    logger.warn(
-                                                            "TCPserver - DeviceID {} has mismatch between configured {} and connected {} IP addresses.",
-                                                            r.deviceId, chInfo.getIpConfigured(),
-                                                            chInfo.getIpReceived());
-                                                } else if (chInfo.isIpLocked() && chInfo.hasIdMismatch()) {
-                                                    logger.warn(
-                                                            "TCPserver - Device with IP {} has mismatch between configured and connected device ID's.",
-                                                            chInfo.getIp());
+                                                if (!chInfo.isIpLocked()) {
+                                                    // device is presented in configuration
+                                                    if (chInfo.hasIdConfigured()) {
+                                                        if (logger.isDebugEnabled()) {
+                                                            logger.debug(
+                                                                    "TCPserver - Channel {} - device from this IP is configured with ID={}",
+                                                                    chInfo.getIp(), chInfo.getDeviceIdConfigured());
+                                                        }
+                                                        // received ID is not equal configured
+                                                        if (chInfo.getDeviceIdConfigured() != r.deviceId) {
+                                                            logger.error(
+                                                                    "TCPserver - Device with IP {} has mismatch between configured(={}) and connected(={}) device ID's. "
+                                                                            + "Remove it from configuration, change device ID or mark it in configuration as locked.",
+                                                                    chInfo.getIp(), chInfo.getDeviceIdConfigured(),
+                                                                    r.deviceId);
+
+                                                            // send info to device
+                                                            sendDataOut(SimpleBinaryProtocol.compileDenyDataFrame(
+                                                                    r.deviceId, (byte) 0x1), chInfo);
+                                                            // close channel
+                                                            closeChannel(chInfo);
+
+                                                            return;
+                                                            // ID equals but IP mismatch
+                                                        }
+                                                        chInfo.assignDeviceId();
+
+                                                        // assign ID for non-configured device
+                                                    } else if (!chInfo.assignDeviceId(r.deviceId)) {
+                                                        logger.error("TCPserver - DeviceID {} will be ignored.",
+                                                                r.deviceId);
+                                                        // send info to device
+                                                        sendDataOut(SimpleBinaryProtocol
+                                                                .compileDenyDataFrame(r.deviceId, (byte) 0x2), chInfo);
+                                                        closeChannel(chInfo);
+                                                        return;
+                                                    } else if (logger.isDebugEnabled()) {
+                                                        logger.debug(
+                                                                "TCPserver - Channel {} - no configuration found. Assign ID process finished",
+                                                                chInfo.getIp());
+                                                    }
                                                 } else {
-                                                    try {
-                                                        offerDataPriority(SimpleBinaryProtocol.compileWelcomeDataFrame(
-                                                                (byte) r.getDeviceId(), (byte) chInfo.getDeviceId()));
-                                                    } catch (InterruptedException e) {
-                                                        logger.error("TCPserver - error sendDataPriority");
+                                                    if (logger.isDebugEnabled()) {
+                                                        logger.debug(
+                                                                "TCPserver - Channel {} - device is configured as IP locked",
+                                                                chInfo.getIp());
+                                                    }
+                                                    chInfo.assignDeviceId();
+                                                    if (chInfo.hasIdMismatch()) {
+                                                        logger.info(
+                                                                "TCPserver - Device with IP {} has mismatch between configured and connected device ID's.",
+                                                                chInfo.getIp());
                                                     }
                                                 }
+
+                                                // send Welcome response
+                                                sendDataOut(SimpleBinaryProtocol.compileWelcomeDataFrame(
+                                                        r.getDeviceId(), chInfo.getDeviceId()), chInfo);
+                                            } else {
+                                                logger.error(
+                                                        "TCPserver - Channel {} - device will be ignored. Non valid packet.",
+                                                        chInfo.getIp());
+                                                closeChannel(chInfo);
+                                                return;
                                             }
                                         }
 
@@ -399,12 +435,21 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
      */
     @Override
     protected boolean sendDataOut(SimpleBinaryItemData data) {
+
+        return sendDataOut(data, channels.getById(data.getDeviceId()));
+    }
+
+    /**
+     * Write data into device stream
+     *
+     * @param data
+     *            Item data with compiled packet
+     */
+    protected boolean sendDataOut(SimpleBinaryItemData data, SimpleBinaryIPChannelInfo chInfo) {
         if (logger.isDebugEnabled()) {
             logger.debug("{} - Try to send data to device {} - {} bytes", this.toString(), data.getDeviceId(),
                     data.getData().length);
         }
-
-        SimpleBinaryIPChannelInfo chInfo = channels.getById(data.getDeviceId());
 
         if (chInfo == null) {
             logger.warn("{} - Device {}: No channel found.", this.toString(), data.getDeviceId());
@@ -450,6 +495,10 @@ public class SimpleBinaryIP extends SimpleBinaryGenericDevice {
 
                         closeChannel(chInfo);
 
+                        return;
+                    }
+
+                    if (chInfo == null) {
                         return;
                     }
 

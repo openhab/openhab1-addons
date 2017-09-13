@@ -210,7 +210,11 @@ public class SimpleBinaryIPChannelInfo {
         writeBuffer = null;
         requestTimeouted = null;
         lastSentData = null;
-        // TODO:
+        receivedDeviceID = -1;
+
+        if (!hasIdConfigured() && collection != null) {
+            collection.remove(this);
+        }
     }
 
     public ByteBuffer getWriteBuffer() {
@@ -299,17 +303,24 @@ public class SimpleBinaryIPChannelInfo {
         return isIpLocked;
     }
 
+    public boolean assignDeviceId() {
+        if (configuredDeviceID < 0) {
+            return false;
+        }
+        receivedDeviceID = configuredDeviceID;
+        return true;
+    }
+
     /**
      * Assign device id for communication
      *
-     * @param devId
+     * @param devId ID received in first(welcome) packet
      * @return True if successfully assigned false if other device use this id or configured is different
      */
     public boolean assignDeviceId(int devId) {
         receivedDeviceID = devId;
 
-        logger.info("Device {} (configured IP={},configured ID={}) assigned to ID={}", this.getIpReceived(),
-                this.getIpConfigured(), this.getDeviceIdConfigured(), devId);
+        logger.info("Device {} assigned to ID={}", this.getIpReceived(), devId);
 
         if (isIpLocked) {
             if (logger.isDebugEnabled()) {
@@ -340,17 +351,14 @@ public class SimpleBinaryIPChannelInfo {
             for (Iterator<SimpleBinaryIPChannelInfo> itr = collection.iterator(); itr.hasNext();) {
                 SimpleBinaryIPChannelInfo item = itr.next();
 
+                // is not me
                 if (!item.equals(this)) {
+                    // channel isn't online
                     if (item.getChannel() == null) {
-                        if (item.getDeviceIdReceived() == devId
-                                || (item.getDeviceIdReceived() == -1 && item.getDeviceIdConfigured() == devId)) {
-
-                            if (item.getDeviceIdConfigured() >= 0) {
-                                configuredDeviceID = item.getDeviceIdConfigured();
-                            }
-                            if (item.getIpConfigured().length() > 0) {
-                                configuredDeviceIP = item.getIpConfigured();
-                            }
+                        // same ID
+                        if (item.getDeviceIdConfigured() == devId) {
+                            configuredDeviceID = item.getDeviceIdConfigured();
+                            configuredDeviceIP = item.getIpConfigured();
 
                             if (logger.isDebugEnabled()) {
                                 logger.debug("Device {} - ID assigning. Old channel record removed(ID={},IP={})",
@@ -358,53 +366,41 @@ public class SimpleBinaryIPChannelInfo {
                             }
 
                             itr.remove();
+                            break;
                         }
+                        // live channel
                     } else {
+                        // same ID
                         if (item.getDeviceIdReceived() == devId) {
-                            if (item.getIp().equals(this.getIp())) {
-                                if (item.getDeviceIdConfigured() >= 0) {
-                                    configuredDeviceID = item.getDeviceIdConfigured();
-                                }
-                                if (item.getIpConfigured().length() > 0) {
-                                    configuredDeviceIP = item.getIpConfigured();
-                                }
-
-                                item.closed();
-                                itr.remove();
-
-                                if (logger.isDebugEnabled()) {
-                                    logger.debug(
-                                            "Device {} - ID assigning. Same channel exist(ID={},IP={}). Channel will be closed and removed",
-                                            this.getIpReceived(), item.getDeviceId(), item.getIp());
-                                }
-                            } else {
-                                // already exist device with same ID and is also connected -> problem
-                                return false;
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Device {} - ID assigning. Same channel exist(ID={},IP={}).",
+                                        this.getIpReceived(), item.getDeviceId(), item.getIp());
                             }
-                        } else {
-                            if (item.getIp().equals(this.getIp())) {
-                                if (logger.isDebugEnabled()) {
-                                    logger.warn("Device {} - ID assigning. Channel with same IP exist(ID={},IP={}).",
-                                            this.getIpReceived(), item.getDeviceId(), item.getIp());
-                                }
+                            return false;
+                        } else if (item.hasIdConfigured() && item.getIp().equals(this.getIpReceived())) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug(
+                                        "Device {} - ID assigning. For this IP={} is assigned and configured another device with ID={}.",
+                                        this.getIpReceived(), item.getIp(), item.getDeviceId());
                             }
+                            return false;
                         }
                     }
                 }
             }
-        }
 
-        if (logger.isDebugEnabled()) {
-            String collectioToString = "";
+            if (logger.isDebugEnabled()) {
+                String collectioToString = "";
 
-            for (SimpleBinaryIPChannelInfo i : collection) {
-                if (collectioToString.length() > 0) {
-                    collectioToString += ",";
+                for (SimpleBinaryIPChannelInfo i : collection) {
+                    if (collectioToString.length() > 0) {
+                        collectioToString += ",";
+                    }
+                    collectioToString += i.getDeviceId() + "/" + i.getIp();
                 }
-                collectioToString += i.getDeviceId() + "/" + i.getIp();
-            }
 
-            logger.debug("collection after remove is={}", collectioToString);
+                logger.debug("collection after remove is={}", collectioToString);
+            }
         }
 
         return true;

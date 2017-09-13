@@ -484,6 +484,8 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
     private void updateState(SimpleBinaryBindingConfig itemConfig, Type state) {
         itemConfig.setState(state);
 
+        int updates = 0;
+
         // through all devices
         for (DeviceConfig d : itemConfig.devices) {
             // send to output devices only
@@ -495,6 +497,7 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
 
             if (device != null) {
                 try {
+                    updates++;
                     device.sendData(itemConfig.item.getName(), state, itemConfig, d);
                 } catch (Exception ex) {
                     logger.error("updateState(): file:{}|line:{}|method:{}|message:{}",
@@ -508,6 +511,10 @@ public class SimpleBinaryBinding extends AbstractActiveBinding<SimpleBinaryBindi
             } else {
                 logger.warn("No device for item: {}", itemConfig.item.getName());
             }
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Item {}: {} devices will be updated", itemConfig.item.getName(), updates);
         }
     }
 

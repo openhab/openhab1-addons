@@ -85,24 +85,32 @@ public class SimpleBinaryDeviceState {
      * Set actual device state
      *
      * @param state
+     * @return
      */
-    public void setState(DeviceStates state) {
+    public boolean setState(DeviceStates state) {
+        boolean changed = false;
+        Calendar now = Calendar.getInstance();
         // set state only if previous is different
         if (this.state != state) {
             this.prevState = this.state;
             this.state = state;
-            this.changedSince = Calendar.getInstance();
+            this.changedSince = now;
+            changed = true;
         }
 
         if (this.state == DeviceStates.CONNECTED) {
-            communicationOK.add(Calendar.getInstance());
+            communicationOK.add(now);
         } else {
-            communicationError.add(Calendar.getInstance());
+            communicationError.add(now);
         }
+
+        double oldPlValue = packetLost;
 
         calcPacketLost();
 
-        lastCommunication = Calendar.getInstance();
+        lastCommunication = now;
+
+        return changed || oldPlValue != packetLost;
     }
 
     /**

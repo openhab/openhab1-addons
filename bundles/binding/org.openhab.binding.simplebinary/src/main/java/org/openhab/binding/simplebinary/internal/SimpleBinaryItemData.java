@@ -22,7 +22,7 @@ public class SimpleBinaryItemData extends SimpleBinaryMessage {
 
     /**
      * Construct item data instance for unspecified item
-     * 
+     *
      * @param messageId
      *            Message ID
      * @param deviceId
@@ -38,7 +38,7 @@ public class SimpleBinaryItemData extends SimpleBinaryMessage {
 
     /**
      * Construct item data instance
-     * 
+     *
      * @param messageId
      *            Message ID
      * @param deviceId
@@ -56,7 +56,7 @@ public class SimpleBinaryItemData extends SimpleBinaryMessage {
 
     /**
      * Return item raw data
-     * 
+     *
      * @return
      */
     public byte[] getData() {
@@ -65,7 +65,7 @@ public class SimpleBinaryItemData extends SimpleBinaryMessage {
 
     /**
      * Return resend counter value
-     * 
+     *
      * @since 1.9.0
      * @return Resend counter value
      */

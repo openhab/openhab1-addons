@@ -90,12 +90,12 @@ public class SimpleBinaryProtocol {
      *            Requested item configuration
      * @return
      */
-    public static SimpleBinaryItemData compileWelcomeDataFrame(byte deviceID, byte assignedId) {
+    public static SimpleBinaryItemData compileWelcomeDataFrame(int deviceID, int assignedId) {
         byte[] data = new byte[4];
 
-        data[0] = deviceID;
+        data[0] = (byte) (deviceID & 0xFF);
         data[1] = (byte) 0xD2;
-        data[2] = assignedId;
+        data[2] = (byte) (assignedId & 0xFF);
         data[3] = evalCRC(data, 3);
 
         return new SimpleBinaryItemData((byte) 0xD1, deviceID, data);
@@ -110,10 +110,10 @@ public class SimpleBinaryProtocol {
      *            Deny reason (0 - default)
      * @return
      */
-    public static SimpleBinaryItemData compileDenyDataFrame(byte deviceID, byte reason) {
+    public static SimpleBinaryItemData compileDenyDataFrame(int deviceID, byte reason) {
         byte[] data = new byte[4];
 
-        data[0] = deviceID;
+        data[0] = (byte) (deviceID & 0xFF);
         data[1] = (byte) 0xD3;
         data[2] = reason;
         data[3] = evalCRC(data, 3);
@@ -192,7 +192,7 @@ public class SimpleBinaryProtocol {
         int datalen = data.length;
 
         // bus address
-        data[0] = (byte) deviceConfig.getDeviceAddress();
+        data[0] = (byte) (deviceConfig.getDeviceAddress() & 0xFF);
         // item address / ID
         data[2] = (byte) (deviceConfig.getItemAddress() & 0xFF);
         data[3] = (byte) ((deviceConfig.getItemAddress() >> 8) & 0xFF);
@@ -280,8 +280,8 @@ public class SimpleBinaryProtocol {
 
                     ((DimmerItem) itemConfig.item).setState(new PercentType(brightness));
                 } else {
-                    logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
-                            itemConfig.getDataType());
+                    logger.error("Unsupported command type {} for target datatype {}. Command={}.",
+                            command.getClass().toString(), itemConfig.getDataType(), command.toString());
                     return null;
                 }
                 break;
@@ -305,8 +305,8 @@ public class SimpleBinaryProtocol {
                     data[4] = 0x0;
                     data[5] = (byte) (cmd.equals(UpDownType.UP) ? 0x4 : 0x8);
                 } else {
-                    logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
-                            itemConfig.getDataType());
+                    logger.error("Unsupported command type {} for target datatype {}. Command={}.",
+                            command.getClass().toString(), itemConfig.getDataType(), command.toString());
                     return null;
                 }
                 break;
@@ -318,8 +318,8 @@ public class SimpleBinaryProtocol {
                     data[6] = (byte) ((cmd.intValue() >> 16) & 0xFF);
                     data[7] = (byte) ((cmd.intValue() >> 24) & 0xFF);
                 } else {
-                    logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
-                            itemConfig.getDataType());
+                    logger.error("Unsupported command type {} for target datatype {}. Command={}.",
+                            command.getClass().toString(), itemConfig.getDataType(), command.toString());
                     return null;
                 }
                 break;
@@ -334,8 +334,8 @@ public class SimpleBinaryProtocol {
                     data[6] = (byte) ((bits >> 16) & 0xFF);
                     data[7] = (byte) ((bits >> 24) & 0xFF);
                 } else {
-                    logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
-                            itemConfig.getDataType());
+                    logger.error("Unsupported command type {} for target datatype {}. Command={}.",
+                            command.getClass().toString(), itemConfig.getDataType(), command.toString());
                     return null;
                 }
                 break;
@@ -405,8 +405,8 @@ public class SimpleBinaryProtocol {
                     }
                     hsbVal = new HSBType(hsbVal.getHue(), hsbVal.getSaturation(), (PercentType) command);
                 } else {
-                    logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
-                            itemConfig.getDataType());
+                    logger.error("Unsupported command type {} for target datatype {}. Command={}.",
+                            command.getClass().toString(), itemConfig.getDataType(), command.toString());
                     return null;
                 }
 
@@ -504,8 +504,8 @@ public class SimpleBinaryProtocol {
                         }
                     }
                 } else {
-                    logger.error("Unsupported command type {} for datatype {}", command.getClass().toString(),
-                            itemConfig.getDataType());
+                    logger.error("Unsupported command type {} for target datatype {}. Command={}.",
+                            command.getClass().toString(), itemConfig.getDataType(), command.toString());
                     return null;
                 }
                 break;
@@ -766,8 +766,9 @@ public class SimpleBinaryProtocol {
                         throw new NoValidCRCException(crc, calcCrc);
                     }
 
-                    return new SimpleBinaryMessage(msgId, devId, -1); // ,findItem(itemsConfig, deviceName, devId,
-                                                                      // address)
+                    return new SimpleBinaryMessage(msgId, devId & 0xFF, -1); // ,findItem(itemsConfig, deviceName,
+                                                                             // devId,
+                // address)
                 default:
                     // data.clear();
 
@@ -785,7 +786,7 @@ public class SimpleBinaryProtocol {
             Map.Entry<String, SimpleBinaryBindingConfig> itemConfig = findItem(itemsConfig, deviceName, devId, address);
 
             if (itemConfig == null) {
-                throw new NoValidItemInConfig(deviceName, devId, address);
+                throw new NoValidItemInConfig(deviceName, devId & 0xFF, address);
             }
 
             SimpleBinaryItem item = new SimpleBinaryItem(itemConfig.getKey(), itemConfig.getValue(), msgId, devId,

@@ -82,9 +82,7 @@ public class SimpleBinaryDeviceStateCollection extends HashMap<Integer, SimpleBi
         // retrieve device
         SimpleBinaryDeviceState deviceState = this.get(deviceAddress);
         // set internal state
-        deviceState.setState(state);
-
-        if (eventPublisher != null) {
+        if (deviceState.setState(state) && eventPublisher != null) {
 
             // send data to event bus
             for (Map.Entry<String, SimpleBinaryInfoBindingConfig> item : deviceItemsConfigs.entrySet()) {

@@ -374,7 +374,7 @@ public class SimpleBinaryGenericBindingProvider extends AbstractGenericBindingPr
 
                             dataType = retreiveDataType(item, item.getClass(), param);
                         } else {
-                            logger.warn("Item %s. Unsupported optional parameter %s", item.getName(),
+                            logger.warn("Item {}. Unsupported optional parameter {}", item.getName(),
                                     optionalConfigs[i]);
                         }
                     }

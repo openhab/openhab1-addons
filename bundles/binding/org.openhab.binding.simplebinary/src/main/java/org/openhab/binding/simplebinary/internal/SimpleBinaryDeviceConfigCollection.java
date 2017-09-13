@@ -21,6 +21,11 @@ import org.openhab.binding.simplebinary.internal.SimpleBinaryGenericBindingProvi
 public class SimpleBinaryDeviceConfigCollection extends LinkedList<DeviceConfig> {
     private static final long serialVersionUID = -6827894112097302707L;
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.LinkedList#add(java.lang.Object)
+     */
     @Override
     public boolean add(DeviceConfig e) {
         if (!this.contains(e)) {
@@ -29,6 +34,11 @@ public class SimpleBinaryDeviceConfigCollection extends LinkedList<DeviceConfig>
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.LinkedList#contains(java.lang.Object)
+     */
     @Override
     public boolean contains(Object o) {
         if (!(o instanceof DeviceConfig)) {
@@ -46,19 +56,16 @@ public class SimpleBinaryDeviceConfigCollection extends LinkedList<DeviceConfig>
         return false;
     }
 
-    public boolean contains(String deviceName) {
+    /**
+     * Return specified device configuration
+     * 
+     * @param deviceName Device(port) name
+     * @param deviceAddress Device(slave) address
+     * @return Device configuration for item
+     */
+    public DeviceConfig get(String deviceName, int deviceAddress) {
         for (DeviceConfig d : this) {
-            if (d.deviceName.equals(deviceName)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public DeviceConfig get(String deviceName) {
-        for (DeviceConfig d : this) {
-            if (d.deviceName.equals(deviceName)) {
+            if (d.deviceAddress == deviceAddress && d.deviceName.equals(deviceName)) {
                 return d;
             }
         }

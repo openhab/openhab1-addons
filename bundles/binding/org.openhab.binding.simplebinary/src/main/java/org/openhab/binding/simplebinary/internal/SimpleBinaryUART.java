@@ -137,7 +137,7 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
             portState.setState(PortStates.NOT_EXIST);
 
             logger.warn("{} not found", this.toString());
-            logger.warn("Available ports: " + getCommPortListString());
+            logger.info("Available ports: " + getCommPortListString());
 
             return false;
         }
@@ -282,8 +282,12 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
     @Override
     protected boolean sendDataOut(SimpleBinaryItemData data) {
         if (!this.connected) {
-            logger.warn("{} - Port is closed. Unable to send data to device {}.", this.toString(), data.getDeviceId());
-            return false;
+            logger.debug("{} - Port is closed. Try to reopen.");
+            if (!this.open()) {
+                logger.warn("{} - Port is closed. Unable to send data to device {}.", this.toString(),
+                        data.getDeviceId());
+                return false;
+            }
         }
 
         // data line stabilization
@@ -501,6 +505,13 @@ public class SimpleBinaryUART extends SimpleBinaryGenericDevice implements Seria
      */
     @Override
     public void checkNewData() {
+        if (!connected) {
+            logger.debug("{} - Port is closed. Try to reopen.");
+            if (!this.open()) {
+                return;
+            }
+        }
+
         super.checkNewData();
     }
 
