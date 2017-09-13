@@ -15,6 +15,10 @@ import java.util.EventListener;
 import java.util.Vector;
 import java.util.Enumeration;
 
+import org.openhab.binding.cardio2e.internal.Cardio2eBinding;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Decodes Cardio2e communication RS-232 protocol stream and stores data in a
  * Cardio2eTransaction subclass object
@@ -24,6 +28,9 @@ import java.util.Enumeration;
  */
 
 public class Cardio2eDecoder {
+	private static final Logger logger = LoggerFactory
+			.getLogger(Cardio2eBinding.class);
+
 	public boolean decodeZonesStateTransaction = false; // Permits to disable
 														// security zones state
 														// transaction decode
@@ -148,20 +155,13 @@ public class Cardio2eDecoder {
 	}
 
 	private void decodeCardio2eTransaction(String transactionToDecode) {
-		// Inits decoding complete transaction
+		// Begins decoding complete transaction
 		boolean decodeComplete = false;
 		Cardio2eTransaction receivedCardio2eTransaction;
 		Cardio2eTransactionTypes transactionType = null;
 		Cardio2eObjectTypes objectType = null;
 		List<String> digestedTransaction = new ArrayList<String>();
-		// System.out.print ("Decoding "+transactionToDecode+" (-"); //Testing
-		// output
-		// Splits tokens
 		digestedTransaction = digestCardio2eTransaction(transactionToDecode);
-		/*
-		 * for (String value : digestedTransaction) { //Testing output
-		 * System.out.print(value + "-"); } System.out.print(")\n");
-		 */
 		if (digestedTransaction.size() >= 2) { // Will process transactions with
 												// a minimum of 2 tokens only
 			// Decode transaction type
@@ -170,8 +170,9 @@ public class Cardio2eDecoder {
 					transactionType = Cardio2eTransactionTypes
 							.fromSymbol(digestedTransaction.get(0).charAt(0));
 				}
-			} catch (IllegalArgumentException e1) {
-				e1.printStackTrace();
+			} catch (IllegalArgumentException ex) {
+				logger.warn("Illegal transaction type in decoding transaction: '{}'",
+						ex.toString());
 			}
 			// Decode object type
 			try {
@@ -179,17 +180,15 @@ public class Cardio2eDecoder {
 					objectType = Cardio2eObjectTypes
 							.fromSymbol(digestedTransaction.get(1).charAt(0));
 				}
-			} catch (IllegalArgumentException e1) {
-				e1.printStackTrace();
+			} catch (IllegalArgumentException ex) {
+				logger.warn("Illegal object type in decoding transaction: '{}'",
+						ex.toString());
 			}
 			// Decode object parameters
 			receivedCardio2eTransaction = new Cardio2eTransaction();
 			if ((transactionType != null) && (objectType != null)) {
 				switch (objectType) {
 				case DATE_AND_TIME:
-					// System.out.print("Received "+transactionType+" ");
-					// //Testing output
-					// System.out.print(objectType+" "); //Testing output
 					Cardio2eDateTimeTransaction receivedCardio2eDateTimeTransaction = new Cardio2eDateTimeTransaction();
 					receivedCardio2eDateTimeTransaction
 							.setTransactionType(transactionType);
@@ -197,12 +196,8 @@ public class Cardio2eDecoder {
 							receivedCardio2eDateTimeTransaction,
 							digestedTransaction);
 					receivedCardio2eTransaction = receivedCardio2eDateTimeTransaction;
-					// System.out.print("\n");//Testing output
 					break;
 				case HVAC_CONTROL:
-					// System.out.print("Received "+transactionType+" ");
-					// //Testing output
-					// System.out.print(objectType+" "); //Testing output
 					Cardio2eHvacControlTransaction receivedCardio2eHvacControlTransaction = new Cardio2eHvacControlTransaction();
 					receivedCardio2eHvacControlTransaction
 							.setTransactionType(transactionType);
@@ -210,12 +205,8 @@ public class Cardio2eDecoder {
 							receivedCardio2eHvacControlTransaction,
 							digestedTransaction);
 					receivedCardio2eTransaction = receivedCardio2eHvacControlTransaction;
-					// System.out.print("\n");//Testing output
 					break;
 				case HVAC_TEMPERATURE:
-					// System.out.print("Received "+transactionType+" ");
-					// //Testing output
-					// System.out.print(objectType+" "); //Testing output
 					Cardio2eHvacTemperatureTransaction receivedCardio2eHvacTemperatureTransaction = new Cardio2eHvacTemperatureTransaction();
 					receivedCardio2eHvacTemperatureTransaction
 							.setTransactionType(transactionType);
@@ -223,12 +214,8 @@ public class Cardio2eDecoder {
 							receivedCardio2eHvacTemperatureTransaction,
 							digestedTransaction);
 					receivedCardio2eTransaction = receivedCardio2eHvacTemperatureTransaction;
-					// System.out.print("\n");//Testing output
 					break;
 				case LIGHTING:
-					// System.out.print("Received "+transactionType+" ");
-					// //Testing output
-					// System.out.print(objectType+" "); //Testing output
 					Cardio2eLightingTransaction receivedCardio2eLightingTransaction = new Cardio2eLightingTransaction();
 					receivedCardio2eLightingTransaction
 							.setTransactionType(transactionType);
@@ -236,12 +223,8 @@ public class Cardio2eDecoder {
 							receivedCardio2eLightingTransaction,
 							digestedTransaction);
 					receivedCardio2eTransaction = receivedCardio2eLightingTransaction;
-					// System.out.print("\n");//Testing output
 					break;
 				case LOGIN:
-					// System.out.print("Received "+transactionType+" ");
-					// //Testing output
-					// System.out.print(objectType+" "); //Testing output
 					Cardio2eLoginTransaction receivedCardio2eLoginTransaction = new Cardio2eLoginTransaction();
 					receivedCardio2eLoginTransaction
 							.setTransactionType(transactionType);
@@ -249,12 +232,8 @@ public class Cardio2eDecoder {
 							receivedCardio2eLoginTransaction,
 							digestedTransaction);
 					receivedCardio2eTransaction = receivedCardio2eLoginTransaction;
-					// System.out.print("\n");//Testing output
 					break;
 				case RELAY:
-					// System.out.print("Received "+transactionType+" ");
-					// //Testing output
-					// System.out.print(objectType+" "); //Testing output
 					Cardio2eRelayTransaction receivedCardio2eRelayTransaction = new Cardio2eRelayTransaction();
 					receivedCardio2eRelayTransaction
 							.setTransactionType(transactionType);
@@ -262,12 +241,8 @@ public class Cardio2eDecoder {
 							receivedCardio2eRelayTransaction,
 							digestedTransaction);
 					receivedCardio2eTransaction = receivedCardio2eRelayTransaction;
-					// System.out.print("\n");//Testing output
 					break;
 				case SCENARIO:
-					// System.out.print("Received "+transactionType+" ");
-					// //Testing output
-					// System.out.print(objectType+" "); //Testing output
 					Cardio2eScenarioTransaction receivedCardio2eScenarioTransaction = new Cardio2eScenarioTransaction();
 					receivedCardio2eScenarioTransaction
 							.setTransactionType(transactionType);
@@ -275,12 +250,8 @@ public class Cardio2eDecoder {
 							receivedCardio2eScenarioTransaction,
 							digestedTransaction);
 					receivedCardio2eTransaction = receivedCardio2eScenarioTransaction;
-					// System.out.print("\n");//Testing output
 					break;
 				case SECURITY:
-					// System.out.print("Received "+transactionType+" ");
-					// //Testing output
-					// System.out.print(objectType+" "); //Testing output
 					Cardio2eSecurityTransaction receivedCardio2eSecurityTransaction = new Cardio2eSecurityTransaction();
 					receivedCardio2eSecurityTransaction
 							.setTransactionType(transactionType);
@@ -288,13 +259,9 @@ public class Cardio2eDecoder {
 							receivedCardio2eSecurityTransaction,
 							digestedTransaction);
 					receivedCardio2eTransaction = receivedCardio2eSecurityTransaction;
-					// System.out.print("\n");//Testing output
 					break;
 				case ZONES:
 					if (decodeZonesStateTransaction) {
-						// System.out.print("Received "+transactionType+" ");
-						// //Testing output
-						// System.out.print(objectType+" "); //Testing output
 						Cardio2eZonesTransaction receivedCardio2eZonesTransaction = new Cardio2eZonesTransaction();
 						receivedCardio2eZonesTransaction
 								.setTransactionType(transactionType);
@@ -302,13 +269,9 @@ public class Cardio2eDecoder {
 								receivedCardio2eZonesTransaction,
 								digestedTransaction);
 						receivedCardio2eTransaction = receivedCardio2eZonesTransaction;
-						// System.out.print("\n");//Testing output
 					}
 					break;
 				case ZONES_BYPASS:
-					// System.out.print("Received "+transactionType+" ");
-					// //Testing output
-					// System.out.print(objectType+" "); //Testing output
 					Cardio2eZonesBypassTransaction receivedCardio2eZoneBypassTransaction = new Cardio2eZonesBypassTransaction();
 					receivedCardio2eZoneBypassTransaction
 							.setTransactionType(transactionType);
@@ -316,12 +279,8 @@ public class Cardio2eDecoder {
 							receivedCardio2eZoneBypassTransaction,
 							digestedTransaction);
 					receivedCardio2eTransaction = receivedCardio2eZoneBypassTransaction;
-					// System.out.print("\n");//Testing output
 					break;
 				case VERSION:
-					// System.out.print("Received "+transactionType+" ");
-					// //Testing output
-					// System.out.print(objectType+" "); //Testing output
 					Cardio2eVersionTransaction receivedCardio2eVersionTransaction = new Cardio2eVersionTransaction();
 					receivedCardio2eVersionTransaction
 							.setTransactionType(transactionType);
@@ -329,12 +288,8 @@ public class Cardio2eDecoder {
 							receivedCardio2eVersionTransaction,
 							digestedTransaction);
 					receivedCardio2eTransaction = receivedCardio2eVersionTransaction;
-					// System.out.print("\n");//Testing output
 					break;
 				case CURTAIN:
-					// System.out.print("Received "+transactionType+" ");
-					// //Testing output
-					// System.out.print(objectType+" "); //Testing output
 					Cardio2eCurtainTransaction receivedCardio2eCurtainTransaction = new Cardio2eCurtainTransaction();
 					receivedCardio2eCurtainTransaction
 							.setTransactionType(transactionType);
@@ -342,7 +297,6 @@ public class Cardio2eDecoder {
 							receivedCardio2eCurtainTransaction,
 							digestedTransaction);
 					receivedCardio2eTransaction = receivedCardio2eCurtainTransaction;
-					// System.out.print("\n");//Testing output
 					break;
 				default:
 					break;
@@ -356,8 +310,6 @@ public class Cardio2eDecoder {
 																			// transaction
 																			// by
 																			// event.
-					// System.out.println("Message successfully decoded to a "+receivedCardio2eTransaction.getClass()+".");//Testing
-					// output
 				}
 			}
 		}
@@ -389,11 +341,10 @@ public class Cardio2eDecoder {
 			try {
 				receivedCardio2eTransaction.setErrorCode(Integer
 						.parseInt(digestedTransaction.get(2)));
-				// System.out.print(" "+receivedCardio2eTransaction.getErrorCodeDescription());
-				// //Testing output
 				decodeComplete = true;
-			} catch (IllegalArgumentException e1) {
-				e1.printStackTrace();
+			} catch (IllegalArgumentException ex) {
+				logger.warn("Illegal argument in decoding NACK transaction: '{}'",
+						ex.toString());
 			}
 		}
 		if (digestedTransaction.size() == 4) {
@@ -402,11 +353,10 @@ public class Cardio2eDecoder {
 						.parseShort(digestedTransaction.get(2)));
 				receivedCardio2eTransaction.setErrorCode(Integer
 						.parseInt(digestedTransaction.get(3)));
-				// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber()+" "+receivedCardio2eTransaction.getErrorCodeDescription());
-				// //Testing output
 				decodeComplete = true;
-			} catch (IllegalArgumentException e1) {
-				e1.printStackTrace();
+			} catch (IllegalArgumentException ex) {
+				logger.warn("Illegal argument in decoding NACK transaction: '{}'",
+						ex.toString());
 			}
 		}
 		return decodeComplete;
@@ -423,11 +373,10 @@ public class Cardio2eDecoder {
 				try {
 					receivedCardio2eTransaction.setObjectNumber(Short
 							.parseShort(digestedTransaction.get(2)));
-					// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber());
-					// //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding LIGHTING transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -443,11 +392,10 @@ public class Cardio2eDecoder {
 							.parseShort(digestedTransaction.get(2)));
 					receivedCardio2eTransaction.setLightIntensity(Byte
 							.parseByte(digestedTransaction.get(3)));
-					// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber()+" "+receivedCardio2eTransaction.getLightIntensity()+"%");
-					// //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding LIGHTING transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -466,11 +414,10 @@ public class Cardio2eDecoder {
 				try {
 					receivedCardio2eTransaction.setObjectNumber(Short
 							.parseShort(digestedTransaction.get(2)));
-					// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber());
-					// //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding RELAY transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -489,12 +436,11 @@ public class Cardio2eDecoder {
 								.setRelayState(Cardio2eRelayStates
 										.fromSymbol(digestedTransaction.get(3)
 												.charAt(0)));
-						// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber()+" "+receivedCardio2eTransaction.getRelayState());
-						// //Testing output
 						decodeComplete = true;
 					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding RELAY transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -514,11 +460,10 @@ public class Cardio2eDecoder {
 				try {
 					receivedCardio2eTransaction.setObjectNumber(Short
 							.parseShort(digestedTransaction.get(2)));
-					// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber());
-					// //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding HVAC_TEMPERATURE transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -538,14 +483,14 @@ public class Cardio2eDecoder {
 								.setHvacSystemMode(Cardio2eHvacSystemModes
 										.fromSymbol(digestedTransaction.get(4)
 												.charAt(0)));
-						// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber()+" "+receivedCardio2eTransaction.getHvacTemperature()+"ºC MODE "+receivedCardio2eTransaction.getHvacSystemMode());
-						// //Testing output
 						decodeComplete = true;
 					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
-				} catch (Exception e) {
-					e.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding HVAC_TEMPERATURE transaction: '{}'",
+							ex.toString());
+				} catch (Exception ex) {
+					logger.warn("Unespecified error in decoding HVAC_TEMPERATURE transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -564,11 +509,10 @@ public class Cardio2eDecoder {
 				try {
 					receivedCardio2eTransaction.setObjectNumber(Short
 							.parseShort(digestedTransaction.get(2)));
-					// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber());
-					// //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding HVAC_CONTROL transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -598,14 +542,14 @@ public class Cardio2eDecoder {
 								.setHvacSystemMode(Cardio2eHvacSystemModes
 										.fromSymbol(digestedTransaction.get(6)
 												.charAt(0)));
-						// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber()+" HEATING / COOLING SETPOINTS: "+receivedCardio2eTransaction.getHvacHeatingSetPoint()+" / "+receivedCardio2eTransaction.getHvacCoolingSetPoint()+"ºC FAN "+receivedCardio2eTransaction.getHvacFanState()+" MODE "+receivedCardio2eTransaction.getHvacSystemMode());
-						// //Testing output
 						decodeComplete = true;
 					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
-				} catch (Exception e) {
-					e.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding HVAC_CONTROL transaction: '{}'",
+							ex.toString());
+				} catch (Exception ex) {
+					logger.warn("Unespecified error in decoding HVAC_CONTROL transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -624,11 +568,10 @@ public class Cardio2eDecoder {
 				try {
 					receivedCardio2eTransaction.setObjectNumber(Short
 							.parseShort(digestedTransaction.get(2)));
-					// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber());
-					// //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding SCENARIO transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -641,11 +584,10 @@ public class Cardio2eDecoder {
 				try {
 					receivedCardio2eTransaction.setObjectNumber(Short
 							.parseShort(digestedTransaction.get(2)));
-					// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber());
-					// //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding SCENARIO transaction: '{}'",
+							ex.toString());
 				}
 			}
 			if (digestedTransaction.size() == 4) {
@@ -655,12 +597,11 @@ public class Cardio2eDecoder {
 								.parseShort(digestedTransaction.get(2)));
 						receivedCardio2eTransaction
 								.setSecurityCode(digestedTransaction.get(3));
-						// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber()+" USING SECURITY CODE "+receivedCardio2eTransaction.getSecurityCode());
-						// //Testing output
 						decodeComplete = true;
 					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding SCENARIO transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -684,11 +625,10 @@ public class Cardio2eDecoder {
 				try {
 					receivedCardio2eTransaction.setObjectNumber(Short
 							.parseShort(digestedTransaction.get(2)));
-					// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber());
-					// //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding ZONES transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -709,8 +649,6 @@ public class Cardio2eDecoder {
 								char c = parameters.charAt(n);
 								zoneStates[n] = Cardio2eZoneStates
 										.fromSymbol(c);
-								// System.out.print("#"+(objectNumber+n)+":"+zoneStates[n]+" ");
-								// //Testing output
 							}
 							receivedCardio2eTransaction
 									.setZoneStates(zoneStates);
@@ -718,8 +656,9 @@ public class Cardio2eDecoder {
 							decodeComplete = true;
 						}
 					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding ZONES transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -743,11 +682,10 @@ public class Cardio2eDecoder {
 				try {
 					receivedCardio2eTransaction.setObjectNumber(Short
 							.parseShort(digestedTransaction.get(2)));
-					// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber());
-					// //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding ZONES_BYPASS transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -773,16 +711,15 @@ public class Cardio2eDecoder {
 								char c = parameters.charAt(n);
 								zoneBypassStates[n] = Cardio2eZoneBypassStates
 										.fromSymbol(c);
-								// System.out.print("#"+(objectNumber+n)+":"+zoneBypassStates[n]+" ");
-								// //Testing output
 							}
 							receivedCardio2eTransaction
 									.setZoneBypassStates(zoneBypassStates);
 							decodeComplete = true;
 						}
 					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding ZONES_BYPASS transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -810,11 +747,10 @@ public class Cardio2eDecoder {
 					receivedCardio2eTransaction
 							.setDateTime(new Cardio2eDateTime(
 									digestedTransaction.get(2)));
-					// System.out.print(receivedCardio2eTransaction.getDateTime());
-					// //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding DATE_AND_TIME transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -833,10 +769,10 @@ public class Cardio2eDecoder {
 				try {
 					receivedCardio2eTransaction.setObjectNumber(Short
 							.parseShort(digestedTransaction.get(2)));
-					// System.out.print("STATE"); //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding SECURITY transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -866,12 +802,11 @@ public class Cardio2eDecoder {
 								.setSecurityState(Cardio2eSecurityStates
 										.fromSymbol(digestedTransaction.get(3)
 												.charAt(0)));
-						// System.out.print("STATE "+receivedCardio2eTransaction.getSecurityState());
-						// //Testing output
 						decodeComplete = true;
 					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding SECURITY transaction: '{}'",
+							ex.toString());
 				}
 			}
 		case SET:
@@ -898,12 +833,11 @@ public class Cardio2eDecoder {
 												.charAt(0)));
 						receivedCardio2eTransaction
 								.setSecurityCode(digestedTransaction.get(4));
-						// System.out.print("STATE "+receivedCardio2eTransaction.getSecurityState()+" USING CODE "+receivedCardio2eTransaction.getSecurityCode());
-						// //Testing output
 						decodeComplete = true;
 					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding SECURITY transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -920,10 +854,10 @@ public class Cardio2eDecoder {
 		case ACK:
 			if (digestedTransaction.size() == 2) {
 				try {
-					// System.out.print("COMMAND ACEPTED"); //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding LOGIN transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -935,11 +869,11 @@ public class Cardio2eDecoder {
 			if (digestedTransaction.size() == 3) {
 				try {
 					if (digestedTransaction.get(2).equals("E")) {
-						// System.out.print("END"); //Testing output
 						decodeComplete = true;
 					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding LOGIN transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -967,12 +901,11 @@ public class Cardio2eDecoder {
 												.charAt(0)));
 						receivedCardio2eTransaction
 								.setProgramCode(digestedTransaction.get(3));
-						// System.out.print("COMMAND: "+receivedCardio2eTransaction.getLoginCommand()+", USING PROGRAM CODE "+receivedCardio2eTransaction.getProgramCode());
-						// //Testing output
 						decodeComplete = true;
 					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding LOGIN transaction: '{}'",
+							ex.toString());
 				}
 			}
 			if (digestedTransaction.size() == 3) { // LOGOUT command (obsolete:
@@ -983,13 +916,12 @@ public class Cardio2eDecoder {
 								.setLoginCommand(Cardio2eLoginCommands
 										.fromSymbol(digestedTransaction.get(2)
 												.charAt(0)));
-						// System.out.print("COMMAND: "+receivedCardio2eTransaction.getLoginCommand());
-						// //Testing output
 						decodeComplete = (receivedCardio2eTransaction
 								.getLoginCommand() == Cardio2eLoginCommands.LOGOUT);
 					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding LOGIN transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -1008,11 +940,10 @@ public class Cardio2eDecoder {
 				try {
 					receivedCardio2eTransaction.setObjectNumber(Short
 							.parseShort(digestedTransaction.get(2)));
-					// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber());
-					// //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding CURTAIN transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -1028,11 +959,10 @@ public class Cardio2eDecoder {
 							.parseShort(digestedTransaction.get(2)));
 					receivedCardio2eTransaction.setOpeningPercentage(Byte
 							.parseByte(digestedTransaction.get(3)));
-					// System.out.print("#"+receivedCardio2eTransaction.getObjectNumber()+" OPENED AT "+receivedCardio2eTransaction.getOpeningPercentage()+"%");
-					// //Testing output
 					decodeComplete = true;
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding CURTAIN transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
@@ -1055,11 +985,10 @@ public class Cardio2eDecoder {
 								.setVersionType(Cardio2eVersionTypes
 										.fromSymbol(digestedTransaction.get(2)
 												.charAt(0)));
-						// System.out.print(receivedCardio2eTransaction.getVersionType());
-						// //Testing output
 						decodeComplete = true;
-					} catch (IllegalArgumentException e1) {
-						e1.printStackTrace();
+					} catch (IllegalArgumentException ex) {
+						logger.warn("Illegal argument in decoding VERSION transaction: '{}'",
+								ex.toString());
 					}
 				}
 			}
@@ -1078,14 +1007,14 @@ public class Cardio2eDecoder {
 												.charAt(0)));
 						receivedCardio2eTransaction
 								.setVersion(digestedTransaction.get(3));
-						// System.out.print(receivedCardio2eTransaction.getVersionType()+"="+receivedCardio2eTransaction.getVersion());
-						// //Testing output
 						decodeComplete = true;
 					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
-				} catch (Exception e) {
-					e.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					logger.warn("Illegal argument in decoding VERSION transaction: '{}'",
+							ex.toString());
+				} catch (Exception ex) {
+					logger.warn("Unespecified error in decoding VERSION transaction: '{}'",
+							ex.toString());
 				}
 			}
 			break;
