@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>PID15903</Model>
+    <Label lang="en">Plug In Power Monitor</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x22</id>             <!-- APPLICATION_STATUS -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x32</id>             <!-- METER -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x98</id>             <!-- SECURITY -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Auto Report Timing</Label>
+            <Type>short</Type>
+            <Default>60</Default>
+            <Minimum>60</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[Reports kWh/kVAh
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Report When Wattage Changes</Label>
+            <Type>short</Type>
+            <Default>50</Default>
+            <Minimum>5</Minimum>
+            <Maximum>3600</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Reports V/A/W
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+</Product>

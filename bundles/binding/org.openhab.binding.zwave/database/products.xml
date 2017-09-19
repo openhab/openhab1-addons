@@ -1457,6 +1457,15 @@
         </Product>
         <Product>
             <Reference>
+                <Type>201A</Type>
+                <Id>1AA4</Id>
+            </Reference>
+            <Model>PID15903</Model>
+            <Label lang="en">Plug In Power Monitor</Label>
+            <ConfigFile>vision/pid15903.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0002</Type>
                 <Id>FFFF</Id>
             </Reference>
@@ -1644,6 +1653,15 @@
     <Manufacturer>
         <Id>010F</Id>
         <Name>Fibaro System</Name>
+        <Product>
+            <Reference>
+                <Type>0702</Type>
+                <Id>1000</Id>
+            </Reference>
+            <Model>FGDW-002</Model>
+            <Label lang="en">Fibaro Door Window Sensor 2</Label>
+            <ConfigFile>fibaro/fgdw002.xml</ConfigFile>
+        </Product>
         <Product>
             <Reference>
                 <Type>0F01</Type>
