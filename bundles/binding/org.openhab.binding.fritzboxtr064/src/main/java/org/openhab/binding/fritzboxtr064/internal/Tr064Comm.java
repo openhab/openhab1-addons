@@ -219,18 +219,18 @@ public class Tr064Comm {
                         beDataNode.addTextNode(dataInValue); // add data which should be requested from fbox for this
                                                              // service
                     } else {
-                        logger.error("item map for command {} does not support dataInValue", itemCommand);
+                        logger.warn("item map for command {} does not support dataInValue", itemCommand);
                     }
                 }
                 logger.trace("Raw SOAP Request to be sent to FritzBox: {}", soapToString(msg));
 
             } catch (Exception e) {
-                logger.error("Error constructing request SOAP msg for getting parameter. {}", e.getMessage());
+                logger.warn("Error constructing request SOAP msg for getting parameter. {}", e.getMessage());
                 logger.debug("Request was: {}", itemConfiguration);
             }
 
             if (bodyData == null) {
-                logger.error("Could not determine data to be sent to FritzBox!");
+                logger.warn("Could not determine data to be sent to FritzBox!");
                 return null;
             }
 
@@ -248,7 +248,7 @@ public class Tr064Comm {
                     _url + tr064service.getControlUrl());
             logger.trace("Raw SOAP Response from FritzBox: {}", soapToString(response));
             if (response == null) {
-                logger.error("Error retrieving SOAP response from FritzBox");
+                logger.warn("Error retrieving SOAP response from FritzBox");
                 continue;
             }
 
@@ -273,7 +273,7 @@ public class Tr064Comm {
         ItemMap itemMapForCommand = determineItemMappingByItemCommand(itemCommand);
 
         if (!(itemMapForCommand instanceof WritableItemMap)) {
-            logger.error("Item command " + itemCommand + " does not support setting values");
+            logger.warn("Item command {} does not support setting values", itemCommand);
             return;
         }
         WritableItemMap itemMap = (WritableItemMap) itemMapForCommand;
