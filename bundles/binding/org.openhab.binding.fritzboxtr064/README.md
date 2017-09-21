@@ -5,6 +5,7 @@ This is a binding for communication with AVM Fritz!Box using SOAP requests (TR06
 It has been tested on:
 
 * 7270
+* 7330SL (v6.54)
 * 7360SL (v6.30)
 * 7390
 * 6360 Cable (v6.04)
