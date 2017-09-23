@@ -30,9 +30,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:${scm.gitBaseUrl}/openhab.git</connection>
-        <developerConnection>scm:git:${scm.gitBaseUrl}/openhab.git</developerConnection>
-        <url>https://github.com/openhab/openhab</url>
+        <connection>scm:git:${scm.gitBaseUrl}/openhab1-addons.git</connection>
+        <developerConnection>scm:git:${scm.gitBaseUrl}/openhab1-addons.git</developerConnection>
+        <url>https://github.com/openhab/openhab1-addons</url>
     </scm>
 
     <issueManagement>
