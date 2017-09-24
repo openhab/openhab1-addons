@@ -5,6 +5,7 @@ This is a binding for communication with AVM Fritz!Box using SOAP requests (TR06
 It has been tested on:
 
 * 7270
+* 7330SL (v6.54)
 * 7360SL (v6.30)
 * 7390
 * 6360 Cable (v6.04)
@@ -23,6 +24,7 @@ It has been tested on:
 * enabling/disabling telephone answering machines (TAMs) 
 * getting new messages per TAM
 * getting missed calls for the last x days
+* getting DSL/WAN statistics for monitoring connection quality
 
 ## Prerequisites
 
@@ -45,6 +47,9 @@ This binding can be configured in the file `services/fritzboxtr064.cfg`.
 
 ```
 String  fboxName            "FBox Model [%s]"           {fritzboxtr064="modelName"}
+String  fboxManufacturer    "FBox Manufacturer [%s]"    {fritzboxtr064="manufacturerName"}
+String  fboxSerial          "FBox Serial [%s]"          {fritzboxtr064="serialNumber"}
+String  fboxVersion         "FBox Version [%s]"         {fritzboxtr064="softwareVersion"}
 # get wan ip if FritzBox establishes the internet connection (e. g. via DSL)
 String  fboxWanIP           "FBox WAN IP [%s]"          {fritzboxtr064="wanip"}
 # get wan ip if FritzBox uses internet connection of external router
@@ -53,6 +58,31 @@ Switch  fboxWifi24          "2,4GHz Wifi"               {fritzboxtr064="wifi24Sw
 Switch  fboxWifi50          "5,0GHz Wifi"               {fritzboxtr064="wifi50Switch"}
 Switch  fboxGuestWifi       "Guest Wifi"                {fritzboxtr064="wifiGuestSwitch"}
 Contact cFboxMacOnline      "Presence (WiFi) [%s]"      {fritzboxtr064="maconline:11-11-11-11-11-11" }
+
+# WAN statistics
+
+String  fboxWanAccessType "FBox WAN access type [%s]" {fritzboxtr064="wanWANAccessType"}
+Number  fboxWanLayer1UpstreamMaxBitRate "FBox WAN us max bit rate [%s]" {fritzboxtr064="wanLayer1UpstreamMaxBitRate"}
+Number  fboxWanLayer1DownstreamMaxBitRate "FBox WAN ds max bit rate [%s]" {fritzboxtr064="wanLayer1DownstreamMaxBitRate"}
+String  fboxWanPhysicalLinkStatus "FBox WAN physical link status [%s]" {fritzboxtr064="wanPhysicalLinkStatus"}
+Number  fboxWanTotalBytesSent "WAN total bytes sent [%s]" {fritzboxtr064="wanTotalBytesSent"}
+Number  fboxWanTotalBytesReceived "WAN total bytes received [%s]" {fritzboxtr064="wanTotalBytesReceived"}
+
+# DSL statistics
+
+Contact fboxDslEnable       "FBox DSL Enable [%s]"      {fritzboxtr064="dslEnable"}
+String  fboxDslStatus       "FBox DSL Status [%s]"      {fritzboxtr064="dslStatus"}
+Number  fboxDslUpstreamCurrRate "DSL Upstream Current [%s mbit/s]" {fritzboxtr064="dslUpstreamCurrRate"}
+Number  fboxDslDownstreamCurrRate "DSL Downstream Current [%s mbit/s]" {fritzboxtr064="dslDownstreamCurrRate"}
+Number  fboxDslUpstreamMaxRate "DSL Upstream Max [%s mbit/s]" {fritzboxtr064="dslUpstreamMaxRate"}
+Number  fboxDslDownstreamMaxRate "DSL Downstream Max [%s mbit/s]" {fritzboxtr064="dslDownstreamMaxRate"}
+Number  fboxDslUpstreamNoiseMargin "DSL Upstream Noise Margin [%s dB*10]" {fritzboxtr064="dslUpstreamNoiseMargin"}
+Number  fboxDslDownstreamNoiseMargin "DSL Downstream Noise Margin [%s dB*10]" {fritzboxtr064="dslDownstreamNoiseMargin"}
+Number  fboxDslUpstreamAttenuation "DSL Upstream Attenuation [%s dB*10]" {fritzboxtr064="dslUpstreamAttenuation"}
+Number  fboxDslDownstreamAttenuation "DSL Downstream Attenuation [%s dB*10]" {fritzboxtr064="dslDownstreamAttenuation"}
+Number  fboxDslFECErrors "DSL FEC Errors [%s]" {fritzboxtr064="dslFECErrors"}
+Number  fboxDslHECErrors "DSL HEC Errors [%s]" {fritzboxtr064="dslHECErrors"}
+Number  fboxDslCRCErrors "DSL CRC Errors [%s]" {fritzboxtr064="dslCRCErrors"}
 
 # only when using call monitor
 Switch  fboxRinging         "Phone ringing [%s]"                {fritzboxtr064="callmonitor_ringing" }
