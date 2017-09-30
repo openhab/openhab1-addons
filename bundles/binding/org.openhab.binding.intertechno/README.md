@@ -56,7 +56,7 @@ For all supported, you simply have to read the position of the switches and use 
 If you have an unsupported intertechno device you can fallback to the raw mode
 
 ```
-{ culintertechno="type=raw;address=FF00FF00;commandOn=FF;commandOff=F0" }
+{ culintertechno="type=raw;commandOn=FF00FF00FF;commandOff=FF00FF00F0" }
 ```
 
-This configuration allows you to manual specify the base address and the appended on and off command.
+This configuration allows you to manual specify the complete commands to send in either ON or OFF state.

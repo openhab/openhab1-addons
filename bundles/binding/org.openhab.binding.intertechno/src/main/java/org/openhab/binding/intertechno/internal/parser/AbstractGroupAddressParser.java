@@ -13,27 +13,36 @@ import java.util.List;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
- * This parser is for raw Intertechno configurations. Use this if we don't have
- * a more convenient parser. The address parts need to specify the encoded
- * address and the on and off command as Strings which can be send via the CUL.
+ * This class implements the basic parsing for a config with a group and an address
+ * parameter.
  *
- * @author Till Klocke
- * @since 1.4.0
+ * @author Michael Neuendorf
  */
-public class RawParser extends AbstractIntertechnoParser {
+public abstract class AbstractGroupAddressParser extends AbstractIntertechnoParser {
+
+    protected String group;
+    protected int address;
 
     @Override
     public void parseConfig(List<String> configParts) throws BindingConfigParseException {
+        group = "";
+        address = 0;
+
         for (int i = 0; i < configParts.size(); i++) {
-            String paramName = configParts.get(i).split("=")[0].toLowerCase();
+            String paramName = configParts.get(i).split("=")[0];
             String paramValue = configParts.get(i).split("=")[1];
 
             switch (paramName) {
-                case "commandon":
-                    commandON = paramValue;
+                case "group":
+                    group = paramValue;
                     break;
-                case "commandoff":
-                    commandOFF = paramValue;
+                case "address":
+                    try {
+                        address = Integer.parseInt(paramValue);
+                    } catch (NumberFormatException e) {
+                        throw new BindingConfigParseException(
+                                "Address is not a number. Configured address: " + paramValue);
+                    }
                     break;
             }
         }
