@@ -10,7 +10,10 @@ package org.openhab.binding.intertechno.internal.parser;
 
 import java.util.List;
 
+import org.openhab.binding.intertechno.internal.CULIntertechnoBinding;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This parser is for raw Intertechno configurations. Use this if we don't have
@@ -21,6 +24,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 1.4.0
  */
 public class RawParser extends AbstractIntertechnoParser {
+
+    private static final Logger logger = LoggerFactory.getLogger(CULIntertechnoBinding.class);
 
     @Override
     public void parseConfig(List<String> configParts) throws BindingConfigParseException {
@@ -37,6 +42,9 @@ public class RawParser extends AbstractIntertechnoParser {
                     break;
             }
         }
+        
+        logger.trace("commandON = {}", commandON);
+        logger.trace("commandOFF = {}", commandOFF);
     }
 
 }

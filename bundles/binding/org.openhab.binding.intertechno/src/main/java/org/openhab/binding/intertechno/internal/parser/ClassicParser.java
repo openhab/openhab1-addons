@@ -10,7 +10,10 @@ package org.openhab.binding.intertechno.internal.parser;
 
 import java.util.List;
 
+import org.openhab.binding.intertechno.internal.CULIntertechnoBinding;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This parser is able to parse classic Intertechno configs.
@@ -20,6 +23,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class ClassicParser extends AbstractGroupAddressParser {
 
+    private static final Logger logger = LoggerFactory.getLogger(CULIntertechnoBinding.class);
+    
     @Override
     public void parseConfig(List<String> configParts) throws BindingConfigParseException {
         super.parseConfig(configParts);
@@ -30,6 +35,9 @@ public class ClassicParser extends AbstractGroupAddressParser {
 
         commandON = getGroupAddress(group.charAt(0)) + getSubAddress(address) + "0F" + "FF";
         commandOFF = getGroupAddress(group.charAt(0)) + getSubAddress(address) + "0F" + "F0";
+
+        logger.trace("commandON = {}", commandON);
+        logger.trace("commandOFF = {}", commandOFF);
     }
 
     private String getGroupAddress(char address) {

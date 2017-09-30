@@ -10,7 +10,10 @@ package org.openhab.binding.intertechno.internal.parser;
 
 import java.util.List;
 
+import org.openhab.binding.intertechno.internal.CULIntertechnoBinding;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class parses configurations for REV type Intertechno devices. This is
@@ -21,12 +24,17 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class REVParser extends AbstractGroupAddressParser {
 
+    private static final Logger logger = LoggerFactory.getLogger(CULIntertechnoBinding.class);
+    
     @Override
     public void parseConfig(List<String> configParts) throws BindingConfigParseException {
         super.parseConfig(configParts);
 
         commandON = getGroupAddress(group) + getSubAddress(address) + "0FF" + "FF";
         commandOFF = getGroupAddress(group) + getSubAddress(address) + "0FF" + "00";
+        
+        logger.trace("commandON = {}", commandON);
+        logger.trace("commandOFF = {}", commandOFF);
     }
 
     private String getGroupAddress(String group) throws BindingConfigParseException {

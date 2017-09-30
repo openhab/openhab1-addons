@@ -10,7 +10,10 @@ package org.openhab.binding.intertechno.internal.parser;
 
 import java.util.List;
 
+import org.openhab.binding.intertechno.internal.CULIntertechnoBinding;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This parser is able to parse the configs for "FLS" Intertechno devices, like
@@ -20,13 +23,18 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 1.4.0
  */
 public class FLSParser extends AbstractGroupAddressParser {
-
+    
+    private static final Logger logger = LoggerFactory.getLogger(CULIntertechnoBinding.class);
+    
     @Override
     public void parseConfig(List<String> configParts) throws BindingConfigParseException {
         super.parseConfig(configParts);
 
         commandON = getGroupAddress(group) + getSubAddress(address) + "00" + "FF";
         commandOFF = getGroupAddress(group) + getSubAddress(address) + "00" + "F0";
+
+        logger.trace("commandON = {}", commandON);
+        logger.trace("commandOFF = {}", commandOFF);
     }
 
     private String getGroupAddress(String group) throws BindingConfigParseException {
