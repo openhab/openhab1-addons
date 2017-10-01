@@ -28,7 +28,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class CULIntertechnoGenericBindingProvider extends AbstractGenericBindingProvider
         implements CULIntertechnoBindingProvider {
-
+    
     /**
      * {@inheritDoc}
      */
@@ -51,7 +51,7 @@ public class CULIntertechnoGenericBindingProvider extends AbstractGenericBinding
 
     /**
      * config of style
-     * <code>{{@literal intertechno="type=<classic|fls|rev>;group=<group>;address=<address>"}}</code><br>
+     * <code>{{@literal culintertechno="type=<classic|fls|rev>;group=<group>;address=<address>"}}</code><br>
      * 
      * {@inheritDoc}
      */
@@ -59,19 +59,32 @@ public class CULIntertechnoGenericBindingProvider extends AbstractGenericBinding
     public void processBindingConfiguration(String context, Item item, String bindingConfig)
             throws BindingConfigParseException {
         super.processBindingConfiguration(context, item, bindingConfig);
-
+        
         String[] configParts = bindingConfig.split(";");
-        String type = configParts[0].split("=")[1];
-        List<String> addressParts = new ArrayList<String>(3);
-        for (int i = 1; i < configParts.length; i++) {
-            addressParts.add(configParts[i].split("=")[1]);
-        }
-        IntertechnoAddressParser parser = AddressParserFactory.getParser(type);
-        String address = parser.parseAddress(addressParts.toArray(new String[addressParts.size()]));
-        String commandOn = parser.getCommandValueON();
-        String commandOff = parser.getCOmmandValueOFF();
+        String type = "";
+        List<String> params = new ArrayList<String>();
 
-        IntertechnoBindingConfig config = new IntertechnoBindingConfig(address, commandOn, commandOff);
+        // extract the value of "type" parameter and put all other into the params array
+        for (int i = 0; i < configParts.length; i++) {
+            String paramName = configParts[i].split("=")[0].toLowerCase();
+            
+            if (paramName.equals("type")) {
+                type = configParts[i].split("=")[1];
+            } else {
+                params.add(configParts[i]);
+            }
+        }
+
+        if (type.equals("")) {
+            throw new BindingConfigParseException("'type' is missing in configuration!");
+        }
+
+        IntertechnoAddressParser parser = AddressParserFactory.getParser(type);
+        parser.parseConfig(params);
+        String commandOn = parser.getCommandON();
+        String commandOff = parser.getCommandOFF();
+
+        IntertechnoBindingConfig config = new IntertechnoBindingConfig(commandOn, commandOff);
 
         addBindingConfig(item, config);
     }

@@ -16,6 +16,9 @@ package org.openhab.binding.intertechno.internal.parser;
  */
 public abstract class AbstractIntertechnoParser implements IntertechnoAddressParser {
 
+    protected String commandON = "";
+    protected String commandOFF = "";
+
     /**
      * Encode an integer as String for sending it via Intertechno. Numbers are
      * represented as "binary" Strings where each letter represents a byte. It is
@@ -52,6 +55,16 @@ public abstract class AbstractIntertechnoParser implements IntertechnoAddressPar
 
         return buffer.toString();
 
+    }
+
+    @Override
+    public String getCommandON() {
+        return commandON;
+    }
+
+    @Override
+    public String getCommandOFF() {
+        return commandOFF;
     }
 
 }
