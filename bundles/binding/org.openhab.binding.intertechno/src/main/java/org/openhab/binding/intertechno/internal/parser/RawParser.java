@@ -29,6 +29,8 @@ public class RawParser extends AbstractIntertechnoParser {
 
     @Override
     public void parseConfig(List<String> configParts) throws BindingConfigParseException {
+        String address = "";
+        
         for (int i = 0; i < configParts.size(); i++) {
             String paramName = configParts.get(i).split("=")[0].toLowerCase();
             String paramValue = configParts.get(i).split("=")[1];
@@ -40,7 +42,18 @@ public class RawParser extends AbstractIntertechnoParser {
                 case "commandoff":
                     commandOFF = paramValue;
                     break;
+                case "address":
+                    address = paramValue;
+                    break;
             }
+        }
+        
+        if (!address.equals("")) {
+            logger.warn("The address-parameter is deprecated! Please use just commandOn and commandOff.");
+            logger.warn("type=raw;commandOn={}{};commandOff={}{}", address, commandON, address, commandOFF);
+            
+            commandON = address + commandON;
+            commandOFF = address + commandOFF;
         }
         
         logger.trace("commandON = {}", commandON);
