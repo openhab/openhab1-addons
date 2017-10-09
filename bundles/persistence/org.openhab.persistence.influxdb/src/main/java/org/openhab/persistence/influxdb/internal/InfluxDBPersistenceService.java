@@ -143,11 +143,11 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
             logger.debug("using default retentionPolicy {}", DEFAULT_RETENTION_POLICY);
         }
 
-        measurementName = (String) config.get("measurement");
+        measurementName = (String) config.get("combined_measurements");
         if (isBlank(measurementName)) {
             logger.debug("Using default storage schema");
         } else {
-            logger.debug("Putting all values in central measurement");
+            logger.debug("Putting all values in central combined_measurements");
         }
 
         isProperlyConfigured = true;
