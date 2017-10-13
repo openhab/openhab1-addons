@@ -134,7 +134,7 @@ public enum ComfoAirCommandType {
             read_reply_data_pos = new int[] { 3 };
         }
     },
-/* SCHWAXI added at 2017-10-13 */
+
     ENTHALPIE_TEMPERATUR {
         {
             key = "enthalpie_temperatur";
@@ -144,7 +144,7 @@ public enum ComfoAirCommandType {
             read_reply_data_pos = new int[] { 0 };
         }
     },
-/* SCHWAXI added at 2017-10-13 */
+
     ENTHALPIE_HUMIDITY {
         {
             key = "enthalpie_humidity";
@@ -154,7 +154,7 @@ public enum ComfoAirCommandType {
             read_reply_data_pos = new int[] { 1 };
         }
     },
-/* SCHWAXI added at 2017-10-13 */   
+  
     PREHEAT_MODE {
         {
             key = "preheat_mode";
@@ -165,7 +165,7 @@ public enum ComfoAirCommandType {
             read_reply_data_bits = 0x80;
         }
     },
-/* SCHWAXI added at 2017-10-13 */            
+        
     FROST_MODE {
         {
             key = "frost_mode";
