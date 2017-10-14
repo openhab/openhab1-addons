@@ -242,7 +242,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
      *             if
      */
     protected void processNextLine(String data) {
-        log.debug("Received raw message from CUL: " + data);
+        log.debug("Received raw message from CUL: {}", data);
         if ("EOB".equals(data)) {
             log.warn("(EOB) End of Buffer. Last message lost. Try sending less messages per time slot to the CUL");
             return;
@@ -265,7 +265,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
         // Credit report received
         String[] report = data.split(" ");
         credit10ms = Integer.parseInt(report[report.length - 1]);
-        log.debug("credit10ms = " + credit10ms);
+        log.debug("credit10ms = {}", credit10ms);
     }
 
     /**
