@@ -188,10 +188,16 @@ public class DynamoDBPersistenceService implements QueryablePersistenceService {
     private boolean waitForTableToBecomeActive(String tableName) {
         try {
             logger.debug("Checking if table '{}' is created...", tableName);
-            TableDescription tableDescription = db.getDynamoDB().getTable(tableName).waitForActiveOrDelete();
-            if (tableDescription == null) {
-                // table has been deleted
-                logger.warn("Table '{}' deleted unexpectedly", tableName);
+            final TableDescription tableDescription;
+            try {
+                tableDescription = db.getDynamoDB().getTable(tableName).waitForActive();
+            } catch (IllegalArgumentException e) {
+                logger.warn("Table '{}' is being deleted: {} {}", tableName, e.getClass().getSimpleName(),
+                        e.getMessage());
+                return false;
+            } catch (ResourceNotFoundException e) {
+                logger.warn("Table '{}' was deleted unexpectedly: {} {}", tableName, e.getClass().getSimpleName(),
+                        e.getMessage());
                 return false;
             }
             boolean success = TableStatus.ACTIVE.equals(TableStatus.fromValue(tableDescription.getTableStatus()));

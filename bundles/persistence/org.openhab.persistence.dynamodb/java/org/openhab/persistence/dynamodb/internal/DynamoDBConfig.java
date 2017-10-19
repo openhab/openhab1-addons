@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.profile.ProfilesConfigFile;
-import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 
 /**
@@ -36,7 +35,7 @@ public class DynamoDBConfig {
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBConfig.class);
 
     private String tablePrefix = DEFAULT_TABLE_PREFIX;
-    private Region region;
+    private Regions region;
     private AWSCredentials credentials;
     private boolean createTable = DEFAULT_CREATE_TABLE_ON_DEMAND;
     private long readCapacityUnits = DEFAULT_READ_CAPACITY_UNITS;
@@ -59,9 +58,9 @@ public class DynamoDBConfig {
                 invalidRegionLogHelp(regionName);
                 return null;
             }
-            final Region region;
+            final Regions region;
             try {
-                region = Region.getRegion(Regions.fromName(regionName));
+                region = Regions.fromName(regionName);
             } catch (IllegalArgumentException e) {
                 invalidRegionLogHelp(regionName);
                 return null;
@@ -125,7 +124,7 @@ public class DynamoDBConfig {
         }
     }
 
-    public DynamoDBConfig(Region region, AWSCredentials credentials, String table, boolean createTable,
+    public DynamoDBConfig(Regions region, AWSCredentials credentials, String table, boolean createTable,
             long readCapacityUnits, long writeCapacityUnits) {
         this.region = region;
         this.credentials = credentials;
@@ -143,7 +142,7 @@ public class DynamoDBConfig {
         return tablePrefix;
     }
 
-    public Region getRegion() {
+    public Regions getRegion() {
         return region;
     }
 

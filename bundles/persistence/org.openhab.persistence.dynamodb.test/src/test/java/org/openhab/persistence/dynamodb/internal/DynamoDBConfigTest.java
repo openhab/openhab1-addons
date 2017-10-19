@@ -18,7 +18,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.google.common.collect.ImmutableMap;
 
@@ -39,19 +38,19 @@ public class DynamoDBConfigTest {
 
     @Test
     public void testInvalidRegion() throws Exception {
-        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.<String, Object>of("region", "foobie")));
+        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.<String, Object> of("region", "foobie")));
     }
 
     @Test
     public void testRegionOnly() throws Exception {
-        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.<String, Object>of("region", "eu-west-1")));
+        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.<String, Object> of("region", "eu-west-1")));
     }
 
     @Test
     public void testRegionWithAccessKeys() throws Exception {
-        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(
-                ImmutableMap.<String, Object>of("region", "eu-west-1", "accessKey", "access1", "secretKey", "secret1"));
-        assertEquals(Region.getRegion(Regions.EU_WEST_1), fromConfig.getRegion());
+        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(ImmutableMap.<String, Object> of("region", "eu-west-1",
+                "accessKey", "access1", "secretKey", "secret1"));
+        assertEquals(Regions.EU_WEST_1, fromConfig.getRegion());
         assertEquals("access1", fromConfig.getCredentials().getAWSAccessKeyId());
         assertEquals("secret1", fromConfig.getCredentials().getAWSSecretKey());
         assertEquals("openhab-", fromConfig.getTablePrefix());
@@ -66,9 +65,9 @@ public class DynamoDBConfigTest {
         FileUtils.write(credsFile, "[fooprofile]\n" + "aws_access_key_id=testAccessKey\n"
                 + "aws_secret_access_key=testSecretKey\n" + "aws_session_token=testSessionToken\n");
 
-        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(ImmutableMap.<String, Object>of("region", "eu-west-1",
+        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(ImmutableMap.<String, Object> of("region", "eu-west-1",
                 "profilesConfigFile", credsFile.getAbsolutePath(), "profile", "fooprofile"));
-        assertEquals(Region.getRegion(Regions.EU_WEST_1), fromConfig.getRegion());
+        assertEquals(Regions.EU_WEST_1, fromConfig.getRegion());
         assertEquals("openhab-", fromConfig.getTablePrefix());
         assertEquals(true, fromConfig.isCreateTable());
         assertEquals(1, fromConfig.getReadCapacityUnits());
@@ -82,7 +81,7 @@ public class DynamoDBConfigTest {
 
     @Test
     public void testEmptyConfiguration() throws Exception {
-        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.<String, Object>of()));
+        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.<String, Object> of()));
     }
 
     @Test
@@ -91,7 +90,7 @@ public class DynamoDBConfigTest {
         FileUtils.write(credsFile, "[fooprofile]\n" + "aws_access_key_idINVALIDKEY=testAccessKey\n"
                 + "aws_secret_access_key=testSecretKey\n" + "aws_session_token=testSessionToken\n");
 
-        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.<String, Object>of("region", "eu-west-1",
+        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.<String, Object> of("region", "eu-west-1",
                 "profilesConfigFile", credsFile.getAbsolutePath(), "profile", "fooprofile")));
     }
 
@@ -101,15 +100,15 @@ public class DynamoDBConfigTest {
         FileUtils.write(credsFile, "[fooprofile]\n" + "aws_access_key_id=testAccessKey\n"
                 + "aws_secret_access_key=testSecretKey\n" + "aws_session_token=testSessionToken\n");
 
-        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.<String, Object>of("region", "eu-west-1",
+        assertNull(DynamoDBConfig.fromConfig(ImmutableMap.<String, Object> of("region", "eu-west-1",
                 "profilesConfigFile", credsFile.getAbsolutePath())));
     }
 
     @Test
     public void testRegionWithAccessKeysWithPrefix() throws Exception {
-        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(ImmutableMap.<String, Object>of("region", "eu-west-1",
+        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(ImmutableMap.<String, Object> of("region", "eu-west-1",
                 "accessKey", "access1", "secretKey", "secret1", "tablePrefix", "foobie-"));
-        assertEquals(Region.getRegion(Regions.EU_WEST_1), fromConfig.getRegion());
+        assertEquals(Regions.EU_WEST_1, fromConfig.getRegion());
         assertEquals("access1", fromConfig.getCredentials().getAWSAccessKeyId());
         assertEquals("secret1", fromConfig.getCredentials().getAWSSecretKey());
         assertEquals("foobie-", fromConfig.getTablePrefix());
@@ -120,9 +119,9 @@ public class DynamoDBConfigTest {
 
     @Test
     public void testRegionWithAccessKeysWithPrefixWithCreateTable() throws Exception {
-        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(ImmutableMap.<String, Object>of("region", "eu-west-1",
+        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(ImmutableMap.<String, Object> of("region", "eu-west-1",
                 "accessKey", "access1", "secretKey", "secret1", "createTable", "false"));
-        assertEquals(Region.getRegion(Regions.EU_WEST_1), fromConfig.getRegion());
+        assertEquals(Regions.EU_WEST_1, fromConfig.getRegion());
         assertEquals("access1", fromConfig.getCredentials().getAWSAccessKeyId());
         assertEquals("secret1", fromConfig.getCredentials().getAWSSecretKey());
         assertEquals("openhab-", fromConfig.getTablePrefix());
@@ -133,9 +132,9 @@ public class DynamoDBConfigTest {
 
     @Test
     public void testRegionWithAccessKeysWithPrefixWithReadCapacityUnits() throws Exception {
-        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(ImmutableMap.<String, Object>of("region", "eu-west-1",
+        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(ImmutableMap.<String, Object> of("region", "eu-west-1",
                 "accessKey", "access1", "secretKey", "secret1", "readCapacityUnits", "5"));
-        assertEquals(Region.getRegion(Regions.EU_WEST_1), fromConfig.getRegion());
+        assertEquals(Regions.EU_WEST_1, fromConfig.getRegion());
         assertEquals("access1", fromConfig.getCredentials().getAWSAccessKeyId());
         assertEquals("secret1", fromConfig.getCredentials().getAWSSecretKey());
         assertEquals("openhab-", fromConfig.getTablePrefix());
@@ -146,9 +145,9 @@ public class DynamoDBConfigTest {
 
     @Test
     public void testRegionWithAccessKeysWithPrefixWithWriteCapacityUnits() throws Exception {
-        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(ImmutableMap.<String, Object>of("region", "eu-west-1",
+        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(ImmutableMap.<String, Object> of("region", "eu-west-1",
                 "accessKey", "access1", "secretKey", "secret1", "writeCapacityUnits", "5"));
-        assertEquals(Region.getRegion(Regions.EU_WEST_1), fromConfig.getRegion());
+        assertEquals(Regions.EU_WEST_1, fromConfig.getRegion());
         assertEquals("access1", fromConfig.getCredentials().getAWSAccessKeyId());
         assertEquals("secret1", fromConfig.getCredentials().getAWSSecretKey());
         assertEquals("openhab-", fromConfig.getTablePrefix());
@@ -159,9 +158,9 @@ public class DynamoDBConfigTest {
 
     @Test
     public void testRegionWithAccessKeysWithPrefixWithReadWriteCapacityUnits() throws Exception {
-        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(ImmutableMap.<String, Object>of("region", "eu-west-1",
+        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(ImmutableMap.<String, Object> of("region", "eu-west-1",
                 "accessKey", "access1", "secretKey", "secret1", "readCapacityUnits", "3", "writeCapacityUnits", "5"));
-        assertEquals(Region.getRegion(Regions.EU_WEST_1), fromConfig.getRegion());
+        assertEquals(Regions.EU_WEST_1, fromConfig.getRegion());
         assertEquals("access1", fromConfig.getCredentials().getAWSAccessKeyId());
         assertEquals("secret1", fromConfig.getCredentials().getAWSSecretKey());
         assertEquals("openhab-", fromConfig.getTablePrefix());
