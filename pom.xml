@@ -51,9 +51,6 @@
 
     <properties>
 
-		<!-- we deactivate the static analysis tool as the openHAB 1 code does not comply to these rules -->
-		<report.fail.on.error>false</report.fail.on.error>
-
 		<!-- JDBC Databasedriver Versions -->
 		<derby.version>10.12.1.1</derby.version>
 		<h2.version>1.4.191</h2.version>
@@ -129,6 +126,17 @@
                             <supportedProjectType>eclipse-plugin</supportedProjectType>
                         </supportedProjectTypes>
                     </configuration>
+                </plugin>
+				
+                <!-- we deactivate the static analysis tool as the openHAB 1 code does not comply to these rules -->
+                <plugin>
+                    <groupId>org.openhab.tools</groupId>
+                    <artifactId>static-code-analysis</artifactId>
+                    <executions>
+                        <execution>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.vafer</groupId>
