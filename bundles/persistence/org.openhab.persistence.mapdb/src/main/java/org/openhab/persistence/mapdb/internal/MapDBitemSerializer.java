@@ -42,38 +42,48 @@ public class MapDBitemSerializer implements Serializer<MapDBItem>, Serializable 
     public void serialize(DataOutput out, MapDBItem item) throws IOException {
         out.writeUTF(item.getName());
         out.writeUTF(item.getState().getClass().getSimpleName());
-        out.writeUTF(item.getState().toString());
+        String stateStr = item.getState().toString();
+        out.writeUTF(stateStr == null ? "" : stateStr);
         out.writeLong(item.getTimestamp().getTime());
     }
 
     @Override
     public MapDBItem deserialize(DataInput in, int available) throws IOException {
-        MapDBItem item = new MapDBItem();
-        item.setName(in.readUTF());
+        String name = in.readUTF();
+
         String stateType = in.readUTF();
-
         String stateStr = in.readUTF();
-
         State state = null;
-
-        if ("DecimalType".equals(stateType)) {
-            state = DecimalType.valueOf(stateStr);
-        } else if ("HSBType".equals(stateType)) {
-            state = HSBType.valueOf(stateStr);
-        } else if ("PercentType".equals(stateType)) {
-            state = PercentType.valueOf(stateStr);
-        } else if ("OnOffType".equals(stateType)) {
-            state = OnOffType.valueOf(stateStr);
-        } else if ("OpenClosedType".equals(stateType)) {
-            state = OpenClosedType.valueOf(stateStr);
-        } else if ("DateTimeType".equals(stateType)) {
-            state = DateTimeType.valueOf(stateStr);
-        } else {
-            state = StringType.valueOf(stateStr);
+        switch (stateType) {
+            case "DateTimeType":
+                state = DateTimeType.valueOf(stateStr);
+                break;
+            case "DecimalType":
+                state = DecimalType.valueOf(stateStr);
+                break;
+            case "HSBType":
+                state = HSBType.valueOf(stateStr);
+                break;
+            case "OnOffType":
+                state = OnOffType.valueOf(stateStr);
+                break;
+            case "OpenClosedType":
+                state = OpenClosedType.valueOf(stateStr);
+                break;
+            case "PercentType":
+                state = PercentType.valueOf(stateStr);
+                break;
+            default:
+                state = StringType.valueOf(stateStr);
+                break;
         }
 
+        Date date = new Date(in.readLong());
+
+        MapDBItem item = new MapDBItem();
+        item.setName(name);
         item.setState(state);
-        item.setTimestamp(new Date(in.readLong()));
+        item.setTimestamp(date);
         return item;
     }
 
