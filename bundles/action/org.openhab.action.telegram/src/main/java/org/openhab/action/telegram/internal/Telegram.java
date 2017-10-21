@@ -247,7 +247,7 @@ public class Telegram {
         PostMethod postMethod = new PostMethod(url);
         try {
             postMethod.getParams().setContentCharset("UTF-8");
-            postMethod.getParams().setSoTimeout(HTTP_PHOTO_TIMEOUT);
+            postMethod.getParams().setSoTimeout(timeoutMillis);
             postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
                     new DefaultHttpMethodRetryHandler(retries, false));
             Part[] parts = new Part[caption != null ? 3 : 2];
