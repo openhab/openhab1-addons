@@ -346,7 +346,7 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
             }
 
         } catch (EpsonProjectorException e) {
-            logger.warn("Couldn't execute command '{}', {}", commmandType.toString(), e);
+            logger.warn("Couldn't execute command '{}', {}", commmandType.toString(), e.getMessage());
 
         } catch (Exception e) {
             logger.warn("Couldn't create state of type '{}'", itemType);
@@ -521,7 +521,7 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
             }
 
         } catch (EpsonProjectorException e) {
-            logger.error("Couldn't execute command '{}', {}", commmandType, e);
+            logger.warn("Couldn't execute command '{}', {}", commmandType, e.getMessage());
 
         }
     }
