@@ -12,6 +12,7 @@ Bundle-Description: This is the Open Energy Monitor binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: gnu.io,
  javax.xml.bind,
+ org.apache.commons.io,
  org.apache.commons.lang,
  org.openhab.core.binding,
  org.openhab.core.events,
