@@ -11,6 +11,7 @@ package org.openhab.binding.intertechno.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.intertechno.CULIntertechnoBindingProvider;
 import org.openhab.binding.intertechno.IntertechnoBindingConfig;
 import org.openhab.binding.intertechno.internal.parser.AddressParserFactory;
@@ -28,7 +29,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class CULIntertechnoGenericBindingProvider extends AbstractGenericBindingProvider
         implements CULIntertechnoBindingProvider {
-    
+
     /**
      * {@inheritDoc}
      */
@@ -59,7 +60,7 @@ public class CULIntertechnoGenericBindingProvider extends AbstractGenericBinding
     public void processBindingConfiguration(String context, Item item, String bindingConfig)
             throws BindingConfigParseException {
         super.processBindingConfiguration(context, item, bindingConfig);
-        
+
         String[] configParts = bindingConfig.split(";");
         String type = "";
         List<String> params = new ArrayList<String>();
@@ -67,7 +68,7 @@ public class CULIntertechnoGenericBindingProvider extends AbstractGenericBinding
         // extract the value of "type" parameter and put all other into the params array
         for (int i = 0; i < configParts.length; i++) {
             String paramName = configParts[i].split("=")[0].toLowerCase();
-            
+
             if (paramName.equals("type")) {
                 type = configParts[i].split("=")[1];
             } else {
@@ -75,7 +76,7 @@ public class CULIntertechnoGenericBindingProvider extends AbstractGenericBinding
             }
         }
 
-        if (type.equals("")) {
+        if (StringUtils.isBlank(type)) {
             throw new BindingConfigParseException("'type' is missing in configuration!");
         }
 

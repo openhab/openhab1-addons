@@ -17,15 +17,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class parses the configuration for the new self-learning intertechno protocol, 
- * which is referenced as V3.
+ * This class parses the configuration for the new self-learning intertechno
+ * protocol, which is referenced as V3.
  *
  * @author Michael Neuendorf
+ * @since 1.11.0
  */
 public class V3Parser implements IntertechnoAddressParser {
 
     private static final Logger logger = LoggerFactory.getLogger(CULIntertechnoBinding.class);
-    
+
     private String commandON = "";
     private String commandOFF = "";
 
@@ -57,32 +58,32 @@ public class V3Parser implements IntertechnoAddressParser {
                     }
             }
         }
-        
+
         // Check parameter values
         if (id.length() != 26) {
             throw new BindingConfigParseException("The ID must contain exactly 26 digits!");
         }
-        
+
         for (int i = 0; i < id.length(); i++) {
             if (id.charAt(i) != '0' && id.charAt(i) != '1') {
                 throw new BindingConfigParseException("The ID must contains only the digits 1 and 0!");
             }
         }
-        
-        if (channelID < 0 && channelID > 15) {
+
+        if (channelID < 0 || channelID > 15) {
             throw new BindingConfigParseException("The channel ID must be in a range from 0 to 15!");
         }
-        
+
         // Build command strings
         String channelIDCode = StringUtils.leftPad(Integer.toBinaryString(channelID), 4, "0");
-        
+
         commandON = id + getGroupCode(group) + "1" + channelIDCode;
-        commandOFF = id + getGroupCode(group) + "0" + channelIDCode; 
+        commandOFF = id + getGroupCode(group) + "0" + channelIDCode;
 
         logger.trace("commandON = {}", commandON);
         logger.trace("commandOFF = {}", commandOFF);
     }
-    
+
     private String getGroupCode(Boolean group) {
         if (group) {
             return "1";

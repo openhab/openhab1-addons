@@ -10,6 +10,7 @@ package org.openhab.binding.intertechno.internal.parser;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.intertechno.internal.CULIntertechnoBinding;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class RawParser extends AbstractIntertechnoParser {
     @Override
     public void parseConfig(List<String> configParts) throws BindingConfigParseException {
         String address = "";
-        
+
         for (int i = 0; i < configParts.size(); i++) {
             String paramName = configParts.get(i).split("=")[0].toLowerCase();
             String paramValue = configParts.get(i).split("=")[1];
@@ -47,15 +48,15 @@ public class RawParser extends AbstractIntertechnoParser {
                     break;
             }
         }
-        
-        if (!address.equals("")) {
-            logger.warn("The address-parameter is deprecated! Please use just commandOn and commandOff.");
+
+        if (StringUtils.isNotBlank(address)) {
+            logger.warn("The address parameter is deprecated! Please use just commandOn and commandOff.");
             logger.warn("type=raw;commandOn={}{};commandOff={}{}", address, commandON, address, commandOFF);
-            
+
             commandON = address + commandON;
             commandOFF = address + commandOFF;
         }
-        
+
         logger.trace("commandON = {}", commandON);
         logger.trace("commandOFF = {}", commandOFF);
     }

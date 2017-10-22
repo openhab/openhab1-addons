@@ -115,7 +115,7 @@ public class CULIntertechnoBinding extends AbstractBinding<CULIntertechnoBinding
                     logger.error("Can't write to CUL", e);
                 }
             } else {
-                logger.error("Can't determine value to send for command {}", command);
+                logger.warn("Can't determine value to send for command {}", command);
             }
         }
     }
