@@ -181,7 +181,7 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
                     connector.disconnect();
                 }
             } catch (SwegonVentilationException e) {
-                logger.error("Error occured when closing connection", e);
+                logger.warn("Error occurred when closing connection", e);
             }
         }
 
@@ -201,7 +201,7 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
             try {
                 connector.connect();
             } catch (SwegonVentilationException e) {
-                logger.error("Error occured when connecting to Swegon ventilation system", e);
+                logger.error("Error occurred when connecting to Swegon ventilation system", e);
 
                 logger.warn("Closing Swegon ventilation system message listener");
 
@@ -254,14 +254,14 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
 
                 } catch (SwegonVentilationException e) {
 
-                    logger.debug("Error occured when received data from Swegon ventilation system", e);
+                    logger.debug("Error occurred when received data from Swegon ventilation system", e);
                 }
             }
 
             try {
                 connector.disconnect();
             } catch (SwegonVentilationException e) {
-                logger.error("Error occured when disconnecting from Swegon ventilation system", e);
+                logger.error("Error occurred when disconnecting from Swegon ventilation system", e);
             }
 
         }
