@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 public class ClassicParser extends AbstractGroupAddressParser {
 
     private static final Logger logger = LoggerFactory.getLogger(CULIntertechnoBinding.class);
-    
+
     @Override
     public void parseConfig(List<String> configParts) throws BindingConfigParseException {
         super.parseConfig(configParts);

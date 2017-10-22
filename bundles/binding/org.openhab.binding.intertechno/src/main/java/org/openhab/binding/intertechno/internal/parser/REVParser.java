@@ -25,14 +25,14 @@ import org.slf4j.LoggerFactory;
 public class REVParser extends AbstractGroupAddressParser {
 
     private static final Logger logger = LoggerFactory.getLogger(CULIntertechnoBinding.class);
-    
+
     @Override
     public void parseConfig(List<String> configParts) throws BindingConfigParseException {
         super.parseConfig(configParts);
 
         commandON = getGroupAddress(group) + getSubAddress(address) + "0FF" + "FF";
         commandOFF = getGroupAddress(group) + getSubAddress(address) + "0FF" + "00";
-        
+
         logger.trace("commandON = {}", commandON);
         logger.trace("commandOFF = {}", commandOFF);
     }
