@@ -67,7 +67,7 @@ public class DenonListener extends Thread {
                     if (line != null) {
                         line = line.trim();
                         if (!StringUtils.isBlank(line)) {
-                            logger.debug("Received from {}: {}", connection.getHost(), line);
+                            logger.trace("Received from {}: {}", connection.getHost(), line);
                             callback.updateReceived(line);
                         }
                     } else {
@@ -123,7 +123,7 @@ public class DenonListener extends Thread {
                 logger.debug("Connecting to {}", connection.getHost());
 
                 // Use raw socket instead of TelnetClient here because TelnetClient sends an extra newline char
-                // after each write to socket which causes the connection to become unresponsive.
+                // after each write which causes the connection to become unresponsive.
                 socket = new Socket();
                 socket.connect(new InetSocketAddress(connection.getHost(), connection.getTelnetPort()), TIMEOUT);
                 socket.setKeepAlive(true);
