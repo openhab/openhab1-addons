@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2016 by the respective copyright holders.
+    Copyright (c) 2010-2017 by the respective copyright holders.
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -10,11 +10,11 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.io.dropbox">
-   <implementation class="org.openhab.io.dropbox.internal.DropboxSynchronizer"/>
+   <implementation class="org.openhab.io.dropbox.internal.DropboxService"/>
    
    <service>
       <provide interface="org.osgi.service.cm.ManagedService"/>
-      <provide interface="org.openhab.io.dropbox.internal.DropboxSynchronizer"/>
+      <provide interface="org.openhab.io.dropbox.internal.DropboxService"/>
    </service>
    <property name="service.pid" type="String" value="org.openhab.dropbox"/>
    

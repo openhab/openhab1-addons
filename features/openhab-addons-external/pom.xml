@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openhab</groupId>
         <artifactId>features</artifactId>
-        <version>1.10.0-SNAPSHOT</version>
+        <version>1.11.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.openhab.addons</groupId>
@@ -63,6 +63,7 @@
                                 <artifact><file>src/main/resources/conf/homematic.cfg</file><type>cfg</type><classifier>homematic</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/horizon.cfg</file><type>cfg</type><classifier>horizon</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/http.cfg</file><type>cfg</type><classifier>http</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/iec6205621meter.cfg</file><type>cfg</type><classifier>iec6205621meter</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ihc.cfg</file><type>cfg</type><classifier>ihc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/influxdb.cfg</file><type>cfg</type><classifier>influxdb</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/insteonplm.cfg</file><type>cfg</type><classifier>insteonplm</classifier></artifact>
@@ -79,6 +80,7 @@
                                 <artifact><file>src/main/resources/conf/mail.cfg</file><type>cfg</type><classifier>mail</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mapdb.cfg</file><type>cfg</type><classifier>mapdb</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/marytts.cfg</file><type>cfg</type><classifier>marytts</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/maxcul.cfg</file><type>cfg</type><classifier>maxcul</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/milight.cfg</file><type>cfg</type><classifier>milight</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mios.cfg</file><type>cfg</type><classifier>mios</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/modbus.cfg</file><type>cfg</type><classifier>modbus</classifier></artifact>
@@ -118,6 +120,7 @@
                                 <artifact><file>src/main/resources/conf/sapp.cfg</file><type>cfg</type><classifier>sapp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/satel.cfg</file><type>cfg</type><classifier>satel</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/snmp.cfg</file><type>cfg</type><classifier>snmp</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/sonance.cfg</file><type>cfg</type><classifier>sonance</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/souliss.cfg</file><type>cfg</type><classifier>souliss</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/swegonventilation.cfg</file><type>cfg</type><classifier>swegonventilation</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/systeminfo.cfg</file><type>cfg</type><classifier>systeminfo</classifier></artifact>

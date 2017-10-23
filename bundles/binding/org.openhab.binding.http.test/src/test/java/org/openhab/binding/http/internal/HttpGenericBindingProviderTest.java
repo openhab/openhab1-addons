@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -301,6 +301,33 @@ public class HttpGenericBindingProviderTest {
         Assert.assertEquals("{header1=value1}", config.get(StringType.valueOf("ON")).headers.toString());
         Assert.assertTrue(config.get(StringType.valueOf("ON")).headers.containsKey("header1"));
         Assert.assertTrue(config.get(StringType.valueOf("ON")).headers.contains("value1"));
+    }
+
+    @Test
+    public void testParseBindingConfigForBodyWithDefaultTransform() throws BindingConfigParseException {
+        // method under test
+        String bindingConfig = ">[ON:POST:http://www.domain.org:1234/home/lights/7:default]";
+        HttpBindingConfig config = provider.parseBindingConfig(testItem, bindingConfig);
+
+        // asserts
+        Assert.assertEquals(true, config.containsKey(StringType.valueOf("ON")));
+        Assert.assertEquals("POST", config.get(StringType.valueOf("ON")).httpMethod);
+        Assert.assertEquals("http://www.domain.org:1234/home/lights/7", config.get(StringType.valueOf("ON")).url);
+        Assert.assertEquals("default", config.get(StringType.valueOf("ON")).body);
+    }
+
+    @Test
+    public void testParseBindingConfigForBodyWithMapTransform() throws BindingConfigParseException {
+        String bindingConfig = ">[OFF:POST:http://www.domain.org:1234/home/lights/23875/:MAP(ABBA)]";
+
+        // method under test
+        HttpBindingConfig config = provider.parseBindingConfig(testItem, bindingConfig);
+
+        // asserts
+        Assert.assertEquals(true, config.containsKey(StringType.valueOf("OFF")));
+        Assert.assertEquals("POST", config.get(StringType.valueOf("OFF")).httpMethod);
+        Assert.assertEquals("http://www.domain.org:1234/home/lights/23875/", config.get(StringType.valueOf("OFF")).url);
+        Assert.assertEquals("MAP=ABBA", config.get(StringType.valueOf("OFF")).transformation);
     }
 
     class StringTestItem extends GenericItem {

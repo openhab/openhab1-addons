@@ -9,6 +9,7 @@
 package org.openhab.binding.ecotouch.internal;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -127,7 +128,8 @@ public class EcoTouchBinding extends AbstractActiveBinding<EcoTouchBindingProvid
                     State value;
                     if (item.getType() == EcoTouchTags.Type.Analog) {
                         // analog value encoded as a scaled integer
-                        BigDecimal decimal = new BigDecimal(heatpumpValue).divide(new BigDecimal(10));
+                        BigDecimal decimal = new BigDecimal(heatpumpValue).divide(BigDecimal.valueOf(item.getDivisor()),
+                                1, RoundingMode.HALF_UP);
                         value = new DecimalType(decimal);
                     } else if (item.getType() == EcoTouchTags.Type.Word) {
                         // integer

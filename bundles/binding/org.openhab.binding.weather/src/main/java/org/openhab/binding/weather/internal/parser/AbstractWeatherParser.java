@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.weather.internal.parser;
 
-import java.io.InputStream;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.openhab.binding.weather.internal.converter.Converter;
@@ -33,6 +31,7 @@ import org.slf4j.LoggerFactory;
  * Common base class for all weather parsers.
  *
  * @author Gerhard Riegler
+ * @author Christoph Weitkamp - Replaced org.apache.commons.httpclient with HttpUtil
  * @since 1.6.0
  */
 public abstract class AbstractWeatherParser implements WeatherParser {
@@ -41,11 +40,8 @@ public abstract class AbstractWeatherParser implements WeatherParser {
 
     private MetadataHandler metadataHandler = MetadataHandler.getInstance();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void parseInto(InputStream is, Weather weather) throws Exception {
+    public void parseInto(String r, Weather weather) throws Exception {
         postProcessEach(weather);
         for (Forecast forecast : weather.getForecast()) {
             postProcessEach(forecast);

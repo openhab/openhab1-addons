@@ -3,6 +3,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="lib" path="lib/asterisk-java-1.0.0-20090923.194527-626.jar" sourcepath="lib/asterisk-java-1.0.0-20090923.194527-626-sources.jar"/>
+	<classpathentry kind="lib" path="lib/asterisk-java-20150829.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

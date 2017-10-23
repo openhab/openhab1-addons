@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,9 @@ import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A message received from the Energy Monitor. On
  * the LAN the messages look like: *!{"trans":215955,"mac":"03:41:C4","time":1435620183,
@@ -29,6 +32,7 @@ import org.openhab.core.types.State;
  */
 public class LightwaveRfEnergyMonitorMessage extends AbstractLightwaveRfJsonMessage
         implements LightwaveRfSerialMessage {
+    private static final Logger logger = LoggerFactory.getLogger(LightwaveRfEnergyMonitorMessage.class);
 
     private static final Pattern MAC_ID_REG_EXP = Pattern.compile(".*\"mac\":\"([^\"}]*)\".*");
     private static final Pattern TIME_ID_REG_EXP = Pattern.compile(".*\"time\":([^,}]*).*");
@@ -41,30 +45,78 @@ public class LightwaveRfEnergyMonitorMessage extends AbstractLightwaveRfJsonMess
     private static final Pattern TODAY_USE_REG_EXP = Pattern.compile(".*\"todUse\":([^,}]*).*");
     private static final Pattern YESTERDAY_USE_REG_EXP = Pattern.compile(".*\"yesUse\":([^,}]*).*");
 
-    private final String mac;
-    private final Date time;
-    private final String prod;
-    private final String serial;
-    private final int signal;
-    private final String type;
-    private final int cUse;
-    private final int maxUse;
-    private final int todUse;
-    private final int yesUse;
+    private String mac;
+    private Date time;
+    private String prod;
+    private String serial;
+    private int signal;
+    private String type;
+    private int cUse;
+    private int maxUse;
+    private int todUse;
+    private int yesUse;
 
     public LightwaveRfEnergyMonitorMessage(String message) throws LightwaveRfMessageException {
         super(message);
-        mac = getStringFromText(MAC_ID_REG_EXP, message);
-        time = getDateFromText(TIME_ID_REG_EXP, message);
-        prod = getStringFromText(PROD_REG_EXP, message);
-        serial = getStringFromText(SERIAL_ID_REG_EXP, message);
-        signal = getIntFromText(SIGNAL_REG_EXP, message);
-        type = getStringFromText(TYPE_REG_EXP, message);
+        try {
+            mac = getStringFromText(MAC_ID_REG_EXP, message);
+        } catch(LightwaveRfMessageException le) {
+            logger.debug("Failed to get a mac attribute from the message '{}'", message);
+        }
 
-        cUse = getIntFromText(CURRENT_USE_REG_EXP, message);
-        maxUse = getIntFromText(MAX_USE_REG_EXP, message);
-        todUse = getIntFromText(TODAY_USE_REG_EXP, message);
-        yesUse = getIntFromText(YESTERDAY_USE_REG_EXP, message);
+        try {
+            time = getDateFromText(TIME_ID_REG_EXP, message);
+        } catch(LightwaveRfMessageException le) {
+            logger.debug("Failed to get a time attribute from the message '{}'", message);
+        }
+
+        try {
+            prod = getStringFromText(PROD_REG_EXP, message);
+        } catch(LightwaveRfMessageException le) {
+            logger.debug("Failed to get a prod attribute from the message '{}'", message);
+        }
+
+        try {
+            serial = getStringFromText(SERIAL_ID_REG_EXP, message);
+        } catch(LightwaveRfMessageException le) {
+            logger.debug("Failed to get a serial attribute from the message '{}'", message);
+        }
+
+        try {
+            signal = getIntFromText(SIGNAL_REG_EXP, message);
+        } catch(LightwaveRfMessageException le) {
+            logger.debug("Failed to get a signal attribute from the message '{}'", message);
+        }
+
+        try {
+            type = getStringFromText(TYPE_REG_EXP, message);
+        } catch(LightwaveRfMessageException le) {
+            logger.debug("Failed to get a type attribute from the message '{}'", message);
+        }
+
+        try {
+            cUse = getIntFromText(CURRENT_USE_REG_EXP, message);
+        } catch(LightwaveRfMessageException le) {
+            logger.debug("Failed to get a cUse attribute from the message '{}'", message);
+        }
+
+        try {
+            maxUse = getIntFromText(MAX_USE_REG_EXP, message);
+        } catch(LightwaveRfMessageException le) {
+            logger.debug("Failed to get a maxUse attribute from the message '{}'", message);
+        }
+
+        try {
+            todUse = getIntFromText(TODAY_USE_REG_EXP, message);
+        } catch(LightwaveRfMessageException le) {
+            logger.debug("Failed to get a todUse attribute from the message '{}'", message);
+        }
+
+        try {
+            yesUse = getIntFromText(YESTERDAY_USE_REG_EXP, message);
+        } catch(LightwaveRfMessageException le) {
+            logger.debug("Failed to get a yesUse attribute from the message '{}'", message);
+        }
     }
 
     @Override

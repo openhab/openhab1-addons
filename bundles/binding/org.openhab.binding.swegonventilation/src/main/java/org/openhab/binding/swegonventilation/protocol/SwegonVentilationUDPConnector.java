@@ -14,6 +14,8 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.Arrays;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.openhab.binding.swegonventilation.internal.SwegonVentilationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +79,35 @@ public class SwegonVentilationUDPConnector extends SwegonVentilationConnector {
             // Receive a packet (blocking)
             socket.receive(packet);
 
-            return Arrays.copyOfRange(packet.getData(), 0, packet.getLength() - 1);
+            logger.trace("Received data (len={}): {}", packet.getLength(),
+                    DatatypeConverter.printHexBinary(Arrays.copyOfRange(packet.getData(), 0, packet.getLength())));
+
+            if (packet.getLength() > 5) {
+
+                if (packet.getData()[0] == (byte) 0xCC && packet.getData()[1] == (byte) 0x64) {
+                    // RAW packet received
+
+                    int calculatedCRC = calculateCRC(packet.getData(), 1, packet.getLength() - 2);
+                    int msgCRC = toInt(packet.getData()[packet.getLength() - 2],
+                            packet.getData()[packet.getLength() - 1]);
+
+                    if (msgCRC == calculatedCRC) {
+
+                        // Return data between first byte and CRC checksum
+                        return Arrays.copyOfRange(packet.getData(), 1, packet.getLength() - 2);
+
+                    } else {
+                        throw new SwegonVentilationException("CRC does not match");
+                    }
+
+                } else if (packet.getData()[0] == (byte) 0x64) {
+                    // PDU packet from swegon GW received. GW have already checked CRC checksum and send only valid and
+                    // stripped PDU's
+                    return Arrays.copyOfRange(packet.getData(), 0, packet.getLength() - 1);
+                }
+            }
+
+            throw new SwegonVentilationException("Illegal UDP packet received");
 
         } catch (SocketException e) {
 

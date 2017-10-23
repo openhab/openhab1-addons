@@ -63,7 +63,7 @@ where:
 
 * `<port>` is the identification of the serial port on the host system, e.g. `COM1` on Windows, `/dev/ttyS0` on Linux or `/dev/tty.PL2303-0000103D` on Mac.  The same `<port>` can be bound to multiple items.
 * `<baudrate>` is the baud rate of the port. Backward compatibility is given; if no baud rate is specified  the serial binding defaults to 9600 baud.
-* `REGEX(<regular expression>)` allows parsing for special strings or numbers in the serial stream. This is based on the [RegEx Service](https://github.com/openhab/openhab1-addons/wiki/Transformations#regex-transformation-service). This is optional. 
+* `REGEX(<regular expression>)` allows parsing for special strings or numbers in the serial stream. You can use a capture group (e.g. REGEX(Position:([0-9.]*)) to capture 12 in "Position:12" or substitution (e.g. REGEX(s/Position:100/ON/) or REGEX(s/Position:100/ON/g)) to replace (FIRST or ALL) "Position:100" strings in response with "ON". This is based on the [RegEx Service](https://github.com/openhab/openhab1-addons/wiki/Transformations#regex-transformation-service) and [ESH RegExTransformationService](https://github.com/eclipse/smarthome/tree/master/extensions/transform/org.eclipse.smarthome.transform.regex). This is optional. 
 * `BASE64` enables the Base64 mode. With this mode all data received on the serial port is saved in Base64 format. In this mode also all data that is sent to the serial port has to be Base64 encoded. (This was implemented because some serial devices are using bytes that are not supported by the REST interface). 
 * `ON(<On string>),OFF(<Off string>)` if used in conjunction with a Switch this mapping will send specific commands to serial port and also match a serial command to specific ON/OFF state. This way you don't have to use a rule to send a command to serial
 * `UP(<Up string>),DOWN(<Down string>),STOP(<Stop string>)` if used in conjunction with a Rollershutter this mapping will send specific commands to serial port. Use REGEX to parse Rollershutter postion (0-100%) comming as feedback over serial link
@@ -84,4 +84,5 @@ String         AVR                "Surround System"   (Multimedia)    { serial="
 Number         Temperature        "My Temp. Sensor"   (Weather)       { serial="/dev/ttyS1@115200,REGEX(ID:2.*,T:([0-9.]*))" } 
 Switch         SerialRelay        "Relay Q1"          (Entrance)      { serial="/dev/ttyS0,ON(Q1_ON\n),OFF(Q1_OFF\n)" }
 Rollershutter  SerialRollo        "Entrance Rollo"    (Entrance)      { serial="/dev/ttyS0,REGEX(Position:([0-9.]*)),UP(Rollo_UP\n),DOWN(Rollo_Down\n),STOP(Rollo_Stop\n)" }
+Switch         RoloAt100          "Rolo at 100"       (Entrance)      { serial="/dev/ttyS0,REGEX(s/Position:100/ON/)" }
 ```

@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>FGDW-002</Model>
+    <Label lang="en">Fibaro Door Window Sensor 2</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x22</id>             <!-- APPLICATION_STATUS -->
+        </Class>
+        <Class>
+            <id>0x30</id>             <!-- SENSOR_BINARY -->
+        </Class>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x56</id>             <!-- CRC_16_ENCAP -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x8E</id>             <!-- MULTI_INSTANCE_ASSOCIATION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Door/window state</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">closed when magnet near</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">opened when magnet near </Label>
+            </Item>
+            <Help><![CDATA[What state is door/window when the magnet is close to the sensor
+<p>0 - closed when magnet near</p> <p>1 - opened when magnet near </p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Visual LED indications</Label>
+            <Type>list</Type>
+            <Default>6</Default>
+            <Minimum>1</Minimum>
+            <Maximum>6</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">indication of opening/closing status change</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">indication of wake up (1 x click or periodical)</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">indication of device tampering</Label>
+            </Item>
+            <Help><![CDATA[Defines events indicated by the visual LED indicator. Disabling extends battery life
+<p>This parameter defines events indicated by the visual LED indicator. Disabling events might extend battery life.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Associations in Z-Wave network Security Mode</Label>
+            <Type>list</Type>
+            <Default>3</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">none of the groups sent as secure</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">2nd group ”On/Off” sent as secure</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">3rd group ”Tamper” sent as secure</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">2nd and 3rd group sent as secure</Label>
+            </Item>
+            <Help><![CDATA[Associations in Z-Wave network Security Mode
+<p>This parameter defines how commands are sent in specified association groups: as secure or non-secure. Parameter is active only in Z-Wave network Security Mode. It does not apply to 1st group “Lifeline”.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>11</Index>
+            <Label lang="en">2nd association group triggers</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">switch after opening and closing</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">switch after opening (parameter 12)</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">switch after closing (parameter 13)</Label>
+            </Item>
+            <Help><![CDATA[2nd association group triggers
+<p>Parameter defines events which result in sending on/off commands to devices added to the 2nd association group. These commands are sent alternately to switch the devices on and off. </p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>12</Index>
+            <Label lang="en">Association for opening - value sent</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>0</Minimum>
+            <Maximum>99</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Association for opening - value sent
+<p>Value sent to devices in 2nd association group when opening is detected The value of 0 turns OFF the device, 255 turns it ON. In case of associating devices allowing smooth control, values 1-99 allow to set an associated device to a specified level.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>13</Index>
+            <Label lang="en">Association for closing - value sent</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>0</Minimum>
+            <Maximum>99</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Association for closing - value sent
+<p>Value sent to devices in 2nd association group when closing is detected The value of 0 turns OFF the device, 255 turns it ON. In case of associating devices allowing smooth control, values 1-99 allow to set an associated device to a specified level.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>14</Index>
+            <Label lang="en">Association for opening - time delay</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32400</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Association for opening - time delay
+<p>Time that must elapse from opening to send the command frame to to devices in 2nd association group.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>15</Index>
+            <Label lang="en">Association for closing - time delay</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32400</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Association for closing - time delay
+<p>Time that must elapse from closing to send the command frame to devices in 2nd association group</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>30</Index>
+            <Label lang="en">Tamper - alarm cancellation delay</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32400</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Tamper - alarm cancellation delay
+<p>Time period after which a tamper alarm will be cancelled.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>31</Index>
+            <Label lang="en">Tamper - reporting alarm cancellation</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">do not send tamper cancellation report</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">send tamper cancellation report</Label>
+            </Item>
+            <Help><![CDATA[Tamper - reporting alarm cancellation
+<p>Reporting cancellation of tamper alarm to the controller and 3rd association group.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>50</Index>
+            <Label lang="en">Interval of temperature measurements</Label>
+            <Type>short</Type>
+            <Default>300</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32400</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Interval of temperature measurements
+<p>This parameter defines how often the temperature will be measured. The shorter the time, the more frequently the temperature will be measured, but the battery life will shorten.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>51</Index>
+            <Label lang="en">Temperature reports threshold</Label>
+            <Type>short</Type>
+            <Default>10</Default>
+            <Minimum>0</Minimum>
+            <Maximum>300</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Temperature reports threshold
+<p>This parameter defines the change of temperature in comparison with last reported, resulting in temperature report being sent to the main controller. Available settings: 0 - temperature reports based on threshold disabled 1-300 - temperature threshold (0.1-30°C, 0.1°C step)</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>52</Index>
+            <Label lang="en">Interval of temperature reports</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32400</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Interval of temperature reports
+<p>This parameter determines how often the temperature reports will be sent to the main controller (regardless of parameters 50 and 51). Available settings: 0 - periodic temperature reports disabled 300-32400 - time in seconds</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>53</Index>
+            <Label lang="en">Temperature offset</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>-1000</Minimum>
+            <Maximum>1000</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Temperature offset
+<p>The value to be added to the actual temperature, measured by the sensor (temperature compensation). Available settings: -1000–1000 (-100–100°C, 0.1°C step)</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>54</Index>
+            <Label lang="en">Temperature alarm reports</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">temperature alarms disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">high temperature alarm</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en"> low temperature alarm</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">high and low temperature alarms enabled</Label>
+            </Item>
+            <Help><![CDATA[Temperature alarm reports
+<p>Temperature alarms reported to the Z-Wave controller. Thresholds are set in parameters 55 and 56. Available settings: 0 - temperature alarms disabled 1 - high temperature alarm 2 - low temperature alarm 3 - high and low temperature alarms enabled</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>55</Index>
+            <Label lang="en">High temperature alarm threshold</Label>
+            <Type>short</Type>
+            <Default>350</Default>
+            <Minimum>1</Minimum>
+            <Maximum>600</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[High temperature alarm threshold
+<p>If temperature is higher than set value, overheat notification will be sent and high temperature alarm will be triggered (if activated). Available settings: 1-600 (0.1-60°C, 0.1°C step)</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>56</Index>
+            <Label lang="en">Low temperature alarm threshold</Label>
+            <Type>short</Type>
+            <Default>100</Default>
+            <Minimum>0</Minimum>
+            <Maximum>599</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Low temperature alarm threshold
+<p>If temperature is lower than the set value, underheat notification will be sent and low temperature alarm will be triggered (if activated). Available settings: 0-599 (0-59.9°C, 0.1°C step)</p>
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">On/Off</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Tamper</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

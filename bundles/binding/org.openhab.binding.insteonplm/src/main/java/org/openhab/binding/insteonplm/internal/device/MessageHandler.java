@@ -335,7 +335,7 @@ public abstract class MessageHandler {
 
         @Override
         public void handleMessage(int group, byte cmd1, Msg msg, DeviceFeature f, String fromPort) {
-            logger.debug("{} drop unimpl message {}: {}", nm(), Utils.getHexByte(cmd1), msg);
+            logger.debug("{} ignoring unimpl message with cmd1:{}", nm(), Utils.getHexByte(cmd1));
         }
     }
 
@@ -600,6 +600,12 @@ public abstract class MessageHandler {
         }
 
         @Override
+        public boolean isDuplicate(Msg msg) {
+            // Disable duplicate elimination because
+            // there are no cleanup or success messages for start/stop.
+            return (false);
+        }
+        @Override
         public void handleMessage(int group, byte cmd1, Msg msg, DeviceFeature f, String fromPort) {
             Msg m = f.makePollMsg();
             if (m != null) {
@@ -613,6 +619,12 @@ public abstract class MessageHandler {
             super(p);
         }
 
+        @Override
+        public boolean isDuplicate(Msg msg) {
+            // Disable duplicate elimination because
+            // there are no cleanup or success messages for start/stop.
+            return (false);
+        }
         @Override
         public void handleMessage(int group, byte cmd1, Msg msg, DeviceFeature f, String fromPort) {
             try {
@@ -630,6 +642,12 @@ public abstract class MessageHandler {
     public static class StopManualChangeHandler extends MessageHandler {
         StopManualChangeHandler(DeviceFeature p) {
             super(p);
+        }
+        @Override
+        public boolean isDuplicate(Msg msg) {
+            // Disable duplicate elimination because
+            // there are no cleanup or success messages for start/stop.
+            return (false);
         }
 
         @Override

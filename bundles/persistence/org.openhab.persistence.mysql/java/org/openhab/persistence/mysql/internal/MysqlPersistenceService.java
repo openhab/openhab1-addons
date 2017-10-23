@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -58,9 +58,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is the implementation of the SQL {@link PersistenceService}.
+ * This is the implementation of the mySQL {@link PersistenceService}.
  *
- * Data is persisted with the following conversions -:
+ * Data is persisted with the following conversions:
  *
  * Item-Type Data-Type MySQL-Type
  * ========= ========= ==========
@@ -74,7 +74,7 @@ import org.slf4j.LoggerFactory;
  * SwitchItem OnOffType CHAR(3)
  *
  * In the store method, type conversion is performed where the default type for
- * an item is not as above For example, DimmerType can return OnOffType, so to
+ * an item is not as above. For example, DimmerType can return OnOffType, so to
  * keep the best resolution, we store as a number in SQL and convert to
  * DecimalType before persisting to MySQL.
  *
@@ -103,7 +103,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService {
     private int errReconnectThreshold = 0;
 
     private int waitTimeout = -1;
-    
+
     // Time used for persisting items, False: MySQL Server time (default), True: openHAB Server time
     private boolean localtime = false;
 
@@ -155,20 +155,21 @@ public class MysqlPersistenceService implements QueryablePersistenceService {
 
         url = (String) config.get("url");
         if (StringUtils.isBlank(url)) {
-            logger.warn("The SQL database URL is missing - please configure the sql:url parameter in openhab.cfg");
+            logger.warn(
+                    "The mySQL database URL is missing. Please configure the url parameter in the configuration.");
             return;
         }
 
         user = (String) config.get("user");
         if (StringUtils.isBlank(user)) {
-            logger.warn("The SQL user is missing - please configure the sql:user parameter in openhab.cfg");
+            logger.warn("The mySQL user is missing. Please configure the user parameter in the configuration.");
             return;
         }
 
         password = (String) config.get("password");
         if (StringUtils.isBlank(password)) {
             logger.warn(
-                    "The SQL password is missing. Attempting to connect without password. To specify a password configure the sql:password parameter in openhab.cfg.");
+                    "The mySQL password is missing; attempting to connect without password. To specify a password, configure the password parameter in the configuration.");
         }
 
         String tmpString = (String) config.get("reconnectCnt");
@@ -180,10 +181,10 @@ public class MysqlPersistenceService implements QueryablePersistenceService {
         if (StringUtils.isNotBlank(tmpString)) {
             waitTimeout = Integer.parseInt(tmpString);
         }
-        
+
         tmpString = (String) config.get("localtime");
         if (StringUtils.isNotBlank(tmpString)) {
-        	localtime = Boolean.parseBoolean(tmpString);
+            localtime = Boolean.parseBoolean(tmpString);
         }
 
         // reconnect to the database in case the configuration has changed.
@@ -430,7 +431,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService {
         // Get current timestamp
         long timeNow = Calendar.getInstance().getTimeInMillis();
         Timestamp timestamp = new Timestamp(timeNow);
-        
+
         String sqlCmd = null;
         PreparedStatement statement = null;
         try {
@@ -441,8 +442,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService {
                 statement.setTimestamp(1, timestamp);
                 statement.setString(2, value);
                 statement.setString(3, value);
-            }
-            else {
+            } else {
                 sqlCmd = new String(
                         "INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),?) ON DUPLICATE KEY UPDATE VALUE=?;");
                 statement = connection.prepareStatement(sqlCmd);

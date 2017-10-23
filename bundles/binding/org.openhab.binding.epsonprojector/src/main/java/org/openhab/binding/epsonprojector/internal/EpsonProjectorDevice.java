@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,6 +32,8 @@ public class EpsonProjectorDevice {
         FULL(0x40),
         ZOOM(0x50),
         WIDE(0x70),
+        ANAMORPHIC(0x80),
+        SQUEEZE(0x90),
         ERROR(0xFF);
 
         private int value;
@@ -116,11 +118,19 @@ public class EpsonProjectorDevice {
     }
 
     public enum ColorMode {
+        CINEMANIGHT(0x05),
         DYNAMIC(0x06),
         NATURAL(0x07),
+        HD(0x09),
+        SILVER(0x0A),
         XVCOLOR(0x0B),
         LIVINGROOM(0x0C),
+        THX(0x13),
         CINEMA(0x15),
+        CINEMA3D(0x17),
+        DYNAMIC3D(0x18),
+        THX3D(0x19),
+        BWCINEMA(0x20),
         ERROR(0xFF);
 
         private int value;

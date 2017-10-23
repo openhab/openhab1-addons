@@ -64,7 +64,8 @@ If the command calendar contains items whose description does not follow the `BE
 
 This is really nice to use in combination with a rule such as used for [voice control](https://github.com/openhab/openhab/wiki/Controlling-openHAB-with-your-voice) - set the default item to: `caldavCommand:defaultItemOnBegin=VoiceCommand`
 
-Then you can use the very same logic of your voice commands also in your calendar events (which should also improve the [WAF](https://en.wikipedia.org/wiki/Wife_acceptance_factor) ;-)).
+Then you can use the very same logic of your voice commands also in your calendar events.
+
 Depending on your rule implementation, it is possible to use event entries like these:
 
 * "Swtich on light in kitchen"

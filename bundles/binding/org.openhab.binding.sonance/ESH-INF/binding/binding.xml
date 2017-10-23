@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="Sonance"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>Sonance Binding</name>
+    <description>This binding integrates with Sonance DSP Amplifiers.</description>
+    <author>Laurens Van Acker</author>
+    
+    <service-id>org.openhab.sonance</service-id>
+
+    <config-description>
+        <parameter name="refresh" type="integer">
+            <label>Refresh interval</label>
+            <description>Data refresh interval in milliseconds.</description>
+            <default>60000</default>
+        </parameter>
+    </config-description>
+</binding:binding>
