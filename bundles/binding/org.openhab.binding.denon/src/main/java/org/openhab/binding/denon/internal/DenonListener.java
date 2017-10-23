@@ -122,6 +122,8 @@ public class DenonListener extends Thread {
                 Thread.sleep(delay);
                 logger.debug("Connecting to {}", connection.getHost());
 
+                // Use raw socket instead of TelnetClient here because TelnetClient sends an extra newline char
+                // after each write to socket which causes the connection to become unresponsive.
                 socket = new Socket();
                 socket.connect(new InetSocketAddress(connection.getHost(), connection.getTelnetPort()), TIMEOUT);
                 socket.setKeepAlive(true);
