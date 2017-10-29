@@ -8,7 +8,16 @@
  */
 package org.openhab.action.twitter.internal;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.io.FileUtils;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
 import org.slf4j.Logger;
@@ -16,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import twitter4j.DirectMessage;
 import twitter4j.Status;
+import twitter4j.StatusUpdate;
 import twitter4j.TwitterException;
 
 /**
@@ -40,6 +50,55 @@ public class Twitter {
     static twitter4j.Twitter client = null;
 
     /**
+     * Check twitter prerequesites. Should be used at the beginning of all public methods
+     * 
+     * @return <code>true</code>, all prerequesites are validated and 
+     *         <code>false</code> one prerequesite is not validated.
+     */
+    private static boolean checkPrerequesites() {
+        if (!TwitterActionService.isProperlyConfigured) {
+            logger.debug("Twitter client is not yet configured > execution aborted!");
+            return false;
+        }
+        if (!isEnabled) {
+            logger.debug("Twitter client is disabled > execution aborted!");
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Internal method about sending a tweet, with or without image
+     * 
+     * @param tweetTxt the Tweet to send
+     * @param fileToAttach the file to attach. May be null if no attached file.
+     * 
+     * @return <code>true</code>, if sending the tweet has been successful and
+     *         <code>false</code> in all other cases.
+     */
+    private static boolean sendTweet(final String tweetTxt, final File fileToAttach) {
+        // abbreviate the Tweet to meet the 140 character limit ...
+        final String abbreviatedTweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
+        try {
+            // abbreviate the Tweet to meet the allowed character limit ...
+            tweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
+
+            // send the Tweet
+            final StatusUpdate status = new StatusUpdate(abbreviatedTweetTxt);
+            if (fileToAttach != null && fileToAttach.isFile()) {
+            	status.setMedia(fileToAttach);
+            }
+            final Status updatedStatus = client.updateStatus(status);
+            logger.debug("Successfully sent Tweet '{}'", updatedStatus.getText());
+            return true;
+        } catch (TwitterException e) {
+            logger.error("Failed to send Tweet '" + abbreviatedTweetTxt + "' because of: " + e.getLocalizedMessage());
+            return false;
+        }
+    }
+
+    /**
      * Sends a Tweet via Twitter
      * 
      * @param tweetTxt the Tweet to send
@@ -49,26 +108,60 @@ public class Twitter {
      */
     @ActionDoc(text = "Sends a Tweet via Twitter", returns = "<code>true</code>, if sending the tweet has been successful and <code>false</code> in all other cases.")
     public static boolean sendTweet(@ParamDoc(name = "tweetTxt", text = "the Tweet to send") String tweetTxt) {
-        if (!TwitterActionService.isProperlyConfigured) {
-            logger.debug("Twitter client is not yet configured > execution aborted!");
-            return false;
-        }
-        if (!isEnabled) {
-            logger.debug("Twitter client is disabled > execution aborted!");
-            return false;
+    	if (! checkPrerequesites()) {
+    		return false;
+    	}
+        return sendTweet(tweetTxt, null);
+    }
+
+    /**
+     * Sends a Tweet via Twitter
+     * 
+     * @param tweetTxt the Tweet to send
+     * 
+     * @return <code>true</code>, if sending the tweet has been successful and
+     *         <code>false</code> in all other cases.
+     */
+    @ActionDoc(text = "Sends a Tweet via Twitter", returns = "<code>true</code>, if sending the tweet has been successful and <code>false</code> in all other cases.")
+    public static boolean sendPicture(@ParamDoc(name = "tweetTxt", text = "the Tweet to send") String tweetTxt, @ParamDoc(name = "tweetPicture", text = "the picture to attach") String tweetPicture) {
+    	if (! checkPrerequesites()) {
+    		return false;
+    	}
+
+        // prepare the image attachment
+        File fileToAttach = null;
+        boolean deleteTemporaryFile = false;
+        if (StringUtils.startsWith(tweetPicture, "http")) {
+    		final String tDir = System.getProperty("java.io.tmpdir"); 
+    		final String path = tDir + File.separator + "openhab-twitter-remote_attached_file" + "." + FilenameUtils.getExtension(tweetPicture); 
+        	try {
+        		final URL url = new URL(tweetPicture); 
+        		fileToAttach = new File(path); 
+        		// fileToAttach.deleteOnExit();  // good idea ? could lead to temporary files staying around until JVM is down
+        		deleteTemporaryFile = true;
+        		FileUtils.copyURLToFile(url, fileToAttach);
+        	} catch (final MalformedURLException e) {
+        		logger.error("Can't read file from '" + tweetPicture + "'", e);
+        	} catch (final IOException e) {
+        		logger.error("Can't save file from '" + tweetPicture + "' to '" + path + "'", e);
+        	}
+        } else {
+            fileToAttach = new File(tweetPicture);
         }
 
-        try {
-            // abbreviate the Tweet to meet the allowed character limit ...
-            tweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
-            // send the Tweet
-            Status status = client.updateStatus(tweetTxt);
-            logger.debug("Successfully sent Tweet '{}'", status.getText());
-            return true;
-        } catch (TwitterException e) {
-            logger.error("Failed to send Tweet '" + tweetTxt + "' because of: " + e.getLocalizedMessage());
-            return false;
+        if (fileToAttach != null && fileToAttach.isFile()) {
+            logger.info("Image '{}' correctly found, will be included in tweet", tweetPicture);
+        } else {
+            logger.warn("Image '{}' not found, will only tweet text", tweetPicture);
         }
+    
+        // send the Tweet
+        final boolean result = sendTweet(tweetTxt, fileToAttach);
+        // delete temp file (if needed)
+        if (deleteTemporaryFile) {
+        	FileUtils.deleteQuietly(fileToAttach);
+        }
+        return result;
     }
 
     /**
@@ -84,10 +177,9 @@ public class Twitter {
     public static boolean sendDirectMessage(
             @ParamDoc(name = "recipientId", text = "the receiver of this direct message") String recipientId,
             @ParamDoc(name = "messageTxt", text = "the direct message to send") String messageTxt) {
-        if (!isEnabled) {
-            logger.debug("Twitter client is disabled > execution aborted!");
-            return false;
-        }
+    	if (! checkPrerequesites()) {
+    		return false;
+    	}
 
         try {
             // abbreviate the Tweet to meet the allowed character limit ...
