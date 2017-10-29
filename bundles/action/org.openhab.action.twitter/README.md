@@ -5,7 +5,8 @@ Twitter can be used to "tweet" notifications when certain events take place in o
 
 ## Actions
 
-* `sendTweet(message)`: Send a Tweet
+* `sendTweet('message')`: Send a Tweet
+* `sendPicture('message', 'image')`: Send a Tweet, including a picture (may be a remote URL or a local file)
 * `sendDirectMessage('recipient', 'direct message')`: Send a direct message simply use the following syntax inside a rule or script;
 
 
