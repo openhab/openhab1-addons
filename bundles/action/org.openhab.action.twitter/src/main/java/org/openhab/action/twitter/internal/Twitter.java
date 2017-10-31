@@ -15,9 +15,7 @@ import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.io.FileUtils;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
 import org.slf4j.Logger;
@@ -50,12 +48,13 @@ public class Twitter {
     static twitter4j.Twitter client = null;
 
     /**
-     * Check twitter prerequesites. Should be used at the beginning of all public methods
+     * Check twitter prerequisites. Should be used at the beginning of all public
+     * methods
      * 
-     * @return <code>true</code>, all prerequesites are validated and 
-     *         <code>false</code> one prerequesite is not validated.
+     * @return <code>true</code>, all prerequisites are validated and
+     *         <code>false</code> one prerequisite is not validated.
      */
-    private static boolean checkPrerequesites() {
+    private static boolean checkPrerequisites() {
         if (!TwitterActionService.isProperlyConfigured) {
             logger.debug("Twitter client is not yet configured > execution aborted!");
             return false;
@@ -64,85 +63,97 @@ public class Twitter {
             logger.debug("Twitter client is disabled > execution aborted!");
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
-     * Internal method about sending a tweet, with or without image
+     * Internal method for sending a tweet, with or without image
      * 
-     * @param tweetTxt the Tweet to send
-     * @param fileToAttach the file to attach. May be null if no attached file.
+     * @param tweetTxt
+     *            text string to be sent as a Tweet
+     * @param fileToAttach
+     *            the file to attach. May be null if no attached file.
      * 
      * @return <code>true</code>, if sending the tweet has been successful and
      *         <code>false</code> in all other cases.
      */
-    private static boolean sendTweet(final String tweetTxt, final File fileToAttach) {
+    private static boolean doSendTweet(final String tweetTxt, final File fileToAttach) {
         // abbreviate the Tweet to meet the 140 character limit ...
         final String abbreviatedTweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
         try {
             // send the Tweet
             final StatusUpdate status = new StatusUpdate(abbreviatedTweetTxt);
             if (fileToAttach != null && fileToAttach.isFile()) {
-            	status.setMedia(fileToAttach);
+                status.setMedia(fileToAttach);
             }
             final Status updatedStatus = client.updateStatus(status);
             logger.debug("Successfully sent Tweet '{}'", updatedStatus.getText());
             return true;
         } catch (TwitterException e) {
-            logger.error("Failed to send Tweet '" + abbreviatedTweetTxt + "' because of: " + e.getLocalizedMessage());
+            logger.warn("Failed to send Tweet '{}' because of : {}", abbreviatedTweetTxt, e.getLocalizedMessage());
             return false;
         }
     }
 
     /**
-     * Sends a Tweet via Twitter
+     * Sends a standard Tweet.
      * 
-     * @param tweetTxt the Tweet to send
+     * @param tweetTxt
+     *            text string to be sent as a Tweet
      * 
      * @return <code>true</code>, if sending the tweet has been successful and
      *         <code>false</code> in all other cases.
      */
     @ActionDoc(text = "Sends a Tweet via Twitter", returns = "<code>true</code>, if sending the tweet has been successful and <code>false</code> in all other cases.")
-    public static boolean sendTweet(@ParamDoc(name = "tweetTxt", text = "the Tweet to send") String tweetTxt) {
-    	if (! checkPrerequesites()) {
-    		return false;
-    	}
-        return sendTweet(tweetTxt, null);
+    public static boolean sendTweet(
+            @ParamDoc(name = "tweetTxt", text = "text string to be sent as a Tweet") String tweetTxt) {
+        if (!checkPrerequisites()) {
+            return false;
+        }
+        return doSendTweet(tweetTxt, null);
     }
 
     /**
-     * Sends a Tweet via Twitter
+     * Sends a Tweet with an image
      * 
-     * @param tweetTxt the Tweet to send
+     * @param tweetTxt
+     *            text string to be sent as a Tweet
+     * @param tweetPicture
+     *            the path of the picture that needs to be attached (either an url,
+     *            either a path pointing to a local file)
      * 
      * @return <code>true</code>, if sending the tweet has been successful and
      *         <code>false</code> in all other cases.
      */
     @ActionDoc(text = "Sends a Tweet via Twitter", returns = "<code>true</code>, if sending the tweet has been successful and <code>false</code> in all other cases.")
-    public static boolean sendPicture(@ParamDoc(name = "tweetTxt", text = "the Tweet to send") String tweetTxt, @ParamDoc(name = "tweetPicture", text = "the picture to attach") String tweetPicture) {
-    	if (! checkPrerequesites()) {
-    		return false;
-    	}
+    public static boolean sendTweet(
+            @ParamDoc(name = "tweetTxt", text = "text string to be sent as a Tweet") String tweetTxt,
+            @ParamDoc(name = "tweetPicture", text = "the picture to attach") String tweetPicture) {
+        if (!checkPrerequisites()) {
+            return false;
+        }
 
         // prepare the image attachment
         File fileToAttach = null;
         boolean deleteTemporaryFile = false;
-        if (StringUtils.startsWith(tweetPicture, "http")) {
-    		final String tDir = System.getProperty("java.io.tmpdir"); 
-    		final String path = tDir + File.separator + "openhab-twitter-remote_attached_file" + "." + FilenameUtils.getExtension(tweetPicture); 
-        	try {
-        		final URL url = new URL(tweetPicture); 
-        		fileToAttach = new File(path); 
-        		// fileToAttach.deleteOnExit();  // good idea ? could lead to temporary files staying around until JVM is down
-        		deleteTemporaryFile = true;
-        		FileUtils.copyURLToFile(url, fileToAttach);
-        	} catch (final MalformedURLException e) {
-        		logger.error("Can't read file from '" + tweetPicture + "'", e);
-        	} catch (final IOException e) {
-        		logger.error("Can't save file from '" + tweetPicture + "' to '" + path + "'", e);
-        	}
+        if (StringUtils.startsWith(tweetPicture, "http://") || StringUtils.startsWith(tweetPicture, "https://")) {
+            // we have a remote url and need to download the remote file to a temporary location
+            final String tDir = System.getProperty("java.io.tmpdir");
+            final String path = tDir + File.separator + "openhab-twitter-remote_attached_file" + "."
+                    + FilenameUtils.getExtension(tweetPicture);
+            try {
+                final URL url = new URL(tweetPicture);
+                fileToAttach = new File(path);
+                deleteTemporaryFile = true;
+                FileUtils.copyURLToFile(url, fileToAttach);
+            } catch (MalformedURLException e) {
+                logger.warn("Can't read file from '{}'", tweetPicture, e);
+            } catch (IOException e) {
+                logger.warn("Can't save file from '{}' to '{}'", tweetPicture, path, e);
+            }
         } else {
+            // we have a local file and can just use it directly
             fileToAttach = new File(tweetPicture);
         }
 
@@ -151,12 +162,12 @@ public class Twitter {
         } else {
             logger.warn("Image '{}' not found, will only tweet text", tweetPicture);
         }
-    
+
         // send the Tweet
-        final boolean result = sendTweet(tweetTxt, fileToAttach);
+        boolean result = doSendTweet(tweetTxt, fileToAttach);
         // delete temp file (if needed)
         if (deleteTemporaryFile) {
-        	FileUtils.deleteQuietly(fileToAttach);
+            FileUtils.deleteQuietly(fileToAttach);
         }
         return result;
     }
@@ -164,19 +175,21 @@ public class Twitter {
     /**
      * Sends a direct message via Twitter
      * 
-     * @param recipientId the receiver of this direct message
-     * @param messageTxt the direct message to send
+     * @param recipientId
+     *            the receiver of this direct message
+     * @param messageTxt
+     *            the direct message to send
      * 
-     * @return <code>true</code>, if sending the direct message has been successful and
-     *         <code>false</code> in all other cases.
+     * @return <code>true</code>, if sending the direct message has been successful
+     *         and <code>false</code> in all other cases.
      */
     @ActionDoc(text = "Sends a direct message via Twitter", returns = "<code>true</code>, if sending the direct message has been successful and <code>false</code> in all other cases.")
     public static boolean sendDirectMessage(
             @ParamDoc(name = "recipientId", text = "the receiver of this direct message") String recipientId,
             @ParamDoc(name = "messageTxt", text = "the direct message to send") String messageTxt) {
-    	if (! checkPrerequesites()) {
-    		return false;
-    	}
+        if (!checkPrerequisites()) {
+            return false;
+        }
 
         try {
             // abbreviate the Tweet to meet the 140 character limit ...
@@ -187,9 +200,8 @@ public class Twitter {
                     message.getRecipientScreenName());
             return true;
         } catch (TwitterException e) {
-            logger.error("Failed to send Tweet '" + messageTxt + "' because of: " + e.getLocalizedMessage());
+            logger.warn("Failed to send Tweet '{}' because of : ", messageTxt, e.getLocalizedMessage());
             return false;
         }
     }
-
 }
