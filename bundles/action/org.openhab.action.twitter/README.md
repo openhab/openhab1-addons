@@ -4,9 +4,23 @@ Twitter can be used to "tweet" notifications when certain events take place in o
 
 ## Actions
 
-* `sendTweet('message')`: Send a Tweet
-* `sendPicture('message', 'image')`: Send a Tweet, including a picture (may be a remote URL or a local file)
+* `sendTweet('message')`: Send a standard Tweet
+* `sendTweet('message', 'image')`: Send a Tweet, including a picture (may be a remote URL or a local file)
 * `sendDirectMessage('recipient', 'direct message')`: Send a direct message simply use the following syntax inside a rule or script;
+
+### Examples
+
+* Send a tweet with an attached image available on filesystem (here with the official OpenHAB2 docker container, otherwise path needs to be adapted to your installation and image location) :
+
+```
+sendTweet("Test with image on filesystem", "/openhab/conf/icons/test.png")
+```
+
+* Send a tweet with an attached image available on a remote URL :
+
+```
+sendTweet("Test with remote URL", "https://i.imgur.com/F9eDwMY.png")
+```
 
 
 ## Configuration
