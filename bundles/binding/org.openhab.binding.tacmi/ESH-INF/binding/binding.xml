@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="tacmi"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+    xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0
+        http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+  <name>TA CMI Binding</name>
+  <description>The TA CMI binding integrates the C.M.I module from
+Technische Alternative. It allows to read analog and digital values
+using the TA CoE (CAN over Ethernet) protocol. There is also limited
+write support.
+</description>
+<author>Timo Wendt, Wolfgang Klimt</author>
+
+ <service-id>org.openhab.tacmi</service-id>
+
+<config-description>
+        <parameter name="refresh" type="integer">
+            <label>Refresh interval</label>
+            <description>Data refresh interval in milliseconds.</description>
+            <default>120000</default>
+		</parameter>
+        <parameter name="cmiAddress" type="text" required="true">
+            <label>CMI IP address</label>
+            <description>IP address of the CMI module</description>
+		</parameter>
+</config-description>
+ 
+
+</binding:binding>
+
