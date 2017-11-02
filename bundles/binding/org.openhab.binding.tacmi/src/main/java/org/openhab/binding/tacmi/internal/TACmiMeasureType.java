@@ -32,7 +32,7 @@ public enum TACmiMeasureType {
     UNKNOWN7(7, 0),
     UNKNOWN8(8, 0),
     UNKNOWN9(9, 0),
-    KILOWATT(10, 1),
+    KILOWATT(10, 2),
     KILOWATTHOURS(11, 1),
     MEGAWATTHOURS(12, 0),
     UNKNOWN13(13, 0),
