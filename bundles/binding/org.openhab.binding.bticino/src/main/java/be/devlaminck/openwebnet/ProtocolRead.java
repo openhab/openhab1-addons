@@ -35,12 +35,12 @@ public class ProtocolRead {
 
     public ProtocolRead(String p_message) {
         m_message = p_message;
-        logger.info("Instance created for message [" + p_message + "]");
+        logger.debug("Instance created for message [" + p_message + "]");
     }
 
     public void addProperty(String p_key, String p_value) {
         // TODO Auto-generated method stub
-        logger.info("addProperty Key : " + p_key + ", Value : " + p_value);
+        logger.debug("addProperty Key : " + p_key + ", Value : " + p_value);
         m_properties.put(p_key, p_value);
     }
 
