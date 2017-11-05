@@ -36,12 +36,13 @@ public class MonitorSessionThread extends Thread {
     private OpenWebNet pluginReference = null;
     private String ipAddress = null;
     private Integer port = 0;
+    private String passwd = null;
 
     @Override
     public void run() {
         // connect to own gateway
-        logger.debug("Connecting to ipaddress {} on port {}", ipAddress, port);
-        pluginReference.myPlant = new MyHomeJavaConnector(ipAddress, port);
+        logger.debug("Connecting to ipaddress {} on port {}", ipAddress, port, passwd);
+        pluginReference.myPlant = new MyHomeJavaConnector(ipAddress, port, passwd);
         try {
             pluginReference.myPlant.startMonitoring();
             while (!Thread.interrupted()) {
@@ -60,10 +61,11 @@ public class MonitorSessionThread extends Thread {
         logger.info("Stopped MonitorSessionThread thread");
     }
 
-    public MonitorSessionThread(OpenWebNet pluginReference, String ipAddress, Integer port) {
+    public MonitorSessionThread(OpenWebNet pluginReference, String ipAddress, Integer port, String passwd) {
         this.pluginReference = pluginReference;
         this.ipAddress = ipAddress;
         this.port = port;
+        this.passwd = passwd;
     }
 
     public void buildEventFromFrame(String frame) {

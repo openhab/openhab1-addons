@@ -44,7 +44,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
      * <code>'^(.*?)\\.(host|port)$'</code>
      */
     private static final Pattern EXTRACT_BTICINO_GATEWAY_CONFIG_PATTERN = Pattern
-            .compile("^(.*?)\\.(host|port|rescan_secs)$");
+            .compile("^(.*?)\\.(host|port|passwd|rescan_secs)$");
 
     // indicates that the updated has been run once
     boolean m_binding_initialized = false;
@@ -61,12 +61,17 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
         String host;
         // Default port is 20000 for a MH200
         int port = 20000;
+
+        // Default OpenWenNet password
+        String passwd = "00000";
+
         // Default rescan interval is 300 seconds
         int rescan_secs = 300;
 
         @Override
         public String toString() {
-            return "Bticino [id=" + id + ", host=" + host + ", port=" + port + ", rescan secs=" + rescan_secs + "]";
+            return "Bticino [id=" + id + ", host=" + host + ", port=" + port + ", passwd=" + passwd + ", rescan secs="
+                    + rescan_secs + "]";
         }
     }
 
@@ -228,6 +233,8 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
                 // parameter port
                 else if ("port".equals(configKey)) {
                     l_bticino_config.port = Integer.valueOf(value);
+                } else if ("passwd".equals(configKey)) {
+                    l_bticino_config.passwd = value;
                 } else if ("rescan_secs".equals(configKey)) {
                     l_bticino_config.rescan_secs = Integer.valueOf(value);
                 } else {
@@ -257,6 +264,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
             l_bticino_device.setEventPublisher(eventPublisher);
             l_bticino_device.setHost(l_current_device_config.host);
             l_bticino_device.setPort(l_current_device_config.port);
+            l_bticino_device.setPasswd(l_current_device_config.passwd);
             l_bticino_device.setRescanInterval(l_current_device_config.rescan_secs);
             try {
                 l_bticino_device.initialize();

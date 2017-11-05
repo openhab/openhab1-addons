@@ -40,6 +40,7 @@ public class OpenWebNet extends Thread {
     private String host = "";
     // standard port for the MH200(N) of bticino
     private Integer port = 20000;
+    private String passwd = "";
     private Date m_last_bus_scan = new Date(0);
     private Integer m_bus_scan_interval_secs = 120;
     private Integer m_first_scan_delay_secs = 60;
@@ -60,9 +61,10 @@ public class OpenWebNet extends Thread {
      */
     private List<IBticinoEventListener> m_event_listener_list = new LinkedList<IBticinoEventListener>();
 
-    public OpenWebNet(String p_host, int p_port, int p_rescan_interval_secs) {
+    public OpenWebNet(String p_host, int p_port, String p_passwd, int p_rescan_interval_secs) {
         host = p_host;
         port = p_port;
+        passwd = p_passwd;
         m_bus_scan_interval_secs = p_rescan_interval_secs;
     }
 
@@ -71,7 +73,7 @@ public class OpenWebNet extends Thread {
      */
     public void onStart() {
         // create thread
-        monitorSessionThread = new MonitorSessionThread(this, host, port);
+        monitorSessionThread = new MonitorSessionThread(this, host, port, passwd);
         // start first bus scan 30 secs later
         m_last_bus_scan = new Date(
                 (new Date()).getTime() - (1000 * m_bus_scan_interval_secs) + (1000 * m_first_scan_delay_secs));

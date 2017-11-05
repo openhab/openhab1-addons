@@ -60,7 +60,7 @@ public class PriorityQueueThread implements Runnable {
     /**
      * Create the Priority Queue Thread giving the reference to the MyHome
      * connector and the Priority queue
-     * 
+     *
      * @param myConnector
      *            myhome connector used only for IP, port read
      * @param list
@@ -79,7 +79,8 @@ public class PriorityQueueThread implements Runnable {
                 logger.info("OpenWebNet CMD [" + tosend + "]");
                 if (sk == null) { // Create a new command session
                     try {
-                        sk = MyHomeSocketFactory.openCommandSession(myConnector.ip, myConnector.port);
+                        sk = MyHomeSocketFactory.openCommandSession(myConnector.ip, myConnector.port,
+                                myConnector.passwd);
                     } catch (IOException e) {
                         System.err.println(
                                 "PriorityQueueThread: Problem during socket monitor opening - " + e.toString());
