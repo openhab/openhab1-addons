@@ -26,7 +26,7 @@ import com.myhome.fcrisciani.exception.MalformedCommandOPEN;
  * /tree/master/plugins/devices/openwebnet) and on code of Flavio Fcrisciani
  * released as EPL (https://github.com/fcrisciani/java-myhome-library)
  *
- * @author Tom De Vlaminck
+ * @author Tom De Vlaminck, Andrea Carabillo'
  * @serial 1.0
  * @since 1.7.0
  */
@@ -43,7 +43,7 @@ public class OpenWebNet extends Thread {
     private String passwd = "";
     private Date m_last_bus_scan = new Date(0);
     private Integer m_bus_scan_interval_secs = 120;
-    private Integer m_first_scan_delay_secs = 60;
+    private Integer m_first_scan_delay_secs = 30;
     public MyHomeJavaConnector myPlant = null;
     private MonitorSessionThread monitorSessionThread = null;
 
@@ -60,6 +60,10 @@ public class OpenWebNet extends Thread {
      * bus
      */
     private List<IBticinoEventListener> m_event_listener_list = new LinkedList<IBticinoEventListener>();
+
+    public OpenWebNet(String p_host, int p_port, int p_rescan_interval_secs) {
+        this(p_host, p_port, "", p_rescan_interval_secs);
+    }
 
     public OpenWebNet(String p_host, int p_port, String p_passwd, int p_rescan_interval_secs) {
         host = p_host;
@@ -129,13 +133,14 @@ public class OpenWebNet extends Thread {
     // sends diagnostic frames to initialize the system
     public void initSystem() {
         try {
-            logger.info("Sending " + LIGHTING_DIAGNOSTIC_FRAME + " frame to (re)initialize LIGHTING");
+            logger.info("Sending frames to (re)initialize subsystems");
+            logger.debug("Sending " + LIGHTING_DIAGNOSTIC_FRAME + " frame to (re)initialize LIGHTING");
             myPlant.sendCommandSync(LIGHTING_DIAGNOSTIC_FRAME);
-            logger.info("Sending " + AUTOMATIONS_DIAGNOSTIC_FRAME + " frame to (re)initialize AUTOMATIONS");
+            logger.debug("Sending " + AUTOMATIONS_DIAGNOSTIC_FRAME + " frame to (re)initialize AUTOMATIONS");
             myPlant.sendCommandSync(AUTOMATIONS_DIAGNOSTIC_FRAME);
-            logger.info("Sending " + ALARM_DIAGNOSTIC_FRAME + " frame to (re)initialize ALARM");
+            logger.debug("Sending " + ALARM_DIAGNOSTIC_FRAME + " frame to (re)initialize ALARM");
             myPlant.sendCommandSync(ALARM_DIAGNOSTIC_FRAME);
-            logger.info("Sending " + POWER_MANAGEMENT_DIAGNOSTIC_FRAME + " frame to (re)initialize POWER MANAGEMENT");
+            logger.debug("Sending " + POWER_MANAGEMENT_DIAGNOSTIC_FRAME + " frame to (re)initialize POWER MANAGEMENT");
             myPlant.sendCommandSync(POWER_MANAGEMENT_DIAGNOSTIC_FRAME);
         } catch (Exception e) {
             logger.error("initSystem failed : " + e.getMessage());

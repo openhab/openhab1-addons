@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * This class implements a binding of bticino devices to openHAB. The binding
  * configurations are provided by the {@link GenericItemProvider}.
  *
- * @author Tom De Vlaminck
+ * @author Tom De Vlaminck, Andrea Carabillo'
  * @serial 1.0
  * @since 1.7.0
  */
@@ -61,10 +61,8 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
         String host;
         // Default port is 20000 for a MH200
         int port = 20000;
-
-        // Default OpenWenNet password
+        // Default OpenWebNet password
         String passwd = "00000";
-
         // Default rescan interval is 300 seconds
         int rescan_secs = 300;
 

@@ -47,11 +47,11 @@ public class BticinoDevice implements IBticinoEventListener {
     // information about the binding config of the items)
     private BticinoBinding m_bticino_binding;
     // Hostname or Host IP (of the MH200)
-    private String m_host = "192.168.3.35";
+    private String m_host = "";
     // Port to connect to
-    private int m_port = 20000;
-    // OpenWebNet Password
-    private String m_passwd = "00000";
+    private int m_port = 0;
+    // Openweb password
+    private String m_passwd = "";
     // Rescan interval in seconds
     private int m_rescan_interval_secs = 0;
     // Indicator if this device is started

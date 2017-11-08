@@ -76,7 +76,7 @@ public class PriorityQueueThread implements Runnable {
         do {
             try {
                 tosend = list.getCommand();
-                logger.info("OpenWebNet CMD [" + tosend + "]");
+                logger.debug("OpenWebNet CMD [" + tosend + "]");
                 if (sk == null) { // Create a new command session
                     try {
                         sk = MyHomeSocketFactory.openCommandSession(myConnector.ip, myConnector.port,

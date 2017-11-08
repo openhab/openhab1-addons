@@ -25,7 +25,7 @@ import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
  * openwebnet) and on code of Flavio Fcrisciani
  * (https://github.com/fcrisciani/java-myhome-library) released under EPL
  *
- * @author Tom De Vlaminck, Lago Moreno
+ * @author Tom De Vlaminck, Lago Moreno, Andrea Carabillo'
  * @serial 1.0
  * @since 1.7.0
  */
@@ -41,7 +41,7 @@ public class MonitorSessionThread extends Thread {
     @Override
     public void run() {
         // connect to own gateway
-        logger.debug("Connecting to ipaddress {} on port {}", ipAddress, port, passwd);
+        logger.debug("Connecting to ipaddress {} on port {} with passord {}", ipAddress, port, passwd);
         pluginReference.myPlant = new MyHomeJavaConnector(ipAddress, port, passwd);
         try {
             pluginReference.myPlant.startMonitoring();
@@ -61,6 +61,10 @@ public class MonitorSessionThread extends Thread {
         logger.info("Stopped MonitorSessionThread thread");
     }
 
+    public MonitorSessionThread(OpenWebNet pluginReference, String ipAddress, Integer port) {
+        this(pluginReference, ipAddress, port, "");
+    }
+
     public MonitorSessionThread(OpenWebNet pluginReference, String ipAddress, Integer port, String passwd) {
         this.pluginReference = pluginReference;
         this.ipAddress = ipAddress;
@@ -69,7 +73,7 @@ public class MonitorSessionThread extends Thread {
     }
 
     public void buildEventFromFrame(String frame) {
-        logger.debug("Received OpenWebNet frame '" + frame + "' now translate it to an event.");
+        logger.debug("Received OpenWebNet frame '{}' now translate it to an event.", frame);
         String who = null;
         String what = null;
         String where = null;
@@ -402,7 +406,7 @@ public class MonitorSessionThread extends Thread {
                 event.addProperty("messageType", messageType);
             }
             // notify event
-            logger.debug(OWNUtilities.getDateTime() + " Rx: " + frame + " " + "(" + messageDescription + ")");
+            logger.debug("{} Rx: {} ({})", OWNUtilities.getDateTime(), frame, messageDescription);
 
             // Notify all the listeners an event has been received
             pluginReference.notifyEvent(event);
@@ -712,8 +716,8 @@ public class MonitorSessionThread extends Thread {
             if (objectName != null) {
                 event.addProperty("object.name", objectName);
             }
-            logger.debug("Frame " + frame + " is " + messageType + " message. Notify it as OpenHab event "
-                    + messageDescription == "No Description set" ? "" : messageDescription); // for debug
+            logger.debug("Frame {} is {} message. Notify it as OpenHab event {}", frame, messageType,
+                    (messageDescription == "No Description set") ? "" : messageDescription); // for debug
 
             // Notify all the listeners an event has been received
             pluginReference.notifyEvent(event);
