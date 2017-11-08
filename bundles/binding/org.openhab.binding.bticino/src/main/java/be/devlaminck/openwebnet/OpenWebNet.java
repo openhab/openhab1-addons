@@ -43,7 +43,7 @@ public class OpenWebNet extends Thread {
     private String passwd = "";
     private Date m_last_bus_scan = new Date(0);
     private Integer m_bus_scan_interval_secs = 120;
-    private Integer m_first_scan_delay_secs = 30;
+    private Integer m_first_scan_delay_secs = 60;
     public MyHomeJavaConnector myPlant = null;
     private MonitorSessionThread monitorSessionThread = null;
 
