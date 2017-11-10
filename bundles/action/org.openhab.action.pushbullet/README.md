@@ -13,7 +13,7 @@ For specific information on each item, see the [Pushbullet API](https://docs.pus
 ## Examples
 
 ```
-sendPushbulletNote("pitaya", "hakan.tandogan@gmail.com", "this is the title", "And this is the body of the message")
+sendPushbulletNote("mybot", "someone@somewhere.com", "this is the title", "And this is the body of the message")
 ```
 
 
