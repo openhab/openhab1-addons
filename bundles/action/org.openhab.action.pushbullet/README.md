@@ -4,11 +4,18 @@ The Pushbullet action allows you to notify iOS, Android & Windows 10 Phone & Des
 
 ## Actions
 
-The following is a valid action call that can be made when the plugin is loaded. For specific information on each item, see the [Pushbullet API](https://docs.pushbullet.com/).
+The following is a valid action call that can be made when the plugin is loaded.
+For specific information on each item, see the [Pushbullet API](https://docs.pushbullet.com/).
+
+* `sendPushbulletNote(String receiver, String title, String message)`
+* `sendPushbulletNote(String botname, String receiver, String title, String message)`
+
+## Examples
 
 ```
-pushbullet(String botname, String receiver, String title, String message)
+sendPushbulletNote("pitaya", "hakan.tandogan@gmail.com", "this is the title", "And this is the body of the message")
 ```
+
 
 ## Creating an account for your bot(s)
 
@@ -27,17 +34,15 @@ The API keys are bound to the pushbullet account.
 * Click on "Create Access Token".
 * Copy the token created on the site.
 
-... TODO - write some proper docu here...
+You must at least provide an API token (Private or Alias Key from Pushbullet.com) and a message in some manner before a message can be pushed.
+All other parameters are optional.
+If you use an alias key, the parameters (device, icon, sound, vibration) are overwritten by the alias setting on pushbullet.
 
-You must at least provide an API token (Private or Alias Key from Pushbullet.com) and a message in some manner before a message can be pushed. All other parameters are optional. If you use an alias key, the parameters (device, icon, sound, vibration) are overwritten by the alias setting on pushbullet.
-
-
-* httpmime is only needed for the MultiPartEntityBuilder in postFile...
 
 ## Rate limits
 
 As of June 2017, free accounts have a limit of 500 pushes per month.
-This action does not evaluate the rate limiting headers though (TODO better excuse here...)
+This action does not evaluate the rate limiting headers though.
 
 ## Libraries
 
