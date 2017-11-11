@@ -266,7 +266,7 @@ public class MyHomeSocketFactory {
             response = readUntilDelimiter(inputStream);
 
             if (!isACK(response)) {
-                throw new IOException();
+                throw new IOException("Invalid gateway password");
             }
         }
 
@@ -325,7 +325,7 @@ public class MyHomeSocketFactory {
             response = readUntilDelimiter(inputStream);
 
             if (!isACK(response)) {
-                throw new IOException();
+                throw new IOException("Invalid gateway password");
             }
         }
 
