@@ -25,7 +25,7 @@ import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
  * openwebnet) and on code of Flavio Fcrisciani
  * (https://github.com/fcrisciani/java-myhome-library) released under EPL
  *
- * @author Tom De Vlaminck, Lago Moreno, Andrea Carabillo'
+ * @author Tom De Vlaminck, Lago Moreno, Andrea Carabillo
  * @serial 1.0
  * @since 1.7.0
  */
