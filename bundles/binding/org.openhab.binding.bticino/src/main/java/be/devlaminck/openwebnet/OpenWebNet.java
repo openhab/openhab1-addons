@@ -26,7 +26,7 @@ import com.myhome.fcrisciani.exception.MalformedCommandOPEN;
  * /tree/master/plugins/devices/openwebnet) and on code of Flavio Fcrisciani
  * released as EPL (https://github.com/fcrisciani/java-myhome-library)
  *
- * @author Tom De Vlaminck, Andrea Carabillo'
+ * @author Tom De Vlaminck, Andrea Carabillo
  * @serial 1.0
  * @since 1.7.0
  */
