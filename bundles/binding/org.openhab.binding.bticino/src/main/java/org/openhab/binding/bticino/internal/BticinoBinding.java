@@ -62,7 +62,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
         // Default port is 20000 for a MH200
         int port = 20000;
         // Default OpenWebNet password
-        String passwd = "00000";
+        String passwd = "12345";
         // Default rescan interval is 300 seconds
         int rescan_secs = 300;
 
