@@ -37,3 +37,4 @@ Bundle-ClassPath: .,
   lib/joda-time-2.8.1.jar
 Service-Component: OSGI-INF/dynamodb.xml
 Bundle-Activator: org.openhab.persistence.dynamodb.internal.DynamoDBPersistenceServiceActivator
+Bundle-ActivationPolicy: lazy
