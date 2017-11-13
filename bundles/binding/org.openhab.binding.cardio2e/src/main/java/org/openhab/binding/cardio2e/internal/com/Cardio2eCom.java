@@ -432,7 +432,7 @@ public class Cardio2eCom {
 					nextSendingTransaction = null;
 					if (discarded)
 						logger.warn(
-								"Transaction '{}' was discarded, because it was sent {} times and no recepit ACK was received.",
+								"Transaction '{}' was discarded, because it was sent {} times and no ACK receipt was received.",
 								primitiveSentTransaction, MAX_SENDING_TRIES);
 				}
 			} else {
@@ -481,8 +481,8 @@ public class Cardio2eCom {
 			} finally {
 				try {
 					if ((nextSendingTransaction.getTransactionType() != Cardio2eTransactionTypes.SET)
-							|| (nextSendingTransaction.getObjectType() == Cardio2eObjectTypes.LOGIN))
-							//|| (testMode))
+							|| (nextSendingTransaction.getObjectType() == Cardio2eObjectTypes.LOGIN)
+							|| (testMode))
 						nextSendingTransaction.receiptACK = true;	// Only
 																	// some SET
 																	// transactions

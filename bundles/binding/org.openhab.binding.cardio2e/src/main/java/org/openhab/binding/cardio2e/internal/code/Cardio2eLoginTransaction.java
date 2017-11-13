@@ -19,9 +19,6 @@ import org.apache.commons.lang.StringUtils;
  */
 
 public class Cardio2eLoginTransaction extends Cardio2eTransaction {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3396631977094337554L;
 	private Cardio2eLoginCommands loginCommand = null;
 	private String programCode = null;

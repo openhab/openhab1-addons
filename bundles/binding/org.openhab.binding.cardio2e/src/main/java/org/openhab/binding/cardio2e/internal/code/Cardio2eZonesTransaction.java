@@ -17,9 +17,6 @@ package org.openhab.binding.cardio2e.internal.code;
  */
 
 public class Cardio2eZonesTransaction extends Cardio2eTransaction {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7910172422528076632L;
 	public boolean invertZoneDetection = false;
 	private short maxStatesLenght = 0;

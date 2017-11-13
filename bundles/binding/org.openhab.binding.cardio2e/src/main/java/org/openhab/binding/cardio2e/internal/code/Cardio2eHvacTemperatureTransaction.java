@@ -17,9 +17,6 @@ package org.openhab.binding.cardio2e.internal.code;
  */
 
 public class Cardio2eHvacTemperatureTransaction extends Cardio2eTransaction {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6789216588228925388L;
 	private double hvacTemperature;
 	private Cardio2eHvacSystemModes hvacSystemMode = null;

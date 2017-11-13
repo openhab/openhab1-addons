@@ -19,13 +19,13 @@ package org.openhab.binding.cardio2e.internal.code;
 
 public enum Cardio2eRelayStates {
 
-	OPENED { // Opened relay is equal to appliance ON
+	OPENED { // Opened is equal to appliance ON
 		{
 			symbol = 'O';
 		}
 	},
 
-	CLOSED { // Opened is equal to appliance OFF
+	CLOSED { // Closed is equal to appliance OFF
 		{
 			symbol = 'C';
 		}

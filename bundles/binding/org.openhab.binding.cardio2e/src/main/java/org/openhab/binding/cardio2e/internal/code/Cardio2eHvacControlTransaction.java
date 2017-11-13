@@ -17,9 +17,6 @@ package org.openhab.binding.cardio2e.internal.code;
  */
 
 public class Cardio2eHvacControlTransaction extends Cardio2eTransaction {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3140812809946223591L;
 	public static boolean smartSendingEnabledClass = false; // Signals whether
 															// the whole class

@@ -17,9 +17,6 @@ package org.openhab.binding.cardio2e.internal.code;
  */
 
 public class Cardio2eVersionTransaction extends Cardio2eTransaction {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6011325654448157237L;
 	private Cardio2eVersionTypes versionType = null;
 	private String version = null;

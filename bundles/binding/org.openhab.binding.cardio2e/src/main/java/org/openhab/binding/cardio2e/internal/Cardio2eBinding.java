@@ -466,7 +466,7 @@ public class Cardio2eBinding extends
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
+		// The code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug(
@@ -496,7 +496,7 @@ public class Cardio2eBinding extends
 						reverseOrder = true;
 					}
 				}
-				if (reverseOrder) { // Get config in reverse o normal order
+				if (reverseOrder) { // Get config in reverse or normal order
 					config = provider.getReverseOrderConfig(itemName);
 				} else {
 					config = provider.getConfig(itemName);
@@ -523,19 +523,19 @@ public class Cardio2eBinding extends
 							if (transaction.mustBeSent) {
 								transaction.primitiveStringTransaction = transaction
 										.toString();
-								com.sendTransaction(transaction);
 								logger.debug(
-										"Added '{}' to Cardio 2é RS-232 send queue",
+										"Adding '{}' to Cardio 2é RS-232 send queue",
 										transaction.primitiveStringTransaction
 												.substring(
 														0,
 														transaction.primitiveStringTransaction
 																.length() - 1));
+								com.sendTransaction(transaction);
 							} else {
-								logger.debug("No command sent to Cardio 2è because it is not necessary to send current object value again");
+								logger.debug("No command sent to Cardio 2é because it is not necessary to send current object value again");
 							}
 						} else {
-							logger.debug("No command sent to Cardio 2è because item is configured as 'reverse mode'");
+							logger.debug("No command sent to Cardio 2é because item is configured as 'reverse mode'");
 						}
 					} catch (Exception ex) {
 						logger.warn("Error in processing command: '{}'",
@@ -543,10 +543,10 @@ public class Cardio2eBinding extends
 					}
 				}
 			} else {
-				logger.warn("No command will sent to Cardio 2è because no provider is available");
+				logger.warn("No command will sent to Cardio 2é because no provider is available");
 			}
 		} else {
-			logger.warn("Can not send command to Cardio 2è because we are not logged in");
+			logger.warn("Can not send command to Cardio 2é because we are not logged in");
 		}
 	}
 
@@ -586,16 +586,16 @@ public class Cardio2eBinding extends
 											.getPendingUpdates() + 1);
 									transaction.primitiveStringTransaction = transaction
 											.toString();
-									com.sendTransaction(transaction);
 									logger.debug(
-											"Added '{}' to Cardio 2é RS-232 send queue",
+											"Adding '{}' to Cardio 2é RS-232 send queue",
 											transaction.primitiveStringTransaction
 													.substring(
 															0,
 															transaction.primitiveStringTransaction
 																	.length() - 1));
+									com.sendTransaction(transaction);
 								} else {
-									logger.debug("No state sent to Cardio 2è because it is not necessary to send current object value again");
+									logger.debug("No state sent to Cardio 2é because it is not necessary to send current object value again");
 								}
 							}
 						} else {
@@ -623,14 +623,14 @@ public class Cardio2eBinding extends
 														transaction);
 										transaction.primitiveStringTransaction = transaction
 												.toString();
-										com.sendTransaction(transaction);
 										logger.debug(
-												"Added '{}' to Cardio 2é RS-232 send queue",
+												"Adding '{}' to Cardio 2é RS-232 send queue",
 												transaction.primitiveStringTransaction
 														.substring(
 																0,
 																transaction.primitiveStringTransaction
 																		.length() - 1));
+										com.sendTransaction(transaction);
 									} else {
 										// Will ask Cardio 2é for current date
 										// and time (GET transaction). When
@@ -649,7 +649,7 @@ public class Cardio2eBinding extends
 											allowedDatetimeUpdateHour);
 								}
 							} else {
-								logger.debug("No state sent to Cardio 2è because item is not configured as 'reverse mode'");
+								logger.debug("No state sent to Cardio 2é because item is not configured as 'reverse mode'");
 							}
 						}
 					} catch (Exception ex) {
@@ -658,10 +658,10 @@ public class Cardio2eBinding extends
 					}
 				}
 			} else {
-				logger.warn("No state will sent to Cardio 2è because no provider is available");
+				logger.warn("No state will sent to Cardio 2é because no provider is available");
 			}
 		} else {
-			logger.warn("Can not send state to Cardio 2è because we are not logged in");
+			logger.warn("Can not send state to Cardio 2é because we are not logged in");
 		}
 	}
 
@@ -670,10 +670,9 @@ public class Cardio2eBinding extends
 				|| ((System.currentTimeMillis() - lastDateTimeRequestTimestamp) >= DATE_TIME_GET_MIN_DELAY)) {
 			lastDateTimeRequestTimestamp = System.currentTimeMillis();
 			try {
-				logger.debug("Date and time update in course...");
+				logger.debug("Date and time update in course (adding GET request to Cardio 2é RS-232 send queue)");
 				com.sendTransaction(new Cardio2eDateTimeTransaction(
 						Cardio2eTransactionTypes.GET));
-				logger.debug("Added GET date and time request to Cardio 2é RS-232 send queue");
 			} catch (Exception ex) {
 				logger.warn("Failed to send GET date and time request: '{}'",
 						ex.toString());
@@ -796,7 +795,7 @@ public class Cardio2eBinding extends
 														configLightingTransaction,
 														provider.getItem(itemName));
 										logger.debug(
-												"Sending LIGHT #{} {}  state to the bus.",
+												"Sending LIGHT #{} {} state to the bus.",
 												configLightingTransaction
 														.getObjectNumber(),
 												newState);
@@ -1182,14 +1181,14 @@ public class Cardio2eBinding extends
 										}
 										newDateTimeTransaction.primitiveStringTransaction = newDateTimeTransaction
 												.toString();
-										com.sendTransaction(newDateTimeTransaction);
 										logger.debug(
-												"Sent '{}'",
+												"Sending '{}'",
 												newDateTimeTransaction.primitiveStringTransaction
 														.substring(
 																0,
 																newDateTimeTransaction.primitiveStringTransaction
 																		.length() - 1));
+										com.sendTransaction(newDateTimeTransaction);
 									} else {
 										logger.debug(
 												"Date and time {} minutes offset is too much (maximum is {} minutes). New date and time will be discarded",

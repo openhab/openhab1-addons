@@ -18,9 +18,6 @@ package org.openhab.binding.cardio2e.internal.code;
  */
 
 public class Cardio2eCurtainTransaction extends Cardio2eTransaction {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 160027467017676320L;
 	private static boolean smartSendingEnabledClass = false; // Signals whether
 																// the whole
@@ -233,9 +230,9 @@ public class Cardio2eCurtainTransaction extends Cardio2eTransaction {
 	public boolean smartSendingCanReplaceLikeMe() {
 		// This function has been replaced in this Cardio2eTransaction subclass
 		// in order to return true.
-		// When returns true, smart sending will can delete the transactions
-		// like this from the send buffer and add a new transaction that
-		// replaces them.
+		// When returns true, smart sending will be able to delete the
+		// transactions like this from the send buffer and add a new
+		// transaction that replaces them.
 		return true;
 	}
 }

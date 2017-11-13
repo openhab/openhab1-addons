@@ -553,7 +553,7 @@ public class Cardio2eGenericBindingProvider extends
 	}
 
 	public Map<String, BindingConfig> getMatchBindingConfigs(
-			Cardio2eTransaction transaction) { // Returns a HashMap that
+			Cardio2eTransaction transaction) { // Returns a Map that
 												// contains only the
 												// BindingConfigs with
 												// Cardio2eTransaction like
@@ -579,9 +579,6 @@ public class Cardio2eGenericBindingProvider extends
 
 	public class Cardio2eBindingConfig extends
 			LinkedList<Cardio2eBindingConfigItem> implements BindingConfig {
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 	}
 

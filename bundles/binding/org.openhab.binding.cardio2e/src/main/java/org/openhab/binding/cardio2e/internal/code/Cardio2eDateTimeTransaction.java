@@ -17,9 +17,6 @@ package org.openhab.binding.cardio2e.internal.code;
  */
 
 public class Cardio2eDateTimeTransaction extends Cardio2eTransaction {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7460821351007261636L;
 	private static boolean smartSendingEnabledClass = false; // Signals whether
 																// the whole

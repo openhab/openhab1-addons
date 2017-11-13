@@ -243,9 +243,9 @@ public class Cardio2eTransaction implements Cloneable, Serializable {
 		// This function has been replaced in Cardio2eLightingTransaction,
 		// Cardio2eRelayTransaction and Cardio2eCurtainTransaction subclasses in
 		// order to return true.
-		// When returns true, smart sending will can delete the transactions
-		// like this from the send buffer and add a new transaction that
-		// replaces them.
+		// When returns true, smart sending will be able to delete the
+		// transactions like this from the send buffer and add a new transaction
+		// that replaces them.
 		return false;
 	}
 }

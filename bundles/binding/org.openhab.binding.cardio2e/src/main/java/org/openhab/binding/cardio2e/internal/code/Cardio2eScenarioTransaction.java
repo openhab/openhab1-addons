@@ -19,9 +19,6 @@ import org.apache.commons.lang.StringUtils;
  */
 
 public class Cardio2eScenarioTransaction extends Cardio2eTransaction {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2305337044178383893L;
 	private static boolean smartSendingEnabledClass = false; // Signals whether
 																// the whole

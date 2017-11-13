@@ -31,15 +31,15 @@ public interface Cardio2eBindingProvider extends BindingProvider {
 	/**
 	 * @param itemName
 	 *            The name of the item
-	 * @return LinkedList of the BindingConfigs mapped to the item with the
-	 *         given name
+	 * @return Cardio2eBindingConfig mapped to the
+	 *         item with the given name
 	 */
 	Cardio2eBindingConfig getConfig(String itemName);
 
 	/**
 	 * @param itemName
 	 *            The name of the item
-	 * @return Reverser Order LinkedList of the BindingConfigs mapped to the
+	 * @return Reverse Order Cardio2eBindingConfig mapped to the
 	 *         item with the given name
 	 */
 	Cardio2eBindingConfig getReverseOrderConfig(String itemName);
@@ -47,7 +47,7 @@ public interface Cardio2eBindingProvider extends BindingProvider {
 	/**
 	 * @param transaction
 	 *            A valid Cardio2eTransaction
-	 * @return A HashMap that contains only the BindingConfigs with
+	 * @return A Map that contains only the BindingConfigs with
 	 *         Cardio2eTransaction like "transaction" and their IntemNames
 	 */
 	Map<String, BindingConfig> getMatchBindingConfigs(
