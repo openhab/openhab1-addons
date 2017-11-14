@@ -129,6 +129,9 @@ anel="<identifier>:<item>"
 | `IO6` | Switch | state of I/O 6 | only if `IO6ISINPUT = ON`
 | `IO7` | Switch | state of I/O 7 | only if `IO7ISINPUT = ON`
 | `IO8` | Switch | state of I/O 8 | only if `IO8ISINPUT = ON`
+| `SENSOR_TEMPERATURE` | Number | sensor temperature (device firmware >= 6.1) | no
+| `SENSOR_HUMIDITY` | Number | sensor humidity (device firmware >= 6.1) | no
+| `SENSOR_BRIGHTNESS` | Number | sensor brightness (device firmware >= 6.1) | no
 
 
 ## Example Rules
