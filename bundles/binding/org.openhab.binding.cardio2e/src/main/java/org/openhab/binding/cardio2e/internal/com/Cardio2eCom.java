@@ -18,7 +18,6 @@ import java.util.TimerTask;
 import java.util.Vector;
 import java.util.Enumeration;
 
-import org.openhab.binding.cardio2e.internal.Cardio2eBinding;
 import org.openhab.binding.cardio2e.internal.code.Cardio2eDecoder;
 import org.openhab.binding.cardio2e.internal.code.Cardio2eDecoder.Cardio2eDecodedTransactionListener;
 import org.openhab.binding.cardio2e.internal.code.Cardio2eDecodedTransactionEvent;
@@ -27,6 +26,7 @@ import org.openhab.binding.cardio2e.internal.code.Cardio2eLoginTransaction;
 import org.openhab.binding.cardio2e.internal.code.Cardio2eObjectTypes;
 import org.openhab.binding.cardio2e.internal.code.Cardio2eTransaction;
 import org.openhab.binding.cardio2e.internal.code.Cardio2eTransactionTypes;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +39,12 @@ import jssc.SerialPortException;
  * Cardio2e COM RS-232 handling class.
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @Since 1.10.0
+ * @Since 1.11.0
  */
 
 public class Cardio2eCom {
 	private static final Logger logger = LoggerFactory
-			.getLogger(Cardio2eBinding.class);
+			.getLogger(Cardio2eCom.class);
 	private static final char CARDIO2E_END_TRANSACTION_TEST_CHARACTER = '\n'; // for
 																				// testMode
 																				// Cardio2eTransaction.CARDIO2E_END_TRANSACTION_CHARACTER
@@ -483,7 +483,7 @@ public class Cardio2eCom {
 					if ((nextSendingTransaction.getTransactionType() != Cardio2eTransactionTypes.SET)
 							|| (nextSendingTransaction.getObjectType() == Cardio2eObjectTypes.LOGIN)
 							|| (testMode))
-						nextSendingTransaction.receiptACK = true;	// Only
+						nextSendingTransaction.receiptACK = true; // Only
 																	// some SET
 																	// transactions
 																	// returns

@@ -13,7 +13,7 @@ package org.openhab.binding.cardio2e.internal.code;
  * Cardio2e Binding structured zones bypass transaction model
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @Since 1.10.0
+ * @Since 1.11.0
  */
 
 public class Cardio2eZonesBypassTransaction extends Cardio2eTransaction {
@@ -211,8 +211,7 @@ public class Cardio2eZonesBypassTransaction extends Cardio2eTransaction {
 						"cannot set zoneState because objectNumber is not properly defined");
 			}
 		} else {
-			throw new IllegalArgumentException(
-					"zoneBypassState cannot be null");
+			throw new IllegalArgumentException("zoneBypassState cannot be null");
 		}
 	}
 

@@ -18,7 +18,7 @@ import org.openhab.core.items.Item;
 
 /**
  * @author Manuel Alberto Guerrero Díaz
- * @since 1.10.0
+ * @since 1.11.0
  */
 public interface Cardio2eBindingProvider extends BindingProvider {
 	/**
@@ -31,16 +31,15 @@ public interface Cardio2eBindingProvider extends BindingProvider {
 	/**
 	 * @param itemName
 	 *            The name of the item
-	 * @return Cardio2eBindingConfig mapped to the
-	 *         item with the given name
+	 * @return Cardio2eBindingConfig mapped to the item with the given name
 	 */
 	Cardio2eBindingConfig getConfig(String itemName);
 
 	/**
 	 * @param itemName
 	 *            The name of the item
-	 * @return Reverse Order Cardio2eBindingConfig mapped to the
-	 *         item with the given name
+	 * @return Reverse Order Cardio2eBindingConfig mapped to the item with the
+	 *         given name
 	 */
 	Cardio2eBindingConfig getReverseOrderConfig(String itemName);
 

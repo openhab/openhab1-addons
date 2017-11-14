@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * querying a Website/Device.
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @since 1.10.0
+ * @since 1.11.0
  */
 public class Cardio2eBinding extends
 		AbstractActiveBinding<Cardio2eBindingProvider> {

@@ -15,7 +15,7 @@ import java.util.EventObject;
  * Cardio2e Decoded Transaction Event class.
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @Since 1.10.0
+ * @Since 1.11.0
  */
 
 public class Cardio2eDecodedTransactionEvent extends EventObject {

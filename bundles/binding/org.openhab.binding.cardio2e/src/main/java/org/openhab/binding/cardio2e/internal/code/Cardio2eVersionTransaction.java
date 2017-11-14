@@ -13,7 +13,7 @@ package org.openhab.binding.cardio2e.internal.code;
  * Cardio2e Binding structured Version transaction model
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @Since 1.10.0
+ * @Since 1.11.0
  */
 
 public class Cardio2eVersionTransaction extends Cardio2eTransaction {

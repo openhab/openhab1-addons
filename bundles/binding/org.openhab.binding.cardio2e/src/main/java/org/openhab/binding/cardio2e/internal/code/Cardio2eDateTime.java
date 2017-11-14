@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
-import org.openhab.binding.cardio2e.internal.Cardio2eBinding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * Cardio2e DateTime structured data model
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @Since 1.10.0
+ * @Since 1.11.0
  */
 
 public class Cardio2eDateTime implements Cloneable, Serializable {
@@ -42,7 +41,7 @@ public class Cardio2eDateTime implements Cloneable, Serializable {
 	public static final short CARDIO2E_DATE_MIN_YEAR = 1995;
 	public static final short CARDIO2E_DATE_MAX_YEAR = 2095;
 	private static final Logger logger = LoggerFactory
-			.getLogger(Cardio2eBinding.class);
+			.getLogger(Cardio2eDateTime.class);
 	private String dateTime;
 
 	public Cardio2eDateTime() {// No args -> sets date and time from system
@@ -100,7 +99,8 @@ public class Cardio2eDateTime implements Cloneable, Serializable {
 		try {
 			dateTime = CARDIO2E_DATE_TIME_FORMAT.parse(this.dateTime);
 		} catch (ParseException ex) {
-			logger.warn("Unknown error in parsing to Date(): '{}'", ex.toString());
+			logger.warn("Unknown error in parsing to Date(): '{}'",
+					ex.toString());
 		}
 		return dateTime;
 	}
@@ -112,7 +112,8 @@ public class Cardio2eDateTime implements Cloneable, Serializable {
 			dateTime.setTime((Date) CARDIO2E_DATE_TIME_FORMAT
 					.parse(this.dateTime));
 		} catch (ParseException ex) {
-			logger.warn("Unknown error in parsing to Calendar(): '{}'", ex.toString());
+			logger.warn("Unknown error in parsing to Calendar(): '{}'",
+					ex.toString());
 		}
 		return dateTime;
 	}

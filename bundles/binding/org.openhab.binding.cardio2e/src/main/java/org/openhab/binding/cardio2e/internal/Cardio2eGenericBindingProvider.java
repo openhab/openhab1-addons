@@ -52,7 +52,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * This class is responsible for parsing the binding configuration.
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @since 1.10.0
+ * @since 1.11.0
  */
 public class Cardio2eGenericBindingProvider extends
 		AbstractGenericBindingProvider implements Cardio2eBindingProvider {

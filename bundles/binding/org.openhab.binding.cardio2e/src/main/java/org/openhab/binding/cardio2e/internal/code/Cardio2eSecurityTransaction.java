@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
  * Cardio2e Binding structured security transaction model
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @Since 1.10.0
+ * @Since 1.11.0
  */
 
 public class Cardio2eSecurityTransaction extends Cardio2eTransaction {

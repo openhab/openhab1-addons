@@ -15,7 +15,6 @@ import java.util.EventListener;
 import java.util.Vector;
 import java.util.Enumeration;
 
-import org.openhab.binding.cardio2e.internal.Cardio2eBinding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,12 +23,12 @@ import org.slf4j.LoggerFactory;
  * Cardio2eTransaction subclass object
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @Since 1.10.0
+ * @Since 1.11.0
  */
 
 public class Cardio2eDecoder {
 	private static final Logger logger = LoggerFactory
-			.getLogger(Cardio2eBinding.class);
+			.getLogger(Cardio2eDecoder.class);
 
 	public boolean decodeZonesStateTransaction = false; // Permits to disable
 														// security zones state
@@ -171,7 +170,8 @@ public class Cardio2eDecoder {
 							.fromSymbol(digestedTransaction.get(0).charAt(0));
 				}
 			} catch (IllegalArgumentException ex) {
-				logger.warn("Illegal transaction type in decoding transaction: '{}'",
+				logger.warn(
+						"Illegal transaction type in decoding transaction: '{}'",
 						ex.toString());
 			}
 			// Decode object type
@@ -181,7 +181,8 @@ public class Cardio2eDecoder {
 							.fromSymbol(digestedTransaction.get(1).charAt(0));
 				}
 			} catch (IllegalArgumentException ex) {
-				logger.warn("Illegal object type in decoding transaction: '{}'",
+				logger.warn(
+						"Illegal object type in decoding transaction: '{}'",
 						ex.toString());
 			}
 			// Decode object parameters
@@ -343,7 +344,8 @@ public class Cardio2eDecoder {
 						.parseInt(digestedTransaction.get(2)));
 				decodeComplete = true;
 			} catch (IllegalArgumentException ex) {
-				logger.warn("Illegal argument in decoding NACK transaction: '{}'",
+				logger.warn(
+						"Illegal argument in decoding NACK transaction: '{}'",
 						ex.toString());
 			}
 		}
@@ -355,7 +357,8 @@ public class Cardio2eDecoder {
 						.parseInt(digestedTransaction.get(3)));
 				decodeComplete = true;
 			} catch (IllegalArgumentException ex) {
-				logger.warn("Illegal argument in decoding NACK transaction: '{}'",
+				logger.warn(
+						"Illegal argument in decoding NACK transaction: '{}'",
 						ex.toString());
 			}
 		}
@@ -375,7 +378,8 @@ public class Cardio2eDecoder {
 							.parseShort(digestedTransaction.get(2)));
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding LIGHTING transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding LIGHTING transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -394,7 +398,8 @@ public class Cardio2eDecoder {
 							.parseByte(digestedTransaction.get(3)));
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding LIGHTING transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding LIGHTING transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -416,7 +421,8 @@ public class Cardio2eDecoder {
 							.parseShort(digestedTransaction.get(2)));
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding RELAY transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding RELAY transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -439,7 +445,8 @@ public class Cardio2eDecoder {
 						decodeComplete = true;
 					}
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding RELAY transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding RELAY transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -462,7 +469,8 @@ public class Cardio2eDecoder {
 							.parseShort(digestedTransaction.get(2)));
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding HVAC_TEMPERATURE transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding HVAC_TEMPERATURE transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -486,10 +494,12 @@ public class Cardio2eDecoder {
 						decodeComplete = true;
 					}
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding HVAC_TEMPERATURE transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding HVAC_TEMPERATURE transaction: '{}'",
 							ex.toString());
 				} catch (Exception ex) {
-					logger.warn("Unespecified error in decoding HVAC_TEMPERATURE transaction: '{}'",
+					logger.warn(
+							"Unespecified error in decoding HVAC_TEMPERATURE transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -511,7 +521,8 @@ public class Cardio2eDecoder {
 							.parseShort(digestedTransaction.get(2)));
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding HVAC_CONTROL transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding HVAC_CONTROL transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -545,10 +556,12 @@ public class Cardio2eDecoder {
 						decodeComplete = true;
 					}
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding HVAC_CONTROL transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding HVAC_CONTROL transaction: '{}'",
 							ex.toString());
 				} catch (Exception ex) {
-					logger.warn("Unespecified error in decoding HVAC_CONTROL transaction: '{}'",
+					logger.warn(
+							"Unespecified error in decoding HVAC_CONTROL transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -570,7 +583,8 @@ public class Cardio2eDecoder {
 							.parseShort(digestedTransaction.get(2)));
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding SCENARIO transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding SCENARIO transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -586,7 +600,8 @@ public class Cardio2eDecoder {
 							.parseShort(digestedTransaction.get(2)));
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding SCENARIO transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding SCENARIO transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -600,7 +615,8 @@ public class Cardio2eDecoder {
 						decodeComplete = true;
 					}
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding SCENARIO transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding SCENARIO transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -627,7 +643,8 @@ public class Cardio2eDecoder {
 							.parseShort(digestedTransaction.get(2)));
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding ZONES transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding ZONES transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -657,7 +674,8 @@ public class Cardio2eDecoder {
 						}
 					}
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding ZONES transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding ZONES transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -684,7 +702,8 @@ public class Cardio2eDecoder {
 							.parseShort(digestedTransaction.get(2)));
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding ZONES_BYPASS transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding ZONES_BYPASS transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -718,7 +737,8 @@ public class Cardio2eDecoder {
 						}
 					}
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding ZONES_BYPASS transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding ZONES_BYPASS transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -749,7 +769,8 @@ public class Cardio2eDecoder {
 									digestedTransaction.get(2)));
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding DATE_AND_TIME transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding DATE_AND_TIME transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -771,7 +792,8 @@ public class Cardio2eDecoder {
 							.parseShort(digestedTransaction.get(2)));
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding SECURITY transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding SECURITY transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -805,7 +827,8 @@ public class Cardio2eDecoder {
 						decodeComplete = true;
 					}
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding SECURITY transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding SECURITY transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -836,7 +859,8 @@ public class Cardio2eDecoder {
 						decodeComplete = true;
 					}
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding SECURITY transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding SECURITY transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -856,7 +880,8 @@ public class Cardio2eDecoder {
 				try {
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding LOGIN transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding LOGIN transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -872,7 +897,8 @@ public class Cardio2eDecoder {
 						decodeComplete = true;
 					}
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding LOGIN transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding LOGIN transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -904,7 +930,8 @@ public class Cardio2eDecoder {
 						decodeComplete = true;
 					}
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding LOGIN transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding LOGIN transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -920,7 +947,8 @@ public class Cardio2eDecoder {
 								.getLoginCommand() == Cardio2eLoginCommands.LOGOUT);
 					}
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding LOGIN transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding LOGIN transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -942,7 +970,8 @@ public class Cardio2eDecoder {
 							.parseShort(digestedTransaction.get(2)));
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding CURTAIN transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding CURTAIN transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -961,7 +990,8 @@ public class Cardio2eDecoder {
 							.parseByte(digestedTransaction.get(3)));
 					decodeComplete = true;
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding CURTAIN transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding CURTAIN transaction: '{}'",
 							ex.toString());
 				}
 			}
@@ -987,7 +1017,8 @@ public class Cardio2eDecoder {
 												.charAt(0)));
 						decodeComplete = true;
 					} catch (IllegalArgumentException ex) {
-						logger.warn("Illegal argument in decoding VERSION transaction: '{}'",
+						logger.warn(
+								"Illegal argument in decoding VERSION transaction: '{}'",
 								ex.toString());
 					}
 				}
@@ -1010,10 +1041,12 @@ public class Cardio2eDecoder {
 						decodeComplete = true;
 					}
 				} catch (IllegalArgumentException ex) {
-					logger.warn("Illegal argument in decoding VERSION transaction: '{}'",
+					logger.warn(
+							"Illegal argument in decoding VERSION transaction: '{}'",
 							ex.toString());
 				} catch (Exception ex) {
-					logger.warn("Unespecified error in decoding VERSION transaction: '{}'",
+					logger.warn(
+							"Unespecified error in decoding VERSION transaction: '{}'",
 							ex.toString());
 				}
 			}

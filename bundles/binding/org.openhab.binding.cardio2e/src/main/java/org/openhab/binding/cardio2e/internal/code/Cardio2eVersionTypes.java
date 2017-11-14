@@ -18,7 +18,7 @@ package org.openhab.binding.cardio2e.internal.code;
  * -> Cardio2e COMPLETE VERSION=2.40S.512-2.2-1.00-1111
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @Since 1.10.0
+ * @Since 1.11.0
  */
 
 public enum Cardio2eVersionTypes {

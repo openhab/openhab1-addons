@@ -38,13 +38,13 @@ import org.openhab.core.types.State;
  * This class is responsible for parsing the Cardio 2é transactions.
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @since 1.10.0
+ * @since 1.11.0
  */
 class Cardio2eTransactionParser {
 
 	protected static boolean filterUnnecessaryCommand;
 	protected static boolean filterUnnecessaryReverseModeUpdate;
-	
+
 	private static final String ON_OFF_TYPE_STRING = "OnOffType";
 	private static final String PERCENT_TYPE_STRING = "PercentType";
 	private static final String INCREASE_DECREASE_TYPE_STRING = "IncreaseDecreaseType";

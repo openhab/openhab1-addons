@@ -20,7 +20,7 @@ import java.io.Serializable;
  * Cardio2e Binding structured transaction model
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @Since 1.10.0
+ * @Since 1.11.0
  */
 
 public class Cardio2eTransaction implements Cloneable, Serializable {

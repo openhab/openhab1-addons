@@ -14,7 +14,7 @@ package org.openhab.binding.cardio2e.internal.code;
  * Cardio2e versions).
  * 
  * @author Manuel Alberto Guerrero Díaz
- * @Since 1.10.0
+ * @Since 1.11.0
  */
 
 public class Cardio2eCurtainTransaction extends Cardio2eTransaction {
