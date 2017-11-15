@@ -37,6 +37,7 @@
                                 <artifact><file>src/main/resources/conf/caldavCommand.cfg</file><type>cfg</type><classifier>caldavCommand</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/caldavio.cfg</file><type>cfg</type><classifier>caldavio</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/caldavPersonal.cfg</file><type>cfg</type><classifier>caldavPersonal</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/cardio2e.cfg</file><type>cfg</type><classifier>cardio2e</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/comfoair.cfg</file><type>cfg</type><classifier>comfoair</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/culintertechno.cfg</file><type>cfg</type><classifier>culintertechno</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/denon.cfg</file><type>cfg</type><classifier>denon</classifier></artifact>
