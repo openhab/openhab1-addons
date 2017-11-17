@@ -126,13 +126,13 @@ public class AnelDataParser {
          * https://github.com/openhab/openhab1-addons/issues/5338
          * https://anel-elektronik.de/forum_neu/viewtopic.php?f=16&t=207
          */
-        final int sensorDataIndex = findNameAndNumberPatternIndex(arr, startIndex, "s", 3);
+        final int sensorDataIndex = findNameAndNumberPatternIndex(arr, 26, "s", 3);
         if (sensorDataIndex > 0) {
             checkForSensorChanges(arr, state, result, sensorDataIndex);
         }
 
         // as soon as someone wants read power measurement values, this is how it should be...
-        // final int powerDataIndex = findNameAndNumberPatternIndex(arr, startIndex, "p", 7);
+        // final int powerDataIndex = findNameAndNumberPatternIndex(arr, 26, "p", 7);
         // if (powerDataIndex > 0) { ... }
 
         return result;
