@@ -108,7 +108,7 @@ public class AnelDataParser {
             checkForStateChanges(arr, state, result);
         }
 
-        // IO is occupies fields 16-23
+        // IO occupies fields 16-23
         if (arr.length >= 24) {
             checkForIOChanges(arr, state, result);
         }
@@ -126,15 +126,14 @@ public class AnelDataParser {
          * https://github.com/openhab/openhab1-addons/issues/5338
          * https://anel-elektronik.de/forum_neu/viewtopic.php?f=16&t=207
          */
-        final int sensorDataIndex = findSensorDataIndex(arr, 26);
+        final int sensorDataIndex = findNameAndNumberPatternIndex(arr, startIndex, "s", 3);
         if (sensorDataIndex > 0) {
             checkForSensorChanges(arr, state, result, sensorDataIndex);
         }
 
-        final int powerDataIndex = findPowerDataIndex(arr, 26);
-        if (powerDataIndex > 0) {
-            // TODO: not sure whether this effort is needed; add these 7 values if someone requests it?
-        }
+        // as soon as someone wants read power measurement values, this is how it should be...
+        // final int powerDataIndex = findNameAndNumberPatternIndex(arr, startIndex, "p", 7);
+        // if (powerDataIndex > 0) { ... }
 
         return result;
     }
@@ -208,14 +207,6 @@ public class AnelDataParser {
             result.put(AnelCommandType.SENSOR_BRIGHTNESS, new DecimalType(sensorBrightness));
             state.sensorBrightness = sensorBrightness;
         }
-    }
-
-    private static int findSensorDataIndex(String[] arr, int startIndex) {
-        return findNameAndNumberPatternIndex(arr, startIndex, "s", 3);
-    }
-
-    private static int findPowerDataIndex(String[] arr, int startIndex) {
-        return findNameAndNumberPatternIndex(arr, startIndex, "p", 7);
     }
 
     private static int findNameAndNumberPatternIndex(String[] arr, int startIndex, String name, int numberCount) {
