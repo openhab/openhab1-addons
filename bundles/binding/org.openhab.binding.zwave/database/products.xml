@@ -900,6 +900,23 @@
 		<Name>Aeon Labs</Name>
 		<Product>
 			<Reference>
+				<Type>0002</Type>
+				<Id>0082</Id>
+			</Reference>
+			<Reference>
+				<Type>0102</Type>
+				<Id>0082</Id>
+			</Reference>
+			<Reference>
+				<Type>0202</Type>
+				<Id>0082</Id>
+			</Reference>
+			<Model>ZW130</Model>
+			<Label lang="en">WallMote Quad</Label>
+			<ConfigFile>aeon/zw130.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0104</Type>
 				<Id>0038</Id>
 			</Reference>
