@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZW130</Model>
+    <Label lang="en">WallMote Quad</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x26</id>             <!-- SWITCH_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5B</id>             <!-- CENTRAL_SCENE -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x60</id>             <!-- MULTI_INSTANCE -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x8E</id>             <!-- MULTI_INSTANCE_ASSOCIATION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Touch sound</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enable</Label>
+            </Item>
+            <Help><![CDATA[Enable/disable the touch sound.
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Touch vibration</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enable</Label>
+            </Item>
+            <Help><![CDATA[Enable/disable the touch vibration.
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Button slide</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enable</Label>
+            </Item>
+            <Help><![CDATA[Enable/disable the function of button slide.
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Notification report</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Central scene</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Central scene and config</Label>
+            </Item>
+            <Help><![CDATA[Which notification to be sent to the associated devices.
+<p>To set which notification would be sent to the associated devices (Group 1) when pressing the buttons. When the parameter is set to 3, slide functionality on the buttons is activated.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>39</Index>
+            <Label lang="en">Low battery value</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>0</Minimum>
+            <Maximum>50</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[Set the low battery value
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>255</Index>
+            <Label lang="en">Reset the WallMote Quad</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>0</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>4</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Reset to factory default</Label>
+            </Item>
+            <Item>
+                <Value>1431655765</Value>
+                <Label lang="en">Reset and remove</Label>
+            </Item>
+            <Help><![CDATA[Reset the WallMote Quad to factory default.
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Z-Wave Plus Lifeline</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Button 1 basic</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Button 1 multilevel</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>4</Index>
+            <Label lang="en">Button 2 basic</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>5</Index>
+            <Label lang="en">Button 2 multilevel</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>6</Index>
+            <Label lang="en">Button 3 basic</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>7</Index>
+            <Label lang="en">Button 3 multilevel</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>8</Index>
+            <Label lang="en">Button 4 basic</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>9</Index>
+            <Label lang="en">Button 4 multilevel</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>
