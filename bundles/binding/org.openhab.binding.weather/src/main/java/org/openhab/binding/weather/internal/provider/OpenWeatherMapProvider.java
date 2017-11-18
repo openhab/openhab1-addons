@@ -19,7 +19,7 @@ import org.openhab.binding.weather.internal.parser.JsonWeatherParser;
  */
 public class OpenWeatherMapProvider extends AbstractWeatherProvider {
     private static final String URL = "http://api.openweathermap.org/data/2.5/weather?lat=[LATITUDE]&lon=[LONGITUDE]&lang=[LANGUAGE]&mode=json&units=metric&APPID=[API_KEY]";
-    private static final String FORECAST = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=[LATITUDE]&lon=[LONGITUDE]&lang=[LANGUAGE]&cnt=5&mode=json&units=metric&APPID=[API_KEY]";
+    private static final String FORECAST = "http://api.openweathermap.org/data/2.5/forecast?lat=[LATITUDE]&lon=[LONGITUDE]&lang=[LANGUAGE]&cnt=5&mode=json&units=metric&APPID=[API_KEY]";
 
     public OpenWeatherMapProvider() {
         super(new JsonWeatherParser());
