@@ -64,6 +64,7 @@ public class OpenEnergyMonitorSerialConnector extends OpenEnergyMonitorConnector
                 serialPort.addEventListener(this);
                 serialPort.notifyOnDataAvailable(true);
             } catch (TooManyListenersException e) {
+                logger.warn("Can't add serial port event listener. ", e);
             }
 
             in = serialPort.getInputStream();
@@ -120,7 +121,7 @@ public class OpenEnergyMonitorSerialConnector extends OpenEnergyMonitorConnector
                 }
             }
         } catch (IOException e) {
-            throw new OpenEnergyMonitorException("Error occured while receiving data", e);
+            throw new OpenEnergyMonitorException("Error occurred while receiving data. ", e);
         }
 
         return null;
@@ -140,7 +141,7 @@ public class OpenEnergyMonitorSerialConnector extends OpenEnergyMonitorConnector
             }
         } catch (NumberFormatException e) {
             // Rubbish received from the serial port, ignore the whole frame
-            throw new OpenEnergyMonitorException("Error occured while receiving data", e);
+            throw new OpenEnergyMonitorException("Error occurred while receiving data. ", e);
         }
 
         return bytebuf.array();

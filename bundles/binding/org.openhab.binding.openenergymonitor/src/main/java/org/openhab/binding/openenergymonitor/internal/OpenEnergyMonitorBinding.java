@@ -121,7 +121,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                         OpenEnergyMonitorParserRule rule = new OpenEnergyMonitorParserRule(value);
                         parsingRules.put(key, rule);
                     } catch (OpenEnergyMonitorException e) {
-                        throw new ConfigurationException(key, "invalid parser rule", e);
+                        throw new ConfigurationException(key, "invalid parser rule. ", e);
                     }
                 }
 
@@ -140,7 +140,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                 try {
                     messageListener.join();
                 } catch (InterruptedException e) {
-                    logger.info("Previous message listener closing interrupted", e);
+                    logger.info("Previous message listener closing interrupted. ", e);
                 }
             }
 
@@ -172,7 +172,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                     connector.disconnect();
                 }
             } catch (OpenEnergyMonitorException e) {
-                logger.error("Error occured when closing connection", e);
+                logger.warn("Error occurred when closing connection. ", e);
             }
         }
 
@@ -192,7 +192,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
             try {
                 connector.connect();
             } catch (OpenEnergyMonitorException e) {
-                logger.error("Error occured when connecting to Open Energy Monitor device", e);
+                logger.error("Error occurred when connecting to Open Energy Monitor device. ", e);
 
                 logger.warn("Closing Open Energy Monitor message listener");
 
@@ -244,7 +244,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                                                 found = true;
 
                                             } catch (Exception e) {
-                                                logger.error("Error occured during data evaluation", e);
+                                                logger.warn("Error occurred during data evaluation. ", e);
                                             }
                                         }
 
@@ -269,7 +269,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
 
                 } catch (OpenEnergyMonitorException e) {
 
-                    logger.error("Error occured when received data from Open Energy Monitor device", e);
+                    logger.warn("Error occurred when received data from Open Energy Monitor device. ", e);
                     if (!interrupted) {
                         try {
                             Thread.sleep(3000);
@@ -280,7 +280,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                     try {
                         connector.disconnect();
                     } catch (OpenEnergyMonitorException oeme) {
-                        // do nothing, but exit
+                        logger.warn("Error occurred when trying to disconnet. ", e);
                     }
                 }
             }
@@ -320,7 +320,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                             transformationType);
                 }
             } catch (TransformationException te) {
-                logger.error(
+                logger.warn(
                         "transformation throws exception [transformation type=" + transformationType
                                 + ", transformation function=" + transformationFunction + ", response=" + data + "]",
                         te);
