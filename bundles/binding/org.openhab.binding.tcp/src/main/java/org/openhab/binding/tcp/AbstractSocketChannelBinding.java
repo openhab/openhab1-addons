@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -51,14 +52,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * This is the base for all "Socket" connection-oriented network based connectivity and communication.It
- * requires a ChannelBindingProvider based binding provider. Data is pushed around using ByteBuffers with an indicator
- * for blocking/non-blocking (synchronous/asynchronous) communication
+ * This is the base for all "Socket" connection-oriented network based connectivity and communication. It
+ * requires a ChannelBindingProvider-based binding provider. Data is pushed around using ByteBuffers with an indicator
+ * for blocking/non-blocking (synchronous/asynchronous) communication.
  *
  * @author Karel Goderis
  * @since 1.1.0
- *
  */
 public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvider> extends AbstractActiveBinding<P>
         implements ManagedService {
@@ -77,9 +76,9 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
     protected boolean queueUntilConnected = true;
     // default port to listen on for incoming connections
     protected int listenerPort = 0;
-    // share channels between within an item definition
+    // share channels within an item definition
     protected boolean itemShareChannels = true;
-    // share channels between items definitions
+    // share channels between item definitions
     protected boolean bindingShareChannels = true;
     // share channels between "outbound" and "inbound" item definitions
     protected boolean directionsShareChannels = false;
@@ -94,15 +93,15 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
     // Queue to store BufferElements that need to be written to the network
     protected List<WriteBufferElement> writeQueue = Collections.synchronizedList(new ArrayList<WriteBufferElement>());
 
-    // Simple datastructure to track the state of Channels
+    // Simple data structure to track the state of Channels
     protected ChannelTracker<Channel> channels = new ChannelTracker<Channel>();
 
     /**
-     * Datastructure to represent that state of a communications channel
-     * 
+     * Data structure to represent the state of a communications channel.
+     *
      * @author Karel Goderis
      * @since 1.4.0
-     **/
+     */
     protected class Channel {
 
         // the Item that is bound to this channel
@@ -193,7 +192,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                 response = response + "]";
                 return response;
             } catch (Exception e) {
-                logger.error("An exception occurred while converting Channel to String {}", e.getMessage());
+                logger.warn("An exception occurred while converting Channel to String: {}", e.getMessage());
             }
             return "";
         }
@@ -204,7 +203,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
      * The ChannelTracker acts as a little dB that stores all the information on the state of the
      * underlying NIO SocketChannels in use. It comes with a bunch of get... methods that allow a caller to
      * query Channels.
-     * 
+     *
      * get() - get the channel that matches the provided criteria for the given {Item,Command}
      * getFirst() - get the first channel that matches the provided criteria
      * getFirstServed() - return the first Channel that matches the criteria AND that is currently bound to a Java NIO
@@ -212,11 +211,10 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
      * getAll() - return a collection of all the Channels that match the given criteria
      * contains() - return true if a channel that matches the provided criteria exists in the ChannelTracker
      * replace() - replaces the underlying Java NIO channel on the Channels that match the provided criteria
-     * 
+     *
      * @author Karel Goderis
      * @since 1.4.0
-     * 
-     **/
+     */
     protected class ChannelTracker<C extends Channel> extends ArrayList<C> {
 
         private static final long serialVersionUID = 1543958347565096785L;
@@ -631,13 +629,11 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
     }
 
     /**
-     * Simple helper class to store data that needs to be sent over a given channel
-     * 
-     * 
+     * Simple helper class to store data that needs to be sent over a given channel.
+     *
      * @author Karel Goderis
      * @since 1.4.0
-     * 
-     **/
+     */
     protected class WriteBufferElement {
         public Channel channel;
         public ByteBuffer buffer;
@@ -687,12 +683,12 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                 try {
                     listenerKey = listenerChannel.register(selector, SelectionKey.OP_ACCEPT);
                 } catch (ClosedChannelException e1) {
-                    logger.error("An exception occurred while registering a selector: {}", e1.getMessage());
+                    logger.warn("An exception occurred while registering a selector: {}", e1.getMessage());
                 }
             }
 
         } catch (Exception e3) {
-            logger.error("An exception occurred while creating the Listener Channel on port number {} ({})",
+            logger.warn("An exception occurred while creating the Listener Channel on port number {}: {}",
                     listenerPort, e3.getMessage());
         }
     }
@@ -707,7 +703,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
         try {
             selector = Selector.open();
         } catch (IOException e) {
-            logger.error("An exception occurred while registering the selector: {}", e.getMessage());
+            logger.warn("An exception occurred while registering the selector: {}", e.getMessage());
         }
     }
 
@@ -720,24 +716,25 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
         try {
             selector.close();
         } catch (IOException e) {
-            logger.error("An exception occurred while closing the selector: {}", e.getMessage());
+            logger.warn("An exception occurred while closing the selector: {}", e.getMessage());
         }
 
         try {
-            listenerChannel.close();
+            if (listenerChannel != null) {
+                listenerChannel.close();
+            }
         } catch (IOException e) {
-            logger.error("An exception occurred while closing the Listener Channel on port number {} ({})",
-                    listenerPort, e.getMessage());
-
+            logger.warn("An exception occurred while closing the Listener Channel on port number {}: {}", listenerPort,
+                    e.getMessage());
         }
     }
 
     /**
      * Find the first matching {@link ChannelBindingProvider}
      * according to <code>itemName</code>
-     * 
+     *
      * @param itemName
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -769,14 +766,14 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
     public void updated(Dictionary config) throws ConfigurationException {
 
         if (config != null) {
-            String bufferString = (String) config.get("buffersize");
+            String bufferString = Objects.toString(config.get("buffersize"), null);
             if (StringUtils.isNotBlank(bufferString)) {
                 maximumBufferSize = Integer.parseInt((bufferString));
             } else {
                 logger.info("The maximum buffer will be set to the default value of {}", maximumBufferSize);
             }
 
-            String reconnectString = (String) config.get("retryinterval");
+            String reconnectString = Objects.toString(config.get("retryinterval"), null);
             if (StringUtils.isNotBlank(reconnectString)) {
                 reconnectInterval = Integer.parseInt((reconnectString));
             } else {
@@ -784,14 +781,14 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                         reconnectInterval);
             }
 
-            String cronString = (String) config.get("reconnectcron");
+            String cronString = Objects.toString(config.get("reconnectcron"), null);
             if (StringUtils.isNotBlank(cronString)) {
                 reconnectCron = cronString;
             } else {
                 logger.info("The cron job to reset connections will be set to the default value of {}", reconnectCron);
             }
 
-            String queueString = (String) config.get("queue");
+            String queueString = Objects.toString(config.get("queue"), null);
             if (StringUtils.isNotBlank(queueString)) {
                 queueUntilConnected = Boolean.parseBoolean(queueString);
             } else {
@@ -800,7 +797,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                         queueUntilConnected);
             }
 
-            String portString = (String) config.get("port");
+            String portString = Objects.toString(config.get("port"), null);
             if (StringUtils.isNotBlank(portString)) {
                 listenerPort = Integer.parseInt((portString));
             } else {
@@ -808,7 +805,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                         listenerPort);
             }
 
-            String shareString = (String) config.get("itemsharedconnections");
+            String shareString = Objects.toString(config.get("itemsharedconnections"), null);
             if (StringUtils.isNotBlank(shareString)) {
                 itemShareChannels = Boolean.parseBoolean(shareString);
             } else {
@@ -816,7 +813,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                         itemShareChannels);
             }
 
-            String shareString2 = (String) config.get("bindingsharedconnections");
+            String shareString2 = Objects.toString(config.get("bindingsharedconnections"), null);
             if (StringUtils.isNotBlank(shareString2)) {
                 bindingShareChannels = Boolean.parseBoolean(shareString2);
             } else {
@@ -825,7 +822,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                         bindingShareChannels);
             }
 
-            String shareString3 = (String) config.get("directionssharedconnections");
+            String shareString3 = Objects.toString(config.get("directionssharedconnections"), null);
             if (StringUtils.isNotBlank(shareString3)) {
                 directionsShareChannels = Boolean.parseBoolean(shareString3);
             } else {
@@ -833,7 +830,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                         bindingShareChannels);
             }
 
-            String shareString4 = (String) config.get("addressmask");
+            String shareString4 = Objects.toString(config.get("addressmask"), null);
             if (StringUtils.isNotBlank(shareString4)) {
                 useAddressMask = Boolean.parseBoolean(shareString4);
             } else {
@@ -844,24 +841,24 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 
             if (useAddressMask && directionsShareChannels) {
                 logger.warn(
-                        "The setting to share channels between directions is not compatible with the setting to use address masks. We will override the setting to share between directions");
+                        "The setting to share channels between directions is not compatible with the setting to use address masks. We will override the setting to share between directions.");
                 directionsShareChannels = false;
             }
 
             if (bindingShareChannels && !itemShareChannels) {
                 logger.warn(
-                        "The setting to share channels in the binding is not compatible with the setting to share channels within items. We will override the setting to share between items");
+                        "The setting to share channels in the binding is not compatible with the setting to share channels within items. We will override the setting to share between items.");
                 itemShareChannels = true;
             }
 
             if (directionsShareChannels && (!bindingShareChannels || !itemShareChannels)) {
                 logger.warn(
-                        "The setting to share channels between directions is not compatible with the setting to share channels between items or within items. We will override the settings");
+                        "The setting to share channels between directions is not compatible with the setting to share channels between items or within items. We will override the settings.");
                 itemShareChannels = true;
                 bindingShareChannels = true;
             }
 
-            String refreshString = (String) config.get("refreshinterval");
+            String refreshString = Objects.toString(config.get("refreshinterval"), null);
             if (StringUtils.isNotBlank(refreshString)) {
                 refreshInterval = Long.parseLong((refreshString));
             } else {
@@ -874,9 +871,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
             }
 
             setProperlyConfigured(true);
-
         }
-
     }
 
     /**
@@ -887,7 +882,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
         P provider = findFirstMatchingBindingProvider(itemName);
 
         if (provider == null) {
-            logger.warn("cannot find matching binding provider [itemName={}, command={}]", itemName, command);
+            logger.warn("Cannot find matching binding provider [itemName={}, command={}]", itemName, command);
             return;
         }
 
@@ -922,7 +917,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                     || provider.getPortAsString(itemName, someCommand).equals("*")))) {
 
                         logger.warn(
-                                "The channel for {} has a connection problem. Data will queued to the new channel when it is successfully set up.",
+                                "The channel for {} has a connection problem. Data will be queued to the new channel when it is successfully set up.",
                                 theChannel.remote);
 
                         if (!theSocketChannel.isConnectionPending() || !theSocketChannel.isOpen()) {
@@ -931,7 +926,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                             try {
                                 scheduler = StdSchedulerFactory.getDefaultScheduler();
                             } catch (SchedulerException e1) {
-                                logger.error("An exception occurred while getting the Quartz scheduler: {}",
+                                logger.warn("An exception occurred while getting the Quartz scheduler: {}",
                                         e1.getMessage());
                             }
 
@@ -957,7 +952,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                     }
                                 }
                             } catch (SchedulerException e) {
-                                logger.error(
+                                logger.warn(
                                         "An exception occurred while scheduling a job with the Quartz Scheduler {}",
                                         e.getMessage());
                             }
@@ -974,7 +969,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                         }
                     }
                 } else {
-                    logger.error("there is no channel that services [itemName={}, command={}]", itemName, command);
+                    logger.warn("There is no channel that services [itemName={}, command={}]", itemName, command);
                 }
             }
         }
@@ -982,14 +977,15 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
 
     /**
      * This function should be implemented and used to "setup" the
-     * ASCII protocol after that the socket channel has been created. This because some ASCII
-     * protocols need to first emit a certain sequence of characters to
-     * configure or setup the communication channel with the remote end
-     **/
+     * ASCII protocol after the socket channel has been created. This is
+     * because some ASCII protocols need to first emit a certain sequence
+     * of characters to configure or set up the communication channel with
+     * the remote end.
+     */
     abstract protected void configureChannel(Channel channel);
 
     /**
-     * The actual implementation for receiving a command from the openhab runtime should go here
+     * The actual implementation for receiving a command from the openHAB runtime should go here.
      *
      * @param itemName the item name
      * @param command the command
@@ -1001,13 +997,14 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
             String commandAsString);
 
     /**
-     * Returns a {@link State} which is inherited from provide list of DataTypes. The call is delegated to the
-     * {@link TypeParser}. If
-     * <code>stateTypeList</code> is <code>null</code> the {@link StringType} is used.
-     * 
+     * Returns a {@link State} which is inherited from provided list of
+     * DataTypes. The call is delegated to the {@link TypeParser}. If
+     * <code>stateTypeList</code> is <code>null</code> the {@link StringType}
+     * is used.
+     *
      * @param stateTypeList - a list of state types that we should parse against
      * @param transformedResponse - the string to be parsed
-     * 
+     *
      * @return a {@link State} which type is inherited by the {@link TypeParser}
      *         or a {@link StringType} if <code>stateTypeList</code> is <code>null</code>
      */
@@ -1020,7 +1017,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
     }
 
     /**
-     * Parses the buffer received from the Channel
+     * Parses the buffer received from the Channel.
      *
      * @param networkChannel the network channel
      * @param byteBuffer the byte buffer
@@ -1032,15 +1029,14 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
     }
 
     /**
-     * 
      * Callback that will be called when data is received on a given channel.
-     * This method should deal with the actual details of the protocol being implemented
+     * This method should deal with the actual details of the protocol being implemented.
      */
     abstract protected void parseBuffer(String itemName, Command aCommand, Direction theDirection,
             ByteBuffer byteBuffer);
 
     /**
-     * Queues (writes) a ByteBuffer to a channel
+     * Queues (writes) a ByteBuffer to a channel.
      *
      * @param theChannel the network channel
      * @param byteBuffer the byte buffer
@@ -1095,11 +1091,10 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
     }
 
     /**
-     * Quartz Job to reconnect a channel
-     * 
+     * Quartz Job to reconnect a channel.
+     *
      * @author Karel Goderis
      * @since 1.2.0
-     *
      */
     public static class ReconnectJob implements Job {
 
@@ -1123,13 +1118,13 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                     try {
                         theChannel.channel.close();
                     } catch (IOException e) {
-                        logger.error("An exception occurred while closing a channel: {}", e.getMessage());
+                        logger.warn("An exception occurred while closing a channel: {}", e.getMessage());
                     }
 
                     try {
                         theChannel.channel = SocketChannel.open();
                     } catch (IOException e) {
-                        logger.error("An exception occurred while opening a channel: {}", e.getMessage());
+                        logger.warn("An exception occurred while opening a channel: {}", e.getMessage());
                     }
 
                     theChannel.isBlocking = false;
@@ -1139,7 +1134,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                         theChannel.channel.configureBlocking(false);
                         // setKeepAlive(true);
                     } catch (Exception e) {
-                        logger.error("An exception occurred while configuring a channel: {}", e.getMessage());
+                        logger.warn("An exception occurred while configuring a channel: {}", e.getMessage());
                     }
 
                     synchronized (theBinding.selector) {
@@ -1150,7 +1145,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                 theChannel.channel.register(theBinding.selector, interestSet);
                             }
                         } catch (ClosedChannelException e1) {
-                            logger.error("An exception occurred while registering a selector: {}", e1.getMessage());
+                            logger.warn("An exception occurred while registering a selector: {}", e1.getMessage());
                         }
                     }
 
@@ -1160,23 +1155,22 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                             logger.info("Attempting to reconnect the channel for {}", theChannel.remote);
                         }
                     } catch (Exception e) {
-                        logger.error("An exception occurred while connecting a channel: {}", e.getMessage());
+                        logger.warn("An exception occurred while connecting a channel: {}", e.getMessage());
                     }
                 } else {
-                    logger.debug("I cannot proceed without remote address");
+                    logger.debug("Either the remote address was not found or the channel was not open.");
                 }
             } else {
-                logger.warn("Already reconnecting the channel for {}", theChannel.remote);
+                logger.warn("Channel for {} is not reconnecting.", theChannel.remote);
             }
         }
     }
 
     /**
-     * Quartz Job to configure a channel
-     * 
+     * Quartz Job to configure a channel.
+     *
      * @author Karel Goderis
      * @since 1.4.0
-     *
      */
     public static class ConfigureJob implements Job {
 
@@ -1283,8 +1277,8 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                             boolean assigned = false;
 
                             if (useAddressMask && (remoteHost.equals("*") || remotePort.equals("*"))) {
-                                logger.error(
-                                        "We do not accept outgoing connections for Items that do use address masks");
+                                logger.warn(
+                                        "We do not accept outgoing connections for Items that use address masks");
                             } else {
 
                                 channels.add(newChannel);
@@ -1328,7 +1322,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                             try {
                                                 newSocketChannel = SocketChannel.open();
                                             } catch (IOException e2) {
-                                                logger.error("An exception occurred while opening a channel: {}",
+                                                logger.warn("An exception occurred while opening a channel: {}",
                                                         e2.getMessage());
                                             }
 
@@ -1336,7 +1330,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                                 newSocketChannel.socket().setKeepAlive(true);
                                                 newSocketChannel.configureBlocking(false);
                                             } catch (IOException e) {
-                                                logger.error("An exception occurred while configuring a channel: {}",
+                                                logger.warn("An exception occurred while configuring a channel: {}",
                                                         e.getMessage());
                                             }
 
@@ -1347,7 +1341,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                                 try {
                                                     newSocketChannel.register(selector, interestSet);
                                                 } catch (ClosedChannelException e1) {
-                                                    logger.error(
+                                                    logger.warn(
                                                             "An exception occurred while registering a selector: {}",
                                                             e1.getMessage());
                                                 }
@@ -1360,7 +1354,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                                 logger.info("Connecting the channel {} ", newChannel);
                                                 newSocketChannel.connect(remoteAddress);
                                             } catch (IOException e) {
-                                                logger.error("An exception occurred while connecting a channel: {}",
+                                                logger.warn("An exception occurred while connecting a channel: {}",
                                                         e.getMessage());
                                             }
                                         }
@@ -1382,7 +1376,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                 // Wait for an event
                 selector.selectNow();
             } catch (IOException e) {
-                logger.error("An exception occurred while Selecting ({})", e.getMessage());
+                logger.warn("An exception occurred while Selecting: {}", e.getMessage());
             }
         }
 
@@ -1446,7 +1440,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                             newChannel.configureBlocking(false);
                                             // setKeepAlive(true);
                                         } catch (IOException e) {
-                                            logger.error("An exception occurred while configuring a channel: {}",
+                                            logger.warn("An exception occurred while configuring a channel: {}",
                                                     e.getMessage());
                                         }
 
@@ -1455,7 +1449,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                             try {
                                                 newChannel.register(selector, newChannel.validOps());
                                             } catch (ClosedChannelException e1) {
-                                                logger.error("An exception occurred while registering a selector: {}",
+                                                logger.warn("An exception occurred while registering a selector: {}",
                                                         e1.getMessage());
                                             }
                                         }
@@ -1464,7 +1458,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                         try {
                                             scheduler = StdSchedulerFactory.getDefaultScheduler();
                                         } catch (SchedulerException e1) {
-                                            logger.error("An exception occurred while getting the Quartz scheduler: {}",
+                                            logger.warn("An exception occurred while getting the Quartz scheduler: {}",
                                                     e1.getMessage());
                                         }
 
@@ -1491,7 +1485,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                                 scheduler.scheduleJob(job, trigger);
                                             }
                                         } catch (SchedulerException e) {
-                                            logger.error(
+                                            logger.warn(
                                                     "An exception occurred while scheduling a job with the Quartz Scheduler {}",
                                                     e.getMessage());
                                         }
@@ -1514,7 +1508,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                             }
 
                         } catch (IOException e) {
-                            logger.error("An exception occurred while configuring a channel: {}", e.getMessage());
+                            logger.warn("An exception occurred while configuring a channel: {}", e.getMessage());
                         }
                     }
                 } else {
@@ -1552,7 +1546,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                             try {
                                 scheduler = StdSchedulerFactory.getDefaultScheduler();
                             } catch (SchedulerException e1) {
-                                logger.error("An exception occurred while getting the Quartz scheduler: {}",
+                                logger.warn("An exception occurred while getting the Quartz scheduler: {}",
                                         e1.getMessage());
                             }
 
@@ -1578,7 +1572,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                     }
                                 }
                             } catch (SchedulerException e) {
-                                logger.error(
+                                logger.warn(
                                         "An exception occurred while scheduling a job with the Quartz Scheduler {}",
                                         e.getMessage());
                             }
@@ -1589,7 +1583,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                 try {
                                     remote = (InetSocketAddress) theSocketChannel.getRemoteAddress();
                                 } catch (IOException e) {
-                                    logger.error(
+                                    logger.warn(
                                             "An exception occurred while getting the remote address of channel {} ({})",
                                             theSocketChannel, e.getMessage());
                                 }
@@ -1612,7 +1606,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                 try {
                                     scheduler = StdSchedulerFactory.getDefaultScheduler();
                                 } catch (SchedulerException e1) {
-                                    logger.error("An exception occurred while getting the Quartz scheduler: {}",
+                                    logger.warn("An exception occurred while getting the Quartz scheduler: {}",
                                             e1.getMessage());
                                 }
 
@@ -1635,7 +1629,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                         scheduler.scheduleJob(job, trigger);
                                     }
                                 } catch (SchedulerException e) {
-                                    logger.error(
+                                    logger.warn(
                                             "An exception occurred while scheduling a job with the Quartz Scheduler {}",
                                             e.getMessage());
                                 }
@@ -1655,7 +1649,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                         scheduler.scheduleJob(job, trigger);
                                     }
                                 } catch (SchedulerException e) {
-                                    logger.error(
+                                    logger.warn(
                                             "An exception occurred while scheduling a job with the Quartz Scheduler {}",
                                             e.getMessage());
                                 }
@@ -1669,8 +1663,8 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                         boolean error = false;
 
                         try {
-                            // TODO: Additional code to split readBuffer in multiple parts, in case the data send by the
-                            // remote end is not correctly fragemented. Could be handed of to implementation class if
+                            // TODO: Additional code to split readBuffer into multiple parts, in case the data sent by the
+                            // remote end is not correctly fragmented. Could be handed off to implementation class if,
                             // for example, the buffer needs to be split based on a special character like line feed or
                             // carriage return
                             numberBytesRead = theSocketChannel.read(readBuffer);
@@ -1691,7 +1685,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                             try {
                                 theSocketChannel.close();
                             } catch (IOException e) {
-                                logger.warn("The channel for {} is closed ({})", theChannel.remote, e.getMessage());
+                                logger.warn("Error occurred while closing the channel for {}: {}", theChannel.remote, e.getMessage());
                             }
                             error = true;
                         }
@@ -1703,7 +1697,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                 try {
                                     scheduler = StdSchedulerFactory.getDefaultScheduler();
                                 } catch (SchedulerException e1) {
-                                    logger.error("An exception occurred while getting the Quartz scheduler: {}",
+                                    logger.warn("An exception occurred while getting the Quartz scheduler: {}",
                                             e1.getMessage());
                                 }
 
@@ -1731,7 +1725,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                         }
                                     }
                                 } catch (SchedulerException e) {
-                                    logger.error(
+                                    logger.warn(
                                             "An exception occurred while scheduling a job with the Quartz Scheduler {}",
                                             e.getMessage());
                                 }
@@ -1772,7 +1766,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                             "No channel is active or defined for the data we received from {}. It will be discarded.",
                                             theSocketChannel.getRemoteAddress());
                                 } catch (IOException e) {
-                                    logger.error(
+                                    logger.warn(
                                             "An exception occurred while getting the remote address of the channel {} ({})",
                                             theSocketChannel, e.getMessage());
                                 }
@@ -1843,7 +1837,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                         try {
                                             scheduler = StdSchedulerFactory.getDefaultScheduler();
                                         } catch (SchedulerException e1) {
-                                            logger.error("An exception occurred while getting the Quartz scheduler: {}",
+                                            logger.warn("An exception occurred while getting the Quartz scheduler: {}",
                                                     e1.getMessage());
                                         }
 
@@ -1871,7 +1865,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                                                 }
                                             }
                                         } catch (SchedulerException e) {
-                                            logger.error(
+                                            logger.warn(
                                                     "An exception occurred while scheduling a job with the Quartz Scheduler {}",
                                                     e.getMessage());
                                         }
@@ -1900,5 +1894,4 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
     protected long getRefreshInterval() {
         return refreshInterval;
     }
-
 }
