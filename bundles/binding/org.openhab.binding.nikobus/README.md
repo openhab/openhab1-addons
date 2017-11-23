@@ -101,7 +101,7 @@ In order to configure items in openHAB, you will first need to know the module a
 This binding's root logger is `org.openhab.binding.nikobus`.  Enable `DEBUG` logging to discover module addresses and channels that will be logged.  In openHAB 2, this can be performed from the console at the `openhab>` prompt:
 
 ```
-log:set DEBUG otg.openhab.binding.nikobus
+log:set DEBUG org.openhab.binding.nikobus
 log:tail
 ```
 
