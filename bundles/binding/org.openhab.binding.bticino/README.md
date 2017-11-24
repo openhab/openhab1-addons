@@ -16,6 +16,7 @@ This binding can be configured in the file `services/bticino.cfg`.
 |----------|---------|:--------:|-------------|
 | webserver.host |   |   Yes    | OpenWebNet gateway IP address / Hostname |
 | webserver.port | 20000 | No   | OpenWebNet gateway port |
+| webserver.passwd | 12345 | No   | OpenWebNet gateway password |
 | webserver.rescan_secs | 120 | No | OpenWebNet bus status rescan interval |
 
 A sample configuration could look like:
