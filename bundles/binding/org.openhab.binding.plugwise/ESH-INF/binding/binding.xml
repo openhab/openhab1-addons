@@ -12,6 +12,7 @@
     <config-description>
         <parameter name="stick.port" type="text" required="true">
             <label>Stick serial port</label>
+            <context>serial-port</context>            
             <description>The serial port of the Stick, e.g. "COM1" for Windows or "/dev/ttyUSB0" for Linux.</description>
             <default>/dev/ttyUSB0</default>
         </parameter>
