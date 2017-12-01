@@ -74,6 +74,9 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
     // PW
     private String _pw;
 
+    // Phonebook ID
+    private int _pbid;
+
     // Call monitor class/including thread
     private CallMonitor _callMonitor;
 
@@ -112,6 +115,7 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
         String fboxurl = Objects.toString(configuration.get("url"), null);
         String fboxuser = Objects.toString(configuration.get("user"), null);
         String fboxpw = Objects.toString(configuration.get("pass"), null);
+        String fboxphonebookid = Objects.toString(configuration.get("phonebookid"), null);
         if (fboxurl == null) {
             logger.warn("Fritzbox URL was not provided in config. Shutting down binding.");
             // how to shutdown??
@@ -127,9 +131,14 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
             setProperlyConfigured(false);
             return;
         }
+        if (fboxphonebookid == null) {
+            logger.debug("No Phonebookid provided. Use default: 0");
+            fboxphonebookid = "0";
+        }
         this._pw = fboxpw;
         this._user = fboxuser;
         this._url = fboxurl;
+        this._pbid = Integer.valueOf(fboxphonebookid);
 
         if (_fboxComm == null) {
             _fboxComm = new Tr064Comm(_url, _user, _pw);
@@ -178,7 +187,7 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
                         if (_pbm == null) {
                             logger.debug("Downloading phonebooks");
                             _pbm = new PhonebookManager(_fboxComm);
-                            _pbm.downloadPhonebooks();
+                            _pbm.downloadPhonebooks(_pbid);
                         }
 
                         _callMonitor = new CallMonitor(_url, eventPublisher, providers, _pbm);
