@@ -13,6 +13,7 @@
     <config-description>
         <parameter name="port" type="text" required="true">
             <label>Serial port</label>
+            <context>serial-port</context>            
             <description>The DSMR serial port, e.g. "COM1" for Windows or "/dev/ttyUSB0" for Linux.</description>
             <default>/dev/ttyUSB0</default>
         </parameter>
