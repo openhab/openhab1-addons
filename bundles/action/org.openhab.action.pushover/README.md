@@ -37,3 +37,13 @@ The following are valid action calls that can be made when the plugin is loaded.
 * `pushover(String apiToken, String userKey, String message, int priority)`
 * `pushover(String apiToken, String userKey, String message, String device, int priority)`
 * `pushover(String apiToken, String userKey, String message, String device, String title, String url, String urlTitle, int priority, String soundFile)`
+
+The action calls have to be configured in the above sequence, if you need to omit one of the call parameters you may use a null value or two double quotes. In this case any default values from `services/pushover.cfg` will be used. 
+Note that you cannot use a null value for int priority.
+
+### Example
+
+Send a message without a sound, omit String url and String urlTitle.
+
+* `pushover("test message", 1, null, null, "none")` or
+* `pushover("test message", 1, "", "", "none")`
