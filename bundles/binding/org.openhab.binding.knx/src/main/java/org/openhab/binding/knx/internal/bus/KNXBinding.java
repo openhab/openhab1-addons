@@ -108,7 +108,13 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
         logger.trace("Received command (item='{}', command='{}')", itemName, command.toString());
-        if (!isEcho(itemName, command)) {
+        if (!KNXConnection.getEnvironmentModeFelix()) {// running in OH1
+            if (!isEcho(itemName, command)) {
+                logger.trace("internalReceiveCommand do writeToKNX OH1");
+                writeToKNX(itemName, command);
+            }
+        } else if (!isEcho(itemName, command) && isCommandGA(itemName)) {
+            logger.trace("internalReceiveCommand do writeToKNX OH2");
             writeToKNX(itemName, command);
         }
     }
@@ -122,7 +128,13 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
     @Override
     protected void internalReceiveUpdate(String itemName, State newState) {
         logger.trace("Received update (item='{}', state='{}')", itemName, newState.toString());
-        if (!isEcho(itemName, newState)) {
+        if (!KNXConnection.getEnvironmentModeFelix()) {// running in OH1
+            if (!isEcho(itemName, newState)) {
+                logger.trace("internalReceiveUpdate do writeToKNX OH1");
+                writeToKNX(itemName, newState);
+            }
+        } else if (!isEcho(itemName, newState) && !isCommandGA(itemName)) {
+            logger.trace("internalReceiveUpdate do writeToKNX OH2");
             writeToKNX(itemName, newState);
         }
     }
@@ -131,7 +143,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
         String ignoreEventListKey = itemName + type.toString();
         if (ignoreEventList.remove(ignoreEventListKey)) {
             logger.trace(
-                    "We received this event (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!",
+                    "We received this event (item='{}', state='{}') from KNX, so we do not send it back again -> ignore!",
                     itemName, type.toString());
             return true;
         } else {
@@ -264,9 +276,13 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
     private void sendTypeToItemButNotToKnx(GroupAddress destination, String itemName, Type type) {
         // we need to make sure that we won't send out this event to
         // the knx bus again, when receiving it on the openHAB bus
+        // if (!KNXConnection.getEnvironmentModeFelix()) {// running in OH1
         ignoreEventList.add(itemName + type.toString());
-        logger.trace("Added event (item='{}', type='{}') to the ignore event list", itemName, type.toString());
+        logger.trace(
+                "Added event (item='{}', type='{}') to the ignore event list, type is instanceof Command='{}', isCommandGA='{}'",
+                itemName, type.toString(), (type instanceof Command), isCommandGA(destination));
 
+        // }
         if (type instanceof Command && isCommandGA(destination)) {
             eventPublisher.postCommand(itemName, (Command) type);
         } else if (type instanceof State) {
@@ -277,6 +293,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
 
         logger.trace("Processed event (item='{}', type='{}', destination='{}')", itemName, type.toString(),
                 destination.toString());
+
     }
 
     private boolean isStopCommand(byte[] asdu) {
@@ -401,6 +418,15 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
     private boolean isCommandGA(GroupAddress groupAddress) {
         for (KNXBindingProvider provider : providers) {
             if (!provider.isCommandGA(groupAddress)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isCommandGA(final String itemName) {
+        for (KNXBindingProvider provider : providers) {
+            if (!provider.isCommandGA(itemName)) {
                 return false;
             }
         }
@@ -554,8 +580,9 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements P
         public void run() {
             while (mayRun()) {
                 logger.debug("Post new value {} for items {}", command, item);
+
                 sendTypeToItemButNotToKnx(destination, item, command);
-                eventPublisher.postCommand(item, command);
+
                 try {
                     Thread.sleep(SLEEP_PERIOD_MS);
                 } catch (InterruptedException e) {
