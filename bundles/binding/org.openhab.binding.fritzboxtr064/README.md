@@ -36,11 +36,12 @@ It has been tested on:
 This binding can be configured in the file `services/fritzboxtr064.cfg`.
 
 | Property | Default | Required | Description |
-|----------|---------|:--------:|-------------|
-| url      |         |   Yes    | URL. Either use `http://<fbox-ip>:49000` or `https://<fbox-ip>:49443` (https preferred!) |
-| refresh  | 60000   |   No     | Refresh interval in milliseconds |
-| user     | dslf-config |  No  | User Name.  Only use this value if you configured a user in fbox webui/config!  It is recommended to switch to authentication by username in fritzbox config and add a separate config user for this binding. |
-| pass     |         |   Yes    | Password |
+|-------------|---------|:--------:|-------------|
+| url         |         |   Yes    | URL. Either use `http://<fbox-ip>:49000` or `https://<fbox-ip>:49443` (https preferred!) |
+| refresh     | 60000   |   No     | Refresh interval in milliseconds |
+| user        | dslf-config |  No  | User Name.  Only use this value if you configured a user in fbox webui/config!  It is recommended to switch to authentication by username in fritzbox config and add a separate config user for this binding. |
+| pass        |         |   Yes    | Password |
+| phonebookid | 0       |   No     | PhoneBook ID if you use a different phonebook (like a Google-synced phonebook). |
 
 
 ## Item Configuration

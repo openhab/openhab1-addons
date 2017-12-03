@@ -129,8 +129,8 @@ public class PhonebookManager {
     /***
      * Downloads and parses phonebooks from fbox
      */
-    public void downloadPhonebooks() {
-        Document pb = downloadPhonebook(0);
+    public void downloadPhonebooks(int phonebookid) {
+        Document pb = downloadPhonebook(phonebookid);
         if (pb != null) {
             NodeList nlContacts = pb.getElementsByTagName("contact");
             for (int i = 0; i < nlContacts.getLength(); i++) {
