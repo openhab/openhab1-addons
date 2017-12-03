@@ -1,18 +1,24 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.epsonprojector.internal
-Ignore-Package: org.openhab.binding.epsonprojector.internal
+Bundle-Activator: org.openhab.binding.epsonprojector.internal.EpsonProje
+ ctorActivator
+Bundle-ClassPath: .
+Bundle-Description: This is the Epson projector binding of the open Home
+  Automation Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Epson projector Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.epsonprojector
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.epsonprojector.internal.EpsonProjectorActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the Epson projector binding of the open Home Aut
- omation Bus (openHAB)
-Import-Package: gnu.io,
+Export-Package: org.openhab.binding.epsonprojector
+Ignore-Package: org.openhab.binding.epsonprojector.internal
+Import-Package: 
+ gnu.io,
  org.apache.commons.io;version="2.0.1",
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.eclipse.osgi.util;version="1.1.0",
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -26,9 +32,6 @@ Import-Package: gnu.io,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.epsonprojector
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
-
+Private-Package: org.openhab.binding.epsonprojector.internal
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider
+ .xml

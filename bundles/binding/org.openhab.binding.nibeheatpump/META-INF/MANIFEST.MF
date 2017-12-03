@@ -1,16 +1,23 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.nibeheatpump.internal
-Ignore-Package: org.openhab.binding.nibeheatpump.internal
+Bundle-Activator: org.openhab.binding.nibeheatpump.internal.NibeHeatPump
+ Activator
+Bundle-ClassPath: .
+Bundle-Description: This is the nibeheatpump binding of the open Home Au
+ tomation Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB nibeheatpump Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.nibeheatpump
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.nibeheatpump.internal.NibeHeatPumpActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the nibeheatpump binding of the open Home Aut
- omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Export-Package: org.openhab.binding.nibeheatpump
+Ignore-Package: org.openhab.binding.nibeheatpump.internal
+Import-Package: 
+ javax.xml.bind,
+ org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -22,10 +29,7 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.osgi.service.event,
- org.slf4j,
- javax.xml.bind
-Export-Package: org.openhab.binding.nibeheatpump
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+ org.slf4j
+Private-Package: org.openhab.binding.nibeheatpump.internal
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider
+ .xml

@@ -1,17 +1,27 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.mcp23017.internal
-Ignore-Package: org.openhab.binding.mcp23017.internal
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: 
+ .,
+ lib/pi4j-core.jar,
+ lib/pi4j-gpio-extension.jar,
+ lib/quick-json-1.0.2.3.jar
+Bundle-Description: This is the mcp23017 binding of the open Home Automa
+ tion Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB mcp23017 Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.mcp23017
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-ActivationPolicy: lazy
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the mcp23017 binding of the open Home Automation Bus (openHAB)
-Import-Package: org.apache.commons.collections,
+Export-Package: org.openhab.binding.mcp23017
+Ignore-Package: org.openhab.binding.mcp23017.internal
+Import-Package: 
+ org.apache.commons.collections,
  org.apache.commons.collections.bidimap,
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.binding.mcp23017,
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -24,12 +34,7 @@ Import-Package: org.apache.commons.collections,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.mcp23017
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .,
- lib/pi4j-core.jar,
- lib/pi4j-gpio-extension.jar,
- lib/quick-json-1.0.2.3.jar
+Private-Package: org.openhab.binding.mcp23017.internal
 Require-Bundle: org.openhab.binding.mcp23017
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider
+ .xml

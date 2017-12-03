@@ -1,16 +1,24 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.binding.modbus.internal.ModbusActivator
+Bundle-ClassPath: 
+ .,
+ lib/commons-pool2-2.4.2.jar
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB ModbusTCP Master Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.modbus
-Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.modbus.internal.ModbusActivator
 Bundle-Vendor: openHAB.org
-Import-Package: org.apache.commons.collections,
+Bundle-Version: 1.11.0.qualifier
+Export-Package: org.openhab.binding.modbus
+Import-Package: 
+ gnu.io,
+ org.apache.commons.collections,
  org.apache.commons.collections.iterators,
  org.apache.commons.collections.keyvalue,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.apache.commons.lang.builder,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -30,10 +38,5 @@ Import-Package: org.apache.commons.collections,
  org.quartz.impl,
  org.quartz.impl.matchers,
  org.quartz.utils,
- org.slf4j,
- gnu.io
-Export-Package: org.openhab.binding.modbus
+ org.slf4j
 Service-Component: OSGI-INF/*.xml
-Bundle-ClassPath: .,
- lib/commons-pool2-2.4.2.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7

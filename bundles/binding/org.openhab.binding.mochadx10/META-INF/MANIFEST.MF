@@ -1,17 +1,23 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.mochadx10.internal
-Ignore-Package: org.openhab.binding.mochadx10.internal
+Bundle-Activator: org.openhab.binding.mochadx10.internal.MochadX10Activa
+ tor
+Bundle-ClassPath: .
+Bundle-Description: This is the Mochad X10 binding of the open Home Auto
+ mation Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Mochad X10 Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.binding.mochadx10
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.mochadx10.internal.MochadX10Activator
-Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Description: This is the Mochad X10 binding of the open Home Aut
- omation Bus (openHAB)
-Import-Package: org.apache.commons.io,
+Ignore-Package: org.openhab.binding.mochadx10.internal
+Import-Package: 
+ org.apache.commons.io,
  org.apache.commons.lang,
  org.codehaus.jackson.map,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -22,8 +28,6 @@ Import-Package: org.apache.commons.io,
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
-Bundle-SymbolicName: org.openhab.binding.mochadx10
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/mochadx10binding.xml
-Bundle-ClassPath: .
+Private-Package: org.openhab.binding.mochadx10.internal
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/mochadx
+ 10binding.xml

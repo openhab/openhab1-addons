@@ -1,17 +1,21 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.souliss.internal
-Ignore-Package: org.openhab.binding.souliss.internal
+Bundle-Activator: org.openhab.binding.souliss.internal.SoulissActivator
+Bundle-ClassPath: .
+Bundle-Description: This is the souliss binding of the open Home Automat
+ ion Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: Souliss - Arduino based SmartHome Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.souliss
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.souliss.internal.SoulissActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the souliss binding of the open Home Aut
- omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Ignore-Package: org.openhab.binding.souliss.internal
+Import-Package: 
+ org.apache.commons.lang,
  org.apache.commons.net,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -25,7 +29,6 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Private-Package: org.openhab.binding.souliss.internal
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider
+ .xml

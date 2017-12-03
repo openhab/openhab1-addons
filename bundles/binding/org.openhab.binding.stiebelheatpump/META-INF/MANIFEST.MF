@@ -1,15 +1,25 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.stiebelheatpump.internal
-Ignore-Package: org.openhab.binding.stiebelheatpump.internal
+Bundle-Activator: org.openhab.binding.stiebelheatpump.internal.StiebelHe
+ atPumpActivator
+Bundle-ClassPath: .
+Bundle-Description: This is the stiebel heat poump binding of the open H
+ ome Automation Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB stiebel heat pump Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.stiebelheatpump
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.stiebelheatpump.internal.StiebelHeatPumpActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the stiebel heat poump binding of the open Home Automation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Export-Package: 
+ org.openhab.binding.stiebelheatpump.internal,
+ org.openhab.binding.stiebelheatpump;uses:="org.openhab.core.binding"
+Ignore-Package: org.openhab.binding.stiebelheatpump.internal
+Import-Package: 
+ gnu.io,
+ org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.joda.time,
  org.joda.time.base,
  org.openhab.core.binding,
@@ -23,11 +33,7 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.osgi.service.event,
- org.slf4j,
- gnu.io
-Export-Package: org.openhab.binding.stiebelheatpump;uses:="org.openhab.core.binding",
- org.openhab.binding.stiebelheatpump.internal
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: . 
+ org.slf4j
+Private-Package: org.openhab.binding.stiebelheatpump.internal
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider
+ .xml

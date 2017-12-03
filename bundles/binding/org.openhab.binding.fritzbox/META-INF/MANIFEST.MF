@@ -1,16 +1,20 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.binding.fritzbox.internal.FritzboxActivato
+ r
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Fritzbox Binding
-Bundle-SymbolicName: org.openhab.binding.fritzbox
-Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.fritzbox.internal.FritzboxActivator
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.apache.commons.collections,
+Bundle-SymbolicName: org.openhab.binding.fritzbox
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Export-Package: org.openhab.binding.fritzbox
+Import-Package: 
+ org.apache.commons.collections,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.apache.commons.net,
  org.apache.commons.net.telnet,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -29,5 +33,5 @@ Import-Package: org.apache.commons.collections,
  org.quartz.impl.matchers,
  org.quartz.utils,
  org.slf4j
-Export-Package: org.openhab.binding.fritzbox
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/fritzboxbinding.xml
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/fritzbo
+ xbinding.xml

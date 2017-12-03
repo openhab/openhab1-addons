@@ -1,16 +1,18 @@
 Manifest-Version: 1.0
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for the DynamoDB Persistence Bundle
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-SymbolicName: org.openhab.persistence.dynamodb.test
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
-Fragment-Host: org.openhab.persistence.dynamodb
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.junit;bundle-version="4.8.1"
-Import-Package: com.google.common.collect,
+Bundle-SymbolicName: org.openhab.persistence.dynamodb.test
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Fragment-Host: org.openhab.persistence.dynamodb
+Import-Package: 
+ com.google.common.collect,
  org.apache.commons.io,
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.library.tel.types
+Require-Bundle: org.junit;bundle-version="4.8.1"

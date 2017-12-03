@@ -1,11 +1,15 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.persistence.logging.internal.LoggingPersis
+ tenceActivator
+Bundle-ClassPath: .
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Logging Persistence Bundle
-Bundle-SymbolicName: org.openhab.persistence.logging
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: ch.qos.logback.classic,
+Bundle-SymbolicName: org.openhab.persistence.logging
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Import-Package: 
+ ch.qos.logback.classic,
  ch.qos.logback.classic.encoder,
  ch.qos.logback.classic.spi,
  ch.qos.logback.core,
@@ -13,11 +17,10 @@ Import-Package: ch.qos.logback.classic,
  ch.qos.logback.core.pattern,
  ch.qos.logback.core.spi,
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.items,
  org.openhab.core.persistence,
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
-Bundle-ClassPath: .
 Service-Component: OSGI-INF/loggingpersistence.xml
-Bundle-Activator: org.openhab.persistence.logging.internal.LoggingPersistenceActivator

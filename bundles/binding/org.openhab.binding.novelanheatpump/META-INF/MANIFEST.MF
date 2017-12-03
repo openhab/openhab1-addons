@@ -1,14 +1,18 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.binding.novelanheatpump.internal.HeatPumpA
+ ctivator
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Novelan Heatpump Binding
-Bundle-SymbolicName: org.openhab.binding.novelanheatpump
-Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.novelanheatpump.internal.HeatPumpActivator
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.apache.commons.collections,
+Bundle-SymbolicName: org.openhab.binding.novelanheatpump
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Export-Package: org.openhab.binding.novelanheatpump
+Import-Package: 
+ org.apache.commons.collections,
  org.apache.commons.io,
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.eclipse.osgi.util;version="1.1.0",
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -23,5 +27,5 @@ Import-Package: org.apache.commons.collections,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.novelanheatpump
-Service-Component: OSGI-INF/genericbindigprovider.xml, OSGI-INF/heatpumpbinding.xml
+Service-Component: OSGI-INF/genericbindigprovider.xml, OSGI-INF/heatpump
+ binding.xml

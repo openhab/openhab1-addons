@@ -1,16 +1,22 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.ecotouch.internal
-Ignore-Package: org.openhab.binding.ecotouch.internal
+Bundle-Activator: org.openhab.binding.ecotouch.internal.EcoTouchActivato
+ r
+Bundle-ClassPath: .
+Bundle-Description: This is the EcoTouch binding of the open Home Automa
+ tion Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB EcoTouch Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.ecotouch
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.ecotouch.internal.EcoTouchActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the EcoTouch binding of the open Home Aut
- omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Export-Package: org.openhab.binding.ecotouch
+Ignore-Package: org.openhab.binding.ecotouch.internal
+Import-Package: 
+ org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -24,8 +30,6 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.ecotouch
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Private-Package: org.openhab.binding.ecotouch.internal
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider
+ .xml

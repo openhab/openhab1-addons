@@ -1,15 +1,18 @@
 Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: 
+ .,
+ lib/opentts-0.2.jar
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Multimedia SpeechDispatcher
-Bundle-SymbolicName: org.openhab.io.multimedia.tts.speechdispatcher
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: .,
- lib/opentts-0.2.jar
-Import-Package: org.openhab.io.multimedia.tts,
+Bundle-SymbolicName: org.openhab.io.multimedia.tts.speechdispatcher
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Import-Package: 
+ org.eclipse.jdt.annotation;resolution:=optional,
+ org.openhab.io.multimedia.tts,
  org.osgi.framework,
  org.osgi.service.cm;version="1.4.0",
  org.slf4j
 Service-Component: OSGI-INF/tts_speechdispatcher.xml
-Bundle-ActivationPolicy: lazy

@@ -1,15 +1,20 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.wol.internal
-Ignore-Package: org.openhab.binding.wol.internal
-Bundle-Name: openHAB WoL Binding
-Bundle-Vendor: openHAB.org
-Bundle-Version: 1.11.0.qualifier
 Bundle-Activator: org.openhab.binding.wol.internal.WolActivator
-Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ClassPath: .
 Bundle-Description: This is the Wake-on-LAN binding of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.apache.commons.codec.binary;version="1.3.0",
+Bundle-DocURL: http://www.openhab.org
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB WoL Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.binding.wol
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Ignore-Package: org.openhab.binding.wol.internal
+Import-Package: 
+ org.apache.commons.codec.binary;version="1.3.0",
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
@@ -21,9 +26,5 @@ Import-Package: org.apache.commons.codec.binary;version="1.3.0",
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Bundle-SymbolicName: org.openhab.binding.wol
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Private-Package: org.openhab.binding.wol.internal
 Service-Component: OSGI-INF/binding.xml
-Bundle-ClassPath: .
-

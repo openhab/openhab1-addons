@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for the EM binding
-Bundle-SymbolicName: org.openhab.binding.em.test
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
-Fragment-Host: org.openhab.binding.em
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.binding.em.test
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Fragment-Host: org.openhab.binding.em
 Require-Bundle: org.junit;bundle-version="4.8.1"

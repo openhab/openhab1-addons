@@ -1,15 +1,23 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.exec.internal
-Ignore-Package: org.openhab.binding.exec.internal
+Bundle-Activator: org.openhab.binding.exec.internal.ExecActivator
+Bundle-ClassPath: 
+ lib/commons-exec-1.1.jar,
+ .
+Bundle-Description: This is the Exec binding of the open Home Automation
+  Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Exec Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.binding.exec
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.exec.internal.ExecActivator
-Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Description: This is the Exec binding of the open Home Aut
- omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Export-Package: org.openhab.binding.exec
+Ignore-Package: org.openhab.binding.exec.internal
+Import-Package: 
+ org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -23,11 +31,6 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Bundle-SymbolicName: org.openhab.binding.exec
-Bundle-DocURL: http://www.openhab.org
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: lib/commons-exec-1.1.jar,
- .
-Export-Package: org.openhab.binding.exec
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-
+Private-Package: org.openhab.binding.exec.internal
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider
+ .xml

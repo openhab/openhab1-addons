@@ -1,12 +1,18 @@
 Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.openhab.binding.km200.internal.KM200Activator
+Bundle-ClassPath: 
+ .,
+ lib/json-20160810.jar
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB KM200 Binding
-Bundle-SymbolicName: org.openhab.binding.km200
-Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.km200.internal.KM200Activator
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: com.google.common.io,
+Bundle-SymbolicName: org.openhab.binding.km200
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Export-Package: org.openhab.binding.km200
+Import-Package: 
+ com.google.common.io,
  com.google.common.net,
  org.apache.commons.codec.binary,
  org.apache.commons.collections,
@@ -17,6 +23,7 @@ Import-Package: com.google.common.io,
  org.apache.commons.lang,
  org.apache.commons.net,
  org.apache.http.impl.client,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -31,9 +38,5 @@ Import-Package: com.google.common.io,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.km200
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/km200binding.xml
-Bundle-ClassPath: .,
- lib/json-20160810.jar
-Bundle-ActivationPolicy: lazy
-
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/km200bi
+ nding.xml

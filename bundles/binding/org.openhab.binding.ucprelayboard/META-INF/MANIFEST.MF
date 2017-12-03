@@ -1,13 +1,17 @@
 Manifest-Version: 1.0
+Bundle-ClassPath: .
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB UCProjects.eu RelayBoard Binding
-Bundle-SymbolicName: org.openhab.binding.ucprelayboard
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: gnu.io,
+Bundle-SymbolicName: org.openhab.binding.ucprelayboard
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Export-Package: org.openhab.binding.ucprelayboard
+Import-Package: 
+ gnu.io,
  org.apache.commons.io,
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -19,6 +23,5 @@ Import-Package: gnu.io,
  org.osgi.service.cm,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.ucprelayboard
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider
+ .xml

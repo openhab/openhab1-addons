@@ -1,19 +1,24 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.hue.internal
-Ignore-Package: org.openhab.binding.hue.internal
+Bundle-Activator: org.openhab.binding.hue.internal.HueActivator
+Bundle-ClassPath: .
+Bundle-Description: This is the Hue binding of the open Home Automation 
+ Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Hue Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.binding.hue
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.hue.internal.HueActivator
-Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Description: This is the Hue binding of the open Home Aut
- omation Bus (openHAB)
-Import-Package: com.sun.jersey.api.client,
+Ignore-Package: org.openhab.binding.hue.internal
+Import-Package: 
+ com.sun.jersey.api.client,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.codehaus.jackson,
  org.codehaus.jackson.map,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -24,8 +29,6 @@ Import-Package: com.sun.jersey.api.client,
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
-Bundle-SymbolicName: org.openhab.binding.hue
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/huebinding.xml
-Bundle-ClassPath: .
+Private-Package: org.openhab.binding.hue.internal
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/huebind
+ ing.xml

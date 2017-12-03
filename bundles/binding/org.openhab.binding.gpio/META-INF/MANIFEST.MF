@@ -1,12 +1,15 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.binding.gpio.internal.GPIOBindingActivator
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB GPIO Binding
-Bundle-SymbolicName: org.openhab.binding.gpio
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: Dancho Penev
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.apache.commons.collections,
+Bundle-SymbolicName: org.openhab.binding.gpio
+Bundle-Vendor: Dancho Penev
+Bundle-Version: 1.11.0.qualifier
+Import-Package: 
+ org.apache.commons.collections,
  org.apache.commons.collections.bidimap,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -20,6 +23,5 @@ Import-Package: org.apache.commons.collections,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Service-Component: OSGI-INF/gpiobinding.xml,
- OSGI-INF/gpiobindingprovider.xml
-Bundle-Activator: org.openhab.binding.gpio.internal.GPIOBindingActivator
+Service-Component: OSGI-INF/gpiobinding.xml,OSGI-INF/gpiobindingprovider
+ .xml

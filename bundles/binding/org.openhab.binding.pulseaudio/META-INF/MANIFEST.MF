@@ -1,17 +1,24 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.binding.pulseaudio.internal.PulseaudioActi
+ vator
+Bundle-ClassPath: .
+Bundle-Description: This is the runtime component of the open Home Autom
+ ation Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Pulseaudio Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.binding.pulseaudio
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.pulseaudio.internal.PulseaudioActivator
-Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Description: This is the runtime component of the open Home Aut
- omation Bus (openHAB)
-Import-Package: com.google.common.base,
+Import-Package: 
+ com.google.common.base,
  com.google.common.collect,
  org.apache.commons.collections,
  org.apache.commons.collections.list,
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -25,9 +32,5 @@ Import-Package: com.google.common.base,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Bundle-SymbolicName: org.openhab.binding.pulseaudio
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/pulseaudiobinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
-
+Service-Component: OSGI-INF/pulseaudiobinding.xml, OSGI-INF/genericbindi
+ ngprovider.xml

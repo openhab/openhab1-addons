@@ -1,20 +1,7 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: openHAB HarmonyHub IO Bundle
-Bundle-SymbolicName: org.openhab.io.harmonyhub
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.openhab.io.harmonyhub, 
- net.whistlingfish.harmony,
- net.whistlingfish.harmony.config
-Import-Package: org.apache.commons.lang;version="2.6.0",
- org.openhab.core.events,
- org.osgi.service.cm;version="1.4.0",
- org.slf4j;version="1.6.4"
-Bundle-DocURL: http://www.openhab.org
-Service-Component: OSGI-INF/harmonyhub.xml
-Bundle-ClassPath: .,
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: 
+ .,
  lib/guava-17.0.jar,
  lib/guice-4.0-beta4.jar,
  lib/harmony-java-client-1.0.4.jar,
@@ -28,4 +15,21 @@ Bundle-ClassPath: .,
  lib/smack-tcp-4.0.2.jar,
  lib/harmony-java-client-1.0.3.jar,
  lib/xpp3-1.1.4c.jar
-Bundle-ActivationPolicy: lazy
+Bundle-DocURL: http://www.openhab.org
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB HarmonyHub IO Bundle
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.io.harmonyhub
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Export-Package: 
+ net.whistlingfish.harmony,
+ net.whistlingfish.harmony.config,
+ org.openhab.io.harmonyhub
+Import-Package: 
+ org.apache.commons.lang;version="2.6.0",
+ org.eclipse.jdt.annotation;resolution:=optional,
+ org.openhab.core.events,
+ org.osgi.service.cm;version="1.4.0",
+ org.slf4j;version="1.6.4"
+Service-Component: OSGI-INF/harmonyhub.xml

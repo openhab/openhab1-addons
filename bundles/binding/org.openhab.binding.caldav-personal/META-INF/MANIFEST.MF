@@ -1,17 +1,25 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.caldav_personal.internal
-Ignore-Package: org.openhab.binding.caldav_personal.internal
+Bundle-Activator: org.openhab.binding.caldav_personal.internal.CalDavAct
+ ivator
+Bundle-ClassPath: .
+Bundle-Description: This is the CalDav-Personal binding of the open Home
+  Automation Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB CalDav Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.caldav-personal
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.caldav_personal.internal.CalDavActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the CalDav-Personal binding of the open Home Aut
- omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Ignore-Package: org.openhab.binding.caldav_personal.internal
+Import-Package: 
+ org.apache.commons.lang,
  org.apache.commons.lang.math;version="2.6.0",
+ org.eclipse.jdt.annotation;resolution:=optional,
+ org.joda.time,
+ org.joda.time.base,
+ org.joda.time.format,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -19,16 +27,12 @@ Import-Package: org.apache.commons.lang,
  org.openhab.core.library.types,
  org.openhab.core.types,
  org.openhab.io.caldav,
- org.joda.time,
- org.joda.time.base,
- org.joda.time.format,
  org.openhab.model.item.binding,
  org.osgi.framework,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/caldavbinding.xml, OSGI-INF/caldavbindingprovider.xml
-Bundle-ClassPath: .
+Private-Package: org.openhab.binding.caldav_personal.internal
+Service-Component: OSGI-INF/caldavbinding.xml, OSGI-INF/caldavbindingpro
+ vider.xml

@@ -1,12 +1,18 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.binding.vdr.internal.VDRActivator
+Bundle-ClassPath: 
+ lib/svdrp4j-1.0.0-SNAPSHOT.jar,
+ .
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB VDR Binding
-Bundle-SymbolicName: org.openhab.binding.vdr
-Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.vdr.internal.VDRActivator
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.apache.commons.lang;version="2.4.0",
+Bundle-SymbolicName: org.openhab.binding.vdr
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Export-Package: org.openhab.binding.vdr
+Import-Package: 
+ org.apache.commons.lang;version="2.4.0",
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -19,7 +25,5 @@ Import-Package: org.apache.commons.lang;version="2.4.0",
  org.osgi.service.cm,
  org.osgi.service.event,
  org.slf4j
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/vdrbinding.xml, OSGI-INF/vdrmonitor.xml
-Bundle-ClassPath: lib/svdrp4j-1.0.0-SNAPSHOT.jar,
- .
-Export-Package: org.openhab.binding.vdr
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/vdrbind
+ ing.xml, OSGI-INF/vdrmonitor.xml

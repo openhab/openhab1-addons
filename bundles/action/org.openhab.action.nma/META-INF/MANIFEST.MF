@@ -1,17 +1,23 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.action.nma.internal
-Ignore-Package: org.openhab.action.nma.internal
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.openhab.action.nma.internal.NotifyMyAndroidActivat
+ or
+Bundle-ClassPath: .
+Bundle-Description: This is the NotifyMyAndroid action of the open Home 
+ Automation Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB NotifyMyAndroid Action
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.action.nma
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.action.nma.internal.NotifyMyAndroidActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the NotifyMyAndroid action of the open Home Aut
- omation Bus (openHAB)
-Import-Package: org.apache.commons.io;version="2.0.1",
+Ignore-Package: org.openhab.action.nma.internal
+Import-Package: 
+ org.apache.commons.io;version="2.0.1",
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
@@ -22,8 +28,5 @@ Import-Package: org.apache.commons.io;version="2.0.1",
  org.osgi.service.cm,
  org.osgi.service.component,
  org.slf4j
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Private-Package: org.openhab.action.nma.internal
 Service-Component: OSGI-INF/action.xml
-Bundle-ClassPath: .
-Bundle-ActivationPolicy: lazy

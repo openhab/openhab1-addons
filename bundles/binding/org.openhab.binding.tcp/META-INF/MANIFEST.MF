@@ -1,14 +1,20 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.binding.tcp.internal.TCPActivator
+Bundle-ClassPath: .
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB TCP-UDP Binding
-Bundle-SymbolicName: org.openhab.binding.tcp
-Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.tcp.internal.TCPActivator
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.apache.commons.lang,
+Bundle-SymbolicName: org.openhab.binding.tcp
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Export-Package: 
+ org.openhab.binding.tcp,
+ org.openhab.binding.tcp.protocol
+Import-Package: 
+ org.apache.commons.lang,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -24,8 +30,6 @@ Import-Package: org.apache.commons.lang,
  org.quartz.impl.matchers,
  org.quartz.utils,
  org.slf4j
-Bundle-ClassPath: .
-Export-Package: org.openhab.binding.tcp,org.openhab.binding.tcp.protoc
- ol
-Service-Component: OSGI-INF/tcpgenericbindingprovider.xml, OSGI-INF/tcpbinding.xml,OSGI-INF/udpgenericbindingprovider.xml, OSGI-INF/udpbinding.xml
-
+Service-Component: OSGI-INF/tcpgenericbindingprovider.xml, OSGI-INF/tcpb
+ inding.xml,OSGI-INF/udpgenericbindingprovider.xml, OSGI-INF/udpbinding.
+ xml

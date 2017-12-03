@@ -1,11 +1,16 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.binding.plcbus.internal.PLCBusActivator
+Bundle-ClassPath: .
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB PLCBus Binding
-Bundle-SymbolicName: org.openhab.binding.plcbus
-Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.plcbus.internal.PLCBusActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: gnu.io,
+Bundle-SymbolicName: org.openhab.binding.plcbus
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Export-Package: org.openhab.binding.plcbus
+Import-Package: 
+ gnu.io,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.autoupdate,
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -17,8 +22,5 @@ Import-Package: gnu.io,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.slf4j
-Service-Component: OSGI-INF/plcbusgenericbindingprovider.xml,
- OSGI-INF/plcbusbinding.xml
-Bundle-ClassPath: .
-Export-Package: org.openhab.binding.plcbus
-Bundle-Vendor: openHAB.org
+Service-Component: OSGI-INF/plcbusgenericbindingprovider.xml,OSGI-INF/pl
+ cbusbinding.xml

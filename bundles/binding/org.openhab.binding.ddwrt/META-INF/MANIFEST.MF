@@ -1,16 +1,19 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.binding.ddwrt.internal.DDWRTActivator
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB DD-WRT Binding
-Bundle-SymbolicName: org.openhab.binding.ddwrt
-Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.ddwrt.internal.DDWRTActivator
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.apache.commons.collections,
+Bundle-SymbolicName: org.openhab.binding.ddwrt
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Export-Package: org.openhab.binding.ddwrt
+Import-Package: 
+ org.apache.commons.collections,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.apache.commons.net,
  org.apache.commons.net.telnet,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -25,5 +28,5 @@ Import-Package: org.apache.commons.collections,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.ddwrt
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/ddwrtbinding.xml
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/ddwrtbi
+ nding.xml

@@ -1,15 +1,27 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.io.caldav.internal
-Ignore-Package: org.openhab.io.caldav.internal
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.openhab.io.caldav.internal.CalDavActivator
+Bundle-ClassPath: 
+ .,
+ lib/commons-lang3-3.3.2.jar,
+ lib/httpclient-4.3.5.jar,
+ lib/httpcore-4.3.2.jar,
+ lib/ical4j-2.0-beta1.jar,
+ lib/sardine-5.6.jar
+Bundle-Description: This is the CalDav enhancement of the open Home Auto
+ mation Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB CalDav Calendar
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.io.caldav
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.io.caldav.internal.CalDavActivator
-Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Description: This is the CalDav enhancement of the open Home Aut
- omation Bus (openHAB)
-Import-Package: com.google.common.collect,
+Export-Package: org.openhab.io.caldav
+Ignore-Package: org.openhab.io.caldav.internal
+Import-Package: 
+ com.google.common.collect,
  org.apache.commons.codec,
  org.apache.commons.codec.binary,
  org.apache.commons.codec.net,
@@ -17,6 +29,7 @@ Import-Package: com.google.common.collect,
  org.apache.commons.lang,
  org.apache.commons.lang.math,
  org.apache.commons.logging,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.joda.time,
  org.joda.time.base,
  org.joda.time.format,
@@ -39,15 +52,5 @@ Import-Package: com.google.common.collect,
  org.quartz.impl.matchers,
  org.quartz.utils,
  org.slf4j
-Bundle-SymbolicName: org.openhab.io.caldav
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Private-Package: org.openhab.io.caldav.internal
 Service-Component: OSGI-INF/caldavloader.xml
-Bundle-ClassPath: .,
- lib/commons-lang3-3.3.2.jar,
- lib/httpclient-4.3.5.jar,
- lib/httpcore-4.3.2.jar,
- lib/ical4j-2.0-beta1.jar,
- lib/sardine-5.6.jar
-Export-Package: org.openhab.io.caldav
-Bundle-ActivationPolicy: lazy

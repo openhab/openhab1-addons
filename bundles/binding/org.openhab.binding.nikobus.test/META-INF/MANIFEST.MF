@@ -1,13 +1,16 @@
 Manifest-Version: 1.0
+Bundle-ClassPath: 
+ lib/mockito-all-1.9.5.jar,
+ lib/slf4j-jdk14-1.6.4.jar,
+ .
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for Nikobus Binding
 Bundle-SymbolicName: org.openhab.binding.nikobus.test
+Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
 Fragment-Host: org.openhab.binding.nikobus;bundle-version="1.3.0"
-Bundle-Vendor: openHAB.org
-Require-Bundle: org.junit;bundle-version="4.8.1"
-Bundle-ClassPath: lib/mockito-all-1.9.5.jar,
- lib/slf4j-jdk14-1.6.4.jar,
- .
-Import-Package: gnu.io,
+Import-Package: 
+ gnu.io,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.slf4j;version="1.6.4"
+Require-Bundle: org.junit;bundle-version="4.8.1"
