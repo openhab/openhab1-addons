@@ -1,20 +1,35 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.knx.internal
-Ignore-Package: org.openhab.binding.knx.internal
+Bundle-Activator: org.openhab.binding.knx.internal.KNXActivator
+Bundle-ClassPath: 
+ lib/calimero-rxtx-2.0a3.jar,
+ lib/calimero-core-2.3-beta.jar,
+ .
+Bundle-Description: This is the runtime component of the open Home Autom
+ ation Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB KNX Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.binding.knx
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.knx.internal.KNXActivator
-Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Description: This is the runtime component of the open Home Aut
- omation Bus (openHAB)
-Import-Package: com.google.common.base,
+Export-Package: 
+ org.openhab.binding.knx.config,
+ tuwien.auto.calimero,
+ tuwien.auto.calimero.datapoint,
+ tuwien.auto.calimero.exception,
+ tuwien.auto.calimero.link,
+ tuwien.auto.calimero.process
+Ignore-Package: org.openhab.binding.knx.internal
+Import-Package: 
+ com.google.common.base,
  com.google.common.collect,
  gnu.io;resolution:=optional,
  org.apache.commons.collections,
  org.apache.commons.collections.list,
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.autoupdate,
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -28,17 +43,6 @@ Import-Package: com.google.common.base,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Bundle-SymbolicName: org.openhab.binding.knx
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/knxbinding.xml, OSGI-INF/knxcoretypemapper.xml, OSGI-INF/knxgenericbindingprovider.xml
-Bundle-ClassPath: lib/calimero-rxtx-2.0a3.jar,
- lib/calimero-core-2.3-beta.jar,
- .
-Export-Package: org.openhab.binding.knx.config,
- tuwien.auto.calimero,
- tuwien.auto.calimero.datapoint,
- tuwien.auto.calimero.exception,
- tuwien.auto.calimero.link,
- tuwien.auto.calimero.process
-
+Private-Package: org.openhab.binding.knx.internal
+Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/knxbinding.xml, 
+ OSGI-INF/knxcoretypemapper.xml, OSGI-INF/knxgenericbindingprovider.xml

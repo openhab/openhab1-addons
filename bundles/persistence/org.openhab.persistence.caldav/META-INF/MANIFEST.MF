@@ -1,13 +1,19 @@
 Manifest-Version: 1.0
-Service-Component: OSGI-INF/caldav.xml, OSGI-INF/configuration.xml
+Bundle-Activator: org.openhab.persistence.caldav.internal.CaldavActivato
+ r
+Bundle-ClassPath: .
+Bundle-DocURL: http://www.openhab.org
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB calDAV Persistence
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.persistence.caldav
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.persistence.caldav.internal.CaldavActivator
-Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Import-Package: com.google.common.annotations;version="1.0.0",
+Import-Package: 
+ com.google.common.annotations;version="1.0.0",
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.joda.time,
  org.joda.time.base,
  org.openhab.core.events,
@@ -21,7 +27,4 @@ Import-Package: com.google.common.annotations;version="1.0.0",
  org.osgi.service.cm,
  org.osgi.service.event,
  org.slf4j
-Bundle-SymbolicName: org.openhab.persistence.caldav
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: .
+Service-Component: OSGI-INF/caldav.xml, OSGI-INF/configuration.xml

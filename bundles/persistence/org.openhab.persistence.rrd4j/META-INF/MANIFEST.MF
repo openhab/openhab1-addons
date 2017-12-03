@@ -1,13 +1,19 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.persistence.rrd4j.internal.RRD4jActivator
+Bundle-ClassPath: 
+ .,
+ lib/rrd4j-2.1.1.jar
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB RRD4j Persistence Bundle
-Bundle-SymbolicName: org.openhab.persistence.rrd4j
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: javax.servlet,
+Bundle-SymbolicName: org.openhab.persistence.rrd4j
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Import-Package: 
+ javax.servlet,
  org.apache.commons.io,
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
@@ -21,7 +27,4 @@ Import-Package: javax.servlet,
  org.osgi.service.cm,
  org.osgi.service.http,
  org.slf4j
-Bundle-ClassPath: .,
- lib/rrd4j-2.1.1.jar
 Service-Component: OSGI-INF/rrd4j.xml, OSGI-INF/chartservlet.xml
-Bundle-Activator: org.openhab.persistence.rrd4j.internal.RRD4jActivator

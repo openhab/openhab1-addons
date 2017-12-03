@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for the Exec binding
-Bundle-SymbolicName: org.openhab.binding.exec.test
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
-Fragment-Host: org.openhab.binding.exec
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.binding.exec.test
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Fragment-Host: org.openhab.binding.exec
 Require-Bundle: org.junit;bundle-version="4.8.1"

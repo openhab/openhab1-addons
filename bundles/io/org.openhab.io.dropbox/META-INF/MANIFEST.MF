@@ -1,17 +1,22 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.io.dropbox.internal
-Ignore-Package: org.openhab.io.dropbox.internal
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.openhab.io.dropbox.internal.DropboxActivator
+Bundle-ClassPath: 
+ .,
+ lib/dropbox-core-sdk-1.7.3.jar,
+ lib/jackson-core-2.2.2.jar
+Bundle-Description: This is the Dropbox IO bundle of the open Home Autom
+ ation Bus (openHAB)
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Dropbox IO Bundle
-Bundle-SymbolicName: org.openhab.io.dropbox
-Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.io.dropbox.internal.DropboxActivator
-Bundle-Vendor: openHAB
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Description: This is the Dropbox IO bundle of the open Home Aut
- omation Bus (openHAB)
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.apache.commons.io,
+Bundle-SymbolicName: org.openhab.io.dropbox
+Bundle-Vendor: openHAB
+Bundle-Version: 1.11.0.qualifier
+Ignore-Package: org.openhab.io.dropbox.internal
+Import-Package: 
+ org.apache.commons.io,
  org.apache.commons.lang,
  org.apache.commons.logging,
  org.apache.http,
@@ -28,6 +33,7 @@ Import-Package: org.apache.commons.io,
  org.apache.http.impl.conn.tsccm,
  org.apache.http.message,
  org.apache.http.params,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -45,8 +51,5 @@ Import-Package: org.apache.commons.io,
  org.quartz.impl.matchers,
  org.quartz.utils,
  org.slf4j
-Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .,
- lib/dropbox-core-sdk-1.7.3.jar,
- lib/jackson-core-2.2.2.jar
+Private-Package: org.openhab.io.dropbox.internal
 Service-Component: OSGI-INF/synchronizer.xml

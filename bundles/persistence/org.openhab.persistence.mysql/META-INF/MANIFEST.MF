@@ -1,13 +1,20 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.persistence.mysql.internal.MysqlPersistenc
+ eServiceActivator
+Bundle-ClassPath: 
+ .,
+ lib/mysql-connector-java-5.1.26-bin.jar
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB mySQL Persistence bundle
-Bundle-SymbolicName: org.openhab.persistence.mysql
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.persistence.mysql
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
 DynamicImport-Package: *
-Import-Package: org.apache.commons.io,
+Import-Package: 
+ org.apache.commons.io,
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
@@ -17,7 +24,4 @@ Import-Package: org.apache.commons.io,
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
-Bundle-ClassPath: .,
- lib/mysql-connector-java-5.1.26-bin.jar
 Service-Component: OSGI-INF/mysql.xml
-Bundle-Activator: org.openhab.persistence.mysql.internal.MysqlPersistenceServiceActivator

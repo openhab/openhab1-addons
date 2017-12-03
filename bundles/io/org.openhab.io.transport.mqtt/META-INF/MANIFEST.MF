@@ -1,20 +1,26 @@
 Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: 
+ .,
+ lib/org.eclipse.paho.client.mqttv3-1.1.0.jar
+Bundle-DocURL: http://www.openhab.org
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB MQTT Transport Bundle
-Bundle-SymbolicName: org.openhab.io.transport.mqtt
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.eclipse.paho.client.mqttv3,org.eclipse.paho.client
- .mqttv3.logging,org.eclipse.paho.client.mqttv3.persist,org.eclipse.pa
- ho.client.mqttv3.util,org.openhab.io.transport.mqtt
-Import-Package: org.apache.commons.lang;version="2.6.0",
+Bundle-SymbolicName: org.openhab.io.transport.mqtt
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Export-Package: 
+ org.eclipse.paho.client.mqttv3,
+ org.eclipse.paho.client.mqttv3.logging,
+ org.eclipse.paho.client.mqttv3.persist,
+ org.eclipse.paho.client.mqttv3.util,
+ org.openhab.io.transport.mqtt
+Import-Package: 
+ org.apache.commons.lang;version="2.6.0",
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.eclipse.paho.client.mqttv3,
  org.openhab.core.events,
  org.osgi.service.cm;version="1.4.0",
  org.slf4j;version="1.6.4"
-Bundle-DocURL: http://www.openhab.org
 Service-Component: OSGI-INF/mqtt-*.xml
-Bundle-ClassPath: .,
- lib/org.eclipse.paho.client.mqttv3-1.1.0.jar
-Bundle-ActivationPolicy: lazy

@@ -1,13 +1,23 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.diyonxbee.internal
-Ignore-Package: org.openhab.binding.diyonxbee.internal
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: 
+ .,
+ lib/log4j.jar,
+ lib/RXTXcomm.jar,
+ lib/xbee-api-0.9.jar
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB DiyOnXBee Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.diyonxbee;singleton:=true
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-ManifestVersion: 2
-Import-Package: org.apache.commons.lang,
+Export-Package: org.openhab.binding.diyonxbee
+Ignore-Package: org.openhab.binding.diyonxbee.internal
+Import-Package: 
+ org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.autoupdate,
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -21,12 +31,6 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.diyonxbee
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/diyonxbeebinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .,
- lib/log4j.jar,
- lib/RXTXcomm.jar,
- lib/xbee-api-0.9.jar
+Private-Package: org.openhab.binding.diyonxbee.internal
+Service-Component: OSGI-INF/diyonxbeebinding.xml, OSGI-INF/genericbindin
+ gprovider.xml

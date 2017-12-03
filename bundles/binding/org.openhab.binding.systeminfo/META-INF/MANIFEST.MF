@@ -1,20 +1,25 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.systeminfo.internal
-Ignore-Package: org.openhab.binding.systeminfo.internal
+Bundle-Activator: org.openhab.binding.systeminfo.internal.SysteminfoActi
+ vator
+Bundle-ClassPath: 
+ .,
+ lib/sigar.jar
+Bundle-Description: This is the Systeminfo Binding of the open Home Auto
+ mation Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Name: openHAB Systeminfo Binding
-Bundle-SymbolicName: org.openhab.binding.systeminfo
-Bundle-Vendor: openHAB.org
-Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.systeminfo.internal.SysteminfoActivator
 Bundle-ManifestVersion: 2
-Bundle-Description: This is the Systeminfo Binding of the open Home Aut
- omation Bus (openHAB)
-Bundle-NativeCode: lib/amd64/freebsd/6/libsigar.so;processor=amd64;osname=freebsd;osversion=6,
+Bundle-Name: openHAB Systeminfo Binding
+Bundle-NativeCode: 
+ lib/amd64/freebsd/6/libsigar.so;processor=amd64;osname=freebsd;osversio
+ n=6,
  lib/amd64/linux/libsigar.so;processor=amd64;osname=linux,
  lib/amd64/solaris/libsigar.so;processor=amd64;osname=solaris,
- lib/amd64/winnt/sigar.dll;processor=amd64;osname=win32;osname=Windows8;osname=Windows 8;osname=Win8;osname=Windows10;osname=Windows 10;osname=Win10,
- lib/arm/linux/libsigar-cubian.so;lib/arm/linux/libsigar-odroid-u3.so;lib/arm/linux/libsigar-raspbian.so;processor=arm;osname=linux,
+ lib/amd64/winnt/sigar.dll;processor=amd64;osname=win32;osname=Windows8;
+ osname=Windows 8;osname=Win8;osname=Windows10;osname=Windows 10;osname=
+ Win10,
+ lib/arm/linux/libsigar-cubian.so;lib/arm/linux/libsigar-odroid-u3.so;li
+ b/arm/linux/libsigar-raspbian.so;processor=arm;osname=linux,
  lib/ia64/hpux/11/libsigar.sl;processor=ia64w;osname=hpux,
  lib/ia64/linux/libsigar.so;processor=ia64w;osname=linux,
  lib/pa/hpux/11/libsigar.sl;processor=parisc;osname=hpux,
@@ -31,9 +36,19 @@ Bundle-NativeCode: lib/amd64/freebsd/6/libsigar.so;processor=amd64;osname=freebs
  lib/x86/freebsd/6/libsigar.so;processor=x86;osname=freebsd;osversion=6,
  lib/x86/linux/libsigar.so;processor=x86;osname=linux,
  lib/x86/solaris/libsigar.so;processor=x86;osname=solaris,
- lib/x86/winnt/sigar.dll;processor=x86;osname=win32;osname=Windows8;osname=Windows 8;osname=Win8;osname=Windows10;osname=Windows 10;osname=Win10
-Import-Package: org.apache.commons.lang,
+ lib/x86/winnt/sigar.dll;processor=x86;osname=win32;osname=Windows8;osna
+ me=Windows 8;osname=Win8;osname=Windows10;osname=Windows 10;osname=Win1
+ 0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.binding.systeminfo
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Export-Package: org.openhab.binding.systeminfo
+Ignore-Package: org.openhab.binding.systeminfo.internal
+Import-Package: 
+ org.apache.commons.lang,
  org.eclipse.emf.ecore,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -46,9 +61,6 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.systeminfo
-Bundle-DocURL: http://www.openhab.org
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .,
- lib/sigar.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Private-Package: org.openhab.binding.systeminfo.internal
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider
+ .xml

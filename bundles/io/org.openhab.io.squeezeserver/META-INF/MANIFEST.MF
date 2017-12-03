@@ -1,16 +1,18 @@
 Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Bundle-DocURL: http://www.openhab.org
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Squeeze Server Bundle
-Bundle-SymbolicName: org.openhab.io.squeezeserver
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.io.squeezeserver
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
 Export-Package: org.openhab.io.squeezeserver
-Import-Package: org.apache.commons.lang;version="2.6.0",
+Import-Package: 
+ org.apache.commons.lang;version="2.6.0",
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.events,
  org.osgi.service.cm;version="1.4.0",
  org.slf4j;version="1.6.4"
-Bundle-DocURL: http://www.openhab.org
 Service-Component: OSGI-INF/squeezeserver.xml
-Bundle-ClassPath: .
-Bundle-ActivationPolicy: lazy

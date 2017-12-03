@@ -1,12 +1,15 @@
 Manifest-Version: 1.0
+Bundle-ClassPath: .
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB MQTT Persistence Bundle
-Bundle-SymbolicName: org.openhab.persistence.mqtt
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.apache.commons.io,
+Bundle-SymbolicName: org.openhab.persistence.mqtt
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Import-Package: 
+ org.apache.commons.io,
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.items,
  org.openhab.core.library.types,
  org.openhab.core.persistence,
@@ -15,5 +18,4 @@ Import-Package: org.apache.commons.io,
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
-Bundle-ClassPath: .
 Service-Component: OSGI-INF/mqtt-persistence.xml

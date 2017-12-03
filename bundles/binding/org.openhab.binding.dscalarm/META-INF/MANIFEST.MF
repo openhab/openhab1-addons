@@ -1,18 +1,24 @@
 Manifest-Version: 1.0
-Bundle-Name: openHAB DSC Alarm Binding
-Bundle-SymbolicName: org.openhab.binding.dscalarm
-Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.dscalarm1.internal.DSCAlarmActivator
-Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ManifestVersion: 2
+Bundle-Activator: org.openhab.binding.dscalarm1.internal.DSCAlarmActivat
+ or
+Bundle-ClassPath: .
+Bundle-Description: This is the DSC Alarm binding of the open Home Autom
+ ation Bus (openHAB)
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Description: This is the DSC Alarm binding of the open Home Automation Bus (openHAB)
-Import-Package: gnu.io,
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB DSC Alarm Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.binding.dscalarm
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Export-Package: org.openhab.binding.dscalarm1
+Import-Package: 
+ gnu.io,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -28,10 +34,5 @@ Import-Package: gnu.io,
  org.quartz.impl.matchers,
  org.quartz.utils,
  org.slf4j
-Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
-Export-Package: org.openhab.binding.dscalarm1
-
-
-
-
+Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingpr
+ ovider.xml

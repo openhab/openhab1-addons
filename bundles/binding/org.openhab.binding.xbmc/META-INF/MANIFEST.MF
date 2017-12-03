@@ -1,17 +1,26 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.xbmc.internal
-Ignore-Package: org.openhab.binding.xbmc.internal
+Bundle-Activator: org.openhab.binding.xbmc.internal.XbmcActivator
+Bundle-ClassPath: 
+ .,
+ lib/async-http-client-1.8.4.jar,
+ lib/netty-3.9.0.Final.jar
+Bundle-Description: This is the XBMC binding of the open Home Automation
+  Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB XBMC Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.xbmc
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.xbmc.internal.XbmcActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the XBMC binding of the open Home Automation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Export-Package: org.openhab.binding.xbmc
+Ignore-Package: org.openhab.binding.xbmc.internal
+Import-Package: 
+ org.apache.commons.lang,
  org.codehaus.jackson,
  org.codehaus.jackson.map,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -24,10 +33,6 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.xbmc
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .,
- lib/async-http-client-1.8.4.jar,
- lib/netty-3.9.0.Final.jar
+Private-Package: org.openhab.binding.xbmc.internal
+Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingpr
+ ovider.xml

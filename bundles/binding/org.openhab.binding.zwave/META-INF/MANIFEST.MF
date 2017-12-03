@@ -1,17 +1,31 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.zwave.internal
-Ignore-Package: org.openhab.binding.zwave.internal
+Bundle-Activator: org.openhab.binding.zwave.internal.ZWaveActivator
+Bundle-ClassPath: 
+ .,
+ lib/xstream-1.4.6.jar
+Bundle-Description: This is the ZWave binding of the open Home Automatio
+ n Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB ZWave Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.zwave
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.zwave.internal.ZWaveActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the ZWave binding of the open Home Aut
- omation Bus (openHAB)
-Import-Package: gnu.io,
+Export-Package: 
+ org.openhab.binding.zwave,
+ org.openhab.binding.zwave.internal.config
+Ignore-Package: org.openhab.binding.zwave.internal
+Import-Package: 
+ gnu.io,
+ javax.security.auth,
+ javax.xml.namespace,
+ javax.xml.stream,
+ javax.xml.transform,
+ javax.xml.transform.stream,
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.autoupdate,
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -24,15 +38,7 @@ Import-Package: gnu.io,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.osgi.service.event,
- org.slf4j,
- javax.security.auth,
- javax.xml.namespace,
- javax.xml.stream,
- javax.xml.transform,
- javax.xml.transform.stream
-Export-Package: org.openhab.binding.zwave,org.openhab.binding.zwave.in
- ternal.config
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: ., lib/xstream-1.4.6.jar
+ org.slf4j
+Private-Package: org.openhab.binding.zwave.internal
+Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingpr
+ ovider.xml

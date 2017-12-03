@@ -1,14 +1,23 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.weather.internal
-Ignore-Package: org.openhab.binding.weather.internal
+Bundle-Activator: org.openhab.binding.weather.internal.bus.WeatherActiva
+ tor
+Bundle-ClassPath: 
+ .,
+ lib/jackson-core-2.4.1.1.jar
+Bundle-Description: This is the Weather binding of the open Home Automat
+ ion Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Weather Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.binding.weather
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.weather.internal.bus.WeatherActivator
-Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Description: This is the Weather binding of the open Home Automation Bus (openHAB)
-Import-Package: javax.servlet,
+Export-Package: org.openhab.binding.weather.internal.utils
+Ignore-Package: org.openhab.binding.weather.internal
+Import-Package: 
+ javax.servlet,
  javax.servlet.http,
  javax.xml.bind,
  javax.xml.bind.annotation,
@@ -18,6 +27,7 @@ Import-Package: javax.servlet,
  org.apache.commons.lang.builder,
  org.apache.commons.lang.math,
  org.apache.commons.lang.reflect,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -33,11 +43,6 @@ Import-Package: javax.servlet,
  org.quartz.impl.matchers,
  org.quartz.utils,
  org.slf4j
-Bundle-SymbolicName: org.openhab.binding.weather
-Bundle-DocURL: http://www.openhab.org
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml, OSGI-INF/weatherservlet.xml
-Bundle-ClassPath: .,
- lib/jackson-core-2.4.1.1.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.openhab.binding.weather.internal.utils
-
+Private-Package: org.openhab.binding.weather.internal
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider
+ .xml, OSGI-INF/weatherservlet.xml

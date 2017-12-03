@@ -1,16 +1,24 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.enocean.internal
-Ignore-Package: org.openhab.binding.enocean.internal
+Bundle-Activator: org.openhab.binding.enocean.internal.EnoceanActivator
+Bundle-ClassPath: 
+ .,
+ lib/opencean-core-0.0.1-SNAPSHOT.jar
+Bundle-Description: This is the enocean binding of the open Home Automat
+ ion Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB enocean Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.enocean
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.enocean.internal.EnoceanActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the enocean binding of the open Home Automation Bus (openHAB)
-Import-Package: gnu.io,
+Export-Package: org.openhab.binding.enocean
+Ignore-Package: org.openhab.binding.enocean.internal
+Import-Package: 
+ gnu.io,
  org.apache.commons.io,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -21,9 +29,6 @@ Import-Package: gnu.io,
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
-Export-Package: org.openhab.binding.enocean
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/enoceanbinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .,
- lib/opencean-core-0.0.1-SNAPSHOT.jar
+Private-Package: org.openhab.binding.enocean.internal
+Service-Component: OSGI-INF/enoceanbinding.xml, OSGI-INF/genericbindingp
+ rovider.xml

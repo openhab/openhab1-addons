@@ -1,13 +1,16 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.bticino.internal
-Ignore-Package: org.openhab.binding.bticino.internal
+Bundle-Activator: org.openhab.binding.bticino.internal.BticinoActivator
+Bundle-ClassPath: .
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB BTicino Binding
-Bundle-SymbolicName: org.openhab.binding.bticino
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.openhab.core.binding,
+Bundle-SymbolicName: org.openhab.binding.bticino
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Ignore-Package: org.openhab.binding.bticino.internal
+Import-Package: 
+ org.eclipse.jdt.annotation;resolution:=optional,
+ org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
@@ -17,7 +20,6 @@ Import-Package: org.openhab.core.binding,
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/bticinobinding.xml
-Bundle-ClassPath: .
-Bundle-Activator: org.openhab.binding.bticino.internal.BticinoActivator
-
+Private-Package: org.openhab.binding.bticino.internal
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/bticino
+ binding.xml

@@ -1,16 +1,22 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.squeezebox.internal
-Ignore-Package: org.openhab.binding.squeezebox.internal
+Bundle-Activator: org.openhab.binding.squeezebox.internal.SqueezeboxActi
+ vator
+Bundle-ClassPath: .
+Bundle-Description: This is the Squeezebox binding of the open Home Auto
+ mation Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.gnu.org/licenses/gpl.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Squeezebox Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.squeezebox
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.squeezebox.internal.SqueezeboxActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the Squeezebox binding of the open Home Aut
- omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Export-Package: org.openhab.binding.squeezebox
+Ignore-Package: org.openhab.binding.squeezebox.internal
+Import-Package: 
+ org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -26,10 +32,7 @@ Import-Package: org.apache.commons.lang,
  org.quartz.impl,
  org.quartz.impl.matchers,
  org.slf4j
-Export-Package: org.openhab.binding.squeezebox
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Private-Package: org.openhab.binding.squeezebox.internal
 Require-Bundle: org.openhab.io.squeezeserver;bundle-version="1.4.0"
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
-
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider
+ .xml

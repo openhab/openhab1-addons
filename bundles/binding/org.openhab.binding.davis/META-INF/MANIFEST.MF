@@ -1,17 +1,22 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.davis.internal
-Ignore-Package: org.openhab.binding.davis.internal
+Bundle-Activator: org.openhab.binding.davis.internal.DavisActivator
+Bundle-ClassPath: .
+Bundle-Description: This is the Davis binding of the open Home Automatio
+ n Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Davis Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.davis
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.davis.internal.DavisActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the Davis binding of the open Home Aut
- omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Export-Package: org.openhab.binding.davis
+Ignore-Package: org.openhab.binding.davis.internal
+Import-Package: 
  gnu.io,
+ org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -24,8 +29,6 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.davis
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/davisbinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Private-Package: org.openhab.binding.davis.internal
+Service-Component: OSGI-INF/davisbinding.xml, OSGI-INF/genericbindingpro
+ vider.xml

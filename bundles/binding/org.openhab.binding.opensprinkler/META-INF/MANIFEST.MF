@@ -1,16 +1,25 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.opensprinkler.internal
-Ignore-Package: org.openhab.binding.opensprinkler.internal
+Bundle-Activator: org.openhab.binding.opensprinkler.internal.OpenSprinkl
+ erActivator
+Bundle-ClassPath: 
+ .,
+ lib/opensprinkler-0.0.3.jar,
+ lib/pi4j-core-0.0.5.jar
+Bundle-Description: This is the OpenSprinkler binding of the open Home A
+ utomation Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB OpenSprinkler Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.opensprinkler
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.opensprinkler.internal.OpenSprinklerActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the OpenSprinkler binding of the open Home Aut
- omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Export-Package: org.openhab.binding.opensprinkler
+Ignore-Package: org.openhab.binding.opensprinkler.internal
+Import-Package: 
+ org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -23,10 +32,6 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.opensprinkler
-Bundle-DocURL: http://www.openhab.org
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .,
- lib/opensprinkler-0.0.3.jar,
- lib/pi4j-core-0.0.5.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Private-Package: org.openhab.binding.opensprinkler.internal
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider
+ .xml

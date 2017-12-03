@@ -1,13 +1,15 @@
 Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Multimedia MacinTalk
-Bundle-SymbolicName: org.openhab.io.multimedia.tts.macintalk
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: .
-Import-Package: org.openhab.io.multimedia.tts,
+Bundle-SymbolicName: org.openhab.io.multimedia.tts.macintalk
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Import-Package: 
+ org.eclipse.jdt.annotation;resolution:=optional,
+ org.openhab.io.multimedia.tts,
  org.osgi.framework,
  org.slf4j
 Service-Component: OSGI-INF/tts_mac.xml
-Bundle-ActivationPolicy: lazy

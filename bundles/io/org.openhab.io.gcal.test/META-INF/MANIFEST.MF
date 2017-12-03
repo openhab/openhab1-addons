@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
+Bundle-Description: This is the Test-Bundle for the Google Calendar enha
+ ncementof the open Home Automation Bus (openHAB)
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Google Calendar Test
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Description: This is the Test-Bundle for the Google Calendar enhancement
- of the open Home Automation Bus (openHAB)
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.io.gcal.test
+Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
 Fragment-Host: org.openhab.io.gcal
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.8.2"
-Bundle-Vendor: openHAB.org

@@ -1,16 +1,24 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.homematic.internal
-Ignore-Package: org.openhab.binding.homematic.internal
+Bundle-Activator: org.openhab.binding.homematic.internal.bus.HomematicAc
+ tivator
+Bundle-ClassPath: .
+Bundle-Description: This is the homematic binding of the open Home Autom
+ ation Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB homematic Binding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.binding.homematic
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.homematic.internal.bus.HomematicActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the homematic binding of the open Home Aut
- omation Bus (openHAB)
-Import-Package: javax.xml.bind,
+Export-Package: 
+ org.openhab.binding.homematic.internal.common,
+ org.openhab.binding.homematic.internal.communicator.client,
+ org.openhab.binding.homematic.internal.communicator.client.interfaces
+Ignore-Package: org.openhab.binding.homematic.internal
+Import-Package: 
+ javax.xml.bind,
  javax.xml.bind.annotation,
  org.apache.commons.httpclient,
  org.apache.commons.httpclient.methods,
@@ -20,6 +28,7 @@ Import-Package: javax.xml.bind,
  org.apache.commons.lang.math,
  org.apache.commons.lang.reflect,
  org.apache.commons.logging,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -32,10 +41,6 @@ Import-Package: javax.xml.bind,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.homematic.internal.common,org.open
- hab.binding.homematic.internal.communicator.client,org.openhab.bindin
- g.homematic.internal.communicator.client.interfaces
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/homematicbinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Private-Package: org.openhab.binding.homematic.internal
+Service-Component: OSGI-INF/homematicbinding.xml, OSGI-INF/genericbindin
+ gprovider.xml

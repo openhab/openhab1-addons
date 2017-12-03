@@ -1,17 +1,22 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.action.xbmc.internal
-Ignore-Package: org.openhab.action.xbmc.internal
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.openhab.action.xbmc.internal.XBMCActivator
+Bundle-ClassPath: .
+Bundle-Description: This is the XBMC action of the open Home Automation 
+ Bus (openHAB)
+Bundle-DocURL: http://www.openhab.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
 Bundle-Name: openHAB XBMC Action
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.action.xbmc
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.action.xbmc.internal.XBMCActivator
-Bundle-ManifestVersion: 2
-Bundle-Description: This is the XBMC action of the open Home Aut
- omation Bus (openHAB)
-Import-Package: org.apache.commons.io,
+Ignore-Package: org.openhab.action.xbmc.internal
+Import-Package: 
+ org.apache.commons.io,
  org.apache.commons.lang,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
@@ -21,8 +26,5 @@ Import-Package: org.apache.commons.io,
  org.osgi.framework,
  org.osgi.service.component,
  org.slf4j
-Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Private-Package: org.openhab.action.xbmc.internal
 Service-Component: OSGI-INF/action.xml
-Bundle-ClassPath: .
-Bundle-ActivationPolicy: lazy

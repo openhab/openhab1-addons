@@ -1,12 +1,19 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.binding.sonos.internal.SonosActivator
+Bundle-ClassPath: 
+ .,
+ lib/cling-core-1.0.5.jar,
+ lib/teleal-common-1.0.13.jar,
+ lib/cling-support-1.0.5.jar
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Sonos Binding
-Bundle-SymbolicName: org.openhab.binding.sonos
-Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.sonos.internal.SonosActivator
-Bundle-Vendor: openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.apache.commons.lang;version="2.4.0",
+Bundle-SymbolicName: org.openhab.binding.sonos
+Bundle-Vendor: openhab.org
+Bundle-Version: 1.11.0.qualifier
+Import-Package: 
+ org.apache.commons.lang;version="2.4.0",
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.joda.time,
  org.joda.time.base,
  org.joda.time.format,
@@ -25,10 +32,8 @@ Import-Package: org.apache.commons.lang;version="2.4.0",
  org.quartz.impl.matchers,
  org.quartz.utils,
  org.slf4j
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/sonosbinding.xml
-Bundle-ClassPath: .,
- lib/cling-core-1.0.5.jar,
- lib/teleal-common-1.0.13.jar,
- lib/cling-support-1.0.5.jar
-Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1.0",
+Require-Bundle: 
+ org.apache.httpcomponents.httpclient;bundle-version="4.1.0",
  org.apache.httpcomponents.httpcore;bundle-version="4.1.0"
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/sonosbi
+ nding.xml

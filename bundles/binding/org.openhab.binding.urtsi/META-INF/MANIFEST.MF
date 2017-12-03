@@ -1,14 +1,19 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.binding.urtsi.internal.UrtsiActivator
+Bundle-ClassPath: .
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Somfy URTSI II Binding
-Bundle-SymbolicName: org.openhab.binding.urtsi
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: com.google.common.base,
+Bundle-SymbolicName: org.openhab.binding.urtsi
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Export-Package: org.openhab.binding.urtsi
+Import-Package: 
+ com.google.common.base,
  com.google.common.collect,
  gnu.io,
  org.apache.commons.io,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.autoupdate,
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -21,7 +26,5 @@ Import-Package: com.google.common.base,
  org.osgi.service.cm,
  org.osgi.service.event,
  org.slf4j
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/urtsibinding.xml
-Bundle-ClassPath: .
-Bundle-Activator: org.openhab.binding.urtsi.internal.UrtsiActivator
-Export-Package: org.openhab.binding.urtsi
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/urtsibi
+ nding.xml

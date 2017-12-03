@@ -1,13 +1,17 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.binding.serial.internal.SerialActivator
+Bundle-ClassPath: .
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Serial Binding
-Bundle-SymbolicName: org.openhab.binding.serial
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: gnu.io,
+Bundle-SymbolicName: org.openhab.binding.serial
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Import-Package: 
+ gnu.io,
  org.apache.commons.codec.binary,
  org.apache.commons.io,
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
@@ -20,5 +24,3 @@ Import-Package: gnu.io,
  org.osgi.service.event,
  org.slf4j
 Service-Component: OSGI-INF/serialbinding.xml
-Bundle-ClassPath: .
-Bundle-Activator: org.openhab.binding.serial.internal.SerialActivator

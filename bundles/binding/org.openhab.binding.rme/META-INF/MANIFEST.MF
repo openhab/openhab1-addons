@@ -1,14 +1,17 @@
 Manifest-Version: 1.0
+Bundle-Activator: org.openhab.binding.rme.internal.RMEActivator
+Bundle-ClassPath: .
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB RME Binding
-Bundle-SymbolicName: org.openhab.binding.rme
-Bundle-Version: 1.11.0.qualifier
-Bundle-Activator: org.openhab.binding.rme.internal.RMEActivator
-Bundle-Vendor: openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: gnu.io,
+Bundle-SymbolicName: org.openhab.binding.rme
+Bundle-Vendor: openhab.org
+Bundle-Version: 1.11.0.qualifier
+Import-Package: 
+ gnu.io,
  org.apache.commons.io;version="2.0.1",
  org.apache.commons.lang;version="2.4.0",
+ org.eclipse.jdt.annotation;resolution:=optional,
  org.joda.time,
  org.joda.time.base,
  org.joda.time.format,
@@ -27,5 +30,5 @@ Import-Package: gnu.io,
  org.quartz.impl.matchers,
  org.quartz.utils,
  org.slf4j
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/rmebinding.xml
-Bundle-ClassPath: .
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/rmebind
+ ing.xml

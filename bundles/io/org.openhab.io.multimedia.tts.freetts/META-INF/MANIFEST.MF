@@ -1,11 +1,7 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: openHAB Multimedia FreeTTS
-Bundle-SymbolicName: org.openhab.io.multimedia.tts.freetts
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: .,
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: 
+ .,
  lib/cmu_time_awb.jar,
  lib/cmu_us_kal.jar,
  lib/freetts.jar,
@@ -13,8 +9,15 @@ Bundle-ClassPath: .,
  lib/cmulex.jar,
  lib/cmutimelex.jar,
  lib/en_us.jar
-Import-Package: org.openhab.io.multimedia.tts,
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Multimedia FreeTTS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.io.multimedia.tts.freetts
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Import-Package: 
+ org.eclipse.jdt.annotation;resolution:=optional,
+ org.openhab.io.multimedia.tts,
  org.osgi.framework,
  org.slf4j
 Service-Component: OSGI-INF/tts_freetts.xml
-Bundle-ActivationPolicy: lazy

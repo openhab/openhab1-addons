@@ -1,11 +1,13 @@
 Manifest-Version: 1.0
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for the db4o Persistence Bundle
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-SymbolicName: org.openhab.persistence.db4o.test
-Bundle-Version: 1.11.0.qualifier
-Bundle-Vendor: openHAB.org
-Fragment-Host: org.openhab.persistence.db4o
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.openhab.persistence.db4o.test
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.11.0.qualifier
+Fragment-Host: org.openhab.persistence.db4o
+Import-Package: 
+ org.apache.commons.io,
+ org.eclipse.jdt.annotation;resolution:=optional
 Require-Bundle: org.junit;bundle-version="4.8.1"
-Import-Package: org.apache.commons.io
