@@ -138,7 +138,13 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
         this._pw = fboxpw;
         this._user = fboxuser;
         this._url = fboxurl;
-        this._pbid = Integer.valueOf(fboxphonebookid);
+        
+        try{
+            this._pbid = Integer.valueOf(fboxphonebookid);
+    	}catch(NumberFormatException ex){ //set fallback to 0
+            this._pbid = 0;
+
+    	}
 
         if (_fboxComm == null) {
             _fboxComm = new Tr064Comm(_url, _user, _pw);
