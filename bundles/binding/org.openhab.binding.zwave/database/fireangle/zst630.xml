@@ -39,6 +39,18 @@
             <SetToController>true</SetToController>
         </Group>
 
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Basic Report</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Notification Report</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
     </Associations>
 
 </Product>
