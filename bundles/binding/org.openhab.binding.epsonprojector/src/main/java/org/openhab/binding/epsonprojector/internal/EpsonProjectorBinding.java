@@ -98,7 +98,7 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
                             logger.debug("Closing connection to device '{}' ", deviceCfg.deviceId);
                             device.disconnect();
                         } catch (EpsonProjectorException e) {
-                            logger.error("Error occured when closing connection to device '{}'", deviceCfg.deviceId);
+                            logger.error("Error occurred when closing connection to device '{}'", deviceCfg.deviceId);
                         }
                     }
                 }

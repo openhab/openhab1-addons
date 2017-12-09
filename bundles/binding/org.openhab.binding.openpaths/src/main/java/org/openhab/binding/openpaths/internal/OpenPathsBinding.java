@@ -231,7 +231,7 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
             logger.error("Error mapping JSON:\n" + toParse, e);
             return null;
         } catch (IOException e) {
-            logger.error("An I/O error occured while decoding JSON:\n" + response.getBody());
+            logger.error("An I/O error occurred while decoding JSON:\n" + response.getBody());
             return null;
         }
 

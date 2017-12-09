@@ -58,7 +58,7 @@ public class Helper {
             lsSerializer.write(doc, lsOutput);
             strMsg = stringWriter.toString();
         } catch (Exception e) {
-            logger.warn("Error occured when converting document to string", e);
+            logger.warn("Error occurred when converting document to string", e);
         }
         return strMsg;
     }

@@ -162,7 +162,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 
                         }
                     } catch (UnknownHostException e) {
-                        logger.error("UnknownHostException occured when connecting to amplifier {}:{}.", ip, port);
+                        logger.error("UnknownHostException occurred when connecting to amplifier {}:{}.", ip, port);
                     } catch (IOException e) {
                         logger.debug("Amplifier ({},{}) is offline, status can't be updated at this moment.", ip, port);
                         try {

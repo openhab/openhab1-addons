@@ -172,7 +172,7 @@ public class NotifyMyAndroid {
                 return false;
             }
         } catch (Exception e) {
-            logger.error("An error occured while notifying your android", e);
+            logger.error("An error occurred while notifying your android", e);
             return false;
         }
     }

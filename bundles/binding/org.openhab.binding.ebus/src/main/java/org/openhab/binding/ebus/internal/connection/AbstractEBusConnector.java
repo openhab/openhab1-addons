@@ -155,7 +155,7 @@ public abstract class AbstractEBusConnector extends Thread {
                     // lastReceiveTime = System.nanoTime();
 
                     if (read == -1) {
-                        logger.debug("eBUS read timeout occured, no data on bus ...");
+                        logger.debug("eBUS read timeout occurred, no data on bus ...");
 
                     } else {
 
@@ -179,7 +179,7 @@ public abstract class AbstractEBusConnector extends Thread {
                 }
 
             } catch (IOException e) {
-                logger.error("An IO exception has occured! Try to reconnect eBus connector ...", e);
+                logger.error("An IO exception has occurred! Try to reconnect eBus connector ...", e);
 
                 try {
                     reconnect();

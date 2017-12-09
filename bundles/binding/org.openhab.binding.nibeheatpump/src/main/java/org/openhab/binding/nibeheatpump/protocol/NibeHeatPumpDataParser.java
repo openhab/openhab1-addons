@@ -1132,7 +1132,7 @@ public class NibeHeatPumpDataParser {
                         }
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    throw new NibeHeatPumpException("Error occured during data parsing", e);
+                    throw new NibeHeatPumpException("Error occurred during data parsing", e);
                 }
 
                 return values;
