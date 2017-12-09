@@ -221,7 +221,7 @@ public abstract class AbstractEBusWriteConnector extends AbstractEBusConnector {
 
                     // last send try was a collision
                     if (lastSendCollisionDetected) {
-                        logger.warn("A second collision occured!");
+                        logger.warn("A second collision occurred!");
                         resetSend();
                         return;
                     }

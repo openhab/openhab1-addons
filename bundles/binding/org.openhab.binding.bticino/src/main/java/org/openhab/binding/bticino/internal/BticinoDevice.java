@@ -214,7 +214,7 @@ public class BticinoDevice implements IBticinoEventListener {
         List<BticinoBindingConfig> l_binding_configs = m_bticino_binding.getItemForBticinoBindingConfig(
                 p_protocol_read.getProperty("who"), p_protocol_read.getProperty("where"));
 
-        // log it when an event has occured that no item is bound to
+        // log it when an event has occurred that no item is bound to
         if (l_binding_configs.isEmpty()) {
             logger.debug("Gateway [" + m_gateway_id + "], No Item found for bticino event, WHO ["
                     + p_protocol_read.getProperty("who") + "], WHAT [" + p_protocol_read.getProperty("what")

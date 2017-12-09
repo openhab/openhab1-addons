@@ -189,7 +189,7 @@ public class BaseStation implements SerialEventWorker {
 
         // Filter out the lines that contain garbage data
         if (message.contains("(CRC wrong after decryption)")) {
-            logger.debug("BaseStation eventOccured: CRC wrong after decryption");
+            logger.debug("BaseStation eventOccurred: CRC wrong after decryption");
             return;
         }
 
@@ -197,7 +197,7 @@ public class BaseStation implements SerialEventWorker {
             StringTokenizer strTok = new StringTokenizer(message, "\n");
             String data = null;
             versionInfo = new String[strTok.countTokens()];
-            logger.debug("BaseStation eventOccured - initial message ( {} )", strTok.countTokens());
+            logger.debug("BaseStation eventOccurred - initial message ( {} )", strTok.countTokens());
             int i = 0;
             while (strTok.hasMoreTokens()) {
                 versionInfo[i] = strTok.nextToken();
@@ -207,7 +207,7 @@ public class BaseStation implements SerialEventWorker {
         } else {
             String logResult = message.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r").substring(0, 40);
 
-            logger.debug("BaseStation eventOccured - giving to Binding {}", logResult);
+            logger.debug("BaseStation eventOccurred - giving to Binding {}", logResult);
             if (bindingEventWorker != null) {
                 bindingEventWorker.eventOccured(message);
             }

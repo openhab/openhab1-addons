@@ -101,7 +101,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider>implements 
                             }
                         }
                     } catch (IOException e) {
-                        logger.error("Error occured while changing pin state for item " + itemName + ", exception: "
+                        logger.error("Error occurred while changing pin state for item " + itemName + ", exception: "
                                 + e.getMessage());
                         return;
                     } finally {
@@ -176,7 +176,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider>implements 
                         }
                     }
                 } catch (IOException e) {
-                    logger.error("Error occured while receiving pin state for item " + itemName + ", exception: "
+                    logger.error("Error occurred while receiving pin state for item " + itemName + ", exception: "
                             + e.getMessage());
                     return;
                 } finally {
@@ -194,7 +194,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider>implements 
 
         String itemName = null;
 
-        logger.error("Error occured in pin event processing, exception: " + exception.getMessage());
+        logger.error("Error occurred in pin event processing, exception: " + exception.getMessage());
 
         try {
             if (registryLock.readLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
@@ -287,7 +287,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider>implements 
                             newItem(provider, itemName);
                         }
                     } catch (Exception e) {
-                        logger.error("Error occured while changing backend object for item " + itemName
+                        logger.error("Error occurred while changing backend object for item " + itemName
                                 + ", exception: " + e.getMessage());
                     } finally {
                         registryLock.writeLock().unlock();
@@ -380,7 +380,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider>implements 
                 gpioPin.addEventHandler(this);
             }
         } catch (Exception e) {
-            logger.error("Error occured while creating backend object for item " + itemName + ", exception: "
+            logger.error("Error occurred while creating backend object for item " + itemName + ", exception: "
                     + e.getMessage());
         }
     }
@@ -404,7 +404,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider>implements 
                         try {
                             gpio.releasePin(gpioPin);
                         } catch (Exception e) {
-                            logger.error("Error occured while deleting backend object for item " + itemName
+                            logger.error("Error occurred while deleting backend object for item " + itemName
                                     + ", exception: " + e.getMessage());
                         }
                     }

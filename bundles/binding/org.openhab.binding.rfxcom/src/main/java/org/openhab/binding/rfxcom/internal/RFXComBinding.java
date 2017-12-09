@@ -270,7 +270,7 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
                     }
                 }
             } catch (RFXComException e) {
-                logger.error("Error occured during packet receiving, data: {}",
+                logger.error("Error occurred during packet receiving, data: {}",
                         DatatypeConverter.printHexBinary(packet), e);
             }
         }

@@ -72,7 +72,7 @@ public class FS20Binding extends AbstractBinding<FS20BindingProvider>implements 
                 FS20Command fs20Command = FS20CommandHelper.convertHABCommandToFS20Command(command);
                 culHandlerLifecycle.getCul().send("F" + bindingConfig.getAddress() + fs20Command.getHexValue());
             } catch (CULCommunicationException e) {
-                logger.error("An exception occured while sending a command", e);
+                logger.error("An exception occurred while sending a command", e);
             }
         }
     }
