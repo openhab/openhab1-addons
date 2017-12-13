@@ -23,7 +23,6 @@ import org.openhab.core.types.Type;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.model.item.binding.BindingConfigReader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +100,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
     /** the suffix to mark a group address for start-stop-dimming */
     private static final String START_STOP_MARKER_SUFFIX = "ss";
 
-    //Logger
+    // Logger
     private static Logger logger = LoggerFactory.getLogger(KNXGenericBindingProvider.class);
 
     /**
@@ -187,7 +186,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
                                 if (input == null) {
                                     return false;
                                 }
-                                if (input.itemName.equals(itemName)) {
+                                if (input.itemName.equals(itemName) && input.mainDataPoint != null) {
                                     Class<?> dptTypeClass = KNXCoreTypeMapper.toTypeClass(input.mainDataPoint.getDPT());
                                     return dptTypeClass != null && dptTypeClass.equals(typeClass);
                                 }
@@ -246,7 +245,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.knx.config.KNXBindingProvider#isCommandGA(tuwien.auto.calimero.GroupAddress)
      */
     @Override
@@ -276,7 +275,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.knx.config.KNXBindingProvider#getReadableDatapoints()
      */
     @Override
@@ -308,7 +307,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.openhab.binding.knx.config.KNXBindingProvider#isAutoRefreshEnabled(tuwien.auto.calimero.datapoint.Datapoint)
      */
@@ -319,7 +318,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.openhab.binding.knx.config.KNXBindingProvider#getAutoRefreshTime(tuwien.auto.calimero.datapoint.Datapoint)
      */
@@ -340,7 +339,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.core.autoupdate.AutoUpdateBindingProvider#autoUpdate(java.lang.String)
      */
     @Override
@@ -368,7 +367,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
      * This is the main method that takes care of parsing a binding configuration
      * string for a given item. It returns a collection of {@link BindingConfig}
      * instances, which hold all relevant data about the binding to KNX of an item.
-     * 
+     *
      * @param item the item for which the binding configuration string is provided
      * @param bindingConfig a string which holds the binding information
      * @return a knx binding config, a collection of {@link KNXBindingConfigItem}
@@ -439,17 +438,15 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
                     String[] segments = dataPoint.split(":");
                     Class<? extends Type> typeClass = null;
                     String dptID = null;
-                    if( segments.length == 1 ) {
-                      //DatapointID NOT specified in binding config, so try to guess it
-                      typeClass = item.getAcceptedCommandTypes().size() > 0
-                              ? item.getAcceptedCommandTypes().get(i)
-                              : item.getAcceptedDataTypes().size() > 1 ? item.getAcceptedDataTypes().get(i)
-                                      : item.getAcceptedDataTypes().get(0);
-                      dptID = getDefaultDPTId(typeClass);
-                    }
-                    else {
-                      //DatapointID specified in binding config, so use it
-                      dptID = segments[0];
+                    if (segments.length == 1) {
+                        // DatapointID NOT specified in binding config, so try to guess it
+                        typeClass = item.getAcceptedCommandTypes().size() > 0 ? item.getAcceptedCommandTypes().get(i)
+                                : item.getAcceptedDataTypes().size() > 1 ? item.getAcceptedDataTypes().get(i)
+                                        : item.getAcceptedDataTypes().get(0);
+                        dptID = getDefaultDPTId(typeClass);
+                    } else {
+                        // DatapointID specified in binding config, so use it
+                        dptID = segments[0];
                     }
                     if (dptID == null || dptID.trim().isEmpty()) {
                         throw new BindingConfigParseException(
@@ -511,7 +508,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /**
      * Returns a default datapoint type id for a type class.
-     * 
+     *
      * @param typeClass the type class
      * @return the default datapoint type id
      */
@@ -521,20 +518,20 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /**
      * This is an internal container to gather all config items for one opeHAB item.
-     * 
+     *
      * @author Kai Kreuzer
-     * 
+     *
      */
     @SuppressWarnings("serial")
-    /* default */ static class KNXBindingConfig extends LinkedList<KNXBindingConfigItem>implements BindingConfig {
+    /* default */ static class KNXBindingConfig extends LinkedList<KNXBindingConfigItem> implements BindingConfig {
     }
 
     /**
      * This is an internal data structure to store information from the binding config strings and use it to answer the
      * requests to the KNX binding provider.
-     * 
+     *
      * @author Kai Kreuzer
-     * 
+     *
      */
     /* default */ static class KNXBindingConfigItem {
         public String itemName;
