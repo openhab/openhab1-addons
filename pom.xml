@@ -33,6 +33,7 @@
         <connection>scm:git:${scm.gitBaseUrl}/openhab1-addons.git</connection>
         <developerConnection>scm:git:${scm.gitBaseUrl}/openhab1-addons.git</developerConnection>
         <url>https://github.com/openhab/openhab1-addons</url>
+        <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
