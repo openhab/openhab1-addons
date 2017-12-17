@@ -46,6 +46,10 @@
             <id>bintray</id>
             <url>https://api.bintray.com/maven/openhab/mvn/openhab1-addons/;publish=1</url>
         </repository>
+        <snapshotRepository>
+            <id>jfrog</id>
+            <url>https://openhab.jfrog.io/openhab/libs-snapshot-local</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <description>This is the open Home Automation Bus (openHAB)</description>
