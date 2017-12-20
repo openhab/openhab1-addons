@@ -206,12 +206,19 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
     }
 
     private void updateItemsForEvent() {
+        if (calDavLoader == null) {
+            logger.debug("calDavLoader not available. Unable to update items for event.");
+            return;
+        }
+
         CalDavBindingProvider bindingProvider = null;
+
         for (CalDavBindingProvider bindingProvider_ : this.providers) {
             bindingProvider = bindingProvider_;
         }
+
         if (bindingProvider == null) {
-            logger.error("no binding provider found");
+            logger.warn("No binding provider found");
             return;
         }
 
@@ -220,10 +227,16 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
         for (String item : bindingProvider.getItemNames()) {
             CalDavConfig config = bindingProvider.getConfig(item);
             List<CalDavEvent> events = eventCache.get(config.getUniqueEventListKey());
-            if (events == null && this.calDavLoader != null) {
+            if (events == null) {
+                logger.debug("No events found in event cache. Attempting to load from calendar.");
                 CalDavQuery query = getQueryForConfig(config);
-                events = this.calDavLoader.getEvents(query);
+                events = calDavLoader.getEvents(query);
                 eventCache.put(config.getUniqueEventListKey(), events);
+            }
+
+            if (events == null) {
+                logger.debug("No events found for item '{}'. Nothing to update.", item);
+                continue;
             }
             this.updateItem(item, config, events);
         }
