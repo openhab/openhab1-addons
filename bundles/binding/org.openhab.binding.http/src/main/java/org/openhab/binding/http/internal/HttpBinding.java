@@ -84,7 +84,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
     private Map<String, CacheConfig> itemCache = new HashMap<String, CacheConfig>();
     private Object itemCacheLock = new Object();
     
-    //when deactivate() is called, this gets set to true
+    //true when the binding is shutting down
     private boolean shuttingDown;
 
     public HttpBinding() {
@@ -106,6 +106,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
     @Override
     public void activate() {
         super.activate();
+        shuttingDown = false;
         setProperlyConfigured(true);
     }
 
