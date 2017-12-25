@@ -88,7 +88,7 @@ public class LgTvMessageReader extends HttpServlet {
     protected HttpService httpService;
 
     public void setHttpService(HttpService httpService) {
-        logger.info("setHttpService called");
+        logger.debug("setHttpService called");
         this.httpService = httpService;
     }
 
@@ -140,7 +140,7 @@ public class LgTvMessageReader extends HttpServlet {
     }
 
     public void activate() {
-        logger.info("LgTv servlet activate called");
+        logger.debug("LgTv servlet activate called");
 
         try {
             bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
@@ -165,7 +165,7 @@ public class LgTvMessageReader extends HttpServlet {
 
             Hashtable<String, String> props = new Hashtable<String, String>();
             httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, createHttpContext());
-            logger.info("Started LgTv Servlet at {} {}", WEBAPP_ALIAS, SERVLET_NAME);
+            logger.info("Started LgTv Servlet at {}{}", WEBAPP_ALIAS, SERVLET_NAME);
         } catch (NamespaceException e) {
             logger.warn("NamespaceException occurred during servlet startup", e);
         } catch (ServletException e) {
@@ -179,7 +179,7 @@ public class LgTvMessageReader extends HttpServlet {
         try {
             httpService.unregister(WEBAPP_ALIAS + SERVLET_NAME);
         } catch(IllegalArgumentException e) {
-            logger.info("LgTv Servlet '{}' was not registered. Nothing to deactivate.", WEBAPP_ALIAS + SERVLET_NAME);
+            logger.debug("LgTv Servlet '{}' was not registered. Nothing to deactivate.", WEBAPP_ALIAS + SERVLET_NAME);
         } finally {
             logger.info("Stopped LgTv Servlet");
         }
