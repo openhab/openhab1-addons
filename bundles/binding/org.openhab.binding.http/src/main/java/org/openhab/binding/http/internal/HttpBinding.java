@@ -83,6 +83,9 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
     /** Map table to store cache data */
     private Map<String, CacheConfig> itemCache = new HashMap<String, CacheConfig>();
     private Object itemCacheLock = new Object();
+    
+    //when deactivate() is called, this gets set to true
+    private boolean shuttingDown;
 
     public HttpBinding() {
     }
@@ -104,6 +107,12 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
     public void activate() {
         super.activate();
         setProperlyConfigured(true);
+    }
+
+    @Override
+    public void deactivate() {
+        super.deactivate();
+        shuttingDown = true;
     }
 
     protected void addBindingProvider(HttpBindingProvider bindingProvider) {
@@ -135,6 +144,10 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
      */
     @Override
     public void execute() {
+        if (shuttingDown) {
+            logger.debug("Ignoring call to execute(), because binding is shutting down.");
+            return;
+        }
 
         for (HttpBindingProvider provider : providers) {
             for (String itemName : provider.getInBindingItemNames()) {
