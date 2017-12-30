@@ -1,6 +1,6 @@
 # TinkerForge Actions
 
-The TinkerForge Action service provides direct interaction with some of the TinkerForge devices. 
+The TinkerForge Action service provides direct interaction with some of the TinkerForge devices.
 
 ## Prerequisites
 
@@ -10,13 +10,13 @@ The action service depends on the TinkerForge Binding (1.x) being installed and 
 
 These action functions are available:
 
-* `tfClearLCD(String uid)`
+*   `tfClearLCD(String uid)`
 
-	Clears the display of the LCD with the given uid.
+Clears the display of the LCD with the given uid.
 
-  Example:
+Example:
 
-  ```
+  ```java
   rule "clear lcd"
       when
           Item ClearLCD received command ON
@@ -25,13 +25,13 @@ These action functions are available:
   end
   ```
 
-* `tfServoSetposition(String uid, String num, String position, String velocity, String acceleration)`
+*   `tfServoSetposition(String uid, String num, String position, String velocity, String acceleration)`
 
-  Sets the position of a TinkerForge servo with the uid $uid and servo number to the position $position using the speed $speed and acceleration $acceleration.
+Sets the position of a TinkerForge servo with the uid $uid and servo number to the position $position using the speed $speed and acceleration $acceleration.
 
-  Example:
+Example:
 
-	```
+	```java
 	rule "move servo"
     when
         Item MoveServo received command ON
@@ -44,16 +44,16 @@ These action functions are available:
   end
 	```
 
-* `tfDCMotorSetspeed(String uid, String speed, String acceleration, String drivemode)`
+*   `tfDCMotorSetspeed(String uid, String speed, String acceleration, String drivemode)`
 
-  Sets the speed of a TinkerForge DC motor with the given uid to $speed using the acceleration $acceleration and the drivemode $drivemode.
+Sets the speed of a TinkerForge DC motor with the given uid to $speed using the acceleration $acceleration and the drivemode $drivemode.
 
-	* speed: value between -32767 - 32767
-	* drivemode is either "break" or "coast"
+*   speed: value between -32767 - 32767
+*   drivemode is either "break" or "coast"
 
-	Example:
+Example:
 
-	```
+	```java
 	rule "move motor"
     when
         Item DCMOVE received command ON
@@ -70,16 +70,16 @@ These action functions are available:
   end
 	```
 
-* `tfDCMotorSetspeed(String uid, Short speed, Integer acceleration, String drivemode)`
+*   `tfDCMotorSetspeed(String uid, Short speed, Integer acceleration, String drivemode)`
 
-  Sets the speed of a TinkerForge DC motor with the given uid to $speed using the acceleration $acceleration and the drivemode $drivemode.
+Sets the speed of a TinkerForge DC motor with the given uid to $speed using the acceleration $acceleration and the drivemode $drivemode.
 
-  * speed: value between -32767 - 32767
-  * drivemode is either "break" or "coast"
+*   speed: value between -32767 - 32767
+*   drivemode is either "break" or "coast"
 
-  Example:
+Example:
 
-	```
+	```java
 	rule "move motor"
     when
         Item DCMOVE received command ON
@@ -102,25 +102,26 @@ These action functions are available:
 
   Example:
 
-  ```
+  ```java
     rule "Clear"
         when Item Clear changed
-    then 
+    then
 	   tfRotaryEncoderClear("kHv")
     end
   ```
 
-* `tfLoadCellTare(String uid)`
+*   `tfLoadCellTare(String uid)`
  	Sets tare on the load cell bricklet with the given uid.
 
-  Example:
+Example:
 
-  ```
+  ```java
     rule "Tare"
-        when 
+        when
                 Item Tare changed to ON
         then
                 postUpdate(TareValue, Weight.state)
                 tfLoadCellTare("v8V")
     end
-  ```    
+  ```
+	
