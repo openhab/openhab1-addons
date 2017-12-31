@@ -161,7 +161,7 @@ public class Telegram {
     static public boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
             @ParamDoc(name = "photoURL") String photoURL, @ParamDoc(name = "caption") String caption,
             @ParamDoc(name = "username") String username, @ParamDoc(name = "password") String password) {
-        return sendTelegramPhoto(group, photoURL, caption, null, null, HTTP_PHOTO_TIMEOUT, HTTP_RETRIES);
+        return sendTelegramPhoto(group, photoURL, caption, username, password, HTTP_PHOTO_TIMEOUT, HTTP_RETRIES);
 
     }
 
