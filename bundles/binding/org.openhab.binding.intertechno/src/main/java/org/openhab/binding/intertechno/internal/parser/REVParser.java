@@ -8,7 +8,12 @@
  */
 package org.openhab.binding.intertechno.internal.parser;
 
+import java.util.List;
+
+import org.openhab.binding.intertechno.internal.CULIntertechnoBinding;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class parses configurations for REV type Intertechno devices. This is
@@ -17,13 +22,19 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @author Till Klocke
  * @since 1.4.0
  */
-public class REVParser extends AbstractIntertechnoParser {
+public class REVParser extends AbstractGroupAddressParser {
+
+    private static final Logger logger = LoggerFactory.getLogger(CULIntertechnoBinding.class);
 
     @Override
-    public String parseAddress(String... addressParts) throws BindingConfigParseException {
-        String group = addressParts[0];
-        String sub = addressParts[1];
-        return getGroupAddress(group) + getSubAddress(sub) + "0FF";
+    public void parseConfig(List<String> configParts) throws BindingConfigParseException {
+        super.parseConfig(configParts);
+
+        commandON = getGroupAddress(group) + getSubAddress(address) + "0FF" + "FF";
+        commandOFF = getGroupAddress(group) + getSubAddress(address) + "0FF" + "00";
+
+        logger.trace("commandON = {}", commandON);
+        logger.trace("commandOFF = {}", commandOFF);
     }
 
     private String getGroupAddress(String group) throws BindingConfigParseException {
@@ -42,28 +53,17 @@ public class REVParser extends AbstractIntertechnoParser {
         }
     }
 
-    private String getSubAddress(String sub) throws BindingConfigParseException {
-        char subChar = sub.charAt(0);
-        switch (subChar) {
-            case '1':
+    private String getSubAddress(int sub) throws BindingConfigParseException {
+        switch (sub) {
+            case 1:
                 return "1FF";
-            case '2':
+            case 2:
                 return "F1F";
             case 3:
                 return "FF1";
             default:
                 throw new BindingConfigParseException("Unknown sub address: " + sub);
         }
-    }
-
-    @Override
-    public String getCommandValueON() {
-        return "FF";
-    }
-
-    @Override
-    public String getCOmmandValueOFF() {
-        return "00";
     }
 
 }

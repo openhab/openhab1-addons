@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,9 @@ package org.openhab.binding.intertechno.internal.parser;
  * @since 1.4.0
  */
 public abstract class AbstractIntertechnoParser implements IntertechnoAddressParser {
+
+    protected String commandON = "";
+    protected String commandOFF = "";
 
     /**
      * Encode an integer as String for sending it via Intertechno. Numbers are
@@ -52,6 +55,16 @@ public abstract class AbstractIntertechnoParser implements IntertechnoAddressPar
 
         return buffer.toString();
 
+    }
+
+    @Override
+    public String getCommandON() {
+        return commandON;
+    }
+
+    @Override
+    public String getCommandOFF() {
+        return commandOFF;
     }
 
 }

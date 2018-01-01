@@ -8,7 +8,13 @@
  */
 package org.openhab.binding.intertechno.internal.parser;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.openhab.binding.intertechno.internal.CULIntertechnoBinding;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This parser is for raw Intertechno configurations. Use this if we don't have
@@ -20,25 +26,39 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class RawParser extends AbstractIntertechnoParser {
 
-    private String commandOn;
-    private String commandOff;
+    private static final Logger logger = LoggerFactory.getLogger(CULIntertechnoBinding.class);
 
     @Override
-    public String parseAddress(String... addressParts) throws BindingConfigParseException {
-        String address = addressParts[0];
-        commandOn = addressParts[1];
-        commandOff = addressParts[2];
-        return address;
-    }
+    public void parseConfig(List<String> configParts) throws BindingConfigParseException {
+        String address = "";
 
-    @Override
-    public String getCommandValueON() {
-        return commandOn;
-    }
+        for (int i = 0; i < configParts.size(); i++) {
+            String paramName = configParts.get(i).split("=")[0].toLowerCase();
+            String paramValue = configParts.get(i).split("=")[1];
 
-    @Override
-    public String getCOmmandValueOFF() {
-        return commandOff;
+            switch (paramName) {
+                case "commandon":
+                    commandON = paramValue;
+                    break;
+                case "commandoff":
+                    commandOFF = paramValue;
+                    break;
+                case "address":
+                    address = paramValue;
+                    break;
+            }
+        }
+
+        if (StringUtils.isNotBlank(address)) {
+            logger.warn("The address parameter is deprecated! Please use just commandOn and commandOff.");
+            logger.warn("type=raw;commandOn={}{};commandOff={}{}", address, commandON, address, commandOFF);
+
+            commandON = address + commandON;
+            commandOFF = address + commandOFF;
+        }
+
+        logger.trace("commandON = {}", commandON);
+        logger.trace("commandOFF = {}", commandOFF);
     }
 
 }
