@@ -44,6 +44,7 @@ The action calls have to be configured in the above sequence, if you need to omi
 In this case any default values from `services/pushover.cfg` will be used.
 Note that you cannot use a null value for int priority.
 
+
 ### Example
 
 Send a message without a sound, omit String url and String urlTitle.
