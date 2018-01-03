@@ -2,7 +2,8 @@
 
 The Pebble action service allows you to send pins and notifications directly to your Pebble watch.
 
-You'll need to install the openHAB app on your Pebble watch and lookup the Timeline token. This token is displayed at the bottom of the configuration page when you configure the app on your phone.
+You'll need to install the openHAB app on your Pebble watch and lookup the Timeline token.
+This token is displayed at the bottom of the configuration page when you configure the app on your phone.
 
 ## Configuration
 
