@@ -9,7 +9,7 @@ As described in the Telegram Bot API, this is the manual procedure needed in ord
 1.  Create the Bot and get the Token
 *   On a Telegram client open a chat with BotFather.
 *   write `/newbot` to BotFather, fill all the needed information, write down the token. This is the authentication token needed.
-2.  Create the destination chat and get the chatId
+1.  Create the destination chat and get the chatId
 *   Open a new chat with your new Bot and post a message on the chat
 *   Open a browser and invoke `https://api.telegram.org/bot<token>/getUpdates` (where `<token>` is the authentication token previously obtained)
 *   Look at the JSON result and write down the value of `result[0].message.chat.id`. That is the chatId.
@@ -36,7 +36,7 @@ bot2.chatId=654321
 bot2.token=yyyyyyyyyyy
 ```
 
-In this example two bots can be used (`bot1` and `bot2`).
+It this example two bots can be used (`bot1` and `bot2`).
 
 ## Examples
 
@@ -44,7 +44,7 @@ In this example two bots can be used (`bot1` and `bot2`).
 
 telegram.rules
 
-```java
+```
 rule "Send telegram with Fixed Message"
 when
 	Item Foo changed
@@ -57,7 +57,7 @@ end
 
 telegram.rules
 
-```java
+```
 rule "Send telegram with Formatted Message"
 when
 	Item Foo changed
@@ -70,7 +70,7 @@ end
 
 telegram.rules
 
-```java
+```
 rule "Send telegram with image and caption from image accessible by url"
 when
     Item Light_GF_Living_Table changed
@@ -82,7 +82,7 @@ end
 
 telegram.rules
 
-```java
+```
 rule "Send telegram with image without caption from image accessible by url"
 when
     Item Light_GF_Living_Table changed
@@ -96,7 +96,7 @@ In case your image is behind an authenticated web server (locked by username and
 
 telegram.rules
 
-```java
+```
 rule "Send telegram with image without caption from image accessible by url"
 when
     Item Light_GF_Living_Table changed
