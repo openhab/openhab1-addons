@@ -16,7 +16,7 @@ Clears the display of the LCD with the given uid.
 
 Example:
 
-  ```java
+  ```javascript
   rule "clear lcd"
       when
           Item ClearLCD received command ON
@@ -31,7 +31,7 @@ Sets the position of a TinkerForge servo with the uid $uid and servo number to t
 
 Example:
 
-	```java
+	```javascript
 	rule "move servo"
     when
         Item MoveServo received command ON
@@ -53,7 +53,7 @@ Sets the speed of a TinkerForge DC motor with the given uid to $speed using the 
 
 Example:
 
-	```java
+	```javascript
 	rule "move motor"
     when
         Item DCMOVE received command ON
@@ -79,7 +79,7 @@ Sets the speed of a TinkerForge DC motor with the given uid to $speed using the 
 
 Example:
 
-	```java
+	```javascript
 	rule "move motor"
     when
         Item DCMOVE received command ON
@@ -102,7 +102,7 @@ Example:
 
   Example:
 
-  ```java
+  ```javascript
     rule "Clear"
         when Item Clear changed
     then
@@ -115,7 +115,7 @@ Example:
 
 Example:
 
-  ```java
+  ```javascript
     rule "Tare"
         when
                 Item Tare changed to ON
@@ -124,4 +124,3 @@ Example:
                 tfLoadCellTare("v8V")
     end
   ```
-	
