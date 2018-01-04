@@ -2768,6 +2768,15 @@
 			<Label lang="en">Thermostatic Valve</Label>
 			<ConfigFile>eurotronic/cometz.xml</ConfigFile>
 		</Product>
+		<Product>
+			 <Reference>
+			 	<Type>0003</Type>
+			 	<Id>0001</Id>
+			 </Reference>
+			 <Model>Spirit</Model>
+			 <Label lang="en">Thermostatic Valve</Label>
+			 ConfigFile>eurotronic/spirit.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0111</Id>
