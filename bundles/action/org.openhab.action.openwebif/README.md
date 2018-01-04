@@ -7,7 +7,7 @@ The OpenWebIf action allows you to send a message to enigma2-based Linux satelli
 Configure your satellite receivers in `services/openwebif.cfg`.
 
 | Property                   | Default | Required | Description            |
-|----------------------------|---------|-:-:------|------------------------|
+|----------------------------|---------|:--------:|------------------------|
 | `receiver.<name>.host`     |         |          | For example, `vusolo2` |
 | `receiver.<name>.port`     |         |          | For example, `81`      |
 | `receiver.<name>.user`     |         |          | For example, `root`    |
