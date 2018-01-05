@@ -2775,7 +2775,7 @@
 			 </Reference>
 			 <Model>Spirit</Model>
 			 <Label lang="en">Thermostatic Valve</Label>
-			 ConfigFile>eurotronic/spirit.xml</ConfigFile>
+			 <ConfigFile>eurotronic/spirit.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
