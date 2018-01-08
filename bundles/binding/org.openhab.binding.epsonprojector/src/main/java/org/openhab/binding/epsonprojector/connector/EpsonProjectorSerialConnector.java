@@ -136,7 +136,7 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector, S
 
         } catch (IOException e) {
 
-            logger.debug("IO error occured...reconnect and resend ones");
+            logger.debug("IO error occurred...reconnect and resend ones");
             disconnect();
             connect();
 

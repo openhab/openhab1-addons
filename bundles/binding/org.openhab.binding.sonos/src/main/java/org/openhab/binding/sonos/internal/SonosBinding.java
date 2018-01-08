@@ -310,7 +310,7 @@ public class SonosBinding extends AbstractActiveBinding<SonosBindingProvider>imp
                 try {
                     sonosCommandType = SonosCommandType.getCommandType(sonosCommand, Direction.OUT);
                 } catch (Exception e) {
-                    logger.error("An exception occured while verifying command compatibility ({})", e.getMessage());
+                    logger.error("An exception occurred while verifying command compatibility ({})", e.getMessage());
                 }
 
                 if (sonosID != null) {

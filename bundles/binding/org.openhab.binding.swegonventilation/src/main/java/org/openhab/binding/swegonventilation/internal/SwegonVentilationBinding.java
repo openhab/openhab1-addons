@@ -168,6 +168,7 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
     private class MessageListener extends Thread {
 
         private boolean interrupted = false;
+        SwegonVentilationConnector connector = null;
 
         MessageListener() {
         }
@@ -175,14 +176,19 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
         public void setInterrupted(boolean interrupted) {
             this.interrupted = interrupted;
             this.interrupt();
+            try {
+                if (connector != null) {
+                    connector.disconnect();
+                }
+            } catch (SwegonVentilationException e) {
+                logger.warn("Error occurred when closing connection", e);
+            }
         }
 
         @Override
         public void run() {
 
             logger.debug("Swegon ventilation system message listener started");
-
-            SwegonVentilationConnector connector;
 
             if (simulator == true) {
                 connector = new SwegonVentilationSimulator();
@@ -195,7 +201,7 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
             try {
                 connector.connect();
             } catch (SwegonVentilationException e) {
-                logger.error("Error occured when connecting to Swegon ventilation system", e);
+                logger.error("Error occurred when connecting to Swegon ventilation system", e);
 
                 logger.warn("Closing Swegon ventilation system message listener");
 
@@ -248,14 +254,14 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
 
                 } catch (SwegonVentilationException e) {
 
-                    logger.error("Error occured when received data from Swegon ventilation system", e);
+                    logger.debug("Error occurred when received data from Swegon ventilation system", e);
                 }
             }
 
             try {
                 connector.disconnect();
             } catch (SwegonVentilationException e) {
-                logger.error("Error occured when disconnecting from Swegon ventilation system", e);
+                logger.error("Error occurred when disconnecting from Swegon ventilation system", e);
             }
 
         }

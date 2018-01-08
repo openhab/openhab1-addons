@@ -67,7 +67,7 @@ public class LgTvInteractor implements LgtvEventListener {
 
     private int waitafterbyebye = 10; // wait 10secs for new interaction with tv
                                       // after byebye event
-    private long byebyeseen = -1; // time when last byebye event occured
+    private long byebyeseen = -1; // time when last byebye event occurred
 
     public String quickfind(String sourcestring, String tag) {
         String retval = "#notfound";

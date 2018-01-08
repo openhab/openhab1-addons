@@ -18,6 +18,7 @@
         </parameter>
         <parameter name="port" type="text">
             <label>Serial Port</label>
+            <context>serial-port</context>            
             <description>Serial port to which the UPB modem is connected.</description>
             <required>true</required>
         </parameter>

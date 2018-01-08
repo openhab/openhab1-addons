@@ -93,7 +93,7 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
         try {
             logger.trace("{}[{}]: request : {}", getProviderName(), locationConfig.getLocationId(), url);
 
-            String response = HttpUtil.executeUrl("GET", url, 15000);
+            String response = StringUtils.trimToEmpty(HttpUtil.executeUrl("GET", url, 15000));
 
             if (logger.isTraceEnabled()) {
                 response = StringUtils.remove(response, "\n");

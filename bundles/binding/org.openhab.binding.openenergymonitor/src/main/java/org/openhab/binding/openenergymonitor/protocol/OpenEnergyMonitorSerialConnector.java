@@ -105,7 +105,7 @@ public class OpenEnergyMonitorSerialConnector extends OpenEnergyMonitorConnector
          * }
          * } catch (IOException e) {
          * throw new OpenEnergyMonitorException(
-         * "Error occured while receiving data", e);
+         * "Error occurred while receiving data", e);
          * }
          */
 

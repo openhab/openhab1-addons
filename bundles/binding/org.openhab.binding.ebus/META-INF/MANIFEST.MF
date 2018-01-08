@@ -6,7 +6,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: This is the eBus binding of the open Home Aut
  omation Bus (openHAB)
 Bundle-SymbolicName: org.openhab.binding.ebus
-Bundle-Version: 1.11.0.qualifier
+Bundle-Version: 1.12.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: gnu.io;resolution:=optional,
  org.apache.commons.io,

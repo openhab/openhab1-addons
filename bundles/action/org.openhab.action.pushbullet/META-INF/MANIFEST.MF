@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.action.pushbullet.internal
+Ignore-Package: org.openhab.action.pushbullet.internal
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Name: openHAB Pushbullet Action
+Bundle-SymbolicName: org.openhab.action.pushbullet
+Bundle-Vendor: openHAB
+Bundle-Version: 1.12.0.qualifier
+Bundle-Activator: org.openhab.action.pushbullet.internal.PushbulletActivator
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the Pushbullet action of the open Home Automation Bus (openHAB)
+Import-Package: com.google.gson,
+ com.google.gson.annotations,
+ org.apache.commons.io,
+ org.apache.commons.lang,
+ org.eclipse.smarthome.io.net.http,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.scriptengine.action,
+ org.openhab.core.types,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.slf4j
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Service-Component: OSGI-INF/*.xml
+Bundle-ClassPath: .
+Bundle-ActivationPolicy: lazy

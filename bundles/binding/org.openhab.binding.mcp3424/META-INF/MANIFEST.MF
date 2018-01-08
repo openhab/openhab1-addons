@@ -4,7 +4,7 @@ Ignore-Package: org.openhab.binding.mcp3424.internal
 Bundle-Name: openHAB mcp3424 Binding
 Bundle-SymbolicName: org.openhab.binding.mcp3424
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.11.0.qualifier
+Bundle-Version: 1.12.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html

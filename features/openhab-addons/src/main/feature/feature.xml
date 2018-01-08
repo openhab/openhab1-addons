@@ -65,6 +65,13 @@
     <configfile finalname="${openhab.conf}/services/prowl.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/prowl</configfile>
   </feature>
 
+  <feature name="openhab-action-pushbullet" description="Pushbullet Action" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.pushbullet/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/pushbullet.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/pushbullet</configfile>
+  </feature>
+  
   <feature name="openhab-action-pushover" description="Pushover Action" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -288,7 +295,7 @@
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.gc100ir/${project.version}</bundle>
   </feature>
   
-  <feature name="openhab-binding-gpio" description="GPIO Binding" version="${project.version}">
+  <feature name="openhab-binding-gpio1" description="GPIO Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <feature>openhab-io-gpio1</feature>
@@ -303,7 +310,7 @@
   </feature>
 
 
-  <feature name="openhab-binding-horizon" description="Horizon Binding" version="${project.version}">
+  <feature name="openhab-binding-horizon1" description="Horizon Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.horizon/${project.version}</bundle>
@@ -317,7 +324,7 @@
     <configfile finalname="${openhab.conf}/services/http.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/http</configfile>
   </feature>
 
-  <feature name="openhab-binding-iec6205621meter" description="IEC 62056-21 Meter" version="${project.version}">
+  <feature name="openhab-binding-iec6205621meter1" description="IEC 62056-21 Meter" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <feature>openhab-transport-serial</feature>

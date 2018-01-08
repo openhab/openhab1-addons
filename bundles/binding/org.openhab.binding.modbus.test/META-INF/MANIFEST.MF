@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for Modbus Binding
 Bundle-SymbolicName: org.openhab.binding.modbus.test
-Bundle-Version: 1.11.0.qualifier
+Bundle-Version: 1.12.0.qualifier
 Fragment-Host: org.openhab.binding.modbus
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit

@@ -98,7 +98,7 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
                             logger.debug("Closing connection to device '{}' ", deviceCfg.deviceId);
                             device.disconnect();
                         } catch (EpsonProjectorException e) {
-                            logger.error("Error occured when closing connection to device '{}'", deviceCfg.deviceId);
+                            logger.error("Error occurred when closing connection to device '{}'", deviceCfg.deviceId);
                         }
                     }
                 }
@@ -346,7 +346,7 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
             }
 
         } catch (EpsonProjectorException e) {
-            logger.warn("Couldn't execute command '{}', {}", commmandType.toString(), e);
+            logger.warn("Couldn't execute command '{}', {}", commmandType.toString(), e.getMessage());
 
         } catch (Exception e) {
             logger.warn("Couldn't create state of type '{}'", itemType);
@@ -521,7 +521,7 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
             }
 
         } catch (EpsonProjectorException e) {
-            logger.error("Couldn't execute command '{}', {}", commmandType, e);
+            logger.warn("Couldn't execute command '{}', {}", commmandType, e.getMessage());
 
         }
     }

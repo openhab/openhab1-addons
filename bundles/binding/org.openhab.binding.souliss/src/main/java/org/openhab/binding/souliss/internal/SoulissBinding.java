@@ -132,6 +132,10 @@ public class SoulissBinding<E> extends AbstractActiveBinding<SoulissBindingProvi
 
         // Get the typical defined in the hash table
         SoulissGenericTypical T = SoulissGenericBindingProvider.SoulissTypicalsRecipients.getTypicalFromItem(itemName);
+        if (T == null) {
+            logger.debug("receiveCommand - itemName '{}' not a SoulissTypical", itemName);
+            return;
+        }
         logger.info("receiveCommand - {} = {} - Typical: 0x{}", itemName, command, Integer.toHexString(T.getType()));
 
         switch (T.getType()) {

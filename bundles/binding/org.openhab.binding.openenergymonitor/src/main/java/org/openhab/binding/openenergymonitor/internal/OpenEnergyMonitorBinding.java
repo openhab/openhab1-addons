@@ -186,7 +186,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
             try {
                 connector.connect();
             } catch (OpenEnergyMonitorException e) {
-                logger.error("Error occured when connecting to Open Energy Monitor device", e);
+                logger.error("Error occurred when connecting to Open Energy Monitor device", e);
 
                 logger.warn("Closing Open Energy Monitor message listener");
 
@@ -236,7 +236,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                                             found = true;
 
                                         } catch (Exception e) {
-                                            logger.error("Error occured during data evaluation", e);
+                                            logger.error("Error occurred during data evaluation", e);
                                         }
                                     }
 
@@ -260,14 +260,14 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
 
                 } catch (OpenEnergyMonitorException e) {
 
-                    logger.error("Error occured when received data from Open Energy Monitor device", e);
+                    logger.error("Error occurred when received data from Open Energy Monitor device", e);
                 }
             }
 
             try {
                 connector.disconnect();
             } catch (OpenEnergyMonitorException e) {
-                logger.error("Error occured when disconnecting form Open Energy Monitor device", e);
+                logger.error("Error occurred when disconnecting form Open Energy Monitor device", e);
             }
 
         }

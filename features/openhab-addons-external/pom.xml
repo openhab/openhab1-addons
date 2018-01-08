@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.openhab</groupId>
         <artifactId>features</artifactId>
-        <version>1.11.0-SNAPSHOT</version>
+        <version>1.12.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.openhab.addons</groupId>
@@ -37,6 +36,7 @@
                                 <artifact><file>src/main/resources/conf/caldavCommand.cfg</file><type>cfg</type><classifier>caldavCommand</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/caldavio.cfg</file><type>cfg</type><classifier>caldavio</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/caldavPersonal.cfg</file><type>cfg</type><classifier>caldavPersonal</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/cardio2e.cfg</file><type>cfg</type><classifier>cardio2e</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/comfoair.cfg</file><type>cfg</type><classifier>comfoair</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/culintertechno.cfg</file><type>cfg</type><classifier>culintertechno</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/denon.cfg</file><type>cfg</type><classifier>denon</classifier></artifact>
@@ -112,6 +112,7 @@
                                 <artifact><file>src/main/resources/conf/plugwise.cfg</file><type>cfg</type><classifier>plugwise</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/powermax.cfg</file><type>cfg</type><classifier>powermax</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/prowl.cfg</file><type>cfg</type><classifier>prowl</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/pushbullet.cfg</file><type>cfg</type><classifier>pushbullet</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pushover.cfg</file><type>cfg</type><classifier>pushover</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pushsafer.cfg</file><type>cfg</type><classifier>pushsafer</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/rwesmarthome.cfg</file><type>cfg</type><classifier>rwesmarthome</classifier></artifact>
@@ -124,6 +125,7 @@
                                 <artifact><file>src/main/resources/conf/souliss.cfg</file><type>cfg</type><classifier>souliss</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/swegonventilation.cfg</file><type>cfg</type><classifier>swegonventilation</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/systeminfo.cfg</file><type>cfg</type><classifier>systeminfo</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/tacmi.cfg</file><type>cfg</type><classifier>tacmi</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/tcp.cfg</file><type>cfg</type><classifier>tcp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/telegram.cfg</file><type>cfg</type><classifier>telegram</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/tinkerforge.cfg</file><type>cfg</type><classifier>tinkerforge</classifier></artifact>

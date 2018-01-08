@@ -36,7 +36,7 @@ public class ModbusSlaveException extends ModbusException {
      * specification in <tt>net.wimpi.modbus.Modbus</tt>.
      * <p>
      *
-     * @param TYPE the type of exception that occured.
+     * @param TYPE the type of exception that occurred.
      *
      * @see net.wimpi.modbus.Modbus
      */

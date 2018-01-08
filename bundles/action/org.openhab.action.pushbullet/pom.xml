@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>action</artifactId>
+		<version>1.12.0-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<bundle.symbolicName>org.openhab.action.pushbullet</bundle.symbolicName>
+		<bundle.namespace>org.openhab.action.pushbullet</bundle.namespace>
+		<deb.name>openhab-addon-action-pushbullet</deb.name>
+		<deb.description>${project.name}</deb.description>
+	</properties>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.action</groupId>
+	<artifactId>org.openhab.action.pushbullet</artifactId>
+
+	<name>openHAB Pushbullet Action</name>
+
+	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

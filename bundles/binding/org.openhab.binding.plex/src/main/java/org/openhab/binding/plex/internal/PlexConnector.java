@@ -571,7 +571,7 @@ public class PlexConnector extends Thread {
             } catch (JsonMappingException e) {
                 logger.error("Error mapping JSON", e);
             } catch (IOException e) {
-                logger.error("An I/O error occured while decoding JSON", e);
+                logger.error("An I/O error occurred while decoding JSON", e);
             }
 
             return null;

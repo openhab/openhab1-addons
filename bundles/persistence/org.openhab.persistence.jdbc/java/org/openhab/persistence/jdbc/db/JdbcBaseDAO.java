@@ -432,10 +432,9 @@ public class JdbcBaseDAO {
             logger.debug("JDBC::storeItemValueProvider: newVal.intValue: '{}'", newVal.intValue());
             vo.setValue(newVal.intValue());
         } else if ("DATETIMEITEM".equals(itemType)) {
-            // vo.setValueTypes(getSqlTypes().get(itemType), java.util.Date.class);
-            vo.setValueTypes(getSqlTypes().get(itemType), java.sql.Date.class);
+            vo.setValueTypes(getSqlTypes().get(itemType), java.sql.Timestamp.class);
             Calendar x = ((DateTimeType) item.getState()).getCalendar();
-            java.sql.Date d = new java.sql.Date(x.getTimeInMillis());
+            java.sql.Timestamp d = new java.sql.Timestamp(x.getTimeInMillis());
             logger.debug("JDBC::storeItemValueProvider: DateTimeItem: '{}'", d);
             vo.setValue(d);
         } else {

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for Nikobus Binding
 Bundle-SymbolicName: org.openhab.binding.nikobus.test
-Bundle-Version: 1.11.0.qualifier
+Bundle-Version: 1.12.0.qualifier
 Fragment-Host: org.openhab.binding.nikobus;bundle-version="1.3.0"
 Bundle-Vendor: openHAB.org
 Require-Bundle: org.junit;bundle-version="4.8.1"

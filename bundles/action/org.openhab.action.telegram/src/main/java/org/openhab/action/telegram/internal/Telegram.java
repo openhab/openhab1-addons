@@ -62,6 +62,7 @@ public class Telegram {
     private static final String TELEGRAM_PHOTO_URL = "https://api.telegram.org/bot%s/sendPhoto";
     private static final int HTTP_TIMEOUT = 2000;
     private static final int HTTP_PHOTO_TIMEOUT = 10000;
+    private static final int HTTP_RETRIES = 3;
 
     private static Map<String, TelegramBot> groupTokens = new HashMap<String, TelegramBot>();
 
@@ -86,7 +87,7 @@ public class Telegram {
         postMethod.getParams().setContentCharset("UTF-8");
         postMethod.getParams().setSoTimeout(HTTP_TIMEOUT);
         postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(3, false));
+                new DefaultHttpMethodRetryHandler(HTTP_RETRIES, false));
         NameValuePair[] data = { new NameValuePair("chat_id", groupTokens.get(group).getChatId()),
                 new NameValuePair("text", message) };
         postMethod.setRequestBody(data);
@@ -145,13 +146,30 @@ public class Telegram {
     static public boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
             @ParamDoc(name = "photoURL") String photoURL, @ParamDoc(name = "caption") String caption) {
 
-        return sendTelegramPhoto(group, photoURL, caption, null, null);
+        return sendTelegramPhoto(group, photoURL, caption, null, null, HTTP_PHOTO_TIMEOUT, HTTP_RETRIES);
+    }
+
+    @ActionDoc(text = "Sends a Picture via Telegram REST API, using custom HTTP timeout")
+    static public boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
+            @ParamDoc(name = "photoURL") String photoURL, @ParamDoc(name = "caption") String caption,
+            @ParamDoc(name = "timeoutMillis") Integer timeoutMillis) {
+
+        return sendTelegramPhoto(group, photoURL, caption, null, null, timeoutMillis, HTTP_RETRIES);
     }
 
     @ActionDoc(text = "Sends a Picture, protected by username/password authentication, via Telegram REST API")
     static public boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
             @ParamDoc(name = "photoURL") String photoURL, @ParamDoc(name = "caption") String caption,
             @ParamDoc(name = "username") String username, @ParamDoc(name = "password") String password) {
+        return sendTelegramPhoto(group, photoURL, caption, null, null, HTTP_PHOTO_TIMEOUT, HTTP_RETRIES);
+
+    }
+
+    @ActionDoc(text = "Sends a Picture, protected by username/password authentication, using custom HTTP timeout and retries, via Telegram REST API")
+    static public boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
+            @ParamDoc(name = "photoURL") String photoURL, @ParamDoc(name = "caption") String caption,
+            @ParamDoc(name = "username") String username, @ParamDoc(name = "password") String password,
+            @ParamDoc(name = "timeoutMillis") int timeoutMillis, @ParamDoc(name = "retries") int retries) {
 
         if (groupTokens.get(group) == null) {
             logger.warn("Bot '{}' not defined; action skipped.", group);
@@ -175,8 +193,9 @@ public class Telegram {
         }
 
         GetMethod getMethod = new GetMethod(photoURL);
-        getMethod.getParams().setSoTimeout(HTTP_PHOTO_TIMEOUT);
-        getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+        getMethod.getParams().setSoTimeout(timeoutMillis);
+        getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                new DefaultHttpMethodRetryHandler(retries, false));
         try {
             int statusCode = getClient.executeMethod(getMethod);
             if (statusCode != HttpStatus.SC_OK) {
@@ -184,8 +203,8 @@ public class Telegram {
                 return false;
             }
 
-            //if the content-length is 0 (which shouldn't happen),
-            //flag an appropriate error
+            // if the content-length is 0 (which shouldn't happen),
+            // flag an appropriate error
             if (getMethod.getResponseContentLength() == 0) {
                 logger.warn("Failed to retrieve an image. Fetched URL returned no data.");
                 return false;
@@ -228,9 +247,9 @@ public class Telegram {
         PostMethod postMethod = new PostMethod(url);
         try {
             postMethod.getParams().setContentCharset("UTF-8");
-            postMethod.getParams().setSoTimeout(HTTP_PHOTO_TIMEOUT);
+            postMethod.getParams().setSoTimeout(timeoutMillis);
             postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                    new DefaultHttpMethodRetryHandler(3, false));
+                    new DefaultHttpMethodRetryHandler(retries, false));
             Part[] parts = new Part[caption != null ? 3 : 2];
             parts[0] = new StringPart("chat_id", groupTokens.get(group).getChatId());
             parts[1] = new FilePart("photo",
