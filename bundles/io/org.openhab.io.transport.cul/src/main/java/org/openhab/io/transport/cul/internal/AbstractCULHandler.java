@@ -155,7 +155,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
 
     @Override
     public boolean hasListeners() {
-        return listeners.size() > 0;
+        return (listeners.size() == 1 && listeners.get(0) != sendThread || listeners.size() > 1);
     }
 
     @Override
