@@ -139,7 +139,7 @@ public class SwegonVentilationSerialConnector extends SwegonVentilationConnector
                 }
             }
         } catch (IOException e) {
-            throw new SwegonVentilationException("Error occured while receiving data", e);
+            throw new SwegonVentilationException("Error occurred while receiving data", e);
         }
 
         return null;

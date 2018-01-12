@@ -9,14 +9,13 @@
 package org.openhab.binding.anel.internal;
 
 import java.io.InvalidClassException;
+import java.util.EnumSet;
 import java.util.Set;
 
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
-
-import com.google.common.collect.Sets;
 
 /**
  * Represents all valid command types which can be processed by this binding.
@@ -197,13 +196,19 @@ public enum AnelCommandType {
     /** Name of {@link AnelCommandType#IO7} (not changeable). */
     IO7NAME("IO7NAME", StringItem.class),
     /** Name of {@link AnelCommandType#IO8} (not changeable). */
-    IO8NAME("IO8NAME", StringItem.class),;
+    IO8NAME("IO8NAME", StringItem.class),
+    /** Sensor temperature (not changeable; only if device firmware >= 6.1). */
+    SENSOR_TEMPERATURE("SENSOR_TEMPERATURE", NumberItem.class),
+    /** Sensor humidity (not changeable; only if device firmware >= 6.1). */
+    SENSOR_HUMIDITY("SENSOR_HUMIDITY", NumberItem.class),
+    /** Sensor brightness (not changeable; only if device firmware >= 6.1). */
+    SENSOR_BRIGHTNESS("SENSOR_BRIGHTNESS", NumberItem.class),;
 
     /** Set of all changeable switch (if not locked). */
-    public static Set<AnelCommandType> SWITCHES = Sets.newHashSet(F1, F2, F3, F4, F5, F6, F7, F8);
+    public static Set<AnelCommandType> SWITCHES = EnumSet.of(F1, F2, F3, F4, F5, F6, F7, F8);
 
     /** Set of all IOs. */
-    public static Set<AnelCommandType> IOS = Sets.newHashSet(IO1, IO2, IO3, IO4, IO5, IO6, IO7, IO8);
+    public static Set<AnelCommandType> IOS = EnumSet.of(IO1, IO2, IO3, IO4, IO5, IO6, IO7, IO8);
 
     private final String text;
     private Class<? extends Item> itemClass;
@@ -224,7 +229,7 @@ public enum AnelCommandType {
 
     /**
      * Validate command type string.
-     * 
+     *
      * @param commandTypeText
      *            Command string e.g. 'F1' for {@link AnelCommandType#F1}.
      * @return <code>true</code> if the item is valid.
@@ -249,7 +254,7 @@ public enum AnelCommandType {
 
     /**
      * Convert command type string to command type class.
-     * 
+     *
      * @param commandTypeText
      *            Command string e.g. 'F1' for {@link AnelCommandType#F1}.
      * @return The corresponding command type.

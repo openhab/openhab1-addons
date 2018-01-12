@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,14 +17,12 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
-import org.openhab.core.types.UnDefType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +50,8 @@ public class BticinoDevice implements IBticinoEventListener {
     private String m_host = "";
     // Port to connect to
     private int m_port = 0;
+    // Openweb password
+    private String m_passwd = "";
     // Rescan interval in seconds
     private int m_rescan_interval_secs = 0;
     // Indicator if this device is started
@@ -59,7 +59,7 @@ public class BticinoDevice implements IBticinoEventListener {
     // A lock object
     private Object m_lock = new Object();
     // The openweb object that handles connections and events
-    private OpenWebNet m_open_web_net;
+    private OpenWebNet m_open_web_net = null;
 
     private static final Logger logger = LoggerFactory.getLogger(BticinoDevice.class);
 
@@ -78,6 +78,10 @@ public class BticinoDevice implements IBticinoEventListener {
         m_port = p_port;
     }
 
+    public void setPasswd(String p_passwd) {
+        m_passwd = p_passwd;
+    }
+
     public void setRescanInterval(int p_rescan_interval_secs) {
         m_rescan_interval_secs = p_rescan_interval_secs;
     }
@@ -92,7 +96,7 @@ public class BticinoDevice implements IBticinoEventListener {
 
     /**
      * Initialize this device
-     * 
+     *
      * @throws InitializationException
      */
     public void initialize() throws InitializationException {
@@ -102,11 +106,11 @@ public class BticinoDevice implements IBticinoEventListener {
 
     /**
      * Start this device
-     * 
+     *
      */
     public void startDevice() {
         if (m_open_web_net == null) {
-            m_open_web_net = new OpenWebNet(m_host, m_port, m_rescan_interval_secs);
+            m_open_web_net = new OpenWebNet(m_host, m_port, m_passwd, m_rescan_interval_secs);
             m_open_web_net.addEventListener(this);
             m_open_web_net.onStart();
         }
@@ -142,36 +146,33 @@ public class BticinoDevice implements IBticinoEventListener {
                 switch (l_who) {
                     // Lights
                     case 1: {
-                        if (command instanceof IncreaseDecreaseType ) {
-                            if( IncreaseDecreaseType.INCREASE.equals(command) ) {
+                        if (command instanceof IncreaseDecreaseType) {
+                            if (IncreaseDecreaseType.INCREASE.equals(command)) {
                                 logger.debug("Light received INCREASE command.");
                                 l_pr.addProperty("what", "30");
-                            }
-                            else {
+                            } else {
                                 logger.debug("Light received DECREASE command.");
                                 l_pr.addProperty("what", "31");
                             }
-                        }
-                        else if (command instanceof PercentType) {
-                            PercentType pType = (PercentType)command;
-                            //take percentage and divide by 10, round 1 (ie 0 to 10 is the result, nothing else)
-                            int percentValue = (int)(Math.floor(pType.intValue()/10F));
+                        } else if (command instanceof PercentType) {
+                            PercentType pType = (PercentType) command;
+                            // take percentage and divide by 10, round 1 (ie 0 to 10 is the result, nothing else)
+                            int percentValue = (int) (Math.floor(pType.intValue() / 10F));
                             logger.debug("Set light value to {}", percentValue);
                             l_pr.addProperty("what", String.valueOf(percentValue));
-                        }
-                        else if (command instanceof OnOffType) {
+                        } else if (command instanceof OnOffType) {
                             if (OnOffType.ON.equals(command)) {
                                 l_pr.addProperty("what", "1");
                             } else {
                                 l_pr.addProperty("what", "0");
                             }
-                        }
-                        else {
-                            logger.warn("Received unknown command type for lighting: '{}'", command.getClass().getName());
+                        } else {
+                            logger.warn("Received unknown command type for lighting: '{}'",
+                                    command.getClass().getName());
                         }
                         break;
                     }
-                        // Shutter
+                    // Shutter
                     case 2: {
                         if (UpDownType.UP.equals(command)) {
                             l_pr.addProperty("what", "1");
@@ -182,7 +183,7 @@ public class BticinoDevice implements IBticinoEventListener {
                         }
                         break;
                     }
-                        // CEN Basic & Evolved
+                    // CEN Basic & Evolved
                     case 15: {
                         // Only for the on type, send a CEN event (aka a pushbutton
                         // device)
@@ -194,7 +195,6 @@ public class BticinoDevice implements IBticinoEventListener {
                         break;
                     }
                 }
-
                 m_open_web_net.onCommand(l_pr);
             }
         } catch (Exception e) {
@@ -214,7 +214,7 @@ public class BticinoDevice implements IBticinoEventListener {
         List<BticinoBindingConfig> l_binding_configs = m_bticino_binding.getItemForBticinoBindingConfig(
                 p_protocol_read.getProperty("who"), p_protocol_read.getProperty("where"));
 
-        // log it when an event has occured that no item is bound to
+        // log it when an event has occurred that no item is bound to
         if (l_binding_configs.isEmpty()) {
             logger.debug("Gateway [" + m_gateway_id + "], No Item found for bticino event, WHO ["
                     + p_protocol_read.getProperty("who") + "], WHAT [" + p_protocol_read.getProperty("what")

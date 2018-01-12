@@ -154,10 +154,20 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
      * Stops communication by disconnecting from the module and stopping all
      * background tasks.
      */
-    public synchronized void close() {
+    public void close() {
+        // first we clear watchdog field in the object
+        CommunicationWatchdog watchdog = null;
         if (this.communicationWatchdog != null) {
-            this.communicationWatchdog.close();
-            this.communicationWatchdog = null;
+            synchronized (this) {
+                if (this.communicationWatchdog != null) {
+                    watchdog = this.communicationWatchdog;
+                    this.communicationWatchdog = null;
+                }
+            }
+        }
+        // then, if watchdog exists, we close it
+        if (watchdog != null) {
+            watchdog.close();
         }
     }
 

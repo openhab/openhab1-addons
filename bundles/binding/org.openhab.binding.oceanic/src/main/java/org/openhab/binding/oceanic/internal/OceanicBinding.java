@@ -568,7 +568,7 @@ public class OceanicBinding extends AbstractActiveBinding<OceanicBindingProvider
                                 try {
                                     value = createStateForType(valueSelector, response);
                                 } catch (BindingConfigParseException e) {
-                                    logger.error("An exception occured while converting {} to a valid state : {}",
+                                    logger.error("An exception occurred while converting {} to a valid state : {}",
                                             response, e.getMessage());
                                     return;
                                 }

@@ -74,7 +74,7 @@ public class EpsonProjectorTcpConnector implements EpsonProjectorConnector {
             try {
                 socket.close();
             } catch (IOException e) {
-                logger.warn("Error occured when closing tcp socket", e);
+                logger.warn("Error occurred when closing tcp socket", e);
             }
         }
 
@@ -116,7 +116,7 @@ public class EpsonProjectorTcpConnector implements EpsonProjectorConnector {
 
         } catch (IOException e) {
 
-            logger.debug("IO error occured...reconnect and resend ones");
+            logger.debug("IO error occurred...reconnect and resend ones");
             disconnect();
             connect();
 

@@ -1,4 +1,4 @@
-## Description
+## ISY Binding
 
 This is a openHAB binding for the Universal Devices ISY 994i router and PLM. Universal Devices offers a Java SDK for
 external programs to communicate with the router. Alternatives include an extensive REST API. See details at
@@ -23,7 +23,7 @@ There are currently 3 types available:
 * lock - locks use the security command instead of the normal off/on commands
 * heartbeat - several battery powered sensors send a heartbeat.  This is just a ST (status) with value 255, and it means that the sensor is still alive.  To make rules easier, you can define these as type=heartbeat with an item type of DateTime, and it will update with the current time every time the heartbeat is received.  You can then check the item using a rule to see if the DateTime item is too old.
 
-## OpenHAB Item Examples
+## Item Examples
 
         /* Insteon-enabled thermostat.  Note "type=thermostat" to ensure proper temp calculations, and cmd=CLISPH to use the ISY setpoint heat value instead of status */
         Number Temperature_Indoor "Inside [%.2f °F]" <temperature> (All) {isy="ctrl=29.24.98.1,type=thermostat,cmd=ST"}
@@ -69,23 +69,3 @@ The following settings configure the ISY binding in the openhab.cfg file.
 * isy:port=80 # the port of the ISY router
 * isy:user=user # the user of the ISY router
 * isy:password=password # the password of the ISY router
-
-
-## Disclaimer
-
-There is no guarantee for the function of the binding or its correctness. Use at your own risk.
-
-## Development Upgrade Instructions
-
-To build and install the isy binding, you need to first download the Java SDK that corresponds with the firmware version
-of your ISY 994i.
-
-
-1. [Download](https://www.universal-devices.com/isy-developers/.) the latest Java SDK zip file, e.g. ISY-WSDK-4.2.21.zip
-1. Unzip it to some local folder
-1. Copy the isy_inst.jar file into the org.openhab.binding.isy/lib folder
-1. Provided that the API and the file name have not changed, there should not be a need to change the source code. Watch for
-   compilation errors and adjust accordingly.
-
-
-The Lib is pushed with the binding, if you are using a older firmware version than the bundled version you may have issues. The SDK used should work with all newer version. 

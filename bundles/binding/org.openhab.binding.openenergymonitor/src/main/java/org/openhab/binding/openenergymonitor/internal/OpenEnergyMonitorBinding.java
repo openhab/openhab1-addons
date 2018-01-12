@@ -193,7 +193,6 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                 connector.connect();
             } catch (OpenEnergyMonitorException e) {
                 logger.error("Error occurred when connecting to Open Energy Monitor device. ", e);
-
                 logger.warn("Closing Open Energy Monitor message listener");
 
                 // exit
@@ -242,7 +241,6 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                                                 logger.debug("Eval '{}={}={}'", variable, tmp, result);
                                                 state = new DecimalType(result);
                                                 found = true;
-
                                             } catch (Exception e) {
                                                 logger.warn("Error occurred during data evaluation. ", e);
                                             }
@@ -268,7 +266,6 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                     }
 
                 } catch (OpenEnergyMonitorException e) {
-
                     logger.warn("Error occurred when received data from Open Energy Monitor device. ", e);
                     if (!interrupted) {
                         try {

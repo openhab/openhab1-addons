@@ -142,7 +142,7 @@ public class JdbcBaseDAO {
         SQL_CREATE_ITEMS_TABLE_IF_NOT = "CREATE TABLE IF NOT EXISTS #itemsManageTable# (ItemId INT NOT NULL AUTO_INCREMENT,#colname# #coltype# NOT NULL,PRIMARY KEY (ItemId))";
         SQL_DELETE_ITEMS_ENTRY = "DELETE FROM items WHERE ItemName=#itemname#";
         SQL_GET_ITEMID_TABLE_NAMES = "SELECT itemid, itemname FROM #itemsManageTable#";
-        SQL_GET_ITEM_TABLES = "SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE' AND table_schema=#jdbcUriDatabaseName# AND NOT table_name=#itemsManageTable#";
+        SQL_GET_ITEM_TABLES = "SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE' AND table_schema='#jdbcUriDatabaseName#' AND NOT table_name='#itemsManageTable#'";
         SQL_CREATE_ITEM_TABLE = "CREATE TABLE IF NOT EXISTS #tableName# (time #tablePrimaryKey# NOT NULL, value #dbType#, PRIMARY KEY(time))";
         SQL_INSERT_ITEM_VALUE = "INSERT INTO #tableName# (TIME, VALUE) VALUES( #tablePrimaryValue#, ? ) ON DUPLICATE KEY UPDATE VALUE= ?";
     }
@@ -432,10 +432,9 @@ public class JdbcBaseDAO {
             logger.debug("JDBC::storeItemValueProvider: newVal.intValue: '{}'", newVal.intValue());
             vo.setValue(newVal.intValue());
         } else if ("DATETIMEITEM".equals(itemType)) {
-            // vo.setValueTypes(getSqlTypes().get(itemType), java.util.Date.class);
-            vo.setValueTypes(getSqlTypes().get(itemType), java.sql.Date.class);
+            vo.setValueTypes(getSqlTypes().get(itemType), java.sql.Timestamp.class);
             Calendar x = ((DateTimeType) item.getState()).getCalendar();
-            java.sql.Date d = new java.sql.Date(x.getTimeInMillis());
+            java.sql.Timestamp d = new java.sql.Timestamp(x.getTimeInMillis());
             logger.debug("JDBC::storeItemValueProvider: DateTimeItem: '{}'", d);
             vo.setValue(d);
         } else {

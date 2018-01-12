@@ -47,6 +47,7 @@ import org.openhab.binding.denon.internal.communication.entities.commands.AppCom
 import org.openhab.binding.denon.internal.communication.entities.commands.AppCommandResponse;
 import org.openhab.binding.denon.internal.communication.entities.commands.CommandRx;
 import org.openhab.binding.denon.internal.communication.entities.commands.CommandTx;
+import org.openhab.binding.denon.internal.communication.entities.types.VolumeType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
@@ -158,8 +159,9 @@ public class DenonConnector {
                 }
             });
             listener.start();
+        } else {
+            getInitialState();
         }
-        getInitialState();
     }
 
     /**
@@ -175,7 +177,7 @@ public class DenonConnector {
 
     /**
      * Send a command for a certain property
-     * 
+     *
      * @param config The property
      * @param command The command
      */
@@ -201,8 +203,34 @@ public class DenonConnector {
      * basic configuration info (like the number of zones)
      */
     public void getInitialState() {
-        setConfigProperties();
-        updateState();
+        if (connection.isTelnet()) {
+            requestState();
+        } else {
+            setConfigProperties();
+            updateState();
+        }
+    }
+
+    /**
+     * Sends a series of state query commands over the telnet connection
+     */
+    private void requestState() {
+        // Run in new thread to not delay the set up of the binding. Handling responses is done in the listener thread.
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                for (String cmd : Arrays.asList("PW?", "MS?", "MV?", "ZM?", "MU?", "SI?", "Z2?", "Z2MU?", "Z3", "Z3MU?",
+                        "NSE")) {
+                    internSendCommandTelnet(cmd);
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        logger.trace("Interrupted while requesting state", e);
+                    }
+                }
+
+            }
+        });
     }
 
     /**
@@ -222,7 +250,7 @@ public class DenonConnector {
 
     /**
      * Update a single property from the state cache
-     * 
+     *
      * @param property The name of the property
      */
     public void updateStateFromCache(String property) {
@@ -291,7 +319,7 @@ public class DenonConnector {
      * This method tries to parse information received over the telnet connection.
      * It's quite unreliable. Some chars go missing or turn into other chars. That's
      * why each command is validated using a regex.
-     * 
+     *
      * @param commandString The received command (one line)
      */
     private void processUpdate(String commandString) {
@@ -401,6 +429,18 @@ public class DenonConnector {
             return;
         }
 
+        if (connection.isTelnet()) {
+            internSendCommandTelnet(command);
+        } else {
+            internSendCommandHttp(command);
+        }
+    }
+
+    private void internSendCommandTelnet(String command) {
+        listener.sendCommand(command);
+    }
+
+    private void internSendCommandHttp(String command) {
         try {
             String url = cmdUrl + URLEncoder.encode(command, Charset.defaultCharset().displayName());
             logger.trace("Calling url {}", url);
@@ -464,13 +504,20 @@ public class DenonConnector {
             String url = String.format("%s" + URL_ZONE_SECONDARY_LITE, statusUrl, i, i);
             logger.trace("Refreshing URL: {}", url);
             ZoneStatusLite zoneSecondary = getDocument(url, ZoneStatusLite.class);
-            if (zoneSecondary != null) {
-                stateCache.put("Z" + i, zoneSecondary.getPower().getValue() ? OnOffType.ON : OnOffType.OFF);
-                stateCache.put("Z" + i + DenonProperty.ZONE_VOLUME.getCode(),
-                        new PercentType(zoneSecondary.getMasterVolume().getValue()));
-                stateCache.put("Z" + i + DenonProperty.MUTE.getCode(),
-                        zoneSecondary.getMute().getValue() ? OnOffType.ON : OnOffType.OFF);
+            if (zoneSecondary == null) {
+                logger.warn("Unable to get secondary zone information.");
+                return;
             }
+
+            stateCache.put("Z" + i, zoneSecondary.getPower().getValue() ? OnOffType.ON : OnOffType.OFF);
+            VolumeType v = zoneSecondary.getMasterVolume();
+            if (v != null && v.getValue() != null) {
+                stateCache.put("Z" + i + DenonProperty.ZONE_VOLUME.getCode(), new PercentType(v.getValue()));
+            } else {
+                logger.debug("Not updating master volume for secondary zone. Value is null.");
+            }
+            stateCache.put("Z" + i + DenonProperty.MUTE.getCode(),
+                    zoneSecondary.getMute().getValue() ? OnOffType.ON : OnOffType.OFF);
         }
     }
 
@@ -520,10 +567,10 @@ public class DenonConnector {
 
     /**
      * Translate the volume command from the receiver to the openHAB property.
-     * 
+     *
      * Z2 -> Z2ZV
      * Z3 -> Z3ZV, etc
-     * 
+     *
      * @param command The command from the receiver
      * @return The property name in openHAB
      */

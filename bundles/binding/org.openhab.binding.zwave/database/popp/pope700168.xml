@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>POPE700168</Model>
+    <Label lang="en">POPP Rain-Sensor</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x32</id>             <!-- METER -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Rain Counter</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32000</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[Ths values shows the total count of rain from the moment of inclusion in mm waterlevel. By writing this value this counter can be reset. Size: 2 Byte, Default Value: 0
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Rain Start Command</Label>
+            <Type>short</Type>
+            <Default>99</Default>
+            <Minimum>0</Minimum>
+            <Maximum>99</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[This BASIC Set Command value is sent out into Association Group 2 when the device detects start of rain Size: 1 Byte, Default Value: 99
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Rain Stop Command</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>99</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[This BASIC Set Command value is sent out into Association Group 2 when the device detects stop of rain Size: 1 Byte, Default Value: 0
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Meter Multiplier</Label>
+            <Type>short</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>1000</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[This multiplier allows to adapt the display to certain controllers not being able to handle very low numbers. Size: 2 Byte, Default Value: 1 only 1/10/100/1000
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">Heavy Rain</Label>
+            <Type>short</Type>
+            <Default>255</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[This threshold defines when a heavy rain condition is hit. In most countries this is defined as > 15 mm rain per hour. The default value however is to turn this function off. Size: 1 Byte, Default Value: 255
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>6</Index>
+            <Label lang="en">Heavy Rain Start Command</Label>
+            <Type>short</Type>
+            <Default>99</Default>
+            <Minimum>0</Minimum>
+            <Maximum>99</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[This BASIC Set Command value is sent out into Association Group 3 when the device detects start of heavy rain Size: 1 Byte, Default Value: 99
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>7</Index>
+            <Label lang="en">Heavy Rain Stop Command</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>99</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[This BASIC Set Command value is sent out into Association Group 3 when the device detects stop of heavy rain Size: 1 Byte, Default Value: 0
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Switching Command when Rain (> 0 mm/h)</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Heavy Rain detected. Basic Set Comand is sent.</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

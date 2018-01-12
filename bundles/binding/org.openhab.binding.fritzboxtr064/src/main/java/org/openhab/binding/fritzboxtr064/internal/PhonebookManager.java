@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -117,7 +117,7 @@ public class PhonebookManager {
      */
     public Document downloadPhonebook(int id) {
         logger.info("Downloading phonebook ID {}", id);
-        String phoneBookUrl = _tr064comm.getTr064Value("phonebook:" + id);
+        String phoneBookUrl = _tr064comm.getTr064Value(new ItemConfiguration("phonebook", String.valueOf(id)));
         Document phoneBook = _tr064comm.getFboxXmlResponse(phoneBookUrl);
         logger.debug("Downloaded Phonebook:");
         logger.trace(Helper.documentToString(phoneBook));
@@ -129,8 +129,8 @@ public class PhonebookManager {
     /***
      * Downloads and parses phonebooks from fbox
      */
-    public void downloadPhonebooks() {
-        Document pb = downloadPhonebook(0);
+    public void downloadPhonebooks(int phonebookid) {
+        Document pb = downloadPhonebook(phonebookid);
         if (pb != null) {
             NodeList nlContacts = pb.getElementsByTagName("contact");
             for (int i = 0; i < nlContacts.getLength(); i++) {

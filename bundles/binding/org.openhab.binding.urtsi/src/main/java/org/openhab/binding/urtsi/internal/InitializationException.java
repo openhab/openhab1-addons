@@ -9,7 +9,7 @@
 package org.openhab.binding.urtsi.internal;
 
 /**
- * The InitializationException indicates that an error occured while initializing the device or while parsing the
+ * The InitializationException indicates that an error occurred while initializing the device or while parsing the
  * binding configuration.
  * 
  * @author Oliver Libutzki

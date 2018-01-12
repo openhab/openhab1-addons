@@ -362,7 +362,7 @@ public class ZWaveSecurityCommandClassWithInitialization extends ZWaveSecurityCo
                 logger.debug(
                         "NODE {}: call from NodeAdvancer initialize, inclusion flow, get the next message or wait for a response to the current one, nextMessage={}",
                         this.getNode().getNodeId(), nextMessage);
-                if (nextMessage == null) { // There is an outstanding request or a timeout error occured
+                if (nextMessage == null) { // There is an outstanding request or a timeout error occurred
                     if (securePairingComplete) {
                         inclusionStateTracker = null;
                         return null; // all done

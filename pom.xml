@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <prerequisites>
@@ -9,12 +8,12 @@
     <parent>
         <groupId>org.openhab</groupId>
         <artifactId>pom-tycho</artifactId>
-        <version>2.1.0-SNAPSHOT</version>
-        <relativePath></relativePath>
+        <version>2.1.0</version>
+        <relativePath/>
     </parent>
 
     <artifactId>pom-addons1</artifactId>
-    <version>1.10.0-SNAPSHOT</version>
+    <version>1.12.0-SNAPSHOT</version>
     <name>openHAB 1 Add-ons</name>
 
     <organization>
@@ -30,9 +29,10 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:https://github.com/openhab/openhab.git</connection>
-        <developerConnection>scm:git:https://github.com/openhab/openhab.git</developerConnection>
-        <url>https://github.com/openhab/openhab</url>
+        <connection>scm:git:${scm.gitBaseUrl}/openhab1-addons.git</connection>
+        <developerConnection>scm:git:${scm.gitBaseUrl}/openhab1-addons.git</developerConnection>
+        <url>https://github.com/openhab/openhab1-addons</url>
+        <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
@@ -40,15 +40,20 @@
         <system>Github</system>
     </issueManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>bintray</id>
+            <url>https://api.bintray.com/maven/openhab/mvn/openhab1-addons/;publish=1</url>
+        </repository>
+        <snapshotRepository>
+            <id>jfrog</id>
+            <url>https://openhab.jfrog.io/openhab/libs-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <description>This is the open Home Automation Bus (openHAB)</description>
 
     <properties>
-        <ohcp2.version>2.1.x</ohcp2.version>
-
-		<!-- we deactivate the static analysis tool as the openHAB 1 code does not comply to these rules -->
-		<skipChecks>true</skipChecks>
-
-        <repo.url>https://api.bintray.com/maven/openhab/mvn/openhab1-addons/;publish=1</repo.url>
 
 		<!-- JDBC Databasedriver Versions -->
 		<derby.version>10.12.1.1</derby.version>
@@ -73,6 +78,18 @@
 
         <pluginManagement>
             <plugins>
+                <plugin>
+                  <groupId>com.itemis.maven.plugins</groupId>
+                  <artifactId>unleash-maven-plugin</artifactId>
+                  <version>2.7.3</version>
+                  <dependencies>
+                    <dependency>
+                      <groupId>com.itemis.maven.plugins</groupId>
+                      <artifactId>unleash-scm-provider-git</artifactId>
+                      <version>2.1.0</version>
+                    </dependency>
+                  </dependencies>
+                </plugin>
                 <plugin>
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
@@ -125,6 +142,17 @@
                             <supportedProjectType>eclipse-plugin</supportedProjectType>
                         </supportedProjectTypes>
                     </configuration>
+                </plugin>
+				
+                <!-- we deactivate the static analysis tool as the openHAB 1 code does not comply to these rules -->
+                <plugin>
+                    <groupId>org.openhab.tools</groupId>
+                    <artifactId>static-code-analysis</artifactId>
+                    <executions>
+                        <execution>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.vafer</groupId>
@@ -215,7 +243,7 @@
         <!-- openHAB core p2 repository -->
         <repository>
             <id>p2-openhab-core</id>
-            <url>https://dl.bintray.com/openhab/p2/openhab-core/${ohcp2.version}</url>
+            <url>https://dl.bintray.com/openhab/p2/openhab-core/2.0.0</url>
             <layout>p2</layout>
         </repository>
 
@@ -227,83 +255,5 @@
         </repository>
 
     </repositories>
-
-    <profiles>
-        <profile>
-            <id>prepare-release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-versions-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                        <executions>
-                            <execution>
-                                <id>update-version</id>
-                                <phase>initialize</phase>
-                                <goals>
-                                    <goal>set-version</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>deploy</id>
-            <distributionManagement>
-                <repository>
-                    <id>bintray</id>
-                    <url>${repo.url}</url>
-                    <uniqueVersion>false</uniqueVersion>
-                </repository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>${tycho-groupid}</groupId>
-                        <artifactId>tycho-source-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                        <executions>
-                            <execution>
-                                <id>plugin-source</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>plugin-source</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <sourceBundle>true</sourceBundle>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>prepare-next-snapshot</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-versions-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                        <executions>
-                            <execution>
-                                <id>update-version</id>
-                                <phase>initialize</phase>
-                                <goals>
-                                    <goal>set-version</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>

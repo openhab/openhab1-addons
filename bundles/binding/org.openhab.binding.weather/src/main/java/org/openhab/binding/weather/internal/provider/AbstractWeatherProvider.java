@@ -8,17 +8,8 @@
  */
 package org.openhab.binding.weather.internal.provider;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.Calendar;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.HttpVersion;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.weather.internal.common.LocationConfig;
 import org.openhab.binding.weather.internal.common.ProviderConfig;
@@ -28,6 +19,7 @@ import org.openhab.binding.weather.internal.model.Forecast;
 import org.openhab.binding.weather.internal.model.ProviderName;
 import org.openhab.binding.weather.internal.model.Weather;
 import org.openhab.binding.weather.internal.parser.WeatherParser;
+import org.openhab.io.net.http.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,24 +28,14 @@ import org.slf4j.LoggerFactory;
  * weather data.
  *
  * @author Gerhard Riegler
+ * @author Christoph Weitkamp - Replaced org.apache.commons.httpclient with HttpUtil
  * @since 1.6.0
  */
 public abstract class AbstractWeatherProvider implements WeatherProvider {
     private static final Logger logger = LoggerFactory.getLogger(AbstractWeatherProvider.class);
-    private static HttpClient httpClient = null;
 
     private WeatherConfig config = WeatherContext.getInstance().getConfig();
     private WeatherParser parser;
-
-    static {
-        httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
-        HttpClientParams params = httpClient.getParams();
-        params.setConnectionManagerTimeout(15000);
-        params.setSoTimeout(30000);
-        params.setContentCharset("UTF-8");
-        params.setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
-        params.setVersion(HttpVersion.HTTP_1_0);
-    }
 
     public AbstractWeatherProvider(WeatherParser parser) {
         this.parser = parser;
@@ -108,26 +90,19 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
      * Executes the http request and parses the returned stream.
      */
     private void executeRequest(Weather weather, String url, LocationConfig locationConfig) throws Exception {
-        GetMethod get = null;
         try {
             logger.trace("{}[{}]: request : {}", getProviderName(), locationConfig.getLocationId(), url);
 
-            get = new GetMethod(url);
-            httpClient.executeMethod(get);
+            String response = StringUtils.trimToEmpty(HttpUtil.executeUrl("GET", url, 15000));
 
-            InputStream is = null;
             if (logger.isTraceEnabled()) {
-                String response = get.getResponseBodyAsString(100000);
                 response = StringUtils.remove(response, "\n");
                 response = StringUtils.trim(response);
                 logger.trace("{}[{}]: response: {}", getProviderName(), locationConfig.getLocationId(), response);
-                is = new ByteArrayInputStream(response.getBytes(get.getResponseCharSet()));
-            } else {
-                is = get.getResponseBodyAsStream();
             }
 
-            if (get.getStatusCode() == HttpStatus.SC_OK) {
-                parser.parseInto(is, weather);
+            if (!response.isEmpty()) {
+                parser.parseInto(response, weather);
             }
             // special handling because of bad OpenWeatherMap json structure
             if (weather.getProvider() == ProviderName.OPENWEATHERMAP && weather.getResponseCode() != null
@@ -135,8 +110,8 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
                 weather.setError(null);
             }
 
-            if (!weather.hasError() && get.getStatusCode() != HttpStatus.SC_OK) {
-                weather.setError(get.getStatusLine().toString());
+            if (!weather.hasError() && response.isEmpty()) {
+                weather.setError("Error: response is empty!");
             }
 
             if (weather.hasError()) {
@@ -149,10 +124,6 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
             logger.error(getProviderName() + ": " + ex.getMessage());
             weather.setError(ex.getClass().getSimpleName() + ": " + ex.getMessage());
             throw ex;
-        } finally {
-            if (get != null) {
-                get.releaseConnection();
-            }
         }
     }
 

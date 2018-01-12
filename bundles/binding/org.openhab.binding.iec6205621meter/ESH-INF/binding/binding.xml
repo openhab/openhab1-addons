@@ -28,8 +28,8 @@
         </parameter>        
         <parameter name="serialPort" type="text" required="true">
             <label>Serial port</label>
+            <context>serial-port</context>
             <description>The serial port to use for connecting to the metering device e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux.</description>
-            <default>/dev/ttyS0</default>
         </parameter>
     </config-description>
 </binding:binding>

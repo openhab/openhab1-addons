@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>Spirit</Model>
+    <Label lang="en">Thermostatic Valve</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x26</id>             <!-- SWITCH_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x40</id>             <!-- THERMOSTAT_MODE -->
+        </Class>
+        <Class>
+            <id>0x43</id>             <!-- THERMOSTAT_SETPOINT -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x75</id>             <!-- PROTECTION -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x98</id>             <!-- SECURITY -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">LCD Invert</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">LCD-content normal </Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">LCD-content inverted (UK Edition)</Label>
+            </Item>
+            <Help><![CDATA[LCD Invert
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">LCD Timeout</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>5</Minimum>
+            <Maximum>30</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">No Timeout LCD always on</Label>
+            </Item>
+            <Help><![CDATA[LCD Timeout
+<p>0: No Timeout LCD always on</p> <p>5-30: LCD will turn off after 5 to 30 seconds</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Backlight</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Backlight disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Backlight enabled</Label>
+            </Item>
+            <Help><![CDATA[Backlight
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Battery report</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">system notification</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Send battery status unsolicited once a day. </Label>
+            </Item>
+            <Help><![CDATA[Battery report
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">Measured  Temperature report</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>0</Minimum>
+            <Maximum>50</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[Measured Temperature report
+<p>0: Unsolicited Temperature reporting disabled</p> <p>1-50: report if temperature changed by delta = 0,1°C ... 5,0 °C</p> <p>default 5: report on delta T = 0,5°C</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>6</Index>
+            <Label lang="en">Valve opening  percentage report</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+            <Help><![CDATA[Valve opening percentage report
+<p>0: Unsolicited valve opening percentage reporting disabled.</p> <p>1-100: report if valve opening changed by delta = 1% ... 100%</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>7</Index>
+            <Label lang="en">Window open detection</Label>
+            <Type>list</Type>
+            <Default>2</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Sensitivity low </Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Sensitivity medium</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Sensitivity high</Label>
+            </Item>
+            <Help><![CDATA[Window open detection
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>8</Index>
+            <Label lang="en">Measured  Temperature offset</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>-50</Minimum>
+            <Maximum>50</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>128</Value>
+                <Label lang="en">External temperature sensor will be used for regulation.</Label>
+            </Item>
+            <Help><![CDATA[Measured Temperature offset
+<p>-50 - +50: Offsets the measured temperature by-5,0°C – (+)5,0°C</p> <p>128: External temperature sensor will be used for regulation.</p>
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>

@@ -19,20 +19,29 @@ import java.util.GregorianCalendar;
  * /tree/master/plugins/devices/openwebnet) and on code of Flavio Fcrisciani
  * release as EPL (https://github.com/fcrisciani/java-myhome-library)
  *
- * @author Tom De Vlaminck
+ * @author Tom De Vlaminck, LAGO Moreno
  * @serial 1.0
  * @since 1.7.0
  *
  */
 public class OWNUtilities {
 
-    /*
+    // ------------------------------------------------------------------------
+
+    /**
      * OWN Control Messages
      */
     public final static String MSG_OPEN_ACK = "*#*1##";
     public final static String MSG_OPEN_NACK = "*#*0##";
 
-    // create the frame to send to the own gateway
+    // ------------------------------------------------------------------------
+
+    /**
+     * Create the frame to send to the own gateway
+     * 
+     * @param c
+     * @return
+     */
     public static String createFrame(ProtocolRead c) {
         String frame = null;
         String address[] = null;
@@ -48,12 +57,27 @@ public class OWNUtilities {
         return (frame);
     }
 
+    // ------------------------------------------------------------------------
+
+    /**
+     * Get datetime on format "dd/MM/yyyy HH:mm:ss"
+     * 
+     * @return
+     */
     public static String getDateTime() {
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         return (sdf.format(calendar.getTime()));
     }
 
+    // ------------------------------------------------------------------------
+
+    /**
+     * Convert temperature from bticino bus format to readable format
+     * 
+     * @param temperature
+     * @return
+     */
     public static String convertTemperature(String temperature) {
         String temp = "";
         if (!temperature.substring(0, 1).equalsIgnoreCase("0")) {
@@ -65,6 +89,14 @@ public class OWNUtilities {
         return (temp);
     }
 
+    // ------------------------------------------------------------------------
+
+    /**
+     * Convert day from number to name
+     * 
+     * @param dayNumber
+     * @return
+     */
     public static String dayName(String dayNumber) {
         String dayName = null;
         switch (Integer.parseInt(dayNumber)) {
@@ -95,6 +127,14 @@ public class OWNUtilities {
         return (dayName);
     }
 
+    // ------------------------------------------------------------------------
+
+    /**
+     * Get model name from model number
+     * 
+     * @param modelNumber
+     * @return
+     */
     public static String gatewayModel(String modelNumber) {
         String model = null;
         switch (new Integer(Integer.parseInt(modelNumber))) {
@@ -115,4 +155,6 @@ public class OWNUtilities {
         }
         return (model);
     }
+
+    // ------------------------------------------------------------------------
 }

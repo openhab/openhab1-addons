@@ -258,7 +258,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
                                 }
 
                             } catch (Exception e) {
-                                logger.error("Error occured during resource query", e);
+                                logger.error("Error occurred during resource query", e);
                             }
 
                             lastUpdateMap.put(itemName, System.currentTimeMillis());
@@ -473,7 +473,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
             } catch (IhcExecption e) {
                 logger.error("Can't update Item '{}' value ", itemName, e);
             } catch (Exception e) {
-                logger.error("Error occured during item update", e);
+                logger.error("Error occurred during item update", e);
             }
         }
 
@@ -614,7 +614,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
     @Override
     public void errorOccured(EventObject event, IhcExecption e) {
-        logger.warn("Error occured on communication to IHC controller: {}", e.getMessage());
+        logger.warn("Error occurred on communication to IHC controller: {}", e.getMessage());
 
         logger.debug("Reconnection request");
         setReconnectRequest(true);

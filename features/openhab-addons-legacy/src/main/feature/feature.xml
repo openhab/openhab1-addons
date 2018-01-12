@@ -20,12 +20,19 @@
     <configfile finalname="${openhab.conf}/services/astro.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/astro</configfile>
   </feature>
 
+  <feature name="openhab-binding-dmx1" description="DMX OLA Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.dmx/${project.version}</bundle>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.dmx.ola/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/dmx.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/dmx</configfile>
+  </feature>
+
   <feature name="openhab-binding-exec1" description="Exec Binding (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.exec/${project.version}</bundle>
   </feature>
-
 
   <feature name="openhab-binding-homematic1" description="Homematic Binding (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
@@ -34,11 +41,18 @@
     <configfile finalname="${openhab.conf}/services/homematic.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/homematic</configfile>
   </feature>
 
-  <feature name="openhab-binding-milight1" description="Milight Binding" version="${project.version}">
+  <feature name="openhab-binding-milight1" description="Milight Binding (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.milight/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/milight.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/milight</configfile>
+  </feature>
+
+  <feature name="openhab-binding-nest1" description="Nest Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.nest/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/nest.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/nest</configfile>
   </feature>
 
   <feature name="openhab-binding-netatmo1" description="Netatmo Binding (1.x)" version="${project.version}">
@@ -63,11 +77,25 @@
     <configfile finalname="${openhab.conf}/services/onkyo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/onkyo</configfile>
   </feature>
 
+  <feature name="openhab-binding-plugwise1" description="Plugwise Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.plugwise/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/plugwise.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/plugwise</configfile>
+  </feature>
+
   <feature name="openhab-binding-systeminfo1" description="System Info Binding (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.systeminfo/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/systeminfo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/systeminfo</configfile>
+  </feature>
+
+  <feature name="openhab-binding-tellstick1" description="Tellstick Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.tellstick/${project.version}</bundle>
   </feature>
 
   <feature name="openhab-binding-urtsi1" description="Somfy URTSI II Binding (1.x)" version="${project.version}">

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -221,7 +221,7 @@ public class CallMonitor extends Thread {
                 if (_ip != null) {
                     BufferedReader reader = null;
                     try {
-                        logger.info("Callmonitor Thread [{}] attempting connection to FritzBox on {}:{}..",
+                        logger.debug("Callmonitor Thread [{}] attempting connection to FritzBox on {}:{}..",
                                 Thread.currentThread().getId(), _ip, _port);
                         _socket = new Socket(_ip, _port);
                         reader = new BufferedReader(new InputStreamReader(_socket.getInputStream()));

@@ -4,16 +4,16 @@ Ignore-Package: org.openhab.io.dropbox.internal
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Dropbox IO Bundle
 Bundle-SymbolicName: org.openhab.io.dropbox
-Bundle-Version: 1.10.0.qualifier
+Bundle-Version: 1.12.0.qualifier
 Bundle-Activator: org.openhab.io.dropbox.internal.DropboxActivator
-Bundle-Vendor: openHAB.org
+Bundle-Vendor: openHAB
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the Dropbox IO bundle of the open Home Aut
  omation Bus (openHAB)
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.apache.commons.io,
  org.apache.commons.lang,
- org.apache.commons.logging;version="1.1.1",
+ org.apache.commons.logging,
  org.apache.http,
  org.apache.http.client,
  org.apache.http.client.entity,

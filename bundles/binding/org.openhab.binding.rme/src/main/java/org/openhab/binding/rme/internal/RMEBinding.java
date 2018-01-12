@@ -360,7 +360,7 @@ public class RMEBinding extends AbstractActiveBinding<RMEBindingProvider>impleme
                                                     matcher.group(selector.getFieldIndex()));
                                         }
                                     } catch (BindingConfigParseException e) {
-                                        logger.error("An exception occured while converting {} to a valid state : {}",
+                                        logger.error("An exception occurred while converting {} to a valid state : {}",
                                                 matcher.group(selector.getFieldIndex()), e.getMessage());
                                         return;
                                     }

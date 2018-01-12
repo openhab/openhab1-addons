@@ -34,27 +34,39 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
 
     /**
      * Thread which sends all queued commands to the CUL.
+     * The Thread waits on a CUL response before sending a new
+     * command to prevent race conditions. 
      *
      * @author Till Klocke
      * @since 1.4.0
      *
      */
-    private class SendThread extends Thread {
+    private class SendThread extends Thread implements CULListener {
 
         private final Logger logger = LoggerFactory.getLogger(SendThread.class);
+        
+        private Boolean waitOnCULResponse = false;
 
         @Override
         public void run() {
+            int waitTimeout = 0;
+            
             while (!isInterrupted()) {
-                String command = sendQueue.poll();
-                if (command != null) {
-                    if (!command.endsWith("\r\n")) {
-                        command = command + "\r\n";
-                    }
-                    try {
-                        writeMessage(command);
-                    } catch (CULCommunicationException e) {
-                        logger.warn("Error while writing command to CUL", e);
+                if (!waitOnCULResponse) {
+                    String command = sendQueue.poll();
+                    if (command != null) {
+                        if (!command.endsWith("\r\n")) {
+                            command = command + "\r\n";
+                        }
+                        try {
+                            logger.trace("Writing message: {}", command);
+                            
+                            writeMessage(command);
+                            waitOnCULResponse = true;
+                            waitTimeout = 0;
+                        } catch (CULCommunicationException e) {
+                            logger.warn("Error while writing command to CUL", e);
+                        }
                     }
                 }
                 try {
@@ -62,7 +74,25 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
                 } catch (InterruptedException e) {
                     logger.debug("Error while sleeping in SendThread", e);
                 }
+
+                waitTimeout += 1;
+                if (waitOnCULResponse && waitTimeout > 200) {
+                    logger.trace("Reset wait on CUL response due to timeout");;
+                    waitOnCULResponse = false;
+                }
             }
+        }
+
+        @Override
+        public void dataReceived(String data) {
+            logger.trace("CUL response received: {}", data);
+            waitOnCULResponse = false;
+        }
+
+        @Override
+        public void error(Exception e) {
+            logger.trace("CUL error received: {}", e);
+            waitOnCULResponse = false;
         }
     }
 
@@ -131,12 +161,16 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     @Override
     public void open() throws CULDeviceException {
         openHardware();
+        
+        registerListener(sendThread);
         sendThread.start();
     }
 
     @Override
     public void close() {
         sendThread.interrupt();
+        unregisterListener(sendThread);
+        
         closeHardware();
     }
 
@@ -158,6 +192,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     public void send(String command) {
         if (isMessageAllowed(command)) {
             sendQueue.add(command);
+            requestCreditReport();
         }
     }
 
@@ -207,7 +242,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
      *             if
      */
     protected void processNextLine(String data) {
-        log.debug("Received raw message from CUL: " + data);
+        log.debug("Received raw message from CUL: {}", data);
         if ("EOB".equals(data)) {
             log.warn("(EOB) End of Buffer. Last message lost. Try sending less messages per time slot to the CUL");
             return;
@@ -217,10 +252,8 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
             return;
         } else if (data.matches("^\\d+\\s+\\d+")) {
             processCreditReport(data);
-            return;
         }
         notifyDataReceived(data);
-        requestCreditReport();
     }
 
     /**
@@ -232,7 +265,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
         // Credit report received
         String[] report = data.split(" ");
         credit10ms = Integer.parseInt(report[report.length - 1]);
-        log.debug("credit10ms = " + credit10ms);
+        log.debug("credit10ms = {}", credit10ms);
     }
 
     /**
@@ -252,7 +285,11 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     private void requestCreditReport() {
         /* this requests a report which provides credit10ms */
         log.debug("Requesting credit report");
-        write("X\r\n");
+        try {
+            sendWithoutCheck("X\r\n");
+        } catch (CULCommunicationException e) {
+            log.warn("Error requesting credit report from CUL", e);
+        }
     }
 
     /**
@@ -262,8 +299,8 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
      * @throws CULCommunicationException
      */
     private void writeMessage(String message) throws CULCommunicationException {
+        log.trace("Writing message: {}", message);
         write(message);
-        requestCreditReport();
     }
 
     @Override

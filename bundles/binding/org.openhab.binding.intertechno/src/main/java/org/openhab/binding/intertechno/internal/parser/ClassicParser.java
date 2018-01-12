@@ -8,7 +8,12 @@
  */
 package org.openhab.binding.intertechno.internal.parser;
 
+import java.util.List;
+
+import org.openhab.binding.intertechno.internal.CULIntertechnoBinding;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This parser is able to parse classic Intertechno configs.
@@ -16,19 +21,23 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @author Till Klocke
  * @since 1.4.0
  */
-public class ClassicParser extends AbstractIntertechnoParser {
+public class ClassicParser extends AbstractGroupAddressParser {
+
+    private static final Logger logger = LoggerFactory.getLogger(CULIntertechnoBinding.class);
 
     @Override
-    public String parseAddress(String... addressParts) throws BindingConfigParseException {
-        char group = addressParts[0].charAt(0);
-        int subAddress = 0;
-        try {
-            subAddress = Integer.parseInt(addressParts[1]);
-        } catch (NumberFormatException e) {
-            throw new BindingConfigParseException(
-                    "Sub address is not a number. Configured subaddress: " + addressParts[1]);
+    public void parseConfig(List<String> configParts) throws BindingConfigParseException {
+        super.parseConfig(configParts);
+
+        if (group.length() != 1) {
+            throw new BindingConfigParseException("group parameter must contain exactly one character!");
         }
-        return getGroupAddress(group) + getSubAddress(subAddress) + "0F";
+
+        commandON = getGroupAddress(group.charAt(0)) + getSubAddress(address) + "0F" + "FF";
+        commandOFF = getGroupAddress(group.charAt(0)) + getSubAddress(address) + "0F" + "F0";
+
+        logger.trace("commandON = {}", commandON);
+        logger.trace("commandOFF = {}", commandOFF);
     }
 
     private String getGroupAddress(char address) {
@@ -39,16 +48,6 @@ public class ClassicParser extends AbstractIntertechnoParser {
 
     private String getSubAddress(int address) {
         return getEncodedString(4, address - 1, 'F', '0');
-    }
-
-    @Override
-    public String getCommandValueON() {
-        return "FF";
-    }
-
-    @Override
-    public String getCOmmandValueOFF() {
-        return "F0";
     }
 
 }

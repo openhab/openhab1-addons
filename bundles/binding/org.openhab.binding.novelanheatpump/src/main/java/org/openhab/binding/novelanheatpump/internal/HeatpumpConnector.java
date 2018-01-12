@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -53,9 +53,7 @@ public class HeatpumpConnector {
         OutputStream out = sock.getOutputStream();
         datain = new DataInputStream(in);
         dataout = new DataOutputStream(out);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Novelan Heatpump connect");
-        }
+        logger.debug("Novelan Heatpump connect");
     }
 
     /**
@@ -105,12 +103,10 @@ public class HeatpumpConnector {
         int cmd = datain.readInt();
         int resp = datain.readInt();
         if (cmd != 3002) {
-            logger.error("can't write parameter {} with value {} to heatpump.", param, value);
+            logger.warn("Can't write parameter {} with value {} to heatpump.", param, value);
             return false;
         } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("successful parameter {} with value {} to heatpump written.", param, value);
-            }
+            logger.debug("Successful parameter {} with value {} to heatpump written.", param, value);
             return true;
         }
 
@@ -147,16 +143,20 @@ public class HeatpumpConnector {
      * disconnect from heatpump
      */
     public void disconnect() {
-        try {
-            datain.close();
-        } catch (IOException e) {
-            logger.error("can't close datain", e);
+        if (datain != null) {
+            try {
+                datain.close();
+            } catch (IOException e) {
+                logger.warn("Can't close data input stream", e);
+            }
         }
-        try {
-            dataout.close();
-        } catch (IOException e) {
-            logger.error("can't close dataout", e);
+
+        if (dataout != null) {
+            try {
+                dataout.close();
+            } catch (IOException e) {
+                logger.warn("Can't close data output stream", e);
+            }
         }
     }
-
 }

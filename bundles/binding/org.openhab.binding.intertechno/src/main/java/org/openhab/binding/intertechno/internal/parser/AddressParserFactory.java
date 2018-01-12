@@ -27,6 +27,8 @@ public class AddressParserFactory {
             return new REVParser();
         } else if ("raw".equals(type)) {
             return new RawParser();
+        } else if ("v3".equals(type)) {
+            return new V3Parser();
         }
 
         return null;

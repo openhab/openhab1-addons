@@ -168,6 +168,7 @@ A configuration line for a TinkerForge Device looks like this in services/tinker
 ```
 
 The *symbolic name* string can be used in the items configuration as an alternative for the uid and subid values.
+If you have more than one device of the same type you have to choose a unique *symbolic name* for every device.
 
 The following table lists the general available properties.
 

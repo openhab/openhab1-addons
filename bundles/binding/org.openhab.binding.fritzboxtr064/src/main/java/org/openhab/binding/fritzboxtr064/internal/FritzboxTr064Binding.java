@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,11 @@
  */
 package org.openhab.binding.fritzboxtr064.internal;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +43,26 @@ import org.slf4j.LoggerFactory;
  */
 public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064BindingProvider> {
 
+    private static class ItemDescription {
+        private final String _name;
+
+        private final Class<? extends Item> _type;
+
+        public ItemDescription(String _name, Class<? extends Item> _type) {
+            this._name = _name;
+            this._type = _type;
+        }
+
+        public String getName() {
+            return _name;
+        }
+
+        public Class<? extends Item> getType() {
+            return _type;
+        }
+
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(FritzboxTr064Binding.class);
 
     // URL to connect to fbox. Provided in main cfg file
@@ -49,6 +73,9 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
 
     // PW
     private String _pw;
+
+    // Phonebook ID
+    private int _pbid;
 
     // Call monitor class/including thread
     private CallMonitor _callMonitor;
@@ -88,6 +115,7 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
         String fboxurl = Objects.toString(configuration.get("url"), null);
         String fboxuser = Objects.toString(configuration.get("user"), null);
         String fboxpw = Objects.toString(configuration.get("pass"), null);
+        String fboxphonebookid = Objects.toString(configuration.get("phonebookid"), null);
         if (fboxurl == null) {
             logger.warn("Fritzbox URL was not provided in config. Shutting down binding.");
             // how to shutdown??
@@ -103,9 +131,19 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
             setProperlyConfigured(false);
             return;
         }
+        if (fboxphonebookid == null) {
+            logger.debug("No Phonebookid provided. Use default: 0");
+            fboxphonebookid = "0";
+        }
         this._pw = fboxpw;
         this._user = fboxuser;
         this._url = fboxurl;
+        
+        try {
+            this._pbid = Integer.valueOf(fboxphonebookid);
+    	} catch(NumberFormatException ex) { //set fallback to 0
+            this._pbid = 0;
+    	}
 
         if (_fboxComm == null) {
             _fboxComm = new Tr064Comm(_url, _user, _pw);
@@ -138,6 +176,9 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
     protected void execute() {
         logger.trace("FritzboxTr064 executing...");
 
+        Map<ItemConfiguration, ItemDescription> itemsByConfiguration = new HashMap<>();
+        List<ItemConfiguration> itemConfigurations = new ArrayList<>();
+
         for (FritzboxTr064BindingProvider provider : providers) {
             for (String itemName : provider.getItemNames()) { // check each item relevant for this binding
                 FritzboxTr064BindingConfig conf = provider.getBindingConfigByItemName(itemName); // extract itemconfig
@@ -151,7 +192,7 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
                         if (_pbm == null) {
                             logger.debug("Downloading phonebooks");
                             _pbm = new PhonebookManager(_fboxComm);
-                            _pbm.downloadPhonebooks();
+                            _pbm.downloadPhonebooks(_pbid);
                         }
 
                         _callMonitor = new CallMonitor(_url, eventPublisher, providers, _pbm);
@@ -161,37 +202,47 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
                     continue; // make sure, no callmonitor items are processed by tr064
                 }
 
-                // TR064 protocol usage
-                String tr064result = _fboxComm.getTr064Value(conf.getConfigString()); // try to get value for this item
-                                                                                      // config string from fbox
-                if (tr064result == null) { // if value cannot be read
-                    tr064result = "ERR";
-                }
-                Class<? extends Item> itemType = conf.getItemType();
-                if (itemType.isAssignableFrom(StringItem.class)) {
-                    eventPublisher.postUpdate(itemName, new StringType(tr064result));
-                } else if (itemType.isAssignableFrom(ContactItem.class)) {
-                    State newState = tr064result.equals("1") ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-                    eventPublisher.postUpdate(itemName, newState);
-                } else if (itemType.isAssignableFrom(SwitchItem.class)) {
-                    State newState = tr064result.equals("1") ? OnOffType.ON : OnOffType.OFF;
-                    eventPublisher.postUpdate(itemName, newState);
-                } else if (itemType.isAssignableFrom(NumberItem.class)) { // number items e.g. TAM messages
-                    // tr064 retrieves only Strings, trying to parse value returned
-                    int val = 0;
-                    try {
-                        val = Integer.parseInt(tr064result);
-                    } catch (NumberFormatException ex) {
-                        val = -1; // indicate error as -1
-                    }
-
-                    State newState = new DecimalType(val);
-                    eventPublisher.postUpdate(itemName, newState);
-                }
-
+                ItemConfiguration request = ItemConfiguration.parse(conf.getConfigString());
+                itemConfigurations.add(request);
+                itemsByConfiguration.put(request, new ItemDescription(itemName, conf.getItemType()));
             }
-
         }
+
+        Map<ItemConfiguration, String> resultsByConfiguration = _fboxComm.getTr064Values(itemConfigurations);
+
+        for (Entry<ItemConfiguration, ItemDescription> entry : itemsByConfiguration.entrySet()) {
+            ItemConfiguration itemConfiguration = entry.getKey();
+            ItemDescription item = entry.getValue();
+            String itemName = item.getName();
+            Class<? extends Item> itemType = item.getType();
+
+            String tr064result = resultsByConfiguration.get(itemConfiguration);
+
+            if (tr064result == null) { // if value cannot be read
+                tr064result = "ERR";
+            }
+            if (itemType.isAssignableFrom(StringItem.class)) {
+                eventPublisher.postUpdate(itemName, new StringType(tr064result));
+            } else if (itemType.isAssignableFrom(ContactItem.class)) {
+                State newState = tr064result.equals("1") ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
+                eventPublisher.postUpdate(itemName, newState);
+            } else if (itemType.isAssignableFrom(SwitchItem.class)) {
+                State newState = tr064result.equals("1") ? OnOffType.ON : OnOffType.OFF;
+                eventPublisher.postUpdate(itemName, newState);
+            } else if (itemType.isAssignableFrom(NumberItem.class)) { // number items e.g. TAM messages
+                // tr064 retrieves only Strings, trying to parse value returned
+                long val = 0;
+                try {
+                    val = Long.parseLong(tr064result);
+                } catch (NumberFormatException ex) {
+                    val = -1; // indicate error as -1
+                }
+
+                State newState = new DecimalType(val);
+                eventPublisher.postUpdate(itemName, newState);
+            }
+        }
+
     }
 
     /**
@@ -207,8 +258,12 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
         for (FritzboxTr064BindingProvider provider : providers) {
             FritzboxTr064BindingConfig conf = provider.getBindingConfigByItemName(itemName);
             if (conf != null) {
-                _fboxComm.setTr064Value(conf.getConfigString(), command); // pass config String because config string
-                                                                          // needed for finding item map
+                ItemConfiguration request = ItemConfiguration.parse(conf.getConfigString()); // pass config String
+                                                                                             // because config string
+                                                                                             // needed for finding item
+                                                                                             // map
+                _fboxComm.setTr064Value(request, command);
+
             }
         }
     }

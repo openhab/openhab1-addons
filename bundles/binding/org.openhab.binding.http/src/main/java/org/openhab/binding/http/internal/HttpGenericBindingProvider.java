@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,13 +28,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * This class can parse information from the generic binding format and
  * provides HTTP binding information from it. It registers as an
  * {@link HttpBindingProvider} service as well.
- * </p>
  *
- * <p>
  * Here are some examples for valid binding configuration strings:
  * <ul>
  * <li>
@@ -91,6 +88,9 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
     /** {@link Pattern} that separates a url string from the following post body string */
     private static final Pattern URL_PARSING_PATTERN = Pattern
             .compile("^((([^:/?#]+):)?(//([^/?#]*))?([^?#:]*)(\\?([^#:]*))?(#(.*))?)(:.*)?");
+
+    /** {@link Pattern} for parsing a transformation */
+    private static final Pattern TRANSFORM_PATTERN = Pattern.compile("(.*)\\((.*)\\)");
 
     /**
      * {@inheritDoc}
@@ -287,12 +287,37 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 
             if (configElement.httpMethod.equals("POST") && urlMatcher.group(11) != null) {
                 configElement.body = urlMatcher.group(11).substring(1);
+                setBodyTransform(configElement, command);
             }
 
             config.put(command, configElement);
         }
 
         return config;
+    }
+
+    private void setBodyTransform(HttpBindingConfigElement configElement, Command command) {
+        if (configElement == null || configElement.body == null) {
+            logger.trace("No body content found.");
+            return;
+        }
+
+        Matcher transformMatcher = TRANSFORM_PATTERN.matcher(configElement.body);
+        if (!configElement.body.equals("default") && !transformMatcher.matches()) {
+            logger.trace("Body contained no known transforms.");
+            return;
+        }
+
+        if (configElement.body.equals("default")) {
+            configElement.transformation = "default";
+        } else {
+            String transformCmd = transformMatcher.group(1);
+            String transformParam = transformMatcher.group(2);
+            logger.trace("transformCmd: {}", transformCmd);
+            logger.trace("transformParam: {}", transformParam);
+            configElement.transformation = transformCmd + "=" + transformParam;
+            configElement.body = null;
+        }
     }
 
     /**
@@ -416,6 +441,16 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
     public String getTransformation(String itemName) {
         HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
         return config != null && config.get(IN_BINDING_KEY) != null ? config.get(IN_BINDING_KEY).transformation : null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTransformation(String itemName, Command command) {
+        HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
+        return config != null && getConfigElement(config, command) != null
+                ? getConfigElement(config, command).transformation : null;
     }
 
     /**

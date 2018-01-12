@@ -11,6 +11,7 @@
 	<config-description>
 		<parameter name="serialPort" type="text" required="false">
 			<label>Serial port</label>
+			<context>serial-port</context>
 			<description>The serial port to use for connecting to the serial interface of the PowerMax alarm system e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux.</description>
 		</parameter>
 		<parameter name="ip" type="text" required="false">

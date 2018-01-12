@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>YRD220</Model>
+    <Label lang="en">Yale Real Living Touchscreen Deadbolt</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x4C</id>             <!-- DOOR_LOCK_LOGGING -->
+        </Class>
+        <Class>
+            <id>0x4E</id>             <!-- SCHEDULE_ENTRY_LOCK -->
+        </Class>
+        <Class>
+            <id>0x62</id>             <!-- DOOR_LOCK -->
+        </Class>
+        <Class>
+            <id>0x63</id>             <!-- USER_CODE -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x75</id>             <!-- PROTECTION -->
+        </Class>
+        <Class>
+            <id>0x76</id>             <!-- LOCK -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x8A</id>             <!-- TIME -->
+        </Class>
+        <Class>
+            <id>0x8B</id>             <!-- TIME_PARAMETERS -->
+        </Class>
+        <Class>
+            <id>0x98</id>             <!-- SECURITY -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Audio Volume</Label>
+            <Type>list</Type>
+            <Default>3</Default>
+            <Minimum>1</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Silent</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Low</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">High</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Auto Re-lock</Label>
+            <Type>short</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Auto Re-lock</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Off</Label>
+            </Item>
+            <Item>
+                <Value>255</Value>
+                <Label lang="en">On</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Re-lock Time</Label>
+            <Type>short</Type>
+            <Default>30</Default>
+            <Minimum>5</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Wrong Code Entry Limit</Label>
+            <Type>short</Type>
+            <Default>5</Default>
+            <Minimum>1</Minimum>
+            <Maximum>7</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">Language</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>1</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">English</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Spanish</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">French</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>7</Index>
+            <Label lang="en">Shutdown Time</Label>
+            <Type>short</Type>
+            <Default>30</Default>
+            <Minimum>1</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+        </Parameter>
+
+        <Parameter>
+            <Index>8</Index>
+            <Label lang="en">Operating Mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Normal</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Vacation Mode</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Privacy Mode</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Alarm Reports</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>
