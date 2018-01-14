@@ -8,7 +8,7 @@ You may define default values for parameters to action calls in the file `servic
 None of the configuration parameters are required as you can specify required configuration items in the action call, but you must at least provide an *API Token*, *User/Group Key* and a *Message* in some manner before a message can be pushed.
 
 | Property        | Default | Required                                          | Description                                                                                                            |
-|-----------------|---------|-:-:-----------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+|-----------------|---------|:-------------------------------------------------:|------------------------------------------------------------------------------------------------------------------------|
 | defaultTimeout  | 10000   | No                                                | Timeout in milliseconds for the connection to pushover.net                                                             |
 | defaultToken    |         | if using action call without `apiToken` parameter | Pushover [API token](https://pushover.net/api) to send to devices                                                      |
 | defaultUser     |         | if using action call without `userKey` parameter  | Pushover User or Group key (not e-mail address) of your user (or you) to send to devices.                              |
@@ -24,30 +24,29 @@ None of the configuration parameters are required as you can specify required co
 The following are valid action calls that can be made when the plugin is loaded.
 For specific information on each item, see the [Pushover API](https://pushover.net/api).
 
-*   `pushover(String message)`
-*   `pushover(String message, String device)`
-*   `pushover(String message, int priority)`
-*   `pushover(String message, int priority, String url)`
-*   `pushover(String message, int priority, String url, String urlTitle)`
-*   `pushover(String message, int priority, String url, String urlTitle, String soundFile)`
-*   `pushover(String message, String device, int priority)`
-*   `pushover(String message, String device, int priority, String url)`
-*   `pushover(String message, String device, int priority, String url, String urlTitle)`
-*   `pushover(String message, String device, int priority, String url, String urlTitle, String soundFile)`
-*   `pushover(String apiToken, String userKey, String message)`
-*   `pushover(String apiToken, String userKey, String message, String device)`
-*   `pushover(String apiToken, String userKey, String message, int priority)`
-*   `pushover(String apiToken, String userKey, String message, String device, int priority)`
-*   `pushover(String apiToken, String userKey, String message, String device, String title, String url, String urlTitle, int priority, String soundFile)`
+- `pushover(String message)`
+- `pushover(String message, String device)`
+- `pushover(String message, int priority)`
+- `pushover(String message, int priority, String url)`
+- `pushover(String message, int priority, String url, String urlTitle)`
+- `pushover(String message, int priority, String url, String urlTitle, String soundFile)`
+- `pushover(String message, String device, int priority)`
+- `pushover(String message, String device, int priority, String url)`
+- `pushover(String message, String device, int priority, String url, String urlTitle)`
+- `pushover(String message, String device, int priority, String url, String urlTitle, String soundFile)`
+- `pushover(String apiToken, String userKey, String message)`
+- `pushover(String apiToken, String userKey, String message, String device)`
+- `pushover(String apiToken, String userKey, String message, int priority)`
+- `pushover(String apiToken, String userKey, String message, String device, int priority)`
+- `pushover(String apiToken, String userKey, String message, String device, String title, String url, String urlTitle, int priority, String soundFile)`
 
 The action calls have to be configured in the above sequence, if you need to omit one of the call parameters you may use a null value or two double quotes.
 In this case any default values from `services/pushover.cfg` will be used.
 Note that you cannot use a null value for int priority.
 
-
 ### Example
 
 Send a message without a sound, omit String url and String urlTitle.
 
-*   `pushover("test message", 1, null, null, "none")` or
-*   `pushover("test message", 1, "", "", "none")`
+- `pushover("test message", 1, null, null, "none")` or
+- `pushover("test message", 1, "", "", "none")`
