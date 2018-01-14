@@ -10,7 +10,7 @@ This token is displayed at the bottom of the configuration page when you configu
 You can either configure the required Pebble token in `services/pebble.cfg` and refer to it by name, or provide it explicitly in your action calls.
 
 | Property       | Default | Required | Description                            |
-|----------------|---------|-:-:------|----------------------------------------|
+|----------------|---------|:--------:|----------------------------------------|
 | `<name>.token` |         |          | A token to use in action calls by name |
 
 ### Configuration Example
