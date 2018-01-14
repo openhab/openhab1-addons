@@ -6,27 +6,30 @@ The Telegram Action service allows sending formatted messages to Telegram client
 
 As described in the Telegram Bot API, this is the manual procedure needed in order to get the necessary information.
 
-1.  Create the Bot and get the Token
-*   On a Telegram client open a chat with BotFather.
-*   write `/newbot` to BotFather, fill all the needed information, write down the token. This is the authentication token needed.
-1.  Create the destination chat and get the chatId
-*   Open a new chat with your new Bot and post a message on the chat
-*   Open a browser and invoke `https://api.telegram.org/bot<token>/getUpdates` (where `<token>` is the authentication token previously obtained)
-*   Look at the JSON result and write down the value of `result[0].message.chat.id`. That is the chatId.
+1. Create the Bot and get the Token
+
+- On a Telegram client open a chat with BotFather.
+- write `/newbot` to BotFather, fill all the needed information, write down the token. This is the authentication token needed.
+
+2. Create the destination chat and get the chatId
+
+- Open a new chat with your new Bot and post a message on the chat
+- Open a browser and invoke `https://api.telegram.org/bot<token>/getUpdates` (where `<token>` is the authentication token previously obtained)
+- Look at the JSON result and write down the value of `result[0].message.chat.id`. That is the chatId.
 
 ## Configuration
 
 The action can be configured in `services/telegram.cfg`.
 
 | Property            | Default | Required | Description                           |
-|---------------------|---------|-:-:------|---------------------------------------|
+|---------------------|---------|:--------:|---------------------------------------|
 | bots                |         | Yes      | Comma-separated list of `<bot-name>`s |
 | `<bot name>.chatId` |         | Yes      | chat id                               |
 | `<bot name>.token`  |         | Yes      | authentication token                  |
 
 ### Configuration example
 
-```
+```text
 bots=bot1,bot2
 
 bot1.chatId=22334455
@@ -44,12 +47,12 @@ It this example two bots can be used (`bot1` and `bot2`).
 
 telegram.rules
 
-```
+```java
 rule "Send telegram with Fixed Message"
 when
-	Item Foo changed
+   Item Foo changed
 then
-	sendTelegram("bot1", "item Foo changed")
+   sendTelegram("bot1", "item Foo changed")
 end
 ```
 
@@ -57,12 +60,12 @@ end
 
 telegram.rules
 
-```
+```java
 rule "Send telegram with Formatted Message"
 when
-	Item Foo changed
+   Item Foo changed
 then
-	sendTelegram("bot1", "item Foo changed to %s and number is %.1f", Foo.state.toString, 23.56)
+   sendTelegram("bot1", "item Foo changed to %s and number is %.1f", Foo.state.toString, 23.56)
 end
 ```
 
@@ -70,7 +73,7 @@ end
 
 telegram.rules
 
-```
+```java
 rule "Send telegram with image and caption from image accessible by url"
 when
     Item Light_GF_Living_Table changed
@@ -82,7 +85,7 @@ end
 
 telegram.rules
 
-```
+```java
 rule "Send telegram with image without caption from image accessible by url"
 when
     Item Light_GF_Living_Table changed
@@ -96,7 +99,7 @@ In case your image is behind an authenticated web server (locked by username and
 
 telegram.rules
 
-```
+```java
 rule "Send telegram with image without caption from image accessible by url"
 when
     Item Light_GF_Living_Table changed
