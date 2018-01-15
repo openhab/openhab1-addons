@@ -39,6 +39,10 @@ class InfoResponse {
         private BigDecimal currentFloorTemperature;
         @JsonProperty("AWAY")
         private Boolean away;
+        @JsonProperty("HOLIDAY")
+        private Boolean holiday;
+        @JsonProperty("HOLIDAY_DAYS")
+        private BigDecimal holidayDays;
         @JsonProperty("STANDBY")
         private Boolean standby;
         @JsonProperty("HEATING")
@@ -60,6 +64,14 @@ class InfoResponse {
 
         public Boolean isAway() {
             return away;
+        }
+
+        public Boolean isHoliday() {
+            return holiday;
+        }
+
+        public BigDecimal getHolidayDays() {
+            return holidayDays;
         }
 
         public Boolean isStandby() {
