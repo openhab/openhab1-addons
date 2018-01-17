@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config-description:config-descriptions
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:config-description="http://eclipse.org/smarthome/schemas/config-description/v1.0.0"
+    xsi:schemaLocation="http://eclipse.org/smarthome/schemas/config-description/v1.0.0
+        http://eclipse.org/smarthome/schemas/config-description-1.0.0.xsd">
+
+    <config-description uri="persistence:dynamodb">
+
+        <!-- 
+			############################ Amazon DynamoDB Persistence Service ##################################
+			#
+			# The following parameters are used to configure Amazon DynamoDB Persistence.
+			# 
+			# Further details at https://docs.openhab.org/addons/persistence/dynamodb/readme.html
+			#
+			
+			#
+			# CONNECTION SETTINGS (follow OPTION 1 or OPTION 2)
+			#
+			
+			# OPTION 1 (using accessKey and secretKey)
+			#accessKey=AKIAIOSFODNN7EXAMPLE
+			#secretKey=3+AAAAABBBbbbCCCCCCdddddd+7mnbIOLH
+			#region=eu-west-1
+			
+			# OPTION 2 (using profilesConfigFile and profile)
+			# where profilesConfigFile points to AWS credentials file 
+			#profilesConfigFile=/etc/openhab2/aws_creds
+			#profile=fooprofile
+			#region=eu-west-1
+			
+			# Credentials file example:
+			#
+			# [fooprofile]
+			# aws_access_key_id=AKIAIOSFODNN7EXAMPLE
+			# aws_secret_access_key=3+AAAAABBBbbbCCCCCCdddddd+7mnbIOLH
+			
+			
+			#
+			# ADVANCED CONFIGURATION (OPTIONAL)
+			#
+			
+			# read capacity for the created tables
+			#readCapacityUnits=1
+			
+			# write capacity for the created tables
+			#writeCapacityUnits=1
+			
+			# table prefix used in the name of created tables
+			#tablePrefix=openhab-
+         -->
+        <parameter name="region" type="text" required="true">
+            <label>AWS region ID</label>
+            <description><![CDATA[AWS region ID as described in Step 2 in Setting up Amazon account.<br />
+            The region needs to match the region of the AWS user that will access Amazon DynamoDB.<br />
+            For example, eu-west-1.]]></description>
+        </parameter>
+
+        <parameter name="accessKey" type="text" required="false">
+            <label>AWS access key</label>
+            <description><![CDATA[AWS access key of the AWS user that will access Amazon DynamoDB.
+            <br />
+            Give either 1) access key and secret key, or 2) credentials file and profile name.
+            ]]></description>
+        </parameter>
+        
+        <parameter name="secretKey" type="text" required="false">
+            <label>AWS secret key</label>
+            <description><![CDATA[AWS secret key of the AWS user that will access Amazon DynamoDB.
+            <br />
+            Give either 1) access key and secret key, or 2) credentials file and profile name.
+            ]]></description>
+        </parameter>
+        
+        
+        <parameter name="profilesConfigFile" type="text" required="false">
+            <label>AWS credentials file</label>
+            <description><![CDATA[Path to the AWS credentials file. <br />
+            For example, /etc/openhab2/aws_creds. 
+            Please note that the user that runs openHAB must have approriate read rights to the credential file.
+            <br />
+            Give either 1) access key and secret key, or 2) credentials file and profile name.
+            ]]></description>
+        </parameter>
+        
+        <parameter name="profile" type="text" required="false">
+            <label>Profile name</label>
+            <description><![CDATA[Name of the profile to use in AWS credentials file
+            <br />
+            Give either 1) access key and secret key, or 2) credentials file and profile name.
+            ]]></description>
+        </parameter>
+        
+
+        
+        <parameter name="readCapacityUnits" type="integer" required="false" min="1">        
+            <description>Read capacity for the created tables. Default is 1.</description>
+            <label>Read capacity</label>
+            <advanced>true</advanced>
+        </parameter>
+       
+        <parameter name="writeCapacityUnits" type="integer" required="false" min="1">        
+            <label>Write capacity</label>
+            <description>Write capacity for the created tables. Default is 1.</description>
+            <advanced>true</advanced>
+        </parameter>
+        
+        <parameter name="tablePrefix" type="text" required="false">        
+            <label>Table prefix</label>
+            <description>Table prefix used in the name of created tables. Default is openhab-</description>
+            <advanced>true</advanced>
+        </parameter>
+        
+    </config-description>
+
+</config-description:config-descriptions>
