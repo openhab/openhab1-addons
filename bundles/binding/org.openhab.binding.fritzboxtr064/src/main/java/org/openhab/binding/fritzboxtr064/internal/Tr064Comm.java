@@ -462,8 +462,11 @@ public class Tr064Comm {
             // Check for (auth-) error
             if (slResponse.getStatusCode() == 401) {
                 logger.error(
-                        "Could not read response from FritzBox. Unauthorized! Check User/PW in config. Create user for tr064 requests");
-                _httpClientContext.getTargetAuthState().reset();
+                        "Could not read response from FritzBox. Unauthorized! Check User/PW in config. "
+                        + "Verify configured user for tr064 requests. Reason from Fritzbox was: {}", slResponse.getReasonPhrase());
+                      
+                postSoap.releaseConnection();
+                resetHttpClient();              
                 return null;
             }
 
@@ -494,7 +497,7 @@ public class Tr064Comm {
             // Make sure connection is released. If error occurred make sure to print in log
             if (exceptionOccurred) {
                 logger.error("Releasing connection to FritzBox because of error!");
-                _httpClientContext.getTargetAuthState().reset();
+                resetHttpClient();
             } else {
                 logger.debug("Releasing connection");
             }
@@ -505,7 +508,23 @@ public class Tr064Comm {
 
     }
 
-    /***
+    /**
+     * In case of failure reset the authentication state, close connection and init again.
+     */
+    private void resetHttpClient() {
+    	logger.trace("Drop client for fritzbox and setup connection again.");
+		if (_httpClientContext.getTargetAuthState() != null) {
+			_httpClientContext.getTargetAuthState().reset();
+		}
+    	try {
+			_httpClient.close();
+		} catch (IOException e) {
+			logger.error("Failed to close connection to fritzbox at {}. This might result in still open, but dead connections waiting for a timeout.", _url, e);
+		}
+		_httpClient = createTr064HttpClient(_url);		
+	}
+
+	/***
      * sets all required namespaces and prepares the SOAP message to send
      * creates skeleton + body data
      *
