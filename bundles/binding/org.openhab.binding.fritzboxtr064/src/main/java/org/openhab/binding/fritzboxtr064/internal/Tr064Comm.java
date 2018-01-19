@@ -453,7 +453,9 @@ public class Tr064Comm {
         try {
             entBody = new StringEntity(soapToString(request), ContentType.create("text/xml", "UTF-8")); // add body
             postSoap.setEntity(entBody);
-            resp = _httpClient.execute(postSoap, _httpClientContext);
+            synchronized (_httpClient) {
+	            resp = _httpClient.execute(postSoap, _httpClientContext);
+            }
 
             // Fetch content data
             StatusLine slResponse = resp.getStatusLine();
