@@ -418,12 +418,13 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
                     // new type
 
                     Integer val = provider.getValue(itemName, (Command) type);
+                    Type finalType = type;
                     boolean trigger = false;
                     if (val != null) {
                         if (val == 0) {
-                            type = OnOffType.OFF;
+                            finalType = OnOffType.OFF;
                         } else if (val == 1) {
-                            type = OnOffType.ON;
+                            finalType = OnOffType.ON;
                         } else {
                             trigger = true;
                         }
@@ -432,7 +433,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
                     }
 
                     if (!trigger) {
-                        value = IhcDataConverter.convertCommandToResourceValue(type, value, enumValues);
+                        value = IhcDataConverter.convertCommandToResourceValue(finalType, value, enumValues);
 
                         boolean result = updateResource(value);
 
@@ -449,7 +450,9 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
                         if (result == true) {
                             logger.debug("Item '{}' trigger started", itemName);
 
-                            Thread.sleep(val);
+                            if (val != null) {
+                                Thread.sleep(val);
+                            }
 
                             value = IhcDataConverter.convertCommandToResourceValue(OnOffType.OFF, value, enumValues);
 
@@ -567,7 +570,17 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
         logger.trace("Controller state {}", state.getState());
 
         if (controllerState.getState().equals(state.getState()) == false) {
-            logger.info("Controller state change detected ({} -> {})", controllerState.getState(), state.getState());
+            logger.debug("Controller state change detected ({} -> {})", controllerState.getState(), state.getState());
+
+            switch (state.getState()) {
+                case IhcClient.CONTROLLER_STATE_INITIALIZE:
+                    logger.info("Controller state changed to initializing state, waiting for ready state");
+                    break;
+                case IhcClient.CONTROLLER_STATE_READY:
+                    logger.info("Controller state changed to ready state");
+                    break;
+                default:
+            }
 
             if (controllerState.getState().equals(IhcClient.CONTROLLER_STATE_INITIALIZE)
                     || state.getState().equals(IhcClient.CONTROLLER_STATE_READY)) {
