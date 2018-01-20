@@ -461,8 +461,8 @@ public class Tr064Comm {
 
             // Check for (auth-) error
             if (slResponse.getStatusCode() == 401) {
-                logger.error(
-                        "Could not read response from FritzBox. Unauthorized! Check User/PW in config. "
+                logger.warn(
+                        "Could not read response from FritzBox. Unauthorized! Check user and password in config. "
                         + "Verify configured user for tr064 requests. Reason from Fritzbox was: {}", slResponse.getReasonPhrase());
                       
                 postSoap.releaseConnection();
@@ -496,7 +496,7 @@ public class Tr064Comm {
         } finally {
             // Make sure connection is released. If error occurred make sure to print in log
             if (exceptionOccurred) {
-                logger.error("Releasing connection to FritzBox because of error!");
+                logger.warn("Releasing connection to FritzBox because of error.");
                 resetHttpClient();
             } else {
                 logger.debug("Releasing connection");
@@ -519,7 +519,7 @@ public class Tr064Comm {
     	try {
 			_httpClient.close();
 		} catch (IOException e) {
-			logger.error("Failed to close connection to fritzbox at {}. This might result in still open, but dead connections waiting for a timeout.", _url, e);
+			logger.debug("Failed to close connection to fritzbox at {}. This might result in still open, but dead connections waiting for a timeout.", _url, e);
 		}
 		_httpClient = createTr064HttpClient(_url);		
 	}
