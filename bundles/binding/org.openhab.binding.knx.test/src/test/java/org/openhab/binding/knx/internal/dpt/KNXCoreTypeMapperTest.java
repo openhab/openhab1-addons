@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -1652,6 +1652,7 @@ public class KNXCoreTypeMapperTest {
          * Standard Summer Time: Time = UT+X, Quality of Clock: clock without ext. sync signal
          */
         Type type = testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x00, 0x00 }, DateTimeType.class);
+        assertNotNull("Failed to get a type for the datapoint '" + dpt + "'", type);
         testToDPTValue(dpt, type, "1900-01-01 01:02:03");
 
         /*
@@ -1665,27 +1666,32 @@ public class KNXCoreTypeMapperTest {
          */
         assertNull("KNXCoreTypeMapper.toType() should return null (date but no year)",
                 testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x10, 0x00 }, DateTimeType.class));
+
         /*
          * Reference testcase + Months and Day fields invalid => not supported
          */
         assertNull("KNXCoreTypeMapper.toType() should return null (date but no day and month)",
                 testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x08, 0x00 }, DateTimeType.class));
+
         /*
          * Reference testcase + Year, Months and Day fields invalid
          */
         type = testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x18, 0x00 }, DateTimeType.class);
         testToDPTValue(dpt, type, "1970-01-01 01:02:03");
+
         /*
          * Reference testcase + Year , Months and Day fields invalid + Day of week field invalid
          */
         type = testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x1C, 0x00 }, DateTimeType.class);
         testToDPTValue(dpt, type, "1970-01-01 01:02:03");
+
         /*
          * Reference testcase + Year, Months and Day fields invalid + Day of week field invalid
          * Working day field invalid
          */
         type = testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x3C, 0x00 }, DateTimeType.class);
         testToDPTValue(dpt, type, "1970-01-01 01:02:03");
+
         /*
          * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
          * Working day field invalid + Hour of day, Minutes and Seconds fields invalid
@@ -1701,16 +1707,19 @@ public class KNXCoreTypeMapperTest {
         assertNull("KNXCoreTypeMapper.toType() should return null (neither date nor time, but summertime flag)",
                 type = testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3F, 0x00 },
                         DateTimeType.class));
+
         /*
          * Reference testcase + day of week=Any day, Day of week field invalid
          */
         type = testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00 }, DateTimeType.class);
         testToDPTValue(dpt, type, "1900-01-01 00:00:00");
+
         /*
          * Reference testcase + Day of week field invalid
          */
         type = testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x04, 0x00 }, DateTimeType.class);
         testToDPTValue(dpt, type, "1900-01-01 00:00:00");
+
         /*
          * Reference testcase + day of week=Any day, Day of week field invalid, working day, working day field invalid
          */
@@ -1724,6 +1733,7 @@ public class KNXCoreTypeMapperTest {
         type = testToType(dpt, new byte[] { (byte) 0xFF, 0x0C, 0x1F, 0x17, 0x3B, 0x3B, (byte) 0x04, (byte) 0x00 },
                 DateTimeType.class);
         testToDPTValue(dpt, type, "2155-12-31 23:59:59");
+
         /*
          * December 31st, 2155, 24:00:00, day of week=Any day, Day of week field invalid
          *
@@ -1737,6 +1747,7 @@ public class KNXCoreTypeMapperTest {
         type = testToType(dpt, new byte[] { (byte) 0xFF, 0x0C, 0x1F, 0x18, 0x00, 0x00, (byte) 0x04, (byte) 0x00 },
                 DateTimeType.class);
         testToDPTValue(dpt, type, "2155-12-31 23:59:59");
+
         /*
          * December 31st, 2014 24:00:00, day of week=Any day, Day of week field invalid
          *

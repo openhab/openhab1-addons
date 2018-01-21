@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -448,7 +448,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
                         // DatapointID specified in binding config, so use it
                         dptID = segments[0];
                     }
-                    if (dptID == null || dptID.trim().isEmpty()) {
+                    if ((dptID == null || dptID.trim().isEmpty()) && typeClass != null) {
                         throw new BindingConfigParseException(
                                 "No DPT could be determined for the type '" + typeClass.getSimpleName() + "'.");
                     }
