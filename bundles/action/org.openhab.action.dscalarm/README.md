@@ -9,8 +9,8 @@ The DSC Alarm Action bundle relies on the DSC Alarm Binding (1.x) being installe
 
 ## Actions
 
-*   `sendDSCAlarmCommand(String command)` - sends a DSC Alarm command
-*   `sendDSCAlarmCommand(String command, String data)` - same as above but with command specific required data
+- `sendDSCAlarmCommand(String command)` - sends a DSC Alarm command
+- `sendDSCAlarmCommand(String command, String data)` - same as above but with command specific required data
 
 The `command` parameter is a string numeric code.
 The following table shows which commands are supported:
@@ -45,13 +45,11 @@ To invoke the action see the examples below:
 
 Add an item to your items file such as a switch:
 
-```
-Switch PollCommand "Send a poll command to the DSC Alarm System"
-```
+`Switch PollCommand "Send a poll command to the DSC Alarm System"`
 
 The following rule will trigger whenever the switch is turned ON:
 
-```
+```java
 rule "PollCommand"
     when
         Item PollCommand received command ON
@@ -62,13 +60,11 @@ end
 
 Again add an item to your items file:
 
-```
-Switch BypassZone1 "Bypass Zone 1"
-```
+`Switch BypassZone1 "Bypass Zone 1"`
 
 This rule triggers when the switch is turned ON:
 
-```
+```java
 rule "BypassZone1"
     when
         Item BypassZone1 received command ON
