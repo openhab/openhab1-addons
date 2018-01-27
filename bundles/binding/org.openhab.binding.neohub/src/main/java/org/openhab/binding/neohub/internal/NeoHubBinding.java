@@ -121,6 +121,10 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>i
                 return new StringType(deviceInfo.getDeviceName());
             case Away:
                 return deviceInfo.isAway() ? OnOffType.ON : OnOffType.OFF;
+            case Holiday:
+                return deviceInfo.isHoliday() ? OnOffType.ON : OnOffType.OFF;
+            case HolidayDays:
+                return new DecimalType(deviceInfo.getHolidayDays());
             case Standby:
                 return deviceInfo.isStandby() ? OnOffType.ON : OnOffType.OFF;
             case Heating:
