@@ -36,7 +36,9 @@ public class LightwaveRfHeatingInfoResponse extends AbstractLightwaveRfJsonMessa
     private static final Pattern TIME_ID_REG_EXP = Pattern.compile(".*\"time\":([^,}]*).*");
     private static final Pattern PROD_REG_EXP = Pattern.compile(".*\"prod\":\"([^\"}]*)\".*");
     private static final Pattern SERIAL_ID_REG_EXP = Pattern.compile(".*\"serial\":\"([^\"}]*)\".*");
+/** Wifi link no longer sends signal as part of message
     private static final Pattern SIGNAL_REG_EXP = Pattern.compile(".*\"signal\":([^,}]*).*");
+*/    
     private static final Pattern TYPE_REG_EXP = Pattern.compile(".*\"type\":\"([^\"}]*)\".*");
     private static final Pattern BATTERY_REG_EXP = Pattern.compile(".*\"batt\":([^,}]*).*");
     private static final Pattern VERSION_REG_EXP = Pattern.compile(".*\"ver\":([^,}]*).*");
@@ -52,7 +54,9 @@ public class LightwaveRfHeatingInfoResponse extends AbstractLightwaveRfJsonMessa
     private final Date time;
     private final String prod;
     private final String serial;
+/* wifi link no longer sends signal as part of the message
     private final String signal;
+*/
     private final String type;
     private final String batteryLevel;
     private final String version;
@@ -70,7 +74,9 @@ public class LightwaveRfHeatingInfoResponse extends AbstractLightwaveRfJsonMessa
         time = getDateFromText(TIME_ID_REG_EXP, message);
         prod = getStringFromText(PROD_REG_EXP, message);
         serial = getStringFromText(SERIAL_ID_REG_EXP, message);
+/* wifi link no longer sends signal as part of the message
         signal = getStringFromText(SIGNAL_REG_EXP, message);
+*/        
         type = getStringFromText(TYPE_REG_EXP, message);
         batteryLevel = getStringFromText(BATTERY_REG_EXP, message);
         version = getStringFromText(VERSION_REG_EXP, message);
@@ -88,20 +94,36 @@ public class LightwaveRfHeatingInfoResponse extends AbstractLightwaveRfJsonMessa
         return new StringBuilder("*!{").append("\"trans\":").append(getMessageId().getMessageIdString())
                 .append(",\"mac\":\"").append(mac).append("\",\"time\":").append(getLightwaveDateFromJavaDate(time))
                 .append(",\"prod\":\"").append(prod).append("\",\"serial\":\"").append(serial).append("\",\"signal\":")
-                .append(signal).append(",\"type\":\"").append(type).append("\",\"batt\":").append(batteryLevel)
+                .append(type).append("\",\"batt\":").append(batteryLevel)
                 .append(",\"ver\":").append(version).append(",\"state\":\"").append(state).append("\",\"cTemp\":")
                 .append(currentTemperature).append(",\"cTarg\":").append(currentTargetTemperature)
                 .append(",\"output\":").append(output).append(",\"nTarg\":").append(nextTargetTeperature)
                 .append(",\"nSlot\":\"").append(nextSlot).append("\",\"prof\":").append(prof).append("}").toString();
     }
-
+ 
+/* wifi link no longer sends signal as part of message. This is the old version of the statement    
+    public String getLightwaveRfCommandString() {
+        return new StringBuilder("*!{").append("\"trans\":").append(getMessageId().getMessageIdString())
+            .append(",\"mac\":\"").append(mac).append("\",\"time\":").append(getLightwaveDateFromJavaDate(time))
+            .append(",\"prod\":\"").append(prod).append("\",\"serial\":\"").append(serial).append("\",\"signal\":")
+            .append(signal).append(",\"type\":\"").append(type).append("\",\"batt\":").append(batteryLevel)
+            .append(",\"ver\":").append(version).append(",\"state\":\"").append(state).append("\",\"cTemp\":")
+            .append(currentTemperature).append(",\"cTarg\":").append(currentTargetTemperature)
+            .append(",\"output\":").append(output).append(",\"nTarg\":").append(nextTargetTeperature)
+            .append(",\"nSlot\":\"").append(nextSlot).append("\",\"prof\":").append(prof).append("}").toString();
+    }
+*/    
+    
+    
     @Override
     public State getState(LightwaveRfType type) {
         switch (type) {
             case HEATING_BATTERY:
                 return new DecimalType(getBatteryLevel());
+/* wifi link no longer sends signal as part of the message
             case SIGNAL:
                 return new DecimalType(getSignal());
+*/                
             case HEATING_CURRENT_TEMP:
                 return new DecimalType(getCurrentTemperature());
             case HEATING_SET_TEMP:
@@ -136,10 +158,11 @@ public class LightwaveRfHeatingInfoResponse extends AbstractLightwaveRfJsonMessa
         return time;
     }
 
+/* wifi link no longer sends signal as part of the message    
     public String getSignal() {
         return signal;
     }
-
+*/
     public String getBatteryLevel() {
         return batteryLevel;
     }
