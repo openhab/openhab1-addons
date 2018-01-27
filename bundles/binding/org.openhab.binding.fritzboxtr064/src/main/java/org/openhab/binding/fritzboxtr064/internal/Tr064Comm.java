@@ -77,8 +77,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /***
- * Controls communication and parsing for TR064 communication with
- * FritzBox
+ * Controls communication and parsing for TR064 communication with FritzBox
  *
  * @author gitbock
  * @version 1.8.0
@@ -100,7 +99,8 @@ public class Tr064Comm {
     // mappig table for mapping item command to tr064 parameters
     private Map<String, ItemMap> _allItemMap = null;
 
-    // http client object used to communicate with fbox (needed for reading/writing soap requests)
+    // http client object used to communicate with fbox (needed for reading/writing
+    // soap requests)
     private CloseableHttpClient _httpClient = null;
     private HttpClientContext _httpClientContext = null; // for reusing auth (?)
 
@@ -138,8 +138,7 @@ public class Tr064Comm {
     }
 
     /***
-     * makes sure all values are set properly
-     * before starting communications
+     * makes sure all values are set properly before starting communications
      */
     private void init() {
         if (_user == null) {
@@ -162,13 +161,15 @@ public class Tr064Comm {
     }
 
     /***
-     * Fetches the values for the given item configurations from the FritzBox. Calls the FritzBox
-     * SOAP services delivering the values for the item configurations. The resulting map contains
-     * the values of all item configurations returned by the invoked services. This can be more
-     * items than were given as parameter.
+     * Fetches the values for the given item configurations from the FritzBox. Calls
+     * the FritzBox SOAP services delivering the values for the item configurations.
+     * The resulting map contains the values of all item configurations returned by
+     * the invoked services. This can be more items than were given as parameter.
      *
-     * @param request string from config including the command and optional parameters
-     * @return Parsed values for all item configurations returned by the invoked services.
+     * @param request
+     *            string from config including the command and optional parameters
+     * @return Parsed values for all item configurations returned by the invoked
+     *         services.
      */
     public Map<ItemConfiguration, String> getTr064Values(Collection<ItemConfiguration> itemConfigurations) {
         Map<ItemConfiguration, String> values = new HashMap<>();
@@ -262,8 +263,10 @@ public class Tr064Comm {
     /***
      * Sets a parameter in fbox. Called from event bus
      *
-     * @param request config string from itemconfig
-     * @param cmd command to set
+     * @param request
+     *            config string from itemconfig
+     * @param cmd
+     *            command to set
      */
 
     public void setTr064Value(ItemConfiguration request, Command cmd) {
@@ -347,10 +350,11 @@ public class Tr064Comm {
     }
 
     /***
-     * Creates a apache HTTP Client object, ignoring SSL Exceptions like self signed certificates
-     * and sets Auth. Scheme to Digest Auth
+     * Creates a apache HTTP Client object, ignoring SSL Exceptions like self signed
+     * certificates and sets Auth. Scheme to Digest Auth
      *
-     * @param fboxUrl the URL from config file of fbox to connect to
+     * @param fboxUrl
+     *            the URL from config file of fbox to connect to
      * @return the ready-to-use httpclient for tr064 requests
      */
     private CloseableHttpClient createTr064HttpClient(String fboxUrl) {
@@ -377,8 +381,8 @@ public class Tr064Comm {
                 new UsernamePasswordCredentials(_user, _pw));
         // Create AuthCache instance. Manages authentication based on server response
         AuthCache authCache = new BasicAuthCache();
-        // Generate DIGEST scheme object, initialize it and add it to the local auth cache. Digeste is standard for fbox
-        // auth SOAP
+        // Generate DIGEST scheme object, initialize it and add it to the local auth
+        // cache. Digeste is standard for fbox auth SOAP
         DigestScheme digestAuth = new DigestScheme();
         digestAuth.overrideParamter("realm", "HTTPS Access"); // known from fbox specification
         digestAuth.overrideParamter("nonce", ""); // never known at first request
@@ -391,12 +395,8 @@ public class Tr064Comm {
         SSLConnectionSocketFactory sslsf = null;
         try {
             sslContextBuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy()); // accept self signed certs
-            sslsf = new SSLConnectionSocketFactory(sslContextBuilder.build(), null, null, new NoopHostnameVerifier()); // dont
-                                                                                                                       // verify
-                                                                                                                       // hostname
-                                                                                                                       // against
-                                                                                                                       // cert
-                                                                                                                       // CN
+            // dont verify hostname against cert CN
+            sslsf = new SSLConnectionSocketFactory(sslContextBuilder.build(), null, null, new NoopHostnameVerifier());
         } catch (Exception ex) {
             logger.error(ex.getMessage());
         }
@@ -436,9 +436,12 @@ public class Tr064Comm {
 
     /***
      *
-     * @param soapActionHeader String in HTTP Header. specific for each TR064 service
-     * @param request the SOAPMEssage Object to send to fbox as request
-     * @param serviceUrl URL to sent the SOAP Message to (service specific)
+     * @param soapActionHeader
+     *            String in HTTP Header. specific for each TR064 service
+     * @param request
+     *            the SOAPMEssage Object to send to fbox as request
+     * @param serviceUrl
+     *            URL to sent the SOAP Message to (service specific)
      * @return
      */
     private SOAPMessage readSoapResponse(String soapActionHeader, SOAPMessage request, String serviceUrl) {
@@ -461,9 +464,13 @@ public class Tr064Comm {
 
             // Check for (auth-) error
             if (slResponse.getStatusCode() == 401) {
-                logger.error(
-                        "Could not read response from FritzBox. Unauthorized! Check User/PW in config. Create user for tr064 requests");
-                _httpClientContext.getTargetAuthState().reset();
+                logger.warn(
+                        "Could not read response from FritzBox. Unauthorized! Check user and password in config. "
+                                + "Verify configured user for tr064 requests. Reason from Fritzbox was: {}",
+                        slResponse.getReasonPhrase());
+
+                postSoap.releaseConnection();
+                resetHttpClient();
                 return null;
             }
 
@@ -493,8 +500,8 @@ public class Tr064Comm {
         } finally {
             // Make sure connection is released. If error occurred make sure to print in log
             if (exceptionOccurred) {
-                logger.error("Releasing connection to FritzBox because of error!");
-                _httpClientContext.getTargetAuthState().reset();
+                logger.warn("Releasing connection to FritzBox because of error.");
+                resetHttpClient();
             } else {
                 logger.debug("Releasing connection");
             }
@@ -505,11 +512,30 @@ public class Tr064Comm {
 
     }
 
+    /**
+     * In case of failure reset the authentication state, close connection and init
+     * again.
+     */
+    private void resetHttpClient() {
+        logger.trace("Drop client for fritzbox and setup connection again.");
+        if (_httpClientContext.getTargetAuthState() != null) {
+            _httpClientContext.getTargetAuthState().reset();
+        }
+        try {
+            _httpClient.close();
+        } catch (IOException e) {
+            logger.debug("Failed to close connection to fritzbox at {}. "
+                    + "This might result in still open, but dead connections waiting for a timeout.", _url, e);
+        }
+        _httpClient = createTr064HttpClient(_url);
+    }
+
     /***
-     * sets all required namespaces and prepares the SOAP message to send
-     * creates skeleton + body data
+     * sets all required namespaces and prepares the SOAP message to send creates
+     * skeleton + body data
      *
-     * @param bodyData is attached to skeleton to form entire SOAP message
+     * @param bodyData
+     *            is attached to skeleton to form entire SOAP message
      * @return ready to send SOAP message
      */
     private SOAPMessage constructTr064Msg(SOAPBodyElement bodyData) {
@@ -556,7 +582,8 @@ public class Tr064Comm {
     /***
      * looks for the proper item mapping for the item command given from item file
      *
-     * @param itemCommand String item command
+     * @param itemCommand
+     *            String item command
      * @return found itemMap object if found, or null
      */
     private ItemMap determineItemMappingByItemCommand(String itemCommand) {
@@ -571,7 +598,8 @@ public class Tr064Comm {
     /***
      * determines Service including which URL to connect to for value request
      *
-     * @param the itemmap for which the service is searched
+     * @param the
+     *            itemmap for which the service is searched
      * @return the found service or null
      */
     private Tr064Service determineServiceByItemMapping(ItemMap mapping) {
@@ -584,8 +612,8 @@ public class Tr064Comm {
     }
 
     /***
-     * Connects to fbox service xml to get a list of all services
-     * which are offered by TR064. Saves it into local list
+     * Connects to fbox service xml to get a list of all services which are offered
+     * by TR064. Saves it into local list
      */
     private void readAllServices() {
         Document xml = getFboxXmlResponse(_url + "/" + TR064DOWNLOADFILE);
@@ -614,10 +642,9 @@ public class Tr064Comm {
     }
 
     /**
-     * populates local static mapping table
-     * todo: refactore to read from config file later?
-     * sets the parser based on the itemcommand -> soap value parser "svp" anonymous method
-     * for each mapping
+     * populates local static mapping table todo: refactore to read from config file
+     * later? sets the parser based on the itemcommand -> soap value parser "svp"
+     * anonymous method for each mapping
      *
      */
     private void generateItemMappings() {
@@ -739,7 +766,8 @@ public class Tr064Comm {
         addItemMap(imTamSwitch);
 
         // New Messages per TAM ID
-        // two requests needed: First gets URL to download tam info from, 2nd contains info of messages
+        // two requests needed: First gets URL to download tam info from, 2nd contains
+        // info of messages
         SingleItemMap imTamNewMessages = new SingleItemMap("tamNewMessages", "GetMessageList",
                 "urn:X_AVM-DE_TAM-com:serviceId:X_AVM-DE_TAM1", "NewIndex", "NewURL", new SoapValueParser() {
 
@@ -759,7 +787,8 @@ public class Tr064Comm {
                                                                                           // "new", indicating message
                                                                                           // was not listened to
 
-                                // When <new> contains 1 -> message is new, when 0, message not new -> Counting 1s
+                                // When <new> contains 1 -> message is new, when 0, message not new -> Counting
+                                // 1s
                                 int newMessages = 0;
                                 for (int i = 0; i < nlNews.getLength(); i++) {
                                     if (nlNews.item(i).getTextContent().equals("1")) {
@@ -780,7 +809,8 @@ public class Tr064Comm {
         addItemMap(imTamNewMessages);
 
         // Missed calls
-        // two requests: 1st fetches URL to download call list, 2nd fetches xml call list
+        // two requests: 1st fetches URL to download call list, 2nd fetches xml call
+        // list
         SingleItemMap imMissedCalls = new SingleItemMap("missedCallsInDays", "GetCallList",
                 "urn:X_AVM-DE_OnTel-com:serviceId:X_AVM-DE_OnTel1", "NewDays", "NewCallListURL", new SoapValueParser() {
 
@@ -844,8 +874,8 @@ public class Tr064Comm {
     }
 
     /***
-     * sets up a raw http(s) connection to Fbox and gets xml response
-     * as XML Document, ready for parsing
+     * sets up a raw http(s) connection to Fbox and gets xml response as XML
+     * Document, ready for parsing
      *
      * @return
      */
