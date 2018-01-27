@@ -86,8 +86,11 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
      */
     private long refreshInterval = 60000;
 
-    // holds Fbox TR064 connection
-    private Tr064Comm _fboxComm = null;
+	// holds Fbox TR064 connection for execution calls
+	private Tr064Comm _fboxCommExecution = null;
+	
+	// holds fbox connection for internal receive commands
+	private Tr064Comm _fboxCommReceiveCommand = null;
 
     private PhonebookManager _pbm = null;
 
@@ -145,8 +148,11 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
             this._pbid = 0;
     	}
 
-        if (_fboxComm == null) {
-            _fboxComm = new Tr064Comm(_url, _user, _pw);
+        if (_fboxCommExecution == null) {
+        	_fboxCommExecution = new Tr064Comm(_url, _user, _pw);
+        }
+        if (_fboxCommReceiveCommand == null) {
+        	_fboxCommReceiveCommand = new Tr064Comm(_url, _user, _pw);
         }
 
         setProperlyConfigured(true);
@@ -191,7 +197,7 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
 
                         if (_pbm == null) {
                             logger.debug("Downloading phonebooks");
-                            _pbm = new PhonebookManager(_fboxComm);
+                            _pbm = new PhonebookManager(_fboxCommExecution);
                             _pbm.downloadPhonebooks(_pbid);
                         }
 
@@ -208,7 +214,7 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
             }
         }
 
-        Map<ItemConfiguration, String> resultsByConfiguration = _fboxComm.getTr064Values(itemConfigurations);
+        Map<ItemConfiguration, String> resultsByConfiguration = _fboxCommExecution.getTr064Values(itemConfigurations);
 
         for (Entry<ItemConfiguration, ItemDescription> entry : itemsByConfiguration.entrySet()) {
             ItemConfiguration itemConfiguration = entry.getKey();
@@ -251,8 +257,8 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
         logger.trace("internalReceiveCommand({},{}) is called!", itemName, command);
-        if (_fboxComm == null) {
-            _fboxComm = new Tr064Comm(_url, _user, _pw);
+        if (_fboxCommReceiveCommand == null) {
+        	_fboxCommReceiveCommand = new Tr064Comm(_url, _user, _pw);
         }
         // Search Item Binding config for this itemName
         for (FritzboxTr064BindingProvider provider : providers) {
@@ -262,7 +268,7 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
                                                                                              // because config string
                                                                                              // needed for finding item
                                                                                              // map
-                _fboxComm.setTr064Value(request, command);
+                _fboxCommReceiveCommand.setTr064Value(request, command);
 
             }
         }
