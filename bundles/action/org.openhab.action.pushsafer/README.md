@@ -7,7 +7,7 @@ The Pushsafer action allows you to notify iOS, Android & Windows 10 Phone & Desk
 The following is a valid action call that can be made when the plugin is loaded.
 For specific information on each item, see the [Pushsafer API](https://www.pushsafer.com/en/pushapi).
 
-```
+```java
 pushsafer(String apiToken, String message, String title, String device, String icon, String vibration, String sound)
 ```
 
