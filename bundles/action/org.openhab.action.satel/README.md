@@ -8,11 +8,11 @@ Satel Binding v1.x must be installed and configured in order to use Satel action
 
 ## Actions
 
-*   `boolean satelIsConnected()` - returns `true` if connected to communication module and `false` otherwise
-*   `Object[] satelReadEvent(int eventIndex)` - reads event log record for given index; records must be read one by one from most recent record under index `-1`; see record description below
-*   `String satelReadDeviceName(String deviceType, int deviceNumber)` - reads description of a device; device type must be one of PARTITION, ZONE, USER, EXPANDER, LCD, OUTPUT, TIMER, TELEPHONE, OBJECT
-*   `void satelSetUserCode(String newUserCode)` - overrides configured user code to a given one; allows to execute commands not available for default user configured in the settings
-*   `void satelResetUserCode()` - reverts user code set by `satelSetUserCode(String newUserCode)` to the value configured in openhab.cfg/satel.cfg.
+- `boolean satelIsConnected()` - returns `true` if connected to communication module and `false` otherwise
+- `Object[] satelReadEvent(int eventIndex)` - reads event log record for given index; records must be read one by one from most recent record under index `-1`; see record description below
+- `String satelReadDeviceName(String deviceType, int deviceNumber)` - reads description of a device; device type must be one of PARTITION, ZONE, USER, EXPANDER, LCD, OUTPUT, TIMER, TELEPHONE, OBJECT
+- `void satelSetUserCode(String newUserCode)` - overrides configured user code to a given one; allows to execute commands not available for default user configured in the settings
+- `void satelResetUserCode()` - reverts user code set by `satelSetUserCode(String newUserCode)` to the value configured in openhab.cfg/satel.cfg.
 
 ### Event record fields
 
@@ -33,7 +33,7 @@ Satel Binding v1.x must be installed and configured in order to use Satel action
 
 ## Examples
 
-### Rule to send email on each alarm with 10 most recent records from the event log
+### Send email on alarm with 10 most recent event log entries
 
 satel.rules
 
@@ -155,7 +155,7 @@ String Keypad_Char ">"
 
 satel.sitemap
 
-```
+```java
 Text label="Enter user code" icon="settings" {
   Switch item=Keypad_Char mappings=[ "1"="1", "2"="2", "3"="3" ]
   Switch item=Keypad_Char mappings=[ "4"="4", "5"="5", "6"="6" ]
