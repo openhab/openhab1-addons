@@ -2,21 +2,17 @@
 
 Twitter can be used to "tweet" notifications when certain events take place in openHAB.
 
-
 ## Actions
 
-*   `sendTweet(message)`: Send a Tweet
-*   `sendDirectMessage('recipient', 'direct message')`: Send a direct message simply use the following syntax inside a rule or script;
-
+- `sendTweet(message)`: Send a Tweet
+- `sendDirectMessage('recipient', 'direct message')`: Send a direct message simply use the following syntax inside a rule or script;
 
 ## Configuration
 
 The Twitter action service is one of the pre-defined set of actions that is automatically available, and can be used within rules and scripts.
 You will need to enable "tweeting" by adding the following to the file `services/twitter.cfg`:
 
-```
-enabled=true
-```
+`enabled=true`
 
 After enabling, you will then need to authenticate openHAB with Twitter.
 Typically a new Twitter account would be set up for openHAB, rather than using your personal account, but that is entirely up to you.
@@ -73,7 +69,7 @@ You can now safely delete the `twitter.pin` file if you wish as it is no longer 
 Please beware there are technical limits that apply to your account.
 The current limits are:
 
-*   Direct messages: 250 per day.
-*   Tweets: 1,000 per day. The daily update limit is further broken down into smaller limits for semi-hourly intervals. Retweets are counted as Tweets.
-*   Following (daily): The technical follow limit is 1,000 per day. Please note that this is a technical account limit only, and there are additional rules prohibiting aggressive following behavior. Details about following limits and prohibited behavior are on the Follow Limits and Best Practices page.
-*   Following (account-based): Once an account is following 2,000 other users, additional follow attempts are limited by account-specific ratios. The Follow Limits and Best Practices page has more information.
+- Direct messages: 250 per day.
+- Tweets: 1,000 per day. The daily update limit is further broken down into smaller limits for semi-hourly intervals. Retweets are counted as Tweets.
+- Following (daily): The technical follow limit is 1,000 per day. Please note that this is a technical account limit only, and there are additional rules prohibiting aggressive following behavior. Details about following limits and prohibited behavior are on the Follow Limits and Best Practices page.
+- Following (account-based): Once an account is following 2,000 other users, additional follow attempts are limited by account-specific ratios. The Follow Limits and Best Practices page has more information.
