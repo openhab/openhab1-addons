@@ -357,7 +357,7 @@ public class Tr064Comm {
      *            the URL from config file of fbox to connect to
      * @return the ready-to-use httpclient for tr064 requests
      */
-    private CloseableHttpClient createTr064HttpClient(String fboxUrl) {
+    private synchronized CloseableHttpClient createTr064HttpClient(String fboxUrl) {
         CloseableHttpClient hc = null;
         // Convert URL String from config in easy explotable URI object
         URIBuilder uriFbox = null;
@@ -456,7 +456,9 @@ public class Tr064Comm {
         try {
             entBody = new StringEntity(soapToString(request), ContentType.create("text/xml", "UTF-8")); // add body
             postSoap.setEntity(entBody);
-            resp = _httpClient.execute(postSoap, _httpClientContext);
+            synchronized (_httpClient) {
+                resp = _httpClient.execute(postSoap, _httpClientContext);
+            }
 
             // Fetch content data
             StatusLine slResponse = resp.getStatusLine();
@@ -884,18 +886,19 @@ public class Tr064Comm {
         HttpGet httpGet = new HttpGet(url);
         boolean exceptionOccurred = false;
         try {
-            CloseableHttpResponse resp = _httpClient.execute(httpGet, _httpClientContext);
-            int responseCode = resp.getStatusLine().getStatusCode();
-            if (responseCode == 200) {
-                HttpEntity entity = resp.getEntity();
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                DocumentBuilder db = dbf.newDocumentBuilder();
-                tr064response = db.parse(entity.getContent());
-                EntityUtils.consume(entity);
-            } else {
-                logger.error("Failed to receive valid response from httpGet");
+            synchronized (_httpClient) {
+                CloseableHttpResponse resp = _httpClient.execute(httpGet, _httpClientContext);
+                int responseCode = resp.getStatusLine().getStatusCode();
+                if (responseCode == 200) {
+                    HttpEntity entity = resp.getEntity();
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder db = dbf.newDocumentBuilder();
+                    tr064response = db.parse(entity.getContent());
+                    EntityUtils.consume(entity);
+                } else {
+                    logger.error("Failed to receive valid response from httpGet");
+                }
             }
-
         } catch (Exception e) {
             exceptionOccurred = true;
             logger.error("Failed to receive valid response from httpGet: {}", e.getMessage());
