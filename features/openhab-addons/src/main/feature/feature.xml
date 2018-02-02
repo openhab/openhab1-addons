@@ -490,6 +490,13 @@
     <configfile finalname="${openhab.conf}/services/mqttitude.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqttitude</configfile>
   </feature>
 
+  <feature name="openhab-binding-mystromecopower1" description="MystromEcoPower Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.mystromecopower/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/mystromecopower.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mystromecopower</configfile>
+  </feature>
+
   <feature name="openhab-binding-myq1" description="Chamberlain MyQ Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
