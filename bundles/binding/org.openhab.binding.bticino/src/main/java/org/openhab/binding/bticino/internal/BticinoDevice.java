@@ -13,14 +13,18 @@ import java.util.List;
 import org.openhab.binding.bticino.internal.BticinoGenericBindingProvider.BticinoBindingConfig;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
@@ -54,6 +58,8 @@ public class BticinoDevice implements IBticinoEventListener {
     private String m_passwd = "";
     // Rescan interval in seconds
     private int m_rescan_interval_secs = 0;
+    // Heating zones
+    private int m_heating_zones = 0;
     // Indicator if this device is started
     private boolean m_device_is_started = false;
     // A lock object
@@ -86,6 +92,10 @@ public class BticinoDevice implements IBticinoEventListener {
         m_rescan_interval_secs = p_rescan_interval_secs;
     }
 
+    public void setHeatingZones(int p_heating_zones) {
+        m_heating_zones = p_heating_zones;
+    }
+
     public void setEventPublisher(EventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
     }
@@ -110,7 +120,7 @@ public class BticinoDevice implements IBticinoEventListener {
      */
     public void startDevice() {
         if (m_open_web_net == null) {
-            m_open_web_net = new OpenWebNet(m_host, m_port, m_passwd, m_rescan_interval_secs);
+            m_open_web_net = new OpenWebNet(m_host, m_port, m_passwd, m_rescan_interval_secs, m_heating_zones);
             m_open_web_net.addEventListener(this);
             m_open_web_net.onStart();
         }
@@ -174,12 +184,55 @@ public class BticinoDevice implements IBticinoEventListener {
                     }
                     // Shutter
                     case 2: {
-                        if (UpDownType.UP.equals(command)) {
-                            l_pr.addProperty("what", "1");
-                        } else if (UpDownType.DOWN.equals(command)) {
-                            l_pr.addProperty("what", "2");
-                        } else if (StopMoveType.STOP.equals(command)) {
-                            l_pr.addProperty("what", "0");
+                        if (command instanceof PercentType) {
+                            if (Integer.valueOf(command.toString()) >= 55) {
+                                l_pr.addProperty("what", "2");
+                            } else if (Integer.valueOf(command.toString()) <= 45) {
+                                l_pr.addProperty("what", "1");
+                            } else if (Integer.valueOf(command.toString()) > 45
+                                    && Integer.valueOf(command.toString()) < 55) {
+                                l_pr.addProperty("what", "0");
+                            }
+                        } else {
+                            if (UpDownType.UP.equals(command)) {
+                                l_pr.addProperty("what", "1");
+                            } else if (UpDownType.DOWN.equals(command)) {
+                                l_pr.addProperty("what", "2");
+                            } else if (StopMoveType.STOP.equals(command)) {
+                                l_pr.addProperty("what", "0");
+                            }
+                        }
+                        break;
+                    }
+                    // Temperature Control
+                    case 4: {
+                        // rfreuis
+                        // *#4*WHERE*#13*T##
+                        // WHERE = #1-99
+                        // T = Temperature Offset 03 (3 degrees C)
+                        // #0 is used in the WHERE for ALL ZONES
+                        // if (itemBindingConfig.what.equalsIgnoreCase("13")) {
+                        // l_pr.addProperty("what", "13*0" + String.valueOf(command));
+                        // }
+
+                        // *#4*WHERE*#14*T*M##
+                        // WHERE = #1-99
+                        // T = Temperature 0400 (40 degrees C)
+                        // M = Mode (1=Heating, 2=Cooling 3=General)
+                        // #0 is used in the WHERE for ALL ZONES
+                        if (itemBindingConfig.what.equalsIgnoreCase("14")) {
+                            l_pr.addProperty("what", "14*" + convertTemperatureBticino(String.valueOf(command)) + "*1");
+                        } else if (itemBindingConfig.what.equalsIgnoreCase("100")) {
+                            l_pr.addProperty("what", String.valueOf(command));
+                        }
+                        break;
+                    }
+                    // Lock
+                    case 6: {
+                        // rfreuis
+                        // Only for the on type;
+                        if (OnOffType.ON.equals(command)) {
+                            l_pr.addProperty("what", itemBindingConfig.what);
                         }
                         break;
                     }
@@ -203,6 +256,18 @@ public class BticinoDevice implements IBticinoEventListener {
         }
     }
 
+    // rfreuis
+    private String convertTemperatureBticino(String temperature) {
+        String temp = "";
+        if (temperature.indexOf(".") < 0) {
+            temp = "0" + temperature + "0";
+        } else {
+            temp = "0" + temperature.substring(0, temperature.indexOf("."))
+                    + temperature.substring(temperature.indexOf(".") + 1);
+        }
+        return (temp);
+    }
+
     public void handleEvent(ProtocolRead p_protocol_read) throws Exception {
         // the events on the bus are now received
         // map them to events on the openhab bus
@@ -214,7 +279,7 @@ public class BticinoDevice implements IBticinoEventListener {
         List<BticinoBindingConfig> l_binding_configs = m_bticino_binding.getItemForBticinoBindingConfig(
                 p_protocol_read.getProperty("who"), p_protocol_read.getProperty("where"));
 
-        // log it when an event has occurred that no item is bound to
+        // log it when an event has occured that no item is bound to
         if (l_binding_configs.isEmpty()) {
             logger.debug("Gateway [" + m_gateway_id + "], No Item found for bticino event, WHO ["
                     + p_protocol_read.getProperty("who") + "], WHAT [" + p_protocol_read.getProperty("what")
@@ -236,6 +301,10 @@ public class BticinoDevice implements IBticinoEventListener {
                         eventPublisher.postUpdate(l_item.getName(), OnOffType.ON);
                     } else if (p_protocol_read.getProperty("messageDescription").equalsIgnoreCase("Light OFF")) {
                         eventPublisher.postUpdate(l_item.getName(), OnOffType.OFF);
+                    } else if (p_protocol_read.getProperty("messageDescription").equalsIgnoreCase("Light Dimmer")) {
+                        int percentValue = (int) (Math
+                                .floor(Integer.parseInt(p_protocol_read.getProperty("what")) * 10F));
+                        eventPublisher.postUpdate(l_item.getName(), PercentType.valueOf(String.valueOf(percentValue)));
                     }
                 }
                 // CENs
@@ -282,9 +351,109 @@ public class BticinoDevice implements IBticinoEventListener {
                 // THERMOREGULATION
                 if (p_protocol_read.getProperty("messageType").equalsIgnoreCase("thermoregulation")) {
 
-                    if (p_protocol_read.getProperty("messageDescription").equalsIgnoreCase("Temperature value")) {
-                        eventPublisher.postUpdate(l_item.getName(),
-                                DecimalType.valueOf(p_protocol_read.getProperty("temperature")));
+                    switch (Integer.parseInt(l_binding_config.what)) {
+                        case 0:
+                        case 12:
+                        case 13:
+                        case 14:
+                            if (p_protocol_read.getProperty("what").equalsIgnoreCase(l_binding_config.what)
+                                    && p_protocol_read.getProperty("hStatus").equalsIgnoreCase("0")
+                                    && p_protocol_read.getProperty("temperature") != null) {
+                                logger.debug(
+                                        "T :" + l_item.getName() + " : " + p_protocol_read.getProperty("temperature"));
+                                eventPublisher.postUpdate(l_item.getName(),
+                                        DecimalType.valueOf(p_protocol_read.getProperty("temperature")));
+                            }
+                            break;
+
+                        case 100:
+                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("1")) {
+                                logger.debug("T_ControlStatus :" + l_item.getName());
+                                eventPublisher.postUpdate(l_item.getName(),
+                                        DecimalType.valueOf(p_protocol_read.getProperty("what")));
+                                // eventPublisher.postUpdate(l_item.getName(),
+                                // DecimalType.valueOf(p_protocol_read.getProperty("what").substring(1,2)));
+                            }
+                            break;
+
+                        case 101:
+                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("2")) {
+                                logger.debug("T_ControlMode :" + l_item.getName());
+                                eventPublisher.postUpdate(l_item.getName(),
+                                        DecimalType.valueOf(p_protocol_read.getProperty("what")));
+                            }
+                            break;
+
+                        case 102:
+                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("3")) {
+                                logger.debug("T_ControlMessage :" + l_item.getName());
+                                eventPublisher.postUpdate(l_item.getName(),
+                                        DecimalType.valueOf(p_protocol_read.getProperty("what")));
+                            }
+                            break;
+                    }
+                }
+            } else if (l_item instanceof ContactItem) {
+                logger.debug("Gateway [" + m_gateway_id + "], RECEIVED EVENT FOR NumberItem [" + l_item.getName()
+                        + "], TRANSLATE TO OPENHAB BUS EVENT");
+
+                // THERMOREGULATION
+                if (p_protocol_read.getProperty("messageType").equalsIgnoreCase("thermoregulation")) {
+                    switch (Integer.parseInt(l_binding_config.what)) {
+                        case 20:
+                            if (p_protocol_read.getProperty("what").equalsIgnoreCase(l_binding_config.what)) {
+                                int state = -1;
+                                if (p_protocol_read.getProperty("messageDescription").equalsIgnoreCase("Heating OFF")) {
+                                    state = 0;
+                                    eventPublisher.postUpdate(l_item.getName(),
+                                            (state == 1) ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
+                                } else if (p_protocol_read.getProperty("messageDescription")
+                                        .equalsIgnoreCase("Heating ON")) {
+                                    state = 1;
+                                    eventPublisher.postUpdate(l_item.getName(),
+                                            (state == 1) ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
+                                }
+                                logger.debug("T_Relay :" + l_item.getName() + "/" + state);
+                            }
+                            break;
+                    }
+                }
+            } else if (l_item instanceof StringItem) {
+                logger.debug("Gateway [" + m_gateway_id + "], RECEIVED EVENT FOR NumberItem [" + l_item.getName()
+                        + "], TRANSLATE TO OPENHAB BUS EVENT");
+
+                // THERMOREGULATION
+                if (p_protocol_read.getProperty("messageType").equalsIgnoreCase("thermoregulation")) {
+                    String state = null;
+                    switch (Integer.parseInt(l_binding_config.what)) {
+                        case 20:
+                            if (p_protocol_read.getProperty("what").equalsIgnoreCase(l_binding_config.what)) {
+                                if (p_protocol_read.getProperty("messageDescription").equalsIgnoreCase("Heating OFF")) {
+                                    state = "Off";
+                                    eventPublisher.postUpdate(l_item.getName(), StringType.valueOf(state));
+                                } else if (p_protocol_read.getProperty("messageDescription")
+                                        .equalsIgnoreCase("Heating ON")) {
+                                    state = "HeatOn";
+                                    eventPublisher.postUpdate(l_item.getName(), StringType.valueOf(state));
+                                }
+                                logger.debug("T_Relay :" + l_item.getName() + "/" + state);
+                            }
+                            break;
+                        case 101:
+                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("2")) {
+                                switch (Integer.parseInt(p_protocol_read.getProperty("what"))) {
+                                    case 1:
+                                        state = "HeatOn";
+                                        eventPublisher.postUpdate(l_item.getName(), StringType.valueOf(state));
+                                        break;
+                                    case 2:
+                                        state = "CoolOn";
+                                        eventPublisher.postUpdate(l_item.getName(), StringType.valueOf(state));
+                                        break;
+                                }
+                                logger.debug("T_ControlMode :" + l_item.getName() + "/" + state);
+                            }
+                            break;
                     }
                 }
             }
