@@ -81,6 +81,7 @@ public class MonitorSessionThread extends Thread {
         String objectName = null;
         String messageType = null;
         String messageDescription = null;
+        String hStatus = null;
         String[] frameParts = null;
         ProtocolRead event = null;
 
@@ -206,20 +207,41 @@ public class MonitorSessionThread extends Thread {
             }
             // TERMOREGULATION
             if (who.equalsIgnoreCase("4")) {
+                what = frameParts[2];
                 messageType = "thermoregulation";
                 objectClass = "Thermo";
-                objectName = who + "*" + where;
+                objectName = who + "*" + where + "*" + what;
 
-                if (frameParts[2].equalsIgnoreCase("0")) {
+                // hStatus
+                // -------
+                // 0: Status Probe / Actuators
+                // 1: Status Operation Mode
+                // 2: Status Control Mode
+                // 3: Status Main Unit
+
+                hStatus = "0";
+
+                if (what.equalsIgnoreCase("20")) {
+                    String[] where_parts = where.split("#");
+                    where = where_parts[0];
+                    switch (Integer.parseInt(frameParts[3])) {
+                        // Heating OFF
+                        case 0:
+                            messageDescription = "Heating OFF";
+                            break;
+                        // Heating ON
+                        case 1:
+                            messageDescription = "Heating ON";
+                            break;
+                    }
+                } else {
                     String temperature = frameParts[3];
                     temperature = OWNUtilities.convertTemperature(temperature);
                     messageDescription = "Temperature value";
                     if (temperature != null) {
                         event.addProperty("temperature", temperature);
                     }
-                } else {
-                    logger.debug("other temperature message");
-
+                    logger.debug("Temperature Value");
                 }
             }
             // GATEWAY CONTROL
@@ -395,7 +417,12 @@ public class MonitorSessionThread extends Thread {
                 }
             }
 
-            event.addProperty("who", who);
+            if (who != null) {
+                event.addProperty("who", who);
+            }
+            if (what != null) {
+                event.addProperty("what", what);
+            }
             if (where != null) {
                 event.addProperty("where", where);
             }
@@ -405,11 +432,22 @@ public class MonitorSessionThread extends Thread {
             if (messageType != null) {
                 event.addProperty("messageType", messageType);
             }
+            if (hStatus != null) {
+                event.addProperty("hStatus", hStatus);
+            }
+            if (objectClass != null) {
+                event.addProperty("object.class", objectClass);
+            }
+            if (objectName != null) {
+                event.addProperty("object.name", objectName);
+            }
             // notify event
-            logger.debug("{} Rx: {} ({})", OWNUtilities.getDateTime(), frame, messageDescription);
+            if (who != null && what != null && where != null && messageDescription != null) {
+                logger.debug("{} Rx: {} ({})", OWNUtilities.getDateTime(), frame, messageDescription);
 
-            // Notify all the listeners an event has been received
-            pluginReference.notifyEvent(event);
+                // Notify all the listeners an event has been received
+                pluginReference.notifyEvent(event);
+            }
         }
 
         // Command frame
@@ -503,65 +541,109 @@ public class MonitorSessionThread extends Thread {
                 // THERMOREGULATION
                 case 4:
                     messageType = "thermoregulation";
-                    objectClass = "Thermo";
+                    objectClass = "ThermoStatus";
+
+                    String[] where_parts;
+                    where_parts = where.split("#");
+
+                    // hStatus
+                    // -------
+                    // 0: Status Probe / Actuators
+                    // 1: Status Operation Mode
+                    // 2: Status Control Mode
+                    // 3: Status Main Unit
 
                     switch (Integer.parseInt(what)) {
                         case 0:
                             messageDescription = "Conditioning";
+                            hStatus = "2";
                             break;
                         case 1:
                             messageDescription = "Heating";
+                            hStatus = "2";
                             break;
                         case 20:
                             messageDescription = "Remote Control disabled";
+                            hStatus = "3";
                             break;
                         case 21:
                             messageDescription = "Remote Control enabled";
+                            hStatus = "3";
                             break;
                         case 22:
                             messageDescription = "At least one Probe OFF";
+                            hStatus = "3";
                             break;
                         case 23:
                             messageDescription = "At least one Probe in protection";
+                            hStatus = "3";
                             break;
                         case 24:
                             messageDescription = "At least one Probe in manual";
+                            hStatus = "3";
                             break;
                         case 30:
                             messageDescription = "Failure discovered";
+                            hStatus = "3";
                             break;
                         case 31:
                             messageDescription = "Central Unit battery KO";
+                            hStatus = "3";
                             break;
                         case 103:
                             messageDescription = "OFF Heating";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 110:
                             messageDescription = "Manual Heating";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 111:
                             messageDescription = "Automatic Heating";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 202:
                             messageDescription = "AntiFreeze";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 203:
                             messageDescription = "OFF Conditioning";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 210:
                             messageDescription = "Manual Conditioning";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 211:
                             messageDescription = "Automatic Conditioning";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 302:
                             messageDescription = "Thermal Protection";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 303:
                             messageDescription = "Generic OFF";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 311:
                             messageDescription = "Automatic Generic";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
+                            break;
+                        default:
+                            messageDescription = "Heating Program";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                     }
                     break; // close THERMOREGULATION switch
@@ -710,17 +792,22 @@ public class MonitorSessionThread extends Thread {
             if (messageDescription != null) {
                 event.addProperty("messageDescription", messageDescription);
             }
+            if (hStatus != null) {
+                event.addProperty("hStatus", hStatus);
+            }
             if (objectClass != null) {
                 event.addProperty("object.class", objectClass);
             }
             if (objectName != null) {
                 event.addProperty("object.name", objectName);
             }
-            logger.debug("Frame {} is {} message. Notify it as OpenHab event {}", frame, messageType,
-                    (messageDescription == "No Description set") ? "" : messageDescription); // for debug
+            if (who != null && what != null && where != null && messageDescription != null) {
+                logger.info("Frame " + frame + " is " + messageType + " message. Notify it as OpenHab event "
+                        + messageDescription == "No Description set" ? "" : messageDescription); // for debug
 
-            // Notify all the listeners an event has been received
-            pluginReference.notifyEvent(event);
+                // Notify all the listeners an event has been received
+                pluginReference.notifyEvent(event);
+            }
         }
     }
 }
