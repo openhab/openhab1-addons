@@ -12,10 +12,8 @@ import java.util.HashMap;
 
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.types.State;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -40,7 +38,7 @@ public class BticinoGenericBindingProvider extends AbstractGenericBindingProvide
      */
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.openhab.model.item.binding.BindingConfigReader#getBindingType()
      */
     public String getBindingType() {
@@ -52,12 +50,11 @@ public class BticinoGenericBindingProvider extends AbstractGenericBindingProvide
      */
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 
-        if (!(item instanceof SwitchItem || item instanceof RollershutterItem || item instanceof NumberItem
-                || item instanceof ContactItem || item instanceof StringItem)) {
-            throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
-                    + item.getClass().getSimpleName()
-                    + "', this Item is not allowed - please check your *.items configuration"
-                    + ", only SwitchItem, RollershutterItem, NumberItem ContactItem and StringItem are allowed / supported for now");
+        if (!(item instanceof SwitchItem || item instanceof RollershutterItem || item instanceof NumberItem)) {
+            throw new BindingConfigParseException(
+                    "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
+                            + "', this Item is not allowed - please check your *.items configuration"
+                            + ", only SwitchItem, RollershutterItem and NumberItem are allowed / supported for now");
         }
     }
 
@@ -80,10 +77,10 @@ public class BticinoGenericBindingProvider extends AbstractGenericBindingProvide
     /**
      * Checks if the bindingConfig contains a valid binding type and returns an
      * appropriate instance.
-     *
+     * 
      * @param item
      * @param bindingConfig
-     *
+     * 
      * @throws BindingConfigParseException
      *             if bindingConfig is no valid binding type
      */
@@ -99,7 +96,7 @@ public class BticinoGenericBindingProvider extends AbstractGenericBindingProvide
     /**
      * BticinoBindingConfig stores configuration of the item bound to openweb -
      * bticino bus
-     *
+     * 
      * @author Tom De Vlaminck
      * @serial 1.0
      * @since 1.7.0
@@ -139,7 +136,7 @@ public class BticinoGenericBindingProvider extends AbstractGenericBindingProvide
 
         /**
          * Constructor for config object
-         *
+         * 
          * @param item
          * @param config
          * @throws BindingConfigParseException
@@ -187,7 +184,7 @@ public class BticinoGenericBindingProvider extends AbstractGenericBindingProvide
         /**
          * bticino="if=0;who=1;what=1;where=23" if => support for multiple MH200
          * devices (= several houses through VPN (wet dreams :,) )
-         *
+         * 
          * @param p_binding_config
          * @return
          */
