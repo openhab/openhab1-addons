@@ -208,6 +208,11 @@ public class BticinoDevice implements IBticinoEventListener {
                         }
                         break;
                     }
+                    // Door Lock
+                    case 6: {
+                        // Only for the ON type (open)
+                        if (OnOffType.ON.equals(command)) {
+                            l_pr.addProperty("what", itemBindingConfig.what);
                         }
                         break;
                     }
