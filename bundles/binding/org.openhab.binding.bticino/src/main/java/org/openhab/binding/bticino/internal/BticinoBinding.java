@@ -65,11 +65,13 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
         String passwd = "12345";
         // Default rescan interval is 300 seconds
         int rescan_secs = 300;
+        // Default heating zones are 99
+        int heating_zones = 99;
 
         @Override
         public String toString() {
             return "Bticino [id=" + id + ", host=" + host + ", port=" + port + ", passwd=" + passwd + ", rescan secs="
-                    + rescan_secs + "]";
+                    + rescan_secs + ", heating zones=" + heating_zones + "]";
         }
     }
 
@@ -235,6 +237,8 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
                     l_bticino_config.passwd = value;
                 } else if ("rescan_secs".equals(configKey)) {
                     l_bticino_config.rescan_secs = Integer.valueOf(value);
+                    // parameter heating
+                    l_bticino_config.heating_zones = Integer.valueOf(value);
                 } else {
                     throw new ConfigurationException(configKey,
                             "the given configKey '" + configKey + "' with value '" + value + "' is unknown");
