@@ -184,12 +184,27 @@ public class BticinoDevice implements IBticinoEventListener {
                     }
                     // Shutter
                     case 2: {
-                        if (UpDownType.UP.equals(command)) {
-                            l_pr.addProperty("what", "1");
-                        } else if (UpDownType.DOWN.equals(command)) {
-                            l_pr.addProperty("what", "2");
-                        } else if (StopMoveType.STOP.equals(command)) {
-                            l_pr.addProperty("what", "0");
+                        if (command instanceof PercentType) {
+                            // Workaround for Homekit as it sends PecentType Commands
+                            if (Integer.valueOf(command.toString()) >= 55) {
+                                l_pr.addProperty("what", "2");
+                            } else if (Integer.valueOf(command.toString()) <= 45) {
+                                l_pr.addProperty("what", "1");
+                            } else if (Integer.valueOf(command.toString()) > 45
+                                    && Integer.valueOf(command.toString()) < 55) {
+                                l_pr.addProperty("what", "0");
+                            }
+                        } else {
+                            if (UpDownType.UP.equals(command)) {
+                                l_pr.addProperty("what", "1");
+                            } else if (UpDownType.DOWN.equals(command)) {
+                                l_pr.addProperty("what", "2");
+                            } else if (StopMoveType.STOP.equals(command)) {
+                                l_pr.addProperty("what", "0");
+                            }
+                        }
+                        break;
+                    }
                     // Temperature Control
                     case 4: {
                         // Set Temperature Heating Zone
