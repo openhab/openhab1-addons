@@ -444,7 +444,6 @@ public class MonitorSessionThread extends Thread {
             // notify event
             if (who != null && what != null && where != null && messageDescription != null) {
                 logger.debug("{} Rx: {} ({})", OWNUtilities.getDateTime(), frame, messageDescription);
-
                 // Notify all the listeners an event has been received
                 pluginReference.notifyEvent(event);
             }
@@ -802,7 +801,7 @@ public class MonitorSessionThread extends Thread {
                 event.addProperty("object.name", objectName);
             }
             if (who != null && what != null && where != null && messageDescription != null) {
-                logger.info("Frame " + frame + " is " + messageType + " message. Notify it as OpenHab event "
+                logger.debug("Frame " + frame + " is " + messageType + " message. Notify it as OpenHab event "
                         + messageDescription == "No Description set" ? "" : messageDescription); // for debug
 
                 // Notify all the listeners an event has been received
