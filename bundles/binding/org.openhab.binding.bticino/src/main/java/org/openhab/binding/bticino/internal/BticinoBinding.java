@@ -41,10 +41,10 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
 
     /**
      * RegEx to validate a bticino gateway config
-     * <code>'^(.*?)\\.(host|port)$'</code>
+     * <code>'^(.*?)\\.(host|port|passwd|rescan_secs|heating_zones)$'</code>
      */
     private static final Pattern EXTRACT_BTICINO_GATEWAY_CONFIG_PATTERN = Pattern
-            .compile("^(.*?)\\.(host|port|passwd|rescan_secs)$");
+            .compile("^(.*?)\\.(host|port|passwd|rescan_secs|heating_zones)$");
 
     // indicates that the updated has been run once
     boolean m_binding_initialized = false;
@@ -202,7 +202,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
 
                 if (!matcher.matches()) {
                     logger.debug("given bticino gateway-config-key '" + key
-                            + "' does not follow the expected pattern '<gateway_name>.<host|port>'");
+                            + "' does not follow the expected pattern '<gateway_name>.<host|port|passwd|rescan_secs|heating_zones>'");
                     continue;
                 }
 
@@ -237,6 +237,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
                     l_bticino_config.passwd = value;
                 } else if ("rescan_secs".equals(configKey)) {
                     l_bticino_config.rescan_secs = Integer.valueOf(value);
+                } else if ("heating_zones".equals(configKey)) {
                     // parameter heating
                     l_bticino_config.heating_zones = Integer.valueOf(value);
                 } else {
@@ -268,6 +269,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
             l_bticino_device.setPort(l_current_device_config.port);
             l_bticino_device.setPasswd(l_current_device_config.passwd);
             l_bticino_device.setRescanInterval(l_current_device_config.rescan_secs);
+            l_bticino_device.setHeatingZones(l_current_device_config.heating_zones);
             try {
                 l_bticino_device.initialize();
             } catch (InitializationException e) {

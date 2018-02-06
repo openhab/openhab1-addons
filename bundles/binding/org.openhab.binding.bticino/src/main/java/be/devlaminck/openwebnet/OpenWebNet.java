@@ -44,7 +44,7 @@ public class OpenWebNet extends Thread {
     private Date m_last_bus_scan = new Date(0);
     private Integer m_bus_scan_interval_secs = 120;
     private Integer m_first_scan_delay_secs = 60;
-    private Integer m_heating_zones = 99;
+    private Integer m_heating_zones = 0;
     public MyHomeJavaConnector myPlant = null;
     private MonitorSessionThread monitorSessionThread = null;
 
@@ -87,7 +87,7 @@ public class OpenWebNet extends Thread {
         monitorSessionThread.start();
         logger.info("Connected to [" + host + ":" + port + "], Rescan bus every [" + m_bus_scan_interval_secs
                 + "] seconds, first scan over [" + (((new Date()).getTime() - m_last_bus_scan.getTime()) / 1000)
-                + "] seconds.");
+                + "] seconds, max. heating zones: [" + m_heating_zones + "]");
         // start the processing thread
         start();
     }
@@ -144,17 +144,23 @@ public class OpenWebNet extends Thread {
             logger.info("Sending " + POWER_MANAGEMENT_DIAGNOSTIC_FRAME + " frame to (re)initialize POWER MANAGEMENT");
             myPlant.sendCommandSync(POWER_MANAGEMENT_DIAGNOSTIC_FRAME);
 
-            logger.info("Sending *4#* frames to (re)initialize HEATING");
             // *#4*#1*20## Diagnostic Frame Actors
+            logger.info("Sending Diagnostic Frame Actors to (re)initialize HEATING");
             myPlant.sendCommandSync("*#4*#1*20##");
+
             // *#4*#0## Diagnostic Frame Program Main Unit
-            myPlant.sendCommandSync("*#4*#0##"); // Program Central Control
+            logger.info("Sending Diagnostic Frame Main Unit to (re)initialize HEATING");
+            myPlant.sendCommandSync("*#4*#0##");
+
+            logger.info("Sending Diagnostic Frame Heat Zones 1 .. " + m_heating_zones + " to (re)initialize HEATING");
             for (int i = 1; i <= m_heating_zones; i++) {
+                logger.info("Sending Diagnostic Frame Heat Zone " + i + " to (re)initialize HEATING");
                 // *4#*#xx## Diagnostic Frame Main Unit
                 myPlant.sendCommandSync("*#4*#" + i + "##");
                 // *4#*xx## Diagnostic Frame Thermostat
                 myPlant.sendCommandSync("*#4*" + i + "##");
             }
+            logger.info("Sending Diagnostic Frames to (re)initialize HEATING finished");
         } catch (Exception e) {
             logger.error("initSystem failed : " + e.getMessage());
         }
