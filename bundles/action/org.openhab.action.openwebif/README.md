@@ -16,7 +16,7 @@ Configure your satellite receivers in `services/openwebif.cfg`.
 
 ### Configuration Example
 
-```
+```java
 receiver.main.host=vusolo2
 receiver.main.port=81
 receiver.main.user=root
@@ -28,7 +28,7 @@ receiver.main.https=false
 
 Now you can send a message to the configured receiver:
 
-*   `sendOpenWebIfNotification(NAME, MESSAGE, TYPE, TIMEOUT)`
+- `sendOpenWebIfNotification(NAME, MESSAGE, TYPE, TIMEOUT)`
 
 | Parameter | Meaning                                              |
 |-----------|------------------------------------------------------|
@@ -39,7 +39,7 @@ Now you can send a message to the configured receiver:
 
 ## Examples
 
-```
+```java
 sendOpenWebIfNotification("main", "Hello World!\n\nThis is a message sent from openHab!", "WARNING", 10)
 ```
 
