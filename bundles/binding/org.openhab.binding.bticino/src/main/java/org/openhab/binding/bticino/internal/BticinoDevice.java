@@ -274,7 +274,7 @@ public class BticinoDevice implements IBticinoEventListener {
         List<BticinoBindingConfig> l_binding_configs = m_bticino_binding.getItemForBticinoBindingConfig(
                 p_protocol_read.getProperty("who"), p_protocol_read.getProperty("where"));
 
-        // log it when an event has occured that no item is bound to
+        // log it when an event has occurred that no item is bound to
         if (l_binding_configs.isEmpty()) {
             logger.debug("Gateway [" + m_gateway_id + "], No Item found for bticino event, WHO ["
                     + p_protocol_read.getProperty("who") + "], WHAT [" + p_protocol_read.getProperty("what")
@@ -358,8 +358,8 @@ public class BticinoDevice implements IBticinoEventListener {
                             if (p_protocol_read.getProperty("what").equalsIgnoreCase(l_binding_config.what)
                                     && p_protocol_read.getProperty("hStatus").equalsIgnoreCase("0")
                                     && p_protocol_read.getProperty("temperature") != null) {
-                                logger.debug(
-                                        "T :" + l_item.getName() + " : " + p_protocol_read.getProperty("temperature"));
+                                logger.debug("T : {} : {}", l_item.getName(),
+                                        p_protocol_read.getProperty("temperature"));
                                 eventPublisher.postUpdate(l_item.getName(),
                                         DecimalType.valueOf(p_protocol_read.getProperty("temperature")));
                             }
@@ -368,7 +368,7 @@ public class BticinoDevice implements IBticinoEventListener {
                         case 100:
                             // Status Operation Mode
                             if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("1")) {
-                                logger.debug("T_ControlStatus :" + l_item.getName());
+                                logger.debug("T_ControlStatus : {}", l_item.getName());
                                 eventPublisher.postUpdate(l_item.getName(),
                                         DecimalType.valueOf(p_protocol_read.getProperty("what")));
                             }
@@ -377,7 +377,7 @@ public class BticinoDevice implements IBticinoEventListener {
                         case 101:
                             // Status Control Mode
                             if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("2")) {
-                                logger.debug("T_ControlMode :" + l_item.getName());
+                                logger.debug("T_ControlMode : {}", l_item.getName());
                                 eventPublisher.postUpdate(l_item.getName(),
                                         DecimalType.valueOf(p_protocol_read.getProperty("what")));
                             }
@@ -386,7 +386,7 @@ public class BticinoDevice implements IBticinoEventListener {
                         case 102:
                             // Status Main Unit
                             if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("3")) {
-                                logger.debug("T_ControlMessage :" + l_item.getName());
+                                logger.debug("T_ControlMessage : {}", l_item.getName());
                                 eventPublisher.postUpdate(l_item.getName(),
                                         DecimalType.valueOf(p_protocol_read.getProperty("what")));
                             }
@@ -414,7 +414,7 @@ public class BticinoDevice implements IBticinoEventListener {
                                     eventPublisher.postUpdate(l_item.getName(),
                                             (state == 1) ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
                                 }
-                                logger.debug("T_Relay :" + l_item.getName() + "/" + state);
+                                logger.debug("T_Relay : {} / {}", l_item.getName(), state);
                             }
                             break;
                     }
@@ -439,7 +439,7 @@ public class BticinoDevice implements IBticinoEventListener {
                                     state = "HeatOn";
                                     eventPublisher.postUpdate(l_item.getName(), StringType.valueOf(state));
                                 }
-                                logger.debug("T_Relay :" + l_item.getName() + "/" + state);
+                                logger.debug("T_Relay : {} / {}", l_item.getName(), state);
                             }
                             break;
                         case 101:
@@ -455,7 +455,7 @@ public class BticinoDevice implements IBticinoEventListener {
                                         eventPublisher.postUpdate(l_item.getName(), StringType.valueOf(state));
                                         break;
                                 }
-                                logger.debug("T_ControlMode :" + l_item.getName() + "/" + state);
+                                logger.debug("T_ControlMode : {}", l_item.getName());
                             }
                             break;
                     }

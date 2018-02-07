@@ -54,10 +54,10 @@ public class BticinoGenericBindingProvider extends AbstractGenericBindingProvide
 
         if (!(item instanceof SwitchItem || item instanceof RollershutterItem || item instanceof NumberItem
                 || item instanceof ContactItem || item instanceof StringItem)) {
-            throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
-                    + item.getClass().getSimpleName()
-                    + "', this Item is not allowed - please check your *.items configuration"
-                    + ", only SwitchItem, RollershutterItem, NumberItem ContactItem and StringItem are allowed / supported for now");
+            throw new BindingConfigParseException(
+                    "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
+                            + "'. This Item is not allowed - please check your *.items configuration."
+                            + "Only SwitchItem, RollershutterItem, NumberItem ContactItem and StringItem are allowed.");
         }
     }
 

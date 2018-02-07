@@ -85,9 +85,10 @@ public class OpenWebNet extends Thread {
                 (new Date()).getTime() - (1000 * m_bus_scan_interval_secs) + (1000 * m_first_scan_delay_secs));
         // start thread
         monitorSessionThread.start();
-        logger.info("Connected to [" + host + ":" + port + "], Rescan bus every [" + m_bus_scan_interval_secs
-                + "] seconds, first scan over [" + (((new Date()).getTime() - m_last_bus_scan.getTime()) / 1000)
-                + "] seconds, max. heating zones: [" + m_heating_zones + "]");
+        logger.info(
+                "Connected to [{}:{}], Rescan bus every [{}] seconds, first scan over [{}] seconds, max. heating zones: [{}]",
+                host, port, m_bus_scan_interval_secs, (((new Date()).getTime() - m_last_bus_scan.getTime()) / 1000),
+                m_heating_zones);
         // start the processing thread
         start();
     }
@@ -99,7 +100,7 @@ public class OpenWebNet extends Thread {
         try {
             myPlant.sendCommandAsync(OWNUtilities.createFrame(c), 1);
         } catch (MalformedCommandOPEN ex) {
-            logger.error("onCommand error : " + ex.getMessage());
+            logger.error("onCommand error : {}", ex.getMessage());
         }
     }
 
@@ -115,7 +116,7 @@ public class OpenWebNet extends Thread {
         } catch (InterruptedException p_i_ex) {
             logger.error("Openwebnet.run, InterruptedException : " + p_i_ex.getMessage());
         } catch (Exception p_i_ex) {
-            logger.error("Openwebnet.run, Exception : " + p_i_ex.getMessage());
+            logger.error("Openwebnet.run, Exception : {}", p_i_ex.getMessage());
         } finally {
             // interrupt handler on monitor thread will stop thread
             monitorSessionThread.interrupt();
@@ -135,13 +136,15 @@ public class OpenWebNet extends Thread {
     // sends diagnostic frames to initialize the system
     public void initSystem() {
         try {
-            logger.info("Sending " + LIGHTING_DIAGNOSTIC_FRAME + " frame to (re)initialize LIGHTING");
+            logger.info("Sending frames to (re)initialize subsystems");
+
+            logger.debug("Sending {} frame to (re)initialize LIGHTING", LIGHTING_DIAGNOSTIC_FRAME);
             myPlant.sendCommandSync(LIGHTING_DIAGNOSTIC_FRAME);
-            logger.info("Sending " + AUTOMATIONS_DIAGNOSTIC_FRAME + " frame to (re)initialize AUTOMATIONS");
+            logger.debug("Sending {} frame to (re)initialize AUTOMATIONS", AUTOMATIONS_DIAGNOSTIC_FRAME);
             myPlant.sendCommandSync(AUTOMATIONS_DIAGNOSTIC_FRAME);
-            logger.info("Sending " + ALARM_DIAGNOSTIC_FRAME + " frame to (re)initialize ALARM");
+            logger.debug("Sending {} frame to (re)initialize ALARM", ALARM_DIAGNOSTIC_FRAME);
             myPlant.sendCommandSync(ALARM_DIAGNOSTIC_FRAME);
-            logger.info("Sending " + POWER_MANAGEMENT_DIAGNOSTIC_FRAME + " frame to (re)initialize POWER MANAGEMENT");
+            logger.debug("Sending {} frame to (re)initialize POWER MANAGEMENT", POWER_MANAGEMENT_DIAGNOSTIC_FRAME);
             myPlant.sendCommandSync(POWER_MANAGEMENT_DIAGNOSTIC_FRAME);
 
             // *#4*#1*20## Diagnostic Frame Actors
@@ -149,20 +152,20 @@ public class OpenWebNet extends Thread {
             myPlant.sendCommandSync("*#4*#1*20##");
 
             // *#4*#0## Diagnostic Frame Program Main Unit
-            logger.info("Sending Diagnostic Frame Main Unit to (re)initialize HEATING");
+            logger.debug("Sending Diagnostic Frame Main Unit to (re)initialize HEATING");
             myPlant.sendCommandSync("*#4*#0##");
 
-            logger.info("Sending Diagnostic Frame Heat Zones 1 .. " + m_heating_zones + " to (re)initialize HEATING");
+            logger.debug("Sending Diagnostic Frame Heat Zones 1 .. {} to (re)initialize HEATING", m_heating_zones);
             for (int i = 1; i <= m_heating_zones; i++) {
-                logger.info("Sending Diagnostic Frame Heat Zone " + i + " to (re)initialize HEATING");
+                logger.debug("Sending Diagnostic Frame Heat Zone {} to (re)initialize HEATING", i);
                 // *4#*#xx## Diagnostic Frame Main Unit
                 myPlant.sendCommandSync("*#4*#" + i + "##");
                 // *4#*xx## Diagnostic Frame Thermostat
                 myPlant.sendCommandSync("*#4*" + i + "##");
             }
-            logger.info("Sending Diagnostic Frames to (re)initialize HEATING finished");
+            logger.debug("Sending Diagnostic Frames to (re)initialize HEATING finished");
         } catch (Exception e) {
-            logger.error("initSystem failed : " + e.getMessage());
+            logger.error("initSystem failed : {}", e.getMessage());
         }
     }
 
@@ -171,8 +174,7 @@ public class OpenWebNet extends Thread {
             try {
                 l_event_listener.handleEvent(p_i_event);
             } catch (Exception p_ex) {
-                logger.error("notifyEvent, Exception : " + p_ex.getMessage() + " / " + p_ex.toString() + " / "
-                        + p_i_event.toString());
+                logger.error("notifyEvent, Exception : {}", p_ex.getMessage());
             }
         }
     }

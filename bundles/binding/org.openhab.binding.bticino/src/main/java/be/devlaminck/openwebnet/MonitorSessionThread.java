@@ -58,7 +58,7 @@ public class MonitorSessionThread extends Thread {
         } catch (IOException ex) {
             logger.error("MonitorSessionThread.run, exception : " + ex.getMessage());
         }
-        logger.info("Stopped MonitorSessionThread thread");
+        logger.debug("Stopped MonitorSessionThread thread");
     }
 
     public MonitorSessionThread(OpenWebNet pluginReference, String ipAddress, Integer port) {
@@ -108,12 +108,11 @@ public class MonitorSessionThread extends Thread {
 
         // Status request frame
         if (frame.substring(0, 2).equalsIgnoreCase("*#")) {
-            // remove *# and ##
             frame = frame.substring(2, length - 2);
 
             // remove *# and ##
-            frameParts = frame.split("\\*"); // * is reserved so it must be
-                                             // escaped
+            frameParts = frame.split("\\*"); // * is reserved so it must be escaped
+
             who = frameParts[0];
             where = frameParts[1];
             objectName = who + "*" + where;
@@ -417,9 +416,7 @@ public class MonitorSessionThread extends Thread {
                 }
             }
 
-            if (who != null) {
-                event.addProperty("who", who);
-            }
+            event.addProperty("who", who);
             if (what != null) {
                 event.addProperty("what", what);
             }
@@ -438,11 +435,10 @@ public class MonitorSessionThread extends Thread {
             if (objectClass != null) {
                 event.addProperty("object.class", objectClass);
             }
-            if (objectName != null) {
-                event.addProperty("object.name", objectName);
-            }
+            event.addProperty("object.name", objectName);
+
             // notify event
-            if (who != null && what != null && where != null && messageDescription != null) {
+            if (what != null && where != null && messageDescription != null) {
                 logger.debug("{} Rx: {} ({})", OWNUtilities.getDateTime(), frame, messageDescription);
                 // Notify all the listeners an event has been received
                 pluginReference.notifyEvent(event);
@@ -451,10 +447,11 @@ public class MonitorSessionThread extends Thread {
 
         // Command frame
         if (!(frame.substring(0, 2).equalsIgnoreCase("*#")) && (frame.substring(0, 1).equalsIgnoreCase("*"))) {
-            // remove delimiter chars * and ##
             frame = frame.substring(1, length - 2);
-            frameParts = frame.split("\\*"); // * is reserved so it must be
-                                             // escaped
+
+            // remove delimiter chars * and ##
+            frameParts = frame.split("\\*"); // * is reserved so it must be escaped
+
             who = frameParts[0];
             what = frameParts[1];
             // Burglar Central Unit Status Request = *#5##
@@ -797,12 +794,11 @@ public class MonitorSessionThread extends Thread {
             if (objectClass != null) {
                 event.addProperty("object.class", objectClass);
             }
-            if (objectName != null) {
-                event.addProperty("object.name", objectName);
-            }
+            event.addProperty("object.name", objectName);
+
             if (who != null && what != null && where != null && messageDescription != null) {
-                logger.debug("Frame " + frame + " is " + messageType + " message. Notify it as OpenHab event "
-                        + messageDescription == "No Description set" ? "" : messageDescription); // for debug
+                logger.debug("Frame {} is {} message. Notify it as OpenHab event {}.", frame, messageType,
+                        messageDescription == "No Description set" ? "" : messageDescription); // for debug
 
                 // Notify all the listeners an event has been received
                 pluginReference.notifyEvent(event);

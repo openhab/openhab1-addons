@@ -201,8 +201,9 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
                 Matcher matcher = EXTRACT_BTICINO_GATEWAY_CONFIG_PATTERN.matcher(key);
 
                 if (!matcher.matches()) {
-                    logger.debug("given bticino gateway-config-key '" + key
-                            + "' does not follow the expected pattern '<gateway_name>.<host|port|passwd|rescan_secs|heating_zones>'");
+                    logger.debug(
+                            "given bticino gateway-config-key '{}' does not follow the expected pattern '<gateway_name>.<host|port|passwd|rescan_secs|heating_zones>'",
+                            key);
                     continue;
                 }
 
@@ -214,7 +215,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
 
                 // Search the config, to update the values (row / row)
                 BticinoConfig l_bticino_config = m_bticino_devices_config.get(l_gw_if_id);
-                // Create a new config if it wasnt found now
+                // Create a new config if it wasn't found now
                 if (l_bticino_config == null) {
                     l_bticino_config = new BticinoConfig();
                     // set the id
