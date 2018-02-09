@@ -89,7 +89,7 @@ public class Telegram {
         postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
                 new DefaultHttpMethodRetryHandler(HTTP_RETRIES, false));
         NameValuePair[] data = { new NameValuePair("chat_id", groupTokens.get(group).getChatId()),
-                new NameValuePair("text", message) };
+                new NameValuePair("text", message), new NameValuePair("parse_mode", "Markdown") };
         postMethod.setRequestBody(data);
 
         try {
