@@ -561,30 +561,37 @@ public class MonitorSessionThread extends Thread {
                         case 20:
                             messageDescription = "Remote Control disabled";
                             hStatus = "3";
+                            where = where_parts[1];
                             break;
                         case 21:
                             messageDescription = "Remote Control enabled";
                             hStatus = "3";
+                            where = where_parts[1];
                             break;
                         case 22:
                             messageDescription = "At least one Probe OFF";
-                            hStatus = "3";
+                            hStatus = "4";
+                            where = where_parts[1];
                             break;
                         case 23:
                             messageDescription = "At least one Probe in protection";
-                            hStatus = "3";
+                            hStatus = "4";
+                            where = where_parts[1];
                             break;
                         case 24:
                             messageDescription = "At least one Probe in manual";
-                            hStatus = "3";
+                            hStatus = "4";
+                            where = where_parts[1];
                             break;
                         case 30:
                             messageDescription = "Failure discovered";
-                            hStatus = "3";
+                            hStatus = "4";
+                            where = where_parts[1];
                             break;
                         case 31:
                             messageDescription = "Central Unit battery KO";
-                            hStatus = "3";
+                            hStatus = "4";
+                            where = where_parts[1];
                             break;
                         case 103:
                             messageDescription = "OFF Heating";

@@ -385,8 +385,17 @@ public class BticinoDevice implements IBticinoEventListener {
                             break;
 
                         case 102:
-                            // Status Main Unit
+                            // Status Main Unit Remote
                             if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("3")) {
+                                logger.debug("T_ControlMessage : {}", l_item.getName());
+                                eventPublisher.postUpdate(l_item.getName(),
+                                        DecimalType.valueOf(p_protocol_read.getProperty("what")));
+                            }
+                            break;
+
+                        case 103:
+                            // Status Main Unit Last Status
+                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("4")) {
                                 logger.debug("T_ControlMessage : {}", l_item.getName());
                                 eventPublisher.postUpdate(l_item.getName(),
                                         DecimalType.valueOf(p_protocol_read.getProperty("what")));
