@@ -111,7 +111,7 @@ public class BticinoDevice implements IBticinoEventListener {
      */
     public void initialize() throws InitializationException {
         // Add other initialization stuff here
-        logger.debug("Gateway [" + m_gateway_id + "], initialize OK");
+        logger.debug("Gateway [{}], initialize OK", m_gateway_id);
     }
 
     /**
@@ -125,7 +125,7 @@ public class BticinoDevice implements IBticinoEventListener {
             m_open_web_net.onStart();
         }
         m_device_is_started = true;
-        logger.debug("Gateway [" + m_gateway_id + "], started OK");
+        logger.debug("Gateway [{}], started OK", m_gateway_id);
     }
 
     public void stopDevice() {
@@ -246,8 +246,8 @@ public class BticinoDevice implements IBticinoEventListener {
                 m_open_web_net.onCommand(l_pr);
             }
         } catch (Exception e) {
-            logger.error("Gateway [" + m_gateway_id + "], Error processing receiveCommand '{}'",
-                    (Object[]) new String[] { e.getMessage() });
+            logger.error("Gateway [{}], Error processing receiveCommand '{}'", m_gateway_id,
+                    new String[] { e.getMessage() });
         }
     }
 
@@ -266,8 +266,9 @@ public class BticinoDevice implements IBticinoEventListener {
     public void handleEvent(ProtocolRead p_protocol_read) throws Exception {
         // the events on the bus are now received
         // map them to events on the openhab bus
-        logger.debug("Gateway [" + m_gateway_id + "], Bticino WHO [" + p_protocol_read.getProperty("who") + "], WHAT ["
-                + p_protocol_read.getProperty("what") + "], WHERE [" + p_protocol_read.getProperty("where") + "]");
+        logger.debug("Gateway [{}], Bticino WHO [{}], WHAT [{}], WHERE [{}]", m_gateway_id,
+                p_protocol_read.getProperty("who"), p_protocol_read.getProperty("what"),
+                p_protocol_read.getProperty("where"));
 
         // Get all the configs that are connected to this (who,where), multiple
         // possible
@@ -276,9 +277,9 @@ public class BticinoDevice implements IBticinoEventListener {
 
         // log it when an event has occurred that no item is bound to
         if (l_binding_configs.isEmpty()) {
-            logger.debug("Gateway [" + m_gateway_id + "], No Item found for bticino event, WHO ["
-                    + p_protocol_read.getProperty("who") + "], WHAT [" + p_protocol_read.getProperty("what")
-                    + "], WHERE [" + p_protocol_read.getProperty("where") + "]");
+            logger.debug("Gateway [{}], No Item found for bticino event, WHO [{}], WHAT [{}], WHERE [{}]", m_gateway_id,
+                    p_protocol_read.getProperty("who"), p_protocol_read.getProperty("what"),
+                    p_protocol_read.getProperty("where"));
         }
 
         // every item associated with this who/where update the status
@@ -289,8 +290,8 @@ public class BticinoDevice implements IBticinoEventListener {
             if (l_item instanceof SwitchItem) {
                 // Lights
                 if (p_protocol_read.getProperty("messageType").equalsIgnoreCase("lighting")) {
-                    logger.debug("Gateway [" + m_gateway_id + "], RECEIVED EVENT FOR SwitchItem [" + l_item.getName()
-                            + "], TRANSLATE TO OPENHAB BUS EVENT");
+                    logger.debug("Gateway [{}], RECEIVED EVENT FOR SwitchItem [{}], TRANSLATE TO OPENHAB BUS EVENT",
+                            m_gateway_id, l_item.getName());
 
                     if (p_protocol_read.getProperty("messageDescription").equalsIgnoreCase("Light ON")) {
                         eventPublisher.postUpdate(l_item.getName(), OnOffType.ON);
@@ -306,8 +307,8 @@ public class BticinoDevice implements IBticinoEventListener {
                 else if (p_protocol_read.getProperty("messageType").equalsIgnoreCase("CEN Basic and Evolved")) {
                     // Pushbutton virtual address must match
                     if (l_binding_config.what.equalsIgnoreCase(p_protocol_read.getProperty("what"))) {
-                        logger.debug("Gateway [" + m_gateway_id + "], RECEIVED EVENT FOR SwitchItem ["
-                                + l_item.getName() + "], TRANSLATE TO OPENHAB BUS EVENT");
+                        logger.debug("Gateway [{}], RECEIVED EVENT FOR SwitchItem [{}], TRANSLATE TO OPENHAB BUS EVENT",
+                                m_gateway_id, l_item.getName());
 
                         if (p_protocol_read.getProperty("messageDescription").equalsIgnoreCase("Virtual pressure")) {
                             // only returns when finished
@@ -328,8 +329,8 @@ public class BticinoDevice implements IBticinoEventListener {
                     }
                 }
             } else if (l_item instanceof RollershutterItem) {
-                logger.debug("Gateway [" + m_gateway_id + "], RECEIVED EVENT FOR RollershutterItem [" + l_item.getName()
-                        + "], TRANSLATE TO OPENHAB BUS EVENT");
+                logger.debug("Gateway [{}], RECEIVED EVENT FOR RollershutterItem [{}], TRANSLATE TO OPENHAB BUS EVENT",
+                        m_gateway_id, l_item.getName());
 
                 if (p_protocol_read.getProperty("messageType").equalsIgnoreCase("automation")) {
 
@@ -340,8 +341,8 @@ public class BticinoDevice implements IBticinoEventListener {
                     }
                 }
             } else if (l_item instanceof NumberItem) {
-                logger.debug("Gateway [" + m_gateway_id + "], RECEIVED EVENT FOR NumberItem [" + l_item.getName()
-                        + "], TRANSLATE TO OPENHAB BUS EVENT");
+                logger.debug("Gateway [{}], RECEIVED EVENT FOR NumberItem [{}], TRANSLATE TO OPENHAB BUS EVENT",
+                        m_gateway_id, l_item.getName());
 
                 // THERMOREGULATION
                 if (p_protocol_read.getProperty("messageType").equalsIgnoreCase("thermoregulation")) {
@@ -394,8 +395,8 @@ public class BticinoDevice implements IBticinoEventListener {
                     }
                 }
             } else if (l_item instanceof ContactItem) {
-                logger.debug("Gateway [" + m_gateway_id + "], RECEIVED EVENT FOR NumberItem [" + l_item.getName()
-                        + "], TRANSLATE TO OPENHAB BUS EVENT");
+                logger.debug("Gateway [{}], RECEIVED EVENT FOR ContactItem [{}], TRANSLATE TO OPENHAB BUS EVENT",
+                        m_gateway_id, l_item.getName());
 
                 // THERMOREGULATION
                 if (p_protocol_read.getProperty("messageType").equalsIgnoreCase("thermoregulation")) {
@@ -420,8 +421,8 @@ public class BticinoDevice implements IBticinoEventListener {
                     }
                 }
             } else if (l_item instanceof StringItem) {
-                logger.debug("Gateway [" + m_gateway_id + "], RECEIVED EVENT FOR NumberItem [" + l_item.getName()
-                        + "], TRANSLATE TO OPENHAB BUS EVENT");
+                logger.debug("Gateway [{}], RECEIVED EVENT FOR StringItem [{}], TRANSLATE TO OPENHAB BUS EVENT",
+                        m_gateway_id, l_item.getName());
 
                 // THERMOREGULATION
                 // to be used for Homekit
