@@ -9,6 +9,7 @@
 package be.devlaminck.openwebnet;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,8 +63,19 @@ public class OpenWebNet extends Thread {
      */
     private List<IBticinoEventListener> m_event_listener_list = new LinkedList<IBticinoEventListener>();
 
+    public OpenWebNet(String p_host, int p_port, int p_rescan_interval_secs) {
+        this(p_host, p_port, "", p_rescan_interval_secs);
+    }
+
     public OpenWebNet(String p_host, int p_port, int p_rescan_interval_secs, int p_heating_zones) {
         this(p_host, p_port, "", p_rescan_interval_secs, p_heating_zones);
+    }
+
+    public OpenWebNet(String p_host, int p_port, String p_passwd, int p_rescan_interval_secs) {
+        host = p_host;
+        port = p_port;
+        passwd = p_passwd;
+        m_bus_scan_interval_secs = p_rescan_interval_secs;
     }
 
     public OpenWebNet(String p_host, int p_port, String p_passwd, int p_rescan_interval_secs, int p_heating_zones) {
@@ -155,15 +167,19 @@ public class OpenWebNet extends Thread {
             logger.debug("Sending Diagnostic Frame Main Unit to (re)initialize HEATING");
             myPlant.sendCommandSync("*#4*#0##");
 
-            logger.debug("Sending Diagnostic Frame Heat Zones 1 .. {} to (re)initialize HEATING", m_heating_zones);
-            for (int i = 1; i <= m_heating_zones; i++) {
-                logger.debug("Sending Diagnostic Frame Heat Zone {} to (re)initialize HEATING", i);
-                // *4#*#xx## Diagnostic Frame Main Unit
-                myPlant.sendCommandSync("*#4*#" + i + "##");
-                // *4#*xx## Diagnostic Frame Thermostat
-                myPlant.sendCommandSync("*#4*" + i + "##");
+            Calendar rightNow = Calendar.getInstance();
+
+            if (m_heating_zones > 0 && rightNow.get(Calendar.MINUTE) == 59) {
+                logger.debug("Sending Diagnostic Frame Heat Zones 1 .. {} to (re)initialize HEATING", m_heating_zones);
+                for (int i = 1; i <= m_heating_zones; i++) {
+                    logger.debug("Sending Diagnostic Frame Heat Zone {} to (re)initialize HEATING", i);
+                    // *4#*#xx## Diagnostic Frame Main Unit
+                    myPlant.sendCommandSync("*#4*#" + i + "##");
+                    // *4#*xx## Diagnostic Frame Thermostat
+                    myPlant.sendCommandSync("*#4*" + i + "##");
+                }
+                logger.debug("Sending Diagnostic Frames to (re)initialize HEATING finished");
             }
-            logger.debug("Sending Diagnostic Frames to (re)initialize HEATING finished");
         } catch (Exception e) {
             logger.error("initSystem failed : {}", e.getMessage());
         }
