@@ -501,6 +501,15 @@ public class MonitorSessionThread extends Thread {
                     messageType = "Automation";
                     objectClass = "Automation";
 
+                    // For virtual configuration we receive for automation on 1000#0
+                    // so assuming the second part is the what
+                    what_parts = what.split("#");
+                    if (what_parts.length > 1) {
+                        virtual_where = true;
+                        // take the last part for the what
+                        what = what_parts[what_parts.length - 1];
+                    }
+
                     switch (Integer.parseInt(what)) {
                         case 0:
                             messageDescription = "Automation STOP";
