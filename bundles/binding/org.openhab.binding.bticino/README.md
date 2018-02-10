@@ -18,7 +18,7 @@ This binding can be configured in the file `services/bticino.cfg`.
 | webserver.port | 20000 | No   | OpenWebNet gateway port |
 | webserver.passwd | 12345 | No   | OpenWebNet gateway password |
 | webserver.rescan_secs | 120 | No | OpenWebNet bus status rescan interval |
-| webserver.heting_zones | 0 | No | OpenWebNet heating zones |
+| webserver.heating_zones | 0 | No | OpenWebNet heating zones |
 
 A sample configuration could look like:
 
