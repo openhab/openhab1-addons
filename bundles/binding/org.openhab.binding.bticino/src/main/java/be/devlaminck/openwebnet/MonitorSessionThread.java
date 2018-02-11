@@ -556,7 +556,9 @@ public class MonitorSessionThread extends Thread {
                     // 0: Status Probe / Actuators
                     // 1: Status Operation Mode
                     // 2: Status Control Mode
-                    // 3: Status Main Unit
+                    // 3: Status Main Unit Remote
+                    // 4: Status Main Unit Probes
+                    // 5: Status Main Unit Failures
 
                     switch (Integer.parseInt(what)) {
                         case 0:
@@ -594,12 +596,12 @@ public class MonitorSessionThread extends Thread {
                             break;
                         case 30:
                             messageDescription = "Failure discovered";
-                            hStatus = "4";
+                            hStatus = "5";
                             where = where_parts[1];
                             break;
                         case 31:
                             messageDescription = "Central Unit battery KO";
-                            hStatus = "4";
+                            hStatus = "5";
                             where = where_parts[1];
                             break;
                         case 103:

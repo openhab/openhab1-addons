@@ -62,6 +62,10 @@ public class BticinoDevice implements IBticinoEventListener {
     private int m_heating_zones = 0;
     // Indicator if this device is started
     private boolean m_device_is_started = false;
+    // Status of the main Heating Unit Probe Status
+    private String hMainCtrlProbeState = "";
+    // Status of the main Heating Unit Failure
+    private String hMainCtrlFailure = "";
     // A lock object
     private Object m_lock = new Object();
     // The openweb object that handles connections and events
@@ -370,6 +374,8 @@ public class BticinoDevice implements IBticinoEventListener {
                             // Status Operation Mode
                             if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("1")) {
                                 logger.debug("T_ControlStatus : {}", l_item.getName());
+                                hMainCtrlProbeState = "";
+                                hMainCtrlFailure = "";
                                 eventPublisher.postUpdate(l_item.getName(),
                                         DecimalType.valueOf(p_protocol_read.getProperty("what")));
                             }
@@ -387,16 +393,7 @@ public class BticinoDevice implements IBticinoEventListener {
                         case 102:
                             // Status Main Unit Remote
                             if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("3")) {
-                                logger.debug("T_ControlMessage : {}", l_item.getName());
-                                eventPublisher.postUpdate(l_item.getName(),
-                                        DecimalType.valueOf(p_protocol_read.getProperty("what")));
-                            }
-                            break;
-
-                        case 103:
-                            // Status Main Unit Last Status
-                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("4")) {
-                                logger.debug("T_ControlMessage : {}", l_item.getName());
+                                logger.debug("T_ControlRemote : {}", l_item.getName());
                                 eventPublisher.postUpdate(l_item.getName(),
                                         DecimalType.valueOf(p_protocol_read.getProperty("what")));
                             }
@@ -425,6 +422,24 @@ public class BticinoDevice implements IBticinoEventListener {
                                             (state == 1) ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
                                 }
                                 logger.debug("T_Relay : {} / {}", l_item.getName(), state);
+                            }
+                            break;
+                        case 102:
+                            // Status Main Unit Remote
+                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("3")) {
+                                int state = -1;
+                                if (p_protocol_read.getProperty("messageDescription")
+                                        .equalsIgnoreCase("Remote Control disabled")) {
+                                    state = 0;
+                                    eventPublisher.postUpdate(l_item.getName(),
+                                            (state == 1) ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
+                                } else if (p_protocol_read.getProperty("messageDescription")
+                                        .equalsIgnoreCase("Remote Control enabled")) {
+                                    state = 1;
+                                    eventPublisher.postUpdate(l_item.getName(),
+                                            (state == 1) ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
+                                }
+                                logger.debug("T_ControlRemote : {} / {}", l_item.getName());
                             }
                             break;
                     }
@@ -466,6 +481,40 @@ public class BticinoDevice implements IBticinoEventListener {
                                         break;
                                 }
                                 logger.debug("T_ControlMode : {}", l_item.getName());
+                            }
+                            break;
+                        case 102:
+                            // Status Main Unit Remote
+                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("3")) {
+                                logger.debug("T_ControlRemote : {}", l_item.getName());
+                                eventPublisher.postUpdate(l_item.getName(),
+                                        StringType.valueOf(p_protocol_read.getProperty("messageDescription")));
+                            }
+                            break;
+                        case 103:
+                            // Status Main Unit Probe Status
+                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("4")) {
+                                if (hMainCtrlProbeState.length() > 0) {
+                                    hMainCtrlProbeState = hMainCtrlProbeState + ", "
+                                            + p_protocol_read.getProperty("messageDescription");
+                                } else {
+                                    hMainCtrlProbeState = p_protocol_read.getProperty("messageDescription");
+                                }
+                                logger.debug("T_ControlMessage 1: {} / {}", l_item.getName(), hMainCtrlProbeState);
+                                eventPublisher.postUpdate(l_item.getName(), StringType.valueOf(hMainCtrlProbeState));
+                            }
+                            break;
+                        case 104:
+                            // Status Main Unit Failure
+                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("5")) {
+                                if (hMainCtrlFailure.length() > 0) {
+                                    hMainCtrlFailure = hMainCtrlFailure + ", \n\r"
+                                            + p_protocol_read.getProperty("messageDescription");
+                                } else {
+                                    hMainCtrlFailure = p_protocol_read.getProperty("messageDescription");
+                                }
+                                logger.debug("T_ControlMessage 1: {} / {}", l_item.getName(), hMainCtrlFailure);
+                                eventPublisher.postUpdate(l_item.getName(), StringType.valueOf(hMainCtrlFailure));
                             }
                             break;
                     }

@@ -105,7 +105,8 @@ Contact HValve_1 "Actor 1 [MAP(yourbticino.map):%s]" <undefloor_heating> (Heatin
 Contact HPumpe "Pump [MAP(yourbticino.map):%s]" <pump> (HeatingActor) {bticino="if=default;who=4;what=20;where=0"}
 Number MHCtrlMode "Main Unit Control Mode [MAP(yourbticino.map):%s]" <heating> (Heating) {bticino="if=default;who=4;what=100;where=0"}
 Number HMCtrlRemote "Main Unit Remote [MAP(yourbticino.map):%s]" <heating> (Heating) {bticino="if=default;who=4;what=102;where=0"}
-Number HMCtrlLastStatus "Main Unit LastStatus [MAP(yourbticino.map):%s]" <heating> (Heating) {bticino="if=default;who=4;what=103;where=0"}
+String HMCtrlStatus "Main Unit Status [%s]" <heating> (Heating) {bticino="if=default;who=4;what=103;where=0"}
+String HMCtrlFailure "Main Unit Failure [%s]" <heating> (Heating) {bticino="if=default;who=4;what=104;where=0"}
 ```
 
 transform/yourbticino.map
@@ -119,13 +120,6 @@ OPEN=Heating ON
 
 20=Remote Control disabled
 21=Remote Control enabled
-
-22=At least one Probe OFF
-23=At least one Probe in protection
-24=At least one Probe in manual
-
-30=Failure discovered
-31=Central Unit battery KO
 
 102=FREEZE PROTECTION
 103=OFF
@@ -194,7 +188,8 @@ sitemap yourbticino label="Main panel" {
      Frame label="Heating Main Control Unit" {
             Selection item=HMCtrlMode label="Control Mode Main Unit [%.1f]" mappings=[103="OFF", 102="FREEZE PROTECTION", 1101="Program Winter 1", 1201="Scenario Winter 1"]
             Text item=HMCtrlRemote 
-            Text item=HMCtrlLastStatus
+            Text item=HMCtrlStatus
+            Text item=HMCtrlFailure
             Default item=HPumpe 
      }            
      Frame label="Heating Room 1" {
