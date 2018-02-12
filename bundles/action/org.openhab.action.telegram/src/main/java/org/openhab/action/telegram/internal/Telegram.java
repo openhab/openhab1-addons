@@ -66,10 +66,14 @@ public class Telegram {
 
     private static Map<String, TelegramBot> groupTokens = new HashMap<String, TelegramBot>();
 
-    public static void addToken(String group, String chatId, String token, String parse) {
-        groupTokens.put(group, new TelegramBot(chatId, token, parse));
+    public static void addToken(String group, String chatId, String token) {
+        groupTokens.put(group, new TelegramBot(chatId, token));
     }
 
+    public static void addToken(String group, String parse) {
+        groupTokens.put(group, new TelegramBot(parse));
+    }
+    
     @ActionDoc(text = "Sends a Telegram via Telegram REST API - direct message")
     static public boolean sendTelegram(@ParamDoc(name = "group") String group,
             @ParamDoc(name = "message") String message) {
