@@ -22,12 +22,15 @@ public class TelegramBot {
     private String token;
     private String parse;
 
-    public TelegramBot(String chatId, String token, String parse) {
+    public TelegramBot(String chatId, String token) {
         this.chatId = chatId;
         this.token = token;
-        this.parse = parse;
     }
 
+    public TelegramBot(String parse) {
+        this.parse = parse;
+    }
+    
     public String getChatId() {
         return chatId;
     }
