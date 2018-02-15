@@ -54,7 +54,7 @@ class ConfigDeviceStore implements DeviceStateStore {
         val[7] = (byte) (prodId);
         if (map.containsKey(address)) {
             byte oldVal[] = map.get(address);
-            if (Arrays.equals(oldVal, val)) {
+            if (!Arrays.equals(oldVal, val)) {
                 logger.warn("Product code for device {} re-assigned from {}/{} to {}/{}.", address,
                         bytesToInt(oldVal, 0, 4), bytesToInt(oldVal, 4, 4), manId, prodId);
             }
@@ -81,7 +81,7 @@ class ConfigDeviceStore implements DeviceStateStore {
 
     private int bytesToInt(byte bytes[], int idx, int len) {
         int val = 0;
-        for (int i = 0; i < len; ++len) {
+        for (int i = 0; i < len; i++) {
             val = val << 8;
             val = val | bytes[idx + i];
         }
