@@ -440,6 +440,7 @@ public class BticinoDevice implements IBticinoEventListener {
                                             (state == 1) ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
                                 }
                                 logger.debug("T_ControlRemote : {} / {}", l_item.getName());
+                                logger.debug("T_ControlRemote : {} / {}", l_item.getName(), state);
                             }
                             break;
                     }
