@@ -19,6 +19,7 @@ This binding can be configured in the file `services/bticino.cfg`.
 | webserver.passwd | 12345 | No   | OpenWebNet gateway password |
 | webserver.rescan_secs | 120 | No | OpenWebNet bus status rescan interval |
 | webserver.heating_zones | 0 | No | OpenWebNet heating zones |
+| webserver.shutter_run_msecs | 0 | No | OpenWebNet Runtime of Shutter to calculate Position Feedback |
 
 A sample configuration could look like:
 
@@ -231,8 +232,8 @@ then
     }   
 end
 
-// Doorbel ringer light
-rule "Doorbel ringer"
+// Doorbell ringer light
+rule "Doorbell ringer"
 when
     Item Doorbell_Light received update
 then

@@ -46,6 +46,7 @@ public class OpenWebNet extends Thread {
     private Integer m_bus_scan_interval_secs = 120;
     private Integer m_first_scan_delay_secs = 60;
     private Integer m_heating_zones = 0;
+    private Integer m_shutter_run_msecs = 0;
     public MyHomeJavaConnector myPlant = null;
     private MonitorSessionThread monitorSessionThread = null;
 
@@ -67,8 +68,9 @@ public class OpenWebNet extends Thread {
         this(p_host, p_port, "", p_rescan_interval_secs);
     }
 
-    public OpenWebNet(String p_host, int p_port, int p_rescan_interval_secs, int p_heating_zones) {
-        this(p_host, p_port, "", p_rescan_interval_secs, p_heating_zones);
+    public OpenWebNet(String p_host, int p_port, int p_rescan_interval_secs, int p_heating_zones,
+            int p_shutter_run_msecs) {
+        this(p_host, p_port, "", p_rescan_interval_secs, p_heating_zones, p_shutter_run_msecs);
     }
 
     public OpenWebNet(String p_host, int p_port, String p_passwd, int p_rescan_interval_secs) {
@@ -78,12 +80,14 @@ public class OpenWebNet extends Thread {
         m_bus_scan_interval_secs = p_rescan_interval_secs;
     }
 
-    public OpenWebNet(String p_host, int p_port, String p_passwd, int p_rescan_interval_secs, int p_heating_zones) {
+    public OpenWebNet(String p_host, int p_port, String p_passwd, int p_rescan_interval_secs, int p_heating_zones,
+            int p_shutter_run_msecs) {
         host = p_host;
         port = p_port;
         passwd = p_passwd;
         m_bus_scan_interval_secs = p_rescan_interval_secs;
         m_heating_zones = p_heating_zones;
+        m_shutter_run_msecs = p_shutter_run_msecs;
     }
 
     /*
@@ -98,9 +102,9 @@ public class OpenWebNet extends Thread {
         // start thread
         monitorSessionThread.start();
         logger.info(
-                "Connected to [{}:{}], Rescan bus every [{}] seconds, first scan over [{}] seconds, max. heating zones: [{}]",
+                "Connected to [{}:{}], Rescan bus every [{}] seconds, first scan over [{}] seconds, max. heating zones: [{}], Shutter run time [{}] msecs",
                 host, port, m_bus_scan_interval_secs, (((new Date()).getTime() - m_last_bus_scan.getTime()) / 1000),
-                m_heating_zones);
+                m_heating_zones, m_shutter_run_msecs);
         // start the processing thread
         start();
     }
