@@ -14,6 +14,8 @@ This binding can be configured in the `services/fs20.cfg` file.
 
 When using a serial port, you may need to add `-Dgnu.io.rxtx.SerialPorts=/dev/ttyACM0` in your server startup.  Please consult the [forum](https://community.openhab.org) for the latest information.
 
+You may also need to add the `openhab` user to the `dialout` group.
+
 To use a networked CUL device for FS20 from ser2net, this line in `/etc/ser2net.conf` on the remote `<host>` will publish the serial interface (replace /dev/ttySP1 with whatever is appropriate):
 
 ```
