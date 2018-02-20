@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -89,7 +89,6 @@ public class MqttBrokerConnection implements MqttCallback {
      *             If connection could not be created.
      */
     public synchronized void start() throws Exception {
-
         if (StringUtils.isEmpty(url)) {
             logger.debug("No url defined for MQTT broker connection '{}'. Not starting.", name);
             return;
@@ -134,8 +133,8 @@ public class MqttBrokerConnection implements MqttCallback {
     }
 
     /**
-     * Set the url for the MQTT broker. Valid URL's are in the format:
-     * tcp://localhost:1883 or ssl://localhost:8883
+     * Set the url for the MQTT broker. Valid URLs are in the format
+     * "tcp://localhost:1883" or "ssl://localhost:8883"
      * 
      * @param url
      *            url string for the MQTT broker.
@@ -263,7 +262,7 @@ public class MqttBrokerConnection implements MqttCallback {
     public void setAllowLongerClientIds(boolean value) {
         this.allowLongerClientIds = value;
     }
-
+    
     /**
      * Open an MQTT client connection.
      * 
@@ -271,6 +270,7 @@ public class MqttBrokerConnection implements MqttCallback {
      */
     private void openConnection() throws Exception {
         if (client != null && client.isConnected()) {
+            logger.trace("client already created and connected. nothing to do.");
             return;
         }
 
@@ -278,7 +278,7 @@ public class MqttBrokerConnection implements MqttCallback {
             throw new Exception("Missing url");
         }
 
-        if (client == null) {
+        if (client == null || !client.getCurrentServerURI().equals(url)) {
             if (StringUtils.isBlank(clientId) || clientId.length() > 23) {
                 if (StringUtils.isBlank(clientId)) {
                     clientId = MqttClient.generateClientId();
