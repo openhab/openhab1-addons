@@ -262,7 +262,7 @@ public class MqttBrokerConnection implements MqttCallback {
     public void setAllowLongerClientIds(boolean value) {
         this.allowLongerClientIds = value;
     }
-    
+
     /**
      * Open an MQTT client connection.
      * 
