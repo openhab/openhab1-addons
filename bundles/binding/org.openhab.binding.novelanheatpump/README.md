@@ -126,7 +126,7 @@ Number HeatPump_Thermalenergy_Warmwater     "Waermemenge Brauchwasser [%.1f KWh]
 Number HeatPump_Thermalenergy_Pool  "Waermemenge Schwimmbad [%.1f KWh]" <energy> (gHeatpump) { novelanheatpump="thermalenergy_pool" }
 Number HeatPump_Thermalenergy_Total     "Waermemenge gesamt seit Reset [%.1f KWh]"  <energy> (gHeatpump) { novelanheatpump="thermalenergy_total" }
 Number HeatPump_Massflow    "Massentrom [%.1f L/h]" <energy> (gHeatpump) { novelanheatpump="massflow" }
-String HeatPump_State   "Status [%s]"   <temperature> (gHeatpump) { novelanheatpump="extended_state" }
+String HeatPump_State_Ext   "Status [%s]"   <temperature> (gHeatpump) { novelanheatpump="extended_state" }
 
 Number HeatPump_heating_operation_mode   "Heizung Betriebsart [%.0f]"  (gHeatpump) { novelanheatpump="heating_operation_mode" }
 Number HeatPump_heating_temperature   "Heizung Temperatur [%.1f]"  (gHeatpump) { novelanheatpump="heating_temperature" }
