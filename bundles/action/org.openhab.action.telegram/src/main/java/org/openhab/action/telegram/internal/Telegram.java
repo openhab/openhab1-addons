@@ -181,50 +181,59 @@ public class Telegram {
             return false;
         }
 
-        // load image from url
-        byte[] imageFromURL;
+        byte[] image;
 
-        HttpClient getClient = new HttpClient();
+        if (photoURL.toLowerCase().contains("http")) {
+            // load image from url
+            logger.warn("Photo URL provided.");
 
-        if (username != null && password != null) {
-            getClient.getParams().setAuthenticationPreemptive(true);
-            Credentials defaultcreds = new UsernamePasswordCredentials(username, password);
-            getClient.getState().setCredentials(AuthScope.ANY, defaultcreds);
-        }
+            HttpClient getClient = new HttpClient();
 
-        GetMethod getMethod = new GetMethod(photoURL);
-        getMethod.getParams().setSoTimeout(timeoutMillis);
-        getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(retries, false));
-        try {
-            int statusCode = getClient.executeMethod(getMethod);
-            if (statusCode != HttpStatus.SC_OK) {
-                logger.warn("Failed to retrieve an image. Received status: {}", getMethod.getStatusLine());
-                return false;
+            if (username != null && password != null) {
+                getClient.getParams().setAuthenticationPreemptive(true);
+                Credentials defaultcreds = new UsernamePasswordCredentials(username, password);
+                getClient.getState().setCredentials(AuthScope.ANY, defaultcreds);
             }
 
-            // if the content-length is 0 (which shouldn't happen),
-            // flag an appropriate error
-            if (getMethod.getResponseContentLength() == 0) {
-                logger.warn("Failed to retrieve an image. Fetched URL returned no data.");
-                return false;
-            }
+            GetMethod getMethod = new GetMethod(photoURL);
+            getMethod.getParams().setSoTimeout(timeoutMillis);
+            getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                    new DefaultHttpMethodRetryHandler(retries, false));
+            try {
+                int statusCode = getClient.executeMethod(getMethod);
+                if (statusCode != HttpStatus.SC_OK) {
+                    logger.warn("Failed to retrieve an image. Received status: {}", getMethod.getStatusLine());
+                    return false;
+                }
 
-            imageFromURL = getMethod.getResponseBody();
-        } catch (HttpException e) {
-            logger.warn("HTTP protocol violation: {}", e);
-            return false;
-        } catch (IOException e) {
-            logger.warn("Transport error: {}", e);
-            return false;
-        } finally {
-            getMethod.releaseConnection();
+                // if the content-length is 0 (which shouldn't happen),
+                // flag an appropriate error
+                if (getMethod.getResponseContentLength() == 0) {
+                    logger.warn("Failed to retrieve an image. Fetched URL returned no data.");
+                    return false;
+                }
+
+                image = getMethod.getResponseBody();
+            } catch (HttpException e) {
+                logger.warn("HTTP protocol violation: {}", e);
+                return false;
+            } catch (IOException e) {
+                logger.warn("Transport error: {}", e);
+                return false;
+            } finally {
+                getMethod.releaseConnection();
+            }
+        } else {
+            // Load image from provided base64 image
+            logger.warn("Photo base64 provided, converting to binary.");
+            String base64Image = photoURL.split(",")[1];
+            image = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
         }
 
         // parse image type
         String imageType;
         try {
-            ImageInputStream iis = ImageIO.createImageInputStream(new ByteArrayInputStream(imageFromURL));
+            ImageInputStream iis = ImageIO.createImageInputStream(new ByteArrayInputStream(image));
             logger.debug("imageInputStream length: {}", iis.length());
             Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(iis);
             if (!imageReaders.hasNext()) {
@@ -253,7 +262,7 @@ public class Telegram {
             Part[] parts = new Part[caption != null ? 3 : 2];
             parts[0] = new StringPart("chat_id", groupTokens.get(group).getChatId());
             parts[1] = new FilePart("photo",
-                    new ByteArrayPartSource(String.format("image.%s", imageType), imageFromURL));
+                    new ByteArrayPartSource(String.format("image.%s", imageType), image));
             if (caption != null) {
                 parts[2] = new StringPart("caption", caption, "UTF-8");
             }
