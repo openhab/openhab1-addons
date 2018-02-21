@@ -6,7 +6,7 @@ Note: The whole functionality was reverse engineered via tcpdump, so use it at
 
 These parameters can be changed:
 
-* Heating operation mode
+* Heating operation modeexten
 * Warm water operation mode
 * Cooling operation mode
 * Offset of the heating curve
@@ -46,6 +46,7 @@ where `<eventType>` is one of the following values:
 | `temperature_servicewater_reference` | Number | the reference temperature of the servicewater |
 | `temperature_servicewater` | Number | the temperature of the servicewater |
 | `state` | String | contains the time of the state and the state; Possible states are error, running, stoped, defrosting |
+| `simple_state` | String | contains only the short statename; Possible states are error, running, stoped, defrosting |
 | `extended_state` | String | contains the time of the state and the state; Possible states are error, heating, standby, switch-on delay, switching cycle | blocked, provider lock time, service water, screed heat up, defrosting, pump flow, desinfection, cooling, pool water, heating ext., service water ext., | flow monitoring, ZWE operation |
 | `temperature_solar_collector` | Number | the temperature of the sensor in the solar collector |
 | `temperature_hot_gas` | Number | 
