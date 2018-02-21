@@ -6,7 +6,7 @@ Note: The whole functionality was reverse engineered via tcpdump, so use it at
 
 These parameters can be changed:
 
-* Heating operation modeexten
+* Heating operation mode
 * Warm water operation mode
 * Cooling operation mode
 * Offset of the heating curve
