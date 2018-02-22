@@ -225,7 +225,7 @@ public class Telegram {
             }
         } else {
             // Load image from provided base64 image
-            logger.warn("Photo base64 provided, converting to binary.");
+            logger.warn("Photo base64 provided; converting to binary.");
             String base64Image = photoURL.split(",")[1];
             image = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
         }
