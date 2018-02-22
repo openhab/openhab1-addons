@@ -113,7 +113,7 @@ Do not use username/password in url like in this example `http://<username>:<pas
 
 `http` and `https` are the only protocols allowed.
 
-In case you want to send a base64 jpeg or png image.
+If you would like to send a base64 jpeg or png image.
 
 telegram.rules
 
