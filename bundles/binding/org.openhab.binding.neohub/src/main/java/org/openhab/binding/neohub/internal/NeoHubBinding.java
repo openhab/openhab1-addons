@@ -121,7 +121,7 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider> 
                 BigDecimal currentTemperature = deviceInfo.getCurrentTemperature();
                 if (currentTemperature.intValue() == 255) {
                     // when device is off or just reset we will get 255.255
-                    logger.warn("Current temperature for device {} is out of range (is device off?): {}", deviceName,
+                    logger.debug("Current temperature for device {} is out of range (is device off?): {}", deviceName,
                             currentTemperature);
                     return UnDefType.UNDEF;
                 }
@@ -130,7 +130,7 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider> 
                 BigDecimal currentFloortemperature = deviceInfo.getCurrentFloorTemperature();
                 // when floor sensor is off we will get 127
                 if (currentFloortemperature.intValue() == 127) {
-                    logger.warn("Current floor temperature for device {} is out of range (is floor sensor off?): {}",
+                    logger.debug("Current floor temperature for device {} is out of range (is floor sensor off?): {}",
                             deviceName, currentFloortemperature);
                     return UnDefType.UNDEF;
                 }
