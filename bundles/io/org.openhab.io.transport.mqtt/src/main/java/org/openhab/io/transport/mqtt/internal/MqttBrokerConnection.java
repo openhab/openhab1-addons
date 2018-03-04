@@ -133,13 +133,23 @@ public class MqttBrokerConnection implements MqttCallback {
     }
 
     /**
-     * Set the url for the MQTT broker. Valid URLs are in the format
+     * Set the URL for the MQTT broker. Valid URLs are in the format
      * "tcp://localhost:1883" or "ssl://localhost:8883"
      * 
+     * When the URL is changed, the client is closed and removed, so that
+     * it is recreated on the next call to openConnection().
+     *
      * @param url
      *            url string for the MQTT broker.
      */
     public void setUrl(String url) {
+        if ((url != null && !url.equals(this.url)) ||
+            (url == null && this.url != null)) {
+            //url has changed, so close and null the client
+            logger.trace("url property changed. client will be shut down.");
+            close();
+            client = null;
+        }
         this.url = url;
     }
 
@@ -244,12 +254,22 @@ public class MqttBrokerConnection implements MqttCallback {
     /**
      * Set client id to use when connecting to the broker. If none is specified,
      * a default is generated.
-     * 
+     *
+     * When the clientId is changed, the client is closed and removed, so that
+     * it is recreated on the next call to openConnection().
+     *
      * @param value
      *            clientId to use.
      */
     public void setClientId(String value) {
-        this.clientId = value;
+        if ((value != null && !value.equals(clientId)) ||
+            (value == null && clientId != null)) {
+            //client id has changed, so close and null the client
+            logger.trace("clientId property changed. client will be shut down.");
+            close();
+            client = null;
+        }
+        clientId = value;
     }
 
     /**
