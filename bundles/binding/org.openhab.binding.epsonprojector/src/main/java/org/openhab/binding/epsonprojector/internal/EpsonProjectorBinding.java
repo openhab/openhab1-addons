@@ -531,7 +531,7 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
         DeviceConfig device = deviceConfigCache.get(deviceId);
 
         if (device == null) {
-            logger.error("Could not find device '{}'", deviceId);
+            logger.warn("Could not find device '{}'", deviceId);
             return;
         }
 
