@@ -119,6 +119,6 @@ class InfoResponse {
                 return d;
             }
         }
-        throw new IllegalStateException("No device by the name of " + device + " was not found in the response.");
+        return null;
     }
 }
