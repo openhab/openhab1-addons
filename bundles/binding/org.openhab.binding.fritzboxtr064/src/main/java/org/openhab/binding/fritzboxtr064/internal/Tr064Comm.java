@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -76,12 +76,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/***
- * Controls communication and parsing for TR064 communication with FritzBox
+/**
+ * Controls communication and parsing for TR064 communication with FritzBox.
  *
  * @author gitbock
  * @version 1.8.0
- *
  */
 public class Tr064Comm {
     private static final Logger logger = LoggerFactory.getLogger(Tr064Comm.class);
@@ -137,8 +136,8 @@ public class Tr064Comm {
         this._pw = _pw;
     }
 
-    /***
-     * makes sure all values are set properly before starting communications
+    /**
+     * Makes sure all values are set properly before starting communications.
      */
     private void init() {
         if (_user == null) {
@@ -160,7 +159,7 @@ public class Tr064Comm {
         return values.get(request);
     }
 
-    /***
+    /**
      * Fetches the values for the given item configurations from the FritzBox. Calls
      * the FritzBox SOAP services delivering the values for the item configurations.
      * The resulting map contains the values of all item configurations returned by
@@ -220,7 +219,7 @@ public class Tr064Comm {
                         beDataNode.addTextNode(dataInValue); // add data which should be requested from fbox for this
                                                              // service
                     } else {
-                        logger.warn("item map for command {} does not support dataInValue", itemCommand);
+                        logger.warn("Item map for command {} does not support dataInValue", itemCommand);
                     }
                 }
                 logger.trace("Raw SOAP Request to be sent to FritzBox: {}", soapToString(msg));
@@ -260,15 +259,14 @@ public class Tr064Comm {
         return values;
     }
 
-    /***
-     * Sets a parameter in fbox. Called from event bus
+    /**
+     * Sets a parameter in fbox. Called from event bus.
      *
      * @param request
      *            config string from itemconfig
      * @param cmd
      *            command to set
      */
-
     public void setTr064Value(ItemConfiguration request, Command cmd) {
         String itemCommand = request.getItemCommand();
 
@@ -349,9 +347,9 @@ public class Tr064Comm {
 
     }
 
-    /***
-     * Creates a apache HTTP Client object, ignoring SSL Exceptions like self signed
-     * certificates and sets Auth. Scheme to Digest Auth
+    /**
+     * Creates an Apache HTTP Client object, ignoring SSL Exceptions like self signed
+     * certificates, and sets Auth. Scheme to Digest Auth.
      *
      * @param fboxUrl
      *            the URL from config file of fbox to connect to
@@ -416,8 +414,8 @@ public class Tr064Comm {
         return hc;
     }
 
-    /***
-     * converts SOAP msg into string
+    /**
+     * Converts SOAP message into string.
      *
      * @param sm
      * @return
@@ -434,7 +432,7 @@ public class Tr064Comm {
         return strMsg;
     }
 
-    /***
+    /**
      *
      * @param soapActionHeader
      *            String in HTTP Header. specific for each TR064 service
@@ -513,7 +511,7 @@ public class Tr064Comm {
     }
 
     /**
-     * In case of failure reset the authentication state, close connection and init
+     * In case of failure, reset the authentication state, close connection and init
      * again.
      */
     private void resetHttpClient() {
@@ -530,9 +528,9 @@ public class Tr064Comm {
         _httpClient = createTr064HttpClient(_url);
     }
 
-    /***
-     * sets all required namespaces and prepares the SOAP message to send creates
-     * skeleton + body data
+    /**
+     * Sets all required namespaces and prepares the SOAP message to send.
+     * Creates skeleton + body data.
      *
      * @param bodyData
      *            is attached to skeleton to form entire SOAP message
@@ -576,11 +574,10 @@ public class Tr064Comm {
         }
 
         return soapMsg;
-
     }
 
-    /***
-     * looks for the proper item mapping for the item command given from item file
+    /**
+     * Looks for the proper item mapping for the item command given from item file.
      *
      * @param itemCommand
      *            String item command
@@ -595,8 +592,8 @@ public class Tr064Comm {
         return foundMapping;
     }
 
-    /***
-     * determines Service including which URL to connect to for value request
+    /**
+     * Determines Service including which URL to connect to for value request.
      *
      * @param the
      *            itemmap for which the service is searched
@@ -611,9 +608,9 @@ public class Tr064Comm {
         return foundService;
     }
 
-    /***
+    /**
      * Connects to fbox service xml to get a list of all services which are offered
-     * by TR064. Saves it into local list
+     * by TR064. Saves it into local list.
      */
     private void readAllServices() {
         Document xml = getFboxXmlResponse(_url + "/" + TR064DOWNLOADFILE);
@@ -642,11 +639,11 @@ public class Tr064Comm {
     }
 
     /**
-     * populates local static mapping table todo: refactore to read from config file
-     * later? sets the parser based on the itemcommand -> soap value parser "svp"
-     * anonymous method for each mapping
-     *
+     * Populates local static mapping table.
+     * Sets the parser based on the itemcommand -> soap value parser "svp"
+     * anonymous method for each mapping.
      */
+    //TODO: refactor to read from config file later?
     private void generateItemMappings() {
         // services available from fbox. Needed for e.g. wifi select 5GHz/Guest Wifi
         if (_allServices.isEmpty()) { // no services are known yet?
@@ -873,9 +870,9 @@ public class Tr064Comm {
         }
     }
 
-    /***
-     * sets up a raw http(s) connection to Fbox and gets xml response as XML
-     * Document, ready for parsing
+    /**
+     * Sets up a raw http(s) connection to Fbox and gets xml response as XML
+     * Document, ready for parsing.
      *
      * @return
      */
