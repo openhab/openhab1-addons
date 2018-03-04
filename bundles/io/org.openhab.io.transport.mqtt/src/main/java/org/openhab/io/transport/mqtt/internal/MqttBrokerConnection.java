@@ -298,7 +298,7 @@ public class MqttBrokerConnection implements MqttCallback {
             throw new Exception("Missing url");
         }
 
-        if (client == null || !client.getCurrentServerURI().equals(url)) {
+        if (client == null) {
             if (StringUtils.isBlank(clientId) || clientId.length() > 23) {
                 if (StringUtils.isBlank(clientId)) {
                     clientId = MqttClient.generateClientId();
