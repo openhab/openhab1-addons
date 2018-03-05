@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>MT02792</Model>
+    <Label lang="en">Home Control Metering Plug </Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x2B</id>             <!-- SCENE_ACTIVATION -->
+        </Class>
+        <Class>
+            <id>0x2C</id>             <!-- SCENE_ACTUATOR_CONF -->
+        </Class>
+        <Class>
+            <id>0x32</id>             <!-- METER -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x75</id>             <!-- PROTECTION -->
+        </Class>
+        <Class>
+            <id>0x7A</id>             <!-- FIRMWARE_UPDATE_MD -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Watt counter reporting period</Label>
+            <Type>list</Type>
+            <Default>720</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32767</Maximum>
+            <Size>2</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Help><![CDATA[multiples of 5s
+<p>Enable automatic interval in seconds reporting with an interval of 5s * the value. Set to 0 will disable the autoreporting function.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">KWh counter reporting period</Label>
+            <Type>list</Type>
+            <Default>6</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32767</Maximum>
+            <Size>2</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Help><![CDATA[number of 10 minute intervals
+<p>Enable automatic interval in minutes reporting with an interval of 10min * the value. Set to 0 will disable the autoreporting function.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Definition of  warning of current  load (A)</Label>
+            <Type>short</Type>
+            <Default>1300</Default>
+            <Minimum>10</Minimum>
+            <Maximum>1300</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[1300*0.01A = 13A
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Definition of  warning of load  fuse protection  (kWh)</Label>
+            <Type>short</Type>
+            <Default>10000</Default>
+            <Minimum>1</Minimum>
+            <Maximum>10000</Maximum>
+            <Size>2</Size>
+            <Help><![CDATA[load caution threshold
+<p>Enable automatic warning when the accumulated kWh power consumption exceeds the setting value from 1KWh ~ 10000KWh.. Set to 0 will disable kWh load caution reporting.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>5</Index>
+            <Label lang="en">Mode for restoring  status</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>2</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Upon the return of AC power, the switch will remain Off.</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">resume previous state</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Upon the return of AC power, the switch will turn On.</Label>
+            </Item>
+            <Help><![CDATA[Restore switch state mode.
+<p>Status of the plug if it is disconnected and reconnected from the mains power supply.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>6</Index>
+            <Label lang="en">Switch OFF mode</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">SWITCH OFF commands received are ignored.</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">SWITCH OFF commands received are honored.</Label>
+            </Item>
+            <Help><![CDATA[Mode of switch off function.
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>7</Index>
+            <Label lang="en">LED display mode</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">The LED follows the state of the switch.</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">LED off with load ON</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Flash mode</Label>
+            </Item>
+            <Help><![CDATA[Display  device status
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>8</Index>
+            <Label lang="en">Auto off timer</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>32767</Maximum>
+            <Size>2</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable</Label>
+            </Item>
+            <Help><![CDATA[Auto off timer. 0 will disable the auto off function.
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>9</Index>
+            <Label lang="en">Device from  command status</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>3</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">When SWITCH ALL OFF is received, the MT2792 turns Off.</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Ignore ALL OFF</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">If ALL OFF is received, turn ON if it is OFF</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">When SWITCH ALL OFF is received, the MT2792 turns On.</Label>
+            </Item>
+            <Help><![CDATA[RF off command mode
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Reports</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>
