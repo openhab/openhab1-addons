@@ -50,6 +50,15 @@
 			<!--Use the Configuration for the Vision ZS6101 -->
 			<ConfigFile>vision/zs6101.xml</ConfigFile>
 		</Product>
+		<Product>
+    			<Reference>
+     				 <Type>0001</Type>
+     				 <Id>0012</Id>
+   			</Reference>
+    			<Model>MT02792</Model>
+    			<Label lang="en">Home Control Metering Plug </Label>
+    			<ConfigFile>devolo/mt02792.xml</ConfigFile>
+  		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0000</Id>
