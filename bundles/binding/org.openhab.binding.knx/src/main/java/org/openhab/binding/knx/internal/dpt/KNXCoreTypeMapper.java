@@ -126,13 +126,13 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
         // Datapoint Types "8-Bit Unsigned Value", Main number 5
         dptTypeMap.put(DPTXlator8BitUnsigned.DPT_SCALING.getID(), PercentType.class);
         dptTypeMap.put(DPTXlator8BitUnsigned.DPT_ANGLE.getID(), DecimalType.class);
-        dptTypeMap.put(DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID(), DecimalType.class);
+        dptTypeMap.put(DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID(), PercentType.class);
         dptTypeMap.put(DPTXlator8BitUnsigned.DPT_DECIMALFACTOR.getID(), DecimalType.class);
         dptTypeMap.put(DPTXlator8BitUnsigned.DPT_TARIFF.getID(), DecimalType.class);
         dptTypeMap.put(DPTXlator8BitUnsigned.DPT_VALUE_1_UCOUNT.getID(), DecimalType.class);
 
         // Datapoint Types "8-bit Signed Value", Main number 6
-        dptTypeMap.put(DPTXlator8BitSigned.DPT_PERCENT_V8.getID(), DecimalType.class);
+        dptTypeMap.put(DPTXlator8BitSigned.DPT_PERCENT_V8.getID(), PercentType.class);
         dptTypeMap.put(DPTXlator8BitSigned.DPT_VALUE_1_UCOUNT.getID(), DecimalType.class);
         dptTypeMap.put(DPTXlator8BitSigned.DPT_STATUS_MODE3.getID(), DecimalType.class);
 
@@ -156,7 +156,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
         dptTypeMap.put(DPTXlator2ByteFloat.DPT_INTENSITY_OF_LIGHT.getID(), DecimalType.class);
         dptTypeMap.put(DPTXlator2ByteFloat.DPT_WIND_SPEED.getID(), DecimalType.class);
         dptTypeMap.put(DPTXlator2ByteFloat.DPT_AIR_PRESSURE.getID(), DecimalType.class);
-        dptTypeMap.put(DPTXlator2ByteFloat.DPT_HUMIDITY.getID(), DecimalType.class);
+        dptTypeMap.put(DPTXlator2ByteFloat.DPT_HUMIDITY.getID(), PercentType.class);
         dptTypeMap.put(DPTXlator2ByteFloat.DPT_AIRQUALITY.getID(), DecimalType.class);
         dptTypeMap.put(DPTXlator2ByteFloat.DPT_TIME_DIFFERENCE1.getID(), DecimalType.class);
         dptTypeMap.put(DPTXlator2ByteFloat.DPT_TIME_DIFFERENCE2.getID(), DecimalType.class);
