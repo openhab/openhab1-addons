@@ -170,7 +170,6 @@ public class BticinoDevice implements IBticinoEventListener {
                 l_pr.addProperty("address", itemBindingConfig.where);
 
                 int l_who = Integer.parseInt(itemBindingConfig.who);
-                int l_where = Integer.parseInt(itemBindingConfig.where);
                 switch (l_who) {
                     // Lights
                     case 1: {
@@ -229,6 +228,7 @@ public class BticinoDevice implements IBticinoEventListener {
                             }
                             break;
                         } else {
+                            int l_where = Integer.parseInt(itemBindingConfig.where);
                             if ((command instanceof PercentType) && (ShutterBlock == false)) {
                                 // int RollerShutterPosStart = Integer.parseInt(getItemState(itemName).toString());
                                 int RollerShutterPosStart = RollerShutterPos[l_where];
