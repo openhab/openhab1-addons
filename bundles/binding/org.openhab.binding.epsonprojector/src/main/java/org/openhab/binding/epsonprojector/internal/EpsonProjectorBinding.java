@@ -82,10 +82,10 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
     @Override
     public void deactivate() {
         logger.debug("Deactivate");
-        closeConnection();
+        shutdownConnections();
     }
 
-    private void closeConnection() {
+    private void shutdownConnections() {
         if (deviceConfigCache != null) {
             // close all connections
             for (Entry<String, DeviceConfig> entry : deviceConfigCache.entrySet()) {
@@ -169,7 +169,8 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
                     if (state != null) {
                         eventPublisher.postUpdate(itemName, state);
                     } else {
-                        logger.error("No response received from command '{}'", commmandType);
+                        logger.debug("No response received from command '{}'", commmandType);
+                        closeConnection(deviceId);
                     }
 
                     lastUpdateMap.put(itemName, System.currentTimeMillis());
@@ -346,8 +347,8 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
             }
 
         } catch (EpsonProjectorException e) {
-            logger.warn("Couldn't execute command '{}', {}", commmandType.toString(), e.getMessage());
-
+            logger.debug("Couldn't execute command '{}', {}", commmandType.toString(), e.getMessage());
+            closeConnection(deviceId);
         } catch (Exception e) {
             logger.warn("Couldn't create state of type '{}'", itemType);
             return null;
@@ -522,7 +523,27 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
 
         } catch (EpsonProjectorException e) {
             logger.warn("Couldn't execute command '{}', {}", commmandType, e.getMessage());
+            closeConnection(deviceId);
+        }
+    }
 
+    private void closeConnection(String deviceId) {
+        DeviceConfig device = deviceConfigCache.get(deviceId);
+
+        if (device == null) {
+            logger.warn("Could not find device '{}'", deviceId);
+            return;
+        }
+
+        EpsonProjectorDevice remoteController = device.getConnection();
+
+        if (remoteController != null) {
+            try {
+                logger.debug("Closing connection to device '{}' ", deviceId);
+                remoteController.disconnect();
+            } catch (EpsonProjectorException e) {
+                logger.debug("Error occurred when closing connection to device '{}'", deviceId);
+            }
         }
     }
 
