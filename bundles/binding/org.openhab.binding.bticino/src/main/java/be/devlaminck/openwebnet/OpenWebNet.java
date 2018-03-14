@@ -164,7 +164,7 @@ public class OpenWebNet extends Thread {
             myPlant.sendCommandSync(POWER_MANAGEMENT_DIAGNOSTIC_FRAME);
 
             // *#4*#1*20## Diagnostic Frame Actors
-            logger.info("Sending Diagnostic Frame Actors to (re)initialize HEATING");
+            logger.debug("Sending Diagnostic Frame Actors to (re)initialize HEATING");
             myPlant.sendCommandSync("*#4*#1*20##");
 
             // *#4*#0## Diagnostic Frame Program Main Unit
