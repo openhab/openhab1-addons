@@ -9,12 +9,16 @@
 package org.openhab.binding.bticino.internal;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.openhab.binding.bticino.internal.BticinoGenericBindingProvider.BticinoBindingConfig;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
@@ -29,6 +33,11 @@ import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceException;
+import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,10 +79,11 @@ public class BticinoDevice implements IBticinoEventListener {
     private String hMainCtrlFailure = "";
     // Rollershutter Position Variables
     private int m_ShutterRunTime = 0;
-    private Date[] RollerShutterTimeStart = new Date[99];
-    private String[] RollerShutterDir = new String[99];
-    private int[] RollerShutterPos = new int[99];
-    private boolean ShutterBlock = false;
+    private Map<String, Date> RollerShutterTimeStart = new HashMap<String, Date>();
+    private Map<String, String> RollerShutterDir = new HashMap<String, String>();
+    private Map<String, Integer> RollerShutterPos = new HashMap<String, Integer>();
+    private Map<String, Boolean> ShutterPosActive = new HashMap<String, Boolean>();
+    private Map<String, Boolean> ShutterBlock = new HashMap<String, Boolean>();
     // A lock object
     private Object m_lock = new Object();
     // The openweb object that handles connections and events
@@ -170,6 +180,8 @@ public class BticinoDevice implements IBticinoEventListener {
                 l_pr.addProperty("address", itemBindingConfig.where);
 
                 int l_who = Integer.parseInt(itemBindingConfig.who);
+                String l_where = itemBindingConfig.where;
+
                 switch (l_who) {
                     // Lights
                     case 1: {
@@ -228,87 +240,100 @@ public class BticinoDevice implements IBticinoEventListener {
                             }
                             break;
                         } else {
-                            int l_where = Integer.parseInt(itemBindingConfig.where);
-                            if ((command instanceof PercentType) && (ShutterBlock == false)) {
-                                // int RollerShutterPosStart = Integer.parseInt(getItemState(itemName).toString());
-                                int RollerShutterPosStart = RollerShutterPos[l_where];
-                                logger.debug("RollershutterPosStart %: {}: {}", itemName, RollerShutterPosStart);
-
-                                int RollerShutterPosEnd = Integer.valueOf(command.toString());
-                                if (RollerShutterPosEnd > RollerShutterPosStart) {
-                                    l_pr.addProperty("what", "2");
-                                    ShutterBlock = true;
-                                    m_open_web_net.onCommand(l_pr);
-                                    int RollerShutterTimeEnd = (RollerShutterPosEnd - RollerShutterPosStart)
-                                            * m_ShutterRunTime / 100;
-                                    TimeUnit.MILLISECONDS.sleep(RollerShutterTimeEnd);
-                                    l_pr.addProperty("what", "0");
-                                    m_open_web_net.onCommand(l_pr);
-                                    RollerShutterPos[l_where] = RollerShutterPosEnd;
-                                } else if (RollerShutterPosEnd < RollerShutterPosStart) {
-                                    l_pr.addProperty("what", "1");
-                                    ShutterBlock = true;
-                                    m_open_web_net.onCommand(l_pr);
-                                    int RollerShutterTimeEnd = (RollerShutterPosStart - RollerShutterPosEnd)
-                                            * m_ShutterRunTime / 100;
-                                    TimeUnit.MILLISECONDS.sleep(RollerShutterTimeEnd);
-                                    l_pr.addProperty("what", "0");
-                                    m_open_web_net.onCommand(l_pr);
-                                }
-                                RollerShutterPos[l_where] = RollerShutterPosEnd;
-                                eventPublisher.postUpdate(itemName,
-                                        PercentType.valueOf(Integer.toString(RollerShutterPos[l_where])));
-                                logger.debug("RollershutterPosEnd %: {}: {}=>{} / {}", itemName, RollerShutterPosStart,
-                                        RollerShutterPosEnd, Integer.toString(RollerShutterPosEnd));
-                                ShutterBlock = false;
+                            if (ShutterPosActive.getOrDefault(l_where, false) == false) {
+                                logger.warn(
+                                        "Rollershutter Positioning not initalized. Wait for first Automation initalization.");
                                 return;
-                            } else if (ShutterBlock == false) {
-                                int RollerShutterPosStart = RollerShutterPos[l_where];
-                                logger.debug("RollershutterPosStart: {}: {}", itemName, RollerShutterPosStart);
-                                if (UpDownType.UP.equals(command)) {
-                                    l_pr.addProperty("what", "1");
-                                    RollerShutterTimeStart[l_where] = new Date((new Date()).getTime());
-                                    RollerShutterDir[l_where] = "UP";
-                                } else if (UpDownType.DOWN.equals(command)) {
-                                    l_pr.addProperty("what", "2");
-                                    RollerShutterTimeStart[l_where] = new Date((new Date()).getTime());
-                                    RollerShutterDir[l_where] = "DOWN";
-                                } else if (StopMoveType.STOP.equals(command)) {
-                                    l_pr.addProperty("what", "0");
-                                    m_open_web_net.onCommand(l_pr);
-                                    if (RollerShutterDir[l_where] != "") {
-                                        if (RollerShutterDir[l_where] == "UP") {
-                                            logger.debug("RollerShutterTimeStart: {}: {}", itemName,
-                                                    ((new Date()).getTime()
-                                                            - RollerShutterTimeStart[l_where].getTime()));
-                                            Long RollerShutterPosEnd = ((new Date()).getTime()
-                                                    - RollerShutterTimeStart[l_where].getTime()) * 100
-                                                    / m_ShutterRunTime;
-                                            RollerShutterPos[l_where] = (int) (RollerShutterPosStart
-                                                    - RollerShutterPosEnd);
-                                        }
-                                        if (RollerShutterDir[l_where] == "DOWN") {
-                                            logger.debug("RollerShutterTimeStart: {}: {}", itemName,
-                                                    ((new Date()).getTime()
-                                                            - RollerShutterTimeStart[l_where].getTime()));
-                                            Long RollerShutterPosEnd = ((new Date()).getTime()
-                                                    - RollerShutterTimeStart[l_where].getTime()) * 100
-                                                    / m_ShutterRunTime;
-                                            RollerShutterPos[l_where] = (int) (RollerShutterPosStart
-                                                    + RollerShutterPosEnd);
-                                        }
+                            } else {
+                                int RollerShutterPosStart = RollerShutterPos.get(l_where);
+
+                                if ((command instanceof PercentType)
+                                        && (ShutterBlock.getOrDefault(l_where, false) == false)) {
+                                    logger.debug("RollershutterPosStart %: {}: {}", itemName, RollerShutterPosStart);
+
+                                    int RollerShutterPosEnd = Integer.valueOf(command.toString());
+                                    if (RollerShutterPosEnd > RollerShutterPosStart) {
+                                        l_pr.addProperty("what", "2");
+                                        ShutterBlock.put(l_where, true);
+                                        m_open_web_net.onCommand(l_pr);
+                                        int RollerShutterTimeEnd = (RollerShutterPosEnd - RollerShutterPosStart)
+                                                * m_ShutterRunTime / 100;
+                                        TimeUnit.MILLISECONDS.sleep(RollerShutterTimeEnd);
+                                        l_pr.addProperty("what", "0");
+                                        m_open_web_net.onCommand(l_pr);
+                                        RollerShutterPos.put(l_where, RollerShutterPosEnd);
+                                    } else if (RollerShutterPosEnd < RollerShutterPosStart) {
+                                        l_pr.addProperty("what", "1");
+                                        ShutterBlock.put(l_where, true);
+                                        m_open_web_net.onCommand(l_pr);
+                                        int RollerShutterTimeEnd = (RollerShutterPosStart - RollerShutterPosEnd)
+                                                * m_ShutterRunTime / 100;
+                                        TimeUnit.MILLISECONDS.sleep(RollerShutterTimeEnd);
+                                        l_pr.addProperty("what", "0");
+                                        m_open_web_net.onCommand(l_pr);
                                     }
-                                    RollerShutterDir[l_where] = "";
-                                    if (RollerShutterPos[l_where] > 100) {
-                                        RollerShutterPos[l_where] = 100;
-                                    }
-                                    if (RollerShutterPos[l_where] < 0) {
-                                        RollerShutterPos[l_where] = 0;
-                                    }
-                                    logger.debug("RollershutterPosEnd: {}: {}", itemName, RollerShutterPos[l_where]);
+                                    RollerShutterPos.put(l_where, RollerShutterPosEnd);
                                     eventPublisher.postUpdate(itemName,
-                                            PercentType.valueOf(Integer.toString(RollerShutterPos[l_where])));
+                                            PercentType.valueOf(Integer.toString(RollerShutterPosEnd)));
+                                    logger.debug("RollershutterPosEnd %: {}: {}=>{} / {}", itemName,
+                                            RollerShutterPosStart, RollerShutterPosEnd,
+                                            Integer.toString(RollerShutterPosEnd));
+                                    ShutterBlock.put(l_where, false);
                                     return;
+                                } else if (ShutterBlock.getOrDefault(l_where, false) == false) {
+                                    logger.debug("RollershutterPosStart: {}: {}", itemName, RollerShutterPosStart);
+                                    if (UpDownType.UP.equals(command)) {
+                                        l_pr.addProperty("what", "1");
+                                        RollerShutterTimeStart.put(l_where, new Date((new Date()).getTime()));
+                                        RollerShutterDir.put(l_where, "UP");
+                                    } else if (UpDownType.DOWN.equals(command)) {
+                                        l_pr.addProperty("what", "2");
+                                        RollerShutterTimeStart.put(l_where, new Date((new Date()).getTime()));
+                                        RollerShutterDir.put(l_where, "DOWN");
+                                    } else if (StopMoveType.STOP.equals(command)) {
+                                        l_pr.addProperty("what", "0");
+                                        m_open_web_net.onCommand(l_pr);
+                                        if (RollerShutterDir.getOrDefault(l_where, "") != "") {
+                                            if (RollerShutterDir.getOrDefault(l_where, "") == "UP") {
+                                                logger.debug("RollerShutterTimeStart: {}: {}", itemName,
+                                                        ((new Date()).getTime() - RollerShutterTimeStart
+                                                                .getOrDefault(l_where, new Date((new Date()).getTime()))
+                                                                .getTime()));
+                                                Long RollerShutterPosEnd = ((new Date()).getTime()
+                                                        - RollerShutterTimeStart
+                                                                .getOrDefault(l_where, new Date((new Date()).getTime()))
+                                                                .getTime())
+                                                        * 100 / m_ShutterRunTime;
+                                                RollerShutterPos.put(l_where,
+                                                        (int) (RollerShutterPosStart - RollerShutterPosEnd));
+                                            }
+                                            if (RollerShutterDir.getOrDefault(l_where, "") == "DOWN") {
+                                                logger.debug("RollerShutterTimeStart: {}: {}", itemName,
+                                                        ((new Date()).getTime() - RollerShutterTimeStart
+                                                                .getOrDefault(l_where, new Date((new Date()).getTime()))
+                                                                .getTime()));
+                                                Long RollerShutterPosEnd = ((new Date()).getTime()
+                                                        - RollerShutterTimeStart
+                                                                .getOrDefault(l_where, new Date((new Date()).getTime()))
+                                                                .getTime())
+                                                        * 100 / m_ShutterRunTime;
+                                                RollerShutterPos.put(l_where,
+                                                        (int) (RollerShutterPosStart + RollerShutterPosEnd));
+                                            }
+                                        }
+                                        RollerShutterDir.put(l_where, "");
+                                        if (RollerShutterPos.get(l_where) > 100) {
+                                            RollerShutterPos.put(l_where, 100);
+                                        }
+                                        if (RollerShutterPos.get(l_where) < 0) {
+                                            RollerShutterPos.put(l_where, 0);
+                                        }
+                                        logger.debug("RollershutterPosEnd: {}: {}", itemName,
+                                                RollerShutterPos.get(l_where));
+                                        eventPublisher.postUpdate(itemName,
+                                                PercentType.valueOf(Integer.toString(RollerShutterPos.get(l_where))));
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -354,7 +379,9 @@ public class BticinoDevice implements IBticinoEventListener {
                 }
                 m_open_web_net.onCommand(l_pr);
             }
-        } catch (Exception e) {
+        } catch (
+
+        Exception e) {
             logger.error("Gateway [{}], Error processing receiveCommand '{}'", m_gateway_id,
                     new String[] { e.getMessage() });
         }
@@ -379,7 +406,7 @@ public class BticinoDevice implements IBticinoEventListener {
                 p_protocol_read.getProperty("who"), p_protocol_read.getProperty("what"),
                 p_protocol_read.getProperty("where"));
 
-        // Get all the configs that are connected to this (who,where), multiple
+        // getOrDefault all the configs that are connected to this (who,where), multiple
         // possible
         List<BticinoBindingConfig> l_binding_configs = m_bticino_binding.getItemForBticinoBindingConfig(
                 p_protocol_read.getProperty("who"), p_protocol_read.getProperty("where"));
@@ -393,7 +420,7 @@ public class BticinoDevice implements IBticinoEventListener {
 
         // every item associated with this who/where update the status
         for (BticinoBindingConfig l_binding_config : l_binding_configs) {
-            // Get the Item out of the config
+            // getOrDefault the Item out of the config
             Item l_item = l_binding_config.getItem();
 
             if (l_item instanceof SwitchItem) {
@@ -441,9 +468,12 @@ public class BticinoDevice implements IBticinoEventListener {
                 logger.debug("Gateway [{}], RECEIVED EVENT FOR RollershutterItem [{}], TRANSLATE TO OPENHAB BUS EVENT",
                         m_gateway_id, l_item.getName());
 
-                if (p_protocol_read.getProperty("messageType").equalsIgnoreCase("automation")
-                        && (ShutterBlock == false)) {
+                String itemName = l_item.getName();
+                String l_where = p_protocol_read.getProperty("where");
+                int RollerShutterPosStart;
 
+                if (p_protocol_read.getProperty("messageType").equalsIgnoreCase("automation")
+                        && (ShutterBlock.getOrDefault(l_where, false) == false)) {
                     if (m_ShutterRunTime == 0) {
                         if (p_protocol_read.getProperty("messageDescription").equalsIgnoreCase("Automation UP")) {
                             eventPublisher.postUpdate(l_item.getName(), UpDownType.UP);
@@ -452,49 +482,69 @@ public class BticinoDevice implements IBticinoEventListener {
                             eventPublisher.postUpdate(l_item.getName(), UpDownType.DOWN);
                         } else if (p_protocol_read.getProperty("messageDescription")
                                 .equalsIgnoreCase("Automation STOP")) {
-                            // nothing ToDo
+                            // nothing to Do
                         }
                     } else {
-                        String itemName = l_item.getName();
-                        int l_where = Integer.parseInt(p_protocol_read.getProperty("where"));
-                        int RollerShutterPosStart = RollerShutterPos[l_where];
-                        logger.debug("RollershutterPosStart: {}: {}", itemName, RollerShutterPosStart);
-                        if (p_protocol_read.getProperty("messageDescription").equalsIgnoreCase("Automation UP")) {
-                            eventPublisher.postUpdate(l_item.getName(), UpDownType.UP);
-                            RollerShutterTimeStart[l_where] = new Date((new Date()).getTime());
-                            RollerShutterDir[l_where] = "UP";
-                        } else if (p_protocol_read.getProperty("messageDescription")
-                                .equalsIgnoreCase("Automation DOWN")) {
-                            eventPublisher.postUpdate(l_item.getName(), UpDownType.DOWN);
-                            RollerShutterTimeStart[l_where] = new Date((new Date()).getTime());
-                            RollerShutterDir[l_where] = "DOWN";
-                        } else if (p_protocol_read.getProperty("messageDescription")
-                                .equalsIgnoreCase("Automation STOP")) {
-                            if (RollerShutterDir[l_where] != "") {
-                                if (RollerShutterDir[l_where] == "UP") {
-                                    logger.debug("RollerShutterTimeStart: {}: {}", itemName,
-                                            ((new Date()).getTime() - RollerShutterTimeStart[l_where].getTime()));
-                                    Long RollerShutterPosEnd = ((new Date()).getTime()
-                                            - RollerShutterTimeStart[l_where].getTime()) / m_ShutterRunTime / 100;
-                                    RollerShutterPos[l_where] = (int) (RollerShutterPosStart - RollerShutterPosEnd);
+                        if (p_protocol_read.getProperty("messageDescription").equalsIgnoreCase("Automation STOP")
+                                & ShutterPosActive.getOrDefault(l_where, false) == false) {
+                            try {
+                                RollerShutterPosStart = Integer.parseInt(getItemState(itemName).toString());
+                            } catch (Exception ex) {
+                                RollerShutterPosStart = 0;
+                            }
+                            RollerShutterPos.put(l_where, RollerShutterPosStart);
+                            ShutterPosActive.put(l_where, true);
+                            logger.debug("Rollershutter [{}] initalized at {}%", itemName,
+                                    RollerShutterPos.get(l_where));
+                        } else {
+                            RollerShutterPosStart = RollerShutterPos.get(l_where);
+                            logger.debug("RollershutterPosStart: {}: {}", itemName, RollerShutterPosStart);
+                            if (p_protocol_read.getProperty("messageDescription").equalsIgnoreCase("Automation UP")) {
+                                eventPublisher.postUpdate(l_item.getName(), UpDownType.UP);
+                                RollerShutterTimeStart.put(l_where, new Date((new Date()).getTime()));
+                                RollerShutterDir.put(l_where, "UP");
+                            } else if (p_protocol_read.getProperty("messageDescription")
+                                    .equalsIgnoreCase("Automation DOWN")) {
+                                eventPublisher.postUpdate(l_item.getName(), UpDownType.DOWN);
+                                RollerShutterTimeStart.put(l_where, new Date((new Date()).getTime()));
+                                RollerShutterDir.put(l_where, "DOWN");
+                            } else if (p_protocol_read.getProperty("messageDescription")
+                                    .equalsIgnoreCase("Automation STOP")) {
+                                if (RollerShutterDir.getOrDefault(l_where, "") != "") {
+                                    if (RollerShutterDir.getOrDefault(l_where, "") == "UP") {
+                                        logger.debug("RollerShutterTimeStart: {}: {}", itemName,
+                                                ((new Date()).getTime() - RollerShutterTimeStart
+                                                        .getOrDefault(l_where, new Date((new Date()).getTime()))
+                                                        .getTime()));
+                                        Long RollerShutterPosEnd = ((new Date()).getTime() - RollerShutterTimeStart
+                                                .getOrDefault(l_where, new Date((new Date()).getTime())).getTime())
+                                                / m_ShutterRunTime / 100;
+                                        RollerShutterPos.put(l_where,
+                                                (int) (RollerShutterPosStart - RollerShutterPosEnd));
+                                    }
+                                    if (RollerShutterDir.getOrDefault(l_where, "") == "DOWN") {
+                                        logger.debug("RollerShutterTimeStart: {}: {}", itemName,
+                                                ((new Date()).getTime() - RollerShutterTimeStart
+                                                        .getOrDefault(l_where, new Date((new Date()).getTime()))
+                                                        .getTime()));
+                                        Long RollerShutterPosEnd = ((new Date()).getTime() - RollerShutterTimeStart
+                                                .getOrDefault(l_where, new Date((new Date()).getTime())).getTime())
+                                                / m_ShutterRunTime / 100;
+                                        RollerShutterPos.put(l_where,
+                                                (int) (RollerShutterPosStart + RollerShutterPosEnd));
+                                    }
+                                    RollerShutterDir.put(l_where, "");
+                                    if (RollerShutterPos.get(l_where) > 100) {
+                                        RollerShutterPos.put(l_where, 100);
+                                    }
+                                    if (RollerShutterPos.get(l_where) < 0) {
+                                        RollerShutterPos.put(l_where, 0);
+                                    }
+                                    logger.debug("RollershutterPosEnd: {}: {}", itemName,
+                                            RollerShutterPos.get(l_where));
+                                    eventPublisher.postUpdate(itemName,
+                                            PercentType.valueOf(Integer.toString(RollerShutterPos.get(l_where))));
                                 }
-                                if (RollerShutterDir[l_where] == "DOWN") {
-                                    logger.debug("RollerShutterTimeStart: {}: {}", itemName,
-                                            ((new Date()).getTime() - RollerShutterTimeStart[l_where].getTime()));
-                                    Long RollerShutterPosEnd = ((new Date()).getTime()
-                                            - RollerShutterTimeStart[l_where].getTime()) / m_ShutterRunTime / 100;
-                                    RollerShutterPos[l_where] = (int) (RollerShutterPosStart + RollerShutterPosEnd);
-                                }
-                                RollerShutterDir[l_where] = "";
-                                if (RollerShutterPos[l_where] > 100) {
-                                    RollerShutterPos[l_where] = 100;
-                                }
-                                if (RollerShutterPos[l_where] < 0) {
-                                    RollerShutterPos[l_where] = 0;
-                                }
-                                logger.debug("RollershutterPosEnd: {}: {}", itemName, RollerShutterPos[l_where]);
-                                eventPublisher.postUpdate(itemName,
-                                        PercentType.valueOf(Integer.toString(RollerShutterPos[l_where])));
                             }
                         }
                     }
@@ -676,5 +726,32 @@ public class BticinoDevice implements IBticinoEventListener {
                 }
             }
         }
+    }
+
+    private State getItemState(String itemId) throws ServiceException {
+        ItemRegistry itemRegistry = getItemRegistry();
+        State itemState = null;
+
+        try {
+            Item item = itemRegistry.getItem(itemId);
+            itemState = item.getState();
+            logger.debug("{}: State: {}", itemId, itemState.toString());
+        } catch (ItemNotFoundException ex) {
+            logger.info("{} not found {}", itemId, ex);
+        }
+
+        return itemState;
+    }
+
+    private ItemRegistry getItemRegistry() throws ServiceException {
+        BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+        if (bundleContext != null) {
+            ServiceReference<?> serviceReference = bundleContext.getServiceReference(ItemRegistry.class.getName());
+            if (serviceReference != null) {
+                ItemRegistry itemregistry = (ItemRegistry) bundleContext.getService(serviceReference);
+                return itemregistry;
+            }
+        }
+        throw new ServiceException("Cannot get ItemRegistry");
     }
 }
