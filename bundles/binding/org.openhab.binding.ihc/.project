@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.openhab.binding.ihc</name>
+	<name>org.openhab.binding.ihc1</name>
 	<comment>This is the IHC / ELKO LS binding of the open Home Automation Bus (openHAB)</comment>
 	<projects>
 	</projects>
