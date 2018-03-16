@@ -8,16 +8,7 @@
  */
 package org.openhab.action.pushbullet.internal;
 
-import com.google.gson.Gson;
-import org.eclipse.smarthome.io.net.http.HttpUtil;
-import org.openhab.action.pushbullet.internal.model.Push;
-import org.openhab.action.pushbullet.internal.model.PushResponse;
-import org.openhab.core.scriptengine.action.ActionDoc;
-import org.openhab.core.scriptengine.action.ParamDoc;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.openhab.action.pushbullet.internal.PushbulletConstants.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,9 +18,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.openhab.action.pushbullet.internal.PushbulletConstants.API_URL_PUSHES;
-import static org.openhab.action.pushbullet.internal.PushbulletConstants.DEFAULT_BOTNAME;
-import static org.openhab.action.pushbullet.internal.PushbulletConstants.TIMEOUT;
+import org.openhab.action.pushbullet.internal.model.Push;
+import org.openhab.action.pushbullet.internal.model.PushResponse;
+import org.openhab.core.scriptengine.action.ActionDoc;
+import org.openhab.core.scriptengine.action.ParamDoc;
+import org.openhab.io.net.http.HttpUtil;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
 
 /**
  * This class contains the methods that are made available in scripts and rules

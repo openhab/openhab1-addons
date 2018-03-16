@@ -2,24 +2,20 @@
 
   <parent>
     <groupId>org.openhab</groupId>
-    <artifactId>pom-addons1</artifactId>
+    <artifactId>bundles</artifactId>
     <version>1.12.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab</groupId>
-  <artifactId>bundles</artifactId>
+  <groupId>org.openhab.bundles</groupId>
+  <artifactId>api</artifactId>
 
-  <name>openHAB Bundles</name>
+  <name>openHAB 1.x API</name>
 
   <packaging>pom</packaging>
 
   <modules>
-    <module>api</module>
-    <module>action</module>
-    <module>binding</module>
-    <module>io</module>
-    <module>persistence</module>
+    <module>org.openhab.core1</module>
   </modules>
 
 </project>
