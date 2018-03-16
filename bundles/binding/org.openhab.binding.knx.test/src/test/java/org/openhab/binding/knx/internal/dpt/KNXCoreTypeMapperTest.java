@@ -533,27 +533,20 @@ public class KNXCoreTypeMapperTest {
     public void testTypeMapping8BitUnsigned_5_004() throws KNXFormatException {
         DPT dpt = DPTXlator8BitUnsigned.DPT_PERCENT_U8;
 
-        testToTypeClass(dpt, DecimalType.class);
+        testToTypeClass(dpt, PercentType.class);
 
         // Use a too short byte array
         assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
-                testToType(dpt, new byte[] {}, DecimalType.class));
+                testToType(dpt, new byte[] {}, PercentType.class));
 
-        Type type = testToType(dpt, new byte[] { 0 }, DecimalType.class);
+        Type type = testToType(dpt, new byte[] { 0 }, PercentType.class);
         testToDPTValue(dpt, type, "0");
 
-        type = testToType(dpt, new byte[] { 50 }, DecimalType.class);
+        type = testToType(dpt, new byte[] { 50 }, PercentType.class);
         testToDPTValue(dpt, type, "50");
 
-        type = testToType(dpt, new byte[] { 100 }, DecimalType.class);
+        type = testToType(dpt, new byte[] { 100 }, PercentType.class);
         testToDPTValue(dpt, type, "100");
-
-        type = testToType(dpt, new byte[] { (byte) 0xFF }, DecimalType.class);
-        testToDPTValue(dpt, type, "255");
-
-        // Use a too long byte array expecting that additional bytes will be ignored
-        type = testToType(dpt, new byte[] { (byte) 0xFF, 0 }, DecimalType.class);
-        testToDPTValue(dpt, type, "255");
     }
 
     /**
@@ -646,27 +639,17 @@ public class KNXCoreTypeMapperTest {
     public void testTypeMapping8BitSigned_6_001() throws KNXFormatException {
         DPT dpt = DPTXlator8BitSigned.DPT_PERCENT_V8;
 
-        testToTypeClass(dpt, DecimalType.class);
+        testToTypeClass(dpt, PercentType.class);
 
         // Use a too short byte array
         assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
-                testToType(dpt, new byte[] {}, DecimalType.class));
+                testToType(dpt, new byte[] {}, PercentType.class));
 
-        Type type = testToType(dpt, new byte[] { 0 }, DecimalType.class);
+        Type type = testToType(dpt, new byte[] { 0 }, PercentType.class);
         testToDPTValue(dpt, type, "0");
 
-        type = testToType(dpt, new byte[] { (byte) 0x7F }, DecimalType.class);
-        testToDPTValue(dpt, type, "127");
-
-        type = testToType(dpt, new byte[] { (byte) 0x80 }, DecimalType.class);
-        testToDPTValue(dpt, type, "-128");
-
-        type = testToType(dpt, new byte[] { (byte) 0xFF }, DecimalType.class);
-        testToDPTValue(dpt, type, "-1");
-
-        // Use a too long byte array expecting that additional bytes will be ignored
-        type = testToType(dpt, new byte[] { (byte) 0xFF, 0 }, DecimalType.class);
-        testToDPTValue(dpt, type, "-1");
+        type = testToType(dpt, new byte[] { (byte) 0x64 }, PercentType.class);
+        testToDPTValue(dpt, type, "100");
     }
 
     /**
@@ -930,7 +913,7 @@ public class KNXCoreTypeMapperTest {
      */
     @Test
     public void testTypeMapping2ByteFloat_9_007() throws KNXFormatException {
-        testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_HUMIDITY);
+        testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_HUMIDITY, PercentType.class);
     }
 
     /**
@@ -1991,41 +1974,57 @@ public class KNXCoreTypeMapperTest {
      * @throws KNXFormatException
      */
     private void testTypeMapping2ByteFloat(DPT dpt) throws KNXFormatException {
-        testToTypeClass(dpt, DecimalType.class);
+        testTypeMapping2ByteFloat(dpt, DecimalType.class);
+    }
+    
+    private void testTypeMapping2ByteFloat(DPT dpt, Class<? extends Type> expectedClass) throws KNXFormatException {
+        testToTypeClass(dpt, expectedClass);
 
         // Use a too short byte array
         assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
-                testToType(dpt, new byte[] {}, DecimalType.class));
+                testToType(dpt, new byte[] {}, expectedClass));
 
-        Type type = testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+        Type type = testToType(dpt, new byte[] { 0x00, 0x00 }, expectedClass);
         testToDPTValue(dpt, type, "0.0");
 
-        /*
-         * Test the maximum positive value
-         *
-         */
-        type = testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0xFF }, DecimalType.class);
-        testToDPTValue(dpt, type, "670760.96");
+        if (expectedClass.equals(DecimalType.class.getClass())) {
+            /*
+             * Test the maximum positive value
+             *
+             */
+            type = testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0xFF }, expectedClass);
+            testToDPTValue(dpt, type, "670760.96");
 
-        type = testToType(dpt, new byte[] { (byte) 0x07, (byte) 0xFF }, DecimalType.class);
-        testToDPTValue(dpt, type, "20.47");
+            type = testToType(dpt, new byte[] { (byte) 0x07, (byte) 0xFF }, expectedClass);
+            testToDPTValue(dpt, type, "20.47");
 
-        type = testToType(dpt, new byte[] { (byte) 0x87, (byte) 0xFF }, DecimalType.class);
-        testToDPTValue(dpt, type, "-0.01");
+            type = testToType(dpt, new byte[] { (byte) 0x87, (byte) 0xFF }, expectedClass);
+            testToDPTValue(dpt, type, "-0.01");
 
-        type = testToType(dpt, new byte[] { (byte) 0x80, (byte) 0x00 }, DecimalType.class);
-        testToDPTValue(dpt, type, "-20.48");
+            type = testToType(dpt, new byte[] { (byte) 0x80, (byte) 0x00 }, expectedClass);
+            testToDPTValue(dpt, type, "-20.48");
 
-        /*
-         * Test the maximum negative value
-         *
-         */
-        type = testToType(dpt, new byte[] { (byte) 0xF8, 0x00 }, DecimalType.class);
-        testToDPTValue(dpt, type, "-671088.64");
+            /*
+             * Test the maximum negative value
+             *
+             */
+            type = testToType(dpt, new byte[] { (byte) 0xF8, 0x00 }, expectedClass);
+            testToDPTValue(dpt, type, "-671088.64");
 
-        // Use a too long byte array expecting that additional bytes will be ignored
-        type = testToType(dpt, new byte[] { (byte) 0xF8, (byte) 0x00, (byte) 0xFF }, DecimalType.class);
-        testToDPTValue(dpt, type, "-671088.64");
+            // Use a too long byte array expecting that additional bytes will be ignored
+            type = testToType(dpt, new byte[] { (byte) 0xF8, (byte) 0x00, (byte) 0xFF }, expectedClass);
+            testToDPTValue(dpt, type, "-671088.64");
+        } else if (expectedClass.equals(PercentType.class.getClass())) {
+
+            type = testToType(dpt, new byte[] { (byte) 0x00, (byte) 0x21 }, expectedClass);
+            testToDPTValue(dpt, type, "0.3");
+
+            type = testToType(dpt, new byte[] { (byte) 0x14, (byte) 0xEE }, expectedClass);
+            testToDPTValue(dpt, type, "50.48");
+
+            type = testToType(dpt, new byte[] { (byte) 0x1C, (byte) 0xE2 }, expectedClass);
+            testToDPTValue(dpt, type, "100.0");
+        }
     }
 
     /**
