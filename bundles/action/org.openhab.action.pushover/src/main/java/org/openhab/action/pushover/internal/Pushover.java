@@ -243,7 +243,7 @@ public class Pushover {
             } else if (!StringUtils.isEmpty(defaultApiKey)) {
                 addEncodedParameter(data, MESSAGE_KEY_API_KEY, defaultApiKey);
             } else {
-                logger.error("Application API token not specified.");
+                logger.warn("Application API token not specified.");
                 return false;
             }
 
@@ -252,7 +252,7 @@ public class Pushover {
             } else if (!StringUtils.isEmpty(defaultUser)) {
                 addEncodedParameter(data, MESSAGE_KEY_USER, defaultUser);
             } else {
-                logger.error("The user/group key was not specified.");
+                logger.warn("The user/group key was not specified.");
                 return false;
             }
 
@@ -260,12 +260,12 @@ public class Pushover {
                 if ((message.length() + title.length()) <= API_MAX_MESSAGE_LENGTH) {
                     addEncodedParameter(data, MESSAGE_KEY_MESSAGE, message);
                 } else {
-                    logger.error("Together, the event message and title total more than " + API_MAX_MESSAGE_LENGTH
-                            + " characters.");
+                    logger.warn("Together, the event message and title total more than {} characters.",
+                            API_MAX_MESSAGE_LENGTH);
                     return false;
                 }
             } else {
-                logger.error("The event message is missing.");
+                logger.warn("The event message is missing.");
                 return false;
             }
 
@@ -285,14 +285,14 @@ public class Pushover {
                 if (url.length() <= API_MAX_URL_LENGTH) {
                     addEncodedParameter(data, MESSAGE_KEY_URL, url);
                 } else {
-                    logger.error("The url is greater than {} characters.", API_MAX_URL_LENGTH);
+                    logger.warn("The url is greater than {} characters.", API_MAX_URL_LENGTH);
                     return false;
                 }
             } else if (!StringUtils.isEmpty(defaultUrl)) {
                 if (defaultUrl.length() <= API_MAX_URL_LENGTH) {
                     addEncodedParameter(data, MESSAGE_KEY_URL, defaultUrl);
                 } else {
-                    logger.error("The url is greater than {} characters.", API_MAX_URL_LENGTH);
+                    logger.warn("The url is greater than {} characters.", API_MAX_URL_LENGTH);
                     return false;
                 }
             }
@@ -301,14 +301,14 @@ public class Pushover {
                 if (urlTitle.length() <= API_MAX_URL_TITLE_LENGTH) {
                     addEncodedParameter(data, MESSAGE_KEY_URL_TITLE, urlTitle);
                 } else {
-                    logger.error("The url title is greater than {} characters.", API_MAX_URL_TITLE_LENGTH);
+                    logger.warn("The url title is greater than {} characters.", API_MAX_URL_TITLE_LENGTH);
                     return false;
                 }
             } else if (!StringUtils.isEmpty(defaultUrlTitle)) {
                 if (defaultUrlTitle.length() <= API_MAX_URL_TITLE_LENGTH) {
                     addEncodedParameter(data, MESSAGE_KEY_URL_TITLE, defaultUrlTitle);
                 } else {
-                    logger.error("The url title is greater than {} characters.", API_MAX_URL_TITLE_LENGTH);
+                    logger.warn("The url title is greater than {} characters.", API_MAX_URL_TITLE_LENGTH);
                     return false;
                 }
             }
@@ -349,14 +349,14 @@ public class Pushover {
             }
 
             String content = data.toString();
-            logger.debug("Executing post to " + XML_API_URL + " with the following content: " + content);
+            logger.debug("Executing post to {} with the following content: {}", XML_API_URL, content);
             String response = HttpUtil.executeUrl("POST", XML_API_URL, IOUtils.toInputStream(content), CONTENT_TYPE,
                     timeout);
             logger.debug("Raw response: {}", response);
 
             try {
                 if (StringUtils.isEmpty(response)) {
-                    logger.error(
+                    logger.warn(
                             "Received an empty response from our Pushover API call. This can mean either we are having trouble connecting to the Pushover API or the Pushover API is actively enforcing rate limits with a connection time-out.");
                     return false;
                 }
@@ -364,16 +364,16 @@ public class Pushover {
                 if (StringUtils.isEmpty(responseMessage)) {
                     return true;
                 } else {
-                    logger.error("Received error message from Pushover: {}", responseMessage);
+                    logger.warn("Received error message from Pushover: {}", responseMessage);
                     return false;
                 }
             } catch (Exception e) {
-                logger.warn("Can't parse response from Pushover.", e);
+                logger.warn("Can't parse response from Pushover: {}", e.getMessage());
                 logger.debug("Raw response: {}", response);
                 return false;
             }
         } catch (Exception e) {
-            logger.error("An error occurred while notifying your mobile device.", e);
+            logger.warn("An error occurred while notifying your mobile device: {}", e.getMessage());
             return false;
         }
     }
@@ -462,7 +462,7 @@ public class Pushover {
             } else if (!StringUtils.isEmpty(defaultApiKey)) {
                 addEncodedParameter(data, MESSAGE_KEY_API_KEY, defaultApiKey);
             } else {
-                logger.error("Application API token not specified.");
+                logger.warn("Application API token not specified.");
                 return null;
             }
 
@@ -471,7 +471,7 @@ public class Pushover {
             } else if (!StringUtils.isEmpty(defaultUser)) {
                 addEncodedParameter(data, MESSAGE_KEY_USER, defaultUser);
             } else {
-                logger.error("The user/group key was not specified.");
+                logger.warn("The user/group key was not specified.");
                 return null;
             }
 
@@ -479,12 +479,12 @@ public class Pushover {
                 if ((message.length() + title.length()) <= API_MAX_MESSAGE_LENGTH) {
                     addEncodedParameter(data, MESSAGE_KEY_MESSAGE, message);
                 } else {
-                    logger.error("Together, the event message and title total more than " + API_MAX_MESSAGE_LENGTH
-                            + " characters.");
+                    logger.warn("Together, the event message and title total more than {} characters.",
+                            API_MAX_MESSAGE_LENGTH);
                     return null;
                 }
             } else {
-                logger.error("The event message is missing.");
+                logger.warn("The event message is missing.");
                 return null;
             }
 
@@ -504,14 +504,14 @@ public class Pushover {
                 if (url.length() <= API_MAX_URL_LENGTH) {
                     addEncodedParameter(data, MESSAGE_KEY_URL, url);
                 } else {
-                    logger.error("The url is greater than {} characters.", API_MAX_URL_LENGTH);
+                    logger.warn("The url is greater than {} characters.", API_MAX_URL_LENGTH);
                     return null;
                 }
             } else if (!StringUtils.isEmpty(defaultUrl)) {
                 if (defaultUrl.length() <= API_MAX_URL_LENGTH) {
                     addEncodedParameter(data, MESSAGE_KEY_URL, defaultUrl);
                 } else {
-                    logger.error("The url is greater than {} characters.", API_MAX_URL_LENGTH);
+                    logger.warn("The url is greater than {} characters.", API_MAX_URL_LENGTH);
                     return null;
                 }
             }
@@ -520,14 +520,14 @@ public class Pushover {
                 if (urlTitle.length() <= API_MAX_URL_TITLE_LENGTH) {
                     addEncodedParameter(data, MESSAGE_KEY_URL_TITLE, urlTitle);
                 } else {
-                    logger.error("The url title is greater than {} characters.", API_MAX_URL_TITLE_LENGTH);
+                    logger.warn("The url title is greater than {} characters.", API_MAX_URL_TITLE_LENGTH);
                     return null;
                 }
             } else if (!StringUtils.isEmpty(defaultUrlTitle)) {
                 if (defaultUrlTitle.length() <= API_MAX_URL_TITLE_LENGTH) {
                     addEncodedParameter(data, MESSAGE_KEY_URL_TITLE, defaultUrlTitle);
                 } else {
-                    logger.error("The url title is greater than {} characters.", API_MAX_URL_TITLE_LENGTH);
+                    logger.warn("The url title is greater than {} characters.", API_MAX_URL_TITLE_LENGTH);
                     return null;
                 }
             }
@@ -568,13 +568,13 @@ public class Pushover {
             }
 
             String content = data.toString();
-            logger.debug("Executing post to " + JSON_API_URL + " with the following content: " + content);
+            logger.debug("Executing post to {} with the following content: {}", JSON_API_URL, content);
             String response = HttpUtil.executeUrl("POST", JSON_API_URL, IOUtils.toInputStream(content), CONTENT_TYPE,
                     timeout);
             logger.debug("Raw response: {}", response);
 
             if (StringUtils.isEmpty(response)) {
-                logger.error(
+                logger.warn(
                         "Received an empty response from our Pushover API call. This can mean either we are having trouble connecting to the Pushover API or the Pushover API is actively enforcing rate limits with a connection time-out.");
                 return null;
             }
@@ -586,12 +586,12 @@ public class Pushover {
             if (json.has(API_RETURN_STATUS_TAG) && json.get(API_RETURN_STATUS_TAG).getAsInt() == 1) {
                 return json.has(API_RETURN_RECEIPT_TAG) ? json.get(API_RETURN_RECEIPT_TAG).getAsString() : null;
             } else {
-                logger.error("Received error message from Pushover: {}",
+                logger.warn("Received error message from Pushover: {}",
                         json.get(API_RETURN_ERRORS_TAG).getAsJsonArray().getAsString());
                 return null;
             }
         } catch (Exception e) {
-            logger.error("An error occurred while notifying your mobile device.", e);
+            logger.warn("An error occurred while notifying your mobile device: {}", e.getMessage());
             return null;
         }
     }
@@ -617,7 +617,7 @@ public class Pushover {
             } else if (!StringUtils.isEmpty(defaultApiKey)) {
                 addEncodedParameter(data, MESSAGE_KEY_API_KEY, defaultApiKey);
             } else {
-                logger.error("Application API token not specified.");
+                logger.warn("Application API token not specified.");
                 return false;
             }
 
@@ -626,23 +626,23 @@ public class Pushover {
             } else if (!StringUtils.isEmpty(defaultUser)) {
                 addEncodedParameter(data, MESSAGE_KEY_USER, defaultUser);
             } else {
-                logger.error("The user/group key was not specified.");
+                logger.warn("The user/group key was not specified.");
                 return false;
             }
 
             if (StringUtils.isEmpty(receipt)) {
-                logger.error("The message's receipt is missing.");
+                logger.warn("The message's receipt is missing.");
                 return false;
             }
 
             String url = JSON_CANCEL_API_URL.replace("{receipt}", receipt);
             String content = data.toString();
-            logger.debug("Executing post to " + url + " with the following content: " + content);
+            logger.debug("Executing post to {} with the following content: {}", url, content);
             String response = HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), CONTENT_TYPE, timeout);
             logger.debug("Raw response: {}", response);
 
             if (StringUtils.isEmpty(response)) {
-                logger.error(
+                logger.warn(
                         "Received an empty response from our Pushover API call. This can mean either we are having trouble connecting to the Pushover API or the Pushover API is actively enforcing rate limits with a connection time-out.");
                 return false;
             }
@@ -650,12 +650,12 @@ public class Pushover {
             if (json.has(API_RETURN_STATUS_TAG) && json.get(API_RETURN_STATUS_TAG).getAsInt() == 1) {
                 return true;
             } else {
-                logger.error("Received error message from Pushover: {}",
+                logger.warn("Received error message from Pushover: {}",
                         json.get(API_RETURN_ERRORS_TAG).getAsJsonArray().getAsString());
                 return false;
             }
         } catch (Exception e) {
-            logger.error("An error occurred while canceling your notification.", e);
+            logger.warn("An error occurred while canceling your notification: {}", e.getMessage());
             return false;
         }
     }
