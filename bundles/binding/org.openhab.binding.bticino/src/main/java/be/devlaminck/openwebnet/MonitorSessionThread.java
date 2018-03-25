@@ -551,8 +551,7 @@ public class MonitorSessionThread extends Thread {
                     messageType = "thermoregulation";
                     objectClass = "ThermoStatus";
 
-                    String[] where_parts;
-                    where_parts = where.split("#");
+                    String[] where_parts = where.split("#");
 
                     // hStatus
                     // -------

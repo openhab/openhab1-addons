@@ -111,17 +111,17 @@ public class OWNUtilities {
         switch (temperature.length()) {
             case 1:
                 // for positive set point shift at probe
-                temp += temperature.substring(0, 1);
+                temp = temperature.substring(0, 1);
                 break;
             case 2:
                 // for negative set point shift at probe
                 if (!temperature.substring(0, 1).equalsIgnoreCase("0")) {
-                    temp += "-";
+                    temp = "-";
                 }
                 temp += temperature.substring(1, 2);
                 break;
             default:
-                temp += temperature.substring(1, 3);
+                temp = temperature.substring(1, 3);
                 temp += ".";
                 temp += temperature.substring(3);
                 break;
