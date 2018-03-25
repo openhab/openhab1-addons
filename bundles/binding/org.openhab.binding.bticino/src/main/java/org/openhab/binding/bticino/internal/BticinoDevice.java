@@ -274,7 +274,9 @@ public class BticinoDevice implements IBticinoEventListener {
                                             Integer.toString(RollerShutterPosEnd));
                                     ShutterBlock.put(l_where, false);
                                     return;
-                                } else if (ShutterBlock.getOrDefault(l_where, false) == false) {
+                                }
+
+                                if (ShutterBlock.getOrDefault(l_where, false) == false) {
                                     logger.debug("RollershutterPosStart: {}: {}", itemName, RollerShutterPosStart);
                                     if (UpDownType.UP.equals(command)) {
                                         l_pr.addProperty("what", "1");
