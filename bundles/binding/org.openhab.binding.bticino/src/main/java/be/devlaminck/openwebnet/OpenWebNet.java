@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017, openHAB.org and others.
+ * Copyright (c) 2010-2018, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,6 +30,9 @@ import com.myhome.fcrisciani.exception.MalformedCommandOPEN;
  * @author Tom De Vlaminck, Andrea Carabillo
  * @serial 1.0
  * @since 1.7.0
+ *
+ * @author Reinhard Freuis
+ * @since 1.11.0*
  */
 public class OpenWebNet extends Thread {
 
