@@ -278,37 +278,33 @@ public class BticinoDevice implements IBticinoEventListener {
                                     logger.debug("RollershutterPosStart: {}: {}", itemName, RollerShutterPosStart);
                                     if (UpDownType.UP.equals(command)) {
                                         l_pr.addProperty("what", "1");
-                                        RollerShutterTimeStart.put(l_where, new Date((new Date()).getTime()));
+                                        RollerShutterTimeStart.put(l_where, new Date());
                                         RollerShutterDir.put(l_where, "UP");
                                     } else if (UpDownType.DOWN.equals(command)) {
                                         l_pr.addProperty("what", "2");
-                                        RollerShutterTimeStart.put(l_where, new Date((new Date()).getTime()));
+                                        RollerShutterTimeStart.put(l_where, new Date());
                                         RollerShutterDir.put(l_where, "DOWN");
                                     } else if (StopMoveType.STOP.equals(command)) {
                                         l_pr.addProperty("what", "0");
                                         m_open_web_net.onCommand(l_pr);
-                                        if (RollerShutterDir.getOrDefault(l_where, "") != "") {
-                                            if (RollerShutterDir.getOrDefault(l_where, "") == "UP") {
+                                        if (RollerShutterDir.getOrDefault(l_where, "").equals("") == false) {
+                                            if (RollerShutterDir.getOrDefault(l_where, "").equals("UP")) {
                                                 logger.debug("RollerShutterTimeStart: {}: {}", itemName,
                                                         ((new Date()).getTime() - RollerShutterTimeStart
-                                                                .getOrDefault(l_where, new Date((new Date()).getTime()))
-                                                                .getTime()));
+                                                                .getOrDefault(l_where, new Date()).getTime()));
                                                 Long RollerShutterPosEnd = ((new Date()).getTime()
-                                                        - RollerShutterTimeStart
-                                                                .getOrDefault(l_where, new Date((new Date()).getTime()))
+                                                        - RollerShutterTimeStart.getOrDefault(l_where, new Date())
                                                                 .getTime())
                                                         * 100 / m_ShutterRunTime;
                                                 RollerShutterPos.put(l_where,
                                                         (int) (RollerShutterPosStart - RollerShutterPosEnd));
                                             }
-                                            if (RollerShutterDir.getOrDefault(l_where, "") == "DOWN") {
+                                            if (RollerShutterDir.getOrDefault(l_where, "").equals("DOWN")) {
                                                 logger.debug("RollerShutterTimeStart: {}: {}", itemName,
                                                         ((new Date()).getTime() - RollerShutterTimeStart
-                                                                .getOrDefault(l_where, new Date((new Date()).getTime()))
-                                                                .getTime()));
+                                                                .getOrDefault(l_where, new Date()).getTime()));
                                                 Long RollerShutterPosEnd = ((new Date()).getTime()
-                                                        - RollerShutterTimeStart
-                                                                .getOrDefault(l_where, new Date((new Date()).getTime()))
+                                                        - RollerShutterTimeStart.getOrDefault(l_where, new Date())
                                                                 .getTime())
                                                         * 100 / m_ShutterRunTime;
                                                 RollerShutterPos.put(l_where,
@@ -494,35 +490,31 @@ public class BticinoDevice implements IBticinoEventListener {
                             logger.debug("RollershutterPosStart: {}: {}", itemName, RollerShutterPosStart);
                             if (p_protocol_read.getProperty("messageDescription").equalsIgnoreCase("Automation UP")) {
                                 eventPublisher.postUpdate(l_item.getName(), UpDownType.UP);
-                                RollerShutterTimeStart.put(l_where, new Date((new Date()).getTime()));
+                                RollerShutterTimeStart.put(l_where, new Date());
                                 RollerShutterDir.put(l_where, "UP");
                             } else if (p_protocol_read.getProperty("messageDescription")
                                     .equalsIgnoreCase("Automation DOWN")) {
                                 eventPublisher.postUpdate(l_item.getName(), UpDownType.DOWN);
-                                RollerShutterTimeStart.put(l_where, new Date((new Date()).getTime()));
+                                RollerShutterTimeStart.put(l_where, new Date());
                                 RollerShutterDir.put(l_where, "DOWN");
                             } else if (p_protocol_read.getProperty("messageDescription")
                                     .equalsIgnoreCase("Automation STOP")) {
-                                if (RollerShutterDir.getOrDefault(l_where, "") != "") {
-                                    if (RollerShutterDir.getOrDefault(l_where, "") == "UP") {
-                                        logger.debug("RollerShutterTimeStart: {}: {}", itemName,
-                                                ((new Date()).getTime() - RollerShutterTimeStart
-                                                        .getOrDefault(l_where, new Date((new Date()).getTime()))
-                                                        .getTime()));
-                                        Long RollerShutterPosEnd = ((new Date()).getTime() - RollerShutterTimeStart
-                                                .getOrDefault(l_where, new Date((new Date()).getTime())).getTime())
-                                                / m_ShutterRunTime / 100;
+                                if (RollerShutterDir.getOrDefault(l_where, "").equals("") == false) {
+                                    if (RollerShutterDir.getOrDefault(l_where, "").equals("UP")) {
+                                        logger.debug("RollerShutterTimeStart: {}: {}", itemName, (new Date()).getTime()
+                                                - RollerShutterTimeStart.getOrDefault(l_where, new Date()).getTime());
+                                        Long RollerShutterPosEnd = ((new Date()).getTime()
+                                                - RollerShutterTimeStart.getOrDefault(l_where, new Date()).getTime())
+                                                * 100 / m_ShutterRunTime;
                                         RollerShutterPos.put(l_where,
                                                 (int) (RollerShutterPosStart - RollerShutterPosEnd));
                                     }
-                                    if (RollerShutterDir.getOrDefault(l_where, "") == "DOWN") {
-                                        logger.debug("RollerShutterTimeStart: {}: {}", itemName,
-                                                ((new Date()).getTime() - RollerShutterTimeStart
-                                                        .getOrDefault(l_where, new Date((new Date()).getTime()))
-                                                        .getTime()));
-                                        Long RollerShutterPosEnd = ((new Date()).getTime() - RollerShutterTimeStart
-                                                .getOrDefault(l_where, new Date((new Date()).getTime())).getTime())
-                                                / m_ShutterRunTime / 100;
+                                    if (RollerShutterDir.getOrDefault(l_where, "").equals("DOWN")) {
+                                        logger.debug("RollerShutterTimeStart: {}: {}", itemName, (new Date()).getTime()
+                                                - RollerShutterTimeStart.getOrDefault(l_where, new Date()).getTime());
+                                        Long RollerShutterPosEnd = ((new Date()).getTime()
+                                                - RollerShutterTimeStart.getOrDefault(l_where, new Date()).getTime())
+                                                * 100 / m_ShutterRunTime;
                                         RollerShutterPos.put(l_where,
                                                 (int) (RollerShutterPosStart + RollerShutterPosEnd));
                                     }
