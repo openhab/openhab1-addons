@@ -245,7 +245,7 @@ public class BticinoDevice implements IBticinoEventListener {
                         } else {
                             if (ShutterPosActive.getOrDefault(l_where, false) == false) {
                                 logger.warn(
-                                        "Rollershutter Positioning not initalized. Wait for first Automation initalization.");
+                                        "Rollershutter Positioning not initialized. Wait for first Automation initialization.");
                                 return;
                             } else {
                                 int RollerShutterPosStart = RollerShutterPos.get(l_where);
@@ -385,8 +385,7 @@ public class BticinoDevice implements IBticinoEventListener {
         } catch (
 
         Exception e) {
-            logger.error("Gateway [{}], Error processing receiveCommand '{}'", m_gateway_id,
-                    new String[] { e.getMessage() });
+            logger.warn("Gateway [{}], Error processing receiveCommand '{}'", m_gateway_id, e.getMessage());
         }
     }
 
@@ -738,9 +737,9 @@ public class BticinoDevice implements IBticinoEventListener {
         try {
             Item item = itemRegistry.getItem(itemId);
             itemState = item.getState();
-            logger.debug("{}: State: {}", itemId, itemState.toString());
+            logger.debug("{}: State: {}", itemId, itemState);
         } catch (ItemNotFoundException ex) {
-            logger.info("{} not found {}", itemId, ex);
+            logger.info("{} not found {}", itemId, ex.getMessage());
         }
 
         return itemState;

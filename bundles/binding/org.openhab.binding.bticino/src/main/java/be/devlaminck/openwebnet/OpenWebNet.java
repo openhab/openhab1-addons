@@ -119,7 +119,7 @@ public class OpenWebNet extends Thread {
         try {
             myPlant.sendCommandAsync(OWNUtilities.createFrame(c), 1);
         } catch (MalformedCommandOPEN ex) {
-            logger.error("onCommand error : {}", ex.getMessage());
+            logger.warn("onCommand error : {}", ex.getMessage());
         }
     }
 
@@ -135,7 +135,7 @@ public class OpenWebNet extends Thread {
         } catch (InterruptedException p_i_ex) {
             logger.error("Openwebnet.run, InterruptedException : " + p_i_ex.getMessage());
         } catch (Exception p_i_ex) {
-            logger.error("Openwebnet.run, Exception : {}", p_i_ex.getMessage());
+            logger.warn("Openwebnet.run, Exception : {}", p_i_ex.getMessage());
         } finally {
             // interrupt handler on monitor thread will stop thread
             monitorSessionThread.interrupt();
@@ -188,7 +188,7 @@ public class OpenWebNet extends Thread {
                 logger.debug("Sending Diagnostic Frames to (re)initialize HEATING finished");
             }
         } catch (Exception e) {
-            logger.error("initSystem failed : {}", e.getMessage());
+            logger.warn("initSystem failed : {}", e.getMessage());
         }
     }
 
@@ -197,7 +197,7 @@ public class OpenWebNet extends Thread {
             try {
                 l_event_listener.handleEvent(p_i_event);
             } catch (Exception p_ex) {
-                logger.error("notifyEvent, Exception : {}", p_ex.getMessage());
+                logger.warn("notifyEvent, Exception : {}", p_ex.getMessage());
             }
         }
     }
