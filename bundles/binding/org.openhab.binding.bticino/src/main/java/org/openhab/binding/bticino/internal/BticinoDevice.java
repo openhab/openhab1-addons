@@ -219,15 +219,6 @@ public class BticinoDevice implements IBticinoEventListener {
                         if (m_ShutterRunTime == 0) {
                             if (command instanceof PercentType) {
                                 logger.warn("Rollershutter Positioning not possible. Define runtime for Shutter!!");
-                                // Workaround for Homekit as it sends PecentType Commands
-                                // if (Integer.valueOf(command.toString()) >= 55) {
-                                // l_pr.addProperty("what", "2");
-                                // } else if (Integer.valueOf(command.toString()) <= 45) {
-                                // l_pr.addProperty("what", "1");
-                                // } else if (Integer.valueOf(command.toString()) > 45
-                                // && Integer.valueOf(command.toString()) < 55) {
-                                // l_pr.addProperty("what", "0");
-                                // }
                                 return;
                             } else {
                                 if (UpDownType.UP.equals(command)) {
