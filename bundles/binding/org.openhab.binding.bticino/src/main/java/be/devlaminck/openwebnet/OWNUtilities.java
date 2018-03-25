@@ -56,9 +56,9 @@ public class OWNUtilities {
         address = c.getProperty("address").split("\\*");
         where = address[0];
 
-        if (who.equalsIgnoreCase("4")) {
+        if (who.equals("4")) {
             // Heating Control
-            if (what.substring(0, 2).equalsIgnoreCase("14")) {
+            if (what.substring(0, 2).equals("14")) {
                 // Change Temperature Set Point
                 frame = "*#" + who + "*#" + where + "*#" + what + "##";
             } else {

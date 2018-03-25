@@ -223,7 +223,7 @@ public class MonitorSessionThread extends Thread {
 
                 hStatus = "0";
 
-                if (what.equalsIgnoreCase("20")) {
+                if (what.equals("20")) {
                     String[] where_parts = where.split("#");
                     where = where_parts[0];
                     switch (Integer.parseInt(frameParts[3])) {

@@ -350,12 +350,12 @@ public class BticinoDevice implements IBticinoEventListener {
                         // T = Temperature 0400 (40 degrees C)
                         // M = Mode (1=Heating, 2=Cooling 3=General)
                         // #0 is used in the WHERE for ALL ZONES
-                        if (itemBindingConfig.what.equalsIgnoreCase("14")) {
+                        if (itemBindingConfig.what.equals("14")) {
                             l_pr.addProperty("what", "14*" + convertTemperatureBticino(String.valueOf(command)) + "*1");
                         }
                         // Set Control Unit Heating
                         // WHAT = 100
-                        else if (itemBindingConfig.what.equalsIgnoreCase("100")) {
+                        else if (itemBindingConfig.what.equals("100")) {
                             l_pr.addProperty("what", String.valueOf(command));
                         }
                         break;
@@ -569,7 +569,7 @@ public class BticinoDevice implements IBticinoEventListener {
                         case 14:
                             // Status Set Point Temperature
                             if (p_protocol_read.getProperty("what").equalsIgnoreCase(l_binding_config.what)
-                                    && p_protocol_read.getProperty("hStatus").equalsIgnoreCase("0")
+                                    && p_protocol_read.getProperty("hStatus").equals("0")
                                     && p_protocol_read.getProperty("temperature") != null) {
                                 logger.debug("T : {} : {}", l_item.getName(),
                                         p_protocol_read.getProperty("temperature"));
@@ -580,7 +580,7 @@ public class BticinoDevice implements IBticinoEventListener {
 
                         case 100:
                             // Status Operation Mode
-                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("1")) {
+                            if (p_protocol_read.getProperty("hStatus").equals("1")) {
                                 logger.debug("T_ControlStatus : {}", l_item.getName());
                                 hMainCtrlProbeState = "";
                                 hMainCtrlFailure = "";
@@ -591,7 +591,7 @@ public class BticinoDevice implements IBticinoEventListener {
 
                         case 101:
                             // Status Control Mode
-                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("2")) {
+                            if (p_protocol_read.getProperty("hStatus").equals("2")) {
                                 logger.debug("T_ControlMode : {}", l_item.getName());
                                 eventPublisher.postUpdate(l_item.getName(),
                                         DecimalType.valueOf(p_protocol_read.getProperty("what")));
@@ -600,7 +600,7 @@ public class BticinoDevice implements IBticinoEventListener {
 
                         case 102:
                             // Status Main Unit Remote
-                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("3")) {
+                            if (p_protocol_read.getProperty("hStatus").equals("3")) {
                                 logger.debug("T_ControlRemote : {}", l_item.getName());
                                 eventPublisher.postUpdate(l_item.getName(),
                                         DecimalType.valueOf(p_protocol_read.getProperty("what")));
@@ -634,7 +634,7 @@ public class BticinoDevice implements IBticinoEventListener {
                             break;
                         case 102:
                             // Status Main Unit Remote
-                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("3")) {
+                            if (p_protocol_read.getProperty("hStatus").equals("3")) {
                                 int state = -1;
                                 if (p_protocol_read.getProperty("messageDescription")
                                         .equalsIgnoreCase("Remote Control disabled")) {
@@ -677,7 +677,7 @@ public class BticinoDevice implements IBticinoEventListener {
                             break;
                         case 101:
                             // Status Control Mode
-                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("2")) {
+                            if (p_protocol_read.getProperty("hStatus").equals("2")) {
                                 switch (Integer.parseInt(p_protocol_read.getProperty("what"))) {
                                     case 1:
                                         state = "HeatOn";
@@ -693,7 +693,7 @@ public class BticinoDevice implements IBticinoEventListener {
                             break;
                         case 102:
                             // Status Main Unit Remote
-                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("3")) {
+                            if (p_protocol_read.getProperty("hStatus").equals("3")) {
                                 logger.debug("T_ControlRemote : {}", l_item.getName());
                                 eventPublisher.postUpdate(l_item.getName(),
                                         StringType.valueOf(p_protocol_read.getProperty("messageDescription")));
@@ -701,7 +701,7 @@ public class BticinoDevice implements IBticinoEventListener {
                             break;
                         case 103:
                             // Status Main Unit Probe Status
-                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("4")) {
+                            if (p_protocol_read.getProperty("hStatus").equals("4")) {
                                 if (hMainCtrlProbeState.length() > 0) {
                                     hMainCtrlProbeState = hMainCtrlProbeState + ", "
                                             + p_protocol_read.getProperty("messageDescription");
@@ -714,7 +714,7 @@ public class BticinoDevice implements IBticinoEventListener {
                             break;
                         case 104:
                             // Status Main Unit Failure
-                            if (p_protocol_read.getProperty("hStatus").equalsIgnoreCase("5")) {
+                            if (p_protocol_read.getProperty("hStatus").equals("5")) {
                                 if (hMainCtrlFailure.length() > 0) {
                                     hMainCtrlFailure = hMainCtrlFailure + ", \n\r"
                                             + p_protocol_read.getProperty("messageDescription");
