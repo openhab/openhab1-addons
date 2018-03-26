@@ -86,13 +86,6 @@
     <configfile finalname="${openhab.conf}/services/pushsafer.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/pushsafer</configfile>
   </feature>  
 
-  <feature name="openhab-action-satel" description="Satel Action" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <feature>openhab-binding-satel1</feature>
-    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.satel/${project.version}</bundle>
-  </feature>
-
   <feature name="openhab-action-telegram" description="Telegram Action" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -602,14 +595,6 @@
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.sapp/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/sapp.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/sapp</configfile>
-  </feature>
-
-  <feature name="openhab-binding-satel1" description="Satel Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <feature>openhab-transport-serial</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.satel/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/satel.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/satel</configfile>
   </feature>
 
   <feature name="openhab-binding-serial1" description="Serial Binding" version="${project.version}">
