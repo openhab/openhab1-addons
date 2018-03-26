@@ -26,11 +26,10 @@ import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
  * (https://github.com/fcrisciani/java-myhome-library) released under EPL
  *
  * @author Tom De Vlaminck, Lago Moreno, Andrea Carabillo
+ * @author Reinhard Freuis - various enhancements for heating, rollershutter
  * @serial 1.0
  * @since 1.7.0
  *
- * @author Reinhard Freuis
- * @since 1.11.0*
  */
 public class MonitorSessionThread extends Thread {
 

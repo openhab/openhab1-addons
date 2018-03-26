@@ -28,11 +28,10 @@ import com.myhome.fcrisciani.exception.MalformedCommandOPEN;
  * released as EPL (https://github.com/fcrisciani/java-myhome-library)
  *
  * @author Tom De Vlaminck, Andrea Carabillo
+ * @author Reinhard Freuis - various enhancements for heating, rollershutter
  * @serial 1.0
  * @since 1.7.0
  *
- * @author Reinhard Freuis
- * @since 1.11.0*
  */
 public class OpenWebNet extends Thread {
 

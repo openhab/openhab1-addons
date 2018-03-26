@@ -27,11 +27,10 @@ import org.slf4j.LoggerFactory;
  * BticinoBindingProvider provides binding for openHAB Items
  *
  * @author Tom De Vlaminck
+ * @author Reinhard Freuis - various enhancements for heating, rollershutter
  * @serial 1.0
  * @since 1.7.0
  *
- * @author Reinhard Freuis
- * @since 1.11.0*
  */
 public class BticinoGenericBindingProvider extends AbstractGenericBindingProvider implements BticinoBindingProvider {
 

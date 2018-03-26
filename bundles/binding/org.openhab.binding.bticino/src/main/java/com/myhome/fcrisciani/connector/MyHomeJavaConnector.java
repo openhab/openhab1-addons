@@ -35,11 +35,10 @@ import com.myhome.fcrisciani.queue.PriorityQueueThread;
  * plant
  *
  * @author Flavio Crisciani
+ * @author Reinhard Freuis - various enhancements for heating, rollershutter
  * @serial 1.0
  * @since 1.7.0
  *
- * @author Reinhard Freuis
- * @since 1.11.0*
  */
 public class MyHomeJavaConnector {
 
