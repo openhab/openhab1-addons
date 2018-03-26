@@ -51,11 +51,10 @@ import be.devlaminck.openwebnet.ProtocolRead;
  * received, a command on the bus.
  *
  * @author Tom De Vlaminck
+ * @author Reinhard Freuis - various enhancements for heating, rollershutter
  * @serial 1.0
  * @since 1.7.0
  *
- * @author Reinhard Freuis
- * @since 1.11.0*
  */
 public class BticinoDevice implements IBticinoEventListener {
 
@@ -238,96 +237,93 @@ public class BticinoDevice implements IBticinoEventListener {
                                 logger.warn(
                                         "Rollershutter Positioning not initialized. Wait for first Automation initialization.");
                                 return;
-                            } else {
-                                int RollerShutterPosStart = RollerShutterPos.get(l_where);
+                            }
+                            int RollerShutterPosStart = RollerShutterPos.get(l_where);
 
-                                if ((command instanceof PercentType)
-                                        && (ShutterBlock.getOrDefault(l_where, false) == false)) {
-                                    logger.debug("RollershutterPosStart %: {}: {}", itemName, RollerShutterPosStart);
+                            if ((command instanceof PercentType)
+                                    && (ShutterBlock.getOrDefault(l_where, false) == false)) {
+                                logger.debug("RollershutterPosStart %: {}: {}", itemName, RollerShutterPosStart);
 
-                                    int RollerShutterPosEnd = Integer.valueOf(command.toString());
-                                    if (RollerShutterPosEnd > RollerShutterPosStart) {
-                                        l_pr.addProperty("what", "2");
-                                        ShutterBlock.put(l_where, true);
-                                        m_open_web_net.onCommand(l_pr);
-                                        int RollerShutterTimeEnd = (RollerShutterPosEnd - RollerShutterPosStart)
-                                                * m_ShutterRunTime / 100;
-                                        TimeUnit.MILLISECONDS.sleep(RollerShutterTimeEnd);
-                                        l_pr.addProperty("what", "0");
-                                        m_open_web_net.onCommand(l_pr);
-                                        RollerShutterPos.put(l_where, RollerShutterPosEnd);
-                                    } else if (RollerShutterPosEnd < RollerShutterPosStart) {
-                                        l_pr.addProperty("what", "1");
-                                        ShutterBlock.put(l_where, true);
-                                        m_open_web_net.onCommand(l_pr);
-                                        int RollerShutterTimeEnd = (RollerShutterPosStart - RollerShutterPosEnd)
-                                                * m_ShutterRunTime / 100;
-                                        TimeUnit.MILLISECONDS.sleep(RollerShutterTimeEnd);
-                                        l_pr.addProperty("what", "0");
-                                        m_open_web_net.onCommand(l_pr);
-                                    }
+                                int RollerShutterPosEnd = Integer.valueOf(command.toString());
+                                if (RollerShutterPosEnd > RollerShutterPosStart) {
+                                    l_pr.addProperty("what", "2");
+                                    ShutterBlock.put(l_where, true);
+                                    m_open_web_net.onCommand(l_pr);
+                                    int RollerShutterTimeEnd = (RollerShutterPosEnd - RollerShutterPosStart)
+                                            * m_ShutterRunTime / 100;
+                                    TimeUnit.MILLISECONDS.sleep(RollerShutterTimeEnd);
+                                    l_pr.addProperty("what", "0");
+                                    m_open_web_net.onCommand(l_pr);
                                     RollerShutterPos.put(l_where, RollerShutterPosEnd);
-                                    eventPublisher.postUpdate(itemName,
-                                            PercentType.valueOf(Integer.toString(RollerShutterPosEnd)));
-                                    logger.debug("RollershutterPosEnd %: {}: {}=>{} / {}", itemName,
-                                            RollerShutterPosStart, RollerShutterPosEnd,
-                                            Integer.toString(RollerShutterPosEnd));
-                                    ShutterBlock.put(l_where, false);
-                                    return;
-                                } else if (ShutterBlock.getOrDefault(l_where, false) == false) {
-                                    logger.debug("RollershutterPosStart: {}: {}", itemName, RollerShutterPosStart);
-                                    if (UpDownType.UP.equals(command)) {
-                                        l_pr.addProperty("what", "1");
-                                        RollerShutterTimeStart.put(l_where, new Date());
-                                        RollerShutterDir.put(l_where, "UP");
-                                    } else if (UpDownType.DOWN.equals(command)) {
-                                        l_pr.addProperty("what", "2");
-                                        RollerShutterTimeStart.put(l_where, new Date());
-                                        RollerShutterDir.put(l_where, "DOWN");
-                                    } else if (StopMoveType.STOP.equals(command)) {
-                                        l_pr.addProperty("what", "0");
-                                        m_open_web_net.onCommand(l_pr);
-                                        if (RollerShutterDir.getOrDefault(l_where, "").equals("") == false) {
-                                            if (RollerShutterDir.getOrDefault(l_where, "").equals("UP")) {
-                                                logger.debug("RollerShutterTimeStart: {}: {}", itemName,
-                                                        ((new Date()).getTime() - RollerShutterTimeStart
-                                                                .getOrDefault(l_where, new Date()).getTime()));
-                                                Long RollerShutterPosEnd = ((new Date()).getTime()
-                                                        - RollerShutterTimeStart.getOrDefault(l_where, new Date())
-                                                                .getTime())
-                                                        * 100 / m_ShutterRunTime;
-                                                RollerShutterPos.put(l_where,
-                                                        (int) (RollerShutterPosStart - RollerShutterPosEnd));
-                                            }
-                                            if (RollerShutterDir.getOrDefault(l_where, "").equals("DOWN")) {
-                                                logger.debug("RollerShutterTimeStart: {}: {}", itemName,
-                                                        ((new Date()).getTime() - RollerShutterTimeStart
-                                                                .getOrDefault(l_where, new Date()).getTime()));
-                                                Long RollerShutterPosEnd = ((new Date()).getTime()
-                                                        - RollerShutterTimeStart.getOrDefault(l_where, new Date())
-                                                                .getTime())
-                                                        * 100 / m_ShutterRunTime;
-                                                RollerShutterPos.put(l_where,
-                                                        (int) (RollerShutterPosStart + RollerShutterPosEnd));
-                                            }
+                                } else if (RollerShutterPosEnd < RollerShutterPosStart) {
+                                    l_pr.addProperty("what", "1");
+                                    ShutterBlock.put(l_where, true);
+                                    m_open_web_net.onCommand(l_pr);
+                                    int RollerShutterTimeEnd = (RollerShutterPosStart - RollerShutterPosEnd)
+                                            * m_ShutterRunTime / 100;
+                                    TimeUnit.MILLISECONDS.sleep(RollerShutterTimeEnd);
+                                    l_pr.addProperty("what", "0");
+                                    m_open_web_net.onCommand(l_pr);
+                                }
+                                RollerShutterPos.put(l_where, RollerShutterPosEnd);
+                                eventPublisher.postUpdate(itemName,
+                                        PercentType.valueOf(Integer.toString(RollerShutterPosEnd)));
+                                logger.debug("RollershutterPosEnd %: {}: {}=>{} / {}", itemName, RollerShutterPosStart,
+                                        RollerShutterPosEnd, Integer.toString(RollerShutterPosEnd));
+                                ShutterBlock.put(l_where, false);
+                                return;
+                            }
+
+                            if (ShutterBlock.getOrDefault(l_where, false) == false) {
+                                logger.debug("RollershutterPosStart: {}: {}", itemName, RollerShutterPosStart);
+                                if (UpDownType.UP.equals(command)) {
+                                    l_pr.addProperty("what", "1");
+                                    RollerShutterTimeStart.put(l_where, new Date());
+                                    RollerShutterDir.put(l_where, "UP");
+                                } else if (UpDownType.DOWN.equals(command)) {
+                                    l_pr.addProperty("what", "2");
+                                    RollerShutterTimeStart.put(l_where, new Date());
+                                    RollerShutterDir.put(l_where, "DOWN");
+                                } else if (StopMoveType.STOP.equals(command)) {
+                                    l_pr.addProperty("what", "0");
+                                    m_open_web_net.onCommand(l_pr);
+                                    if (RollerShutterDir.getOrDefault(l_where, "").equals("") == false) {
+                                        if (RollerShutterDir.getOrDefault(l_where, "").equals("UP")) {
+                                            logger.debug("RollerShutterTimeStart: {}: {}", itemName,
+                                                    ((new Date()).getTime() - RollerShutterTimeStart
+                                                            .getOrDefault(l_where, new Date()).getTime()));
+                                            Long RollerShutterPosEnd = ((new Date()).getTime() - RollerShutterTimeStart
+                                                    .getOrDefault(l_where, new Date()).getTime()) * 100
+                                                    / m_ShutterRunTime;
+                                            RollerShutterPos.put(l_where,
+                                                    (int) (RollerShutterPosStart - RollerShutterPosEnd));
                                         }
-                                        RollerShutterDir.put(l_where, "");
-                                        if (RollerShutterPos.get(l_where) > 100) {
-                                            RollerShutterPos.put(l_where, 100);
+                                        if (RollerShutterDir.getOrDefault(l_where, "").equals("DOWN")) {
+                                            logger.debug("RollerShutterTimeStart: {}: {}", itemName,
+                                                    ((new Date()).getTime() - RollerShutterTimeStart
+                                                            .getOrDefault(l_where, new Date()).getTime()));
+                                            Long RollerShutterPosEnd = ((new Date()).getTime() - RollerShutterTimeStart
+                                                    .getOrDefault(l_where, new Date()).getTime()) * 100
+                                                    / m_ShutterRunTime;
+                                            RollerShutterPos.put(l_where,
+                                                    (int) (RollerShutterPosStart + RollerShutterPosEnd));
                                         }
-                                        if (RollerShutterPos.get(l_where) < 0) {
-                                            RollerShutterPos.put(l_where, 0);
-                                        }
-                                        logger.debug("RollershutterPosEnd: {}: {}", itemName,
-                                                RollerShutterPos.get(l_where));
-                                        eventPublisher.postUpdate(itemName,
-                                                PercentType.valueOf(Integer.toString(RollerShutterPos.get(l_where))));
-                                        return;
                                     }
+                                    RollerShutterDir.put(l_where, "");
+                                    if (RollerShutterPos.get(l_where) > 100) {
+                                        RollerShutterPos.put(l_where, 100);
+                                    }
+                                    if (RollerShutterPos.get(l_where) < 0) {
+                                        RollerShutterPos.put(l_where, 0);
+                                    }
+                                    logger.debug("RollershutterPosEnd: {}: {}", itemName,
+                                            RollerShutterPos.get(l_where));
+                                    eventPublisher.postUpdate(itemName,
+                                            PercentType.valueOf(Integer.toString(RollerShutterPos.get(l_where))));
+                                    return;
                                 }
                             }
                         }
-
                     }
                     // Temperature Control
                     case 4: {
