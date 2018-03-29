@@ -10,6 +10,8 @@ package org.openhab.binding.knx.config;
 
 import org.openhab.core.types.Type;
 
+import com.sun.istack.internal.Nullable;
+
 import tuwien.auto.calimero.datapoint.Datapoint;
 import tuwien.auto.calimero.process.ProcessEvent;
 
@@ -27,7 +29,7 @@ public interface KNXTypeMapper {
 
     /**
      * maps an openHAB command/state to a string value which correspond to its datapoint in KNX
-     * 
+     *
      * @param type a command or state
      * @param dpt the corresponding datapoint type
      * @return datapoint value as a string
@@ -36,11 +38,14 @@ public interface KNXTypeMapper {
 
     /**
      * maps a datapoint value to an openHAB command or state
-     * 
+     *
      * @param datapoint the source datapoint
      * @param data the datapoint value as an ASDU byte array (see <code>{@link ProcessEvent}.getASDU()</code>)
      * @return a command or state of openHAB
      */
     public Type toType(Datapoint datapoint, byte[] data);
+
+    @Nullable
+    public Class<? extends Type> toTypeClass(@Nullable String dpt);
 
 }
