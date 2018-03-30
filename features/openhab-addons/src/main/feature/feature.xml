@@ -569,12 +569,6 @@
     <configfile finalname="${openhab.conf}/services/powermax.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/powermax</configfile>
   </feature>
 
-  <feature name="openhab-binding-rwesmarthome1" description="RWE SmartHome Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.rwesmarthome/${project.version}</bundle>
-  </feature>
-
   <feature name="openhab-binding-samsungac1" description="Samsung A/C Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
