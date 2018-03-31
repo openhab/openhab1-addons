@@ -477,15 +477,12 @@ public class Tr064Comm {
 
         } catch (UnsupportedEncodingException e) {
             logger.error("Encoding not supported: {}", e.getMessage().toString());
-            response = null;
             exceptionOccurred = true;
         } catch (ClientProtocolException e) {
             logger.error("Client Protocol not supported: {}", e.getMessage().toString());
-            response = null;
             exceptionOccurred = true;
         } catch (IOException e) {
             logger.error("Cannot send/receive: {}", e.getMessage().toString());
-            response = null;
             exceptionOccurred = true;
         } catch (UnsupportedOperationException e) {
             logger.error("Operation unsupported: {}", e.getMessage().toString());
@@ -493,7 +490,6 @@ public class Tr064Comm {
             exceptionOccurred = true;
         } catch (SOAPException e) {
             logger.error("SOAP Error: {}", e.getMessage().toString());
-            response = null;
             exceptionOccurred = true;
         } finally {
             // Make sure connection is released. If error occurred make sure to print in log

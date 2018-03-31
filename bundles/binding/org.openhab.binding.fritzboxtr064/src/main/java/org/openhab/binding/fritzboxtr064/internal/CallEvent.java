@@ -142,7 +142,7 @@ public class CallEvent {
             _connectionType = fields[6];
         }
 
-        logger.debug("Successfully parsed Call Event: {}", toString());
+        logger.debug("Successfully parsed Call Event: {}", this);
         return true;
     }
 
