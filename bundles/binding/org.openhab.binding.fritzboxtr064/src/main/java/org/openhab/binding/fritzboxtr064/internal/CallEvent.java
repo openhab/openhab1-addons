@@ -130,7 +130,11 @@ public class CallEvent {
             _connectionType = fields[5];
         } else if (_callType.equals("CONNECT")) {
             _line = fields[3];
-            _externalNo = fields[4];
+            if (fields.length > 4) {
+                _externalNo = fields[4];
+            } else {
+                _externalNo = "Unknown";
+            }
         } else if (_callType.equals("CALL")) {
             _line = fields[3];
             _internalNo = fields[4];
