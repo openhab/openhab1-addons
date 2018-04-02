@@ -25,18 +25,18 @@ The following are valid action calls that can be made when the plugin is loaded.
 For specific information on each item, see the [Pushover API](https://pushover.net/api).
 
 - `pushover(String message)`
-- `pushover(String message, String device)`
 - `pushover(String message, int priority)`
 - `pushover(String message, int priority, String url)`
 - `pushover(String message, int priority, String url, String urlTitle)`
 - `pushover(String message, int priority, String url, String urlTitle, String soundFile)`
+- `pushover(String message, String device)`
 - `pushover(String message, String device, int priority)`
 - `pushover(String message, String device, int priority, String url)`
 - `pushover(String message, String device, int priority, String url, String urlTitle)`
 - `pushover(String message, String device, int priority, String url, String urlTitle, String soundFile)`
 - `pushover(String apiToken, String userKey, String message)`
-- `pushover(String apiToken, String userKey, String message, String device)`
 - `pushover(String apiToken, String userKey, String message, int priority)`
+- `pushover(String apiToken, String userKey, String message, String device)`
 - `pushover(String apiToken, String userKey, String message, String device, int priority)`
 - `pushover(String apiToken, String userKey, String message, String device, String title, String url, String urlTitle, int priority, String soundFile)`
 
@@ -44,9 +44,34 @@ The action calls have to be configured in the above sequence, if you need to omi
 In this case any default values from `services/pushover.cfg` will be used.
 Note that you cannot use a null value for int priority.
 
-### Example
+- `sendPushoverEmergency(String message)`
+- `sendPushoverEmergency(String message, String title)`
+- `sendPushoverEmergency(String message, String title, String device)`
+- `sendPushoverEmergency(String message, String title, String device, String soundFile)`
+
+- `cancelPushoverEmergency(String receipt)`
+- `cancelPushoverEmergency(String apiToken, String userKey, String receipt)`
+
+The `sendPushoverEmergency` actions will send a message with [Emergency Priority](https://pushover.net/api#priority).
+The actions return a receipt identifier (String).
+The identifier has to be passed on to the `cancelPushoverEmergency` actions to cancel the notification prior to reaching the `defaultExpire` value of one hour.
+
+### Basic example
 
 Send a message without a sound, omit String url and String urlTitle.
 
 - `pushover("test message", 1, null, null, "none")` or
 - `pushover("test message", 1, "", "", "none")`
+
+### Emergency example
+
+```php
+var String receipt = sendPushoverEmergency("Attention, front door opened!")
+
+// wait for your cancel condition
+
+if( receipt !== null ) {
+    cancelPushoverEmergency(receipt)
+    receipt = null
+}
+```
