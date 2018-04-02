@@ -10,7 +10,13 @@ Bundle-Activator: org.openhab.action.pushover.internal.PushoverActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Pushover action of the open Home Automation Bus (openHAB)
 Import-Package: com.google.gson,
- org.apache.commons.io,
+ org.apache.commons.io, 
+ org.apache.commons.codec,
+ org.apache.commons.httpclient,
+ org.apache.commons.httpclient.auth,
+ org.apache.commons.httpclient.methods,
+ org.apache.commons.httpclient.methods.multipart,
+ org.apache.commons.httpclient.params,
  org.apache.commons.lang,
  org.openhab.core.items,
  org.openhab.core.library.items,

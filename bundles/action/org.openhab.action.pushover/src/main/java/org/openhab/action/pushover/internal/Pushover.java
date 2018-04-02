@@ -8,16 +8,26 @@
  */
 package org.openhab.action.pushover.internal;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.scriptengine.action.ActionDoc;
@@ -31,8 +41,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -85,6 +93,7 @@ public class Pushover {
     public static final String MESSAGE_KEY_SOUND = "sound";
     public static final String MESSAGE_KEY_RETRY = "retry";
     public static final String MESSAGE_KEY_EXPIRE = "expire";
+    public static final String MESSAGE_KEY_ATTACHMENT = "attachment";
 
     public static final String MESSAGE_KEY_CONTENT_TYPE = "content-type";
 
@@ -105,7 +114,22 @@ public class Pushover {
     @ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
     public static boolean pushover(@ParamDoc(name = "message", text = "Your message.") String message) {
         return pushover(defaultApiKey, defaultUser, message, defaultDevice, defaultTitle, defaultUrl, defaultUrlTitle,
-                defaultPriority, defaultSound);
+                defaultPriority, defaultSound, null);
+    }
+
+    @ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean sendPushoverImage(@ParamDoc(name = "message", text = "Your message.") String message,
+            @ParamDoc(name = "attachment", text = "The full path of a JPEG image attachment to be pushed with the message (since API version 3.0).") String attachment) {
+        return pushover(defaultApiKey, defaultUser, message, defaultDevice, defaultTitle, defaultUrl, defaultUrlTitle,
+                defaultPriority, defaultSound, attachment);
+    }
+
+    @ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean sendPushoverImage(@ParamDoc(name = "message", text = "Your message.") String message,
+            @ParamDoc(name = "attachment", text = "The full path of a JPEG image attachment to be pushed with the message (since API version 3.0).") String attachment,
+            @ParamDoc(name = "priority", text = "The priority of the notification") int priority) {
+        return pushover(defaultApiKey, defaultUser, message, defaultDevice, defaultTitle, defaultUrl, defaultUrlTitle,
+                priority, defaultSound, attachment);
     }
 
     @ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
@@ -233,24 +257,38 @@ public class Pushover {
             @ParamDoc(name = "urlTitle", text = "A title for your supplementary URL, otherwise just the URL is shown.") String urlTitle,
             @ParamDoc(name = "priority", text = "Send as -1 to always send as a quiet notification, 1 to display as high-priority and bypass the user's quiet hours, or 2 to also require confirmation from the user.") int priority,
             @ParamDoc(name = "sound", text = "The name of one of the sounds supported by device clients to override the user's default sound choice.") String sound) {
+        return pushover(apiKey, user, message, device, title, url, urlTitle, priority, sound, null);
+    }
 
-        StringBuilder data = new StringBuilder();
+    // Primary method for sending a message to the Pushover API
+    @ActionDoc(text = "Send a notification to your Android device. apiKey, user and message are required. All else can effectively be null.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean pushover(@ParamDoc(name = "apiKey", text = "Your application's API token.") String apiKey,
+            @ParamDoc(name = "user", text = "The user/group key (not e-mail address) of your user (or you), viewable when logged into Pushover dashboard.") String user,
+            @ParamDoc(name = "message", text = "Your message.") String message,
+            @ParamDoc(name = "device", text = " Your user's device name to send the message directly to that device, rather than all of the user's devices.") String device,
+            @ParamDoc(name = "title", text = "Your message's title, otherwise your app's name is used.") String title,
+            @ParamDoc(name = "url", text = "A supplementary URL to show with your message.") String url,
+            @ParamDoc(name = "urlTitle", text = "A title for your supplementary URL, otherwise just the URL is shown.") String urlTitle,
+            @ParamDoc(name = "priority", text = "Send as -1 to always send as a quiet notification, 1 to display as high-priority and bypass the user's quiet hours, or 2 to also require confirmation from the user.") int priority,
+            @ParamDoc(name = "sound", text = "The name of one of the sounds supported by device clients to override the user's default sound choice.") String sound,
+            @ParamDoc(name = "attachment", text = "The full path of a JPEG image attachment to be pushed with the message (since API version 3.0).") String attachment) {
 
+        List<Part> parts = new ArrayList<>();
         try {
 
             if (!StringUtils.isEmpty(apiKey)) {
-                addEncodedParameter(data, MESSAGE_KEY_API_KEY, apiKey);
+                parts.add(new StringPart(MESSAGE_KEY_API_KEY, apiKey, UTF_8_ENCODING));
             } else if (!StringUtils.isEmpty(defaultApiKey)) {
-                addEncodedParameter(data, MESSAGE_KEY_API_KEY, defaultApiKey);
+                parts.add(new StringPart(MESSAGE_KEY_API_KEY, defaultApiKey, UTF_8_ENCODING));
             } else {
                 logger.warn("Application API token not specified.");
                 return false;
             }
 
             if (!StringUtils.isEmpty(user)) {
-                addEncodedParameter(data, MESSAGE_KEY_USER, user);
+                parts.add(new StringPart(MESSAGE_KEY_USER, user, UTF_8_ENCODING));
             } else if (!StringUtils.isEmpty(defaultUser)) {
-                addEncodedParameter(data, MESSAGE_KEY_USER, defaultUser);
+                parts.add(new StringPart(MESSAGE_KEY_USER, defaultUser, UTF_8_ENCODING));
             } else {
                 logger.warn("The user/group key was not specified.");
                 return false;
@@ -258,7 +296,7 @@ public class Pushover {
 
             if (!StringUtils.isEmpty(message)) {
                 if ((message.length() + title.length()) <= API_MAX_MESSAGE_LENGTH) {
-                    addEncodedParameter(data, MESSAGE_KEY_MESSAGE, message);
+                    parts.add(new StringPart(MESSAGE_KEY_MESSAGE, message, UTF_8_ENCODING));
                 } else {
                     logger.warn("Together, the event message and title total more than {} characters.",
                             API_MAX_MESSAGE_LENGTH);
@@ -270,27 +308,27 @@ public class Pushover {
             }
 
             if (!StringUtils.isEmpty(device)) {
-                addEncodedParameter(data, MESSAGE_KEY_DEVICE, device);
+                parts.add(new StringPart(MESSAGE_KEY_DEVICE, device, UTF_8_ENCODING));
             } else if (!StringUtils.isEmpty(defaultDevice)) {
-                addEncodedParameter(data, MESSAGE_KEY_DEVICE, defaultDevice);
+                parts.add(new StringPart(MESSAGE_KEY_DEVICE, defaultDevice, UTF_8_ENCODING));
             }
 
             if (!StringUtils.isEmpty(title)) {
-                addEncodedParameter(data, MESSAGE_KEY_TITLE, title);
+                parts.add(new StringPart(MESSAGE_KEY_TITLE, title, UTF_8_ENCODING));
             } else if (!StringUtils.isEmpty(defaultTitle)) {
-                addEncodedParameter(data, MESSAGE_KEY_TITLE, defaultTitle);
+                parts.add(new StringPart(MESSAGE_KEY_TITLE, defaultTitle, UTF_8_ENCODING));
             }
 
             if (!StringUtils.isEmpty(url)) {
                 if (url.length() <= API_MAX_URL_LENGTH) {
-                    addEncodedParameter(data, MESSAGE_KEY_URL, url);
+                    parts.add(new StringPart(MESSAGE_KEY_URL, url, UTF_8_ENCODING));
                 } else {
                     logger.warn("The url is greater than {} characters.", API_MAX_URL_LENGTH);
                     return false;
                 }
             } else if (!StringUtils.isEmpty(defaultUrl)) {
                 if (defaultUrl.length() <= API_MAX_URL_LENGTH) {
-                    addEncodedParameter(data, MESSAGE_KEY_URL, defaultUrl);
+                    parts.add(new StringPart(MESSAGE_KEY_URL, defaultUrl, UTF_8_ENCODING));
                 } else {
                     logger.warn("The url is greater than {} characters.", API_MAX_URL_LENGTH);
                     return false;
@@ -299,14 +337,14 @@ public class Pushover {
 
             if (!StringUtils.isEmpty(urlTitle)) {
                 if (urlTitle.length() <= API_MAX_URL_TITLE_LENGTH) {
-                    addEncodedParameter(data, MESSAGE_KEY_URL_TITLE, urlTitle);
+                    parts.add(new StringPart(MESSAGE_KEY_URL_TITLE, urlTitle, UTF_8_ENCODING));
                 } else {
                     logger.warn("The url title is greater than {} characters.", API_MAX_URL_TITLE_LENGTH);
                     return false;
                 }
             } else if (!StringUtils.isEmpty(defaultUrlTitle)) {
                 if (defaultUrlTitle.length() <= API_MAX_URL_TITLE_LENGTH) {
-                    addEncodedParameter(data, MESSAGE_KEY_URL_TITLE, defaultUrlTitle);
+                    parts.add(new StringPart(MESSAGE_KEY_URL_TITLE, defaultUrlTitle, UTF_8_ENCODING));
                 } else {
                     logger.warn("The url title is greater than {} characters.", API_MAX_URL_TITLE_LENGTH);
                     return false;
@@ -315,23 +353,25 @@ public class Pushover {
 
             try {
                 if (isValueInList(API_VALID_PRIORITY_LIST, priority)) {
-                    addEncodedParameter(data, MESSAGE_KEY_PRIORITY, String.valueOf(priority));
+                    parts.add(new StringPart(MESSAGE_KEY_PRIORITY, String.valueOf(priority), UTF_8_ENCODING));
 
                     if (isValueInList(API_HIGH_PRIORITY_LIST, priority)) {
                         if (retry >= API_MIN_RETRY_SECONDS) {
-                            addEncodedParameter(data, MESSAGE_KEY_RETRY, String.valueOf(retry));
+                            parts.add(new StringPart(MESSAGE_KEY_RETRY, String.valueOf(retry), UTF_8_ENCODING));
                         } else {
                             logger.warn("Retry value of {} is too small. Using default value of {}.", retry,
                                     API_MIN_RETRY_SECONDS);
-                            addEncodedParameter(data, MESSAGE_KEY_RETRY, String.valueOf(API_MIN_RETRY_SECONDS));
+                            parts.add(new StringPart(MESSAGE_KEY_RETRY, String.valueOf(API_MIN_RETRY_SECONDS),
+                                    UTF_8_ENCODING));
                         }
 
                         if (expire <= API_MAX_EXPIRE_SECONDS) {
-                            addEncodedParameter(data, MESSAGE_KEY_EXPIRE, String.valueOf(expire));
+                            parts.add(new StringPart(MESSAGE_KEY_EXPIRE, String.valueOf(expire), UTF_8_ENCODING));
                         } else {
                             logger.warn("Expire value of {} is too large. Using default value of {}.", expire,
                                     API_MAX_EXPIRE_SECONDS);
-                            addEncodedParameter(data, MESSAGE_KEY_EXPIRE, String.valueOf(API_MAX_EXPIRE_SECONDS));
+                            parts.add(new StringPart(MESSAGE_KEY_EXPIRE, String.valueOf(API_MAX_EXPIRE_SECONDS),
+                                    UTF_8_ENCODING));
                         }
                     }
                 } else {
@@ -343,15 +383,47 @@ public class Pushover {
             }
 
             if (!StringUtils.isEmpty(sound)) {
-                addEncodedParameter(data, MESSAGE_KEY_SOUND, sound);
+                parts.add(new StringPart(MESSAGE_KEY_SOUND, sound, UTF_8_ENCODING));
             } else if (!StringUtils.isEmpty(defaultSound)) {
-                addEncodedParameter(data, MESSAGE_KEY_SOUND, defaultSound);
+                parts.add(new StringPart(MESSAGE_KEY_SOUND, defaultSound, UTF_8_ENCODING));
             }
 
-            String content = data.toString();
-            logger.debug("Executing post to {} with the following content: {}", XML_API_URL, content);
-            String response = HttpUtil.executeUrl("POST", XML_API_URL, IOUtils.toInputStream(content), CONTENT_TYPE,
-                    timeout);
+            if (!StringUtils.isEmpty(attachment)) {
+                logger.debug("Push the image attachment '{}'.", attachment);
+                try {
+                    File f = new File(attachment);
+                    FilePart fp = new FilePart(MESSAGE_KEY_ATTACHMENT, f.getName(), f);
+                    fp.setContentType("image/jpeg");
+                    parts.add(fp);
+                } catch (IOException e) {
+                    logger.warn("Could not process file '{}': {}, will send the message without attachment.",
+                            attachment, e.getMessage());
+                }
+            }
+
+            PostMethod httpPost = new PostMethod(XML_API_URL);
+
+            httpPost.setRequestEntity(
+                    new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), httpPost.getParams()));
+
+            logger.debug("Executing post to {} with the following content: {}", XML_API_URL, httpPost);
+            HttpClient client = new HttpClient();
+
+            String response = "";
+            try {
+                int statusCode = client.executeMethod(httpPost);
+                if (statusCode != HttpStatus.SC_OK) {
+                    logger.warn("Method failed: {}.", httpPost.getStatusLine());
+                    return false;
+                }
+                response = IOUtils.toString(httpPost.getResponseBodyAsStream(), UTF_8_ENCODING);
+            } catch (IOException e) {
+                logger.warn("Fatal transport error. {}", e.getMessage());
+                return false;
+            } finally {
+                // Release the connection.
+                httpPost.releaseConnection();
+            }
             logger.debug("Raw response: {}", response);
 
             try {

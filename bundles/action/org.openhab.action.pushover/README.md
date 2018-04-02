@@ -18,6 +18,7 @@ None of the configuration parameters are required as you can specify required co
 | defaultUrlTitle |         | No                                                | URL title to attach to the message if not specified in the command. This can be used to trigger actions on the device. |
 | defaultRetry    | 300     | No                                                | When priority is 2 (high priority), how often (in seconds) should messages be resent                                   |
 | defaultExpire   | 3600    | No                                                | When priority is 2 (high priority), how long (in seconds) to continue resending messages until acknowledged            |
+| attachment |         | No                                                | The full path of a JPEG image attachment to be pushed with the message. |
 
 ## Actions
 
@@ -25,6 +26,8 @@ The following are valid action calls that can be made when the plugin is loaded.
 For specific information on each item, see the [Pushover API](https://pushover.net/api).
 
 - `pushover(String message)`
+- `sendPushoverImage(String message, String attachment)`
+- `sendPushoverImage(String message, int priority, String attachment)`
 - `pushover(String message, int priority)`
 - `pushover(String message, int priority, String url)`
 - `pushover(String message, int priority, String url, String urlTitle)`
@@ -39,6 +42,7 @@ For specific information on each item, see the [Pushover API](https://pushover.n
 - `pushover(String apiToken, String userKey, String message, String device)`
 - `pushover(String apiToken, String userKey, String message, String device, int priority)`
 - `pushover(String apiToken, String userKey, String message, String device, String title, String url, String urlTitle, int priority, String soundFile)`
+- `pushover(String apiToken, String userKey, String message, String device, String title, String url, String urlTitle, int priority, String soundFile, String attachment)`
 
 The action calls have to be configured in the above sequence, if you need to omit one of the call parameters you may use a null value or two double quotes.
 In this case any default values from `services/pushover.cfg` will be used.
