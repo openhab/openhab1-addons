@@ -27,7 +27,7 @@ For specific information on each item, see the [Pushover API](https://pushover.n
 
 - `pushover(String message)`
 - `sendPushoverImage(String message, String attachment)`
-- `sendPushoverImage(String message, int priority, String attachment)`
+- `sendPushoverImage(String message, String attachment, int priority)`
 - `pushover(String message, int priority)`
 - `pushover(String message, int priority, String url)`
 - `pushover(String message, int priority, String url, String urlTitle)`
