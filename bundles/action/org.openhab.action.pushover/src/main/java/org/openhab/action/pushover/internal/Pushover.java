@@ -172,7 +172,7 @@ public class Pushover {
         return this;
     }
 
-    public static Pushover builder(String message) {
+    public static Pushover pushoverBuilder(String message) {
         Pushover pushover = new Pushover();
         pushover.message = message;
         return pushover;

@@ -60,16 +60,16 @@ The identifier has to be passed on to the `cancelPushoverEmergency` actions to c
 
 Different ways to send a message. You can combine the withXXX methods as you need.
 
-- `sendPushoverMessage(builder("test message"))` or
-- `sendPushoverMessage(builder("test message").withEmergencyPriority())` or
-- `sendPushoverMessage(builder("test message").withAttachment("/path/to/file.jpeg"))` or
-- `sendPushoverMessage(builder("test message").withAttachment("/path/to/file.png").withContentType("image/png"))` or
-- `sendPushoverMessage(builder("test message").withApiKey("KEY").withUser("USER").withDevice("DEVICE").withTitle("TITLE").withUrl("URL").withUrlTitle("URL_TITLE").withPriority(0).withSound("SOUND").withAttachment("/path/to/file.png").withContentType("image/png"))`
+- `sendPushoverMessage(pushoverBuilder("test message"))` or
+- `sendPushoverMessage(pushoverBuilder("test message").withEmergencyPriority())` or
+- `sendPushoverMessage(pushoverBuilder("test message").withAttachment("/path/to/file.jpeg"))` or
+- `sendPushoverMessage(pushoverBuilder("test message").withAttachment("/path/to/file.png").withContentType("image/png"))` or
+- `sendPushoverMessage(pushoverBuilder("test message").withApiKey("KEY").withUser("USER").withDevice("DEVICE").withTitle("TITLE").withUrl("URL").withUrlTitle("URL_TITLE").withPriority(0).withSound("SOUND").withAttachment("/path/to/file.png").withContentType("image/png"))`
 
 ### Emergency example
 
 ```
-var String receipt = sendPushoverMessage(builder("Attention, front door opened!").withEmergencyPriority())
+var String receipt = sendPushoverMessage(pushoverBuilder("Attention, front door opened!").withEmergencyPriority())
 
 // wait for your cancel condition
 
