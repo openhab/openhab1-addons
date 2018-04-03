@@ -127,7 +127,7 @@ then
 end
 ```
 
-If you would like to send a Image Item.
+If you would like to send an Image Item.
 
 telegram.rules
 
