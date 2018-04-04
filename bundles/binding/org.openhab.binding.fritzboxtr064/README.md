@@ -52,16 +52,16 @@ String  fboxName            "FBox Model [%s]"           {fritzboxtr064="modelNam
 String  fboxManufacturer    "FBox Manufacturer [%s]"    {fritzboxtr064="manufacturerName"}
 String  fboxSerial          "FBox Serial [%s]"          {fritzboxtr064="serialNumber"}
 String  fboxVersion         "FBox Version [%s]"         {fritzboxtr064="softwareVersion"}
-# get wan ip if FritzBox establishes the internet connection (e. g. via DSL)
+// get wan ip if FritzBox establishes the internet connection (e. g. via DSL)
 String  fboxWanIP           "FBox WAN IP [%s]"          {fritzboxtr064="wanip"}
-# get wan ip if FritzBox uses internet connection of external router
+// get wan ip if FritzBox uses internet connection of external router
 String  fboxWanIPExternal   "FBox external WAN IP [%s]" {fritzboxtr064="externalWanip"}
 Switch  fboxWifi24          "2,4GHz Wifi"               {fritzboxtr064="wifi24Switch"}
 Switch  fboxWifi50          "5,0GHz Wifi"               {fritzboxtr064="wifi50Switch"}
 Switch  fboxGuestWifi       "Guest Wifi"                {fritzboxtr064="wifiGuestSwitch"}
 Contact cFboxMacOnline      "Presence (WiFi) [%s]"      {fritzboxtr064="maconline:11-11-11-11-11-11" }
 
-# WAN statistics
+// WAN statistics
 
 String  fboxWanAccessType "FBox WAN access type [%s]" {fritzboxtr064="wanWANAccessType"}
 Number  fboxWanLayer1UpstreamMaxBitRate "FBox WAN us max bit rate [%s]" {fritzboxtr064="wanLayer1UpstreamMaxBitRate"}
@@ -70,7 +70,7 @@ String  fboxWanPhysicalLinkStatus "FBox WAN physical link status [%s]" {fritzbox
 Number  fboxWanTotalBytesSent "WAN total bytes sent [%s]" {fritzboxtr064="wanTotalBytesSent"}
 Number  fboxWanTotalBytesReceived "WAN total bytes received [%s]" {fritzboxtr064="wanTotalBytesReceived"}
 
-# DSL statistics
+// DSL statistics
 
 Contact fboxDslEnable       "FBox DSL Enable [%s]"      {fritzboxtr064="dslEnable"}
 String  fboxDslStatus       "FBox DSL Status [%s]"      {fritzboxtr064="dslStatus"}
@@ -86,21 +86,21 @@ Number  fboxDslFECErrors "DSL FEC Errors [%s]" {fritzboxtr064="dslFECErrors"}
 Number  fboxDslHECErrors "DSL HEC Errors [%s]" {fritzboxtr064="dslHECErrors"}
 Number  fboxDslCRCErrors "DSL CRC Errors [%s]" {fritzboxtr064="dslCRCErrors"}
 
-# only when using call monitor
+// only when using call monitor
 Switch  fboxRinging         "Phone ringing [%s]"                {fritzboxtr064="callmonitor_ringing" }
 Switch  fboxRinging_Out     "Phone ringing [%s]"                {fritzboxtr064="callmonitor_outgoing" }
 Call    fboxIncomingCall    "Incoming call: [%1$s to %2$s]"     {fritzboxtr064="callmonitor_ringing" } 
 Call    fboxOutgoingCall    "Outgoing call: [%1$s to %2$s]"     {fritzboxtr064="callmonitor_outgoing" }
 
-# resolve numbers to names according phonebook
+// resolve numbers to names according phonebook
 Call    fboxIncomingCallResolved    "Incoming call: [%1$s to %2$s]"     {fritzboxtr064="callmonitor_ringing:resolveName" } 
 
-# Telephone answering machine (TAM) items
-# Number after tamSwitch is ID of configured TAM, start with 0
+// Telephone answering machine (TAM) items
+// Number after tamSwitch is ID of configured TAM, start with 0
 Switch  fboxTAM0Switch   "Answering machine ID 0"       {fritzboxtr064="tamSwitch:0"}
 Number  fboxTAM0NewMsg   "New Messages TAM 0 [%s]"      {fritzboxtr064="tamNewMessages:0"}
 
-# Missed calls: specify the number of last days which should be searched for missed calls
+// Missed calls: specify the number of last days which should be searched for missed calls
 Number  fboxMissedCalls     "Missed Calls [%s]"         {fritzboxtr064="missedCallsInDays:5"}
 
 ```
@@ -144,10 +144,12 @@ when
     Item fboxRinging changed from OFF to ON 
 then
     logInfo("Anrufermeldung", "Generating caller name message...")
-    // fboxIncoming call receives numbers/name of incoming call
-    val CallType incCall = fboxIncomingCall.state as CallType
-    var callerName = incCall.destNum //destNum is external number OR resolved Name if no phonebook entry exists
+    
+    val incCall = fboxIncomingCall.state as StringListType
+    val callerNumber = incCall.getValue(1)
+    val incCallResolved = fboxIncomingCallResolved.state as StringListType
+    val callerName = incCallResolved.getValue(1)
 
-    // do something with callerName
+// do something with callerName
 end
 ```
