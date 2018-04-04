@@ -126,3 +126,16 @@ then
     sendTelegramPhoto("bot1", base64Image, "sent from Openhab")
 end
 ```
+
+If you would like to send an Image Item.
+
+telegram.rules
+
+```java
+rule "Send telegram with Image Item image and caption"
+when
+    Item Webcam_Image changed
+then
+    sendTelegramPhoto("bot1", Webcam_Image.state.toFullString, "sent from Openhab")
+end
+```
