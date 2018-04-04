@@ -459,10 +459,7 @@ public class Pushover {
                     FilePart fp = new FilePart(MESSAGE_KEY_ATTACHMENT, f.getName(), f);
                     String ct = contentType;
                     if (StringUtils.isEmpty(ct)) {
-                        // ct = HttpUtil.guessContentTypeFromData(Files.readAllBytes(f.toPath()));
-                        if (StringUtils.isEmpty(ct)) {
-                            ct = DEFAULT_CONTENT_TYPE;
-                        }
+                        ct = DEFAULT_CONTENT_TYPE;
                     }
                     fp.setContentType(ct);
                     parts.add(fp);

@@ -26,22 +26,22 @@ None of the configuration parameters are required as you can specify required co
 The following are valid action calls that can be made when the plugin is loaded.
 For specific information on each item, see the [Pushover API](https://pushover.net/api).
 
-- `Deprecated pushover(String message)`
-- `Deprecated pushover(String message, int priority)`
-- `Deprecated pushover(String message, int priority, String url)`
-- `Deprecated pushover(String message, int priority, String url, String urlTitle)`
-- `Deprecated pushover(String message, int priority, String url, String urlTitle, String soundFile)`
-- `Deprecated pushover(String message, String device)`
-- `Deprecated pushover(String message, String device, int priority)`
-- `Deprecated pushover(String message, String device, int priority, String url)`
-- `Deprecated pushover(String message, String device, int priority, String url, String urlTitle)`
-- `Deprecated pushover(String message, String device, int priority, String url, String urlTitle, String soundFile)`
-- `Deprecated pushover(String apiToken, String userKey, String message)`
-- `Deprecated pushover(String apiToken, String userKey, String message, int priority)`
-- `Deprecated pushover(String apiToken, String userKey, String message, String device)`
-- `Deprecated pushover(String apiToken, String userKey, String message, String device, int priority)`
-- `Deprecated pushover(String apiToken, String userKey, String message, String device, String title, String url, String urlTitle, int priority, String soundFile)`
-- `Deprecated pushover(String apiToken, String userKey, String message, String device, String title, String url, String urlTitle, int priority, String soundFile, String attachment)`
+- `Deprecated ~~pushover(String message)~~`
+- `Deprecated ~~pushover(String message, int priority)~~`
+- `Deprecated ~~pushover(String message, int priority, String url)~~`
+- `Deprecated ~~pushover(String message, int priority, String url, String urlTitle)~~`
+- `Deprecated ~~pushover(String message, int priority, String url, String urlTitle, String soundFile)~~`
+- `Deprecated ~~pushover(String message, String device)~~`
+- `Deprecated ~~pushover(String message, String device, int priority)~~`
+- `Deprecated ~~pushover(String message, String device, int priority, String url)~~`
+- `Deprecated ~~pushover(String message, String device, int priority, String url, String urlTitle)~~`
+- `Deprecated ~~pushover(String message, String device, int priority, String url, String urlTitle, String soundFile)~~`
+- `Deprecated ~~pushover(String apiToken, String userKey, String message)~~`
+- `Deprecated ~~pushover(String apiToken, String userKey, String message, int priority)~~`
+- `Deprecated ~~pushover(String apiToken, String userKey, String message, String device)~~`
+- `Deprecated ~~pushover(String apiToken, String userKey, String message, String device, int priority)~~`
+- `Deprecated ~~pushover(String apiToken, String userKey, String message, String device, String title, String url, String urlTitle, int priority, String soundFile)~~`
+- `Deprecated ~~pushover(String apiToken, String userKey, String message, String device, String title, String url, String urlTitle, int priority, String soundFile, String attachment)~~`
 - `sendPushoverMessage(Pushover pushover)`
 
 The action calls have to be configured in the above sequence. The builder pattern is used to provide the parameters. The most parameters are optional and may have a default value. See the examples how to call use the pushover action.
