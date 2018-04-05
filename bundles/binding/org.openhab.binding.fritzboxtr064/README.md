@@ -92,7 +92,7 @@ Switch  fboxRinging_Out     "Phone ringing [%s]"                {fritzboxtr064="
 Call    fboxIncomingCall    "Incoming call: [%1$s to %2$s]"     {fritzboxtr064="callmonitor_ringing" } 
 Call    fboxOutgoingCall    "Outgoing call: [%1$s to %2$s]"     {fritzboxtr064="callmonitor_outgoing" }
 
-// resolve numbers to names according phonebook
+// resolve numbers to names based on phonebook
 Call    fboxIncomingCallResolved    "Incoming call: [%1$s to %2$s]"     {fritzboxtr064="callmonitor_ringing:resolveName" } 
 
 // Telephone answering machine (TAM) items
@@ -104,11 +104,6 @@ Number  fboxTAM0NewMsg   "New Messages TAM 0 [%s]"      {fritzboxtr064="tamNewMe
 Number  fboxMissedCalls     "Missed Calls [%s]"         {fritzboxtr064="missedCallsInDays:5"}
 
 ```
-
-## Known issues
-
-See issues [here](https://github.com/gitbock/fritzboxtr064/issues?q=is%3Aissue+is%3Aclosed).
- 
 
 ## Examples and Hints
 
@@ -150,6 +145,6 @@ then
     val incCallResolved = fboxIncomingCallResolved.state as StringListType
     val callerName = incCallResolved.getValue(1)
 
-// do something with callerName
+    // do something with callerName
 end
 ```
