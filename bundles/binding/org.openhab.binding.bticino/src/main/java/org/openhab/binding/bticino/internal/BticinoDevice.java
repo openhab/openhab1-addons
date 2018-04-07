@@ -225,7 +225,7 @@ public class BticinoDevice implements IBticinoEventListener {
                                 } else if (UpDownType.DOWN.equals(command)) {
                                     l_pr.addProperty("what", "2");
                                 } else if (StopMoveType.STOP.equals(command)) {
-                                    l_pr.addProperty("what", "1");
+                                    l_pr.addProperty("what", "0");
                                 } else {
                                     logger.warn("Received unknown command type for automation: '{}'",
                                             command.getClass().getName());
