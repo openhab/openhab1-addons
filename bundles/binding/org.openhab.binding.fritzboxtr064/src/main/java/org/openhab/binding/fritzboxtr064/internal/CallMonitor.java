@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -42,9 +42,9 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/***
- * Wrapper class which handles all data/comm. when call monitoing is used
- * Thread control class
+/**
+ * Wrapper class which handles all data communications when call monitoring is used.
+ * Thread control class.
  *
  * @author gitbock
  * @since 1.8.0
@@ -76,8 +76,7 @@ public class CallMonitor extends Thread {
 
     protected static CallMonitor _instance;
 
-    /***
-     *
+    /**
      * @param url from openhab.cfg to connect to fbox
      * @param ep eventPublisher to pass updates to items
      * @param providers all items relevant for this binding
@@ -92,9 +91,9 @@ public class CallMonitor extends Thread {
         _instance = this;
     }
 
-    /***
+    /**
      * In Main Config only the TR064 URL is provided. Need IP for Socket connection.
-     * Parses the IP from URL String
+     * Parses the IP from URL String.
      *
      * @param url String
      * @return IP address from url
@@ -107,13 +106,14 @@ public class CallMonitor extends Thread {
         if (m.find()) {
             ip = m.group(2);
         } else {
-            logger.error("Cannot get IP from FritzBox URL:  {}", url);
+            logger.warn("Cannot get IP from FritzBox URL: {}", url);
         }
+
         return ip;
     }
 
-    /***
-     * reset the connection to fbox periodically
+    /**
+     * Reset the connection to fbox periodically.
      */
     public void setupReconnectJob() {
         try {
@@ -142,8 +142,8 @@ public class CallMonitor extends Thread {
         }
     }
 
-    /***
-     * cancel the reconnect job
+    /**
+     * Cancel the reconnect job.
      */
     public void shutdownReconnectJob() {
         Scheduler sched = null;
@@ -185,18 +185,17 @@ public class CallMonitor extends Thread {
         }
     }
 
-    /***
-     * thread for setting up socket to fbox, listening for messages, parsing them
-     * and updating items. Most of this code is from Kai Kreuzers original
-     * fritzbox binding!
+    /**
+     * Thread for setting up socket to fbox, listening for messages, parsing them
+     * and updating items. Most of this code is from Kai Kreuzer's original
+     * fritzbox binding.
      *
      * @author gitbock
-     *
      */
     public class CallMonitorThread extends Thread {
 
-        /***
-         * Devnote:
+        /*
+         * Dev note:
          * Objects need to be set here, not in parent class!
          * Otherwise compiler can see them, but at runtime wrong values are given(?)
          */
@@ -211,7 +210,6 @@ public class CallMonitor extends Thread {
         private long _reconnectTime = 60000L;
 
         public CallMonitorThread() {
-
         }
 
         @Override
@@ -228,7 +226,7 @@ public class CallMonitor extends Thread {
                         // reset the retry interval
                         _reconnectTime = 60000L;
                     } catch (Exception e) {
-                        logger.warn("Error attempting to connect to FritzBox. Retrying in {}s", _reconnectTime / 1000L,
+                        logger.warn("Error attempting to connect to FritzBox. Retrying in {} seconds", _reconnectTime / 1000L,
                                 e);
                         try {
                             Thread.sleep(_reconnectTime);
@@ -249,7 +247,7 @@ public class CallMonitor extends Thread {
                                     if (ce.parseRawEvent()) {
                                         handleCallEvent(ce);
                                     } else {
-                                        logger.error("Call Event could not be parsed!");
+                                        logger.warn("Call Event could not be parsed!");
                                     }
                                     try {
                                         // wait a moment, so that rules can be
@@ -264,7 +262,7 @@ public class CallMonitor extends Thread {
                                 if (_interrupted) {
                                     logger.info("Lost connection to Fritzbox because of interrupt");
                                 } else {
-                                    logger.error("Lost connection to FritzBox", e);
+                                    logger.warn("Lost connection to FritzBox", e);
                                 }
                                 break;
                             } finally {
@@ -283,7 +281,7 @@ public class CallMonitor extends Thread {
         }
 
         /**
-         * Handle call event and update item as required
+         * Handle call event and update item as required.
          *
          * @param ce call event to process
          */
@@ -320,11 +318,11 @@ public class CallMonitor extends Thread {
                     String externalInfo = null; // either name or number as requested by item
                     // number name resolving wanted?
                     if (configString.startsWith("callmonitor") && configString.contains("resolveName")) {
-                        logger.debug("name resolving requested in item {}. Setting external no. to", itemName,
+                        logger.debug("name resolving requested in item {}. Setting external no. to {}", itemName,
                                 callerName);
                         externalInfo = callerName;
                     } else {
-                        logger.debug("NO name resolving requested in item {}. Setting external no. to", itemName,
+                        logger.debug("NO name resolving requested in item {}. Setting external no. to {}", itemName,
                                 callerName);
                         externalInfo = ce.getExternalNo();
                     }
@@ -368,14 +366,13 @@ public class CallMonitor extends Thread {
         }
 
         /**
-         * Close socket and stop running thread
+         * Close socket and stop running thread.
          */
         @Override
         public void interrupt() {
             _interrupted = true;
             if (_socket != null) {
                 try {
-
                     _socket.close();
                     logger.debug("Socket to FritzBox closed");
                 } catch (IOException e) {
@@ -385,7 +382,6 @@ public class CallMonitor extends Thread {
                 logger.debug("Socket to FritzBox not open. Not closing.");
             }
         }
-
     }
 
     public void stopThread() {
@@ -408,7 +404,5 @@ public class CallMonitor extends Thread {
         // create a new thread for listening to the FritzBox
         _monitorThread = new CallMonitorThread();
         _monitorThread.start();
-
     }
-
 }
