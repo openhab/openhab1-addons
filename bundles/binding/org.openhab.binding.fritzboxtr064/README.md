@@ -128,7 +128,7 @@ NULL=unknown
 Now, as item configuration use (the addon "Map Transformation" must be installed):
 
 ```
-Contact cFboxMacOnline      "Presence (Wifi) [MAP(presence.map):%d]"    <presence>       {fritzboxtr064="maconline:11-22-33-44-55-66 }
+Contact cFboxMacOnline      "Presence (Wifi) [MAP(presence.map):%s]"    <presence>       {fritzboxtr064="maconline:11-22-33-44-55-66 }
 ```
 
 ### Rules
