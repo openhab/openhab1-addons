@@ -270,12 +270,12 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
         try {
             inputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.debug("closePort inputStream.close error", e);
         }
         try {
             outputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.debug("closePort outputStream.close error", e);
         }
         if (typeIsSerial) {
             serialPort.close();
@@ -300,7 +300,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
             byte[] buf = readResponse();
             expectString(buf, "\n\rOK\n\r");
         } catch (IOException e1) {
-            logger.warn("IO Exception reset after Error: {}", e1);
+            logger.warn("I/O Exception reset after Error: {}", e1);
             closePort();
             try {
                 openPort();

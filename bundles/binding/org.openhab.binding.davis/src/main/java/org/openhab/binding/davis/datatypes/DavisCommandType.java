@@ -40,6 +40,16 @@ public enum DavisCommandType {
         }
     },
 
+    HILOWS {
+        {
+            command = "HILOWS";
+            responsetype = Constants.RESPONSE_TYPE_ACK;
+            responselimitertype = Constants.RESPONSE_LIMITER_TYPE_FIXED_SIZE;
+            responselength = 438;
+            crcchecktype = Constants.CRC_CHECK_TYPE_VAR1;
+        }
+    },
+
     GETTIME {
         {
             command = "GETTIME";
@@ -155,7 +165,7 @@ public enum DavisCommandType {
 
     /**
      * Get a specific command.
-     * 
+     *
      * @param command
      *            command key
      * @return DavisCommandType identified by command
