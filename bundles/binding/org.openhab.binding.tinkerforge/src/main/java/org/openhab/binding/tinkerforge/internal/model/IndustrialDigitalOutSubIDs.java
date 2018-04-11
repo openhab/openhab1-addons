@@ -204,6 +204,12 @@ public enum IndustrialDigitalOutSubIDs implements Enumerator {
         switch (value) {
             case OUT0_VALUE:
                 return OUT0;
+            case OUT1_VALUE:
+                return OUT1;
+            case OUT2_VALUE:
+                return OUT2;
+            case OUT3_VALUE:
+                return OUT3;
         }
         return null;
     }
