@@ -118,8 +118,6 @@ Use a map for presence detection item:
 Create file `transform/presence.map` and add:
 
 ```
-1=present
-0=not present
 OPEN=present
 CLOSED=not present
 NULL=unknown
