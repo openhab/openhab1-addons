@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -386,7 +386,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService {
         // If we still didn't manage to connect, then return!
         if (!isConnected()) {
             logger.warn(
-                    "mySQL: No connection to database. Can not persist item '{}'! "
+                    "mySQL: No connection to database. Cannot persist item '{}'! "
                             + "Will retry connecting to database when error count:{} equals errReconnectThreshold:{}",
                     item, errCnt, errReconnectThreshold);
             return;

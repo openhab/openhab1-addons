@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -174,10 +174,10 @@ public abstract class SatelCommandBase extends SatelMessage implements SatelComm
                 errorMsg = "Other error";
                 break;
             case 0x11:
-                errorMsg = "Can not arm, but can use force arm";
+                errorMsg = "Cannot arm, but can use force arm";
                 break;
             case 0x12:
-                errorMsg = "Can not arm";
+                errorMsg = "Cannot arm";
                 break;
             case (byte) 0xff:
                 logger.trace("Command accepted");

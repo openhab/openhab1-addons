@@ -391,7 +391,7 @@ rpc=bin -> No BinX signature
 rpc=xml -> BadRequestException: Binsystem.multicall
 ```
 
-The binding registers itself with the CCU at startup with the specified communication mode. If you shutdown openHAB (or kill it) and the binding can not unregister successfully from the CCU, the CCU still sends messages. It does this for about three minutes, if there is no answer, it gives up. If you start openHAB in this period of time with another communication mode, these exceptions occur.
+The binding registers itself with the CCU at startup with the specified communication mode. If you shutdown openHAB (or kill it) and the binding cannot unregister successfully from the CCU, the CCU still sends messages. It does this for about three minutes, if there is no answer, it gives up. If you start openHAB in this period of time with another communication mode, these exceptions occur.
 
 Just wait untill the exceptions disappear and restart openHAB. This happens only after switching the communication mode.
 
