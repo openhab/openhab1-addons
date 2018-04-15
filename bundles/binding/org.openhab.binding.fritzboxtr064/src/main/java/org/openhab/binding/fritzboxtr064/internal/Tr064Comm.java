@@ -14,9 +14,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -206,11 +208,12 @@ public class Tr064Comm {
                                                                                                                  // element
                 bodyData = body.addBodyElement(bodyName);
                 // only if input parameter is present
-                if (itemConfiguration.getDataInValue().isPresent()) {
-                    if (itemMap instanceof ParametrizedItemMap) {
-                        String dataInName = ((ParametrizedItemMap) itemMap).getReadDataInName();
-                        String dataInValue = itemConfiguration.getDataInValue().get();
-                        QName dataNode = new QName(dataInName); // service specific node name
+                if (itemMap instanceof ParametrizedItemMap) {
+                    for (InputArgument inputArgument : ((ParametrizedItemMap) itemMap)
+                            .getConfigInputArguments(itemConfiguration)) {
+                        String dataInName = inputArgument.getName();
+                        String dataInValue = inputArgument.getValue();
+                        QName dataNode = new QName(dataInName);
                         SOAPElement beDataNode = bodyData.addChildElement(dataNode);
                         // if input is mac address, replace "-" with ":" as fbox wants
                         if (itemConfiguration.getItemCommand().equals("maconline")) {
@@ -218,9 +221,8 @@ public class Tr064Comm {
                         }
                         beDataNode.addTextNode(dataInValue); // add data which should be requested from fbox for this
                                                              // service
-                    } else {
-                        logger.warn("Item map for command {} does not support dataInValue", itemCommand);
                     }
+
                 }
                 logger.trace("Raw SOAP Request to be sent to FritzBox: {}", soapToString(msg));
 
@@ -293,20 +295,19 @@ public class Tr064Comm {
                                                                                                               // body
                                                                                                               // element
             bodyData = body.addBodyElement(bodyName);
-            // only if input parameter is present
-            if (request.getDataInValue().isPresent()) {
-                String dataInValueAdd = request.getDataInValue().get(); // additional parameter to set e.g. id of TAM to
-                                                                        // set
-                QName dataNode = new QName(itemMap.getWriteDataInNameAdditional()); // name of additional para to set
-                SOAPElement beDataNode = bodyData.addChildElement(dataNode);
-                beDataNode.addTextNode(dataInValueAdd); // add value which should be set
+
+            List<InputArgument> writeInputArguments = new ArrayList<>();
+            writeInputArguments.add(itemMap.getWriteInputArgument(cmd));
+            if (itemMap instanceof ParametrizedItemMap) {
+                writeInputArguments.addAll(((ParametrizedItemMap) itemMap).getConfigInputArguments(request));
             }
 
-            // convert String command into numeric
-            String setDataInValue = cmd.toString().equalsIgnoreCase("on") ? "1" : "0";
-            QName dataNode = new QName(itemMap.getWriteDataInName()); // service specific node name
-            SOAPElement beDataNode = bodyData.addChildElement(dataNode);
-            beDataNode.addTextNode(setDataInValue); // add data which should be requested from fbox for this service
+            for (InputArgument inputArgument : writeInputArguments) {
+                QName dataNode = new QName(inputArgument.getName());
+                SOAPElement beDataNode = bodyData.addChildElement(dataNode);
+                beDataNode.addTextNode(inputArgument.getValue());
+            }
+
             logger.debug("SOAP Msg to send to FritzBox for setting data: {}", soapToString(msg));
 
         } catch (Exception e) {
@@ -639,7 +640,7 @@ public class Tr064Comm {
      * Sets the parser based on the itemcommand -> soap value parser "svp"
      * anonymous method for each mapping.
      */
-    //TODO: refactor to read from config file later?
+    // TODO: refactor to read from config file later?
     private void generateItemMappings() {
         // services available from fbox. Needed for e.g. wifi select 5GHz/Guest Wifi
         if (_allServices.isEmpty()) { // no services are known yet?
@@ -706,20 +707,17 @@ public class Tr064Comm {
         SingleItemMap imWifi24Switch = new SingleItemMap("wifi24Switch", "GetInfo",
                 "urn:WLANConfiguration-com:serviceId:WLANConfiguration1", "", "NewEnable");
         imWifi24Switch.setWriteServiceCommand("SetEnable");
-        imWifi24Switch.setWriteDataInName("NewEnable");
         addItemMap(imWifi24Switch);
 
         // wifi 5GHz
         SingleItemMap imWifi50Switch = new SingleItemMap("wifi50Switch", "GetInfo",
                 "urn:WLANConfiguration-com:serviceId:WLANConfiguration2", "", "NewEnable");
         imWifi50Switch.setWriteServiceCommand("SetEnable");
-        imWifi50Switch.setWriteDataInName("NewEnable");
 
         // guest wifi
         SingleItemMap imWifiGuestSwitch = new SingleItemMap("wifiGuestSwitch", "GetInfo",
                 "urn:WLANConfiguration-com:serviceId:WLANConfiguration3", "", "NewEnable");
         imWifiGuestSwitch.setWriteServiceCommand("SetEnable");
-        imWifiGuestSwitch.setWriteDataInName("NewEnable");
 
         // check if 5GHz wifi and/or guest wifi is available.
         Tr064Service svc5GHzWifi = determineServiceByItemMapping(imWifi50Switch);
@@ -754,8 +752,6 @@ public class Tr064Comm {
         SingleItemMap imTamSwitch = new SingleItemMap("tamSwitch", "GetInfo",
                 "urn:X_AVM-DE_TAM-com:serviceId:X_AVM-DE_TAM1", "NewIndex", "NewEnable");
         imTamSwitch.setWriteServiceCommand("SetEnable");
-        imTamSwitch.setWriteDataInName("NewEnable");
-        imTamSwitch.setWriteDataInNameAdditional("NewIndex"); // additional Parameter to set
         addItemMap(imTamSwitch);
 
         // New Messages per TAM ID
@@ -817,9 +813,9 @@ public class Tr064Comm {
 
                         // extract how many days of call list should be examined for missed calls
                         String days = "3"; // default
-                        if (!itemConfiguration.getAdditionalParameters().isEmpty()) {
-                            days = itemConfiguration.getAdditionalParameters().get(0); // set the days as defined in
-                                                                                       // item config.
+                        if (!itemConfiguration.getArgumentValues().isEmpty()) {
+                            days = itemConfiguration.getArgumentValues().get(0); // set the days as defined in
+                                                                                 // item config.
                             // Otherwise default value of 3 is used
                         }
 
