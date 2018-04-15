@@ -22,7 +22,8 @@ It has been tested on:
  * Switch Item: Receives "ON" state when call is incoming
  * Call Items: Shows external an internal number for incoming/outgoing calls
  * Resolve external call number to phonebook name
-* enabling/disabling telephone answering machines (TAMs) 
+* enabling/disabling telephone answering machines (TAMs)
+* enabling/disabling of call deflection
 * getting new messages per TAM
 * getting missed calls for the last x days
 * getting DSL/WAN statistics for monitoring connection quality
@@ -101,8 +102,14 @@ Switch  fboxTAM0Switch   "Answering machine ID 0"       {fritzboxtr064="tamSwitc
 Number  fboxTAM0NewMsg   "New Messages TAM 0 [%s]"      {fritzboxtr064="tamNewMessages:0"}
 
 // Missed calls: specify the number of last days which should be searched for missed calls
-Number  fboxMissedCalls     "Missed Calls [%s]"         {fritzboxtr064="missedCallsInDays:5"}
+Number  fboxMissedCalls  "Missed Calls [%s]"            {fritzboxtr064="missedCallsInDays:5"}
 
+// Call deflection items
+// Number after callDeflectionSwitch is ID of configured call deflection
+// The ID count includes the entries from the "Call Blocks" page.
+// If you have no "Call Blocks", the first entry on the "Call Diversions" page has ID 0.
+// If you have e. g. 3 "Call Blocks", the first entry on the "Call Diversions" page has ID 3.
+Switch  fboxCD0Switch    "Call Deflection ID 0"         {fritzboxtr064="callDeflectionSwitch:0"}
 ```
 
 ## Examples and Hints

@@ -860,6 +860,13 @@ public class Tr064Comm {
                     }
                 }).build();
         addItemMap(imMissedCalls);
+
+        // call deflection
+        SingleItemMap callDeflection = SingleItemMap.builder().itemCommand("callDeflectionSwitch")
+                .serviceId("urn:X_AVM-DE_OnTel-com:serviceId:X_AVM-DE_OnTel1").configArgumentNames("NewDeflectionId")
+                .itemArgumentName("NewEnable").readServiceCommand("GetDeflection")
+                .writeServiceCommand("SetDeflectionEnable").build();
+        addItemMap(callDeflection);
     }
 
     private void addItemMap(ItemMap itemMap) {
