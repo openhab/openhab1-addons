@@ -81,7 +81,7 @@ If you're not sure about endpoint numbering, look in the logs to see if sensor d
 
 This indicates that the binding can’t find an item linked to this sensor - often this is because the endpoint numbering is incorrect. If the warning above says endpoint = 0, then the binding string shouldn't include an endpoint number.
 
-The `<command>` is optional, but recommended if you have multiple items bound to the same device, or the device reports multiple bits of information. Without the command class, the binding can not unambiguously differentiate different data, so it is recommended to provide a command class. Z-Wave nodes support functionality through command classes. A specific command class can be specified to use that specific functionality of the node. A node can contain multiple supported command classes. If the command is omitted, the best suitable command class for the item / node combination is automatically chosen.
+The `<command>` is optional, but recommended if you have multiple items bound to the same device, or the device reports multiple bits of information. Without the command class, the binding cannot unambiguously differentiate different data, so it is recommended to provide a command class. Z-Wave nodes support functionality through command classes. A specific command class can be specified to use that specific functionality of the node. A node can contain multiple supported command classes. If the command is omitted, the best suitable command class for the item / node combination is automatically chosen.
 
 Command classes may support parameters. A parameter is a name=value pair that configures some aspect of the command class on the node or in the binding.
 

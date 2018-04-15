@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -165,14 +165,14 @@ public class DataParser {
         short newValue = 0;
 
         if (recordDefinition.getDataType() != Type.Settings) {
-            logger.warn("The record {} can not be set as it is not a setable value!", recordDefinition.getName());
+            logger.warn("The record {} cannot be set as it is not a setable value!", recordDefinition.getName());
             throw new StiebelHeatPumpException("record is not a setting!");
         }
 
         double number = Double.parseDouble(value);
 
         if (number > recordDefinition.getMax() || number < recordDefinition.getMin()) {
-            logger.warn("The record {} can not be set to value {} as allowed range is {}<-->{} !",
+            logger.warn("The record {} cannot be set to value {} as allowed range is {}<-->{} !",
                     recordDefinition.getName(), value, recordDefinition.getMax(), recordDefinition.getMin());
             throw new StiebelHeatPumpException("invalid value !");
         }

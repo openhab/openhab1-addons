@@ -195,7 +195,7 @@ public class SerialParameters {
             intBaudRate = Integer.parseInt(rate);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
-                    "baudString '" + rate + "' can not be converted to a number: " + e.getMessage());
+                    "baudString '" + rate + "' cannot be converted to a number: " + e.getMessage());
         }
         setBaudRate(intBaudRate);
     }// setBaudRate
@@ -350,7 +350,7 @@ public class SerialParameters {
             intDataBits = Integer.parseInt(databits);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
-                    "databitsString '" + databits + "' can not be converted to a number: " + e.getMessage());
+                    "databitsString '" + databits + "' cannot be converted to a number: " + e.getMessage());
         }
 
         setDatabits(intDataBits);
@@ -417,7 +417,7 @@ public class SerialParameters {
             doubleStopBits = Double.parseDouble(stopbits);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
-                    "stopbitsString '" + stopbits + "' can not be converted to a number: " + e.getMessage());
+                    "stopbitsString '" + stopbits + "' cannot be converted to a number: " + e.getMessage());
         }
 
         setStopbits(doubleStopBits);

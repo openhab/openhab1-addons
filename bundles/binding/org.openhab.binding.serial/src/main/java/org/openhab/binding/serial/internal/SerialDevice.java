@@ -188,7 +188,7 @@ public class SerialDevice implements SerialPortEventListener {
     /**
      * Initialize this device and open the serial port
      *
-     * @throws InitializationException if port can not be opened
+     * @throws InitializationException if port cannot be opened
      */
     @SuppressWarnings("rawtypes")
     public void initialize() throws InitializationException {
