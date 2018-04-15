@@ -648,8 +648,10 @@ public class Tr064Comm {
         }
 
         // Mac Online Checker
-        SingleItemMap imMacOnline = new SingleItemMap("maconline", "GetSpecificHostEntry",
-                "urn:LanDeviceHosts-com:serviceId:Hosts1", "NewMACAddress", "NewActive", new SoapValueParser() {
+        SingleItemMap imMacOnline = SingleItemMap.builder().itemCommand("maconline")
+                .serviceId("urn:LanDeviceHosts-com:serviceId:Hosts1").itemArgumentName("NewActive")
+                .configArgumentNames("NewMACAddress").readServiceCommand("GetSpecificHostEntry")
+                .soapValueParser(new SoapValueParser() {
 
                     @Override
                     protected String parseValueFromSoapFault(ItemConfiguration itemConfiguration, SOAPFault soapFault,
@@ -672,15 +674,17 @@ public class Tr064Comm {
 
                         return value;
                     }
-                });
+                }).build();
         addItemMap(imMacOnline);
 
         addItemMap(new MultiItemMap(Arrays.asList("modelName", "manufacturerName", "softwareVersion", "serialNumber"),
                 "GetInfo", "urn:DeviceInfo-com:serviceId:DeviceInfo1", name -> "New" + WordUtils.capitalize(name)));
-        addItemMap(new SingleItemMap("wanip", "GetExternalIPAddress",
-                "urn:WANPPPConnection-com:serviceId:WANPPPConnection1", "", "NewExternalIPAddress"));
-        addItemMap(new SingleItemMap("externalWanip", "GetExternalIPAddress",
-                "urn:WANIPConnection-com:serviceId:WANIPConnection1", "", "NewExternalIPAddress"));
+        addItemMap(SingleItemMap.builder().itemCommand("wanip")
+                .serviceId("urn:WANPPPConnection-com:serviceId:WANPPPConnection1")
+                .itemArgumentName("NewExternalIPAddress").readServiceCommand("GetExternalIPAddress").build());
+        addItemMap(SingleItemMap.builder().itemCommand("externalWanip")
+                .serviceId("urn:WANIPConnection-com:serviceId:WANIPConnection1")
+                .itemArgumentName("NewExternalIPAddress").readServiceCommand("GetExternalIPAddress").build());
 
         // WAN Status
         addItemMap(new MultiItemMap(
@@ -688,10 +692,12 @@ public class Tr064Comm {
                         "wanPhysicalLinkStatus"),
                 "GetCommonLinkProperties", "urn:WANCIfConfig-com:serviceId:WANCommonInterfaceConfig1",
                 name -> name.replace("wan", "New")));
-        addItemMap(new SingleItemMap("wanTotalBytesSent", "GetTotalBytesSent",
-                "urn:WANCIfConfig-com:serviceId:WANCommonInterfaceConfig1", "", "NewTotalBytesSent"));
-        addItemMap(new SingleItemMap("wanTotalBytesReceived", "GetTotalBytesReceived",
-                "urn:WANCIfConfig-com:serviceId:WANCommonInterfaceConfig1", "", "NewTotalBytesReceived"));
+        addItemMap(SingleItemMap.builder().itemCommand("wanTotalBytesSent")
+                .serviceId("urn:WANCIfConfig-com:serviceId:WANCommonInterfaceConfig1")
+                .itemArgumentName("NewTotalBytesSent").readServiceCommand("GetTotalBytesSent").build());
+        addItemMap(SingleItemMap.builder().itemCommand("wanTotalBytesReceived")
+                .serviceId("urn:WANCIfConfig-com:serviceId:WANCommonInterfaceConfig1")
+                .itemArgumentName("NewTotalBytesReceived").readServiceCommand("GetTotalBytesReceived").build());
 
         // DSL Status
         addItemMap(new MultiItemMap(
@@ -704,20 +710,20 @@ public class Tr064Comm {
                 "urn:WANDSLIfConfig-com:serviceId:WANDSLInterfaceConfig1", name -> name.replace("dsl", "New")));
 
         // Wifi 2,4GHz
-        SingleItemMap imWifi24Switch = new SingleItemMap("wifi24Switch", "GetInfo",
-                "urn:WLANConfiguration-com:serviceId:WLANConfiguration1", "", "NewEnable");
-        imWifi24Switch.setWriteServiceCommand("SetEnable");
+        SingleItemMap imWifi24Switch = SingleItemMap.builder().itemCommand("wifi24Switch")
+                .serviceId("urn:WLANConfiguration-com:serviceId:WLANConfiguration1").itemArgumentName("NewEnable")
+                .readServiceCommand("GetInfo").writeServiceCommand("SetEnable").build();
         addItemMap(imWifi24Switch);
 
         // wifi 5GHz
-        SingleItemMap imWifi50Switch = new SingleItemMap("wifi50Switch", "GetInfo",
-                "urn:WLANConfiguration-com:serviceId:WLANConfiguration2", "", "NewEnable");
-        imWifi50Switch.setWriteServiceCommand("SetEnable");
+        SingleItemMap imWifi50Switch = SingleItemMap.builder().itemCommand("wifi50Switch")
+                .serviceId("urn:WLANConfiguration-com:serviceId:WLANConfiguration2").itemArgumentName("NewEnable")
+                .readServiceCommand("GetInfo").writeServiceCommand("SetEnable").build();
 
         // guest wifi
-        SingleItemMap imWifiGuestSwitch = new SingleItemMap("wifiGuestSwitch", "GetInfo",
-                "urn:WLANConfiguration-com:serviceId:WLANConfiguration3", "", "NewEnable");
-        imWifiGuestSwitch.setWriteServiceCommand("SetEnable");
+        SingleItemMap imWifiGuestSwitch = SingleItemMap.builder().itemCommand("wifiGuestSwitch")
+                .serviceId("urn:WLANConfiguration-com:serviceId:WLANConfiguration3").itemArgumentName("NewEnable")
+                .readServiceCommand("GetInfo").writeServiceCommand("SetEnable").build();
 
         // check if 5GHz wifi and/or guest wifi is available.
         Tr064Service svc5GHzWifi = determineServiceByItemMapping(imWifi50Switch);
@@ -744,21 +750,23 @@ public class Tr064Comm {
 
         // Phonebook Download
         // itemcommand is dummy: not a real item
-        ItemMap imPhonebook = new SingleItemMap("phonebook", "GetPhonebook",
-                "urn:X_AVM-DE_OnTel-com:serviceId:X_AVM-DE_OnTel1", "NewPhonebookID", "NewPhonebookURL");
+        ItemMap imPhonebook = SingleItemMap.builder().itemCommand("phonebook")
+                .serviceId("urn:X_AVM-DE_OnTel-com:serviceId:X_AVM-DE_OnTel1").configArgumentNames("NewPhonebookID")
+                .itemArgumentName("NewPhonebookURL").readServiceCommand("GetPhonebook").build();
         addItemMap(imPhonebook);
 
         // TAM (telephone answering machine) Switch
-        SingleItemMap imTamSwitch = new SingleItemMap("tamSwitch", "GetInfo",
-                "urn:X_AVM-DE_TAM-com:serviceId:X_AVM-DE_TAM1", "NewIndex", "NewEnable");
-        imTamSwitch.setWriteServiceCommand("SetEnable");
+        SingleItemMap imTamSwitch = SingleItemMap.builder().itemCommand("tamSwitch")
+                .serviceId("urn:X_AVM-DE_TAM-com:serviceId:X_AVM-DE_TAM1").configArgumentNames("NewIndex")
+                .itemArgumentName("NewEnable").readServiceCommand("GetInfo").writeServiceCommand("SetEnable").build();
         addItemMap(imTamSwitch);
 
         // New Messages per TAM ID
         // two requests needed: First gets URL to download tam info from, 2nd contains
         // info of messages
-        SingleItemMap imTamNewMessages = new SingleItemMap("tamNewMessages", "GetMessageList",
-                "urn:X_AVM-DE_TAM-com:serviceId:X_AVM-DE_TAM1", "NewIndex", "NewURL", new SoapValueParser() {
+        SingleItemMap imTamNewMessages = SingleItemMap.builder().itemCommand("tamNewMessages")
+                .serviceId("urn:X_AVM-DE_TAM-com:serviceId:X_AVM-DE_TAM1").configArgumentNames("NewIndex")
+                .itemArgumentName("NewURL").readServiceCommand("GetMessageList").soapValueParser(new SoapValueParser() {
 
                     @Override
                     protected String parseValueFromSoapBody(ItemConfiguration itemConfiguration, SOAPBody soapBody,
@@ -794,14 +802,16 @@ public class Tr064Comm {
 
                         return value;
                     }
-                });
+                }).build();
         addItemMap(imTamNewMessages);
 
         // Missed calls
         // two requests: 1st fetches URL to download call list, 2nd fetches xml call
         // list
-        SingleItemMap imMissedCalls = new SingleItemMap("missedCallsInDays", "GetCallList",
-                "urn:X_AVM-DE_OnTel-com:serviceId:X_AVM-DE_OnTel1", "NewDays", "NewCallListURL", new SoapValueParser() {
+        SingleItemMap imMissedCalls = SingleItemMap.builder().itemCommand("missedCallsInDays")
+                .serviceId("urn:X_AVM-DE_OnTel-com:serviceId:X_AVM-DE_OnTel1").itemArgumentName("NewCallListURL")
+                .readServiceCommand("GetCallList").configArgumentNames("NewDays")
+                .soapValueParser(new SoapValueParser() {
 
                     @Override
                     protected String parseValueFromSoapBody(ItemConfiguration itemConfiguration, SOAPBody soapBody,
@@ -814,8 +824,8 @@ public class Tr064Comm {
                         // extract how many days of call list should be examined for missed calls
                         String days = "3"; // default
                         if (!itemConfiguration.getArgumentValues().isEmpty()) {
-                            days = itemConfiguration.getArgumentValues().get(0); // set the days as defined in
-                                                                                 // item config.
+                            days = itemConfiguration.getArgumentValues().get(0); // set the days as defined in item
+                                                                                 // config.
                             // Otherwise default value of 3 is used
                         }
 
@@ -848,9 +858,8 @@ public class Tr064Comm {
 
                         return value;
                     }
-                });
+                }).build();
         addItemMap(imMissedCalls);
-
     }
 
     private void addItemMap(ItemMap itemMap) {

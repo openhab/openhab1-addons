@@ -11,6 +11,8 @@ package org.openhab.binding.fritzboxtr064.internal;
 import static java.util.Collections.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +33,59 @@ import org.slf4j.LoggerFactory;
  * @since 1.11.0
  */
 public class SingleItemMap extends AbstractItemMap implements ParametrizedItemMap, WritableItemMap {
+    public static class Builder {
+        private String _serviceId;
+        private String _itemCommand;
+        private String _itemArgumentName;
+        private String[] _configArgumentNames;
+        private String _readServiceCommand;
+        private SoapValueParser _soapValueParser = new SoapValueParser();
+        private String _writeServiceCommand;
+
+        Builder() {
+        }
+
+        public Builder serviceId(String _serviceId) {
+            this._serviceId = _serviceId;
+            return this;
+        }
+
+        public Builder itemCommand(String _itemCommand) {
+            this._itemCommand = _itemCommand;
+            return this;
+        }
+
+        public Builder itemArgumentName(String _itemArgumentName) {
+            this._itemArgumentName = _itemArgumentName;
+            return this;
+        }
+
+        public Builder configArgumentNames(String... _configArgumentNames) {
+            this._configArgumentNames = _configArgumentNames;
+            return this;
+        }
+
+        public Builder readServiceCommand(String _readServiceCommand) {
+            this._readServiceCommand = _readServiceCommand;
+            return this;
+        }
+
+        public Builder soapValueParser(SoapValueParser _soapValueParser) {
+            this._soapValueParser = _soapValueParser;
+            return this;
+        }
+
+        public Builder writeServiceCommand(String _writeServiceCommand) {
+            this._writeServiceCommand = _writeServiceCommand;
+            return this;
+        }
+
+        public SingleItemMap build() {
+            return new SingleItemMap(_serviceId, _itemCommand, _itemArgumentName,
+                    _configArgumentNames == null ? Collections.emptyList() : Arrays.asList(_configArgumentNames),
+                    _readServiceCommand, _writeServiceCommand, _soapValueParser);
+        }
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(SingleItemMap.class);
 
@@ -41,31 +96,27 @@ public class SingleItemMap extends AbstractItemMap implements ParametrizedItemMa
                                             // (is parsed as value)
 
     // write specific
-    private String _writeServiceCommand; // command to execute on fbox if value should be set
+    private final String _writeServiceCommand; // command to execute on fbox if value should be set
 
     private final List<String> _configArgumentNames;
 
-    public SingleItemMap(String _itemCommand, String _readServiceCommand, String _serviceId, String _configArgumentName,
-            String _itemArgumentName) {
-        this(_itemCommand, _readServiceCommand, _serviceId, _configArgumentName, _itemArgumentName,
-                new SoapValueParser());
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public SingleItemMap(String _itemCommand, String _readServiceCommand, String _serviceId, String _configArgumentName,
-            String _itemArgumentName, SoapValueParser _soapValueParser) {
-        super(_readServiceCommand, _serviceId, _soapValueParser);
+    private SingleItemMap(String _serviceId, String _itemCommand, String _itemArgumentName,
+            List<String> _configArgumentNames, String _readAction, String _writeServiceCommand,
+            SoapValueParser _soapValueParser) {
+        super(_readAction, _serviceId, _soapValueParser);
         this._itemCommand = _itemCommand;
-        this._configArgumentNames = _configArgumentName == null ? emptyList() : singletonList(_configArgumentName);
         this._itemArgumentName = _itemArgumentName;
+        this._configArgumentNames = _configArgumentNames;
+        this._writeServiceCommand = _writeServiceCommand;
     }
 
     @Override
     public String getWriteServiceCommand() {
         return _writeServiceCommand;
-    }
-
-    public void setWriteServiceCommand(String _writeServiceCommand) {
-        this._writeServiceCommand = _writeServiceCommand;
     }
 
     public String getItemCommand() {
