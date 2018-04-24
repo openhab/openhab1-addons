@@ -232,7 +232,9 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
                             SwegonVentilationCommandType cmdType = val.getKey();
                             Integer value = val.getValue();
 
-                            if (cache.isValueChanged(cmdType, value)) {
+                            if (cache.valueEquals(cmdType, value)) {
+                                logger.trace("Value '{}' for {} hasn't changed, ignoring update", value, cmdType);
+                            } else {
                                 logger.trace("Value '{}' for {} changed", value, cmdType);
                                 cache.update(cmdType, value);
 
@@ -249,8 +251,6 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
                                         }
                                     }
                                 }
-                            } else {
-                                logger.trace("Value '{}' for {} hasn't changed, ignoring update", value, cmdType);
                             }
                         }
                     }
