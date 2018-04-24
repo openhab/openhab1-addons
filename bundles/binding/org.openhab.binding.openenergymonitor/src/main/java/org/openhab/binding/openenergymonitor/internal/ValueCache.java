@@ -18,23 +18,23 @@ import java.util.Map;
  *
  * @author Pauli Anttila
  */
-public class ValueCache<T, V> {
+public class ValueCache<K, V> {
 
-    private Map<T, V> stateMap = Collections.synchronizedMap(new HashMap<T, V>());
+    private Map<K, V> stateMap = Collections.synchronizedMap(new HashMap<K, V>());
 
     public void clear() {
         stateMap.clear();
     }
 
-    public boolean isValueChanged(T type, V value) {
-        V oldValue = stateMap.get(type);
+    public boolean valueEquals(K key, V value) {
+        V oldValue = stateMap.get(key);
         if ((value == null && oldValue == null) || (value != null && value.equals(oldValue))) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
-    public void update(T type, V value) {
+    public void update(K type, V value) {
         stateMap.put(type, value);
     }
 }

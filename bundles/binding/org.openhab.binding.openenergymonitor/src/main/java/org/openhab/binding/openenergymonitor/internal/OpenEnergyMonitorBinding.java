@@ -253,13 +253,13 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                                                     provider.getTransformationFunction(itemName), state);
 
                                             if (state != null) {
-                                                if (cache.isValueChanged(itemName, state)) {
+                                                if (cache.valueEquals(itemName, state)) {
+                                                    logger.trace("Value '{}' for {} hasn't changed, ignoring update",
+                                                            state, itemName);
+                                                } else {
                                                     logger.trace("Value '{}' for {} changed", state, itemName);
                                                     cache.update(itemName, state);
                                                     eventPublisher.postUpdate(itemName, state);
-                                                } else {
-                                                    logger.trace("Value '{}' for {} hasn't changed, ignoring update",
-                                                            state, itemName);
                                                 }
                                                 break;
                                             }
