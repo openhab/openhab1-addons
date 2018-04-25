@@ -10,7 +10,7 @@ The TCP & UDP Bindings act as a network client or as a network server.
 
 The TCP and UDP bindings can be configured in the files `services/tcp.cfg` and `services/udp.cfg`, respectively.
 
-> Note: This is optional for the configuration and not necessary for receiving data. Item-defintions are enough for receiving data. (Developer confirm? 20150128). There's a bug in the binding that requires at least one udp configuration to be defined or the binding will not send UDP messages.
+> Note: This is optional for the configuration and not necessary for sending data. Item-definitions are enough for receiving data, but a port configuration is required for UDP reception. There's a bug in the binding that requires at least one udp configuration to be defined or the binding will not send/receive UDP messages.
 
 The indicated default values apply to both bindings unless otherwise noted.
 
