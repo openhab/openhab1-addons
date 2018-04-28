@@ -11,12 +11,14 @@ package org.openhab.binding.openenergymonitor.internal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
  * Simple value cache.
  *
  * @author Pauli Anttila
+ * @since 1.12.0
  */
 public class ValueCache<K, V> {
 
@@ -28,10 +30,7 @@ public class ValueCache<K, V> {
 
     public boolean valueEquals(K key, V value) {
         V oldValue = stateMap.get(key);
-        if ((value == null && oldValue == null) || (value != null && value.equals(oldValue))) {
-            return true;
-        }
-        return false;
+        return Objects.equals(value, oldValue);
     }
 
     public void update(K type, V value) {
