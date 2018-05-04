@@ -198,28 +198,28 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                 String substring = split[i];
 
                 if (substring.startsWith("REGEX(")) {
-                    pattern = substring.substring(6, substring.length()-1);
+                    pattern = substring.substring(6, substring.length());
                     logger.debug("REGEX: '{}'", pattern);
                 } else if (substring.startsWith("FORMAT(")) {
-                    format = substring.substring(7, substring.length()-1);
+                    format = substring.substring(7, substring.length());
                     logger.debug("FORMAT: '{}'", format);
                 } else if (substring.equals("BASE64")) {
                     base64 = true;
                     logger.debug("Base64-Mode enabled");
                 } else if (substring.startsWith("ON(")) {
-                    onCommand = substring.substring(3, substring.length()-1);
+                    onCommand = substring.substring(3, substring.length());
                     logger.debug("ON: '{}'", onCommand);
                 } else if (substring.startsWith("OFF(")) {
-                    offCommand = substring.substring(4, substring.length()-1);
+                    offCommand = substring.substring(4, substring.length());
                     logger.debug("OFF: '{}'", offCommand);
                 } else if (substring.startsWith("UP(")) {
-                    upCommand = substring.substring(3, substring.length()-1);
+                    upCommand = substring.substring(3, substring.length());
                     logger.debug("UP: '{}'", upCommand);
                 } else if (substring.startsWith("DOWN(")) {
-                    downCommand = substring.substring(5, substring.length()-1);
+                    downCommand = substring.substring(5, substring.length());
                     logger.debug("DOWN: '{}'", downCommand);
                 } else if (substring.startsWith("STOP(")) {
-                    stopCommand = substring.substring(5, substring.length()-1);
+                    stopCommand = substring.substring(5, substring.length());
                     logger.debug("STOP: '{}'", stopCommand);
                 } else {
                     logger.warn("Unrecognized transform: {}", substring);
