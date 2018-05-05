@@ -24,7 +24,7 @@
 			<Type>list</Type>
 			<Default>3</Default>
 			<Size>1</Size>
-			<Label lang="en">Buttons mode</Label>
+			<Label lang="en">Button mode</Label>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">One push button</Label>
@@ -35,7 +35,7 @@
 			</Item>
 			<Item>
 				<Value>2</Value>
-				<Label lang="en">Two toggle switch</Label>
+				<Label lang="en">Two toggle switches</Label>
 			</Item>
 			<Item>
 				<Value>3</Value>
@@ -49,7 +49,7 @@
 			<Type>word</Type>
 			<Default>0</Default>
 			<Size>2</Size>
-			<Help lang="en">Time period for the motor to continue operation.</Help>
+			<Help lang="en">Time period for the motor to continue operation</Help>
 		</Parameter>
 		
 		<Parameter>
@@ -74,7 +74,7 @@
 				<Value>3</Value>
 				<Label lang="en">Open if closed, otherwise Close</Label>
 			</Item>
-			<Help lang="en">Defines how to interpret RF Off command. Can be used in conjunction with Auto Close function: Ignore - to open the door by motion detectors and close it back after some amount of time:</Help>
+			<Help lang="en">Defines how to interpret RF Off command. Can be used in conjunction with Auto Close function: Ignore - to open the door by motion detectors and close it back after some amount of time</Help>
 		</Parameter>
 		<Parameter>
 			<Index>4</Index>
@@ -82,7 +82,7 @@
 			<Default>50</Default>
 			<Size>1</Size>
 			<Label lang="en">Typical click timeout</Label>			
-			<Help lang="en">Typical time used to diff erentiate click, hold, double and triple clicks. 1-100ms in 10ms steps.</Help>
+			<Help lang="en">Typical time used to differentiate click, hold, double and triple clicks (1-100ms in 10ms steps)</Help>
 		</Parameter>
 
 		<Parameter>
@@ -110,13 +110,13 @@
 			<Label lang="en">Action on button press or hold</Label>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en"> Switch On, Off and dim using Basic Set and MultiLevel Start/Stop Changing</Label>
+				<Label lang="en">Switch On, Off and dim using Basic Set and MultiLevel Start/Stop Changing</Label>
 			</Item>		
 			<Item>
 				<Value>2</Value>
 				<Label lang="en">Send Scene</Label>
 			</Item>		
-			<Help lang="en"> Deö nes which command should be sent to Association group on button press or hold. Scene mode will send 1 for Up event, 2 for Stop, 3 for Down</Help>
+			<Help lang="en">Defines which command should be sent to Association group on button press or hold. Scene mode will send 1 for Up event, 2 for Stop, 3 for Down</Help>
 		</Parameter>
 
 		<Parameter>
@@ -153,7 +153,7 @@
 			<Default>60</Default>
 			<Size>1</Size>
 			<Label lang="en">Full close time</Label>			
-			<Help lang="en">Time to go from opened to closed state. Used to estimate the current level. Note that in Permanent motion mode the reported value would be Closed or Opened, while all Basic and Multilevel Set values (1-99, 255) would Open except 0 value that would Close.</Help>
+			<Help lang="en">Time to go from opened to closed state. Used to estimate the current level. Note that in Permanent motion mode the reported value would be Closed or Opened, while all Basic and Multilevel Set values (1-99, 255) would Open except 0 value that would Close</Help>
 		</Parameter>		
 		<Parameter>
 			<Index>11</Index>
@@ -161,7 +161,7 @@
 			<Default>60</Default>
 			<Size>1</Size>
 			<Label lang="en">Full open 	time</Label>			
-			<Help lang="en"> Time to go from closed to open state. This value may diff er from full close time for some blinds due to gravity. Used to estimate the current level. Note that in Permanent motion mode the reported value would be Closed or Opened, while all Basic and Multilevel Set values (1-99, 255) would Open except 0 value that would Close.</Help>
+			<Help lang="en">Time to go from closed to open state. This value may differ from full close time for some blinds due to gravity. Used to estimate the current level. Note that in Permanent motion mode the reported value would be Closed or Opened, while all Basic and Multilevel Set values (1-99, 255) would Open except 0 value that would Close</Help>
 		</Parameter>
 		<Parameter>
 			<Index>12</Index>
@@ -169,7 +169,7 @@
 			<Default>0</Default>
 			<Size>1</Size>
 			<Label lang="en">Node Id of the blocking device</Label>			
-			<Help lang="en">: Id of the device which commands would be interpreted not as Open/Close, but as block/unblock. Useful with door opening detector: if the door is open, block the blind not to break shades while they move.</Help>
+			<Help lang="en">Id of the device which commands would be interpreted not as Open/Close, but as block/unblock. Useful with door opening detector: if the door is open, block the blind not to break shades while they move</Help>
 		</Parameter>
 		<Parameter>
 			<Index>13</Index>
@@ -185,7 +185,7 @@
 				<Label lang="en">Off</Label>
 			</Item>
 			<Label lang="en">On which command from blocking node to enable the protection</Label>			
-			<Help lang="en">Defines which command from blocking device to interpret as closed door and hence, unprotected.</Help>
+			<Help lang="en">Defines which command from blocking device to interpret as closed door and hence, unprotected</Help>
 		</Parameter>
 		<Parameter>
 			<Index>14</Index>
