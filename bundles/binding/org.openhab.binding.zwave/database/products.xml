@@ -4054,8 +4054,8 @@
 		<Name>DHS</Name>
 		<Product>
 			<Reference>
-				<Type>0055</Type>
-				<Id>0024</Id>
+				<Type>0024</Type>
+				<Id>0055</Id>
 			</Reference>
 			<Model>DHS-WIN-BLW-DHS</Model>
 			<Label lang="en">DHS Z-Wave Tubular Motor Controllerl</Label>
