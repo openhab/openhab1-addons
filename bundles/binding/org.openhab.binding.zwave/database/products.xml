@@ -4049,4 +4049,17 @@
 			<ConfigFile>fireangle/zst630.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
-</Manufacturers>
+	<Manufacturer>
+		<Id>0097</Id>
+		<Name>DHS</Name>
+		<Product>
+			<Reference>
+				<Type>0055</Type>
+				<Id>0024</Id>
+			</Reference>
+			<Model>DHS-WIN-BLW-DHS</Model>
+			<Label lang="en">DHS Z-Wave Tubular Motor Controllerl</Label>
+			<ConfigFile>dhs/dhs-win-blw.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	</Manufacturers>

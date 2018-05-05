@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>DHS-WIN-BLW-DHS</Model>
+	<Label lang="en">Roller Shutter</Label>
+	<CommandClasses>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x8e</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x77</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x87</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x2b</id></Class>
+		<Class><id>0x2c</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Buttons mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">One push button</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Two paddles with Power and Direction</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Two toggle switch</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Two buttons with neutral position</Label>
+			</Item>
+			<Help lang="en">Controls number and function of buttons</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>word</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Help lang="en">Time period for the motor to continue operation.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">What to do on RF close command</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Close</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Open</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Open if closed, otherwise Close</Label>
+			</Item>
+			<Help lang="en">Defines how to interpret RF Off command. Can be used in conjunction with Auto Close function: Ignore - to open the door by motion detectors and close it back after some amount of time:</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Default>50</Default>
+			<Size>1</Size>
+			<Label lang="en">Typical click timeout</Label>			
+			<Help lang="en">Typical time used to diff erentiate click, hold, double and triple clicks. 1-100ms in 10ms steps.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Label lang="en">Invert buttons</Label>			
+			<Help lang="en"></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>6</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Action on button press or hold</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en"> Switch On, Off and dim using Basic Set and MultiLevel Start/Stop Changing</Label>
+			</Item>		
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Send Scene</Label>
+			</Item>		
+			<Help lang="en"> Deö nes which command should be sent to Association group on button press or hold. Scene mode will send 1 for Up event, 2 for Stop, 3 for Down</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>7</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Set LED indication mode</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Show working state</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Always on</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Show opened state</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Indicator command class</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>byte</Type>
+			<Default>60</Default>
+			<Size>1</Size>
+			<Label lang="en">Full close time</Label>			
+			<Help lang="en">Time to go from opened to closed state. Used to estimate the current level. Note that in Permanent motion mode the reported value would be Closed or Opened, while all Basic and Multilevel Set values (1-99, 255) would Open except 0 value that would Close.</Help>
+		</Parameter>		
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>60</Default>
+			<Size>1</Size>
+			<Label lang="en">Full open 	time</Label>			
+			<Help lang="en"> Time to go from closed to open state. This value may diff er from full close time for some blinds due to gravity. Used to estimate the current level. Note that in Permanent motion mode the reported value would be Closed or Opened, while all Basic and Multilevel Set values (1-99, 255) would Open except 0 value that would Close.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Node Id of the blocking device</Label>			
+			<Help lang="en">: Id of the device which commands would be interpreted not as Open/Close, but as block/unblock. Useful with door opening detector: if the door is open, block the blind not to break shades while they move.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">On</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Off</Label>
+			</Item>
+			<Label lang="en">On which command from blocking node to enable the protection</Label>			
+			<Help lang="en">Defines which command from blocking device to interpret as closed door and hence, unprotected.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert open and close relays</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Help lang="en">Allow exchanging open and close relays if blind control is wired to the motor incorrectly</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Click</Label>
+			<Help lang="en">Click, press and hold of up/down buttons</Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Change</Label>
+			<Help lang="en">Send Reports on blind state change</Help>
+		</Group>
+	</Associations>
+</Product>
+
