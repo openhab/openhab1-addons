@@ -11,6 +11,15 @@
 -->
 <features name="${project.artifactId}-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
 
+  <!-- action -->
+
+  <feature name="openhab-action-satel" description="Satel Action (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-binding-satel1</feature>
+    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.satel/${project.version}</bundle>
+  </feature>
+
   <!-- binding -->
 
   <feature name="openhab-binding-astro1" description="Astro Binding (1.x)" version="${project.version}">
@@ -41,6 +50,21 @@
     <configfile finalname="${openhab.conf}/services/homematic.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/homematic</configfile>
   </feature>
 
+  <feature name="openhab-binding-irtrans1" description="IRTrans Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-binding-tcp1</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.irtrans/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/irtrans.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/irtrans</configfile>
+  </feature>
+  
+  <feature name="openhab-binding-knx1" description="KNX Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.knx/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/knx.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/knx</configfile>
+  </feature>
+
   <feature name="openhab-binding-milight1" description="Milight Binding (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -69,6 +93,13 @@
     <configfile finalname="${openhab.conf}/services/networkhealth.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/networkhealth</configfile>
   </feature>
 
+  <feature name="openhab-binding-nibeheatpump1" description="Nibe Heatpump Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.nibeheatpump/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/nibeheatpump.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/nibeheatpump</configfile>
+  </feature>
+
   <feature name="openhab-binding-onkyo1" description="Onkyo Binding (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -83,6 +114,20 @@
     <feature>openhab-transport-serial</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.plugwise/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/plugwise.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/plugwise</configfile>
+  </feature>
+
+  <feature name="openhab-binding-rwesmarthome1" description="RWE SmartHome Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.rwesmarthome/${project.version}</bundle>
+  </feature>
+
+  <feature name="openhab-binding-satel1" description="Satel Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.satel/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/satel.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/satel</configfile>
   </feature>
 
   <feature name="openhab-binding-systeminfo1" description="System Info Binding (1.x)" version="${project.version}">

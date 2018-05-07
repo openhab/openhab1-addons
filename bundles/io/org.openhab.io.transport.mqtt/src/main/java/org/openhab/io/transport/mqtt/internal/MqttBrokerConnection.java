@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -89,7 +89,6 @@ public class MqttBrokerConnection implements MqttCallback {
      *             If connection could not be created.
      */
     public synchronized void start() throws Exception {
-
         if (StringUtils.isEmpty(url)) {
             logger.debug("No url defined for MQTT broker connection '{}'. Not starting.", name);
             return;
@@ -134,13 +133,22 @@ public class MqttBrokerConnection implements MqttCallback {
     }
 
     /**
-     * Set the url for the MQTT broker. Valid URL's are in the format:
-     * tcp://localhost:1883 or ssl://localhost:8883
-     * 
+     * Set the URL for the MQTT broker. Valid URLs are in the format
+     * "tcp://localhost:1883" or "ssl://localhost:8883"
+     *
+     * When the URL is changed, the client is closed and removed, so that
+     * it is recreated on the next call to openConnection().
+     *
      * @param url
      *            url string for the MQTT broker.
      */
     public void setUrl(String url) {
+        if ((url != null && !url.equals(this.url)) || (url == null && this.url != null)) {
+            // url has changed, so close and null the client
+            logger.trace("url property changed. client will be shut down.");
+            close();
+            client = null;
+        }
         this.url = url;
     }
 
@@ -245,12 +253,21 @@ public class MqttBrokerConnection implements MqttCallback {
     /**
      * Set client id to use when connecting to the broker. If none is specified,
      * a default is generated.
-     * 
+     *
+     * When the clientId is changed, the client is closed and removed, so that
+     * it is recreated on the next call to openConnection().
+     *
      * @param value
      *            clientId to use.
      */
     public void setClientId(String value) {
-        this.clientId = value;
+        if ((value != null && !value.equals(clientId)) || (value == null && clientId != null)) {
+            // client id has changed, so close and null the client
+            logger.trace("clientId property changed. client will be shut down.");
+            close();
+            client = null;
+        }
+        clientId = value;
     }
 
     /**
@@ -271,6 +288,7 @@ public class MqttBrokerConnection implements MqttCallback {
      */
     private void openConnection() throws Exception {
         if (client != null && client.isConnected()) {
+            logger.trace("client already created and connected. nothing to do.");
             return;
         }
 

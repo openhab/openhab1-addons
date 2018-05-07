@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,12 +17,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/***
- * Class managing all Phonebook related work
+/**
+ * Class managing all Phonebook related work.
  *
  * @author gitbock
  * @since 1.8.0
- *
  */
 public class PhonebookManager {
 
@@ -41,8 +40,8 @@ public class PhonebookManager {
 
     }
 
-    /***
-     * Looks up name in phone book entries and returns name and type if found
+    /**
+     * Looks up name in phone book entries and returns name and type if found.
      *
      * @param number number to look up name for
      * @param compareCount how many characters must match to accept a match
@@ -110,8 +109,7 @@ public class PhonebookManager {
         return name;
     }
 
-    /***
-     *
+    /**
      * @param Phonebook ID to download, can be determined using TR064 GetPhonebookList
      * @return XML Document downloaded
      */
@@ -123,11 +121,10 @@ public class PhonebookManager {
         logger.trace(Helper.documentToString(phoneBook));
 
         return phoneBook;
-
     }
 
-    /***
-     * Downloads and parses phonebooks from fbox
+    /**
+     * Downloads and parses phonebooks from fbox.
      */
     public void downloadPhonebooks(int phonebookid) {
         Document pb = downloadPhonebook(phonebookid);
@@ -143,9 +140,7 @@ public class PhonebookManager {
                 }
             }
         } else {
-            logger.error("Could not download phonebook");
+            logger.warn("Could not download phonebook");
         }
-
     }
-
 }

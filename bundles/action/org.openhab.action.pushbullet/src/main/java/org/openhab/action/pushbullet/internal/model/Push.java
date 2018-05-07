@@ -30,6 +30,9 @@ public class Push {
     @SerializedName("email")
     private String email;
 
+    @SerializedName("channel_tag")
+    private String channel_tag;
+
     public String getTitle() {
         return title;
     }
@@ -62,9 +65,17 @@ public class Push {
         this.email = email;
     }
 
+    public String getChannel() {
+        return channel_tag;
+    }
+
+    public void setChannel(String channel_tag) {
+        this.channel_tag = channel_tag;
+    }
+
     @Override
     public String toString() {
         return "Push {" + "title='" + title + '\'' + ", body='" + body + '\'' + ", type='" + type + '\'' + ", email='"
-                + email + '\'' + '}';
+                + email + '\'' + ", channel_tag='" + channel_tag + '\'' + '}';
     }
 }

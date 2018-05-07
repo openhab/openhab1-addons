@@ -32,6 +32,7 @@ Bundle-SymbolicName: org.openhab.binding.knx
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/knxbinding.xml, OSGI-INF/knxcoretypemapper.xml, OSGI-INF/knxgenericbindingprovider.xml
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/calimero-rxtx-2.0a3.jar,
  lib/calimero-core-2.3-beta.jar,
  .

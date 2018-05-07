@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -188,7 +188,7 @@ public class SerialDevice implements SerialPortEventListener {
     /**
      * Initialize this device and open the serial port
      *
-     * @throws InitializationException if port can not be opened
+     * @throws InitializationException if port cannot be opened
      */
     @SuppressWarnings("rawtypes")
     public void initialize() throws InitializationException {
@@ -289,7 +289,7 @@ public class SerialDevice implements SerialPortEventListener {
                     String result = sb.toString();
 
                     // send data to the bus
-                    logger.debug("Received message '{}' on serial port {}", new String[] { result, port });
+                    logger.debug("Received message '{}' on serial port {}", result, port);
 
                     if (eventPublisher != null) {
                         if (configMap != null && !configMap.isEmpty()) {
@@ -317,7 +317,7 @@ public class SerialDevice implements SerialPortEventListener {
                                                 eventPublisher.postUpdate(entry.getKey(), state);
                                             } catch (NumberFormatException e) {
                                                 logger.warn("Unable to convert regex result '{}' for item {} to number",
-                                                        new String[] { result, entry.getKey() });
+                                                        result, entry.getKey());
                                             }
                                         }
                                     } catch (TransformationException e) {
@@ -365,7 +365,7 @@ public class SerialDevice implements SerialPortEventListener {
                     }
 
                 } catch (IOException e) {
-                    logger.debug("Error receiving data on serial port {}: {}", new String[] { port, e.getMessage() });
+                    logger.debug("Error receiving data on serial port {}: {}", port, e.getMessage());
                 }
                 break;
         }
@@ -377,7 +377,7 @@ public class SerialDevice implements SerialPortEventListener {
      * @param msg the string to send
      */
     public void writeString(String msg) {
-        logger.debug("Writing '{}' to serial port {}", new String[] { msg, port });
+        logger.debug("Writing '{}' to serial port {}", msg, port);
         try {
             // write string to serial port
             if (msg.startsWith("BASE64:")) {
@@ -388,7 +388,7 @@ public class SerialDevice implements SerialPortEventListener {
 
             outputStream.flush();
         } catch (IOException e) {
-            logger.error("Error writing '{}' to serial port {}: {}", new String[] { msg, port, e.getMessage() });
+            logger.warn("Error writing '{}' to serial port {}: {}", msg, port, e.getMessage());
         }
     }
 

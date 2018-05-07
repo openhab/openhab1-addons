@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -189,7 +189,7 @@ public class NikobusCommand {
     }
 
     /**
-     * When no duplicates are allowed, the same command can not be queued for
+     * When no duplicates are allowed, the same command cannot be queued for
      * sending when a similar command is already in the to send queue.
      * 
      * @param allowDuplicates

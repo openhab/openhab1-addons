@@ -34,7 +34,7 @@ where
 
 It is possible to define wildcards for `<device>` and `<ircommand>`: if either of them are equal to `**` then respectively, any device that defines the given `<ircommand>`, or any `<ircommand>` for the given `<device>`, will match and trigger the status update of the item. If you would put `**` for both `<device>` and `<ircommand>` then any infrared command received by the transceiver will cause the item to be updated.
 
-> **Note:** the IRtrans device does not communicate which `<led>` a command is received by, so that information can not be used to wildcard infrared commands received
+> **Note:** the IRtrans device does not communicate which `<led>` a command is received by, so that information cannot be used to wildcard infrared commands received
 
 > **Note:** If the item is of the type String, then any infrared command received by the transceiver will cause the Item to be updated with "`<device>`,`<ircommand>`". Likewise, any string passed on by the OpenHAB runtime will simply be parsed using the "`<device>`,`<ircommand>`" pattern. For such Items the `<command>` element has to be omitted in the configuration string
 

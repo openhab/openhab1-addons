@@ -1526,7 +1526,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 | property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
-| subid | openHAB subid of the device | in0, in2, in3, in4 |
+| subid | openHAB subid of the device | in0, in1, in2, in3 |
 | type | openHAB type name |  |
 
 ##### tinkerforge.cfg:
@@ -1569,7 +1569,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 | property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
-| subid | openHAB subid of the device | out0, out2, out3, out4 |
+| subid | openHAB subid of the device | out0, out1, out2, out3 |
 | type | openHAB type name |  |
 
 ##### tinkerforge.cfg:
@@ -2060,7 +2060,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 There are three sub devices: joystick_xposition, joystick_yposition and joystick_button.
 Callback period for xy position defaults to 10 milli seconds. CallbackPeriod must be configured
-on bricklet_joystick device, because x and y position can not have
+on bricklet_joystick device, because x and y position cannot have
 different callback periods.
 
 ##### Button

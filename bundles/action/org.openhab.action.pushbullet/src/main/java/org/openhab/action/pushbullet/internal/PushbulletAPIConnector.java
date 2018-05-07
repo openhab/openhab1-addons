@@ -8,16 +8,7 @@
  */
 package org.openhab.action.pushbullet.internal;
 
-import com.google.gson.Gson;
-import org.eclipse.smarthome.io.net.http.HttpUtil;
-import org.openhab.action.pushbullet.internal.model.Push;
-import org.openhab.action.pushbullet.internal.model.PushResponse;
-import org.openhab.core.scriptengine.action.ActionDoc;
-import org.openhab.core.scriptengine.action.ParamDoc;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.openhab.action.pushbullet.internal.PushbulletConstants.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,9 +18,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.openhab.action.pushbullet.internal.PushbulletConstants.API_URL_PUSHES;
-import static org.openhab.action.pushbullet.internal.PushbulletConstants.DEFAULT_BOTNAME;
-import static org.openhab.action.pushbullet.internal.PushbulletConstants.TIMEOUT;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
+import org.openhab.action.pushbullet.internal.model.Push;
+import org.openhab.action.pushbullet.internal.model.PushResponse;
+import org.openhab.core.scriptengine.action.ActionDoc;
+import org.openhab.core.scriptengine.action.ParamDoc;
+import org.openhab.io.net.http.HttpUtil;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
 
 /**
  * This class contains the methods that are made available in scripts and rules
@@ -96,6 +98,14 @@ public class PushbulletAPIConnector {
         return sendPush(DEFAULT_BOTNAME, recipient, title, message, "note");
     }
 
+    @ActionDoc(text = "Sends a message to PushbulletAPIConnector to all user's devices from default bot")
+    public static boolean sendPushbulletNote(
+            @ParamDoc(name = "title", text = "title of the message") String title,
+            @ParamDoc(name = "message", text = "the message to be sent") String message) {
+        logger.debug("Trying to send a note to all user's devices from the default bot");
+        return sendPush(DEFAULT_BOTNAME, null, title, message, "note");
+    }
+
     /**
      * Inner method handling all the pushes.
      *
@@ -108,7 +118,6 @@ public class PushbulletAPIConnector {
      */
     private static boolean sendPush(String botName, String recipient, String title, String body, String type) {
         boolean result = false;
-
         logger.trace("    Botname is   '{}'", botName);
 
         PushbulletBot bot = bots.get(botName);
@@ -127,7 +136,19 @@ public class PushbulletAPIConnector {
         push.setTitle(title);
         push.setBody(body);
         push.setType(type);
-        push.setEmail(recipient);
+
+        if (recipient != null) {
+            if (isValidEmail(recipient)) {
+                logger.trace("    Recipient is an email address");
+                push.setEmail(recipient);
+            } else if (isValidChannel(recipient)) {
+                logger.trace("    Recipient is a channel tag");
+                push.setChannel(recipient);
+            } else {
+                logger.warn("Invalid recipient: {}", recipient);
+                logger.warn("Message will be broadcast to all user's devices.");
+            }
+        }
 
         logger.trace("     Push: {}", push);
 
@@ -158,5 +179,32 @@ public class PushbulletAPIConnector {
 
         return result;
 
+    }
+
+    /**
+     * Inner method checking if channel tag is valid.
+     *
+     * @param channel
+     * @return
+     */
+    private static boolean isValidChannel(String channel) {
+        String pattern = "^[a-zA-Z0-9_-]+$";
+        return channel.matches(pattern);
+    }
+
+    /**
+     * Inner method checking if email address is valid.
+     *
+     * @param email
+     * @return
+     */
+    private static boolean isValidEmail(String email) {
+        try {
+            InternetAddress emailAddr = new InternetAddress(email);
+            emailAddr.validate();
+            return true;
+        } catch (AddressException e) {
+            return false;
+        }
     }
 }

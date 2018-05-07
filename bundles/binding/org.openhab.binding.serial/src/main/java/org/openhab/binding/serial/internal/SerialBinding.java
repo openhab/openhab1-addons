@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
@@ -32,40 +34,50 @@ import org.openhab.core.types.State;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.model.item.binding.BindingConfigReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * <p>
  * This class implements a binding of serial devices to openHAB.
- * The binding configurations are provided by the {@link GenericItemProvider}.
- * </p>
+ * The binding configurations are provided by the {@link
+ * GenericItemProvider}.
  *
- * <p>
  * The format of the binding configuration is simple and looks like this:
- * </p>
- * serial="&lt;port&gt;" where &lt;port&gt; is the identification of the serial port on the host system, e.g.
- * "COM1" on Windows, "/dev/ttyS0" on Linux or "/dev/tty.PL2303-0000103D" on Mac
- * <p>
- * Switch items with this binding will receive an ON-OFF update on the bus, whenever data becomes available on the
- * serial interface<br/>
- * String items will receive the submitted data in form of a string value as a status update, while openHAB commands to
- * a Switch item is
- * sent out as data through the serial interface.
- * </p>
+ *     serial="<port>@<baudrate>"
+ *
+ * `port` is the identification of the serial port on the host system, e.g.
+ * "COM1" on Windows, "/dev/ttyS0" on Linux or "/dev/tty.PL2303-0000103D" on
+ * Mac.
+ *
+ * `baudrate` is the baud rate of the port. if not specified, the default is
+ * 9600.
+ *
+ * Switch items with this binding will receive an ON-OFF update on the bus,
+ * whenever data becomes available on the serial interface.
+ *
+ * String items will receive the submitted data in form of a string value as a
+ * status update.
+ *
+ * openHAB commands to a Switch item are sent out as data through the serial
+ * interface.
  *
  * @author Kai Kreuzer
- *
+ * @since 0.6.0
  */
 public class SerialBinding extends AbstractEventSubscriber implements BindingConfigReader {
 
+    private Logger logger = LoggerFactory.getLogger(SerialBinding.class);
     private Map<String, SerialDevice> serialDevices = new HashMap<>();
 
     /**
-     * stores information about the which items are associated to which port. The map has this content structure:
-     * itemname -> port
+     * Stores information about the which items are associated to which port.
+     * The map has this content structure: itemname -> port
      */
     private Map<String, String> itemMap = new HashMap<String, String>();
 
     /**
-     * stores information about the context of items. The map has this content structure: context -> Set of itemNames
+     * Stores information about the context of items. The map has this content
+     * structure: context -> Set of itemNames
      */
     private Map<String, Set<String>> contextMap = new HashMap<>();
 
@@ -139,6 +151,14 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+        if (item == null) {
+            throw new BindingConfigParseException("Item received was null");
+        }
+
+        if (StringUtils.isBlank(bindingConfig)) {
+            throw new BindingConfigParseException("No binding configuration provided");
+        }
+
         if (!(item instanceof SwitchItem || item instanceof StringItem || item instanceof NumberItem
                 || item instanceof RollershutterItem || item instanceof ContactItem || item instanceof DimmerItem)) {
             throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
@@ -153,6 +173,13 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
     @Override
     public void processBindingConfiguration(String context, Item item, String bindingConfig)
             throws BindingConfigParseException {
+        if (StringUtils.isBlank(context)) {
+            throw new BindingConfigParseException("No context provided");
+        }
+
+        if (StringUtils.isBlank(bindingConfig)) {
+            throw new BindingConfigParseException("No binding configuration provided");
+        }
 
         String pattern = null;
         boolean base64 = false;
@@ -166,26 +193,36 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         int parameterSplitterAt = bindingConfig.indexOf(",");
 
         if (parameterSplitterAt > 0) {
-            String[] split = bindingConfig.substring(parameterSplitterAt + 1, bindingConfig.length() - 1).split("\\),");
+            String[] split = bindingConfig.substring(parameterSplitterAt + 1, bindingConfig.length()).split("\\),");
             for (int i = 0; i < split.length; i++) {
                 String substring = split[i];
 
                 if (substring.startsWith("REGEX(")) {
                     pattern = substring.substring(6, substring.length());
+                    logger.debug("REGEX: '{}'", pattern);
                 } else if (substring.startsWith("FORMAT(")) {
                     format = substring.substring(7, substring.length());
+                    logger.debug("FORMAT: '{}'", format);
                 } else if (substring.equals("BASE64")) {
                     base64 = true;
+                    logger.debug("Base64-Mode enabled");
                 } else if (substring.startsWith("ON(")) {
                     onCommand = substring.substring(3, substring.length());
+                    logger.debug("ON: '{}'", onCommand);
                 } else if (substring.startsWith("OFF(")) {
                     offCommand = substring.substring(4, substring.length());
+                    logger.debug("OFF: '{}'", offCommand);
                 } else if (substring.startsWith("UP(")) {
                     upCommand = substring.substring(3, substring.length());
+                    logger.debug("UP: '{}'", upCommand);
                 } else if (substring.startsWith("DOWN(")) {
                     downCommand = substring.substring(5, substring.length());
+                    logger.debug("DOWN: '{}'", downCommand);
                 } else if (substring.startsWith("STOP(")) {
                     stopCommand = substring.substring(5, substring.length());
+                    logger.debug("STOP: '{}'", stopCommand);
+                } else {
+                    logger.warn("Unrecognized transform: {}", substring);
                 }
             }
         }
@@ -198,10 +235,14 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         }
 
         String port = portConfig[0];
+        logger.debug("Port: {}", port);
         int baudRate = 0;
 
         if (portConfig.length > 1) {
             baudRate = Integer.parseInt(portConfig[1]);
+            logger.debug("Baud rate: {}", baudRate);
+        } else {
+            logger.debug("Baud rate: 9600");
         }
 
         SerialDevice serialDevice = serialDevices.get(port);
@@ -263,5 +304,4 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
             contextMap.remove(context);
         }
     }
-
 }

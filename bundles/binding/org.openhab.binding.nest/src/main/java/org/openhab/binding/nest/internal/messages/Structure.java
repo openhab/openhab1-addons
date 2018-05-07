@@ -30,6 +30,44 @@ import org.codehaus.jackson.annotate.JsonValue;
 public class Structure extends AbstractMessagePart implements DataModelElement {
 
     /**
+     * Structure security state
+     *
+     * @see <a href="https://developers.nest.com/documentation/cloud/structure-guide">Structure state</a>
+     * @see <a href="https://developers.nest.com/documentation/cloud/security-guide">Security Guide</a>
+     * @see <a href="https://developers.nest.com/documentation/cloud/api-structure#wwn_security_state">wwn_security_state</a>
+     */
+    public static enum WwnSecurityState {
+        OK("ok"),
+        DETER("deter");     // Person detected in perimeter camera while structure is in away state
+
+        private final String state;
+
+        private WwnSecurityState(String state) {
+            this.state = state;
+        }
+
+        @JsonValue
+        public String value() {
+            return state;
+        }
+
+        @JsonCreator
+        public static WwnSecurityState forValue(String v) {
+            for (WwnSecurityState s : WwnSecurityState.values()) {
+                if (s.state.equals(v)) {
+                    return s;
+                }
+            }
+            throw new IllegalArgumentException("Invalid state: " + v);
+        }
+
+        @Override
+        public String toString() {
+            return this.state;
+        }
+    }
+
+    /**
      * Describes the Structure state; see the Away Guide for more information.
      *
      * @see <a href="https://developer.nest.com/documentation/cloud/structure-guide">Structure state</a>
@@ -146,6 +184,7 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
     private ETA eta;
     private Date eta_begin;
     private Boolean rhr_enrollment;
+    private WwnSecurityState wwn_security_state;
     private AlarmState co_alarm_state;
     private AlarmState smoke_alarm_state;
 
@@ -315,6 +354,14 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
     }
 
     /**
+     * @return the structure security state
+     */
+    @JsonProperty("wwn_security_state")
+    public WwnSecurityState getWwn_security_state() {
+        return this.wwn_security_state;
+    }
+
+    /**
      * @return CO alarm status
      */
     @JsonProperty("co_alarm_state")
@@ -389,6 +436,7 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
         builder.append("eta", this.eta);
         builder.append("eta_begin", this.eta_begin);
         builder.append("rhr_enrollment", this.rhr_enrollment);
+        builder.append("wwn_security_state", this.wwn_security_state);
         builder.append("co_alarm_state", this.co_alarm_state);
         builder.append("smoke_alarm_state", this.smoke_alarm_state);
 

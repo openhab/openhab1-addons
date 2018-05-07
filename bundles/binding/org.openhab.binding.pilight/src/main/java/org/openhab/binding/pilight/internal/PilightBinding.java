@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -47,7 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Binding that communicates with one or multiple pilight instances.
+ * Binding that communicates with one or more pilight instances.
  *
  * {@link http://www.pilight.org/}
  *
@@ -187,7 +187,7 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider>imple
         } else if (command instanceof PercentType) {
             setDimmerValue((PercentType) command, code);
         } else {
-            logger.error("Only OnOffType and PercentType can be changed by the pilight binding");
+            logger.warn("Only OnOffType and PercentType can be changed by the pilight binding");
             return null;
         }
 
@@ -396,19 +396,27 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider>imple
         PilightBindingProvider pilightProvider = (PilightBindingProvider) provider;
         final PilightBindingConfig config = pilightProvider.getBindingConfig(itemName);
 
-        if (config != null) {
-            PilightConnection connection = connections.get(config.getInstance());
-            if (connection.isConnected()) {
-                connection.getConnector().refreshConfig(new IPilightConfigReceivedCallback() {
-                    @Override
-                    public void configReceived(PilightConnection connection) {
-                        State state = getStateFromConfig(connection.getConfig(), config);
-                        if (state != null) {
-                            eventPublisher.postUpdate(itemName, state);
-                        }
+        if (config == null) {
+            logger.debug("Unable to check item state. config from pilight provider was null.");
+            return;
+        }
+
+        PilightConnection connection = connections.get(config.getInstance()); 
+        if (connection == null) {
+            logger.debug("Unable to check item state. No connection available.");
+            return;
+        }
+
+        if (connection.isConnected()) {
+            connection.getConnector().refreshConfig(new IPilightConfigReceivedCallback() {
+                @Override
+                public void configReceived(PilightConnection connection) {
+                    State state = getStateFromConfig(connection.getConfig(), config);
+                    if (state != null) {
+                        eventPublisher.postUpdate(itemName, state);
                     }
-                });
-            }
+                }
+            });
         }
     }
 
@@ -416,5 +424,4 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider>imple
         return new BigDecimal(string).setScale(2).divide(new BigDecimal(MAX_DIM_LEVEL), RoundingMode.HALF_UP)
                 .multiply(new BigDecimal(100));
     }
-
 }

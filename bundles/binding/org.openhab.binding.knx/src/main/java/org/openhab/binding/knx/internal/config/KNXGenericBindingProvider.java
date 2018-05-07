@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.openhab.binding.knx.config.KNXBindingProvider;
+import org.openhab.binding.knx.config.KNXTypeMapper;
 import org.openhab.binding.knx.internal.dpt.KNXCoreTypeMapper;
 import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.binding.BindingConfig;
@@ -93,6 +94,8 @@ import tuwien.auto.calimero.exception.KNXFormatException;
  */
 public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
         implements KNXBindingProvider, AutoUpdateBindingProvider {
+
+    private final KNXTypeMapper typeHelper = new KNXCoreTypeMapper();
 
     /** the binding type to register for as a binding config reader */
     public static final String KNX_BINDING_TYPE = "knx";
@@ -187,7 +190,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
                                     return false;
                                 }
                                 if (input.itemName.equals(itemName) && input.mainDataPoint != null) {
-                                    Class<?> dptTypeClass = KNXCoreTypeMapper.toTypeClass(input.mainDataPoint.getDPT());
+                                    Class<?> dptTypeClass = typeHelper.toTypeClass(input.mainDataPoint.getDPT());
                                     return dptTypeClass != null && dptTypeClass.equals(typeClass);
                                 }
                                 return false;
@@ -448,12 +451,12 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
                         // DatapointID specified in binding config, so use it
                         dptID = segments[0];
                     }
-                    if (dptID == null || dptID.trim().isEmpty()) {
+                    if ((dptID == null || dptID.trim().isEmpty()) && typeClass != null) {
                         throw new BindingConfigParseException(
                                 "No DPT could be determined for the type '" + typeClass.getSimpleName() + "'.");
                     }
                     // check if this DPT is supported
-                    if (KNXCoreTypeMapper.toTypeClass(dptID) == null) {
+                    if (typeHelper.toTypeClass(dptID) == null) {
                         throw new BindingConfigParseException("DPT " + dptID + " is not supported by the KNX binding.");
                     }
 
@@ -513,7 +516,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
      * @return the default datapoint type id
      */
     private String getDefaultDPTId(Class<? extends Type> typeClass) {
-        return KNXCoreTypeMapper.toDPTid(typeClass);
+        return ((KNXCoreTypeMapper) typeHelper).toDPTid(typeClass);
     }
 
     /**

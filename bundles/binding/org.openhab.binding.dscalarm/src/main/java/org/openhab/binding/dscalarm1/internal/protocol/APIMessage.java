@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -324,7 +324,7 @@ public class APIMessage {
                         break;
                     case PartitionNotReady: /* 651 */
                         apiName = "Partition Not Ready";
-                        apiDescription = apiCodeReceived + ": Partition can not be armed.";
+                        apiDescription = apiCodeReceived + ": Partition cannot be armed.";
                         partition = Integer.parseInt(apiMessage.substring(3, 4));
                         apiMessageType = APIMessageType.PARTITION_EVENT;
                         break;

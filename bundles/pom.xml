@@ -15,6 +15,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>api</module>
     <module>action</module>
     <module>binding</module>
     <module>io</module>

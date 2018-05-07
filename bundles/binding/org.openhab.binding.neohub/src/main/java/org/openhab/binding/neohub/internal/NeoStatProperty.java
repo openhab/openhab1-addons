@@ -27,6 +27,8 @@ public enum NeoStatProperty {
     DeviceName("DeviceName"),
     Heating("Heating"),
     Away("Away"),
+    Holiday("Holiday"),
+    HolidayDays("HolidayDays"),
     Standby("Standby");
 
     /**

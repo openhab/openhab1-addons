@@ -2,15 +2,14 @@
 
 ## Actions
 
-* `harmonyPressButton(<device>, <command>)`
-* `harmonyPressButton(<qualifier>, <device>, <command>)`
-* `harmonyStartActivity(<activity>)`
-* `harmonyStartActivity(<qualifier>,<activity>)`
-
+- `harmonyPressButton(<device>, <command>)`
+- `harmonyPressButton(<qualifier>, <device>, <command>)`
+- `harmonyStartActivity(<activity>)`
+- `harmonyStartActivity(<qualifier>,<activity>)`
 
 ## Examples
 
-```
+```java
 harmonyPressButton("Lounge", "8-Track", "PowerOn")
 harmonyStartActivity("PowerOff")
 ```
