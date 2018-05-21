@@ -108,7 +108,7 @@ Number  fboxMissedCalls  "Missed Calls [%s]"            {fritzboxtr064="missedCa
 // Number after callDeflectionSwitch is ID of configured call deflection
 // The ID count includes the entries from the "Call Blocks" page.
 // If you have no "Call Blocks", the first entry on the "Call Diversions" page has ID 0.
-// If you have e. g. 3 "Call Blocks", the first entry on the "Call Diversions" page has ID 3.
+// If you have 3 "Call Blocks", the first entry on the "Call Diversions" page has ID 3.
 Switch  fboxCD0Switch    "Call Deflection ID 0"         {fritzboxtr064="callDeflectionSwitch:0"}
 ```
 
