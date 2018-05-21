@@ -9,7 +9,7 @@ Bundle-Name: openHAB 1.x Core API
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.openhab.core1
 Bundle-Vendor: openHAB
-Bundle-Version: 1.12.0.qualifier
+Bundle-Version: 1.12.0.RC1
 Export-Package: 
  org.codehaus.jackson,
  org.codehaus.jackson.annotate,

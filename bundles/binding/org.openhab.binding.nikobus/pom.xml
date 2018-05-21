@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.12.0-SNAPSHOT</version>
+		<version>1.12.0.RC1</version>
 	</parent>
 
 	<name>openHAB Nikobus Binding</name>
