@@ -28,6 +28,7 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
+import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -57,8 +58,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
     /** Thread to handle messages from Open Energy Monitor devices */
     private MessageListener messageListener = null;
 
-    public OpenEnergyMonitorBinding() {
-    }
+    private ValueCache<String, State> cache = new ValueCache<String, State>();
 
     @Override
     public void activate() {
@@ -144,6 +144,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                 }
             }
 
+            cache.clear();
             messageListener = new MessageListener();
             messageListener.start();
         }
@@ -252,7 +253,14 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                                                     provider.getTransformationFunction(itemName), state);
 
                                             if (state != null) {
-                                                eventPublisher.postUpdate(itemName, state);
+                                                if (cache.valueEquals(itemName, state)) {
+                                                    logger.trace("Value '{}' for {} hasn't changed, ignoring update",
+                                                            state, itemName);
+                                                } else {
+                                                    logger.trace("Value '{}' for {} changed", state, itemName);
+                                                    cache.update(itemName, state);
+                                                    eventPublisher.postUpdate(itemName, state);
+                                                }
                                                 break;
                                             }
 
