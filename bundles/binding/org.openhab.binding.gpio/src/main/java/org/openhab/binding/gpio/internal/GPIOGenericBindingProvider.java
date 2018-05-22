@@ -108,7 +108,7 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
         /* Configuration string should be in the form "pin:NUMBER [debounse:NUMBER] [activelow:yes|no]" */
         String[] properties = bindingConfig.split(" ");
 
-        if (properties.length > 3) {
+        if (properties.length > 4) {
             logger.error("Wrong number of arguments (" + properties.length + ") in configuration string '"
                     + bindingConfig + "'");
             throw new BindingConfigParseException("Wrong number of agruments (" + properties.length
