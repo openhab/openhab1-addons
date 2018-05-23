@@ -10,89 +10,67 @@ package org.openhab.binding.fritzboxtr064.internal;
 
 import static java.util.Collections.emptyList;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Configuration of an item from the binding config. Each configuration has an {@link #getItemCommand() item command}
  * which determines the value to read. For parametrisable commands the config may also have
- * a {@link #getDataInValue() data in value} and {@link #getAdditionalParameters() additional parameters}.
+ * {@link #getArgumentValues() values for the input arguments}.
  *
  * @author Michael Koch <tensberg@gmx.net>
  * @since 1.11.0
  */
 public class ItemConfiguration {
-    private static final String PARAM_SEPARATOR = ":";
+    private static final String VALUE_SEPARATOR = ":";
 
     private final String _itemCommand;
 
-    private final Optional<String> _dataInValue;
-
-    private final List<String> _additionalParameters;
+    private final List<String> _argumentValues;
 
     /**
      * Parses a configuration string from the binding configuration.
-     * The command and parameters must be separated by colons (':').
+     * The command and argument values must be separated by colons (':').
      *
      * @param itemConfig Configuration string from the binding configuration.
      * @return The parsed configuration.
      */
     public static ItemConfiguration parse(String itemConfig) {
-        String[] requestParts = itemConfig.split(PARAM_SEPARATOR);
+        String[] requestParts = itemConfig.split(VALUE_SEPARATOR);
 
         String itemCommand = requestParts[0];
-        Optional<String> dataInValue;
-        List<String> _additionalParameters;
+        List<String> _argumentValues;
 
-        if (requestParts.length >= 2) {
-            dataInValue = Optional.of(requestParts[1]);
+        if (requestParts.length > 1) {
+            _argumentValues = Arrays.asList(requestParts).subList(1, requestParts.length);
         } else {
-            dataInValue = Optional.empty();
+            _argumentValues = emptyList();
         }
 
-        if (requestParts.length > 2) {
-            _additionalParameters = new ArrayList<>(requestParts.length - 2);
-            for (int i = 2; i < requestParts.length; i++) {
-                _additionalParameters.add(requestParts[i]);
-            }
-        } else {
-            _additionalParameters = emptyList();
-        }
-
-        return new ItemConfiguration(itemCommand, dataInValue, _additionalParameters);
+        return new ItemConfiguration(itemCommand, _argumentValues);
     }
 
-    public ItemConfiguration(String _itemCommand) {
-        this(_itemCommand, Optional.empty(), emptyList());
+    public ItemConfiguration(String _itemCommand, String... _argumentValues) {
+        this(_itemCommand, Arrays.asList(_argumentValues));
     }
 
-    public ItemConfiguration(String _itemCommand, String _dataInValue) {
-        this(_itemCommand, Optional.of(_dataInValue), emptyList());
-    }
-
-    public ItemConfiguration(String _itemCommand, Optional<String> _dataInValue, List<String> _additionalParameters) {
+    public ItemConfiguration(String _itemCommand, List<String> _argumentValues) {
         this._itemCommand = _itemCommand;
-        this._dataInValue = _dataInValue;
-        this._additionalParameters = _additionalParameters;
+        this._argumentValues = _argumentValues;
     }
 
     public String getItemCommand() {
         return _itemCommand;
     }
 
-    public Optional<String> getDataInValue() {
-        return _dataInValue;
-    }
-
-    public List<String> getAdditionalParameters() {
-        return _additionalParameters;
+    public List<String> getArgumentValues() {
+        return _argumentValues;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_itemCommand, _dataInValue, _additionalParameters);
+        return Objects.hash(_itemCommand, _argumentValues);
     }
 
     @Override
@@ -107,18 +85,11 @@ public class ItemConfiguration {
             return false;
         }
         ItemConfiguration other = (ItemConfiguration) obj;
-        if (_additionalParameters == null) {
-            if (other._additionalParameters != null) {
+        if (_argumentValues == null) {
+            if (other._argumentValues != null) {
                 return false;
             }
-        } else if (!_additionalParameters.equals(other._additionalParameters)) {
-            return false;
-        }
-        if (_dataInValue == null) {
-            if (other._dataInValue != null) {
-                return false;
-            }
-        } else if (!_dataInValue.equals(other._dataInValue)) {
+        } else if (!_argumentValues.equals(other._argumentValues)) {
             return false;
         }
         if (_itemCommand == null) {
@@ -135,11 +106,10 @@ public class ItemConfiguration {
     public String toString() {
         String requestString;
 
-        if (_dataInValue.isPresent() || !_additionalParameters.isEmpty()) {
+        if (!_argumentValues.isEmpty()) {
             StringBuilder requestStringBuilder = new StringBuilder();
-            requestStringBuilder.append(_itemCommand).append(PARAM_SEPARATOR).append(_dataInValue.orElse(""));
-            for (String additionalParameter : _additionalParameters) {
-                requestStringBuilder.append(PARAM_SEPARATOR).append(additionalParameter);
+            for (String argumentValue : _argumentValues) {
+                requestStringBuilder.append(VALUE_SEPARATOR).append(argumentValue);
             }
 
             requestString = requestStringBuilder.toString();

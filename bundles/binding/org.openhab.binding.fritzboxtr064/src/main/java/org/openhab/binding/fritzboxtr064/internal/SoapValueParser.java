@@ -129,7 +129,7 @@ public class SoapValueParser {
      */
     protected String parseValueFromSoapBody(ItemConfiguration itemConfiguration, SOAPBody soapBody, ItemMap mapping) {
         String value;
-        String readDataOutName = mapping.getReadDataOutName(itemConfiguration.getItemCommand());
+        String readDataOutName = mapping.getItemArgumentName(itemConfiguration.getItemCommand());
         NodeList nlDataOutNodes = soapBody.getElementsByTagName(readDataOutName);
         if (nlDataOutNodes != null && nlDataOutNodes.getLength() > 0) {
             // extract value from soap response
@@ -178,8 +178,7 @@ public class SoapValueParser {
     }
 
     private ItemConfiguration deriveConfiguration(String itemCommand, ItemConfiguration originalItemConfiguration) {
-        return new ItemConfiguration(itemCommand, originalItemConfiguration.getDataInValue(),
-                originalItemConfiguration.getAdditionalParameters());
+        return new ItemConfiguration(itemCommand, originalItemConfiguration.getArgumentValues());
     }
 
 }
