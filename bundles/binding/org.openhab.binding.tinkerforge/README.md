@@ -126,7 +126,7 @@ hosts=127.0.0.1:4224:1234 192.168.1.100::secret
 
 In order to bind an item to a device, you need to provide configuration settings. The easiest way
 to do so is to add binding information in your item file.
-For location of the item file on a Linux based system see [File locations](http://docs.openhab.org/installation/linux.html#file-locations)
+For location of the item file on a Linux based system see [File locations](https://www.openhab.org/docs/installation/linux.html#file-locations)
 
 
 The configuration of the TinkerForge binding item looks like this:

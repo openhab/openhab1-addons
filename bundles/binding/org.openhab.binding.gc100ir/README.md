@@ -4,7 +4,7 @@ This page describes the Global Cache IR binding (1.x), which allows openHAB item
 
 ![Global Cache Device](http://www.smarthome.com/media/catalog/product/8/1/8115big.jpg)
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/globalcache/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/globalcache/).
 
 ## Binding Configuration
 

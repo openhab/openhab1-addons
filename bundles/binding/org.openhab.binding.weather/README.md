@@ -4,7 +4,7 @@ The Weather binding collects current and forecast weather data from different pr
 
 ![](https://farm4.staticflickr.com/3946/15407522168_7ea34d51e1_o.png)
 
-There is also a binding specifically openHAB 2 [here](http://docs.openhab.org/addons/bindings/yahooweather/readme.html) for Yahoo! Weather.
+There is also a binding specifically openHAB 2 [here](https://www.openhab.org/addons/bindings/yahooweather/) for Yahoo! Weather.
 
 ## Table of Contents
 

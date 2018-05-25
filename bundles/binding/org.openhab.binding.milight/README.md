@@ -4,7 +4,7 @@ The Milight binding allows openHAB to send commands to multiple Milight bridges.
 
 [![openHAB Milight](http://img.youtube.com/vi/zNe9AkQbfmc/0.jpg)](http://www.youtube.com/watch?v=zNe9AkQbfmc)
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/milight/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/milight/).
 
 ## Binding Configuration
 
