@@ -60,6 +60,7 @@ public class Atmosphere {
     private Integer ozone;
 
     @ProviderMappings({
+            @Provider(name = ProviderName.FORECASTIO, property = "uvIndex"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.UV"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "uvIndex"),
             @Provider(name = ProviderName.METEOBLUE, property = "uv_index") })
