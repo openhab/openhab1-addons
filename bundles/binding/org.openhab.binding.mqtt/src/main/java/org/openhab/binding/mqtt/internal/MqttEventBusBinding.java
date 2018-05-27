@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.mqtt.internal;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Dictionary;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,17 +26,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Binding to broadcasts all commands and/or states received on the OpenHab
- * event bus to predefined topics on an MQTT Broker. The binding can also
+ * Binding to broadcast all commands and/or states received on the openHAB
+ * event bus to predefined topics on an MQTT broker. The binding can also
  * subscribe to state or command topics and publish all of these to the openHAB
  * event bus.
  *
  * @author Davy Vanherbergen
  * @since 1.3.0
  */
-public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>implements ManagedService {
+public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> implements ManagedService {
 
-    private static final Logger logger = LoggerFactory.getLogger(MqttEventBusBinding.class);
+    private final Logger logger = LoggerFactory.getLogger(MqttEventBusBinding.class);
 
     /** MqttService for sending/receiving messages **/
     private MqttService mqttService;
@@ -57,8 +58,7 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
 
     /**
      * Name of the broker defined in the openhab.cfg to use for sending messages
-     * to
-     **/
+     */
     private String brokerName;
 
     @Override
@@ -69,7 +69,6 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
 
     @Override
     public void deactivate() {
-
         if (StringUtils.isBlank(brokerName)) {
             return;
         }
@@ -102,7 +101,6 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
      * @return item name or "unknown".
      */
     private String getItemNameFromTopic(String topicDefinition, String actualTopic) {
-
         String itemName = "error-parsing-name-from-topic";
         if (StringUtils.isEmpty(actualTopic) || actualTopic.indexOf('/') == -1) {
             return itemName;
@@ -125,7 +123,13 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
         if (newState == null || statePublisher == null || !statePublisher.isActivated()) {
             return;
         }
-        statePublisher.publish(statePublisher.getTopic(itemName), newState.toString().getBytes());
+
+        try {
+            byte[] utf8 = newState.toString().getBytes("UTF-8");
+            statePublisher.publish(statePublisher.getTopic(itemName), utf8);
+        } catch (UnsupportedEncodingException e) {
+            logger.warn("UTF-8 encoding not supported. Cannot publish state.");
+        }
     }
 
     @Override
@@ -133,7 +137,13 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
         if (commandPublisher == null || command == null || !commandPublisher.isActivated()) {
             return;
         }
-        commandPublisher.publish(commandPublisher.getTopic(itemName), command.toString().getBytes());
+
+        try {
+            byte[] utf8 = command.toString().getBytes("UTF-8");
+            commandPublisher.publish(commandPublisher.getTopic(itemName), utf8);
+        } catch (UnsupportedEncodingException e) {
+            logger.warn("UTF-8 encoding not supported. Cannot publish command.");
+        }
     }
 
     /**
@@ -194,9 +204,8 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
             logger.debug("Setting up Event Bus State Publisher for topic {}", topic);
             statePublisher = new MqttMessagePublisher(brokerName + ":" + topic + ":state:*:default");
             mqttService.registerMessageProducer(brokerName, statePublisher);
-
         } catch (Exception e) {
-            logger.error("Could not create event bus state publisher: {}", e.getMessage());
+            logger.warn("Could not create event bus state publisher: {}", e.getMessage(), e);
         }
 
     }
@@ -206,10 +215,9 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
      * the openHAB event bus.
      * 
      * @param topic
-     *            to subscribe to.
+     *            to subscribe to
      */
     private void setupEventBusCommandSubscriber(String topic) {
-
         if (StringUtils.isBlank(topic)) {
             logger.trace("No topic defined for Event Bus Command Subscriber");
             return;
@@ -224,30 +232,27 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
                 public void processMessage(String topic, byte[] message) {
                     String itemName = getItemNameFromTopic(getTopic(), topic);
                     if (itemRegistry == null) {
-                        logger.error("Unable to lookup item {} for command; dropping", itemName);
+                        logger.warn("Unable to look up item {} for command; dropping", itemName);
                         return;
                     }
                     Command command;
                     try {
                         Item item = itemRegistry.getItem(itemName);
-                        command = getCommand(new String(message), item.getAcceptedCommandTypes());
+                        command = getCommand(new String(message, "UTF-8"), item.getAcceptedCommandTypes());
                     } catch (ItemNotFoundException e) {
                         logger.debug("Unable to find item {} for command; dropping", itemName);
                         return;
                     } catch (Exception e) {
-                        logger.error("Error parsing command from message.", e);
+                        logger.warn("Error parsing command from message.", e);
                         return;
                     }
                     eventPublisher.postCommand(itemName, command);
                 }
-
             };
             mqttService.registerMessageConsumer(brokerName, commandSubscriber);
-
         } catch (Exception e) {
-            logger.error("Could not create event bus command subscriber: {}", e.getMessage());
+            logger.warn("Could not create event bus command subscriber: {}", e.getMessage(), e);
         }
-
     }
 
     /**
@@ -255,10 +260,9 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
      * openHAB event bus.
      * 
      * @param topic
-     *            to subscribe to.
+     *            to subscribe to
      */
     private void setupEventBusStateSubscriber(String topic) {
-
         if (StringUtils.isBlank(topic)) {
             logger.trace("No topic defined for Event Bus State Subscriber");
             return;
@@ -273,29 +277,27 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
                 public void processMessage(String topic, byte[] message) {
                     String itemName = getItemNameFromTopic(getTopic(), topic);
                     if (itemRegistry == null) {
-                        logger.error("Unable to lookup item {} for update; dropping", itemName);
+                        logger.warn("Unable to look up item {} for update; dropping", itemName);
                         return;
                     }
                     State state;
                     try {
                         Item item = itemRegistry.getItem(itemName);
-                        state = getState(new String(message), item.getAcceptedDataTypes());
+                        state = getState(new String(message, "UTF-8"), item.getAcceptedDataTypes());
                     } catch (ItemNotFoundException e) {
                         logger.debug("Unable to find item {} for update; dropping", itemName);
                         return;
                     } catch (Exception e) {
-                        logger.error("Error parsing state from message.", e);
+                        logger.warn("Error parsing state from message.", e);
                         return;
                     }
                     eventPublisher.postUpdate(itemName, state);
                 }
             };
             mqttService.registerMessageConsumer(brokerName, stateSubscriber);
-
         } catch (Exception e) {
-            logger.error("Could not create event bus state subscriber: {}", e.getMessage());
+            logger.warn("Could not create event bus state subscriber: {}", e.getMessage(), e);
         }
-
     }
 
     /**
@@ -303,10 +305,9 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
      * MQTT topic.
      * 
      * @param topic
-     *            to subscribe to.
+     *            to subscribe to
      */
     private void setupEventBusCommandPublisher(String topic) {
-
         if (StringUtils.isBlank(topic)) {
             logger.trace("No topic defined for Event Bus Command Publisher");
             return;
@@ -316,15 +317,13 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
             logger.debug("Setting up Event Bus Command Publisher for topic {}", topic);
             commandPublisher = new MqttMessagePublisher(brokerName + ":" + topic + ":command:*:default");
             mqttService.registerMessageProducer(brokerName, commandPublisher);
-
         } catch (Exception e) {
-            logger.error("Could not create event bus command publisher: {}", e.getMessage());
+            logger.warn("Could not create event bus command publisher: {}", e.getMessage(), e);
         }
     }
 
     @Override
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
-
         // load event bus pubish/subscribe configuration from configuration file
         if (properties == null || properties.isEmpty()) {
             logger.trace("No mqtt-eventbus properties configured.");
@@ -349,5 +348,4 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
 
         logger.debug("MQTT Event Bus Binding initialization completed.");
     }
-
 }
