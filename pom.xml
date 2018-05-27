@@ -236,6 +236,19 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+	    
+        <repository>
+            <id>bintray</id>
+            <name>openHAB SmartHome Repository</name>
+            <url>https://api.bintray.com/maven/openhab/mvn/smarthome</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 
         <!-- SmartHome p2 repository -->
         <repository>
