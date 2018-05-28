@@ -43,7 +43,7 @@
     <distributionManagement>
         <repository>
             <id>bintray</id>
-            <url>https://api.bintray.com/maven/openhab/mvn/openhab1-addons/;publish=1</url>
+            <url>https://api.bintray.com/maven/openhab/mvn/openhab1-addons/;publish=1;override=1</url>
         </repository>
         <snapshotRepository>
             <id>jfrog</id>
