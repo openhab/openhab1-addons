@@ -82,12 +82,6 @@
     </dependency>
     <dependency>
       <groupId>org.openhab.action</groupId>
-      <artifactId>org.openhab.action.nma</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.openhab.action</groupId>
       <artifactId>org.openhab.action.pushover</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
