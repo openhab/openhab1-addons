@@ -99,7 +99,6 @@
                                 <artifact><file>src/main/resources/conf/networkupstools.cfg</file><type>cfg</type><classifier>networkupstools</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/nibeheatpump.cfg</file><type>cfg</type><classifier>nibeheatpump</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/nikobus.cfg</file><type>cfg</type><classifier>nikobus</classifier></artifact>
-                                <artifact><file>src/main/resources/conf/nma.cfg</file><type>cfg</type><classifier>nma</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/novelanheatpump.cfg</file><type>cfg</type><classifier>novelanheatpump</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ntp.cfg</file><type>cfg</type><classifier>ntp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/onewire.cfg</file><type>cfg</type><classifier>onewire</classifier></artifact>
