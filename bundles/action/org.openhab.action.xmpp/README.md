@@ -49,7 +49,7 @@ consoleusers=**cryptic**@public.talk.google.com,myname@gmail.com
 Assuming your PEM-encoded certificate is in a file called `jabber.crt` (it is PEM encoded if you see lines containing `BEGIN CERTIFICATE` and `END CERTIFICATE` with lots of dashes in them) you ca use this shell invocation to print the required value for the `tlspin=` configuration setting:
 
 ```bash
-$ echo "CERTSHA256:$(openssl x509 -in "xx/crt" -noout -fingerprint -sha256 | sed 's/.*=//')"
+$ echo "CERTSHA256:$(openssl x509 -in "jabber.crt" -noout -fingerprint -sha256 | sed 's/.*=//')"
 CERTSHA256:D8:8E:B1:....:7D:84
 ```
 
