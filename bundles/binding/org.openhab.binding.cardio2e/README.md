@@ -2,7 +2,7 @@
 
 The openHAB Cardio2e binding allows one to connect to Secant Cardio IIé home automation system installations. Dimming or switching lights on and off, switching devices on and off, activating roller shutters, executing escenarios, managing HVACs or activating system security are only some examples.
 
-To access your Cardio system you either need an RS-232 interface (like e.g. a Prolific PL-232 based USB to RS-2303 converter interface), and a DB-9 to RJ-11 cable suitable for either Cardio PC or Cardio ACC port. You can use this [schema](https://github.com/openhab/openhab1-addons/files/999699/PcCardio_Cable.pdf&sa=D&ust=1528711214015000) to build your Cardio PC port cable.
+To access your Cardio system you either need an RS-232 interface (like e.g. a Prolific PL-2303 based USB to RS-232 converter interface), and a DB-9 to RJ-11 cable suitable for either Cardio PC or Cardio ACC port. You can use this [schema](https://github.com/openhab/openhab1-addons/files/999699/PcCardio_Cable.pdf&sa=D&ust=1528711214015000) to build your Cardio PC port cable.
 
 > Note: You can also use the Cardio accessory port (ACC) instead of PC port, so you must crimp the RJ-11 in reverse order, exchange RD and TD signals from the DB-9 connector with respect to the previous PC schematic (pins 2 and 3) and do not connect pin 7.
 
