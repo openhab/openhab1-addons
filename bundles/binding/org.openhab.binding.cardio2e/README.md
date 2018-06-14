@@ -1,481 +1,59 @@
-# <span class="c20 c24">Cardio2e Binding</span>
-
-<span class="c0">The openHAB Cardio2e binding allows one to connect to Secant Cardio IIé home automation system installations. Dimming or switching lights on and off, switching devices on and off, activating roller shutters, executing escenarios, managing HVACs or activating system security are only some examples.</span>
-
-<span class="c3">To access your Cardio system you either need an RS-232 interface (like e.g. a Prolific PL-232 based USB to RS-232 converter interface), and a DB-9 to RJ-11 cable suitable for either Cardio PC or Cardio ACC port. You can use this</span> <span class="c37">[schema](https://github.com/openhab/openhab1-addons/files/999699/PcCardio_Cable.pdf&sa=D&ust=1528711214015000)</span><span class="c3"> to build your Cardio PC port cable</span><span class="c33">.</span>
-
-<span class="c33">N</span><span class="c33">ote: You can also use the Cardio accessory port (ACC) instead of PC port, so you must crimp the RJ-11 in reverse order, exchange RD and TD signals from the DB-9 connector with respect to the previous PC schematic</span> <span class="c33">(pins 2 and 3)</span> <span class="c2">and do not connect pin 7.</span>
-
-## <span class="c16">Binding Configuration</span>
-
-<span class="c3">This binding can be configured in the file</span> <span class="c14">configurations/openhab.cfg</span> <span class="c3">(openHAB 1) or  </span><span class="c14">conf/services/cardio2e.cfg</span> <span class="c3">(openHAB 2)</span><span class="c0">.</span>
-
-<a id="t.91c536f4f2c525306d6d2e720fdb7f6e035cf670"></a><a id="t.0"></a>
-
-<table class="c39">
-
-<tbody>
-
-<tr class="c10">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c3 c25">Property</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c3 c25">Default</span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c3 c25">Required</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c3 c25">Description</span>
-
-</td>
-
-</tr>
-
-<tr class="c26">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c0">port</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0"></span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">Yes</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c0">Serial RS-232 port  
-Examples: '/dev/ttyUSB0' for Linux, 'COM1' for Windows.</span>
-
-</td>
-
-</tr>
-
-<tr class="c9">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c3">programcode</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0">00000</span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">No</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c0">Installer program code for login.</span>
-
-</td>
-
-</tr>
-
-<tr class="c38">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c3">securitycode</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0"></span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">No</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c3">S</span><span class="c3">ecurity code for arm / disarm alarm.</span>
-
-</td>
-
-</tr>
-
-<tr class="c15">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c0">zones</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0">false</span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">No</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c0">Alarm zones state detection. Enables alarm zones state detection (by default 'false' for minimum use of resources).</span>
-
-</td>
-
-</tr>
-
-<tr class="c10">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c0">zoneUnchangedMinRefreshDelay</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0">600000</span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">No</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c0">Minimum delay in milliseconds for zone detection refresh when no state changes succeed (by default '600000' milliseconds = 10 minutes).</span>
-
-</td>
-
-</tr>
-
-<tr class="c10">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c0">datetimeMaxOffset</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0">15</span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">No</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c0">Date and time maximum offset allowed (in minutes) for progressive (step by step, minute by minute) date and time state update.  
-Special values: '0' will remove offset limit, '-1' will disable progressive update and will remove offset limit, '-2' will do unconditional update without any filter even if current date and time of Cardio IIé matches the update.</span>
-
-</td>
-
-</tr>
-
-<tr class="c15">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c3">firstUpdateWillSetDatetime</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0">false</span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">No</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c0">Always will set Cardio IIé clock on first date and time update from last binding start, even if allowedDatetimeUpdateHour was set.</span>
-
-</td>
-
-</tr>
-
-<tr class="c9">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c3">allowedDatetimeUpdateHour</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0">-1</span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">No</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c0">Allows date and time updates on specified hour only (for example, a safe hour when no events will be triggered by Cardio's schedules).  
-Valid values are from '0' to '23' ('-1' disables hour restriction).</span>
-
-</td>
-
-</tr>
-
-<tr class="c9">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c0">testmode</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0">false</span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">No</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c3">E</span><span class="c3">nables fake port console test mode, for developer debug purposes only.  
-Warning: Real communication with Cardio 2é will not work if enabled!</span>
-
-</td>
-
-</tr>
-
-<tr class="c9">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c0">minDelayBetweenReceivingAndSending</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0">200</span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">No</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c0">Minimum delay in milliseconds between receiving and sending, for expert tuning only.  
-By default '200' milliseconds (tested safe value).</span>
-
-</td>
-
-</tr>
-
-<tr class="c15">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c3">minDelayBetweenSendings</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0">300</span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">No</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c0">Minimum delay in milliseconds between sendings, for expert tuning only.  
-By default '300' milliseconds (tested safe value).</span>
-
-</td>
-
-</tr>
-
-<tr class="c10">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c3">filterUnnecessaryCommand</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0">false</span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">No</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c0">Avoid sending commands when the last value of the object reported by Cardio IIé is the same value as the command value.</span>
-
-</td>
-
-</tr>
-
-<tr class="c10">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c3">filterUnnecessaryReverseModeUpdate</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0">true</span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">No</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c0">Avoid sending updates (reverse mode) when the last value of the object reported by Cardio IIé is the same value as the update value.</span>
-
-</td>
-
-</tr>
-
-<tr class="c5">
-
-<td class="c17" colspan="1" rowspan="1">
-
-<span class="c3">smartSendingEnabledObjectTypes</span>
-
-</td>
-
-<td class="c8" colspan="1" rowspan="1">
-
-<span class="c0"></span>
-
-</td>
-
-<td class="c12" colspan="1" rowspan="1">
-
-<span class="c0">No</span>
-
-</td>
-
-<td class="c21" colspan="1" rowspan="1">
-
-<span class="c0">Comma separated list of smart sending enabled object types. Smart sending enabled means that no contradictory commands will be stored in the sending buffer for that object type, so that if a command directed to a specific object exists in sending buffer and a new command is received for the same object, the command stored will be replaced by the new one.  
-Valid values are 'LIGHTING', 'RELAY', 'HVAC_CONTROL', 'DATE_AND_TIME', 'SCENARIO', 'SECURITY', 'ZONES_BYPASS' and 'CURTAIN'.</span>
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-### <span class="c20 c29 c25 c28">Example</span>
-
-<span class="c7 c20">port=/dev/ttyUSB0  
+# Cardio2e Binding
+
+The openHAB Cardio2e binding allows one to connect to Secant Cardio IIé home automation system installations. Dimming or switching lights on and off, switching devices on and off, activating roller shutters, executing escenarios, managing HVACs or activating system security are only some examples.
+
+To access your Cardio system you either need an RS-232 interface (like e.g. a Prolific PL-232 based USB to RS-2303 converter interface), and a DB-9 to RJ-11 cable suitable for either Cardio PC or Cardio ACC port. You can use this [schema](https://github.com/openhab/openhab1-addons/files/999699/PcCardio_Cable.pdf&sa=D&ust=1528711214015000) to build your Cardio PC port cable.
+
+> Note: You can also use the Cardio accessory port (ACC) instead of PC port, so you must crimp the RJ-11 in reverse order, exchange RD and TD signals from the DB-9 connector with respect to the previous PC schematic (pins 2 and 3) and do not connect pin 7.
+
+## Binding Configuration
+
+This binding can be configured in the file `configurations/openhab.cfg` (openHAB 1) or `conf/services/cardio2e.cfg` (openHAB 2).
+
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| port | Yes | | Serial RS-232 port. Examples: '/dev/ttyUSB0' for Linux, 'COM1' for Windows |
+| programcode | 00000 |No | Installer program code for login. |
+| securitycode | | No | Security code for arm / disarm alarm. |
+| zones | false | No | Alarm zones state detection. Enables alarm zones state detection (by default 'false' for minimum use of resources). |
+| zoneUnchangedMinRefreshDelay | 600000 | No | Minimum delay in milliseconds for zone detection refresh when no state changes succeed (by default '600000' milliseconds = 10 minutes). |
+| datetimeMaxOffset | 15 | No | Date and time maximum offset allowed (in minutes) for progressive (step by step, minute by minute) date and time state update. Special values: '0' will remove offset limit, '-1' will disable progressive update and will remove offset limit, '-2' will do unconditional update without any filter even if current date and time of Cardio IIé matches the update. |
+| firstUpdateWillSetDatetime | false | No | Always will set Cardio IIé clock on first date and time update from last binding start, even if allowedDatetimeUpdateHour was set. |
+| allowedDatetimeUpdateHour | -1 | No | Allows date and time updates on specified hour only (for example, a safe hour when no events will be triggered by Cardio's schedules). Valid values are from '0' to '23' ('-1' disables hour restriction).|
+| testmode | false | No | Enables fake port console test mode, for developer debug purposes only. Warning: Real communication with Cardio 2é will not work if enabled! |
+| minDelayBetweenReceivingAndSending | 200 | No | Minimum delay in milliseconds between receiving and sending, for expert tuning only. By default '200' milliseconds (tested safe value).|
+| minDelayBetweenSendings | 300 | No | Minimum delay in milliseconds between sendings, for expert tuning only. By default '300' milliseconds (tested safe value). |
+| filterUnnecessaryCommand | false | No | Avoid sending commands when the last value of the object reported by Cardio IIé is the same value as the command value. |
+| filterUnnecessaryReverseModeUpdate | true | No | Avoid sending updates (reverse mode) when the last value of the object reported by Cardio IIé is the same value as the update value.|
+| smartSendingEnabledObjectTypes | | No | Comma separated list of smart sending enabled object types. Smart sending enabled means that no contradictory commands will be stored in the sending buffer for that object type, so that if a command directed to a specific object exists in sending buffer and a new command is received for the same object, the command stored will be replaced by the new one. Valid values are 'LIGHTING', 'RELAY', 'HVAC_CONTROL', 'DATE_AND_TIME', 'SCENARIO', 'SECURITY', 'ZONES_BYPASS' and 'CURTAIN'. |
+
+### Example
+
+```
+port=/dev/ttyUSB0  
 programcode=00000  
 securitycode=12345  
 zones=true  
 filterUnnecessaryCommand=true  
-smartSendingEnabledObjectTypes=LIGHTING, RELAY, HVAC_CONTROL, DATE_AND_TIME, SCENARIO, SECURITY, ZONES_BYPASS, CURTAIN  
-</span>
+smartSendingEnabledObjectTypes=LIGHTING,RELAY,HVAC_CONTROL,DATE_AND_TIME,SCENARIO,SECURITY,ZONES_BYPASS,CURTAIN  
+```
 
-## <span class="c16">Items Configuration</span>
+## Items Configuration
+### Description
+In order to bind an item to a Cardio IIé system you need to provide configuration settings. The easiest way to do so is to add binding information in your 'item file' (in the folder `configurations / items`). The syntax for the Cardio2e binding configuration string is explained here:
 
-### <span class="c20 c25 c28 c29">Description</span>
-
-<span class="c0">In order to bind an item to a Cardio IIé system you need to provide configuration settings. The easiest way to do so is to add binding information in your 'item file' (in the folder configurations / items`). The syntax for the Cardio2e binding configuration string is explained here:</span>
-
-*   <span class="c3 c25">LIGHTING:</span><span class="c3">  
-    </span><span class="c7">c2e="LIGHTING,object_number"  
-    </span><span class="c3">where ‘object_number’ is a number between 1 and 160 that represents the light number you want to control. You can bind both ‘Switch’ and ‘Dimmer’ items types.  
-    </span><span class="c1">Reverse mode</span><span class="c3">: Can be enabled adding ‘!’ symbol before ‘LIGHTING’ (example:</span> <span class="c7">c2e="!LIGHTING,20"</span><span class="c3">), so the Cardio object will be considered as a control, not an actuator. You can bind in reverse mode an unused lighting Cardio control in order to send commands to openHAB item, and to receive item updates (you can enable a unused Cardio lighting control by assigning it a fake X10 address).  
-    </span><span class="c1">Dimmer correction</span><span class="c3">: Can be enabled by adding ‘%’ symbol before ‘object_number’ (example:</span> <span class="c7">c2e="LIGHTING,%1"</span><span class="c3">), in order to consider Cardio lighting 1% values as 0% (powered off). This correction is necessary when Cardio is programmed to turn on a light by presence, since when power on time expires, Cardio sends a 1% value the DMI instead of 0% power off value (in fact, in practice, any value less than 10% in a DM1 will turn off the light).  
-    </span><span class="c1">Autoupdate</span><span class="c3">: Cardio always reports the status of its ‘LIGHTING’ objects after executing a command, so we recommend that you add "autoupdate=false" in the item settings to make sure that the item's value always matches Cardio’s value (example:</span> <span class="c7">Dimmer My_Light {c2e="LIGHTING,2", autoupdate=false}</span><span class="c0">). Not applicable when "reverse mode" is used.  
-    </span>
+* **LIGHTING**:  
+c2e="LIGHTING,object_number"  
+where 'object_number' is a number between 1 and 160 that represents the light number you want to control. You can bind both 'Switch' and 'Dimmer' items types.  
+*Reverse mode*: Can be enabled adding '!' symbol before 'LIGHTING' (example: `c2e="!LIGHTING,20"`), so the Cardio object will be considered as a control, not an actuator. You can bind in reverse mode an unused lighting Cardio control in order to send commands to openHAB item, and to receive item updates (you can enable a unused Cardio lighting control by assigning it a fake X10 address).  
+*Dimmer correction*: Can be enabled by adding '%' symbol before 'object_number' (example: `c2e="LIGHTING,%1"`), in order to consider Cardio lighting 1% values as 0% (powered off). This correction is necessary when Cardio is programmed to turn on a light by presence, since when power on time expires, Cardio sends a 1% value the DMI instead of 0% power off value (in fact, in practice, any value less than 10% in a DM1 will turn off the light).  
+*Autoupdate*: Cardio always reports the status of its 'LIGHTING' objects after executing a command, so we recommend that you add 'autoupdate=false' in the item settings to make sure that the item's value always matches Cardio’s value (example: `Dimmer My_Light {c2e="LIGHTING,2", autoupdate=false}`). Not applicable when "reverse mode" is used.
 *   <span class="c3 c25">RELAY:</span><span class="c3">Option #1:</span> <span class="c7">c2e="RELAY,object_number"  
     </span><span class="c3">where ‘object_number’ is a number between 1 and 40 that represents the relay number you want to control. You can only bind ‘Switch’ items type.  
     Option #2:</span> <span class="c7">c2e="RELAY,shutter_up_object_number,shutter_down_object_number"  
     </span><span class="c3">where ‘shutter_up_object_number’ and ‘shutter_down_object_number’ are numbers between 1 and 40 that represents the relay numbers of a pair of timed relays used to move shutter up and down. You can only bind ‘Rollershutter’ items type.  
     </span><span class="c1">Reverse mode</span><span class="c3">: Can be enabled adding ‘!’ symbol before ‘RELAY’ (example:</span> <span class="c7">c2e="!RELAY,4"</span><span class="c3">), so the Cardio object will be considered as a control, not an actuator. You can bind in reverse mode an unused relay Cardio control in order to send commands to openHAB item, and to receive item updates.  
-    </span><span class="c1">Autoupdate</span><span class="c3">: Cardio always reports the status of its ‘RELAY’ objects after executing a command, so we recommend that you add "autoupdate=false" in the item settings to make sure that the item's value always matches Cardio’s value (example:</span> <span class="c7">RollerShutter My_Shutter {c2e="RELAY,5,6", autoupdate=false}</span><span class="c0">). Not applicable when "reverse mode" is used.  
+    </span><span class="c1">Autoupdate</span><span class="c3">: Cardio always reports the status of its ‘RELAY’ objects after executing a command, so we recommend that you add "autoupdate=false" in the item settings to make sure that the item's value always matches Cardio’s value (example:</span> <span class="c7">RollerShutter My_Shutter {c2e="RELAY,5,6", autoupdate=false}</span><span class="c0">). Not applicable when "reverse mode" is used.
     </span>
 *   <span class="c3 c25">HVAC_TEMPERATURE:</span><span class="c3">  
     </span><span class="c7">c2e="HVAC_TEMPERATURE,hvac_zone"  
@@ -542,7 +120,7 @@ smartSendingEnabledObjectTypes=LIGHTING, RELAY, HVAC_CONTROL, DATE_AND_TIME, SCE
     </span><span class="c7">c2e="CURTAIN,object_number"  
     </span><span class="c3">where ‘object_number’ is a number between 1 and 80 that represents the shutter number you want to control. You can bind both ‘RollerShutter’ and ‘Dimmer’ items types (no STOP or MOVE commands are supported, and 100% value means shutter down). Note that ‘CURTAIN’ objects are only available in lastest Cardio IIé firmware versions.  
     </span><span class="c1">Reverse mode</span><span class="c3">: Can be enabled adding ‘!’ symbol before ‘CURTAIN’’ (example:</span> <span class="c7">c2e="!CURTAIN,13"</span><span class="c3">), so the Cardio object will be considered as a control, not an actuator. You can bind  in reverse mode an unused curtain Cardio control in order to send commands to openHAB item, and to receive item updates.  
-    </span><span class="c1">Autoupdate</span><span class="c3">: Cardio always reports the status of its ‘CURTAIN’ objects after executing a command, so we recommend that you add "autoupdate=false" in the item settings to make sure that the item's value always matches Cardio’s value (example: Dimmer My_Light {</span><span class="c7">c2e="CURTAIN,3", autoupdate=false}</span><span class="c3">). Not applicable when "reverse mode" is used.  
+    </span><span class="c1">Autoupdate</span><span class="c3">: Cardio always reports the status of its ‘CURTAIN’ objects after executing a command, so we recommend that you add "autoupdate=false" in the item settings to make sure that the item's value always matches Cardio’s value (example: Dimmer My_Curtain {</span><span class="c7">c2e="CURTAIN,3", autoupdate=false}</span><span class="c3">). Not applicable when "reverse mode" is used.  
     </span>
 
 <span class="c20 c28 c30"></span>
