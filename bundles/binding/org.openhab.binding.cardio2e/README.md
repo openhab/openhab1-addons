@@ -83,12 +83,12 @@ Examples:
 can be bind to a 'Contact' or 'Switch' item type, where 'zone_number' is a value between 1 and 16 that represents the Cardio IIé alarm zone number you want to monitor, and 'zone_type' is a value that specifies zone type defined in Cardio system config: 'OPEN' for NO (normally open), 'CLOSED' for NC (normally closed) and 'NORMAL' for EOL (end of line resistor). WARNING: Alarm zones state detection is disabled by default for minimum use of resources. In order to monitorize alarm zones you must set parameter 'zones=true' in binding configuration.  
 *Invert value*: Can be enabled adding '!' symbol before 'ZONES', so the reported status of the Cardio alarm zone will be inverted.  
 Examples:  
-```
+    ```
     Contact My_Contact {c2e="ZONES,1,NORMAL"}  
     Switch My_Contact {c2e="ZONES,1,CLOSED"}  
     Contact My_Contact {c2e="!ZONES,2,OPEN"}  
     Switch My_Contact {c2e="!ZONES,2,NORMAL"}  
-```   
+    ```   
 * **ZONES_BYPASS**:  
 `c2e="ZONES_BYPASS,zone_number"`  
 can be bind to a 'Switch' item type, where 'zone_number' is a value between 1 and 16 that represents the Cardio IIé alarm zone number you want to bypass (example: `Switch My_Zone_Bypass {c2e="ZONES_BYPASS,1"}`).  
@@ -110,13 +110,13 @@ can be bind to 'Switch' and 'Number' items type.
 Using a 'Switch' item we can arm / disarm Cardio security system by ON / OFF commands as well as receive state updates (securitycode must be previusly set in config file).  
 *Autoupdate*: Cardio always reports the status of its 'SECURITY' objects after executing a command, so we recommend that you add 'autoupdate=false' in the item settings to make sure that the item's value always matches Cardio's value (example: `Switch Security_Arm {c2e="SECURITY",autoupdate=false}`).
 *Error code*: If security system could not be armed, we can show the reason as numeric error code value update received in a linked 'Number' item (example: `Number Security_Error {c2e="SECURITY", autoupdate=false}`). Likewise, we can configure an entry in the sitemap that translates those values by its corresponding description. Sitemap example:  
-```  
+    ```  
     Text item=Security_Error label="ERROR # [%d]" visibility=[Security_Error>0] labelcolor=[Security_Error>0="red"] valuecolor=[Security_Error>0="red"]  
     Text item=Security_Error label="(security code is not valid)" icon="none" visibility=[Security_Error==4] labelcolor=[Security_Error>0="red"]  
     Text item=Security_Error label="(there are open zones)" icon="none" visibility=[Security_Error==16] labelcolor=[Security_Error>0="red"]  
     Text item=Security_Error label="(there is a power problem)" icon="none" visibility=[Security_Error==17] labelcolor=[Security_Error>0="red"]  
     Text item=Security_Error label="(unknown reason)" icon="none" visibility=[Security_Error==18] labelcolor=[Security_Error>0="red"]  
-```
+    ```
 * **CURTAIN**:  
 `c2e="CURTAIN,object_number"` 
 where 'object_number' is a number between 1 and 80 that represents the shutter number you want to control. You can bind both 'RollerShutter' and 'Dimmer' items types (no STOP or MOVE commands are supported, and 100% value means shutter down). Note that 'CURTAIN' objects are only available in lastest Cardio IIé firmware versions.  
