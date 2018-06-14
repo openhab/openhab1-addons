@@ -118,7 +118,7 @@ Using a 'Switch' item we can arm / disarm Cardio security system by ON / OFF com
     Text item=Security_Error label="(unknown reason)" icon="none" visibility=[Security_Error==18] labelcolor=[Security_Error>0="red"]  
     ```
 * **CURTAIN**:  
-`c2e="CURTAIN,object_number"` 
+`c2e="CURTAIN,object_number"`  
 where 'object_number' is a number between 1 and 80 that represents the shutter number you want to control. You can bind both 'RollerShutter' and 'Dimmer' items types (no STOP or MOVE commands are supported, and 100% value means shutter down). Note that 'CURTAIN' objects are only available in lastest Cardio IIé firmware versions.  
 *Reverse mode*: Can be enabled adding '!' symbol before 'CURTAIN'' (example: `c2e="!CURTAIN,13"`), so the Cardio object will be considered as a control, not an actuator. You can bind  in reverse mode an unused curtain Cardio control in order to send commands to openHAB item, and to receive item updates.  
 *Autoupdate*: Cardio always reports the status of its 'CURTAIN' objects after executing a command, so we recommend that you add 'autoupdate=false' in the item settings to make sure that the item's value always matches Cardio's value (example: `Dimmer My_Curtain {c2e="CURTAIN,3",autoupdate=false}`). Not applicable when "reverse mode" is used.  
