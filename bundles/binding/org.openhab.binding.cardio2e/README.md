@@ -12,7 +12,7 @@ This binding can be configured in the file `configurations/openhab.cfg` (openHAB
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| port | Yes | | Serial RS-232 port. Examples: '/dev/ttyUSB0' for Linux, 'COM1' for Windows. |
+| port | | Yes | Serial RS-232 port. Examples: '/dev/ttyUSB0' for Linux, 'COM1' for Windows. |
 | programcode | 00000 |No | Installer program code for login. |
 | securitycode | | No | Security code for arm / disarm alarm. |
 | zones | false | No | Alarm zones state detection. Enables alarm zones state detection (by default 'false' for minimum use of resources). |
