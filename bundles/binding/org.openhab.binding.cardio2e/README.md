@@ -30,12 +30,12 @@ This binding can be configured in the file `configurations/openhab.cfg` (openHAB
 ### Example
 
 ```
-port=/dev/ttyUSB0  
-programcode=00000  
-securitycode=12345  
-zones=true  
-filterUnnecessaryCommand=true  
-smartSendingEnabledObjectTypes=LIGHTING,RELAY,HVAC_CONTROL,DATE_AND_TIME,SCENARIO,SECURITY,ZONES_BYPASS,CURTAIN  
+cardio2e:port=/dev/ttyUSB0  
+cardio2e:programcode=00000  
+cardio2e:securitycode=12345  
+cardio2e:zones=true  
+cardio2e:filterUnnecessaryCommand=true  
+cardio2e:smartSendingEnabledObjectTypes=LIGHTING,RELAY,HVAC_CONTROL,DATE_AND_TIME,SCENARIO,SECURITY,ZONES_BYPASS,CURTAIN  
 ```
 
 ## Items Configuration
