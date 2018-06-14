@@ -40,32 +40,32 @@ smartSendingEnabledObjectTypes=LIGHTING,RELAY,HVAC_CONTROL,DATE_AND_TIME,SCENARI
 
 ## Items Configuration
 ### Description
-In order to bind an item to a Cardio IIé system you need to provide configuration settings. The easiest way to do so is to add binding information in your 'item file' (in the folder `configurations / items`). The syntax for the Cardio2e binding configuration string is explained here:
+In order to bind an item to a Cardio IIé system you need to provide configuration settings. The easiest way to do so is to add binding information in your 'item file' (in the folder `configurations/items`). The syntax for the Cardio2e binding configuration string is explained here:
 
 * **LIGHTING**:  
-c2e="LIGHTING,object_number"  
+`c2e="LIGHTING,object_number"`  
 where 'object_number' is a number between 1 and 160 that represents the light number you want to control. You can bind both 'Switch' and 'Dimmer' items types.  
 *Reverse mode*: Can be enabled adding '!' symbol before 'LIGHTING' (example: `c2e="!LIGHTING,20"`), so the Cardio object will be considered as a control, not an actuator. You can bind in reverse mode an unused lighting Cardio control in order to send commands to openHAB item, and to receive item updates (you can enable a unused Cardio lighting control by assigning it a fake X10 address).  
 *Dimmer correction*: Can be enabled by adding '%' symbol before 'object_number' (example: `c2e="LIGHTING,%1"`), in order to consider Cardio lighting 1% values as 0% (powered off). This correction is necessary when Cardio is programmed to turn on a light by presence, since when power on time expires, Cardio sends a 1% value the DMI instead of 0% power off value (in fact, in practice, any value less than 10% in a DM1 will turn off the light).  
 *Autoupdate*: Cardio always reports the status of its 'LIGHTING' objects after executing a command, so we recommend that you add 'autoupdate=false' in the item settings to make sure that the item's value always matches Cardio’s value (example: `Dimmer My_Light {c2e="LIGHTING,2", autoupdate=false}`). Not applicable when "reverse mode" is used.
-*   <span class="c3 c25">RELAY:</span><span class="c3">Option #1:</span> <span class="c7">c2e="RELAY,object_number"  
-    </span><span class="c3">where ‘object_number’ is a number between 1 and 40 that represents the relay number you want to control. You can only bind ‘Switch’ items type.  
-    Option #2:</span> <span class="c7">c2e="RELAY,shutter_up_object_number,shutter_down_object_number"  
-    </span><span class="c3">where ‘shutter_up_object_number’ and ‘shutter_down_object_number’ are numbers between 1 and 40 that represents the relay numbers of a pair of timed relays used to move shutter up and down. You can only bind ‘Rollershutter’ items type.  
-    </span><span class="c1">Reverse mode</span><span class="c3">: Can be enabled adding ‘!’ symbol before ‘RELAY’ (example:</span> <span class="c7">c2e="!RELAY,4"</span><span class="c3">), so the Cardio object will be considered as a control, not an actuator. You can bind in reverse mode an unused relay Cardio control in order to send commands to openHAB item, and to receive item updates.  
-    </span><span class="c1">Autoupdate</span><span class="c3">: Cardio always reports the status of its ‘RELAY’ objects after executing a command, so we recommend that you add "autoupdate=false" in the item settings to make sure that the item's value always matches Cardio’s value (example:</span> <span class="c7">RollerShutter My_Shutter {c2e="RELAY,5,6", autoupdate=false}</span><span class="c0">). Not applicable when "reverse mode" is used.
-    </span>
-*   <span class="c3 c25">HVAC_TEMPERATURE:</span><span class="c3">  
-    </span><span class="c7">c2e="HVAC_TEMPERATURE,hvac_zone"  
-    </span><span class="c3">can be bind to a ‘Number’ item type, where ‘hvac_zone’ is a value between 1 and 5 that represents the Cardio IIè HVAC zone number you want to receive temperature value states from (the unit of measurement, ºC or ºF, will be the same that was set in Cardio system config).  
-    Example:</span> <span class="c7">Number My_Temperature {c2e="HVAC_TEMPERATURE,1"}</span><span class="c0">).  
-    </span>
-*   <span class="c3 c25">HVAC_CONTROL:</span><span class="c3">  
-    </span><span class="c1">One parameter options</span><span class="c3">:</span> <span class="c7">c2e="HVAC_CONTROL,hvac_zone"  
-    </span><span class="c3">where ‘hvac_zone’ is a value between 1 and 5 that represents the Cardio IIè HVAC zone number you want to control. You can bind to a ‘Switch’ item in order to simply switch on / off Cardio IIè HVAC zone (example:</span> <span class="c7">Switch My_HVAC_Switch {c2e="HVAC_CONTROL,1"}</span><span class="c3">). You also can bind to a ‘Number’ item in order to control HVAC zone with KNX standard internetworking DPT 20.105 HVAC control values (auto=0, heating=1, cooling= 3, off=6), and no KNX compliant values for Cardio 2è additional submodes (normal=254, economy=255). Example:</span> <span class="c7">Number My_HVAC_KNX_Mode {[optional_KNX_binding_config],c2e="HVAC_CONTROL,1",autoupdate=false}</span><span class="c3">).  
-    </span><span class="c1">Two parameters options</span><span class="c3">:</span> <span class="c7">c2e="HVAC_CONTROL,hvac_zone,function"  
-    </span><span class="c3">where ‘hvac_zone’ is a value between 1 and 5 that also represents the Cardio IIè HVAC zone number, and ‘function’ is the HVAC function you want to control: “FAN” for fan control, “AUTO”, “COOLING” and “HEATING” for HVAC mode switch, and “ECONOMY” and “NORMAL” for additional submodes. You can bind to a ‘Switch’ item in order to switch on / off Cardio IIè HVAC functions, or you can bind to a ‘Number’ item in order to adjust cooling and heating setpoints (</span><span class="c23">Cardio IIè has two different setpoints, one for cooling and one for heating, and</span> <span class="c3">the unit of measurement, ºC or ºF, will be the same that was set in Cardio system config</span><span class="c23">).</span> <span class="c3">E</span><span class="c3">xamples:  
-    </span><span class="c7">Switch My_HVAC_Fan "Fan" {c2e="HVAC_CONTROL,1,FAN"}  
+* **RELAY**:  
+*Option #1*: `c2e="RELAY,object_number"`  
+where 'object_number' is a number between 1 and 40 that represents the relay number you want to control. You can only bind 'Switch' items type.  
+*Option #2*: `c2e="RELAY,shutter_up_object_number,shutter_down_object_number"`  
+where 'shutter_up_object_number' and 'shutter_down_object_number' are numbers between 1 and 40 that represents the relay numbers of a pair of timed relays used to move shutter up and down. You can only bind 'Rollershutter' items type.  
+*Reverse mode*: Can be enabled adding '!' symbol before 'RELAY' (example: `c2e="!RELAY,4"`), so the Cardio object will be considered as a control, not an actuator. You can bind in reverse mode an unused relay Cardio control in order to send commands to openHAB item, and to receive item updates.  
+*Autoupdate*: Cardio always reports the status of its 'RELAY' objects after executing a command, so we recommend that you add 'autoupdate=false' in the item settings to make sure that the item's value always matches Cardio’s value (example: `RollerShutter My_Shutter {c2e="RELAY,5,6", autoupdate=false}`). Not applicable when "reverse mode" is used.  
+*   HVAC_TEMPERATURE:  
+    c2e="HVAC_TEMPERATURE,hvac_zone"  
+    can be bind to a ‘Number’ item type, where ‘hvac_zone’ is a value between 1 and 5 that represents the Cardio IIè HVAC zone number you want to receive temperature value states from (the unit of measurement, ºC or ºF, will be the same that was set in Cardio system config).  
+    Example: Number My_Temperature {c2e="HVAC_TEMPERATURE,1"}<span class="c0">).  
+    
+*   HVAC_CONTROL:  
+    One parameter options: c2e="HVAC_CONTROL,hvac_zone"  
+    where ‘hvac_zone’ is a value between 1 and 5 that represents the Cardio IIè HVAC zone number you want to control. You can bind to a ‘Switch’ item in order to simply switch on / off Cardio IIè HVAC zone (example: Switch My_HVAC_Switch {c2e="HVAC_CONTROL,1"}). You also can bind to a ‘Number’ item in order to control HVAC zone with KNX standard internetworking DPT 20.105 HVAC control values (auto=0, heating=1, cooling= 3, off=6), and no KNX compliant values for Cardio 2è additional submodes (normal=254, economy=255). Example: Number My_HVAC_KNX_Mode {[optional_KNX_binding_config],c2e="HVAC_CONTROL,1",autoupdate=false}).  
+    Two parameters options: c2e="HVAC_CONTROL,hvac_zone,function"  
+    where ‘hvac_zone’ is a value between 1 and 5 that also represents the Cardio IIè HVAC zone number, and ‘function’ is the HVAC function you want to control: “FAN” for fan control, “AUTO”, “COOLING” and “HEATING” for HVAC mode switch, and “ECONOMY” and “NORMAL” for additional submodes. You can bind to a ‘Switch’ item in order to switch on / off Cardio IIè HVAC functions, or you can bind to a ‘Number’ item in order to adjust cooling and heating setpoints (<span class="c23">Cardio IIè has two different setpoints, one for cooling and one for heating, and the unit of measurement, ºC or ºF, will be the same that was set in Cardio system config<span class="c23">). Examples:  
+    Switch My_HVAC_Fan "Fan" {c2e="HVAC_CONTROL,1,FAN"}  
     Switch My_HVAC_Auto "Auto mode"        {c2e="HVAC_CONTROL,1,AUTO"}  
     Switch My_HVAC_Heating "Heating mode" {c2e="HVAC_CONTROL,1,HEATING"}  
     Switch My_HVAC_Cooling "Cooling mode" {c2e="HVAC_CONTROL,1,COOLING"}  
@@ -73,54 +73,51 @@ where 'object_number' is a number between 1 and 160 that represents the light nu
     Switch My_HVAC_Normal "Normal submode" {c2e="HVAC_CONTROL,1,NORMAL"}  
     Number My_HVAC_Cooling_Setpoint "Cooling setpoint [%.1f °C]" {c2e="HVAC_CONTROL,1,COOLING"}  
     Number My_HVAC_Heating_Setpoint "Heating setpoint [%.1f °C]" {c2e="HVAC_CONTROL,1,HEATING"}  
-    </span><span class="c1">Autoupdate</span><span class="c3">: Cardio always reports the status of its ‘HVAC_CONTROL’ objects after executing a command, so we recommend that you add "autoupdate=false" in the item settings to make sure that the item's value always matches Cardio’s value (</span><span class="c7">Switch My_HVAC_Switch {c2e="HVAC_CONTROL,1",autoupdate=false}</span><span class="c0">).  
-    </span>
-*   <span class="c3 c25">ZONES:</span><span class="c3">  
-    </span><span class="c7">c2e="ZONES,zone_number,zone_type"  
-    </span><span class="c3">can be bind to a ‘Contact’ or ‘Switch’ item type, where ‘zone_number’ is a value between 1 and 16 that represents the Cardio IIè alarm zone number you want to monitor, and ‘zone_type’ is a value that specifies zone type defined in Cardio system config: ‘OPEN’ for NO (normally open), ‘CLOSED’ for NC (normally closed) and ‘NORMAL’ for EOL (end of line resistor).  
-    </span><span class="c1">Invert value</span><span class="c3">: Can be enabled adding ‘!’ symbol before ‘ZONES’, so the reported status of the Cardio alarm zone will be inverted.  
+    Autoupdate: Cardio always reports the status of its ‘HVAC_CONTROL’ objects after executing a command, so we recommend that you add "autoupdate=false" in the item settings to make sure that the item's value always matches Cardio’s value (Switch My_HVAC_Switch {c2e="HVAC_CONTROL,1",autoupdate=false}<span class="c0">).  
+    
+*   ZONES:  
+    c2e="ZONES,zone_number,zone_type"  
+    can be bind to a ‘Contact’ or ‘Switch’ item type, where ‘zone_number’ is a value between 1 and 16 that represents the Cardio IIè alarm zone number you want to monitor, and ‘zone_type’ is a value that specifies zone type defined in Cardio system config: ‘OPEN’ for NO (normally open), ‘CLOSED’ for NC (normally closed) and ‘NORMAL’ for EOL (end of line resistor).  
+    Invert value: Can be enabled adding ‘!’ symbol before ‘ZONES’, so the reported status of the Cardio alarm zone will be inverted.  
     Examples:  
-    </span><span class="c7">Contact My_Contact {c2e="ZONES,1,NORMAL"}</span><span class="c3">  
-    </span><span class="c7">Switch My_Contact {c2e="ZONES,1,CLOSED"}</span><span class="c3">  
-    </span><span class="c7">Contact My_Contact {c2e="!ZONES,2,OPEN"}</span><span class="c3">  
-    </span><span class="c7">Switch My_Contact {c2e="!ZONES,2,NORMAL"}</span><span class="c0">  
+    Contact My_Contact {c2e="ZONES,1,NORMAL"}  
+    Switch My_Contact {c2e="ZONES,1,CLOSED"}  
+    Contact My_Contact {c2e="!ZONES,2,OPEN"}  
+    Switch My_Contact {c2e="!ZONES,2,NORMAL"}<span class="c0">  
     Warning: Alarm zones state detection is disabled by default for minimum use of resources. In order to monitorize alarm zones you must set parameter zones=true in binding configuration.  
-    </span>
-*   <span class="c3 c25">ZONES_BYPASS:</span><span class="c3">  
-    </span><span class="c7">c2e="ZONES_BYPASS,zone_number"  
-    </span><span class="c3">can be bind to a ‘Switch’ item type, where ‘zone_number’ is a value between 1 and 16 that represents the Cardio IIè alarm zone number you want to bypass (example:</span> <span class="c7">Switch My_Zone_Bypass {c2e="ZONES_BYPASS,1"}</span><span class="c3">.  
-    </span><span class="c1">Invert value</span><span class="c3">: Can be enabled adding ‘!’ symbol before ‘ZONES_BYPASS’, so the operating mode of the Cardio alarm zone bypass will be inverted, so that the item will indicate whether the zone will be armed for Cardio security system or not (example:</span> <span class="c7">Switch My_Zone_Armed {c2e="!ZONES_BYPASS,1"}</span><span class="c3">.  
-    </span><span class="c1">Note about autoupdate</span><span class="c0">: Cardio will not reports the status of its ‘ZONES_BYPASS’ objects after executing a command, but it does it after arming security system. So we recommend that you DO NOT add "autoupdate=false" in the item settings.  
-    </span>
-*   <span class="c3 c25">DATE_AND_TIME:</span><span class="c3">  
-    </span><span class="c7">c2e="DATE_AND_TIME"  
-    </span><span class="c3">can be bind to a ‘DateTime’ item type. When a date and time value command is received Cardio’s clock will be unconditionally set to item date and time value.</span> <span class="c23">However, upon receiving an update, the clock will be updated based on the criteria defined in the binding configuration (see “</span><span class="c3">datetimeMaxOffset”, “firstUpdateWillSetDatetime” and “allowedDatetimeUpdateHour” config parameters)</span><span class="c3">.  
+    
+*   ZONES_BYPASS:  
+    c2e="ZONES_BYPASS,zone_number"  
+    can be bind to a ‘Switch’ item type, where ‘zone_number’ is a value between 1 and 16 that represents the Cardio IIè alarm zone number you want to bypass (example: Switch My_Zone_Bypass {c2e="ZONES_BYPASS,1"}.  
+    Invert value: Can be enabled adding ‘!’ symbol before ‘ZONES_BYPASS’, so the operating mode of the Cardio alarm zone bypass will be inverted, so that the item will indicate whether the zone will be armed for Cardio security system or not (example: Switch My_Zone_Armed {c2e="!ZONES_BYPASS,1"}.  
+    Note about autoupdate<span class="c0">: Cardio will not reports the status of its ‘ZONES_BYPASS’ objects after executing a command, but it does it after arming security system. So we recommend that you DO NOT add "autoupdate=false" in the item settings.  
+    
+*   DATE_AND_TIME:  
+    c2e="DATE_AND_TIME"  
+    can be bind to a ‘DateTime’ item type. When a date and time value command is received Cardio’s clock will be unconditionally set to item date and time value. <span class="c23">However, upon receiving an update, the clock will be updated based on the criteria defined in the binding configuration (see “datetimeMaxOffset”, “firstUpdateWillSetDatetime” and “allowedDatetimeUpdateHour” config parameters).  
     Because Cardio’s clock usually lags behind, you can use NTP binding in order to keep the clock on time, for example, sending updates every 15 minutes.  
-    Time sync example with OH1 NTP binding:</span> <span class="c7">DateTime My_date_and_time {ntp="Europe/Madrid:es_ES",  c2e="DATE_AND_TIME"</span><span class="c3">).  
-    Time sync example with OH2 NTP binding:</span> <span class="c7">DateTime My_date_and_time {channel="ntp:ntp:cardiosync:dateTime",  c2e="DATE_AND_TIME"</span><span class="c0">).  
-    </span>
-*   <span class="c3 c25">SCENARIO:</span><span class="c3">  
-    </span><span class="c7">c2e="SCENARIO"  
-    </span><span class="c0">can be bind to ‘Number’ items type. When a number value command between 0 and 41 is received, the corresponding Cardio scene number between 1 and 42 will be activated (command value + 1).  
+    Time sync example with OH1 NTP binding: DateTime My_date_and_time {ntp="Europe/Madrid:es_ES",  c2e="DATE_AND_TIME").  
+    Time sync example with OH2 NTP binding: DateTime My_date_and_time {channel="ntp:ntp:cardiosync:dateTime",  c2e="DATE_AND_TIME"<span class="c0">).  
+    
+*   SCENARIO:  
+    c2e="SCENARIO"  
+    <span class="c0">can be bind to ‘Number’ items type. When a number value command between 0 and 41 is received, the corresponding Cardio scene number between 1 and 42 will be activated (command value + 1).  
     Note that numbers between 0 and 41 are used to provide direct compatibility with the scene numbers range used in protocols such as KNX, where the first scene is encoded with the number 0.  
-    </span>
-*   <span class="c3 c25">SECURITY:</span><span class="c3">  
-    </span><span class="c7">c2e="SECURITY"  
-    </span><span class="c3">can be bind to ‘Switch’ and ‘Number’ items type.  
+    
+*   SECURITY:  
+    c2e="SECURITY"  
+    can be bind to ‘Switch’ and ‘Number’ items type.  
     Using a ‘Switch’ item we can arm / disarm Cardio security system by ON / OFF commands as well as receive state updates (securitycode must be previusly set in config file).  
-    </span><span class="c1">Autoupdate</span><span class="c3">: Cardio always reports the status of its ‘SECURITY’ objects after executing a command, so we recommend that you add "autoupdate=false" in the item settings to make sure that the item's value always matches Cardio’s value (example:</span> <span class="c7">Switch Security_Arm {c2e="SECURITY", autoupdate=false}</span><span class="c3">).</span> <span class="c1">Error code</span><span class="c3">: If security system could not be armed, we can show the reason as numeric error code value update received in a linked 'Number' item (example:</span> <span class="c7">Number Security_Error {c2e="SECURITY", autoupdate=false}</span><span class="c3">).  
+    Autoupdate: Cardio always reports the status of its ‘SECURITY’ objects after executing a command, so we recommend that you add "autoupdate=false" in the item settings to make sure that the item's value always matches Cardio’s value (example: Switch Security_Arm {c2e="SECURITY", autoupdate=false}). Error code: If security system could not be armed, we can show the reason as numeric error code value update received in a linked 'Number' item (example: Number Security_Error {c2e="SECURITY", autoupdate=false}).  
     Likewise, we can configure an entry in the sitemap that translates those values by its corresponding description. Sitemap example:  
-    </span><span class="c7">Text item=Security_Error label="ERROR # [%d]" visibility=[Security_Error>0] labelcolor=[Security_Error>0="red"] valuecolor=[Security_Error>0="red"]  
+    Text item=Security_Error label="ERROR # [%d]" visibility=[Security_Error>0] labelcolor=[Security_Error>0="red"] valuecolor=[Security_Error>0="red"]  
     Text item=Security_Error label="(security code is not valid)" icon="none" visibility=[Security_Error==4] labelcolor=[Security_Error>0="red"]  
     Text item=Security_Error label="(there are open zones)" icon="none" visibility=[Security_Error==16] labelcolor=[Security_Error>0="red"]  
     Text item=Security_Error label="(there is a power problem)" icon="none" visibility=[Security_Error==17] labelcolor=[Security_Error>0="red"]  
-    Text item=Security_Error label="(unknown reason)" icon="none" visibility=[Security_Error==18] labelcolor=[Security_Error>0="red"]</span><span class="c0">  
-    </span>
-*   <span class="c3 c25">CURTAIN:</span><span class="c3">  
-    </span><span class="c7">c2e="CURTAIN,object_number"  
-    </span><span class="c3">where ‘object_number’ is a number between 1 and 80 that represents the shutter number you want to control. You can bind both ‘RollerShutter’ and ‘Dimmer’ items types (no STOP or MOVE commands are supported, and 100% value means shutter down). Note that ‘CURTAIN’ objects are only available in lastest Cardio IIé firmware versions.  
-    </span><span class="c1">Reverse mode</span><span class="c3">: Can be enabled adding ‘!’ symbol before ‘CURTAIN’’ (example:</span> <span class="c7">c2e="!CURTAIN,13"</span><span class="c3">), so the Cardio object will be considered as a control, not an actuator. You can bind  in reverse mode an unused curtain Cardio control in order to send commands to openHAB item, and to receive item updates.  
-    </span><span class="c1">Autoupdate</span><span class="c3">: Cardio always reports the status of its ‘CURTAIN’ objects after executing a command, so we recommend that you add "autoupdate=false" in the item settings to make sure that the item's value always matches Cardio’s value (example: Dimmer My_Curtain {</span><span class="c7">c2e="CURTAIN,3", autoupdate=false}</span><span class="c3">). Not applicable when "reverse mode" is used.  
-    </span>
-
-<span class="c20 c28 c30"></span>
+    Text item=Security_Error label="(unknown reason)" icon="none" visibility=[Security_Error==18] labelcolor=[Security_Error>0="red"]<span class="c0">  
+    
+*   CURTAIN:  
+    c2e="CURTAIN,object_number"  
+    where ‘object_number’ is a number between 1 and 80 that represents the shutter number you want to control. You can bind both ‘RollerShutter’ and ‘Dimmer’ items types (no STOP or MOVE commands are supported, and 100% value means shutter down). Note that ‘CURTAIN’ objects are only available in lastest Cardio IIé firmware versions.  
+    Reverse mode: Can be enabled adding ‘!’ symbol before ‘CURTAIN’’ (example: c2e="!CURTAIN,13"), so the Cardio object will be considered as a control, not an actuator. You can bind  in reverse mode an unused curtain Cardio control in order to send commands to openHAB item, and to receive item updates.  
+    Autoupdate: Cardio always reports the status of its ‘CURTAIN’ objects after executing a command, so we recommend that you add "autoupdate=false" in the item settings to make sure that the item's value always matches Cardio’s value (example: Dimmer My_Curtain {c2e="CURTAIN,3", autoupdate=false}). Not applicable when "reverse mode" is used.  
