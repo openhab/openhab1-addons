@@ -6,7 +6,7 @@ In contrast to a "normal" database such as db4o, a round-robin database does not
 
 This service cannot be directly queried, because of the data compression. You could not provide precise answers for all questions. 
 
-NOTE: rrd4j is for storing numerical data only. Attempting to use rrd4j to store complex datatypes (eg. for restore-on-startup) will not work.
+NOTE: rrd4j is for storing numerical data only. Attempting to use rrd4j to store complex datatypes (e.g. for restore-on-startup) will not work.
 
 <!-- MarkdownTOC -->
 
@@ -67,15 +67,15 @@ Steps are the number of consecutive readings that are used the create a single e
 
 Now for the archives: As already said, each datasource can have several archives. Think of an archive as a drawer with a fixed number of boxes in it. Each steps*step seconds  (the step is globally defined for the RRD, 60s in our example) the most-left box is emptied, the content of all boxes is moved one box to the left and new content is added to the most right box. The "steps" value is defined per archive it is the third parameter in the archive definition. The number of boxes is defined as the fourth parameter.
 
-The purpose to have several archives is raised if a different granuality is needed while displaying data for different timespans. In the above examples data for each second are saved for the last hour (granularity 1), looking at the last four houres a granularity of 10 (i.e. 10 readings are consolidated to one reading) is used and so forth. For the first archive (and maybe the only one) a steps-size of one should be used. This way a sample is taken after each step. In this special case the selection of the consolidationfunction is of no effect (a single reading is equal to the MAX, MIN, AVERAGE and LAST of this reading).
+The purpose to have several archives is raised if a different granularity is needed while displaying data for different timespans. In the above examples data for each second are saved for the last hour (granularity 1), looking at the last four hours a granularity of 10 (i.e. 10 readings are consolidated to one reading) is used and so forth. For the first archive (and maybe the only one) a steps-size of one should be used. This way a sample is taken after each step. In this special case the selection of the consolidation function is of no effect (a single reading is equal to the MAX, MIN, AVERAGE and LAST of this reading).
   
 ### Example
 
-So in the above examples, we have 480 boxes, which each represent the value of one minute (Step is set to 60s, Granularity = 1). If more than one value is added to the database within (steps*step) second (and thus more than one value would be stored in one box), the "consolidation function" is used. OpenHAB uses AVERAGE as default for numeric values, so if you add 20 and 21 within one minute, 20.5 would be stored. 480 minutes is 8 hours, so we have a 8h with the granularity of one minute.
+So in the above examples, we have 480 boxes, which each represent the value of one minute (Step is set to 60s, Granularity = 1). If more than one value is added to the database within (steps*step) second (and thus more than one value would be stored in one box), the "consolidation function" is used. openHAB uses AVERAGE as default for numeric values, so if you add 20 and 21 within one minute, 20.5 would be stored. 480 minutes is 8 hours, so we have a 8h with the granularity of one minute.
 
 The same goes for the next archives, for larger time spans, the stored values are less "exact". However, usually you are not interested in the exact temperature for a selected minute two years ago.
 
-services/rrd4j.cfg
+services/rrd4j.cfg:
 
 ```
 ctr5min.def=COUNTER,900,0,U,300
@@ -83,7 +83,22 @@ ctr5min.archives=AVERAGE,0.5,1,365:AVERAGE,0.5,7,300
 ctr5min.items=Item1,Item2
 ```
 
-All item- and event-related configuration is done in the file `persistence/rrd4j.persist`.  The strategy `everyMinute` must be used, otherwise no data will be persisted (stored).
+All item- and event-related configuration is done in the file `persistence/rrd4j.persist`.
+The strategy `everyMinute` (60 seconds) has to be used, otherwise no data will be persisted (stored).
+
+rrd4j.persist:
+
+```java
+Strategies {
+    // for rrd charts, we need a cron strategy
+    everyMinute : "0 * * * * ?"
+}
+
+Items {
+    // persist items on every change and every minute
+    * : strategy = everyChange, everyMinute
+}
+```
 
 ## Troubleshooting
 
