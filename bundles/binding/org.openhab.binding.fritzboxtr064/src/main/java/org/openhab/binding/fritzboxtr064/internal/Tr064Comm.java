@@ -428,7 +428,7 @@ public class Tr064Comm {
             sm.writeTo(xmlStream);
             strMsg = new String(xmlStream.toByteArray());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.debug("Not able to parse SOAP message: {}", sm, e);
         }
         return strMsg;
     }
