@@ -294,8 +294,16 @@ Number System_Temperature_GPU "Temperature GPU [%.1f °C]" <temperature> (System
 
 Add to `rrd4j.persist` file:
 
-```
-System_Temperature_Chart* : strategy = everyChange, everyMinute, restoreOnStartup
+```java
+Strategies {
+    // for rrd charts, we need a cron strategy
+    everyMinute : "0 * * * * ?"
+}
+
+Items {
+    // persist items on every change and every minute
+    System_Temperature_Chart* : strategy = everyChange, everyMinute, restoreOnStartup
+}
 ```
 
 Add to `sitemaps/default.sitemap` file:
