@@ -59,7 +59,7 @@ public class Twitter {
         }
 
         try {
-            // abbreviate the Tweet to meet the 140 character limit ...
+            // abbreviate the Tweet to meet the allowed character limit ...
             tweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
             // send the Tweet
             Status status = client.updateStatus(tweetTxt);
@@ -90,7 +90,7 @@ public class Twitter {
         }
 
         try {
-            // abbreviate the Tweet to meet the 140 character limit ...
+            // abbreviate the Tweet to meet the allowed character limit ...
             messageTxt = StringUtils.abbreviate(messageTxt, CHARACTER_LIMIT);
             // send the direct message
             DirectMessage message = client.sendDirectMessage(recipientId, messageTxt);
