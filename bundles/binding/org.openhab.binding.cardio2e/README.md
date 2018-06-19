@@ -1,7 +1,7 @@
 # Cardio2e Binding
-The openHAB Cardio2e binding allows one to connect to Secant Cardio IIé home automation system installations. Dimming or switching lights on and off, switching devices on and off, activating roller shutters, executing escenarios, managing HVACs or activating system security are only some examples.  
+The openHAB Cardio2e binding allows connecting to Secant Cardio IIé home automation system installations. Dimming or switching lights on and off, switching devices on and off, activating roller shutters, executing scenarios, managing HVACs or activating system security are only some examples.  
 
-To access your Cardio system you need an RS-232 interface (like e.g. a Prolific PL-2303 based USB to RS-232 converter interface) and a DB-9 to RJ-11 cable suitable for either Cardio PC or Cardio ACC port. You can use this [schema](https://github.com/openhab/openhab1-addons/files/999699/PcCardio_Cable.pdf&sa=D&ust=1528711214015000) to build your Cardio PC port cable.  
+To access your Cardio system you need an RS-232 interface (e.g. a Prolific PL-2303 based USB to RS-232 converter interface) and a DB-9 to RJ-11 cable suitable for either Cardio PC or Cardio ACC port. You can use this [schema](https://github.com/openhab/openhab1-addons/files/999699/PcCardio_Cable.pdf&sa=D&ust=1528711214015000) to build your Cardio PC port cable.  
 
 > Note: You can also use the Cardio accessory port (ACC) instead of PC port, so you must crimp the RJ-11 in reverse order, exchange RD and TD signals from the DB-9 connector with respect to the previous PC schematic (pins 2 and 3) and do not connect pin 7.  
 
@@ -37,10 +37,10 @@ cardio2e:smartSendingEnabledObjectTypes=LIGHTING,RELAY,HVAC_CONTROL,DATE_AND_TIM
 
 ## Items Configuration  
 ### Description  
-In order to bind an item to a Cardio IIé system you need to provide configuration settings. The easiest way to do so is to add binding information in your item file. The syntax for the Cardio2e binding configuration string is explained here:  
+In order to bind an item to a Cardio IIé system you need to provide configuration settings. The easiest way to do so is to add binding information in your items file. The syntax for the Cardio2e binding configuration string is explained here:  
 * **LIGHTING**:  
 `c2e="LIGHTING,object_number"`  
-where 'object_number' is a number between 1 and 160 that represents the light number you want to control. You can bind both 'Switch' and 'Dimmer' items types.  
+where 'object_number' is a number between 1 and 160 that represent the light number you want to control. You can bind both 'Switch' and 'Dimmer' items types.  
 *Reverse mode*: Can be enabled by adding '!' symbol before 'LIGHTING' (example: `c2e="!LIGHTING,20"`), so the Cardio object will be considered as a control, not an actuator. You can bind in reverse mode an unused lighting Cardio control in order to send commands to openHAB item, and to receive item updates (you can enable a unused Cardio lighting control by assigning it a fake X10 address).  
 *Dimmer correction*: Can be enabled by adding '%' symbol before 'object_number' (example: `c2e="LIGHTING,%1"`), in order to consider Cardio lighting 1% values as 0% (powered off). This correction is necessary when Cardio is programmed to turn on a light by presence, since when power on time expires, Cardio sends a 1% value to the DM1 instead of 0% power off value (in fact, in practice, any value less than 10% in a DM1 will turn off the light).  
 *Autoupdate*: Cardio always reports the status of its 'LIGHTING' objects after executing a command, so we recommend that you add 'autoupdate=false' in the item settings to make sure that the item's value always matches Cardio's value (example: `Dimmer My_Light {c2e="LIGHTING,2",autoupdate=false}`). Not applicable when "reverse mode" is used.  
@@ -61,7 +61,7 @@ where 'hvac_zone' is a value between 1 and 5 that represents the Cardio IIé HVA
 *Two parameters options*: `c2e="HVAC_CONTROL,hvac_zone,function"`  
 where 'hvac_zone' is a value between 1 and 5 that also represents the Cardio IIé HVAC zone number, and 'function' is the HVAC function you want to control: 'FAN' for fan control, 'AUTO', 'COOLING' and 'HEATING' for HVAC mode switch, and 'ECONOMY' and 'NORMAL' for additional submodes. You can bind to a 'Switch' item in order to switch on / off Cardio IIé HVAC functions, or you can bind to a 'Number' item in order to adjust cooling and heating setpoints (Cardio IIé has two different setpoints, one for cooling and one for heating, and the unit of measurement, ºC or ºF, will be the same that was set in Cardio system config).  
 *Autoupdate*: Cardio always reports the status of its 'HVAC_CONTROL' objects after executing a command, so we recommend that you add 'autoupdate=false' in the item settings to make sure that the item's value always matches Cardio's value.  
-Examples:  
+*Examples*:  
     ```
     Switch My_HVAC_Switch {c2e="HVAC_CONTROL,1",autoupdate=false}
     Number My_HVAC_KNX_Mode {c2e="HVAC_CONTROL,1"[,optional_KNX_binding_config],autoupdate=false}
@@ -76,7 +76,7 @@ Examples:
     ```
 * **ZONES**:  
 `c2e="ZONES,zone_number,zone_type"`  
-can be bound to a 'Contact' or 'Switch' item type, where 'zone_number' is a value between 1 and 16 that represents the Cardio IIé alarm zone number you want to monitor, and 'zone_type' is a value that specifies zone type defined in Cardio system config: 'OPEN' for NO (normally open), 'CLOSED' for NC (normally closed) and 'NORMAL' for EOL (end of line resistor). WARNING: Alarm zones state detection is disabled by default for minimum use of resources. In order to monitorize alarm zones you must set parameter 'zones=true' in binding configuration.  
+can be bound to a 'Contact' or 'Switch' item type, where 'zone_number' is a value between 1 and 16 that represents the Cardio IIé alarm zone number you want to monitor, and 'zone_type' is a value that specifies zone type defined in Cardio system config: 'OPEN' for NO (normally open), 'CLOSED' for NC (normally closed) and 'NORMAL' for EOL (end of line resistor). WARNING: Alarm zones state detection is disabled by default for minimum use of resources. In order to monitor alarm zones you must set parameter 'zones=true' in binding configuration.  
 *Invert value*: Can be enabled by adding '!' symbol before 'ZONES', so the reported status of the Cardio alarm zone will be inverted.  
 Examples:  
     ```
@@ -116,6 +116,6 @@ Using a 'Switch' item we can arm / disarm Cardio security system by ON / OFF com
     ```
 * **CURTAIN**:  
 `c2e="CURTAIN,object_number"`  
-where 'object_number' is a number between 1 and 80 that represents the shutter number you want to control. You can bind both 'RollerShutter' and 'Dimmer' items types (no STOP or MOVE commands are supported, and 100% value means shutter down). Note that 'CURTAIN' objects are only available in lastest Cardio IIé firmware versions.  
+where 'object_number' is a number between 1 and 80 that represent the shutter number you want to control. You can bind both 'RollerShutter' and 'Dimmer' items types (no STOP or MOVE commands are supported, and 100% value means shutter down). Note that 'CURTAIN' objects are only available in lastest Cardio IIé firmware versions.  
 *Reverse mode*: Can be enabled by adding '!' symbol before 'CURTAIN'' (example: `c2e="!CURTAIN,13"`), so the Cardio object will be considered as a control, not an actuator. You can bind  in reverse mode an unused curtain Cardio control in order to send commands to openHAB item, and to receive item updates.  
 *Autoupdate*: Cardio always reports the status of its 'CURTAIN' objects after executing a command, so we recommend that you add 'autoupdate=false' in the item settings to make sure that the item's value always matches Cardio's value (example: `Dimmer My_Curtain {c2e="CURTAIN,3",autoupdate=false}`). Not applicable when "reverse mode" is used.  
