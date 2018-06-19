@@ -35,7 +35,7 @@ public class Twitter {
     static boolean isEnabled = false;
 
     /** The maximum length of a Tweet or direct message */
-    private static final int CHARACTER_LIMIT = 140;
+    private static final int CHARACTER_LIMIT = 280;
 
     static twitter4j.Twitter client = null;
 
