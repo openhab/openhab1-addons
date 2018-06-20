@@ -35,7 +35,7 @@ public class Twitter {
     static boolean isEnabled = false;
 
     /** The maximum length of a Tweet or direct message */
-    private static final int CHARACTER_LIMIT = 140;
+    private static final int CHARACTER_LIMIT = 280;
 
     static twitter4j.Twitter client = null;
 
@@ -59,7 +59,7 @@ public class Twitter {
         }
 
         try {
-            // abbreviate the Tweet to meet the 140 character limit ...
+            // abbreviate the Tweet to meet the allowed character limit ...
             tweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
             // send the Tweet
             Status status = client.updateStatus(tweetTxt);
@@ -90,7 +90,7 @@ public class Twitter {
         }
 
         try {
-            // abbreviate the Tweet to meet the 140 character limit ...
+            // abbreviate the Tweet to meet the allowed character limit ...
             messageTxt = StringUtils.abbreviate(messageTxt, CHARACTER_LIMIT);
             // send the direct message
             DirectMessage message = client.sendDirectMessage(recipientId, messageTxt);
