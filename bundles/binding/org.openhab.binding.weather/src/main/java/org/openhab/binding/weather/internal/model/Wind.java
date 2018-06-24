@@ -51,6 +51,7 @@ public class Wind {
     private Integer degree;
 
     @ProviderMappings({
+            @Provider(name = ProviderName.FORECASTIO, property = "windGust", converter = ConverterType.WIND_MPS),
             @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.wind_gust_kph"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "wind.gust"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "gust", converter = ConverterType.WIND_MPS),
