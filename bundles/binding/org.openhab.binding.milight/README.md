@@ -68,7 +68,7 @@ The following command is valid for RGBW bulbs only :
 
 * `<steps>` is valid for RGBW bulbs only and has to be used with `commandType=brightness`.
 
-This optional setting can be used if your RGBW bulbs are not dimming in 27 steps as this is the default [(See the API)](http://www.limitlessled.com/dev/). 
+This optional setting can be used if your RGBW bulbs are not dimming in 27 steps as this is the default [(See an archive of the API)](https://github.com/Fantasmos/LimitlessLED-DevAPI). 
 
 ## Limitations
 
