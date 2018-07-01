@@ -141,6 +141,12 @@ As far as i know are these
     caldavio:openhab_tasks:password=password
     caldavio:openhab_tasks:reloadInterval=10
     caldavio:openhab_tasks:preloadTime=20000
+## Synology Calendar
+    caldavio:openhab_tasks:url=http://server_ip:server_port/homes/username/calendar_name/
+    caldavio:openhab_tasks:username=username
+    caldavio:openhab_tasks:password=password
+    caldavio:openhab_tasks:reloadInterval=10
+    caldavio:openhab_tasks:preloadTime=20000
 ## (zarafa?)
 
 ## Locate URL
@@ -160,7 +166,7 @@ Saves the events to the calendar named history with a length of 10 minutes
 You can simulate presence with this binding.
 To do this you have to
 * enable the caldav-command binding
-* enbale the caldav-persistence binding
+* enable the caldav-persistence binding
 * configure the Items you need for simulation for caldav persistence
 * configure the caldav persistence to singleEvents=true and an offset you want. One week or two make sense.
 * keep openHAB running for a week or more and the persistent events will occur again in the future regarding the offset you set up
