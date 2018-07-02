@@ -401,6 +401,11 @@ public class EpsonProjectorDevice {
             throw new EpsonProjectorException("No response received");
         }
 
+        // filter tcp handshake response
+        if (response.contains("ESC/VP.net")) {
+            response = response.substring(16, response.length() - 1);
+        }
+
         response = response.replace("\r:", "");
         logger.debug("Response: '{}'", response);
 
@@ -443,6 +448,16 @@ public class EpsonProjectorDevice {
             try {
                 String[] pieces = response.split("=");
                 String str = pieces[1].trim();
+
+                // convert answer "ON", "OFF" to "00", "01" e.g. MUTE, VREVERSE, HREVERSE
+                switch (str) {
+                    case "ON":
+                        str = "00";
+                        break;
+                    case "OFF":
+                        str = "01";
+                        break;
+                }
 
                 return Integer.parseInt(str, radix);
 
