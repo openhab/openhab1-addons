@@ -2,11 +2,11 @@
 
 [Music Player Daemon (MPD)](http://www.musicpd.org/) is a flexible, powerful, server-side application for playing music. Through plugins and libraries it can play a variety of sound files while being controlled by its network protocol. 
 
-With the openHAB MPD binding you can e.g. start/stop playing music in specific rooms / on various channels, change volume, and even see which track is playing.
+With the openHAB MPD binding you can start/stop playing music in specific rooms / on various channels, change volume, and even see which track is playing.
 
 ## Binding Configuration
 
-After installing the MPD version 1 binding by [downloading the .jar file](https://openhab.ci.cloudbees.com/job/PR-openHAB1-Addons/ws/bundles/binding/org.openhab.binding.mpd/target/) into the `addons/` directory, the binding can be configured in the file `services/mpd.cfg`.
+This binding can be configured in the file `services/mpd.cfg`.
 
 
 | Property | Default | Required | Description |
