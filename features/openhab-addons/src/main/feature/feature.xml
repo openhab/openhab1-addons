@@ -147,7 +147,7 @@
     <configfile finalname="${openhab.conf}/services/caldavPersonal.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/caldavPersonal</configfile>
   </feature>
 
-  <feature name="openhab-binding-cardio2e" description="Cardio IIé binding" version="${project.version}">
+  <feature name="openhab-binding-cardio2e1" description="Cardio IIé binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.cardio2e/${project.version}</bundle>
