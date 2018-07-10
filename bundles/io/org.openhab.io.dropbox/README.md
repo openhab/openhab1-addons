@@ -1,5 +1,10 @@
 # Dropbox Synchronization Service
 
+This service no longer exists. It was written to work with the original Dropbox API, which is now retired.
+An update for OH2/ESH is in progress but not completed.
+
+<hr>
+
 This service will synchronize files on the openHAB server, such as configuration and log files, to and/or from a Dropbox account.
 
 The main use case is backing up openHAB configuration and log files
