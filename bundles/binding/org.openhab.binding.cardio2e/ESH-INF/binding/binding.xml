@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="cardio2e"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>Cardio IIé Binding</name>
+    <description>Connect to Secant Cardio IIé home automation system installations.</description>
+    <author>Manuel Alberto Guerrero Díaz</author>
+    
+    <service-id>org.openhab.cardio2e</service-id>
+
+    <config-description>
+        <parameter name="port" type="text" required="true">
+            <label>Serial port</label>
+            <description>Serial RS-232 port. Examples: '/dev/ttyUSB0' for Linux, 'COM1' for Windows.</description>
+        </parameter>
+        <parameter name="programcode" type="text" required="false">
+            <label>Installer code</label>
+            <description>Installer program code for login.</description>
+            <default>00000</default>
+        </parameter>
+        <parameter name="securitycode" type="text" required="false">
+            <label>Security code</label>
+            <description>Security code for arm / disarm alarm.</description>
+        </parameter>
+        <parameter name="zones" type="boolean" required="false">
+            <label>Alarm zones state detection</label>
+            <description>Enables alarm zones state detection (by default 'false' for minimum use of resources).</description>
+            <default>false</default>
+        </parameter>
+        <parameter name="zoneUnchangedMinRefreshDelay" type="long" required="false">
+            <label>Alarm zone state unchanged minimum refresh delay</label>
+            <description>Minimum delay in milliseconds for zone detection refresh when no state changes succeed (by default '600000' milliseconds = 10 minutes).</description>
+            <default>600000</default>
+        </parameter>
+        <parameter name="datetimeMaxOffset" type="short" required="false">
+            <label>Date and time maximum offset</label>
+            <description>Date and time maximum offset allowed (in minutes) for progressive (step by step, minute by minute) date and time state update. Special values: '0' will remove offset limit, '-1' will disable progressive update and will remove offset limit, '-2' will do unconditional update without any filter even if current date and time of Cardio IIé matches the update.</description>
+            <default>15</default>
+        </parameter>
+        <parameter name="firstUpdateWillSetDatetime" type="boolean" required="false">
+            <label>First update will set date and time</label>
+            <description>Always will set Cardio IIé clock on first date and time update from last binding start, even if allowedDatetimeUpdateHour was set.</description>
+            <default>false</default>
+        </parameter>
+        <parameter name="allowedDatetimeUpdateHour" type="short" required="false">
+            <label>Allowed date and time update hour</label>
+            <description>Allows date and time updates on specified hour only (for example, a safe hour when no events will be triggered by Cardio's schedules). Valid values are from '0' to '23' ('-1' disables hour restriction).</description>
+            <default>-1</default>
+        </parameter>
+        <parameter name="testmode" type="boolean" required="false">
+            <label>Test mode</label>
+            <description>Enables fake port console test mode, for developer debug purposes only. Warning: Real communication with Cardio IIé will not work if enabled!</description>
+            <default>false</default>
+        </parameter>
+        <parameter name="minDelayBetweenReceivingAndSending" type="integer" required="false">
+            <label>Minimum delay between receiving and sending</label>
+            <description>Minimum delay in milliseconds between receiving and sending, for expert tuning only. By default '200' milliseconds (tested safe value).</description>
+            <default>200</default>
+        </parameter>
+        <parameter name="minDelayBetweenSendings" type="integer" required="false">
+            <label>Minimum delay between sendings</label>
+            <description>Minimum delay in milliseconds between sendings, for expert tuning only. By default '300' milliseconds (tested safe value).</description>
+            <default>300</default>
+        </parameter>
+        <parameter name="filterUnnecessaryCommand" type="boolean" required="false">
+            <label>Filter unnecessary command</label>
+            <description>Avoid sending commands when the last value of the object reported by Cardio IIé is the same value as the command value.</description>
+            <default>false</default>
+        </parameter>
+        <parameter name="filterUnnecessaryReverseModeUpdate" type="boolean" required="false">
+            <label>Filter unnecessary reverse mode update</label>
+            <description>Avoid sending updates (reverse mode) when the last value of the object reported by Cardio IIé is the same value as the update value.</description>
+            <default>true</default>
+        </parameter>
+        <parameter name="smartSendingEnabledObjectTypes" type="text" required="false">
+            <label>Smart sending enabled object types</label>
+            <description>Comma separated list of smart sending enabled object types. Smart sending enabled means that no contradictory commands will be stored in the sending buffer for that object type, so that if a command directed to a specific object exists in sending buffer and a new command is received for the same object, the command stored will be replaced by the new one. Valid values are 'LIGHTING', 'RELAY', 'HVAC_CONTROL', 'DATE_AND_TIME', 'SCENARIO', 'SECURITY', 'ZONES_BYPASS' and 'CURTAIN'.</description>
+        </parameter>
+    </config-description>
+</binding:binding> 
