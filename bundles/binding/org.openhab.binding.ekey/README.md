@@ -1,7 +1,5 @@
 # ekey Binding
 
-## Introduction
-
 [ekey](http://ekey.net/) is an Austrian company that provides biometric
 access-control solutions, more precisely fingerprint readers and
 corresponding controllers.  This binding extends the functionality of the
