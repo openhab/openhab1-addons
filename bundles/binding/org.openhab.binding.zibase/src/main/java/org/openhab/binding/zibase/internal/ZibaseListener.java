@@ -155,10 +155,7 @@ public class ZibaseListener extends Thread {
                     publishEvents(zbResponse);
 
                     // reset buffer
-                    for (int i = 0; i < receiveData.length; i++) {
-                        receiveData[i] = 0;
-                    }
-
+                    Arrays.fill(receivePacket.getData(), 0, receivePacket.getLength(), (byte) 0);
                 }
                 zibase.hostUnregistering(listenerHost, listenerPort);
 
