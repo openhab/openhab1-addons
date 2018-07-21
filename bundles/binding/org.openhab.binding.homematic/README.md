@@ -81,7 +81,7 @@ These ports are used by the binding:
 
 The CCU firewall must be configured to 'full access' for the Remote Homematic-Script API.
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/homematic/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/homematic/).
 
 ## Binding Configuration
 

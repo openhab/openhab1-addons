@@ -8,7 +8,7 @@ See [examples](#examples) below.
 
 * The user under which you are running openHAB should have the necessary permissions in order to execute your command lines.
 * When using the `ssh` command, you should use private key authorization, since the password cannot be read from the command line.
-* There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/exec/readme.html).
+* There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/exec/).
 
 ## Binding Configuration
 
