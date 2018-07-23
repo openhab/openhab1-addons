@@ -197,5 +197,6 @@
     <module>org.openhab.binding.diyonxbee</module>
     <module>org.openhab.binding.isy</module>
     <module>org.openhab.binding.cardio2e</module>
+    <module>org.openhab.binding.velux</module>
   </modules>
 </project>
