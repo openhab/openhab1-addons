@@ -4,7 +4,6 @@
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
 		<version>1.13.0-SNAPSHOT</version>
-		<relativePath>../../../../../../../../../../../../../../../../../../../../..//Users/guentherschreiner/development/eclipse-workspace-20180621/.git/openhab1-addons/bundles/binding/</relativePath>
 	</parent>
 
 	<name>openHAB Velux Binding</name>
