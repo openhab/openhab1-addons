@@ -13,6 +13,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -153,6 +154,9 @@ public class ZibaseListener extends Thread {
                     ZbResponse zbResponse = new ZbResponse(receivePacket.getData());
                     logger.debug("ZIBASE MESSAGE: " + zbResponse.getMessage());
                     publishEvents(zbResponse);
+
+                    // reset buffer
+                    Arrays.fill(receivePacket.getData(), 0, receivePacket.getLength(), (byte) 0);
                 }
                 zibase.hostUnregistering(listenerHost, listenerPort);
 
