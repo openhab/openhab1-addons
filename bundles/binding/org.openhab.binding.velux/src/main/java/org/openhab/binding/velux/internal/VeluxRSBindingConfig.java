@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 public class VeluxRSBindingConfig extends VeluxBindingConfig {
 
-    static final Logger logger = LoggerFactory.getLogger(VeluxRSBindingConfig.class);
+    private final Logger logger = LoggerFactory.getLogger(VeluxRSBindingConfig.class);
 
     /**
      * The ascending sorted list of generic Objects indexed by an Integer

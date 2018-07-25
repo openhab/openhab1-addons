@@ -44,10 +44,9 @@ public class VeluxBridgeDeviceStatus {
         if ((response == null) || (!response.getResult())) {
             logger.trace("retrieve() finished with failure.");
             return null;
-        } else {
-            logger.trace("retrieve() finished successfully with result {}.", response.getDeviceStatus());
-            return response.getDeviceStatus();
         }
+        logger.trace("retrieve() finished successfully with result {}.", response.getDeviceStatus());
+        return response.getDeviceStatus();
     }
 }
 

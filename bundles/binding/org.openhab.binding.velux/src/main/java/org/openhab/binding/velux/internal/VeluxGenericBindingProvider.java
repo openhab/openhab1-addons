@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public class VeluxGenericBindingProvider extends AbstractGenericBindingProvider implements VeluxBindingProvider {
 
-    private static Logger logger = LoggerFactory.getLogger(VeluxGenericBindingProvider.class);
+    private final Logger logger = LoggerFactory.getLogger(VeluxGenericBindingProvider.class);
 
     /**
      * Stores information about the which items are associated to which scene.
@@ -161,7 +161,6 @@ public class VeluxGenericBindingProvider extends AbstractGenericBindingProvider 
         try {
             thisBinding = new VeluxGenericBindingParser(bindingConfig);
         } catch (IllegalArgumentException e) {
-            logger.error("validateItemType() {}", e.getMessage());
             throw new BindingConfigParseException(e.getMessage());
         }
 
@@ -182,10 +181,9 @@ public class VeluxGenericBindingProvider extends AbstractGenericBindingProvider 
             throw new BindingConfigParseException(errorMessage);
 
         } else {
-            logger.trace("found config '" + bindingConfig + "': " + "item '" + item.getName() + "' is of type '"
-                    + item.getClass().getSimpleName() + "', which is allowed.");
+            logger.trace("found config '{}': Item {} is of type '{}', which is allowed.", bindingConfig, item.getName(),
+                    item.getClass().getSimpleName());
         }
-
         logger.debug("validateItemType() returned w/o exception.");
 
     }
@@ -197,120 +195,109 @@ public class VeluxGenericBindingProvider extends AbstractGenericBindingProvider 
 
         super.processBindingConfiguration(context, item, bindingConfig);
 
-        if (bindingConfig != null) {
-            VeluxBindingConfig config = null;
-            VeluxGenericBindingParser thisBinding = null;
-            try {
-                thisBinding = new VeluxGenericBindingParser(bindingConfig);
-            } catch (IllegalArgumentException e) {
-                logger.error("processBindingConfiguration() {}", e.getMessage());
-                throw new BindingConfigParseException(e.getMessage());
-            }
-
-            logger.trace("processBindingConfiguration() working on thing={},channel={}.", thisBinding.thingIdentifier,
-                    thisBinding.channelIdentifier);
-
-            switch (thisBinding.thingIdentifier) {
-                case VeluxBindingConstants.THING_VELUX_SCENE:
-                    logger.trace("processBindingConfiguration() found THING_VELUX_SCENE w/ channelValue={}.",
-                            thisBinding.channelValue);
-                    if (thisBinding.channelValue.length() == 0) {
-                        logger.error("Velux binding must contain a scene specified as channel subvalue.");
-                        throw new BindingConfigParseException(
-                                "Velux binding must contain a scene specified as channel subvalue.");
-                    }
-                    switch (thisBinding.channelIdentifier) {
-                        case VeluxBindingConstants.CHANNEL_SCENE_ACTION:
-                            config = new VeluxBindingConfig(VeluxItemType.SCENE_ACTION, thisBinding.channelValue);
-                            break;
-                        case VeluxBindingConstants.CHANNEL_SCENE_SILENTMODE:
-                            config = new VeluxBindingConfig(VeluxItemType.SCENE_SILENTMODE, thisBinding.channelValue);
-                            break;
-                        default:
-                            logger.error(
-                                    "processBindingConfiguration() Velux binding must contain one of {} as channel keyword.",
-                                    Arrays.toString(VeluxItemType.getChannelIdentifiers(thisBinding.thingIdentifier)));
-                            throw new BindingConfigParseException("Velux binding must contain one of "
-                                    + VeluxItemType.getChannelIdentifiers(thisBinding.thingIdentifier)
-                                    + " as channel keyword");
-                    }
-                    break;
-
-                // FIXME:"klf200" = deprecated
-                case VeluxBindingConstants.BRIDGE_TYPE:
-                case VeluxBindingConstants.THING_VELUX_BRIDGE:
-                    logger.trace("processBindingConfiguration() found THING_VELUX_BRIDGE");
-                    switch (thisBinding.channelIdentifier) {
-                        case VeluxBindingConstants.CHANNEL_BRIDGE_STATUS:
-                            config = new VeluxBindingConfig(VeluxItemType.BRIDGE_STATUS, bindingConfig);
-                            break;
-                        case VeluxBindingConstants.CHANNEL_BRIDGE_DO_DETECTION:
-                            config = new VeluxBindingConfig(VeluxItemType.BRIDGE_DO_DETECTION, bindingConfig);
-                            break;
-                        case VeluxBindingConstants.CHANNEL_BRIDGE_FIRMWARE:
-                            config = new VeluxBindingConfig(VeluxItemType.BRIDGE_FIRMWARE, bindingConfig);
-                            break;
-                        case VeluxBindingConstants.CHANNEL_BRIDGE_IPADDRESS:
-                            config = new VeluxBindingConfig(VeluxItemType.BRIDGE_IPADDRESS, bindingConfig);
-                            break;
-                        case VeluxBindingConstants.CHANNEL_BRIDGE_SUBNETMASK:
-                            config = new VeluxBindingConfig(VeluxItemType.BRIDGE_SUBNETMASK, bindingConfig);
-                            break;
-                        case VeluxBindingConstants.CHANNEL_BRIDGE_DEFAULTGW:
-                            config = new VeluxBindingConfig(VeluxItemType.BRIDGE_DEFAULTGW, bindingConfig);
-                            break;
-                        case VeluxBindingConstants.CHANNEL_BRIDGE_DHCP:
-                            config = new VeluxBindingConfig(VeluxItemType.BRIDGE_DHCP, bindingConfig);
-                            break;
-                        case VeluxBindingConstants.CHANNEL_BRIDGE_WLANSSID:
-                            config = new VeluxBindingConfig(VeluxItemType.BRIDGE_WLANSSID, bindingConfig);
-                            break;
-                        case VeluxBindingConstants.CHANNEL_BRIDGE_PRODUCTS:
-                            config = new VeluxBindingConfig(VeluxItemType.BRIDGE_PRODUCTS, bindingConfig);
-                            break;
-                        case VeluxBindingConstants.CHANNEL_BRIDGE_SCENES:
-                            config = new VeluxBindingConfig(VeluxItemType.BRIDGE_SCENES, bindingConfig);
-                            break;
-                        case VeluxBindingConstants.CHANNEL_BRIDGE_CHECK:
-                            config = new VeluxBindingConfig(VeluxItemType.BRIDGE_CHECK, bindingConfig);
-                            break;
-                        case VeluxBindingConstants.CHANNEL_BRIDGE_SHUTTER:
-                            try {
-                                config = new VeluxRSBindingConfig(VeluxItemType.BRIDGE_SHUTTER,
-                                        thisBinding.channelValue);
-                            } catch (IllegalArgumentException e) {
-                                logger.error("processBindingConfiguration() {}", e.getMessage());
-                                throw new BindingConfigParseException(e.getMessage());
-                            }
-                            break;
-                        default:
-                            logger.error(
-                                    "processBindingConfiguration() Velux binding must contain one of {} as channel keyword.",
-                                    Arrays.toString(VeluxItemType.getChannelIdentifiers(thisBinding.thingIdentifier)));
-                            throw new BindingConfigParseException("Velux binding must contain one of "
-                                    + VeluxItemType.getChannelIdentifiers(thisBinding.thingIdentifier)
-                                    + " as channel keyword");
-                    }
-                    break;
-
-                default:
-                    logger.error("processBindingConfiguration() Velux binding must contain one of {} as thing keyword.",
-                            Arrays.toString(VeluxItemType.getThingIdentifiers()));
-                    throw new BindingConfigParseException("Velux binding must contain one of "
-                            + VeluxItemType.getThingIdentifiers() + " as thing keyword");
-            }
-
-            itemMap.put(item.getName(), config);
-            Set<String> itemNames = contextMap.get(context);
-            if (itemNames == null) {
-                itemNames = new HashSet<String>();
-                contextMap.put(context, itemNames);
-            }
-
-            addBindingConfig(item, config);
-            logger.debug("processBindingConfiguration({},{},{}) successfully finished.", context, item.getName(),
-                    bindingConfig);
+        if (bindingConfig == null) {
+            return;
         }
+
+        VeluxBindingConfig config = null;
+        VeluxGenericBindingParser thisBinding = null;
+        try {
+            thisBinding = new VeluxGenericBindingParser(bindingConfig);
+        } catch (IllegalArgumentException e) {
+            throw new BindingConfigParseException(e.getMessage());
+        }
+
+        logger.trace("processBindingConfiguration() working on thing={},channel={}.", thisBinding.thingIdentifier,
+                thisBinding.channelIdentifier);
+
+        switch (thisBinding.thingIdentifier) {
+            case VeluxBindingConstants.THING_VELUX_SCENE:
+                logger.trace("processBindingConfiguration() found THING_VELUX_SCENE w/ channelValue={}.",
+                        thisBinding.channelValue);
+                if (thisBinding.channelValue.length() == 0) {
+                    throw new BindingConfigParseException(
+                            "Velux binding must contain a scene specified as channel subvalue.");
+                }
+                switch (thisBinding.channelIdentifier) {
+                    case VeluxBindingConstants.CHANNEL_SCENE_ACTION:
+                        config = new VeluxBindingConfig(VeluxItemType.SCENE_ACTION, thisBinding.channelValue);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_SCENE_SILENTMODE:
+                        config = new VeluxBindingConfig(VeluxItemType.SCENE_SILENTMODE, thisBinding.channelValue);
+                        break;
+                    default:
+                        throw new BindingConfigParseException("Velux binding must contain one of "
+                                + VeluxItemType.getChannelIdentifiers(thisBinding.thingIdentifier)
+                                + " as channel keyword");
+                }
+                break;
+
+            case VeluxBindingConstants.BRIDGE_TYPE:
+            case VeluxBindingConstants.THING_VELUX_BRIDGE:
+                logger.trace("processBindingConfiguration() found THING_VELUX_BRIDGE");
+                switch (thisBinding.channelIdentifier) {
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_STATUS:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_STATUS, bindingConfig);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_DO_DETECTION:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_DO_DETECTION, bindingConfig);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_FIRMWARE:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_FIRMWARE, bindingConfig);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_IPADDRESS:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_IPADDRESS, bindingConfig);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_SUBNETMASK:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_SUBNETMASK, bindingConfig);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_DEFAULTGW:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_DEFAULTGW, bindingConfig);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_DHCP:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_DHCP, bindingConfig);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_WLANSSID:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_WLANSSID, bindingConfig);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_PRODUCTS:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_PRODUCTS, bindingConfig);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_SCENES:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_SCENES, bindingConfig);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_CHECK:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_CHECK, bindingConfig);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_SHUTTER:
+                        try {
+                            config = new VeluxRSBindingConfig(VeluxItemType.BRIDGE_SHUTTER, thisBinding.channelValue);
+                        } catch (IllegalArgumentException e) {
+                            throw new BindingConfigParseException(e.getMessage());
+                        }
+                        break;
+                    default:
+                        throw new BindingConfigParseException("Velux binding must contain one of "
+                                + Arrays.toString(VeluxItemType.getChannelIdentifiers(thisBinding.thingIdentifier))
+                                + " as channel keyword");
+                }
+                break;
+
+            default:
+                throw new BindingConfigParseException("Velux binding must contain one of "
+                        + VeluxItemType.getThingIdentifiers() + " as thing keyword");
+        }
+
+        itemMap.put(item.getName(), config);
+        Set<String> itemNames = contextMap.get(context);
+        if (itemNames == null) {
+            itemNames = new HashSet<String>();
+            contextMap.put(context, itemNames);
+        }
+
+        addBindingConfig(item, config);
+        logger.debug("processBindingConfiguration({},{},{}) successfully finished.", context, item.getName(),
+                bindingConfig);
     }
 
     @Override

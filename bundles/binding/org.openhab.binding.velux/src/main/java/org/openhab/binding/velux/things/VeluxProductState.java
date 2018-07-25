@@ -1,5 +1,4 @@
-/**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+/** * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,19 +19,10 @@ import org.openhab.binding.velux.bridge.comm.BCgetScenes.BCproductState;
  * @author Guenther Schreiner - initial contribution.
  */
 public class VeluxProductState {
-    // private static final Logger LOGGER = LoggerFactory.getLogger(VeluxProductState.class);
 
     // Type definitions
 
     public class ProductState {
-        //
-        // Meaningful values (TBD as enum):
-        // CLOSED(100),
-        // NEARLY_CLOSED(89),
-        // HALF_OPEN(50),
-        // OPEN(0),
-        // UNDEFTYPE(-1);
-        //
 
         private int state;
 

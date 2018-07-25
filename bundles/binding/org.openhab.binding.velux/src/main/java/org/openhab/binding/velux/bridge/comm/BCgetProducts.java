@@ -14,9 +14,9 @@ import java.util.Map;
 import org.openhab.binding.velux.bridge.VeluxBridge;
 
 /**
- * <B>Specific bridge communication message supported by the </B><I>Velux</I><B> bridge.</B>
+ * Specific bridge communication message supported by the Velux bridge.
  * <P>
- * <I>Message semantic:</I> Retrieval of products.
+ * Message semantic: Retrieval of products.
  * <P>
  *
  * It defines informations how to send query and receive answer through the
@@ -31,10 +31,7 @@ public class BCgetProducts implements BridgeCommunicationProtocol<BCgetProducts.
     public static String url = "/api/v1/products";
 
     /**
-     * Bridge Communication classes.
-     * <P>
-     *
-     * @author Guenther Schreiner - Initial contribution.
+     * Bridge Communication class describing a product
      */
     public class BCproduct {
         /*
@@ -82,13 +79,9 @@ public class BCgetProducts implements BridgeCommunicationProtocol<BCgetProducts.
     }
 
     /**
-     * end-of-bridge/comm/BCproduct.java
-     */
-    /**
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
-     * <B>Resulting JSON:</B>
-     *
+     * Resulting JSON:
      * <pre>
      * {"action":"get","params":{}}
      * </pre>
@@ -111,8 +104,7 @@ public class BCgetProducts implements BridgeCommunicationProtocol<BCgetProducts.
      * Bridge I/O Response message used by {@link org.openhab.binding.velux.bridge.VeluxBridge VeluxBridge} for
      * deserialization with including component access methods
      * <P>
-     * <B>Expected JSON (sample):</B>
-     *
+     * Expected JSON (sample):
      * <pre>
      * {
      * "token": "pESIc/9zDWa1CJR6hCDzLw==",
@@ -180,7 +172,7 @@ public class BCgetProducts implements BridgeCommunicationProtocol<BCgetProducts.
     @Override
     public boolean isCommunicationSuccessful(Response response) {
         return response.getResult();
-    };
+    }
 
     @Override
     public Class<Response> getClassOfResponse() {

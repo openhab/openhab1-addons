@@ -14,9 +14,9 @@ import java.util.Map;
 import org.openhab.binding.velux.bridge.VeluxBridge;
 
 /**
- * <B>Specific bridge communication message supported by the </B><I>Velux</I><B> bridge.</B>
+ * Specific bridge communication message supported by the Velux bridge.
  * <P>
- * <I>Message semantic:</I> Communication to deauthenticate itself, resulting in a return of current bridge state.
+ * Message semantic: Communication to deauthenticate itself, resulting in a return of current bridge state.
  * <P>
  *
  * It defines informations how to send query and receive answer through the
@@ -46,8 +46,7 @@ public class BClogout implements BridgeCommunicationProtocol<BClogout.Response> 
     /**
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
-     * <B>Resulting JSON:</B>
-     *
+     * Resulting JSON:
      * <pre>
      * {"action":"logout","params":{}}
      * </pre>
@@ -68,8 +67,7 @@ public class BClogout implements BridgeCommunicationProtocol<BClogout.Response> 
     /**
      * Bridge I/O Response message used by {@link VeluxBridge} for deserializing with including component access methods
      * <P>
-     * <B>Expected JSON (sample):</B>
-     *
+     * Expected JSON (sample):
      * <pre>
      * '{"token": "PHPnfLda71xfGlxoYEOTGQ==", "result": true, "deviceStatus": "IDLE", "data": {}, "errors": [] }'
      * </pre>
@@ -117,7 +115,7 @@ public class BClogout implements BridgeCommunicationProtocol<BClogout.Response> 
     @Override
     public boolean isCommunicationSuccessful(Response response) {
         return response.getResult();
-    };
+    }
 
     @Override
     public Class<Response> getClassOfResponse() {

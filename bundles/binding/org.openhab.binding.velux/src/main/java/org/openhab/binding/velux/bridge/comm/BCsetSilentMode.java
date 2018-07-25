@@ -11,9 +11,9 @@ package org.openhab.binding.velux.bridge.comm;
 import org.openhab.binding.velux.bridge.VeluxBridge;
 
 /**
- * <B>Specific bridge communication message supported by the </B><I>Velux</I><B> bridge.</B>
+ * Specific bridge communication message supported by the Velux bridge.
  * <P>
- * <I>Message semantic:</I> setting of scene silent mode, resulting in a return of current bridge state.
+ * Message semantic: setting of scene silent mode, resulting in a return of current bridge state.
  * <P>
  *
  * It defines informations how to send query and receive answer through the
@@ -28,10 +28,6 @@ public class BCsetSilentMode implements BridgeCommunicationProtocol<BCsetSilentM
     public static String url = "/api/v1/scenes";
     private static int productId;
     private static boolean silentMode;
-
-    /*
-     * Constructors with parameters passing
-     */
 
     public BCsetSilentMode(int id, boolean silent) {
         BCsetSilentMode.productId = id;
@@ -57,8 +53,7 @@ public class BCsetSilentMode implements BridgeCommunicationProtocol<BCsetSilentM
     /**
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
-     * <B>Resulting JSON (sample):</B>
-     *
+     * Resulting JSON (sample):
      * <pre>
      * {"action":"setSilentMode","params":{"id":9,"silent":false}}}
      * </pre>
@@ -78,8 +73,7 @@ public class BCsetSilentMode implements BridgeCommunicationProtocol<BCsetSilentM
     /**
      * Bridge I/O Response message used by {@link VeluxBridge} for deserializing with including component access methods
      * <P>
-     * <B>Expected JSON (sample):</B>
-     *
+     * Expected JSON (sample):
      * <pre>
      * {
      *  "token":"RHIKGlJyZhidI/JSK0a2RQ==",
@@ -133,7 +127,7 @@ public class BCsetSilentMode implements BridgeCommunicationProtocol<BCsetSilentM
     @Override
     public boolean isCommunicationSuccessful(Response response) {
         return response.getResult();
-    };
+    }
 
     @Override
     public Class<Response> getClassOfResponse() {

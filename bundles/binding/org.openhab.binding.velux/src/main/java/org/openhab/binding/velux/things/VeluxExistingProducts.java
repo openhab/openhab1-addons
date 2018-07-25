@@ -36,13 +36,11 @@ public class VeluxExistingProducts {
 
     // Type definitions
 
-    // private ConcurrentHashMap<String, VeluxProduct> existingProductsByName;
     private ConcurrentHashMap<String, VeluxProduct> existingProductsByUniqueIndex;
     private int memberCount;
 
     public VeluxExistingProducts() {
         logger.trace("VeluxExistingProducts() initializing.");
-        // existingProductsByName = new ConcurrentHashMap<String, VeluxProduct>();
         existingProductsByUniqueIndex = new ConcurrentHashMap<String, VeluxProduct>();
         memberCount = 0;
     }

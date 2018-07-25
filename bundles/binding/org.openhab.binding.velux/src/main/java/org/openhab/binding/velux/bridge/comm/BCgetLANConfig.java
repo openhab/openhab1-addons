@@ -14,9 +14,9 @@ import java.util.Map;
 import org.openhab.binding.velux.bridge.VeluxBridge;
 
 /**
- * <B>Specific bridge communication message supported by the </B><I>Velux</I><B> bridge.</B>
+ * Specific bridge communication message supported by the Velux bridge.
  * <P>
- * <I>Message semantic:</I> Retrieval of LAN configuration.
+ * Message semantic: Retrieval of LAN configuration.
  * <P>
  *
  * It defines informations how to send query and receive answer through the
@@ -30,10 +30,6 @@ public class BCgetLANConfig implements BridgeCommunicationProtocol<BCgetLANConfi
 
     public static String url = "/api/v1/lan";
 
-    /*
-     * Constructors with parameters passing
-     */
-
     public BCgetLANConfig() {
     }
 
@@ -44,8 +40,7 @@ public class BCgetLANConfig implements BridgeCommunicationProtocol<BCgetLANConfi
     /**
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
-     * <B>Resulting JSON:</B>
-     *
+     * Resulting JSON:
      * <pre>
      * {"action":"get","params":{}}
      * </pre>
@@ -104,8 +99,7 @@ public class BCgetLANConfig implements BridgeCommunicationProtocol<BCgetLANConfi
     /**
      * Bridge I/O Response message used by {@link VeluxBridge} for unmarshelling with including component access methods
      * <P>
-     * <B>Expected JSON (sample):</B>
-     *
+     * Expected JSON (sample):
      * <pre>
      * {
      *  "token":"RHIKGlJyZhidI/JSK0a2RQ==",
@@ -162,7 +156,7 @@ public class BCgetLANConfig implements BridgeCommunicationProtocol<BCgetLANConfi
     @Override
     public boolean isCommunicationSuccessful(Response response) {
         return response.getResult();
-    };
+    }
 
     @Override
     public Class<Response> getClassOfResponse() {

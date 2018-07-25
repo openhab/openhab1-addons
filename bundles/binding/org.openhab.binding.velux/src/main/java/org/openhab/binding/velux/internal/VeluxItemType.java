@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,14 +20,6 @@ import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-/**
- * Type of a Velux item
- *
- * @author Guenther Schreiner
- * @since 1.13.0
- *
- */
 
 /**
  * Enumeration of Types of a Velux item.
@@ -70,6 +62,10 @@ import org.slf4j.LoggerFactory;
  * <li>ability flag whether this item is able to be modified,</li>
  * <li>ability flag whether this item is to be used as execution trigger.</li>
  * </ul>
+ *
+ * @author Guenther Schreiner
+ * @since 1.13.0
+ *
  */
 public enum VeluxItemType {
     SCENE_ACTION(VeluxBindingConstants.THING_VELUX_SCENE, VeluxBindingConstants.CHANNEL_SCENE_ACTION, SwitchItem.class,
@@ -101,9 +97,7 @@ public enum VeluxItemType {
     BRIDGE_CHECK(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_CHECK, StringItem.class,
             true, false, false),
     BRIDGE_SHUTTER(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_SHUTTER,
-            RollershutterItem.class, false, true, false),
-    // beyond last entry
-    ;
+            RollershutterItem.class, false, true, false);
 
     private String thingIdentifier;
     private String channelIdentifier;
@@ -112,7 +106,8 @@ public enum VeluxItemType {
     private boolean itemIsWritable;
     private boolean itemIsExecutable;
 
-    private static Logger logger = LoggerFactory.getLogger(VeluxItemType.class);
+    private final Logger logger = LoggerFactory.getLogger(VeluxItemType.class);
+    private static Logger logger_ = LoggerFactory.getLogger(VeluxItemType.class);
 
     VeluxItemType(String thingIdentifier, String channelIdentifier, Class<? extends Item> itemClass, boolean isReadable,
             boolean isWritable, boolean isExecutable) {
@@ -140,7 +135,7 @@ public enum VeluxItemType {
     }
 
     /**
-     * {@link VeluxItemType} access method to query appropriate on this type of item.
+     * {@link VeluxItemType} access method to query the appropriate type of item.
      *
      * @return <b>itemClass</b> of type Item describing the possible type of this item.
      */
@@ -204,15 +199,15 @@ public enum VeluxItemType {
      * @return <b>veluxItemType</b> of type VeluxItemType describing the appropriate enum.
      */
     public static VeluxItemType getByThingAndChannel(String thingIdentifier, String channelIdentifier) {
-        logger.trace("getByThingAndChannel({},{}) called.", thingIdentifier, channelIdentifier);
+        logger_.trace("getByThingAndChannel({},{}) called.", thingIdentifier, channelIdentifier);
         for (VeluxItemType v : VeluxItemType.values()) {
-            logger.trace("getByThingAndChannel() work on {} and {}.", v.thingIdentifier, v.channelIdentifier);
+            logger_.trace("getByThingAndChannel() work on {} and {}.", v.thingIdentifier, v.channelIdentifier);
             if ((thingIdentifier.equals(v.thingIdentifier)) && (channelIdentifier.equals(v.channelIdentifier))) {
-                logger.trace("getByThingAndChannel() returns enum.");
+                logger_.trace("getByThingAndChannel() returns enum.");
                 return v;
             }
         }
-        logger.trace("getByThingAndChannel() returns null.");
+        logger_.trace("getByThingAndChannel() returns null.");
         return null;
     }
 
@@ -222,10 +217,10 @@ public enum VeluxItemType {
      * @return <b>veluxItemType</b> of type VeluxItemType describing the appropriate enum.
      */
     public static String[] getThingIdentifiers() {
-        logger.trace("getThingIdentifiers() called.");
+        logger_.trace("getThingIdentifiers() called.");
         Set<List<String>> uniqueSet = new HashSet<List<String>>();
         for (VeluxItemType v : VeluxItemType.values()) {
-            logger.trace("getThingIdentifiers() adding {}.", v.thingIdentifier);
+            logger_.trace("getThingIdentifiers() adding {}.", v.thingIdentifier);
             uniqueSet.add(Arrays.asList(v.thingIdentifier));
         }
         return uniqueSet.toArray(new String[uniqueSet.size()]);
@@ -239,7 +234,7 @@ public enum VeluxItemType {
      * @return <b>veluxItemType</b> of type VeluxItemType describing the appropriate enum.
      */
     public static String[] getChannelIdentifiers(String thingIdentifier) {
-        logger.trace("getChannelIdentifiers() called.");
+        logger_.trace("getChannelIdentifiers() called.");
         Set<List<String>> uniqueSet = new HashSet<List<String>>();
         for (VeluxItemType v : VeluxItemType.values()) {
             if (thingIdentifier.equals(v.thingIdentifier)) {

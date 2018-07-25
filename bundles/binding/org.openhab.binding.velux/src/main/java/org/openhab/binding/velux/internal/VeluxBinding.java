@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * <B>Class for Velux binding which polls something and sends events frequently.</B>
  * <P>
  *
- * This binding is able to do the following tasks with the Velux KLF200 gatewas:
+ * This binding is able to do the following tasks with the Velux KLF200 gateway:
  * <ul>
  * <LI>Startup phase:
  * <ul>
@@ -73,8 +73,6 @@ public class VeluxBinding extends AbstractActiveBinding<VeluxBindingProvider> im
 
     /**
      * The refresh interval which is used to poll values from the Velux binding.
-     *
-     * Will be initialized during constructor.
      */
     private long refreshInterval;
 
@@ -84,7 +82,7 @@ public class VeluxBinding extends AbstractActiveBinding<VeluxBindingProvider> im
     private VeluxBridgeConfiguration config = new VeluxBridgeConfiguration();
 
     /**
-     * Velux binding provider will held the related OpenHAB configuration.
+     * Velux binding provider will hold the related OpenHAB configuration.
      */
     private VeluxBindingProvider bindingProvider = null;
 
@@ -127,8 +125,6 @@ public class VeluxBinding extends AbstractActiveBinding<VeluxBindingProvider> im
     @Override
     public void allBindingsChanged(BindingProvider provider) {
         logger.trace("allBindingsChanged() called.");
-        if (provider instanceof VeluxBindingProvider) {
-        }
         super.allBindingsChanged(provider);
     }
 
@@ -245,24 +241,34 @@ public class VeluxBinding extends AbstractActiveBinding<VeluxBindingProvider> im
 
             final String tcpPortString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_TCPPORT);
             if (isNotBlank(tcpPortString)) {
-                this.config.bridgeTCPPort = Integer.parseInt(tcpPortString);
+                try {
+                    this.config.bridgeTCPPort = Integer.parseInt(tcpPortString);
+                } catch (NumberFormatException e) {
+                    throw new ConfigurationException(VeluxBridgeConfiguration.BRIDGE_TCPPORT, e.getMessage());
+                }
             }
-
             final String passwordString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_PASSWORD);
             if (isNotBlank(passwordString)) {
                 this.config.bridgePassword = passwordString;
             }
-
             final String timeoutMsecsString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_TIMEOUT_MSECS);
             if (isNotBlank(timeoutMsecsString)) {
-                this.config.timeoutMsecs = Integer.parseInt(timeoutMsecsString);
+                try {
+                    this.config.timeoutMsecs = Integer.parseInt(timeoutMsecsString);
+                } catch (NumberFormatException e) {
+                    throw new ConfigurationException(VeluxBridgeConfiguration.BRIDGE_TCPPORT, e.getMessage());
+                }
             }
-
             final String retryNoString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_RETRIES);
             if (isNotBlank(retryNoString)) {
-                this.config.retries = Integer.parseInt(retryNoString);
+                try {
+                    this.config.retries = Integer.parseInt(retryNoString);
+                } catch (NumberFormatException e) {
+                    throw new ConfigurationException(VeluxBridgeConfiguration.BRIDGE_TCPPORT, e.getMessage());
+                }
             }
         }
+
         setProperlyConfigured(true);
 
         logger.info("{}Config[{}={},{}={},{}={},{}={},{}={}]", VeluxBindingConstants.BINDING_ID,

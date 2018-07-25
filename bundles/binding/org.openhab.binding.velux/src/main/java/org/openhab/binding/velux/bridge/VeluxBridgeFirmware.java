@@ -66,10 +66,9 @@ public class VeluxBridgeFirmware {
             this.channel.firmwareVersion = response.getFirmwareVersion();
             this.channel.isRetrieved = true;
             return channel;
-        } else {
-            logger.trace("retrieve() finished with failure.");
-            return null;
         }
+        logger.trace("retrieve() finished with failure.");
+        return null;
     }
 
 }

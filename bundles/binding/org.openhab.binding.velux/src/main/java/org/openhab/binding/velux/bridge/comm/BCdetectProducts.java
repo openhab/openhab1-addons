@@ -14,9 +14,9 @@ import java.util.Map;
 import org.openhab.binding.velux.bridge.VeluxBridge;
 
 /**
- * <B>Specific bridge communication message supported by the </B><I>Velux</I><B> bridge.</B>
+ * Specific bridge communication message supported by the Velux bridge.
  * <P>
- * <I>Message semantic:</I> Action to start discovery of products, i.e. <I>Velux</I> devices.
+ * Message semantic:Action to start discovery of products, i.e. Velux devices.
  * <P>
  *
  * It defines informations how to send query and receive answer through the
@@ -30,10 +30,6 @@ public class BCdetectProducts implements BridgeCommunicationProtocol<BCdetectPro
 
     public static String url = "/api/v1/products";
 
-    /*
-     * Constructors with parameters passing
-     */
-
     public BCdetectProducts() {
     }
 
@@ -43,14 +39,12 @@ public class BCdetectProducts implements BridgeCommunicationProtocol<BCdetectPro
 
     /**
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
-     * <P>
-     * <B>Resulting JSON:</B>
-     *
+     * Resulting JSON:
      * <pre>
      * {"action":"discover","params":{}}
      * </pre>
      *
-     * NOTE: the gateway software is extremely sensible to this exact JSON structure.
+     * NOTE: the gateway software is extremely sensitive to this exact JSON structure.
      * Any modifications (like omitting empty params) will lead to an gateway error.
      */
     public static class Request {
@@ -69,9 +63,7 @@ public class BCdetectProducts implements BridgeCommunicationProtocol<BCdetectPro
 
     /**
      * Bridge I/O Response message used by {@link VeluxBridge} for deserializing with including component access methods
-     * <P>
-     * <B>Expected JSON (sample):</B>
-     *
+     * Expected JSON (sample):
      * <pre>
      * {
      *  "token":"RHIKGlJyZhidI/JSK0a2RQ==",
@@ -125,7 +117,7 @@ public class BCdetectProducts implements BridgeCommunicationProtocol<BCdetectPro
     @Override
     public boolean isCommunicationSuccessful(Response response) {
         return response.getResult();
-    };
+    }
 
     @Override
     public Class<Response> getClassOfResponse() {

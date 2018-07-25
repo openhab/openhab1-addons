@@ -275,7 +275,7 @@ public class VeluxBridge {
                 logger.trace("bridgeCommunicate(): no auth token available, aborting.");
                 return null;
             } else {
-                logger.trace("bridgeCommunicate(): no auth token available, continueing.");
+                logger.trace("bridgeCommunicate(): no auth token available, continuing.");
             }
         }
 

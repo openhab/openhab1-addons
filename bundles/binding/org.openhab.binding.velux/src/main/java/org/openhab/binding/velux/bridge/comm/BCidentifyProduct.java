@@ -11,9 +11,9 @@ package org.openhab.binding.velux.bridge.comm;
 import org.openhab.binding.velux.bridge.VeluxBridge;
 
 /**
- * <B>Specific bridge communication message supported by the </B><I>Velux</I><B> bridge.</B>
+ * Specific bridge communication message supported by the Velux bridge.
  * <P>
- * <I>Message semantic:</I> Trigger action to identify a product, resulting in a return of current bridge state.
+ * Message semantic: Trigger action to identify a product, resulting in a return of current bridge state.
  * <P>
  *
  * It defines informations how to send query and receive answer through the
@@ -29,10 +29,6 @@ public class BCidentifyProduct implements BridgeCommunicationProtocol<BCidentify
     private static String url = "/api/v1/products";
     private static int productId;
     private static int identifyTime = DEFAULT_IDENTIFY_TIME;
-
-    /*
-     * Constructors with parameters passing
-     */
 
     public BCidentifyProduct(int id, int time) {
         BCidentifyProduct.productId = id;
@@ -63,8 +59,7 @@ public class BCidentifyProduct implements BridgeCommunicationProtocol<BCidentify
     /**
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
-     * <B>Resulting JSON (sample):</B>
-     *
+     * Resulting JSON (sample):
      * <pre>
      * {"action":"identify","params":{"id":23,"time":254}}
      * </pre>
@@ -84,8 +79,7 @@ public class BCidentifyProduct implements BridgeCommunicationProtocol<BCidentify
     /**
      * Bridge I/O Response message used by {@link VeluxBridge} for deserializing with including component access methods
      * <P>
-     * <B>Expected JSON (sample):</B>
-     *
+     * Expected JSON (sample):
      * <pre>
      * {
      * "token": "NkR/AA5xXj7iL6NiIW8keA==",
@@ -139,7 +133,7 @@ public class BCidentifyProduct implements BridgeCommunicationProtocol<BCidentify
     @Override
     public boolean isCommunicationSuccessful(Response response) {
         return response.getResult();
-    };
+    }
 
     @Override
     public Class<Response> getClassOfResponse() {

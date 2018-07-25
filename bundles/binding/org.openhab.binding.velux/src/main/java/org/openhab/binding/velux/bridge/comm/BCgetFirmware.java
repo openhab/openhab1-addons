@@ -14,9 +14,9 @@ import java.util.Map;
 import org.openhab.binding.velux.bridge.VeluxBridge;
 
 /**
- * <B>Specific bridge communication message supported by the </B><I>Velux</I><B> bridge.</B>
+ * Specific bridge communication message supported by the Velux bridge.
  * <P>
- * <I>Message semantic:</I> Retrieval of Bridge configuration.
+ * Message semantic: Retrieval of Bridge configuration.
  * <P>
  *
  * It defines informations how to send query and receive answer through the
@@ -30,10 +30,6 @@ public class BCgetFirmware implements BridgeCommunicationProtocol<BCgetFirmware.
 
     public static String url = "/api/v1/settings";
 
-    /*
-     * Constructors with parameters passing
-     */
-
     public BCgetFirmware() {
     }
 
@@ -44,8 +40,7 @@ public class BCgetFirmware implements BridgeCommunicationProtocol<BCgetFirmware.
     /**
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
-     * <B>Resulting JSON:</B>
-     *
+     * Resulting JSON:
      * <pre>
      * {"action":"getFirmware","params":{}}
      * </pre>
@@ -83,7 +78,7 @@ public class BCgetFirmware implements BridgeCommunicationProtocol<BCgetFirmware.
     /**
      * Bridge I/O Response message used by {@link VeluxBridge} for deserializing with including component access methods
      * <P>
-     * <B>Expected JSON (sample):</B>
+     * Expected JSON (sample):
      *
      * <pre>
      * {
@@ -141,7 +136,7 @@ public class BCgetFirmware implements BridgeCommunicationProtocol<BCgetFirmware.
     @Override
     public boolean isCommunicationSuccessful(Response response) {
         return response.getResult();
-    };
+    }
 
     @Override
     public Class<Response> getClassOfResponse() {

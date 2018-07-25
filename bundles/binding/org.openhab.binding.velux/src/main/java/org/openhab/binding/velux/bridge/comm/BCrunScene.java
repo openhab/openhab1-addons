@@ -11,9 +11,9 @@ package org.openhab.binding.velux.bridge.comm;
 import org.openhab.binding.velux.bridge.VeluxBridge;
 
 /**
- * <B>Specific bridge communication message supported by the </B><I>Velux</I><B> bridge.</B>
+ * Specific bridge communication message supported by the Velux bridge.
  * <P>
- * <I>Message semantic:</I> Trigger activation of a specific scene, resulting in a return of current bridge state.
+ * Message semantic: Trigger activation of a specific scene, resulting in a return of current bridge state.
  * <P>
  *
  * It defines informations how to send query and receive answer through the
@@ -27,10 +27,6 @@ public class BCrunScene implements BridgeCommunicationProtocol<BCrunScene.Respon
 
     public static String url = "/api/v1/scenes";
     private static int productId;
-
-    /*
-     * Constructors with parameters passing
-     */
 
     public BCrunScene(int id) {
         BCrunScene.productId = id;
@@ -52,8 +48,7 @@ public class BCrunScene implements BridgeCommunicationProtocol<BCrunScene.Respon
     /**
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
-     * <B>Resulting JSON (sample):</B>
-     *
+     * Resulting JSON (sample):
      * <pre>
      * {"action":"run","params":{"id":9}}
      * </pre>
@@ -73,8 +68,7 @@ public class BCrunScene implements BridgeCommunicationProtocol<BCrunScene.Respon
     /**
      * Bridge I/O Response message used by {@link VeluxBridge} for deserializing with including component access methods
      * <P>
-     * <B>Expected JSON (sample):</B>
-     *
+     * Expected JSON (sample):
      * <pre>
      * {
      *  "token":"RHIKGlJyZhidI/JSK0a2RQ==",
@@ -128,7 +122,7 @@ public class BCrunScene implements BridgeCommunicationProtocol<BCrunScene.Respon
     @Override
     public boolean isCommunicationSuccessful(Response response) {
         return response.getResult();
-    };
+    }
 
     @Override
     public Class<Response> getClassOfResponse() {

@@ -26,13 +26,6 @@ import org.slf4j.LoggerFactory;
 public class VeluxProductReference {
     private final Logger logger = LoggerFactory.getLogger(VeluxProductReference.class);
 
-    // Type definitions
-
-    // imported public static class ProductName
-    // imported public enum ProductTypeId
-
-    // not imported class ProductBridgeIndex
-
     // Class internal
 
     private ProductName name;
@@ -44,8 +37,8 @@ public class VeluxProductReference {
         this.name = new ProductName(productState.getName());
         this.typeId = ProductTypeId.get(productState.getTypeId());
         if (this.typeId == null) {
-            logger.error(
-                    "PLEASE REPORT THIS TO MAINTAINER: VeluxProductReference({}) has found an unregistered ProductTypeId.",
+            logger.warn(
+                    "Please report this to maintainer: VeluxProductReference({}) has found an unregistered ProductTypeId.",
                     productState.getTypeId());
         }
     }

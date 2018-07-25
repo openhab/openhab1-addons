@@ -14,13 +14,13 @@ import org.openhab.binding.velux.internal.VeluxItemType;
  * The {@link VeluxBindingConstants} class defines common constants, which are
  * used across the whole binding.
  *
- * For an in-depth view of the available , take a look onto {@link VeluxItemType}.
+ * For an in-depth view of the available Item type with description of parameters, take a look onto {@link VeluxItemType}.
  *
  * @author Guenther Schreiner - Initial contribution
  */
 public class VeluxBindingConstants {
 
-    /** Basis bindung identification */
+    /** Basic bindung identification */
     public static final String BINDING_ID = "velux";
 
     // List of all thing ids

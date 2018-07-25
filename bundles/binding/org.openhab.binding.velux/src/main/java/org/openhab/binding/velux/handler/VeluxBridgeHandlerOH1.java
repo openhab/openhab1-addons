@@ -58,8 +58,8 @@ import org.slf4j.LoggerFactory;
  * {@link org.openhab.binding.velux.handler.VeluxBridgeHandlerOH1#handleCommandOnChannel handleCommandOnChannel}.
  * <P>
  * <B>Note:</B> This is the same functionality as provided by the <I>OpenHAB2</I>-specific classes
- * {@link org.openhab.binding.velux.handler.VeluxBridgeHandler} and
- * {@link org.openhab.binding.velux.handler.VeluxHandler}.
+ * org.openhab.binding.velux.handler.VeluxBridgeHandler and
+ * org.openhab.binding.velux.handler.VeluxHandler}.
  *
  * @author Guenther Schreiner - Initial contribution.
  */
@@ -193,22 +193,17 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgePro
             VeluxBindingProvider provider, EventPublisher eventPublisher) {
         logger.trace("handleCommandOnChannel(item={},command={},config={},provider={}) called.", itemName, command,
                 config, provider);
-        if (config == null) {
-            logger.info("handleCommandOnChannel() received an empty configuration, should never occur.");
-            return;
-        }
+        assert config != null : "received an empty configuration.";
         if (command == null) {
             logger.trace("handleCommandOnChannel() work on refresh.");
             if (!provider.getConfigForItemName(itemName).getBindingItemType().isReadable()) {
-                logger.info(
-                        "handleCommandOnChannel() received a Refresh command for a non-readable item, should never occur.");
+                logger.warn("handleCommandOnChannel() received a Refresh command for a non-readable item.");
             } else {
                 logger.trace("handleCommandOnChannel() refreshing item {}.", itemName);
 
                 State newState = null;
                 switch (config.getBindingItemType()) {
                     case BRIDGE_STATUS:
-                        // newState = createState(new VeluxBridgeDeviceStatus().retrieve(this));
                         newState = createState(new VeluxBridgeDeviceCheckLostNodes().retrieve(this));
                         break;
 
@@ -307,12 +302,13 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgePro
                         } else {
                             result = "check ok. All scenes used within Items.";
                         }
-                        logger.info("{}", result);
+                        logger.info("Result: {}", result);
                         newState = createState(result);
                         break;
 
                     default:
-                        logger.trace("handleCommandOnChannel() cannot handle REFRESH on channel {} as it is of type.",
+                        logger.trace(
+                                "handleCommandOnChannel() cannot handle REFRESH on channel {} as it is of type {}.",
                                 itemName, config.getBindingItemType());
                 }
                 if (newState != null) {
@@ -369,7 +365,6 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgePro
                         logger.trace("handleCommandOnChannel() execution scene {}.", thisScene);
                         new VeluxBridgeExecute().execute(this, thisScene.getBridgeSceneIndex().toInt());
                     }
-                    ;
                     break;
 
                 case SCENE_SILENTMODE:

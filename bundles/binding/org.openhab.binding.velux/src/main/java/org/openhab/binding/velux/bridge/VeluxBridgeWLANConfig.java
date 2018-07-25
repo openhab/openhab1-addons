@@ -60,15 +60,15 @@ public class VeluxBridgeWLANConfig {
     public Channel retrieve(VeluxBridgeProvider bridge) {
         logger.trace("retrieve() called.");
 
-        if (this.channel == null) {
-            this.channel = new Channel();
+        if (channel == null) {
+            channel = new Channel();
         }
         BCgetWLANConfig.Response response = bridge.bridgeCommunicate(new BCgetWLANConfig());
         if (response != null) {
             logger.trace("retrieve() found successfully configuration {}.", response.getWLANConfig());
-            this.channel.wlanSSID = response.getWLANConfig().getSSID();
-            this.channel.wlanPassword = response.getWLANConfig().getPassword();
-            this.channel.isRetrieved = true;
+            channel.wlanSSID = response.getWLANConfig().getSSID();
+            channel.wlanPassword = response.getWLANConfig().getPassword();
+            channel.isRetrieved = true;
             return channel;
         } else {
             logger.trace("retrieve() finished with failure.");

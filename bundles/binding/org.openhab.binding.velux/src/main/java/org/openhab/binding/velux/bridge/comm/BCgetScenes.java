@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <B>Specific bridge communication message supported by the </B><I>Velux</I><B> bridge.</B>
+ * Specific bridge communication message supported by the Velux bridge.
  * <P>
- * <I>Message semantic:</I> Retrieval of scene configurations.
+ * Message semantic: Retrieval of scene configurations.
  * <P>
  *
  * It defines informations how to send query and receive answer through the
@@ -114,8 +114,7 @@ public class BCgetScenes implements BridgeCommunicationProtocol<BCgetScenes.Resp
      * Bridge I/O Request message used by {@link org.openhab.binding.velux.bridge.VeluxBridge VeluxBridge} for
      * serializing:
      * <P>
-     * <B>Resulting JSON:</B>
-     *
+     * Resulting JSON:
      * <pre>
      * {"action":"get","params":{}}
      * </pre>
@@ -205,7 +204,7 @@ public class BCgetScenes implements BridgeCommunicationProtocol<BCgetScenes.Resp
     @Override
     public boolean isCommunicationSuccessful(Response response) {
         return response.getResult();
-    };
+    }
 
     @Override
     public Class<Response> getClassOfResponse() {

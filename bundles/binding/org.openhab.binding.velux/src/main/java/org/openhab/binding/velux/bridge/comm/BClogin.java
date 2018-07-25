@@ -11,9 +11,9 @@ package org.openhab.binding.velux.bridge.comm;
 import org.openhab.binding.velux.bridge.VeluxBridge;
 
 /**
- * <B>Specific bridge communication message supported by the </B><I>Velux</I><B> bridge.</B>
+ * Specific bridge communication message supported by the Velux bridge.
  * <P>
- * <I>Message semantic:</I> Communication to authenticate itself, resulting in a return of current bridge state.
+ * Message semantic: Communication to authenticate itself, resulting in a return of current bridge state.
  * <P>
  *
  * It defines informations how to send query and receive answer through the
@@ -29,9 +29,6 @@ public class BClogin implements BridgeCommunicationProtocol<BClogin.Response> {
 
     private static String password;
 
-    /*
-     * Constructors with parameters passing
-     */
     public BClogin(String pw) {
         BClogin.password = pw;
     }
@@ -52,8 +49,7 @@ public class BClogin implements BridgeCommunicationProtocol<BClogin.Response> {
     /**
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
-     * <B>Resulting JSON:</B>
-     *
+     * Resulting JSON:
      * <pre>
      * {"action":"login","params":{"password":"PASSWORD"}}
      * </pre>
@@ -123,7 +119,7 @@ public class BClogin implements BridgeCommunicationProtocol<BClogin.Response> {
     @Override
     public boolean isCommunicationSuccessful(Response response) {
         return response.getResult();
-    };
+    }
 
     @Override
     public Class<Response> getClassOfResponse() {

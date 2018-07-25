@@ -29,10 +29,6 @@ package org.openhab.binding.velux.internal.config;
  *
  * @author Guenther Schreiner - Initial contribution
  */
-// FIXME: for OpenHAB2 the following line is acceptable:
-//
-// public class VeluxBridgeConfiguration extends Configuration {
-//
 public class VeluxBridgeConfiguration {
     public static final String BRIDGE_IPADDRESS = "bridgeIPAddress";
     public static final String BRIDGE_TCPPORT = "bridgeTCPPort";
@@ -41,28 +37,16 @@ public class VeluxBridgeConfiguration {
     public static final String BRIDGE_RETRIES = "retries";
     public static final String BRIDGE_REFRESH_SECS = "refreshSecs";
 
-    public String bridgeProtocol;
-    public String bridgeIPAddress;
-    public int bridgeTCPPort;
-    public String bridgePassword;
-    public int timeoutMsecs;
-    public int retries;
-    public long refresh;
-
-    /**
+    /*
      * Default values - should not be modified
      */
-    public VeluxBridgeConfiguration() {
-        this.bridgeProtocol = "http";
-        this.bridgeIPAddress = "192.168.1.1";
-        this.bridgeTCPPort = 80;
-        this.bridgePassword = "velux123";
-        this.timeoutMsecs = 1000;
-        this.retries = 10;
-        this.refresh = 3600000L; // one hour
-
-    }
-
+    public String bridgeProtocol = "http";
+    public String bridgeIPAddress = "192.168.1.1";
+    public int bridgeTCPPort = 80 ;
+    public String bridgePassword = "velux123";
+    public int timeoutMsecs = 1000;
+    public int retries = 10;
+    public long refresh = 3600000L; // one hour
 }
 /*
  * end-of-internal/config/VeluxBridgeConfiguration.java

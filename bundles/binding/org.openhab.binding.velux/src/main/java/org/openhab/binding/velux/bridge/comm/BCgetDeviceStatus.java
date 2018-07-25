@@ -14,9 +14,9 @@ import java.util.Map;
 import org.openhab.binding.velux.bridge.VeluxBridge;
 
 /**
- * <B>Specific bridge communication message supported by the </B><I>Velux</I><B> bridge.</B>
+ * Specific bridge communication message supported by the Velux bridge.
  * <P>
- * <I>Message semantic:</I> Retrieval of current bridge state.
+ * Message semantic: Retrieval of current bridge state.
  * <P>
  *
  * It defines informations how to send query and receive answer through the
@@ -30,10 +30,6 @@ public class BCgetDeviceStatus implements BridgeCommunicationProtocol<BCgetDevic
 
     public static String url = "/api/v1/device";
 
-    /*
-     * Constructors with parameters passing
-     */
-
     public BCgetDeviceStatus() {
     }
 
@@ -44,13 +40,12 @@ public class BCgetDeviceStatus implements BridgeCommunicationProtocol<BCgetDevic
     /**
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
-     * <B>Resulting JSON:</B>
-     *
+     * Resulting JSON:
      * <pre>
      * {"action":"getDeviceStatus","params":{}}
      * </pre>
      *
-     * NOTE: the gateway software is extremely sensible to this exact JSON structure.
+     * NOTE: the gateway software is extremely sensitive to this exact JSON structure.
      * Any modifications (like omitting empty params) will lead to an gateway error.
      */
     public static class Request {
@@ -70,8 +65,7 @@ public class BCgetDeviceStatus implements BridgeCommunicationProtocol<BCgetDevic
     /**
      * Bridge I/O Response message used by {@link VeluxBridge} for deserializing with including component access methods
      * <P>
-     * <B>Expected JSON (sample):</B>
-     *
+     * Expected JSON (sample):
      * <pre>
      * {
      *  "token":"RHIKGlJyZhidI/JSK0a2RQ==",
@@ -125,7 +119,7 @@ public class BCgetDeviceStatus implements BridgeCommunicationProtocol<BCgetDevic
     @Override
     public boolean isCommunicationSuccessful(Response response) {
         return response.getResult();
-    };
+    }
 
     @Override
     public Class<Response> getClassOfResponse() {

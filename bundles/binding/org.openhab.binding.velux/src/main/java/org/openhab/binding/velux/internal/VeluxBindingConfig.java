@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 public class VeluxBindingConfig implements BindingConfig {
 
-    static final Logger logger = LoggerFactory.getLogger(VeluxBindingConfig.class);
+    private final Logger logger = LoggerFactory.getLogger(VeluxBindingConfig.class);
 
     /**
      * The binding type of the velux item described by type {@link org.openhab.binding.velux.internal.VeluxItemType

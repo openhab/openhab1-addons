@@ -41,8 +41,7 @@ public class VeluxBridgeDeviceCheckLostNodes {
 
         logger.trace("retrieve() About to query device status.");
         BCcheckLostNodes.Response response = bridge.bridgeCommunicate(new BCcheckLostNodes());
-        if ((response == null) // || (!response.getResult())
-        ) {
+        if (response == null) {
             logger.trace("retrieve() finished with failure.");
             return null;
         } else {

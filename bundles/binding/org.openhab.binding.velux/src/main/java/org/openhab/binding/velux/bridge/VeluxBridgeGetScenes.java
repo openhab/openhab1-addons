@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 public class VeluxBridgeGetScenes {
     private final Logger logger = LoggerFactory.getLogger(VeluxBridgeGetScenes.class);
 
-    //
     public boolean getScenes(VeluxBridgeProvider bridge) {
         logger.trace("getScenes() called.");
 

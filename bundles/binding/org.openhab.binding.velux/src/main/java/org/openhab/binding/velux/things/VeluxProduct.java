@@ -52,11 +52,11 @@ public class VeluxProduct {
         private int subtype;
 
         // Reverse-lookup map for getting a ProductTypeId from an TypeId
-        private static final Map<Integer, ProductTypeId> LOOKUPTYPEID2ENUM = new HashMap<Integer, ProductTypeId>();
+        private static final Map<Integer, ProductTypeId> lookupTypeId2Enum = new HashMap<Integer, ProductTypeId>();
 
         static {
             for (ProductTypeId typeId : ProductTypeId.values()) {
-                LOOKUPTYPEID2ENUM.put(typeId.getTypeId(), typeId);
+                lookupTypeId2Enum.put(typeId.getTypeId(), typeId);
             }
         }
 
@@ -99,7 +99,7 @@ public class VeluxProduct {
         }
 
         public static ProductTypeId get(int typeId) {
-            return LOOKUPTYPEID2ENUM.get(typeId);
+            return lookupTypeId2Enum.get(typeId);
         }
 
     }
@@ -138,13 +138,13 @@ public class VeluxProduct {
         try {
             this.typeId = ProductTypeId.valueOf(productTypeId);
         } catch (IllegalArgumentException iae) {
-            logger.error(
-                    "PLEASE REPORT THIS TO MAINTAINER: VeluxProduct({},{}) has found an unregistered ProductTypeId.",
+            logger.warn(
+                    "Please report this to maintainer: VeluxProduct({},{}) has found an unregistered ProductTypeId.",
                     productTypeId, productDescr.getTypeId());
         }
         if (this.getTypeId().getTypeId() != productDescr.getTypeId()) {
-            logger.error(
-                    "PLEASE REPORT THIS TO MAINTAINER: VeluxProduct({},{}) has found two different typeIds which differ ({} vs. {}.",
+            logger.warn(
+                    "Please report this to maintainer: VeluxProduct({},{}) has found two different typeIds which differ ({} vs. {}.",
                     productTypeId, productDescr.getTypeId(), this.getTypeId().getTypeId(), productDescr.getTypeId());
         }
     }

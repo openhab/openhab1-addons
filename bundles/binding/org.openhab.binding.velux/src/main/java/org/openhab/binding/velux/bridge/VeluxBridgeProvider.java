@@ -124,7 +124,7 @@ public interface VeluxBridgeProvider {
     public boolean bridgeLogin();
 
     /**
-     * Prepares an (authenticated!) deauthorization request and communicate it with the <b>Velux</b> veluxBridge.
+     * Prepares an authenticated deauthorization request and communicate it with the <b>Velux</b> veluxBridge.
      * In any case, the authorization token stored in this class will be destroyed, so that the
      * next communication has to start with {@link VeluxBridgeProvider#bridgeLogin}.
      *
