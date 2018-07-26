@@ -12,7 +12,7 @@ The binding can be configured by parameters in the global configuration file `op
 
 | Property       | Default                | Required | Description                                           |
 |----------------|------------------------|:--------:|-------------------------------------------------------|
-| bridgeIPAddress| 127.0.0.1              |   Yes    | Hostname or address for accessing the Velux Bridge.   |
+| bridgeIPAddress|                        |   Yes    | Hostname or address for accessing the Velux Bridge.   |
 | bridgeTCPPort  | 80                     |    No    | TCP port for accessing the Velux Bridge.              |
 | bridgePassword | velux123               |    No    | Password for authentication against the Velux Bridge. |
 | timeoutMsecs   | 2000                   |    No    | Initial Connection timeout in milliseconds            |
@@ -34,7 +34,7 @@ For your convenience you'll see a log entry for the recognized configuration wit
 
 ## Discovery
 
-Unfortunatelly there is no way to discover the Velux bridge within the local network. Beware that all Velux scenes have to be added to the local Velux Bridge configuration as described in the Velux setup procedure.
+Unfortunately there is no way to discover the Velux bridge within the local network. Be aware that all Velux scenes have to be added to the local Velux Bridge configuration as described in the Velux setup procedure.
 
 ## Item Configuration
 
@@ -42,7 +42,13 @@ The Items of a Velux Bridge consists in general of a pair of mastertype and subt
 In the appropriate items file, i.e. velux.items, this looks like
 
 ```
-{ velux="thing=<Mastertype>channel=<Subtype>" }
+{ velux="thing=<Mastertype>;channel=<Subtype>" }
+```
+
+Optionally the subtype is enhanced with parameters like the appropriate name of the scene.
+
+```
+{ velux="thing=<Mastertype>;channel=<Subtype>#<Parameter>" }
 ```
 
 | Mastertype | Description                                                               |
@@ -54,23 +60,35 @@ In the appropriate items file, i.e. velux.items, this looks like
 ### Subtype
 
 
-| Subtype      | Item Type     | Description                                                     | Mastertype |
-|--------------|---------------|-----------------------------------------------------------------|------------|
-| action       | Switch        | Activates a set of predefined product settings                  | scene      |
-| silentMode   | Switch        | Modification of the silent mode of the defined product settings | scene      |
-| status       | String        | Current Bridge State                                            | bridge     |
-| doDetection  | Switch        | Start of the product detection mode                             | bridge     |
-| firmware     | String        | Software version of the Bridge                                  | bridge     |
-| ipAddress    | String        | IP address of the Bridge                                        | bridge     |
-| subnetMask   | String        | IP subnetmask of the Bridge                                     | bridge     |
-| defaultGW    | String        | IP address of the Default Gateway of the Bridge                 | bridge     |
-| DHCP         | Switch        | Flag whether automatic IP configuration is enabled              | bridge     |
-| WLANSSID     | String        | Name of the wireless network                                    | bridge     |
-| WLANPassword | String        | WLAN Authentication Password                                    | bridge     |
-| products     | String        | List of all recognized products                                 | bridge     |
-| scenes       | String        | List of all defined scenes                                      | bridge     |
-| check        | String        | Checks of current item configuratio                             | bridge     |
-| shutter      | Rollershutter | Virtual rollershutter as combination of different scenes        | bridge     |
+| Subtype      | Item Type     | Description                                                     | Mastertype | Parameter |
+|--------------|---------------|-----------------------------------------------------------------|------------|-----------|
+| action       | Switch        | Activates a set of predefined product settings                  | scene      | required  |
+| silentMode   | Switch        | Modification of the silent mode of the defined product settings | scene      | required  |
+| status       | String        | Current Bridge State                                            | bridge     | N/A       |
+| doDetection  | Switch        | Start of the product detection mode                             | bridge     | N/A       |
+| firmware     | String        | Software version of the Bridge                                  | bridge     | N/A       |
+| ipAddress    | String        | IP address of the Bridge                                        | bridge     | N/A       |
+| subnetMask   | String        | IP subnetmask of the Bridge                                     | bridge     | N/A       |
+| defaultGW    | String        | IP address of the Default Gateway of the Bridge                 | bridge     | N/A       |
+| DHCP         | Switch        | Flag whether automatic IP configuration is enabled              | bridge     | N/A       |
+| WLANSSID     | String        | Name of the wireless network                                    | bridge     | N/A       |
+| WLANPassword | String        | WLAN Authentication Password                                    | bridge     | N/A       |
+| products     | String        | List of all recognized products                                 | bridge     | N/A       |
+| scenes       | String        | List of all defined scenes                                      | bridge     | N/A       |
+| check        | String        | Checks of current item configuratio                             | bridge     | N/A       |
+| shutter      | Rollershutter | Virtual rollershutter as combination of different scenes        | bridge     | required  |
+
+### Subtype Parameters
+
+In case of the scene-related subtypes, action and silentMode, the spezification of the related scene as parameters is necessary;
+```
+{ velux="thing=scene;channel=<Subtype>#<Parameter>" }
+```
+
+The subtype shutter requires an even pair of parameters, each defining the shutter level and the related scene:
+```
+{ velux="thing=brigde;channel=shutter#<Level1>,<Scene1>,<Level2>,<Scene2>" }
+```
 
 ### Virtual shutter
 
@@ -81,14 +99,9 @@ As the bridge does not support a real rollershutter interaction, this binding pr
 
 
 
-### Items velux.items
+### Items
 
 ```
-/**
- * OpenHAB item defintion for velux binding:
- *  Velux Bridge and Devices
- */
-
 //  Group for simulating push buttons
 
 Group:Switch:OR(ON, OFF)    gV  "PushButton"
@@ -133,7 +146,7 @@ Rollershutter V_DG_M_W  "Velux DG Window Mitte [%d]"    { velux="thing=bridge;ch
 100,V_DG_Window_Mitte_100"}
 ```
 
-### Sitemap velux.sitemap
+### Sitemap
 
 ```
 sitemap velux label="Velux Environment"
@@ -152,7 +165,7 @@ sitemap velux label="Velux Environment"
 }
 ```
 
-### Rule velux.rules
+### Rules
 
 ```
 /**
@@ -185,9 +198,7 @@ During startup of normal operations, there should be only some few messages with
 
 ## Supported/Tested Firmware Revisions
 
-The Velux Bridge in API version One (firmware version 0.1.1.*) allows to activate a set of predefined actions, so called scenes. Therefore besi
-de the bridge, only one main thing exists, the scene element. Unfortunatelly even the current firmware version 0.1.1.0.44.0 does not include en
-hancements on this fact.
+The Velux Bridge in API version One (firmware version 0.1.1.*) allows to activate a set of predefined actions, so called scenes. Therefore beside the bridge, only one main thing exists, the scene element. Unfortunately even the current firmware version 0.1.1.0.44.0 does not include enhancements on this fact.
 
 | Firmware revision | Release date | Description                                                             |
 |:-----------------:|:------------:|-------------------------------------------------------------------------|
@@ -197,7 +208,7 @@ hancements on this fact.
 
 ## Unknown Velux devices
 
-All known <B>Velux<B> devices can be handled by this binding. However, there might be some new ones which will be reported within the logfiles.Therefore, error messages like the one below should be reported to the maintainers so that the new Velux device type can be incorporated."
+All known <B>Velux</B> devices can be handled by this binding. However, there might be some new ones which will be reported within the logfiles.Therefore, error messages like the one below should be reported to the maintainers so that the new Velux device type can be incorporated."
 
 ```
 [ERROR] [g.velux.things.VeluxProductReference] - PLEASE REPORT THIS TO MAINTAINER: VeluxProductReference(3) has found an unregistered ProductTypeId.

@@ -106,8 +106,7 @@ public enum VeluxItemType {
     private boolean itemIsWritable;
     private boolean itemIsExecutable;
 
-    private final Logger logger = LoggerFactory.getLogger(VeluxItemType.class);
-    private static Logger logger_ = LoggerFactory.getLogger(VeluxItemType.class);
+    private static Logger logger = LoggerFactory.getLogger(VeluxItemType.class);
 
     VeluxItemType(String thingIdentifier, String channelIdentifier, Class<? extends Item> itemClass, boolean isReadable,
             boolean isWritable, boolean isExecutable) {
@@ -199,15 +198,15 @@ public enum VeluxItemType {
      * @return <b>veluxItemType</b> of type VeluxItemType describing the appropriate enum.
      */
     public static VeluxItemType getByThingAndChannel(String thingIdentifier, String channelIdentifier) {
-        logger_.trace("getByThingAndChannel({},{}) called.", thingIdentifier, channelIdentifier);
+        logger.trace("getByThingAndChannel({},{}) called.", thingIdentifier, channelIdentifier);
         for (VeluxItemType v : VeluxItemType.values()) {
-            logger_.trace("getByThingAndChannel() work on {} and {}.", v.thingIdentifier, v.channelIdentifier);
+            logger.trace("getByThingAndChannel() work on {} and {}.", v.thingIdentifier, v.channelIdentifier);
             if ((thingIdentifier.equals(v.thingIdentifier)) && (channelIdentifier.equals(v.channelIdentifier))) {
-                logger_.trace("getByThingAndChannel() returns enum.");
+                logger.trace("getByThingAndChannel() returns enum.");
                 return v;
             }
         }
-        logger_.trace("getByThingAndChannel() returns null.");
+        logger.trace("getByThingAndChannel() returns null.");
         return null;
     }
 
@@ -217,10 +216,10 @@ public enum VeluxItemType {
      * @return <b>veluxItemType</b> of type VeluxItemType describing the appropriate enum.
      */
     public static String[] getThingIdentifiers() {
-        logger_.trace("getThingIdentifiers() called.");
+        logger.trace("getThingIdentifiers() called.");
         Set<List<String>> uniqueSet = new HashSet<List<String>>();
         for (VeluxItemType v : VeluxItemType.values()) {
-            logger_.trace("getThingIdentifiers() adding {}.", v.thingIdentifier);
+            logger.trace("getThingIdentifiers() adding {}.", v.thingIdentifier);
             uniqueSet.add(Arrays.asList(v.thingIdentifier));
         }
         return uniqueSet.toArray(new String[uniqueSet.size()]);
@@ -234,7 +233,7 @@ public enum VeluxItemType {
      * @return <b>veluxItemType</b> of type VeluxItemType describing the appropriate enum.
      */
     public static String[] getChannelIdentifiers(String thingIdentifier) {
-        logger_.trace("getChannelIdentifiers() called.");
+        logger.trace("getChannelIdentifiers() called.");
         Set<List<String>> uniqueSet = new HashSet<List<String>>();
         for (VeluxItemType v : VeluxItemType.values()) {
             if (thingIdentifier.equals(v.thingIdentifier)) {

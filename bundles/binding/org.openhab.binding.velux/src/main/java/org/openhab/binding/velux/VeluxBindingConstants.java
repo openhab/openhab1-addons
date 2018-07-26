@@ -20,7 +20,7 @@ import org.openhab.binding.velux.internal.VeluxItemType;
  */
 public class VeluxBindingConstants {
 
-    /** Basic bindung identification */
+    /** Basic binding identification */
     public static final String BINDING_ID = "velux";
 
     // List of all thing ids
