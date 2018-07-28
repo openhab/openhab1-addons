@@ -43,7 +43,7 @@ public class ZibaseBindingConfigReceiver extends ZibaseBindingConfig {
             ZbProtocol.X2D868INSH.toString(), ZbProtocol.X2D868PIWI.toString(), ZbProtocol.ZWAVE.toString(), };
 
     /**
-     * X10 formed id (Z prefix removed for ZWave items
+     * X10 formed id (Z prefix removed for ZWave items)
      */
     protected String x10Id;
 
@@ -64,12 +64,12 @@ public class ZibaseBindingConfigReceiver extends ZibaseBindingConfig {
         // with the X10 version of the ID (no Z prefix) and a special flag
         logger.debug("Item protocol : {}", this.getProtocol());
 
-        if (this.getProtocol().equals(ZbProtocol.ZWAVE.toString())) {
+        if (getProtocol().equals(ZbProtocol.ZWAVE.toString())) {
             logger.debug("Item is ZWAVE !");
-            this.isZWave = true;
-            this.x10Id = this.getId().substring(1);
+            isZWave = true;
+            x10Id = getId().substring(1);
         } else {
-            this.x10Id = this.getId();
+            x10Id = getId();
         }
 
         logger.debug("Item X10 id set to : {}", this.x10Id);

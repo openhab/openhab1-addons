@@ -45,17 +45,17 @@ public class ZibaseListener extends Thread {
     private static final Logger logger = LoggerFactory.getLogger(ZibaseBinding.class);
 
     /**
-     * Regex pattern to extact X10 / Chacon RfId from zibase log
+     * Regex pattern to extract X10 / Chacon RfId from zibase log
      */
     private static final Pattern X10CHACONPATTERN = Pattern.compile(": ([A-Z]{1,3}[0-9]{1,2})(_)");
 
     /**
-     * Regex pattern to extact Radio ID from zibase log
+     * Regex pattern to extract Radio ID from zibase log
      */
     private static final Pattern RADIODIDPATTERN = Pattern.compile(": (<id>)(.+?)(_OFF)?(</id>)");
 
     /**
-     * Regex pattern to extact Scenario id from zibase log
+     * Regex pattern to extract Scenario id from zibase log
      */
     private static final Pattern SCENARIOPATTERN = Pattern.compile(": ([0-9]{1,3})");
 
@@ -65,22 +65,22 @@ public class ZibaseListener extends Thread {
     private Zibase zibase = null;
 
     /**
-     * eventpubisher to publish update on
+     * eventpublisher to publish update on
      */
-    private EventPublisher eventPubisher = null;
+    private EventPublisher eventPublisher = null;
 
     /**
-     * define wether the thread is running
+     * define whether the thread is running
      */
     private boolean running = false;
 
     /**
-     * ip address sent to Zibase for registering
+     * IP address sent to Zibase for registering
      */
     private String listenerHost = "127.0.0.1";
 
     /**
-     * ip address sent to Zibase for registering
+     * IP address sent to Zibase for registering
      */
     private int listenerPort = 9876;
 
@@ -124,7 +124,7 @@ public class ZibaseListener extends Thread {
      * @param pEventPublisher
      */
     public void setEventPubisher(EventPublisher pEventPublisher) {
-        this.eventPubisher = pEventPublisher;
+        this.eventPublisher = pEventPublisher;
     }
 
     /**
@@ -141,7 +141,7 @@ public class ZibaseListener extends Thread {
     @Override
     public void run() {
 
-        if (zibase != null && eventPubisher != null) {
+        if (zibase != null && eventPublisher != null) {
             try {
                 // register to zibase for listening
                 zibase.hostRegistering(listenerHost, listenerPort);
@@ -173,7 +173,7 @@ public class ZibaseListener extends Thread {
             }
 
         } else {
-            logger.error("Zibase not initialized. Ip Address may be wrong or not reachable !");
+            logger.error("Zibase not initialized. IP address may be wrong or not reachable !");
         }
     }
 
@@ -219,7 +219,7 @@ public class ZibaseListener extends Thread {
             return;
         }
 
-        // ...retreive all itemNames that use this id...
+        // ...retrieve all itemNames that use this id...
         Vector<String> listOfItemNames = ZibaseBinding.getBindingProvider().getItemNamesById(id);
         if (listOfItemNames == null) {
             return;
@@ -231,20 +231,21 @@ public class ZibaseListener extends Thread {
         for (String itemName : listOfItemNames) {
             Item item = ZibaseBinding.getBindingProvider().getItemByName(itemName);
 
-            if (item != null) {
+            if (item == null) {
+                continue;
+            }
 
-                ZibaseBindingConfig config = ZibaseBinding.getBindingProvider()
-                        .getItemConfigByUniqueId(itemName + "_" + id);
-                logger.debug("Getting config for {} (id = {}) ", itemName, id);
+            ZibaseBindingConfig config = ZibaseBinding.getBindingProvider()
+                    .getItemConfigByUniqueId(itemName + "_" + id);
+            logger.debug("Getting config for {} (id = {}) ", itemName, id);
 
-                if (config != null) {
-                    synchronized (item) {
-                        org.openhab.core.types.State value = config.getOpenhabStateFromZibaseValue(zibase,
-                                zbResponseStr);
-                        logger.debug("publishing update for {} : {}", itemName, value);
-                        eventPubisher.postUpdate(itemName, value);
-                    }
-                }
+            if (config == null) {
+                continue;
+            }
+            synchronized (item) {
+                org.openhab.core.types.State value = config.getOpenhabStateFromZibaseValue(zibase, zbResponseStr);
+                logger.debug("publishing update for {} : {}", itemName, value);
+                eventPublisher.postUpdate(itemName, value);
             }
         }
     }

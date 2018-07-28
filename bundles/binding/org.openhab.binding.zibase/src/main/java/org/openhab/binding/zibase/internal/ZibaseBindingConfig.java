@@ -79,7 +79,7 @@ abstract class ZibaseBindingConfig implements BindingConfig {
      *
      * @param zibase
      * @param command
-     * @param         int set to megative value if no dim is needed
+     * @param         int set to negative value if no dim is needed
      */
     abstract public void sendCommand(Zibase zibase, Command command, int dim);
 
@@ -92,7 +92,7 @@ abstract class ZibaseBindingConfig implements BindingConfig {
     abstract protected boolean isItemConfigValid();
 
     /**
-     * Tell wether given config string is valid
+     * Tell whether given config string is valid
      *
      * @param zbResponseStr a ZbResponse instance as string
      */
@@ -152,7 +152,7 @@ abstract class ZibaseBindingConfig implements BindingConfig {
     public ZibaseBindingConfig(String[] configParameters) {
 
         this.values = configParameters;
-        logger.debug("Item Constructor - saved valued : {}", StringUtils.join(this.values, ","));
+        logger.debug("Item Constructor - saved value(s) : {}", StringUtils.join(this.values, ","));
     }
 
     /**
