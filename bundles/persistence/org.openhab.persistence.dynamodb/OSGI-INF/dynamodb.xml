@@ -18,4 +18,5 @@
    <property name="service.config.description.uri" type="String" value="persistence:dynamodb"/>
    <property name="service.config.label" type="String" value="Amazon DynamoDB Persistence"/>
    <property name="service.config.category" type="String" value="persistence"/>
+   <property name="service.pid" type="String" value="org.openhab.dynamodb"/>
 </scr:component>
