@@ -9,7 +9,7 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" deactivate="deactivate" name="org.openhab.persistence.dynamodb" immediate="true" configuration-pid="org.openhab.dynamodb" configuration-policy="optional">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" deactivate="deactivate" name="org.openhab.persistence.dynamodb" configuration-pid="org.openhab.dynamodb">
    <implementation class="org.openhab.persistence.dynamodb.internal.DynamoDBPersistenceService"/>
    <service>
       <provide interface="org.openhab.core.persistence.PersistenceService"/>
