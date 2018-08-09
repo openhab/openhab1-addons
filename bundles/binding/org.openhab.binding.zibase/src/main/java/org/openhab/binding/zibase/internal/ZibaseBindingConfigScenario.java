@@ -47,13 +47,13 @@ public class ZibaseBindingConfigScenario extends ZibaseBindingConfig {
      */
     @Override
     protected boolean isItemConfigValid() {
-        logger.info("Checking config for scenario item " + this.getId());
+        logger.info("Checking config for scenario item {}", this.getId());
 
         try {
             Integer.parseInt(this.values[ZibaseBindingConfig.POS_ID]);
             return true;
         } catch (NumberFormatException ex) {
-            logger.error("bad scenario id : " + this.getId());
+            logger.error("bad scenario id : {}", this.getId());
         }
 
         return false;
