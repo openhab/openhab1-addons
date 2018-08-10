@@ -792,13 +792,6 @@
     <configfile finalname="${openhab.conf}/services/gcal.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/gcal</configfile>
   </feature>
 
-  <feature name="openhab-misc-dropbox1" description="Dropbox Synchronization Service" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.dropbox/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/dropbox.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/dropbox</configfile>
-  </feature>
-
   <!-- shared features, not end user facing -->
   
   <feature name="openhab-io-gpio1" description="GPIO IO" version="${project.version}">
