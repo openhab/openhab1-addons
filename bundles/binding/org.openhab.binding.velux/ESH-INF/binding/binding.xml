@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="velux" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+	<name>Velux Binding (1.x)</name>
+	<description>A 1.x binding for the Velux KLF200 Bridge. The Velux Binding interacts via a Velux Bridge with the
+		different Velux devices
+		like controlling window openers, shutters and others. For example a KLF200 can act as interface between the HomeAutomation
+		and the VELUX INTEGRA products with wireless connectivity based on the io-homecontrol standard.
+	</description>
+
+	<service-id>org.openhab.velux</service-id>
+
+	<config-description>
+		<parameter name="bridgeIPAddress" type="text" required="true">
+			<label>Bridge IP Address</label>
+			<description>The hostname or IP address of the Velux Bridge.</description>
+		</parameter>
+		<parameter name="bridgeTCPPort" type="integer" required="false" min="1" max="65335">
+			<label>Bridge Port</label>
+			<description>TCP port of the Velux gateway</description>
+			<default>80</default>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="bridgePassword" type="text">
+			<label>Bridge Password</label>
+			<description>Password for authentication against the Velux Bridge.</description>
+			<required>false</required>
+			<!-- Velux Bridge factory default -->
+			<default>velux123</default>
+		</parameter>
+		<parameter name="timeoutMsecs" type="integer" min="1" step="1">
+			<label>Timeout</label>
+			<description>Initial Connection timeout in milliseconds.</description>
+			<required>false</required>
+			<default>2000</default>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="retries" type="integer" min="1" step="1">
+			<label>Connection retries</label>
+			<description>Number of retries with timing along the Binary Exponential Backoff (BEB) Algorithm.</description>
+			<required>false</required>
+			<default>10</default>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="refreshSecs" type="integer" required="false">
+			<label>Refresh Interval</label>
+			<description>Data refresh interval for any bridge parameters in milliseconds.</description>
+			<default>3600000</default>
+			<required>false</required>
+			<advanced>true</advanced>
+		</parameter>
+
+	</config-description>
+</binding:binding>
