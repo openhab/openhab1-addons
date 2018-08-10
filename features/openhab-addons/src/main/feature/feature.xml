@@ -662,6 +662,13 @@
     <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.influxdb/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/influxdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/influxdb</configfile>
   </feature>
+  
+  <feature name="openhab-persistence-dynamodb" description="Amazon DynamoDB Persistence" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.dynamodb/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/dynamodb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/dynamodb</configfile>
+  </feature>
 
   <feature name="openhab-persistence-gcal" description="Google Calendar Presence Simulator" version="${project.version}">
     <feature>openhab-runtime-base</feature>
