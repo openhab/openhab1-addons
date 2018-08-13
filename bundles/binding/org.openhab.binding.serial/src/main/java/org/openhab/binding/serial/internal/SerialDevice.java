@@ -11,6 +11,8 @@ package org.openhab.binding.serial.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +62,7 @@ public class SerialDevice implements SerialPortEventListener {
 
     private CommPortIdentifier portId;
     private SerialPort serialPort;
+    private Charset charset;
 
     private InputStream inputStream;
 
@@ -117,12 +120,36 @@ public class SerialDevice implements SerialPortEventListener {
     }
 
     public SerialDevice(String port) {
-        this.port = port;
+        this(port, null);
+    }
+
+    public SerialDevice(String port, String charsetName) {
+        this(port, 9600, charsetName);
     }
 
     public SerialDevice(String port, int baud) {
+        this(port, baud, null);
+    }
+
+    public SerialDevice(String port, int baud, String charsetName) {
         this.port = port;
         this.baud = baud;
+        setCharset(charsetName);
+    }
+
+    private void setCharset(String charsetName) {
+        try {
+            if (charsetName == null) {
+                charset = Charset.defaultCharset();
+            } else {
+                charset = Charset.forName(charsetName);
+            }
+
+            logger.debug("Serial port '{}' charset '{}' set.", port, charsetName);
+        } catch (IllegalCharsetNameException e) {
+            logger.warn("Serial port '{}' charset '{}' not found.", port, charsetName);
+            charset = Charset.defaultCharset();
+        }
     }
 
     public void setEventPublisher(EventPublisher eventPublisher) {
@@ -276,7 +303,7 @@ public class SerialDevice implements SerialPortEventListener {
                         // read data from serial device
                         while (inputStream.available() > 0) {
                             int bytes = inputStream.read(readBuffer);
-                            sb.append(new String(readBuffer, 0, bytes));
+                            sb.append(new String(readBuffer, 0, bytes, charset));
                         }
                         try {
                             // add wait states around reading the stream, so that interrupted transmissions are merged
@@ -325,7 +352,7 @@ public class SerialDevice implements SerialPortEventListener {
                                     }
                                 } else if (entry.getValue().type == StringItem.class) {
                                     if (entry.getValue().base64) {
-                                        result = Base64.encodeBase64String(result.getBytes());
+                                        result = Base64.encodeBase64String(result.getBytes(charset));
                                     }
                                     eventPublisher.postUpdate(entry.getKey(), new StringType(result));
 
@@ -383,7 +410,7 @@ public class SerialDevice implements SerialPortEventListener {
             if (msg.startsWith("BASE64:")) {
                 outputStream.write(Base64.decodeBase64(msg.substring(7, msg.length())));
             } else {
-                outputStream.write(msg.getBytes());
+                outputStream.write(msg.getBytes(charset));
             }
 
             outputStream.flush();
