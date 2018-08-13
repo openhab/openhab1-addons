@@ -19,6 +19,27 @@ hometheater.serialPort=/dev/tty.usbserial
 office.serialPort=/dev/ttyS0
 ```
 
+### Using tcp instead of serialPort
+
+Alternatively you can connect to your projector via tcp/telnet if you are using some kind of serial2IP converter.  
+Like: https://community.openhab.org/t/benq-beamer-binding-rs232-over-wifi-ir-receiver/26138/4
+
+In that case the configuration looks like this:
+
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| `<device-id>`.host | | Yes | IP address of your converter |
+| `<device-id>`.port | | Yes | Port the device is listening on. e.g. `23` |
+
+Examples:
+
+```
+hometheater.host=192.168.1.234
+hometheater.port=23
+```
+
+If you are switching from serial to TCP you might need to delete the cache (`/var/lib/openhab2/config/org/openhab/epsonprojector.config`).
+
 ## Item Configuration
 
 The syntax is:
