@@ -21,7 +21,7 @@ office.serialPort=/dev/ttyS0
 
 ### Using tcp instead of serialPort
 
-Alternatively you can connect to your projector via tcp/telnet if you are using some kind of seriel2IP converter.  
+Alternatively you can connect to your projector via tcp/telnet if you are using some kind of serial2IP converter.  
 Like: https://community.openhab.org/t/benq-beamer-binding-rs232-over-wifi-ir-receiver/26138/4
 
 In that case the configuration looks like this:
