@@ -8,26 +8,10 @@
 
 	<name>openHAB Raspberry Pi RC Switch Binding</name>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.rpircswitch</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.rpircswitch</bundle.namespace>
-		<deb.name>openhab-addon-binding-rpircswitch</deb.name>
-		<deb.description>${project.name}</deb.description>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.rpircswitch</artifactId>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

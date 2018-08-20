@@ -6,13 +6,6 @@
 		<version>1.13.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.expire</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.expire</bundle.namespace>
-		<deb.name>openhab-addon-binding-expire</deb.name>
-		<deb.description>${project.name}</deb.description>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.expire</artifactId>
@@ -20,14 +13,5 @@
 	<name>openHAB Expire Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

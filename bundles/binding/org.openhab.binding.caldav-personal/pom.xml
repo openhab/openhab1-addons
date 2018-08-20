@@ -6,13 +6,6 @@
 		<version>1.13.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.caldav-personal</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.caldav-personal</bundle.namespace>
-		<deb.name>openhab-addon-binding-caldav-personal</deb.name>
-		<deb.description>openhab addon binding caldav-personal</deb.description>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.caldav-personal</artifactId>
@@ -20,14 +13,5 @@
 	<name>openHAB CalDAV-Personal Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

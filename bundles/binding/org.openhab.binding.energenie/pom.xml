@@ -6,13 +6,6 @@
 		<version>1.13.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.energenie</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.energenie</bundle.namespace>
-		<deb.name>openhab-addon-binding-energenie</deb.name>
-		<deb.description>${project.name}</deb.description>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.energenie</artifactId>
@@ -21,14 +14,5 @@
 
 	<packaging>eclipse-plugin</packaging>
 
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

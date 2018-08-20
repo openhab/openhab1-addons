@@ -8,26 +8,10 @@
 
 	<name>openHAB DD-WRT Binding</name>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.ddwrt</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.ddwrt</bundle.namespace>
-		<deb.name>openhab-addon-binding-ddwrt</deb.name>
-		<deb.description>${project.name}</deb.description>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.ddwrt</artifactId>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

@@ -6,13 +6,6 @@
 		<version>1.13.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.action.pushover</bundle.symbolicName>
-		<bundle.namespace>org.openhab.action.pushover</bundle.namespace>
-		<deb.name>openhab-addon-action-pushover</deb.name>
-		<deb.description>${project.name}</deb.description>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.action</groupId>
 	<artifactId>org.openhab.action.pushover</artifactId>
@@ -20,14 +13,5 @@
 	<name>openHAB Pushover Action</name>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

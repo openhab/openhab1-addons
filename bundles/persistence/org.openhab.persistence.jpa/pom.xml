@@ -8,13 +8,6 @@
 
     <name>openHAB JPA Persistence</name>
 
-    <properties>
-        <bundle.symbolicName>org.openhab.persistence.jpa</bundle.symbolicName>
-        <bundle.namespace>org.openhab.persistence.jpa</bundle.namespace>
-        <deb.name>openhab-addon-persistence-jpa</deb.name>
-        <deb.description>${project.name}</deb.description>
-    </properties>
-
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openhab.persistence</groupId>
     <artifactId>org.openhab.persistence.jpa</artifactId>
@@ -23,10 +16,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.vafer</groupId>
-                <artifactId>jdeb</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.apache.openjpa</groupId>
                 <artifactId>openjpa-maven-plugin</artifactId>

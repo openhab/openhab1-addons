@@ -6,11 +6,6 @@
     <version>1.13.0-SNAPSHOT</version>
   </parent>
 
-  <properties>
-  	<bundle.symbolicName>org.openhab.io.transport.cul.test</bundle.symbolicName>
-  	<bundle.namespace>org.openhab.io.transport.cul.test</bundle.namespace>
-  </properties>
-
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.io</groupId>
   <artifactId>org.openhab.io.transport.cul.test</artifactId>

@@ -6,14 +6,6 @@
 		<version>1.13.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.iec6205621meter</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.iec6205621meter</bundle.namespace>
-		<deb.name>openhab-addon-binding-iec6205621meter</deb.name>
-		<deb.description>${project.name}</deb.description>
-		<deb.depends>openhab-addon-io-serial</deb.depends>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.iec6205621meter</artifactId>
@@ -21,15 +13,6 @@
 	<name>openHAB IEC 62056-21 Meter Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 	<description>This binding is used to communicate to metering devices supporting serial communication according mode C master. It can be used to read metering data from slaves such as gas, water, heat, or electricity meters.</description>
 </project>

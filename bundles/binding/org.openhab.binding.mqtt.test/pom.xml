@@ -9,11 +9,6 @@
 		<version>1.9.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.mqtt.test</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.mqtt.test</bundle.namespace>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.mqtt.test</artifactId>

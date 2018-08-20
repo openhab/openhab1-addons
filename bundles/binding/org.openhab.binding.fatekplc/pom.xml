@@ -7,10 +7,6 @@
 	</parent>
 
 	<properties>
-		<bundle.symbolicName>org.openhab.binding.fatekplc</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.fatekplc</bundle.namespace>
-		<deb.name>openhab-addon-binding-fatekplc</deb.name>
-		<deb.description>openhab addon binding Fatek PLC</deb.description>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 	</properties>
@@ -22,14 +18,5 @@
 	<name>openHAB Fatek PLC Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

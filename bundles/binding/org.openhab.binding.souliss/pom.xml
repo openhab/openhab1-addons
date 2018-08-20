@@ -8,26 +8,10 @@
 
 	<name>Souliss - Arduino based SmartHome - openHAB Binding</name>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.souliss</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.souliss</bundle.namespace>
-		<deb.name>openhab-addon-binding-souliss</deb.name>
-		<deb.description>${project.name}</deb.description>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.souliss</artifactId>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

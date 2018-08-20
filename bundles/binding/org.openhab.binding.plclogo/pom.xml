@@ -8,13 +8,6 @@
 
 	<name>openHAB PlcLogo Binding</name>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.plclogo</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.plclogo</bundle.namespace>
-		<deb.name>openhab-addon-binding-plclogo</deb.name>
-		<deb.description>openhab addon binding PlcLogo</deb.description>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.plclogo</artifactId>
@@ -28,14 +21,5 @@
 			<version>1.5</version>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

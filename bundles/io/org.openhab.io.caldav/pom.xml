@@ -6,13 +6,6 @@
     <version>1.13.0-SNAPSHOT</version>
   </parent>
 
-  <properties>
-  	<bundle.symbolicName>org.openhab.io.caldav</bundle.symbolicName>
-  	<bundle.namespace>org.openhab.io.caldav</bundle.namespace>
-  	<deb.name>openhab-addon-io-caldav</deb.name>
-	<deb.description>${project.name}</deb.description>
-  </properties>
-
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.io</groupId>
   <artifactId>org.openhab.io.caldav</artifactId>
@@ -21,13 +14,4 @@
 
   <packaging>eclipse-plugin</packaging>
   
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.vafer</groupId>
-        <artifactId>jdeb</artifactId>
-      </plugin>
-    </plugins>
-  </build>
-
 </project>

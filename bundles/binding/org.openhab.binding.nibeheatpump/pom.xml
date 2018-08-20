@@ -8,26 +8,10 @@
 
 	<name>openHAB Nibe heat pump Binding</name>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.nibeheatpump</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.nibeheatpump</bundle.namespace>
-		<deb.name>openhab-addon-binding-nibeheatpump</deb.name>
-		<deb.description>${project.name}</deb.description>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.nibeheatpump</artifactId>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>
