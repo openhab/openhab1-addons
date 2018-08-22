@@ -189,6 +189,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         String downCommand = null;
         String stopCommand = null;
         String format = null;
+        String charset = null;
 
         int parameterSplitterAt = bindingConfig.indexOf(",");
 
@@ -196,6 +197,10 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
             String[] split = bindingConfig.substring(parameterSplitterAt + 1, bindingConfig.length()).split("\\),");
             for (int i = 0; i < split.length; i++) {
                 String substring = split[i];
+                
+                //Remove the closing bracket on the last setting, because this isn't removed by the split.
+                if (i == split.length - 1 && substring.endsWith(")"))
+                	substring = substring.substring(0, substring.length() - 1);
 
                 if (substring.startsWith("REGEX(")) {
                     pattern = substring.substring(6, substring.length());
@@ -203,7 +208,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                 } else if (substring.startsWith("FORMAT(")) {
                     format = substring.substring(7, substring.length());
                     logger.debug("FORMAT: '{}'", format);
-                } else if (substring.equals("BASE64")) {
+                } else if (substring.equals("BASE64") || substring.equals("BASE64(")) {
                     base64 = true;
                     logger.debug("Base64-Mode enabled");
                 } else if (substring.startsWith("ON(")) {
@@ -221,6 +226,9 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                 } else if (substring.startsWith("STOP(")) {
                     stopCommand = substring.substring(5, substring.length());
                     logger.debug("STOP: '{}'", stopCommand);
+                } else if (substring.startsWith("CHARSET(")) {
+                    charset = substring.substring(8, substring.length());
+                    logger.debug("CHARSET: '{}'", charset);
                 } else {
                     logger.warn("Unrecognized transform: {}", substring);
                 }
@@ -248,9 +256,9 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         SerialDevice serialDevice = serialDevices.get(port);
         if (serialDevice == null) {
             if (baudRate > 0) {
-                serialDevice = new SerialDevice(port, baudRate);
+                serialDevice = new SerialDevice(port, baudRate, charset);
             } else {
-                serialDevice = new SerialDevice(port);
+                serialDevice = new SerialDevice(port, charset);
             }
 
             serialDevice.setEventPublisher(eventPublisher);

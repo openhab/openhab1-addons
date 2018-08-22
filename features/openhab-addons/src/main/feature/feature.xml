@@ -443,14 +443,6 @@
     <configfile finalname="${openhab.conf}/transform/miosZWaveStatusIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-zwavestatusin</configfile>
   </feature>
 
-  <feature name="openhab-binding-modbus1" description="Modbus Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <feature>openhab-transport-serial</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.modbus/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/modbus.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/modbus</configfile>
-  </feature>
-
   <feature name="openhab-binding-mqtt1" description="MQTT Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -670,6 +662,13 @@
     <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.influxdb/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/influxdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/influxdb</configfile>
   </feature>
+  
+  <feature name="openhab-persistence-dynamodb" description="Amazon DynamoDB Persistence" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.dynamodb/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/dynamodb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/dynamodb</configfile>
+  </feature>
 
   <feature name="openhab-persistence-gcal" description="Google Calendar Presence Simulator" version="${project.version}">
     <feature>openhab-runtime-base</feature>
@@ -791,13 +790,6 @@
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.gcal/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/gcal.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/gcal</configfile>
-  </feature>
-
-  <feature name="openhab-misc-dropbox1" description="Dropbox Synchronization Service" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.dropbox/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/dropbox.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/dropbox</configfile>
   </feature>
 
   <!-- shared features, not end user facing -->

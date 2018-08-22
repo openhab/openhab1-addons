@@ -13,11 +13,13 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,15 +45,17 @@ public class ZibaseListener extends Thread {
     private static final Logger logger = LoggerFactory.getLogger(ZibaseBinding.class);
 
     /**
-     * Regex pattern to extact X10 / Chacon RfId from zibase log
+     * Regex pattern to extract X10 / Chacon RfId from zibase log
      */
-    private static final Pattern X10CHACONPATTERN = Pattern.compile(": ([A-Z][0-9]{1,2})(_)");
+    private static final Pattern X10CHACONPATTERN = Pattern.compile(": ([A-Z]{1,3}[0-9]{1,2})(_)");
+
     /**
-     * Regex pattern to extact Radio ID from zibase log
+     * Regex pattern to extract Radio ID from zibase log
      */
-    private static final Pattern RADIODIDPATTERM = Pattern.compile(": (<id>)([A-Z]{2}[0-9]*)");
+    private static final Pattern RADIODIDPATTERN = Pattern.compile(": (<id>)(.+?)(_OFF)?(</id>)");
+
     /**
-     * Regex pattern to extact Scenario id from zibase log
+     * Regex pattern to extract Scenario id from zibase log
      */
     private static final Pattern SCENARIOPATTERN = Pattern.compile(": ([0-9]{1,3})");
 
@@ -61,22 +65,22 @@ public class ZibaseListener extends Thread {
     private Zibase zibase = null;
 
     /**
-     * eventpubisher to publish update on
+     * eventpublisher to publish update on
      */
-    private EventPublisher eventPubisher = null;
+    private EventPublisher eventPublisher = null;
 
     /**
-     * define wether the thread is running
+     * define whether the thread is running
      */
     private boolean running = false;
 
     /**
-     * ip address sent to Zibase for registering
+     * IP address sent to Zibase for registering
      */
     private String listenerHost = "127.0.0.1";
 
     /**
-     * ip address sent to Zibase for registering
+     * IP address sent to Zibase for registering
      */
     private int listenerPort = 9876;
 
@@ -89,7 +93,7 @@ public class ZibaseListener extends Thread {
 
     /**
      * set zibase to listen to
-     * 
+     *
      * @param pZibase
      */
     public void setZibase(Zibase pZibase) {
@@ -98,7 +102,7 @@ public class ZibaseListener extends Thread {
 
     /**
      * set host to send to zibase for registering
-     * 
+     *
      * @param pListenerHost
      */
     public void setListenerHost(String pListenerHost) {
@@ -107,7 +111,7 @@ public class ZibaseListener extends Thread {
 
     /**
      * set host to send to zibase for registering
-     * 
+     *
      * @param pListenerPort
      */
     public void setListenerPort(int pListenerPort) {
@@ -116,11 +120,11 @@ public class ZibaseListener extends Thread {
 
     /**
      * set eventpublisher to post update on
-     * 
+     *
      * @param pEventPublisher
      */
     public void setEventPubisher(EventPublisher pEventPublisher) {
-        this.eventPubisher = pEventPublisher;
+        this.eventPublisher = pEventPublisher;
     }
 
     /**
@@ -137,7 +141,7 @@ public class ZibaseListener extends Thread {
     @Override
     public void run() {
 
-        if (zibase != null && eventPubisher != null) {
+        if (zibase != null && eventPublisher != null) {
             try {
                 // register to zibase for listening
                 zibase.hostRegistering(listenerHost, listenerPort);
@@ -151,27 +155,31 @@ public class ZibaseListener extends Thread {
                 while (running) {
                     serverSocket.receive(receivePacket);
                     ZbResponse zbResponse = new ZbResponse(receivePacket.getData());
-                    logger.debug("ZIBASE MESSAGE: " + zbResponse.getMessage());
+                    logger.debug("ZIBASE MESSAGE: {}", zbResponse.getMessage());
                     publishEvents(zbResponse);
+
+                    // reset buffer
+                    Arrays.fill(receivePacket.getData(), 0, receivePacket.getLength(), (byte) 0);
                 }
                 zibase.hostUnregistering(listenerHost, listenerPort);
+                serverSocket.close();
 
             } catch (SocketException ex) {
-                logger.error("Could not open socket to zibase : " + ex);
+                logger.error("Could not open socket to zibase : {}", ex);
             } catch (UnknownHostException ex) {
-                logger.error("Given Zibase host not reachable : " + ex);
+                logger.error("Given Zibase host not reachable : {}", ex);
             } catch (IOException ex) {
-                logger.error("IO eror reading Zibase socket : " + ex);
+                logger.error("IO error reading Zibase socket : {}", ex);
             }
 
         } else {
-            logger.error("Zibase listener thread launched with no associated zibase and/or eventPublisher !");
+            logger.error("Zibase not initialized. IP address may be wrong or not reachable !");
         }
     }
 
     /**
      * Get Item's id from zibase log
-     * 
+     *
      * @param zbResponseStr
      * @return
      */
@@ -187,7 +195,7 @@ public class ZibaseListener extends Thread {
             return matcher.group(1);
         }
 
-        matcher = ZibaseListener.RADIODIDPATTERM.matcher(zbResponseStr);
+        matcher = ZibaseListener.RADIODIDPATTERN.matcher(zbResponseStr);
         if (matcher.find()) {
             return matcher.group(2);
         }
@@ -197,37 +205,47 @@ public class ZibaseListener extends Thread {
 
     /**
      * publish configured zibase item messages on openhab bus
-     * 
+     *
      * @param zbResponse
      */
     protected void publishEvents(ZbResponse zbResponse) {
 
         String zbResponseStr = zbResponse.getMessage();
         String id = this.extractIdFromZbResponse(zbResponseStr);
-        logger.debug("Found event from ID " + id);
+        logger.debug("Found event from ID {}", id);
 
         if (id == null) {
+            logger.debug("    => ignoring null ID");
             return;
         }
 
-        // ...retreive all itemNames that use this id...
+        // ...retrieve all itemNames that use this id...
         Vector<String> listOfItemNames = ZibaseBinding.getBindingProvider().getItemNamesById(id);
         if (listOfItemNames == null) {
             return;
         }
 
-        logger.debug("trying to publish events for " + id);
+        logger.debug("trying to publish events for {}", id);
 
         // then post update for all items that use this id
         for (String itemName : listOfItemNames) {
+            Item item = ZibaseBinding.getBindingProvider().getItemByName(itemName);
+
+            if (item == null) {
+                continue;
+            }
+
             ZibaseBindingConfig config = ZibaseBinding.getBindingProvider()
                     .getItemConfigByUniqueId(itemName + "_" + id);
-            logger.debug("Getting config for " + itemName + " (id = " + id + ") ");
+            logger.debug("Getting config for {} (id = {}) ", itemName, id);
 
-            if (config != null) {
+            if (config == null) {
+                continue;
+            }
+            synchronized (item) {
                 org.openhab.core.types.State value = config.getOpenhabStateFromZibaseValue(zibase, zbResponseStr);
-                logger.debug("publishing update for " + itemName + " : " + value);
-                eventPubisher.postUpdate(itemName, value);
+                logger.debug("publishing update for {} : {}", itemName, value);
+                eventPublisher.postUpdate(itemName, value);
             }
         }
     }

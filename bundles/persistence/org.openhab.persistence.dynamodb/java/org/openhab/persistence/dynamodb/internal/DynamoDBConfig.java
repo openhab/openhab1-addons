@@ -159,7 +159,12 @@ public class DynamoDBConfig {
     }
 
     private static void invalidRegionLogHelp(String region) {
+        Regions[] regions = Regions.values();
+        String[] regionNames = new String[regions.length];
+        for (int i = 0; i < regions.length; i++) {
+            regionNames[i] = regions[i].getName();
+        }
         logger.error("Specify valid AWS region to use, got {}. Valid values include: {}", region,
-                StringUtils.join(Regions.values(), ','));
+                StringUtils.join(regionNames, ','));
     }
 }

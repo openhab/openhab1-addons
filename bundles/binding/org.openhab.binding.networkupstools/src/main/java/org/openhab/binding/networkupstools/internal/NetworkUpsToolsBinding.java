@@ -163,6 +163,10 @@ public class NetworkUpsToolsBinding extends AbstractActiveBinding<NetworkUpsTool
                 }
 
                 String[] parts = key.split("\\.");
+                if (parts.length < 2) {
+                    throw new ConfigurationException(key, "Invalid configuration setting."
+                    	+" Configuration key must contain a period ('.'), but does not.");
+                }
                 String name = parts[0];
                 String prop = parts[1];
                 String value = (String) config.get(key);

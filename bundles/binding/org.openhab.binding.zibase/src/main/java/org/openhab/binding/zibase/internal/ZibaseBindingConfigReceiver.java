@@ -43,12 +43,45 @@ public class ZibaseBindingConfigReceiver extends ZibaseBindingConfig {
             ZbProtocol.X2D868INSH.toString(), ZbProtocol.X2D868PIWI.toString(), ZbProtocol.ZWAVE.toString(), };
 
     /**
+     * X10 formed id (Z prefix removed for ZWave items)
+     */
+    protected String x10Id;
+
+    /**
+     * Zwave indicator used for some Zibase command (eg. getState() )
+     */
+    protected Boolean isZWave = false;
+
+    /**
      * Constructor
-     * 
+     *
      * @param configParameters
      */
     public ZibaseBindingConfigReceiver(String[] configParameters) {
         super(configParameters);
+
+        // handle Zwave case : items' id begin with Z, but some zibase call must be called
+        // with the X10 version of the ID (no Z prefix) and a special flag
+        logger.debug("Item protocol : {}", this.getProtocol());
+
+        if (getProtocol().equals(ZbProtocol.ZWAVE.toString())) {
+            logger.debug("Item is ZWAVE !");
+            isZWave = true;
+            x10Id = getId().substring(1);
+        } else {
+            x10Id = getId();
+        }
+
+        logger.debug("Item X10 id set to : {}", this.x10Id);
+    }
+
+    /**
+     * get x10 id (remove Z prefix if item use Zwave protocol)
+     *
+     * @return
+     */
+    public String getX10Id() {
+        return this.x10Id;
     }
 
     /**
@@ -60,18 +93,20 @@ public class ZibaseBindingConfigReceiver extends ZibaseBindingConfig {
         ZbAction action = ZbAction.valueOf(command.toString());
         ZbProtocol protocol = ZbProtocol.valueOf(this.getProtocol());
 
+        logger.debug("SendCommand => item id is : {} / X10 id is : {}", this.getId(), this.getX10Id());
+
         if (dim >= 0) {
-            zibase.sendCommand(this.getId(), action, protocol, dim, 1);
+            zibase.sendCommand(this.getX10Id(), action, protocol, dim, 1);
         } else {
-            zibase.sendCommand(this.getId(), action, protocol);
+            zibase.sendCommand(this.getX10Id(), action, protocol);
         }
 
-        logger.debug("Send command to " + this.getId() + " : " + action.toString() + " / " + protocol.toString());
+        logger.debug("Send command to {} : {} / {}", this.getId(), action.toString(), protocol.toString());
     }
 
     /**
      * get item protocol
-     * 
+     *
      * @return
      */
     public String getProtocol() {
@@ -83,14 +118,14 @@ public class ZibaseBindingConfigReceiver extends ZibaseBindingConfig {
      */
     @Override
     protected boolean isItemConfigValid() {
-        logger.info("Checking config for Command item " + this.getId());
+        logger.info("Checking config for Command item {}", this.getId());
 
         if (Arrays.binarySearch(ZibaseBindingConfigReceiver.authorizedProtocols, this.getProtocol()) < 0) {
-            logger.error("Unsupported command protocol for item " + this.getId());
+            logger.error("Unsupported command protocol for item {}", this.getId());
             return false;
         }
 
-        logger.info("Config OK for Command item " + this.getId());
+        logger.info("Config OK for Command item {}", this.getId());
         return true;
     }
 
@@ -99,7 +134,21 @@ public class ZibaseBindingConfigReceiver extends ZibaseBindingConfig {
      */
     @Override
     public State getOpenhabStateFromZibaseValue(Zibase zibase, String zbResponseStr) {
-        return OnOffType.valueOf(zibase.getState(this.getId()) ? "ON" : "OFF");
+
+        Boolean zibaseValue;
+
+        logger.debug("getState => item protocol is : {}", this.getProtocol());
+        logger.debug("getState => item id is : {} / X10 id is : {}", this.getId(), this.getX10Id());
+
+        zibaseValue = zibase.getState(this.getX10Id(), this.isZWave);
+
+        if (zibaseValue != null) {
+            logger.debug("zibase returned value for {}: {}", this.getId(), zibaseValue);
+            return OnOffType.valueOf(zibaseValue ? "ON" : "OFF");
+        } else {
+            logger.debug("zibase did not return value for {}", this.getId());
+            return null;
+        }
     }
 
 }
