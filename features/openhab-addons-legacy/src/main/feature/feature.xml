@@ -116,6 +116,14 @@
     <configfile finalname="${openhab.conf}/services/nibeheatpump.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/nibeheatpump</configfile>
   </feature>
 
+  <feature name="openhab-binding-onewire1" description="OneWire Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.onewire/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/onewire.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/onewire</configfile>
+  </feature>
+
+
   <feature name="openhab-binding-onkyo1" description="Onkyo Binding (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
