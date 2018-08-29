@@ -1439,7 +1439,7 @@ public class KNXCoreTypeMapperTest {
 
                 try {
                     Type type = testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
-                    testToDPTValue(dpt, type, "0.0");
+                    testToDPTValue(dpt, type, "0");
                 } catch (NumberFormatException nfe) {
                     fail("DptId: " + dpt.getID() + ", locale: " + locale + ", NumberFormatException. Expecting 0.0");
                 }
@@ -1985,7 +1985,7 @@ public class KNXCoreTypeMapperTest {
                 testToType(dpt, new byte[] {}, expectedClass));
 
         Type type = testToType(dpt, new byte[] { 0x00, 0x00 }, expectedClass);
-        testToDPTValue(dpt, type, "0.0");
+        testToDPTValue(dpt, type, "0");
 
         if (expectedClass.equals(DecimalType.class.getClass())) {
             /*
