@@ -84,19 +84,6 @@ public class InsteonPLMGenericBindingProvider extends AbstractGenericBindingProv
     }
 
     /**
-     * Inherited from AbstractGenericBindingProvider.
-     * {@inheritDoc}
-     */
-    @Override
-    public Boolean autoUpdate(String itemName) {
-        // By default, all features are auto-updating, i.e. we do not rely
-        // on the openhab environment to tell us the status of a device,
-        // but rather resort to polling and listening to update messages
-        // on the insteon network.
-        return true;
-    }
-
-    /**
      * Inherited from InsteonPLMBindingProvider.
      * {@inheritDoc}
      */
@@ -107,9 +94,9 @@ public class InsteonPLMGenericBindingProvider extends AbstractGenericBindingProv
 
     /**
      * Parses binding configuration string. The config string has the format:
-     * 
+     *
      * xx.xxx.xxx:productKey#feature,param1=yyy,param2=zzz
-     * 
+     *
      * @param bindingConfig string with binding parameters
      * @return String array with split arguments: [address,prodKey,features+params]
      * @throws BindingConfigParseException if parameters are invalid
