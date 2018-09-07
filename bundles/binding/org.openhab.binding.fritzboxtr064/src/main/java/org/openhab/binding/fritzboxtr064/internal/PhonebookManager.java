@@ -55,7 +55,7 @@ public class PhonebookManager {
                 if (phoneBookTel == null) {
                     continue;
                 }
-                String reversedPhonebookTel = new StringBuilder(phoneBookTel.trim()).reverse().toString();
+                String reversedPhonebookTel = new StringBuilder(phoneBookTel.replaceAll("\\s+","")).reverse().toString();
                 if (reversedPhonebookTel.length() == 0) {
                     continue;
                 }
