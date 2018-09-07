@@ -44,6 +44,7 @@ public class VeluxProduct {
         ROLLER_SHUTTER(2, 0),
         OTHER(3, 0),
         WINDOW_OPENER(4, 1),
+        SOLAR_SLIDER(10, 2),
         UNDEFTYPE(-1);
 
         // Class internal
