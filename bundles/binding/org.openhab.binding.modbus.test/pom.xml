@@ -8,11 +8,6 @@
 
 	<name>openHAB Modbus Binding Tests</name>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.modbus.test</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.modbus.test</bundle.namespace>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.modbus.test</artifactId>

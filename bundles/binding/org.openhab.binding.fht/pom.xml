@@ -8,27 +8,10 @@
 
 	<name>openHAB FHT Binding</name>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.fht</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.fht</bundle.namespace>
-		<deb.name>openhab-addon-binding-fht</deb.name>
-		<deb.description>${project.name}</deb.description>
-		<deb.depends>openhab-addon-io-cul</deb.depends>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.fht</artifactId>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

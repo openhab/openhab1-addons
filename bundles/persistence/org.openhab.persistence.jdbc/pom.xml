@@ -20,11 +20,7 @@
 		<hikari.version>2.4.7</hikari.version>
 		<dbutils.version>1.6</dbutils.version>
 		<yank.version>3.2.0</yank.version>
-		<bundle.symbolicName>org.openhab.persistence.jdbc</bundle.symbolicName>
-		<bundle.namespace>org.openhab.persistence.jdbc</bundle.namespace>
 		<classpath.ext>lib/</classpath.ext>
-		<deb.name>openhab-addon-persistence-jdbc</deb.name>
-		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<dependencies>
@@ -83,14 +79,4 @@
 
 	</dependencies>
 
-	<build>
-		<plugins>
-
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-
-		</plugins>
-	</build>
 </project>

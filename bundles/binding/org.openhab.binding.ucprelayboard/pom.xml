@@ -8,27 +8,10 @@
 
 	<name>openHAB UCProjects.eu RelayBoard Binding</name>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.ucprelayboard</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.ucprelayboard</bundle.namespace>
-		<deb.name>openhab-addon-binding-ucprelayboard</deb.name>
-		<deb.description>${project.name}</deb.description>
-		<deb.depends>openhab-addon-io-serial</deb.depends>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.ucprelayboard</artifactId>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

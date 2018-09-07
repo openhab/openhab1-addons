@@ -8,27 +8,11 @@
 
 	<name>openHAB Hue Binding</name>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.hue</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.hue</bundle.namespace>
-		<deb.name>openhab-addon-binding-hue</deb.name>
-		<deb.description>${project.name}</deb.description>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.hue</artifactId>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 	<dependencies>
 		<dependency>

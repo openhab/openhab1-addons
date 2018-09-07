@@ -6,14 +6,6 @@
 		<version>1.13.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.stiebelheatpump</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.stiebelheatpump</bundle.namespace>
-		<deb.name>openhab-addon-binding-stiebelheatpump</deb.name>
-		<deb.description>${project.name}</deb.description>
-		<deb.depends>openhab-addon-io-serial</deb.depends>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.stiebelheatpump</artifactId>

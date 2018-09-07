@@ -6,13 +6,6 @@
 		<version>1.13.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.action.ciscospark</bundle.symbolicName>
-		<bundle.namespace>org.openhab.action.ciscospark</bundle.namespace>
-		<deb.name>openhab-addon-action-ciscospark</deb.name>
-		<deb.description>${project.name}</deb.description>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.action</groupId>
 	<artifactId>org.openhab.action.ciscospark</artifactId>
@@ -21,14 +14,6 @@
 
 	<packaging>eclipse-plugin</packaging>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
     <dependencies>
         <dependency>
             <groupId>javax.json</groupId>

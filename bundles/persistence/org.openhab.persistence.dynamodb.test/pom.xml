@@ -6,11 +6,6 @@
 		<version>1.13.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.persistence.dynamodb.test</bundle.symbolicName>
-		<bundle.namespace>org.openhab.persistence.dynamodb.test</bundle.namespace>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.persistence</groupId>
 	<artifactId>org.openhab.persistence.dynamodb.test</artifactId>

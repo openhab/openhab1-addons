@@ -8,26 +8,10 @@
 
 	<name>openHAB Mochad X10 Binding</name>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.mochadx10</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.mochadx10</bundle.namespace>
-		<deb.name>openhab-addon-binding-mochadx10</deb.name>
-		<deb.description>${project.name}</deb.description>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.mochadx10</artifactId>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

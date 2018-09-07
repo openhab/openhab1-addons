@@ -8,27 +8,10 @@
 
 	<name>openHAB Swegon ventilation Binding</name>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.swegonventilation</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.swegonventilation</bundle.namespace>
-		<deb.name>openhab-addon-binding-swegonventilation</deb.name>
-		<deb.description>${project.name}</deb.description>
-		<deb.depends>openhab-addon-io-serial</deb.depends>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.swegonventilation</artifactId>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

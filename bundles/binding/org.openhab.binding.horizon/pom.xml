@@ -6,13 +6,6 @@
 		<version>1.13.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.horizon</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.horizon</bundle.namespace>
-		<deb.name>openhab-addon-binding-horizon</deb.name>
-		<deb.description>${project.name}</deb.description>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.horizon</artifactId>
@@ -20,13 +13,4 @@
 	<name>openHAB Horizon Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>

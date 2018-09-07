@@ -158,11 +158,6 @@
                         </execution>
                     </executions>
                 </plugin>
-                <plugin>
-                    <groupId>org.vafer</groupId>
-                    <artifactId>jdeb</artifactId>
-                    <version>1.5</version>
-                </plugin>
             </plugins>
         </pluginManagement>
     </build>

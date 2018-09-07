@@ -6,14 +6,6 @@
 		<version>1.13.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.action.xpl</bundle.symbolicName>
-		<bundle.namespace>org.openhab.action.xpl</bundle.namespace>
-		<deb.name>openhab-addon-action-xpl</deb.name>
-		<deb.description>${project.name}</deb.description>
-		<deb.depends>openhab-addon-io-xpl</deb.depends>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.action</groupId>
 	<artifactId>org.openhab.action.xpl</artifactId>
@@ -22,13 +14,4 @@
 
 	<packaging>eclipse-plugin</packaging>
 	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>

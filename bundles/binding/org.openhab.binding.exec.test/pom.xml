@@ -6,11 +6,6 @@
 		<version>1.13.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.exec.test</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.exec.test</bundle.namespace>
-	</properties>
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.exec.test</artifactId>
