@@ -5,15 +5,14 @@ The Pushover action service allows you to notify mobile devices of a message usi
 ## Configuration
 
 You may define default values for parameters to action calls in the file `services/pushover.cfg`.
-None of the configuration parameters are required as you can specify required configuration items in the action call, but you must at least provide an *API Key*, *User/Group Key* and a *Message* in some manner before a notification can be pushed.
+None of the configuration parameters are required as you can specify required configuration items in the action call, but you must at least provide an *API Token*, *User/Group Key* and a *Message* in some manner before a message can be pushed.
 
 | Property        | Default | Required                                                      | method to set                       | Description                                                                                                            |
 |-----------------|---------|:-------------------------------------------------------------:|-------------------------------------|------------------------------------------------------------------------------------------------------------------------|
 | defaultTimeout  | 10000   | No                                                            | -                                   | Timeout in milliseconds for the connection to pushover.net                                                             |
-| defaultApiKey   |         | Yes, if using action call without calling withApiKey() method | withApiKey(String apiKey)           | Pushover [API key](https://pushover.net/api) to send to devices                                                        |
+| defaultToken    |         | Yes, if using action call without calling withApiKey() method | withApiKey(String apiKey)           | Pushover [API token](https://pushover.net/api) to send to devices                                                      |
 | defaultUser     |         | Yes, if using action call without calling withUser() method   | withUser(String user)               | Pushover User or Group key (not e-mail address) of your user (or you) to send to devices.                              |
-| defaultDevice   |         | No                                                            | withDevice(String device)           | Pushever device which will receive the notification                                                                    |               |
-| defaultTitle    | openHAB | No                                                            | withTitle(String title)             | Application title for the notification                                                                                 |
+| defaultTitle    | openHAB | No                                                            | withTitle(String title)             | Application title for the message                                                                                      |
 | defaultPriority | 0       | No                                                            | withPriority(int priority)          | Priority of the notification, from -2 (low priority) to 2 (high priority)                                              |
 | defaultUrl      |         | No                                                            | withUrl(String url)                 | URL to attach to the message if not specified in the command. This can be used to trigger actions on the device.       |
 | defaultUrlTitle |         | No                                                            | withUrlTitle(String urlTitle)       | URL title to attach to the message if not specified in the command. This can be used to trigger actions on the device. |
@@ -31,7 +30,7 @@ For specific information on each item, see the [Pushover API](https://pushover.n
 
 Most parameters are optional and may have a default value. In this case any default values from `services/pushover.cfg` will be used.
 Note that you cannot use a null value for int priority.
-See the examples section for detials on how use the pushover action.
+See the examples section for details on how use the pushover action.
 
 - `cancelPushoverEmergency(String receipt)`
 - `cancelPushoverEmergency(String apiToken, String userKey, String receipt)`
