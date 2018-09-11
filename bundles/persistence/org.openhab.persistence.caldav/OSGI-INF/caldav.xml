@@ -16,5 +16,5 @@
       <provide interface="org.openhab.core.persistence.PersistenceService"/>
    </service>
    <reference bind="setCalDavLoader" cardinality="1..1" interface="org.openhab.io.caldav.CalDavLoader" name="CalDavLoader" policy="static" unbind="unsetCalDavLoader"/>
-   <reference bind="setItemRegistry" cardinality="0..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="dynamic" unbind="unsetItemRegistry"/>
+   <reference bind="setItemRegistry" cardinality="1..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="static" unbind="unsetItemRegistry"/>
 </scr:component>
