@@ -11,7 +11,7 @@ package org.openhab.binding.hdanywhere;
 import java.util.HashMap;
 import java.util.List;
 
-import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
+import org.openhab.core.binding.BindingProvider;
 
 /**
  * Interface of the HDanywhere Binding Provider
@@ -19,7 +19,7 @@ import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
  * @author Karel Goderis
  * @since 1.4.0
  */
-public interface HDanywhereBindingProvider extends AutoUpdateBindingProvider {
+public interface HDanywhereBindingProvider extends BindingProvider {
 
     /**
      * Returns a <code>List</code> of host names/IP addresses associated to <code>itemName</code>.
@@ -34,7 +34,7 @@ public interface HDanywhereBindingProvider extends AutoUpdateBindingProvider {
      * Returns a <code>List</code> of HDanywhere matrix output port numbers associated to <code>host</code> and
      * <code>itemName</code>.
      *
-     * @param host the HDanywhere matrix to find matrix output ports for
+     * @param host     the HDanywhere matrix to find matrix output ports for
      * @param itemName the item for which to find matrix output ports for
      * @return a List of matching output port numbers or <code>null</code> if no port numbers
      *         could be found.
