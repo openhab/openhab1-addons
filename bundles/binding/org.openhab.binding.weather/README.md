@@ -42,7 +42,11 @@ Before you can use a weather provider, you need to register a free apikey on the
 The apikey for the different weather providers, at least one must be specified.
 
 > [Hamweather](http://hamweather.com) has two apikeys (client_id, secret_id).
+
 > [Yahoo](https://weather.yahoo.com) does not need an apikey.
+
+> [Wunderground](https://www.wunderground.com) There is no Free API anymore, for more information see https://www.wunderground.com/weather/api
+
 
 | Property                  | Description |
 |---------------------------|-------------|
