@@ -163,9 +163,8 @@ public class Mail {
         } else {
             logger.error(
                     "Cannot send e-mail because of missing configuration settings. The current settings are: "
-                            + "Host: '{}', port '{}', from '{}', startTLSEnabled: {}, sslOnConnect: {}, username: '{}', password '{}'",
-                    new Object[] { hostname, String.valueOf(port), from, String.valueOf(startTLSEnabled),
-                            String.valueOf(sslOnConnect), username, password });
+                            + "Host: '{}', port '{}', from '{}', startTLSEnabled: {}, sslOnConnect: {}, username: '{}'",
+                    hostname, port, from, startTLSEnabled, sslOnConnect, username);
         }
 
         return success;

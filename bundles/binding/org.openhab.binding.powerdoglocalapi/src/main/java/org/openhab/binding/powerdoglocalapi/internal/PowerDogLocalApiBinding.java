@@ -539,7 +539,7 @@ public class PowerDogLocalApiBinding extends AbstractActiveBinding<PowerDogLocal
         public String toString() {
             String displayPassword = "[not set]";
             if (StringUtils.isNotBlank(password)) {
-                displayPassword = "[set]*****";
+                displayPassword = "[set]";
             }
             return "PowerDogLocalApiServerCache [host=" + host + ", password=" + displayPassword + ", lastUpdate="
                     + lastUpdate + ", cache=" + cache + "]";

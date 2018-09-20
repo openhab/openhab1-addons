@@ -258,7 +258,6 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
                     send(client, username);
                 }
                 receive(client); // password:
-                logger.trace("TelnetCommandThread password ({})", password);
                 send(client, password);
                 receive(client); // welcome text
                 send(client, cmdString);

@@ -151,8 +151,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
         if (StringUtils.isNotBlank(ip) && StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
 
-            logger.info("Connecting to IHC / ELKO LS controller [IP='{}' Username='{}' Password='{}'].",
-                    new Object[] { ip, username, "******" });
+            logger.info("Connecting to IHC / ELKO LS controller [IP='{}' Username='{}'].", ip, username);
 
             ihc = new IhcClient(ip, username, password, timeout);
             ihc.setProjectFile(projectFile);
@@ -163,8 +162,8 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
         } else {
             logger.warn(
-                    "Couldn't connect to IHC controller because of missing connection parameters [IP='{}' Username='{}' Password='{}'].",
-                    new Object[] { ip, username, "******" });
+                    "Couldn't connect to IHC controller because of missing connection parameters [IP='{}' Username='{}' Password={}].",
+                    ip, username, StringUtils.isBlank(password) ? "Missing" : "Configured");
         }
     }
 

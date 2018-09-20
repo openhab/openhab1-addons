@@ -122,8 +122,8 @@ public final class Util {
             if (url.startsWith(HTTP_URL_PREFIX)) {
                 log.error("do not use '{}' if no ssl is used", CalDavLoaderImpl.PROP_DISABLE_CERTIFICATE_VERIFICATION);
             }
-            log.trace("connecting to caldav '{}' with disabled certificate verification (url={}, username={}, password={})", 
-                    key, url, userName, password);
+            log.trace("connecting to caldav '{}' with disabled certificate verification (url={}, username={})",
+                    key, url, userName);
             HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setHostnameVerifier(new AllowAllHostnameVerifier());
             try {
                 httpClientBuilder.setSslcontext(new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
@@ -146,8 +146,8 @@ public final class Util {
                 return new SardineImpl(httpClientBuilder, userName, password);
             }
         } else {
-            log.trace("connecting to caldav '{}' (url={}, username={}, password={})", 
-                    key, url, userName, password);
+            log.trace("connecting to caldav '{}' (url={}, username={})",
+                    key, url, userName);
             if (StringUtils.isEmpty(userName) && StringUtils.isEmpty(password)) {
                 log.trace("connecting without credentials for '{}'", key);
                 return new SardineImpl();
