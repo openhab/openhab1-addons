@@ -81,7 +81,7 @@ public class BCgetWLANConfig implements BridgeCommunicationProtocol<BCgetWLANCon
 
         @Override
         public String toString() {
-            return String.format("SSID={},password={}", this.name, this.password);
+            return String.format("SSID=%s,password=********", this.name);
         }
     }
 

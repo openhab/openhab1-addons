@@ -153,7 +153,7 @@ public class MyHomeJavaConnector {
         this.ip = ip;
         this.port = port;
         this.passwd = passwd;
-        logger.debug("Created MyHomeJavaConnector with ip = {}, port = {} and password {}", ip, port, passwd);
+        logger.debug("Created MyHomeJavaConnector with ip = {}, port = {}", ip, port);
         this.commandMutex = new Semaphore(1, true);
         this.commandQueue = new PriorityCommandQueue();
         this.commandQueueThread = new Thread(new PriorityQueueThread(this, commandQueue), "TailThread");

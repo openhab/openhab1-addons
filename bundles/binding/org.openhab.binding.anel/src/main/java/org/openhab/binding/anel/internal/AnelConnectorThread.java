@@ -287,7 +287,6 @@ class AnelConnectorThread extends Thread {
     @Override
     public String toString() {
         return "Anel connection to '" + state.host + "', send UDP port " + connector.sendPort + ", receive UDP port "
-                + connector.receivePort + ", user='" + user + "', password='" + password + "', cache period="
-                + cachePeriod + "min.";
+                + connector.receivePort + ", user='" + user + "', cache period=" + cachePeriod + "min.";
     }
 }

@@ -552,8 +552,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService {
             st.close();
         } catch (Exception e) {
             logger.error(
-                    "mySQL: Failed connecting to the SQL database using: driverClass={}, url={}, user={}, password={}",
-                    driverClass, url, user, password, e);
+                    "mySQL: Failed connecting to the SQL database using: driverClass={}, url={}, user={}",
+                    driverClass, url, user, e);
         }
     }
 
