@@ -23,6 +23,19 @@ sendTweet("Test with remote URL", "https://i.imgur.com/F9eDwMY.png")
 ```
 
 
+* Send a tweet with an attached image available on filesystem (here with the official OpenHAB2 docker container, otherwise path needs to be adapted to your installation and image location) :
+
+```
+sendTweet("Test with image on filesystem", "/openhab/conf/icons/test.png")
+```
+
+* Send a tweet with an attached image available on a remote URL :
+
+```
+sendTweet("Test with remote URL", "https://i.imgur.com/F9eDwMY.png")
+```
+
+
 ## Configuration
 
 The Twitter action service is one of the pre-defined set of actions that is automatically available, and can be used within rules and scripts.

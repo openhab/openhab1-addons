@@ -50,8 +50,9 @@ public class Twitter {
     static twitter4j.Twitter client = null;
 
     /**
-     * Check twitter prerequesites. Should be used at the beginning of all public methods
-     * 
+     * Check twitter prerequisites. Should be used at the beginning of all public
+     * methods
+     *
      * @return <code>true</code> if all prerequisites are validated and
      *         <code>false</code> if any prerequisite is not validated.
      */
@@ -64,10 +65,10 @@ public class Twitter {
             logger.debug("Twitter client is disabled > execution aborted!");
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
      * Internal method for sending a tweet, with or without image
      *
@@ -92,7 +93,7 @@ public class Twitter {
             logger.debug("Successfully sent Tweet '{}'", updatedStatus.getText());
             return true;
         } catch (TwitterException e) {
-            logger.error("Failed to send Tweet '" + abbreviatedTweetTxt + "' because of: " + e.getLocalizedMessage());
+            logger.warn("Failed to send Tweet '{}' because of : {}", abbreviatedTweetTxt, e.getLocalizedMessage());
             return false;
         }
     }
@@ -154,6 +155,7 @@ public class Twitter {
                 logger.warn("Can't save file from '{}' to '{}'", tweetPicture, path, e);
             }
         } else {
+            // we have a local file and can just use it directly
             fileToAttach = new File(tweetPicture);
         }
 
@@ -187,9 +189,9 @@ public class Twitter {
     public static boolean sendDirectMessage(
             @ParamDoc(name = "recipientId", text = "the receiver of this direct message") String recipientId,
             @ParamDoc(name = "messageTxt", text = "the direct message to send") String messageTxt) {
-    	if (! checkPrerequisites()) {
-    		return false;
-    	}
+        if (!checkPrerequisites()) {
+            return false;
+        }
 
         try {
             // abbreviate the Tweet to meet the allowed character limit ...
@@ -200,7 +202,7 @@ public class Twitter {
                     message.getRecipientScreenName());
             return true;
         } catch (TwitterException e) {
-            logger.error("Failed to send Tweet '" + messageTxt + "' because of: " + e.getLocalizedMessage());
+            logger.warn("Failed to send Tweet '{}' because of : ", messageTxt, e.getLocalizedMessage());
             return false;
         }
     }
