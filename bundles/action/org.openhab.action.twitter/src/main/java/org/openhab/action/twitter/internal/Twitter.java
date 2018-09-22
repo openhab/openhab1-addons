@@ -55,7 +55,7 @@ public class Twitter {
      * @return <code>true</code> if all prerequisites are validated and
      *         <code>false</code> if any prerequisite is not validated.
      */
-    private static boolean checkPrerequesites() {
+    private static boolean checkPrerequisites() {
         if (!TwitterActionService.isProperlyConfigured) {
             logger.debug("Twitter client is not yet configured > execution aborted!");
             return false;
@@ -83,9 +83,6 @@ public class Twitter {
         // abbreviate the Tweet to meet the 140 character limit ...
         String abbreviatedTweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
         try {
-            // abbreviate the Tweet to meet the allowed character limit ...
-            tweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
-
             // send the Tweet
             StatusUpdate status = new StatusUpdate(abbreviatedTweetTxt);
             if (fileToAttach != null && fileToAttach.isFile()) {
@@ -190,7 +187,7 @@ public class Twitter {
     public static boolean sendDirectMessage(
             @ParamDoc(name = "recipientId", text = "the receiver of this direct message") String recipientId,
             @ParamDoc(name = "messageTxt", text = "the direct message to send") String messageTxt) {
-    	if (! checkPrerequesites()) {
+    	if (! checkPrerequisites()) {
     		return false;
     	}
 
