@@ -414,6 +414,11 @@ public class PlexConnector extends Thread {
             clientCache = getDocument(clientsUrl, MediaContainer.class);
         }
 
+        if (clientCache == null) {
+            logger.debug("clientCache is null. Unable to get host.");
+            return null;
+        }
+
         Server server = clientCache.getServer(machineIdentifier);
         if (server != null) {
             return server;
