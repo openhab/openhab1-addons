@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2018, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,8 +35,10 @@ import com.myhome.fcrisciani.queue.PriorityQueueThread;
  * plant
  *
  * @author Flavio Crisciani
+ * @author Reinhard Freuis - various enhancements for heating, rollershutter
  * @serial 1.0
  * @since 1.7.0
+ *
  */
 public class MyHomeJavaConnector {
 
@@ -48,6 +50,7 @@ public class MyHomeJavaConnector {
 
     public String ip = null; // MyHome webserver IP address
     public int port = 0; // MyHome webserver port
+    public String passwd = null; // MyHome webserver passwd
     private Socket commandSk = null; // Socket for command sending
     private Semaphore commandMutex = null; // Mutex for the send command section
 
@@ -59,7 +62,7 @@ public class MyHomeJavaConnector {
     // ---- METHODS ---- //
     /**
      * Evaluates if the command that is going to be sent is a valid command
-     * 
+     *
      * @param commandString
      *            is the command in string format
      * @return returns true if the format is correct
@@ -73,7 +76,7 @@ public class MyHomeJavaConnector {
 
     /**
      * Sends a command as a string on the command socket passed
-     * 
+     *
      * @param sk
      *            command socket on which send the command
      * @param command
@@ -91,7 +94,7 @@ public class MyHomeJavaConnector {
 
     /**
      * Receives an array of commands ended with a ACK or NACK
-     * 
+     *
      * @param sk
      *            socket used to read commands
      * @return the array of commands received
@@ -107,7 +110,7 @@ public class MyHomeJavaConnector {
 
     /**
      * Receive message from a monitor socket
-     * 
+     *
      * @param sk
      *            monitor socket used to read commands
      * @return the command received during monitoring
@@ -123,19 +126,34 @@ public class MyHomeJavaConnector {
 
     /* PUBLIC */
     /**
-     * Create an instance of this class, need the IP address and port of the
-     * webserver to connect to
-     * 
+     * Create an instance of this class
+     *
      * @param ip
      *            IP address of the webserver
      * @param port
      *            port number of the webserver
      */
     public MyHomeJavaConnector(final String ip, final int port) {
+        this(ip, port, "");
+    }
+
+    /* PUBLIC */
+    /**
+     * Create an instance of this class
+     *
+     * @param ip
+     *            IP address of the webserver
+     * @param port
+     *            port number of the webserver
+     * @param passwd
+     *            OpenWebNet password
+     */
+    public MyHomeJavaConnector(final String ip, final int port, final String passwd) {
         super();
         this.ip = ip;
         this.port = port;
-        logger.debug("Created MyHomeJavaConnector with ip = {} and port = {}", ip, port);
+        this.passwd = passwd;
+        logger.debug("Created MyHomeJavaConnector with ip = {}, port = {}", ip, port);
         this.commandMutex = new Semaphore(1, true);
         this.commandQueue = new PriorityCommandQueue();
         this.commandQueueThread = new Thread(new PriorityQueueThread(this, commandQueue), "TailThread");
@@ -148,7 +166,7 @@ public class MyHomeJavaConnector {
      * Send a command synchronously and atomically, create a new command socket,
      * sends the command and returns command results before closing the socket
      * created
-     * 
+     *
      * @param command
      *            string representing the command to send
      * @return the array of commands received as a result of the command sent
@@ -166,7 +184,7 @@ public class MyHomeJavaConnector {
             String[] result = null;
 
             try {
-                commandSk = MyHomeSocketFactory.openCommandSession(ip, port);
+                commandSk = MyHomeSocketFactory.openCommandSession(ip, port, passwd);
 
                 sendCommandOPEN(commandSk, command);
                 result = receiveCommandOPEN(commandSk);
@@ -195,7 +213,7 @@ public class MyHomeJavaConnector {
      * Send a command synchronously and atomically, create a new command socket,
      * sends the command and returns command results before closing the socket
      * created
-     * 
+     *
      * @param command
      *            instance of the commandOpen to send
      * @return the array of commands received as a result of the command sent
@@ -209,7 +227,7 @@ public class MyHomeJavaConnector {
     /**
      * Send a command asynchronously, this is queued with a priority and sent
      * automatically
-     * 
+     *
      * @param command
      *            string representing the command to send
      * @param priority
@@ -233,7 +251,7 @@ public class MyHomeJavaConnector {
     /**
      * Send a command asynchronously, this is queued with a priority and sent
      * automatically
-     * 
+     *
      * @param command
      *            instance of the commandOpen to send
      * @param priority
@@ -247,7 +265,7 @@ public class MyHomeJavaConnector {
     /**
      * Send a list of commands asynchronously, these are queued with a priority
      * and sent automatically
-     * 
+     *
      * @param commandList
      *            array of instances of the commandOpen to send
      * @param priority
@@ -263,7 +281,7 @@ public class MyHomeJavaConnector {
     /**
      * Send an Action asynchronously, all its commands are queued with a
      * priority and sent automatically
-     * 
+     *
      * @param action
      *            instance of Action to send
      * @param priority
@@ -291,12 +309,12 @@ public class MyHomeJavaConnector {
     /* MONITOR SESSION */
     /**
      * Start a monitoring session
-     * 
+     *
      * @throws IOException
      *             in case of communication error
      */
     public void startMonitoring() throws IOException {
-        monitorSk = MyHomeSocketFactory.openMonitorSession(ip, port);
+        monitorSk = MyHomeSocketFactory.openMonitorSession(ip, port, passwd);
     }
 
     /**
@@ -308,7 +326,7 @@ public class MyHomeJavaConnector {
      * reason the monitor socket periodically receive some keep-alive message.
      * In case of connection drop the socket timeout fires and this method tries
      * to establish again the connection forever notifying the attempt number.
-     * 
+     *
      * @return the message from the monitor session
      * @throws InterruptedException
      *             notify problem on sleep method
@@ -326,7 +344,7 @@ public class MyHomeJavaConnector {
                 }
                 retry++;
                 Thread.sleep(1000);
-                logger.error("Monitor connection problem. Attempting retry {}.", retry);
+                logger.warn("Monitor connection problem. Attempting retry {}.", retry);
                 try {
                     startMonitoring();
                 } catch (IOException e1) {
@@ -339,7 +357,7 @@ public class MyHomeJavaConnector {
 
     /**
      * Close the monitor session
-     * 
+     *
      * @throws IOException
      *             in case of communication error
      */

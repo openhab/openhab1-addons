@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,7 +9,6 @@
 package org.openhab.binding.fritzboxtr064.internal;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +16,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/***
- * Class managing all Phonebook related work
+/**
+ * Class managing all Phonebook related work.
  *
  * @author gitbock
  * @since 1.8.0
- *
  */
 public class PhonebookManager {
 
@@ -41,77 +39,55 @@ public class PhonebookManager {
 
     }
 
-    /***
-     * Looks up name in phone book entries and returns name and type if found
+    /**
+     * Looks up name in phone book entries and returns name and type if found.
      *
      * @param number number to look up name for
      * @param compareCount how many characters must match to accept a match
      * @return found name or null
      */
-    public String getNameFromNumber(String number, int compareCount) {
+    public String getNameFromNumber(final String number, final int compareCount) {
         logger.info("Trying to resolve number {} to name comparing {} characters", number, compareCount);
-        String name = null;
-        Iterator<PhoneBookEntry> it = _alEntries.iterator();
-        while (it.hasNext()) {
-            PhoneBookEntry pbe = it.next();
-            StringBuilder sbAskNumber = new StringBuilder(number);
-            sbAskNumber.reverse(); // to be able to compare numbers from the end
-            String numberToCompare = "";
-
-            // WORK number
-            StringBuilder sbPhonebookNumber = new StringBuilder(pbe.getBusinessTel());
-            sbPhonebookNumber.reverse();
-            // check if comparing numbers are within entire string range
-            if (compareCount <= sbAskNumber.length()) {
-                numberToCompare = sbAskNumber.substring(0, compareCount);
-            } else {
-                numberToCompare = sbAskNumber.substring(0, sbAskNumber.length());
-            }
-            if (sbPhonebookNumber.toString().startsWith(numberToCompare)) {
-                logger.info("found name match {} in phonebook by comparing {} with {} ", pbe.getName(),
-                        sbPhonebookNumber.toString(), numberToCompare);
-                name = pbe.getName() + " (Work)";
-                break; // no need to cycle through rest of phonebook
-            }
-
-            // HOME number
-            sbPhonebookNumber = new StringBuilder(pbe.getPrivateTel());
-            sbPhonebookNumber.reverse();
-            // check if comparing numbers are within entire string range
-            if (compareCount <= sbAskNumber.length()) {
-                numberToCompare = sbAskNumber.substring(0, compareCount);
-            } else {
-                numberToCompare = sbAskNumber.substring(0, sbAskNumber.length());
-            }
-            if (sbPhonebookNumber.toString().startsWith(numberToCompare)) {
-                logger.info("found name match {} in phonebook by comparing {} with {} ", pbe.getName(),
-                        sbPhonebookNumber.toString(), numberToCompare);
-                name = pbe.getName() + " (Home)";
-                break; // no need to cycle through rest of phonebook
-            }
-
-            // MOBILE number
-            sbPhonebookNumber = new StringBuilder(pbe.getMobileTel());
-            sbPhonebookNumber.reverse();
-            // check if comparing numbers are within entire string range
-            if (compareCount <= sbAskNumber.length()) {
-                numberToCompare = sbAskNumber.substring(0, compareCount);
-            } else {
-                numberToCompare = sbAskNumber.substring(0, sbAskNumber.length());
-            }
-            if (sbPhonebookNumber.toString().startsWith(numberToCompare)) {
-                logger.info("found name match {} in phonebook by comparing {} with {} ", pbe.getName(),
-                        sbPhonebookNumber.toString(), numberToCompare);
-                name = pbe.getName() + " (Mobile)";
-                break; // no need to cycle through rest of phonebook
+        String reversedAskNumber = new StringBuilder(number).reverse().toString();    // reverse to be able to compare numbers from the end
+        for (PhoneBookEntry pbe : _alEntries) {
+            for (TelType t : TelType.values()) {
+                final String phoneBookTel = getTel(t, pbe);
+                if (phoneBookTel == null) {
+                    continue;
+                }
+                String reversedPhonebookTel = new StringBuilder(phoneBookTel.replaceAll("\\s+","")).reverse().toString();
+                if (reversedPhonebookTel.length() == 0) {
+                    continue;
+                }
+                String numberToCompare =  reversedAskNumber;
+                // check if comparing numbers are within entire string range
+                if (compareCount <= numberToCompare.length()) {
+                    numberToCompare = numberToCompare.substring(0, compareCount);
+                }
+                if (reversedPhonebookTel.startsWith(numberToCompare)) {
+                    logger.info("Found name match '{}' in phonebook by comparing incoming number '{}' with address book entry '{}' ", pbe.getName(),
+                            number, phoneBookTel);
+                    return pbe.getName() + " (" + t + ")";
+                }
             }
         }
-
-        return name;
+        return null;
+    }
+    
+    private static enum TelType {
+        Work, Home, Mobile, Fax;
+    }
+    private static String getTel(TelType t, PhoneBookEntry pbe) {
+        switch (t) {
+        case Work: return pbe.getBusinessTel();
+        case Home: return pbe.getPrivateTel();
+        case Mobile: return pbe.getMobileTel();
+        case Fax: return pbe.getFax();
+        default: throw new RuntimeException("Not supported telephone type: " + t);
+        }
     }
 
-    /***
-     *
+    /**
      * @param Phonebook ID to download, can be determined using TR064 GetPhonebookList
      * @return XML Document downloaded
      */
@@ -123,14 +99,13 @@ public class PhonebookManager {
         logger.trace(Helper.documentToString(phoneBook));
 
         return phoneBook;
-
     }
 
-    /***
-     * Downloads and parses phonebooks from fbox
+    /**
+     * Downloads and parses phonebooks from fbox.
      */
-    public void downloadPhonebooks() {
-        Document pb = downloadPhonebook(0);
+    public void downloadPhonebooks(int phonebookid) {
+        Document pb = downloadPhonebook(phonebookid);
         if (pb != null) {
             NodeList nlContacts = pb.getElementsByTagName("contact");
             for (int i = 0; i < nlContacts.getLength(); i++) {
@@ -143,9 +118,7 @@ public class PhonebookManager {
                 }
             }
         } else {
-            logger.error("Could not download phonebook");
+            logger.warn("Could not download phonebook");
         }
-
     }
-
 }

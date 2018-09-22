@@ -8,8 +8,10 @@
  */
 package org.openhab.binding.fritzboxtr064.internal;
 
+import java.util.List;
+
 /**
- * {@link ItemMap} for a SOAP service which takes an input parameter.
+ * {@link ItemMap} for a SOAP service which takes input arguments.
  *
  * @author Michael Koch <tensberg@gmx.net>
  * @since 1.11.0
@@ -17,8 +19,14 @@ package org.openhab.binding.fritzboxtr064.internal;
 public interface ParametrizedItemMap extends ItemMap {
 
     /**
-     * @return XML element name of the data in parameter of the SOAP service.
+     * Get the list of input arguments for a particular configuration.
+     * Creates the {@link InputArgument input arguments} list by combining the
+     * argument names of the item map with the {@link ItemConfiguration#getArgumentValues() argument values} configured
+     * by the user.
+     *
+     * @param config Configuration of the item.
+     * @return List of input arguments for the given configuration.
      */
-    String getReadDataInName();
+    List<InputArgument> getConfigInputArguments(ItemConfiguration config);
 
 }

@@ -4,7 +4,7 @@ The System Information binding provides operating system monitoring data, includ
 
 The binding uses the Hyperic SIGAR API to access system information regardless of the underlying platform (Windows, Linux, OS X...). 
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/systeminfo/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/systeminfo/).
 
 ## Table of Contents
 
@@ -294,8 +294,16 @@ Number System_Temperature_GPU "Temperature GPU [%.1f °C]" <temperature> (System
 
 Add to `rrd4j.persist` file:
 
-```
-System_Temperature_Chart* : strategy = everyChange, everyMinute, restoreOnStartup
+```java
+Strategies {
+    // for rrd charts, we need a cron strategy
+    everyMinute : "0 * * * * ?"
+}
+
+Items {
+    // persist items on every change and every minute
+    System_Temperature_Chart* : strategy = everyChange, everyMinute, restoreOnStartup
+}
 ```
 
 Add to `sitemaps/default.sitemap` file:

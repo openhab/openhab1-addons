@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>pom-addons1</artifactId>
-    <version>1.11.0-SNAPSHOT</version>
+    <version>1.13.0-SNAPSHOT</version>
   </parent>
-
-  <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab</groupId>
   <artifactId>features</artifactId>
 
-  <name>openHAB Features</name>
-
   <packaging>pom</packaging>
+
+  <name>openHAB Features</name>
 
   <modules>
     <module>openhab-addons</module>
@@ -21,59 +21,58 @@
     <module>openhab-addons-external</module>
   </modules>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.karaf.tooling</groupId>
-                    <artifactId>karaf-maven-plugin</artifactId>
-                    <version>${karaf.version}</version>
-                    <extensions>true</extensions>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>${build.helper.maven.plugin.version}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+  <repositories>
+    <repository>
+      <id>jcenter</id>
+      <name>JCenter Repository</name>
+      <url>https://jcenter.bintray.com/</url>
+    </repository>
+    <repository>
+      <id>maggu2810-bintray</id>
+      <name>Bintray Repository of maggu2810</name>
+      <url>https://dl.bintray.com/maggu2810/maven</url>
+    </repository>
+    <repository>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>eclipse-snapshots</id>
+      <name>Eclipse Snapshot Repository</name>
+      <url>https://repo.eclipse.org/content/repositories/snapshots/</url>
+      <layout>default</layout>
+    </repository>
+    <repository>
+      <id>eclipse-releases</id>
+      <name>Eclipse Release Repository</name>
+      <url>https://repo.eclipse.org/content/repositories/releases/</url>
+      <layout>default</layout>
+    </repository>
+    <repository>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>jfrog</id>
+      <name>JFrog OSS Repository</name>
+      <url>http://oss.jfrog.org/libs-snapshot/</url>
+    </repository>
+  </repositories>
 
-    <repositories>
-        <repository>
-            <id>jcenter</id>
-            <name>JCenter Repository</name>
-            <url>https://jcenter.bintray.com/</url>
-        </repository>
-        <repository>
-            <id>maggu2810-bintray</id>
-            <name>Bintray Repository of maggu2810</name>
-            <url>https://dl.bintray.com/maggu2810/maven</url>
-        </repository>
-        <repository>
-            <id>eclipse-snapshots</id>
-            <name>Eclipse Snapshot Repository</name>
-            <layout>default</layout>
-            <url>https://repo.eclipse.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>eclipse-releases</id>
-            <name>Eclipse Release Repository</name>
-            <layout>default</layout>
-            <url>https://repo.eclipse.org/content/repositories/releases/</url>
-        </repository>
-        <repository>
-            <id>jfrog</id>
-            <name>JFrog OSS Repository</name>
-            <url>http://oss.jfrog.org/libs-snapshot/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.karaf.tooling</groupId>
+          <artifactId>karaf-maven-plugin</artifactId>
+          <version>${karaf.version}</version>
+          <extensions>true</extensions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${build.helper.maven.plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 </project>

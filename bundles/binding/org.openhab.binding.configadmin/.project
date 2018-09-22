@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.openhab.binding.configadmin</name>
+	<name>org.openhab.binding.configadmin1</name>
 	<comment>This is the ConfigAdmin binding of the open Home Automation Bus (openHAB)</comment>
 	<projects>
 	</projects>

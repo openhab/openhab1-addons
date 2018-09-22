@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.openhab.binding.diyonxbee</name>
+	<name>org.openhab.binding.diyonxbee1</name>
 	<comment>This is the DiyOnXBee binding of the open Home Automation Bus (openHAB)</comment>
 	<projects>
 	</projects>

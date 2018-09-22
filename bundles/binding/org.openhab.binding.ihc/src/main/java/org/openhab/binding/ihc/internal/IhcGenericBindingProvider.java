@@ -13,7 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.binding.ihc.IhcBindingProvider;
-import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
@@ -71,8 +70,7 @@ import org.slf4j.LoggerFactory;
  * @author Simon Merschjohann
  * @since 1.1.0
  */
-public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
-        implements IhcBindingProvider, AutoUpdateBindingProvider {
+public class IhcGenericBindingProvider extends AbstractGenericBindingProvider implements IhcBindingProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(IhcGenericBindingProvider.class);
 
@@ -200,7 +198,7 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
      * This is an internal data structure to store information from the binding
      * config strings and use it to answer the requests to the IHC binding
      * provider.
-     * 
+     *
      */
     static private class IhcBindingConfig implements BindingConfig {
         Class<? extends Item> itemType;
@@ -263,7 +261,7 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
     @Override
     public int getRefreshInterval(String itemName) {
         IhcBindingConfig config = (IhcBindingConfig) bindingConfigs.get(itemName);
-        return config != null ? config.refreshInterval : null;
+        return config != null ? config.refreshInterval : 0;
     }
 
     @Override
@@ -283,7 +281,7 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
     public boolean hasInBinding(String itemName) {
         IhcBindingConfig config = (IhcBindingConfig) bindingConfigs.get(itemName);
 
-        return config != null ? config.resourceId > 0 : null;
+        return config != null ? config.resourceId > 0 : false;
     }
 
     @Override
@@ -298,11 +296,6 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
 
         }
 
-    }
-
-    @Override
-    public Boolean autoUpdate(String itemName) {
-        return null;
     }
 
     @Override

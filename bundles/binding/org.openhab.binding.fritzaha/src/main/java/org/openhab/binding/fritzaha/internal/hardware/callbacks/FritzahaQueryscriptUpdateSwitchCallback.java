@@ -73,7 +73,7 @@ public class FritzahaQueryscriptUpdateSwitchCallback extends FritzahaReauthCallb
                 logger.error("Error mapping JSON:\n" + response);
                 return;
             } catch (IOException e) {
-                logger.error("An I/O error occured while decoding JSON:\n" + response);
+                logger.error("An I/O error occurred while decoding JSON:\n" + response);
                 return;
             }
             if (deviceData.containsKey("DeviceSwitchState")) {

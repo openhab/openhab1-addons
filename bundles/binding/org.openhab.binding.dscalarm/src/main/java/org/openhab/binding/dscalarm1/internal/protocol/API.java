@@ -300,7 +300,7 @@ public class API {
                 }
 
                 if (password == null || password.length() < 1 || password.length() > 6) {
-                    logger.error("sendCommand(): Password is invalid, must be between 1 and 6 chars", password);
+                    logger.error("sendCommand(): Password is invalid, must be between 1 and 6 chars");
                     break;
                 }
                 data = password;

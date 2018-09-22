@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -147,10 +147,10 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 
             String MAC = ObjectUtils.toString(config.get(deviceName + ".mac"), null);
             if (MAC == null || MAC.equals("")) {
-                logger.warn("Plugwise can not add device with name {} without a MAC address", deviceName);
+                logger.warn("Plugwise cannot add device with name {} without a MAC address", deviceName);
             } else if (stick.getDeviceByMAC(MAC) != null) {
                 logger.warn(
-                        "Plugwise can not add device with name: {} and MAC address: {}, "
+                        "Plugwise cannot add device with name: {} and MAC address: {}, "
                                 + "the same MAC address is already used by device with name: {}",
                         deviceName, MAC, stick.getDeviceByMAC(MAC).name);
             } else {
@@ -192,7 +192,7 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
             logger.debug("Plugwise created Switch with name: {} and MAC address: {}", deviceName, MAC);
         } else {
             logger.warn(
-                    "Plugwise can not create device with name: '{}' because it has an unknown device type: '{}'. "
+                    "Plugwise cannot create device with name: '{}' because it has an unknown device type: '{}'. "
                             + "Known device types are: circle|circleplus|scan|sense|stealth|switch",
                     deviceName, deviceType);
         }
@@ -488,11 +488,11 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
                             }
                         } else {
                             logger.warn(
-                                    "Plugwise can not guess the device that should be added. Consider defining it in the openHAB configuration file");
+                                    "Plugwise cannot guess the device that should be added. Consider defining it in the openHAB configuration file");
                         }
                     } else {
                         logger.warn(
-                                "Plugwise can not add a valid device without a proper MAC address. {} can not be used",
+                                "Plugwise cannot add a valid device without a proper MAC address. {} cannot be used",
                                 element.getId());
                     }
                 }

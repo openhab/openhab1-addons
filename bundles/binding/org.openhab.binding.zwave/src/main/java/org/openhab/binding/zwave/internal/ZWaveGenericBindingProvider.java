@@ -137,14 +137,6 @@ public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider 
      * {@inheritDoc}
      */
     @Override
-    public Boolean autoUpdate(String itemName) {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Item getItem(String itemName) {
         return items.get(itemName);
     }

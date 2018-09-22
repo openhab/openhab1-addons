@@ -151,8 +151,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
         if (StringUtils.isNotBlank(ip) && StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
 
-            logger.info("Connecting to IHC / ELKO LS controller [IP='{}' Username='{}' Password='{}'].",
-                    new Object[] { ip, username, "******" });
+            logger.info("Connecting to IHC / ELKO LS controller [IP='{}' Username='{}'].", ip, username);
 
             ihc = new IhcClient(ip, username, password, timeout);
             ihc.setProjectFile(projectFile);
@@ -163,8 +162,8 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
         } else {
             logger.warn(
-                    "Couldn't connect to IHC controller because of missing connection parameters [IP='{}' Username='{}' Password='{}'].",
-                    new Object[] { ip, username, "******" });
+                    "Couldn't connect to IHC controller because of missing connection parameters [IP='{}' Username='{}' Password={}].",
+                    ip, username, StringUtils.isBlank(password) ? "Missing" : "Configured");
         }
     }
 
@@ -258,7 +257,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
                                 }
 
                             } catch (Exception e) {
-                                logger.error("Error occured during resource query", e);
+                                logger.error("Error occurred during resource query", e);
                             }
 
                             lastUpdateMap.put(itemName, System.currentTimeMillis());
@@ -418,12 +417,13 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
                     // new type
 
                     Integer val = provider.getValue(itemName, (Command) type);
+                    Type finalType = type;
                     boolean trigger = false;
                     if (val != null) {
                         if (val == 0) {
-                            type = OnOffType.OFF;
+                            finalType = OnOffType.OFF;
                         } else if (val == 1) {
-                            type = OnOffType.ON;
+                            finalType = OnOffType.ON;
                         } else {
                             trigger = true;
                         }
@@ -432,7 +432,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
                     }
 
                     if (!trigger) {
-                        value = IhcDataConverter.convertCommandToResourceValue(type, value, enumValues);
+                        value = IhcDataConverter.convertCommandToResourceValue(finalType, value, enumValues);
 
                         boolean result = updateResource(value);
 
@@ -449,7 +449,9 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
                         if (result == true) {
                             logger.debug("Item '{}' trigger started", itemName);
 
-                            Thread.sleep(val);
+                            if (val != null) {
+                                Thread.sleep(val);
+                            }
 
                             value = IhcDataConverter.convertCommandToResourceValue(OnOffType.OFF, value, enumValues);
 
@@ -473,7 +475,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
             } catch (IhcExecption e) {
                 logger.error("Can't update Item '{}' value ", itemName, e);
             } catch (Exception e) {
-                logger.error("Error occured during item update", e);
+                logger.error("Error occurred during item update", e);
             }
         }
 
@@ -567,7 +569,17 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
         logger.trace("Controller state {}", state.getState());
 
         if (controllerState.getState().equals(state.getState()) == false) {
-            logger.info("Controller state change detected ({} -> {})", controllerState.getState(), state.getState());
+            logger.debug("Controller state change detected ({} -> {})", controllerState.getState(), state.getState());
+
+            switch (state.getState()) {
+                case IhcClient.CONTROLLER_STATE_INITIALIZE:
+                    logger.info("Controller state changed to initializing state, waiting for ready state");
+                    break;
+                case IhcClient.CONTROLLER_STATE_READY:
+                    logger.info("Controller state changed to ready state");
+                    break;
+                default:
+            }
 
             if (controllerState.getState().equals(IhcClient.CONTROLLER_STATE_INITIALIZE)
                     || state.getState().equals(IhcClient.CONTROLLER_STATE_READY)) {
@@ -614,7 +626,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
     @Override
     public void errorOccured(EventObject event, IhcExecption e) {
-        logger.warn("Error occured on communication to IHC controller: {}", e.getMessage());
+        logger.warn("Error occurred on communication to IHC controller: {}", e.getMessage());
 
         logger.debug("Reconnection request");
         setReconnectRequest(true);

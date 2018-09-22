@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2018, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,6 +20,7 @@ import java.util.GregorianCalendar;
  * release as EPL (https://github.com/fcrisciani/java-myhome-library)
  *
  * @author Tom De Vlaminck, LAGO Moreno
+ * @author Reinhard Freuis - various enhancements for heating, rollershutter
  * @serial 1.0
  * @since 1.7.0
  *
@@ -38,7 +39,7 @@ public class OWNUtilities {
 
     /**
      * Create the frame to send to the own gateway
-     * 
+     *
      * @param c
      * @return
      */
@@ -53,7 +54,32 @@ public class OWNUtilities {
         what = c.getProperty("what");
         address = c.getProperty("address").split("\\*");
         where = address[0];
-        frame = "*" + who + "*" + what + "*" + where + "##";
+
+        if (who.equals("4")) {
+            // Heating Control
+            if (what.substring(0, 2).equals("14")) {
+                // Change Temperature Set Point
+                frame = "*#" + who + "*#" + where + "*#" + what + "##";
+            } else {
+                switch (Integer.parseInt(what)) {
+                    case 40:
+                        // Request Temperature Probe
+                        frame = "*" + who + "*" + what + "*" + where + "##";
+                        break;
+                    case 110:
+                        // Change to Manual Mode with fixed SP 20°C
+                        frame = "*#" + who + "*#" + where + "*#14*0200*3##";
+                        break;
+                    default:
+                        // Change Modes
+                        frame = "*" + who + "*" + what + "*#" + where + "##";
+                        break;
+                }
+            }
+        } else {
+            frame = "*" + who + "*" + what + "*" + where + "##";
+        }
+
         return (frame);
     }
 
@@ -61,7 +87,7 @@ public class OWNUtilities {
 
     /**
      * Get datetime on format "dd/MM/yyyy HH:mm:ss"
-     * 
+     *
      * @return
      */
     public static String getDateTime() {
@@ -74,18 +100,31 @@ public class OWNUtilities {
 
     /**
      * Convert temperature from bticino bus format to readable format
-     * 
+     *
      * @param temperature
      * @return
      */
     public static String convertTemperature(String temperature) {
         String temp = "";
-        if (!temperature.substring(0, 1).equalsIgnoreCase("0")) {
-            temp += "-";
+
+        switch (temperature.length()) {
+            case 1:
+                // for positive set point shift at probe
+                temp = temperature.substring(0, 1);
+                break;
+            case 2:
+                // for negative set point shift at probe
+                if (!temperature.substring(0, 1).equalsIgnoreCase("0")) {
+                    temp = "-";
+                }
+                temp += temperature.substring(1, 2);
+                break;
+            default:
+                temp = temperature.substring(1, 3);
+                temp += ".";
+                temp += temperature.substring(3);
+                break;
         }
-        temp += temperature.substring(1, 3);
-        temp += ".";
-        temp += temperature.substring(3);
         return (temp);
     }
 
@@ -93,7 +132,7 @@ public class OWNUtilities {
 
     /**
      * Convert day from number to name
-     * 
+     *
      * @param dayNumber
      * @return
      */
@@ -131,7 +170,7 @@ public class OWNUtilities {
 
     /**
      * Get model name from model number
-     * 
+     *
      * @param modelNumber
      * @return
      */

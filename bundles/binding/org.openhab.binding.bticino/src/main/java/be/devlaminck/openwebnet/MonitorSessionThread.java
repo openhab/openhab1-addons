@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2018, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,9 +25,11 @@ import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
  * openwebnet) and on code of Flavio Fcrisciani
  * (https://github.com/fcrisciani/java-myhome-library) released under EPL
  *
- * @author Tom De Vlaminck, Lago Moreno
+ * @author Tom De Vlaminck, Lago Moreno, Andrea Carabillo
+ * @author Reinhard Freuis - various enhancements for heating, rollershutter
  * @serial 1.0
  * @since 1.7.0
+ *
  */
 public class MonitorSessionThread extends Thread {
 
@@ -36,12 +38,13 @@ public class MonitorSessionThread extends Thread {
     private OpenWebNet pluginReference = null;
     private String ipAddress = null;
     private Integer port = 0;
+    private String passwd = null;
 
     @Override
     public void run() {
         // connect to own gateway
-        logger.debug("Connecting to ipaddress {} on port {}", ipAddress, port);
-        pluginReference.myPlant = new MyHomeJavaConnector(ipAddress, port);
+        logger.debug("Connecting to ipaddress {} on port {} with passord {}", ipAddress, port, passwd);
+        pluginReference.myPlant = new MyHomeJavaConnector(ipAddress, port, passwd);
         try {
             pluginReference.myPlant.startMonitoring();
             while (!Thread.interrupted()) {
@@ -57,17 +60,22 @@ public class MonitorSessionThread extends Thread {
         } catch (IOException ex) {
             logger.error("MonitorSessionThread.run, exception : " + ex.getMessage());
         }
-        logger.info("Stopped MonitorSessionThread thread");
+        logger.debug("Stopped MonitorSessionThread thread");
     }
 
     public MonitorSessionThread(OpenWebNet pluginReference, String ipAddress, Integer port) {
+        this(pluginReference, ipAddress, port, "");
+    }
+
+    public MonitorSessionThread(OpenWebNet pluginReference, String ipAddress, Integer port, String passwd) {
         this.pluginReference = pluginReference;
         this.ipAddress = ipAddress;
         this.port = port;
+        this.passwd = passwd;
     }
 
     public void buildEventFromFrame(String frame) {
-        logger.info("Received OpenWebNet frame '" + frame + "' now translate it to an event.");
+        logger.debug("Received OpenWebNet frame '{}' now translate it to an event.", frame);
         String who = null;
         String what = null;
         String where = null;
@@ -75,6 +83,7 @@ public class MonitorSessionThread extends Thread {
         String objectName = null;
         String messageType = null;
         String messageDescription = null;
+        String hStatus = null;
         String[] frameParts = null;
         ProtocolRead event = null;
 
@@ -101,12 +110,11 @@ public class MonitorSessionThread extends Thread {
 
         // Status request frame
         if (frame.substring(0, 2).equalsIgnoreCase("*#")) {
-            // remove *# and ##
             frame = frame.substring(2, length - 2);
 
             // remove *# and ##
-            frameParts = frame.split("\\*"); // * is reserved so it must be
-                                             // escaped
+            frameParts = frame.split("\\*"); // * is reserved so it must be escaped
+
             who = frameParts[0];
             where = frameParts[1];
             objectName = who + "*" + where;
@@ -200,20 +208,41 @@ public class MonitorSessionThread extends Thread {
             }
             // TERMOREGULATION
             if (who.equalsIgnoreCase("4")) {
+                what = frameParts[2];
                 messageType = "thermoregulation";
                 objectClass = "Thermo";
-                objectName = who + "*" + where;
+                objectName = who + "*" + where + "*" + what;
 
-                if (frameParts[2].equalsIgnoreCase("0")) {
+                // hStatus
+                // -------
+                // 0: Status Probe / Actuators
+                // 1: Status Operation Mode
+                // 2: Status Control Mode
+                // 3: Status Main Unit
+
+                hStatus = "0";
+
+                if (what.equals("20")) {
+                    String[] where_parts = where.split("#");
+                    where = where_parts[0];
+                    switch (Integer.parseInt(frameParts[3])) {
+                        // Heating OFF
+                        case 0:
+                            messageDescription = "Heating OFF";
+                            break;
+                        // Heating ON
+                        case 1:
+                            messageDescription = "Heating ON";
+                            break;
+                    }
+                } else {
                     String temperature = frameParts[3];
                     temperature = OWNUtilities.convertTemperature(temperature);
                     messageDescription = "Temperature value";
                     if (temperature != null) {
                         event.addProperty("temperature", temperature);
                     }
-                } else {
-                    logger.debug("other temperature message");
-
+                    logger.debug("Temperature Value");
                 }
             }
             // GATEWAY CONTROL
@@ -390,6 +419,9 @@ public class MonitorSessionThread extends Thread {
             }
 
             event.addProperty("who", who);
+            if (what != null) {
+                event.addProperty("what", what);
+            }
             if (where != null) {
                 event.addProperty("where", where);
             }
@@ -399,19 +431,29 @@ public class MonitorSessionThread extends Thread {
             if (messageType != null) {
                 event.addProperty("messageType", messageType);
             }
-            // notify event
-            logger.info(OWNUtilities.getDateTime() + " Rx: " + frame + " " + "(" + messageDescription + ")");
+            if (hStatus != null) {
+                event.addProperty("hStatus", hStatus);
+            }
+            if (objectClass != null) {
+                event.addProperty("object.class", objectClass);
+            }
+            event.addProperty("object.name", objectName);
 
-            // Notify all the listeners an event has been received
-            pluginReference.notifyEvent(event);
+            // notify event
+            if (what != null && where != null && messageDescription != null) {
+                logger.debug("{} Rx: {} ({})", OWNUtilities.getDateTime(), frame, messageDescription);
+                // Notify all the listeners an event has been received
+                pluginReference.notifyEvent(event);
+            }
         }
 
         // Command frame
         if (!(frame.substring(0, 2).equalsIgnoreCase("*#")) && (frame.substring(0, 1).equalsIgnoreCase("*"))) {
-            // remove delimiter chars * and ##
             frame = frame.substring(1, length - 2);
-            frameParts = frame.split("\\*"); // * is reserved so it must be
-                                             // escaped
+
+            // remove delimiter chars * and ##
+            frameParts = frame.split("\\*"); // * is reserved so it must be escaped
+
             who = frameParts[0];
             what = frameParts[1];
             // Burglar Central Unit Status Request = *#5##
@@ -461,6 +503,15 @@ public class MonitorSessionThread extends Thread {
                     messageType = "Automation";
                     objectClass = "Automation";
 
+                    // For virtual configuration we receive for automation on 1000#0
+                    // so assuming the second part is the what
+                    what_parts = what.split("#");
+                    if (what_parts.length > 1) {
+                        virtual_where = true;
+                        // take the last part for the what
+                        what = what_parts[what_parts.length - 1];
+                    }
+
                     switch (Integer.parseInt(what)) {
                         case 0:
                             messageDescription = "Automation STOP";
@@ -497,65 +548,117 @@ public class MonitorSessionThread extends Thread {
                 // THERMOREGULATION
                 case 4:
                     messageType = "thermoregulation";
-                    objectClass = "Thermo";
+                    objectClass = "ThermoStatus";
+
+                    String[] where_parts = where.split("#");
+
+                    // hStatus
+                    // -------
+                    // 0: Status Probe / Actuators
+                    // 1: Status Operation Mode
+                    // 2: Status Control Mode
+                    // 3: Status Main Unit Remote
+                    // 4: Status Main Unit Probes
+                    // 5: Status Main Unit Failures
 
                     switch (Integer.parseInt(what)) {
                         case 0:
                             messageDescription = "Conditioning";
+                            hStatus = "2";
                             break;
                         case 1:
                             messageDescription = "Heating";
+                            hStatus = "2";
                             break;
                         case 20:
                             messageDescription = "Remote Control disabled";
+                            hStatus = "3";
+                            where = where_parts[1];
                             break;
                         case 21:
                             messageDescription = "Remote Control enabled";
+                            hStatus = "3";
+                            where = where_parts[1];
                             break;
                         case 22:
                             messageDescription = "At least one Probe OFF";
+                            hStatus = "4";
+                            where = where_parts[1];
                             break;
                         case 23:
                             messageDescription = "At least one Probe in protection";
+                            hStatus = "4";
+                            where = where_parts[1];
                             break;
                         case 24:
                             messageDescription = "At least one Probe in manual";
+                            hStatus = "4";
+                            where = where_parts[1];
                             break;
                         case 30:
                             messageDescription = "Failure discovered";
+                            hStatus = "5";
+                            where = where_parts[1];
                             break;
                         case 31:
                             messageDescription = "Central Unit battery KO";
+                            hStatus = "5";
+                            where = where_parts[1];
                             break;
                         case 103:
                             messageDescription = "OFF Heating";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 110:
                             messageDescription = "Manual Heating";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 111:
                             messageDescription = "Automatic Heating";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 202:
                             messageDescription = "AntiFreeze";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 203:
                             messageDescription = "OFF Conditioning";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 210:
                             messageDescription = "Manual Conditioning";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 211:
                             messageDescription = "Automatic Conditioning";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 302:
                             messageDescription = "Thermal Protection";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 303:
                             messageDescription = "Generic OFF";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                         case 311:
                             messageDescription = "Automatic Generic";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
+                            break;
+                        default:
+                            messageDescription = "Heating Program";
+                            hStatus = "1";
+                            where = where_parts[where_parts.length - 1];
                             break;
                     }
                     break; // close THERMOREGULATION switch
@@ -704,17 +807,21 @@ public class MonitorSessionThread extends Thread {
             if (messageDescription != null) {
                 event.addProperty("messageDescription", messageDescription);
             }
+            if (hStatus != null) {
+                event.addProperty("hStatus", hStatus);
+            }
             if (objectClass != null) {
                 event.addProperty("object.class", objectClass);
             }
-            if (objectName != null) {
-                event.addProperty("object.name", objectName);
-            }
-            logger.info("Frame " + frame + " is " + messageType + " message. Notify it as OpenHab event "
-                    + messageDescription == "No Description set" ? "" : messageDescription); // for debug
+            event.addProperty("object.name", objectName);
 
-            // Notify all the listeners an event has been received
-            pluginReference.notifyEvent(event);
+            if (who != null && what != null && where != null && messageDescription != null) {
+                logger.debug("Frame {} is {} message. Notify it as OpenHab event {}.", frame, messageType,
+                        messageDescription == "No Description set" ? "" : messageDescription); // for debug
+
+                // Notify all the listeners an event has been received
+                pluginReference.notifyEvent(event);
+            }
         }
     }
 }

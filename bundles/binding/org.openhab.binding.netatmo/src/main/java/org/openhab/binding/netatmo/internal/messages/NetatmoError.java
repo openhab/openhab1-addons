@@ -36,7 +36,7 @@ public class NetatmoError extends AbstractMessagePart {
      * <li>5 : The application has been deactivated
      * <li>9 : The device has not been found
      * <li>10 : A mandatory API parameter is missing
-     * <li>11 : An unexpected error occured
+     * <li>11 : An unexpected error occurred
      * <li>13 : Operation not allowed
      * <li>15 : Installation of the device has not been finalized
      * <li>21 : Invalid argument

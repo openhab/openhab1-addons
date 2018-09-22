@@ -315,7 +315,7 @@ public class Eiscp implements EiscpInterface {
                 outStream.writeBytes(eiscpCmd.toString());
                 outStream.flush();
             } catch (IOException ioException) {
-                logger.error("Error occured when sending command", ioException);
+                logger.error("Error occurred when sending command", ioException);
 
                 if (retry > 0) {
                     logger.debug("Retry {}...", retry);
@@ -498,7 +498,7 @@ public class Eiscp implements EiscpInterface {
 
                 } catch (EiscpException e) {
 
-                    logger.error("Error occured during message waiting", e);
+                    logger.error("Error occurred during message waiting", e);
 
                 } catch (SocketTimeoutException e) {
 
@@ -509,7 +509,7 @@ public class Eiscp implements EiscpInterface {
                 } catch (Exception e) {
 
                     if (interrupted != true && this.isInterrupted() != true) {
-                        logger.error("Error occured during message waiting", e);
+                        logger.error("Error occurred during message waiting", e);
 
                         restartConnection = true;
 

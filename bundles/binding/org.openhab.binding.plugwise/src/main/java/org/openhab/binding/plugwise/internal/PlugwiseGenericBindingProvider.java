@@ -202,7 +202,7 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
      *         information
      *
      * @throws BindingConfigParseException if the {@link TypeParser} couldn't
-     *             create a command appropriately
+     *                                         create a command appropriately
      *
      * @see {@link TypeParser}
      */
@@ -257,11 +257,6 @@ public class PlugwiseGenericBindingProvider extends AbstractGenericBindingProvid
                     + "]";
         }
 
-    }
-
-    @Override
-    public Boolean autoUpdate(String itemName) {
-        return false;
     }
 
     @Override

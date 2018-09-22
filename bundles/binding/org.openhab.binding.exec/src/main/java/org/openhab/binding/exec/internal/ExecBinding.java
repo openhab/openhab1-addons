@@ -361,7 +361,7 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider>imple
             logger.debug("exit code '{}', result '{}'", exitCode, retval);
 
         } catch (InterruptedException e) {
-            logger.error("Timeout occured when executing commandLine '" + commandLine + "'", e);
+            logger.error("Timeout occurred when executing commandLine '" + commandLine + "'", e);
         }
 
         return retval;

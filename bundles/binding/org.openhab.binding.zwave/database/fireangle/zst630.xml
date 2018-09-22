@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZST-630</Model>
+    <Label lang="en">Thermoptek Smoke Alarm/Smoke Detector</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x71</id>             <!-- ALARM -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+    </CommandClasses>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Basic Report</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Notification Report</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>

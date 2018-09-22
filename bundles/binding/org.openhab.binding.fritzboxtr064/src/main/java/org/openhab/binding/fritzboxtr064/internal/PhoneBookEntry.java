@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -43,7 +43,6 @@ public class PhoneBookEntry {
      * @param xmlNode
      */
     public PhoneBookEntry() {
-
     }
 
     /***
@@ -57,19 +56,17 @@ public class PhoneBookEntry {
         XPath xPath = XPathFactory.newInstance().newXPath();
         logger.debug(Helper.nodeToString(xmlNode));
         try {
-            this._name = (String) xPath.evaluate("person/realName", xmlNode, XPathConstants.STRING);
-            this._uniqueid = (String) xPath.evaluate("uniqueid", xmlNode, XPathConstants.STRING);
-            this._businessTel = (String) xPath.evaluate("telephony/number[@type='work']", xmlNode,
+            _name = (String) xPath.evaluate("person/realName", xmlNode, XPathConstants.STRING);
+            _uniqueid = (String) xPath.evaluate("uniqueid", xmlNode, XPathConstants.STRING);
+            _businessTel = (String) xPath.evaluate("telephony/number[@type='work']", xmlNode,
                     XPathConstants.STRING);
-            this._privateTel = (String) xPath.evaluate("telephony/number[@type='home']", xmlNode,
+            _privateTel = (String) xPath.evaluate("telephony/number[@type='home']", xmlNode,
                     XPathConstants.STRING);
-            this._mobileTel = (String) xPath.evaluate("telephony/number[@type='mobile']", xmlNode,
+            _mobileTel = (String) xPath.evaluate("telephony/number[@type='mobile']", xmlNode,
                     XPathConstants.STRING);
-            this._fax = (String) xPath.evaluate("telephony/number[@type='fax']", xmlNode, XPathConstants.STRING);
-            // xpath is awesome :)
-
+            _fax = (String) xPath.evaluate("telephony/number[@type='fax']", xmlNode, XPathConstants.STRING);
         } catch (XPathExpressionException e) {
-            logger.error("Could not parse Phonebook Entry ", e);
+            logger.warn("Could not parse phone book entry", e);
         }
         // check if id could be parsed as success
         if (!this._uniqueid.isEmpty()) {
@@ -135,5 +132,4 @@ public class PhoneBookEntry {
     public void setId(String _id) {
         this._uniqueid = _id;
     }
-
 }

@@ -1,35 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<parent>
-		<groupId>org.openhab.bundles</groupId>
-		<artifactId>binding</artifactId>
-		<version>1.11.0-SNAPSHOT</version>
-	</parent>
+  <modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.mystromecopower</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.mystromecopower</bundle.namespace>
-		<deb.name>openhab-addon-binding-mystromecopower</deb.name>
-		<deb.description>openhab addon binding MyStromEcoPower</deb.description>
-	</properties>
+  <parent>
+    <groupId>org.openhab.bundles</groupId>
+    <artifactId>binding</artifactId>
+    <version>1.13.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.openhab.binding</groupId>
+  <artifactId>org.openhab.binding.mystromecopower</artifactId>
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.openhab.binding</groupId>
-	<artifactId>org.openhab.binding.mystromecopower</artifactId>
+  <packaging>eclipse-plugin</packaging>
 
-	<name>openHAB MyStromEcoPower Binding</name>
-
-	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+  <name>openHAB MyStromEcoPower Binding</name>
 
 </project>

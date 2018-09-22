@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.denon.DenonBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
@@ -102,7 +103,14 @@ public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider> im
         if (provider instanceof DenonBindingProvider) {
             DenonBindingConfig config = ((DenonBindingProvider) provider).getConfig(itemName);
             if (config != null) {
-                getConnector(config).updateStateFromCache(config.getProperty());
+                DenonConnector connector = getConnector(config);
+                if (connector != null) {
+                    connector.updateStateFromCache(config.getProperty());
+                } else {
+                    logger.debug("No connector found for item {}", itemName);
+                }
+            } else {
+                logger.debug("No config found for item {}", itemName);
             }
         }
     }
@@ -122,7 +130,18 @@ public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider> im
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
         DenonBindingConfig config = getConfig(itemName);
-        getConnector(config).sendCommand(config, command);
+
+        if (config != null) {
+            DenonConnector connector = getConnector(config);
+
+            if (connector != null) {
+                connector.sendCommand(config, command);
+            } else {
+                logger.debug("Cannot send command, no connector found for item {}", itemName);
+            }
+        } else {
+            logger.debug("Cannot send command, no config found for item {}", itemName);
+        }
     }
 
     protected void addBindingProvider(DenonBindingProvider bindingProvider) {
@@ -190,18 +209,22 @@ public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider> im
         for (Entry<String, DenonConnectionProperties> entry : connections.entrySet()) {
             DenonConnectionProperties connection = entry.getValue();
 
-            logger.debug("Denon receiver configured at {}", connection.getHost());
-            DenonConnector connector = new DenonConnector(connection, new DenonPropertyUpdatedCallback() {
-                @Override
-                public void updated(String instance, String property, State state) {
-                    processPropertyUpdated(instance, property, state);
-                }
-            });
-            connection.setConnector(connector);
-            connector.connect();
+            if (!StringUtils.isBlank(connection.getHost())) {
+                logger.debug("Denon receiver configured at {}", connection.getHost());
+                DenonConnector connector = new DenonConnector(connection, new DenonPropertyUpdatedCallback() {
+                    @Override
+                    public void updated(String instance, String property, State state) {
+                        processPropertyUpdated(instance, property, state);
+                    }
+                });
+                connection.setConnector(connector);
+                connector.connect();
 
-            if (connection.isHttp()) {
-                isActiveBinding = true;
+                if (connection.isHttp()) {
+                    isActiveBinding = true;
+                }
+            } else {
+                logger.debug("No host configured for receiver {}", connection.getInstance());
             }
         }
 
@@ -279,6 +302,11 @@ public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider> im
     }
 
     private DenonConnector getConnector(DenonBindingConfig config) {
-        return connections.get(config.getInstance()).getConnector();
+        DenonConnectionProperties connection = connections.get(config.getInstance());
+        if (connection != null) {
+            return connection.getConnector();
+        }
+
+        return null;
     }
 }

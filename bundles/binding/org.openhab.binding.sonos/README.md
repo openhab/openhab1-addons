@@ -6,7 +6,7 @@ Sonos Players support multi-room audio. Sonos achieves this by grouping Sonos Pl
 
 Sonos Players also support playlists, music streaming services like Spotify, Rapsody, … as well as alarm clocks that you can program to wake up with your favourite music
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/sonos/readme.html).  That binding can discover your Sonos players and therefore does not need you to learn UDNs through alternate means.
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/sonos/).  That binding can discover your Sonos players and therefore does not need you to learn UDNs through alternate means.
 
 ## Limitations
 

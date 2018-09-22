@@ -59,7 +59,7 @@ We specified only one register.  If register name starts with "!" (exclamation m
 ### Switch Items
 
 ```
-plcName:[!]REG1[[!]REG2]
+plcName:[!]REG1[:[!]REG2]
 ```
 
 * REG1 is used for read state of switch

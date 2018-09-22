@@ -91,7 +91,7 @@ To reference these values the indexed format syntax is used. A well prepared URL
 http://www.domain.org/home/lights/23871/?status=%2$s&date=%1$tY-%1$tm-%1$td
 ```
 
-Each format string starts with '%' followed by an optional index e.g. `2$`, where `2` is the index of the parameter arg given to the format(format, args...) method. Besides the index you have to specify the format to be applied to the argument. eg. `s` to format a String in the given example or `d` to format an Integer, or `.1f` to format a floating point numner with one decimal place.
+Each format string starts with '%' followed by an optional index e.g. `2$`, where `2` is the index of the parameter arg given to the format(format, args...) method. Besides the index you have to specify the format to be applied to the argument. eg. `s` to format a String in the given example or `d` to format an Integer, or `.1f` to format a floating point number with one decimal place.
 
 ## HTTP headers
 

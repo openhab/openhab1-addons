@@ -15,7 +15,9 @@ import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.io.FileUtils;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
 import org.slf4j.Logger;
@@ -43,7 +45,7 @@ public class Twitter {
     static boolean isEnabled = false;
 
     /** The maximum length of a Tweet or direct message */
-    private static final int CHARACTER_LIMIT = 140;
+    private static final int CHARACTER_LIMIT = 280;
 
     static twitter4j.Twitter client = null;
 
@@ -78,14 +80,17 @@ public class Twitter {
      * @return <code>true</code>, if sending the tweet has been successful and
      *         <code>false</code> in all other cases.
      */
-    private static boolean doSendTweet(final String tweetTxt, final File fileToAttach) {
+    private static boolean sendTweet(final String tweetTxt, final File fileToAttach) {
         // abbreviate the Tweet to meet the 140 character limit ...
         String abbreviatedTweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
         try {
+            // abbreviate the Tweet to meet the allowed character limit ...
+            tweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
+
             // send the Tweet
             StatusUpdate status = new StatusUpdate(abbreviatedTweetTxt);
             if (fileToAttach != null && fileToAttach.isFile()) {
-                status.setMedia(fileToAttach);
+            	status.setMedia(fileToAttach);
             }
             Status updatedStatus = client.updateStatus(status);
             logger.debug("Successfully sent Tweet '{}'", updatedStatus.getText());
@@ -111,7 +116,7 @@ public class Twitter {
         if (!checkPrerequisites()) {
             return false;
         }
-        return doSendTweet(tweetTxt, null);
+        return sendTweet(tweetTxt, (File)null);
     }
 
     /**
@@ -162,12 +167,12 @@ public class Twitter {
         } else {
             logger.warn("Image '{}' not found, will only tweet text", tweetPicture);
         }
-
+    
         // send the Tweet
-        boolean result = doSendTweet(tweetTxt, fileToAttach);
+        boolean result = sendTweet(tweetTxt, fileToAttach);
         // delete temp file (if needed)
         if (deleteTemporaryFile) {
-            FileUtils.deleteQuietly(fileToAttach);
+        	FileUtils.deleteQuietly(fileToAttach);
         }
         return result;
     }
@@ -192,7 +197,7 @@ public class Twitter {
         }
 
         try {
-            // abbreviate the Tweet to meet the 140 character limit ...
+            // abbreviate the Tweet to meet the allowed character limit ...
             messageTxt = StringUtils.abbreviate(messageTxt, CHARACTER_LIMIT);
             // send the direct message
             DirectMessage message = client.sendDirectMessage(recipientId, messageTxt);

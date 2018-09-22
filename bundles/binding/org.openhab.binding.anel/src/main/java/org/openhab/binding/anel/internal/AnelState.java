@@ -39,10 +39,17 @@ public class AnelState {
     /** Device temperature; read-only. */
     String temperature = null;
 
+    /** Sensor temperature; read-only. */
+    String sensorTemperature = null;
+    /** Sensor Humidity; read-only. */
+    String sensorHumidity = null;
+    /** Sensor Brightness; read-only. */
+    String sensorBrightness = null;
+
     /**
      * Create new internal state with default values <code>null</code> for the
      * specified IP address / network name.
-     * 
+     *
      * @param host
      *            The IP address / network name of an Anel device.
      */

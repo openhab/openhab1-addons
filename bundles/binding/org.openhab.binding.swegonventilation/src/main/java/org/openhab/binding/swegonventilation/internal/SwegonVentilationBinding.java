@@ -57,8 +57,7 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
     /** Thread to handle messages from heat pump */
     private MessageListener messageListener = null;
 
-    public SwegonVentilationBinding() {
-    }
+    private ValueCache<SwegonVentilationCommandType, Integer> cache = new ValueCache<SwegonVentilationCommandType, Integer>();
 
     @Override
     public void activate() {
@@ -127,6 +126,7 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
             }
         }
 
+        cache.clear();
         messageListener = new MessageListener();
         messageListener.start();
 
@@ -232,28 +232,29 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
                             SwegonVentilationCommandType cmdType = val.getKey();
                             Integer value = val.getValue();
 
-                            for (SwegonVentilationBindingProvider provider : providers) {
-                                for (String itemName : provider.getItemNames()) {
+                            if (cache.valueEquals(cmdType, value)) {
+                                logger.trace("Value '{}' for {} hasn't changed, ignoring update", value, cmdType);
+                            } else {
+                                logger.trace("Value '{}' for {} changed", value, cmdType);
+                                cache.update(cmdType, value);
 
-                                    SwegonVentilationCommandType commandType = provider.getCommandType(itemName);
+                                for (SwegonVentilationBindingProvider provider : providers) {
+                                    for (String itemName : provider.getItemNames()) {
 
-                                    if (commandType.equals(cmdType)) {
-                                        Class<? extends Item> itemType = provider.getItemType(itemName);
+                                        SwegonVentilationCommandType commandType = provider.getCommandType(itemName);
 
-                                        org.openhab.core.types.State state = convertDeviceValueToOpenHabState(itemType,
-                                                value);
+                                        if (commandType.equals(cmdType)) {
+                                            Class<? extends Item> itemType = provider.getItemType(itemName);
 
-                                        eventPublisher.postUpdate(itemName, state);
+                                            eventPublisher.postUpdate(itemName,
+                                                    convertDeviceValueToOpenHabState(itemType, value));
+                                        }
                                     }
                                 }
                             }
-
                         }
-
                     }
-
                 } catch (SwegonVentilationException e) {
-
                     logger.debug("Error occurred when received data from Swegon ventilation system", e);
                 }
             }
@@ -263,9 +264,6 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
             } catch (SwegonVentilationException e) {
                 logger.error("Error occurred when disconnecting from Swegon ventilation system", e);
             }
-
         }
-
     }
-
 }

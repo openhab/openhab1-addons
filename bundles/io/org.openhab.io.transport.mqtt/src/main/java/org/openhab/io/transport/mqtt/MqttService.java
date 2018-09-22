@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,16 +30,12 @@ import org.slf4j.LoggerFactory;
  * @since 1.3.0
  */
 public class MqttService implements ManagedService {
-
-    private static Logger logger = LoggerFactory.getLogger(MqttService.class);
-
     private ConcurrentHashMap<String, MqttBrokerConnection> brokerConnections = new ConcurrentHashMap<String, MqttBrokerConnection>();
-
     private EventPublisher eventPublisher;
+    private Logger logger = LoggerFactory.getLogger(MqttService.class);
 
     @Override
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
-
         // load broker configurations from configuration file
         if (properties == null || properties.isEmpty()) {
             return;
@@ -47,11 +43,10 @@ public class MqttService implements ManagedService {
 
         Enumeration<String> keys = properties.keys();
         while (keys.hasMoreElements()) {
-
             String key = keys.nextElement();
 
             if (key.equals("service.pid")) {
-                // ignore the only non-broker property..
+                // ignore the only non-broker property
                 continue;
             }
 
@@ -66,10 +61,10 @@ public class MqttService implements ManagedService {
             String property = subkeys[1];
 
             if (StringUtils.isBlank(value)) {
-                logger.trace("Property is empty: {}", key);
+                logger.trace("Property '{}' is empty", key);
                 continue;
             } else {
-                logger.trace("Processing property: {} = {}", key, value);
+                logger.trace("Processing property '{}' = {}", key, value);
             }
 
             MqttBrokerConnection conn = brokerConnections.get(name);
@@ -85,11 +80,18 @@ public class MqttService implements ManagedService {
             } else if (property.equals("pwd")) {
                 conn.setPassword(value);
             } else if (property.equals("qos")) {
-                conn.setQos(Integer.parseInt(value));
+                int parsedQos = safeParseInt(property, value);
+                if (parsedQos > -1) {
+                    conn.setQos(parsedQos);
+                }
             } else if (property.equals("retain")) {
-                conn.setRetain(Boolean.parseBoolean(value));
+                if (validateBooleanSetting(property, value)) {
+                    conn.setRetain(Boolean.parseBoolean(value));
+                }
             } else if (property.equals("async")) {
-                conn.setAsync(Boolean.parseBoolean(value));
+                if (validateBooleanSetting(property, value)) {
+                    conn.setAsync(Boolean.parseBoolean(value));
+                }
             } else if (property.equals("clientId")) {
                 if (value.length() > 65535) {
                     logger.warn("clientId must be less than 65536 characters long");
@@ -97,13 +99,18 @@ public class MqttService implements ManagedService {
                 }
                 conn.setClientId(value);
             } else if (property.equals("allowLongerClientIds")) {
-                conn.setAllowLongerClientIds(Boolean.parseBoolean(value));
+                if (validateBooleanSetting(property, value)) {
+                    conn.setAllowLongerClientIds(Boolean.parseBoolean(value));
+                }
             } else if (property.equals("lwt")) {
                 MqttWillAndTestament will = MqttWillAndTestament.fromString(value);
                 logger.debug("Setting last will: {}", will);
                 conn.setLastWill(will);
             } else if (property.equals("keepAlive")) {
-                conn.setKeepAliveInterval(Integer.parseInt(value));
+                int parsedKeepAlive = safeParseInt(property, value);
+                if (parsedKeepAlive > -1) {
+                    conn.setKeepAliveInterval(parsedKeepAlive);
+                }
             } else {
                 logger.warn("Unrecognized property: {}", key);
             }
@@ -221,5 +228,28 @@ public class MqttService implements ManagedService {
      */
     public void unsetEventPublisher(EventPublisher eventPublisher) {
         this.eventPublisher = null;
+    }
+
+    // validates that an incoming string value from the config file represents
+    // a valid boolean value. Logs a warning if it does not.
+    private boolean validateBooleanSetting(String settingName, String value) {
+        if (value.toLowerCase().equals("true") || value.toLowerCase().equals("false")) {
+            return true;
+        }
+
+        logger.warn("Ignored invalid value for property '{}' ('{}').", settingName, value);
+        return false;
+    }
+
+    // attempts to extract an integer value from the String value.
+    // Logs a warning if parse fails.
+    private int safeParseInt(String settingName, String value) {
+        try {
+            int number = Integer.parseInt(value);
+            return number;
+        } catch (NumberFormatException e) {
+            logger.warn("Ignored invalid value for property '{}' ('{}')", settingName, value);
+            return -1;
+        }
     }
 }

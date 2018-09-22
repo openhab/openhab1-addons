@@ -61,7 +61,7 @@ public class EKeyGenericBindingProvider extends AbstractGenericBindingProvider i
         if (bindingConfig == null) {
             throw new BindingConfigParseException("Your binding configuration is illegal!\n"
                     + "Possible values are: ACTION, USERNAME, USERID, TERMINALID, TERMINALNAME, "
-                    + "FINGERID, KEYID, INPUTID, RELAISID, MODE\nExample: {ekey=\"ACTION\"}");
+                    + "FINGERID, KEYID, INPUTID, RELAYID, MODE\nExample: {ekey=\"ACTION\"}");
         }
 
         config.itemType = item.getClass();
@@ -76,7 +76,7 @@ public class EKeyGenericBindingProvider extends AbstractGenericBindingProvider i
             throw new BindingConfigParseException("eKey does not know the configuration value " + "'" + value
                     + "' that you passed in the item binding configuration!\n"
                     + "Possible values are: ACTION, USERNAME, USERID, TERMINALID, TERMINALNAME, "
-                    + "FINGERID, KEYID, INPUTID, RELAISID, MODE\nExample: {ekey=\"ACTION\"}");
+                    + "FINGERID, KEYID, INPUTID, RELAYID, MODE\nExample: {ekey=\"ACTION\"}");
         }
 
         addBindingConfig(item, config);

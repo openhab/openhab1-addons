@@ -19,26 +19,19 @@ import org.openhab.core.binding.BindingConfig;
  */
 public class IntertechnoBindingConfig implements BindingConfig {
 
-    private String address;
-
-    private String commandOff;
     private String commandOn;
+    private String commandOff;
 
-    public IntertechnoBindingConfig(String address, String commandOn, String commandOff) {
-        this.address = address;
+    public IntertechnoBindingConfig(String commandOn, String commandOff) {
         this.commandOn = commandOn;
         this.commandOff = commandOff;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public String getCommandValueON() {
+    public String getCommandON() {
         return commandOn;
     }
 
-    public String getCommandValueOFF() {
+    public String getCommandOFF() {
         return commandOff;
     }
 

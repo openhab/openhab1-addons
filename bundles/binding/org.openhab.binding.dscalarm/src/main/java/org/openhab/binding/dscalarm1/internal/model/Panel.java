@@ -223,7 +223,7 @@ public class Panel extends DSCAlarmDevice {
             try {
                 date = receivedSDF.parse(time);
             } catch (ParseException e) {
-                logger.error("setTimeDate(): Parse Exception occured while trying parse date string - {}. ", e);
+                logger.error("setTimeDate(): Parse Exception occurred while trying parse date string - {}. ", e);
             }
 
             this.panelTime = date;

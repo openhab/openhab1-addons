@@ -6,7 +6,7 @@ This binding provides access to AVM Home Automation devices, such as the Fritz!D
 
 The binding interfaces with hosts using a choice of two different interfaces, the query script used in the Fritz!OS UI and a webservice designed for interfacing with external applications.
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/avmfritz/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/avmfritz/).
 
 ## Binding Configuration
 

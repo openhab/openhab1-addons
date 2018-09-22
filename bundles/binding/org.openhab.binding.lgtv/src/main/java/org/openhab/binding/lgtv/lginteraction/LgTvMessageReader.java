@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public class LgTvMessageReader extends HttpServlet {
 
-    private static Logger logger = LoggerFactory.getLogger(LgtvConnection.class);
+    private static Logger logger = LoggerFactory.getLogger(LgTvMessageReader.class);
     private static List<LgtvEventListener> _listeners = new ArrayList<LgtvEventListener>();
     protected static ItemRegistry itemRegistry; // mf11102014
     public static final String WEBAPP_ALIAS = "/";
@@ -88,7 +88,7 @@ public class LgTvMessageReader extends HttpServlet {
     protected HttpService httpService;
 
     public void setHttpService(HttpService httpService) {
-        logger.info("sethttpservice called");
+        logger.debug("setHttpService called");
         this.httpService = httpService;
     }
 
@@ -125,8 +125,8 @@ public class LgTvMessageReader extends HttpServlet {
      * @return a {@link SecureHttpContext}
      */
     protected HttpContext createHttpContext() {
-        if (this.httpService == null) {
-            logger.error("cannot create http context httpservice null");
+        if (httpService == null) {
+            logger.warn("Cannot create HttpContext because the httpService is null");
             return null;
         } else {
             HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
@@ -140,6 +140,8 @@ public class LgTvMessageReader extends HttpServlet {
     }
 
     public void activate() {
+        logger.debug("LgTv servlet activate called");
+
         try {
             bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
             if (bundleContext != null) {
@@ -148,39 +150,42 @@ public class LgTvMessageReader extends HttpServlet {
                 if (serviceReference1 != null) {
                     bindingprovider = (LgtvBindingProvider) bundleContext.getService(serviceReference1);
                 } else {
-                    logger.error("lgtvbindungprovider=null");
+                    logger.warn("Unable to get service reference from LgTv binding provider class");
                 }
 
                 ServiceReference<?> serviceReference2 = bundleContext.getServiceReference(ItemRegistry.class.getName());
                 if (serviceReference2 != null) {
                     itemregistry = (ItemRegistry) bundleContext.getService(serviceReference2);
                 } else {
-                    logger.error("itemregistry=null");
+                    logger.warn("Unable to get service reference from ItemRegistry class");
                 }
             } else {
-                logger.error("bundleContext=null");
+                logger.warn("bundleContext is null. Unable to get binding provider or item registry.");
             }
 
-            logger.info("lgtv servlet activate called");
             Hashtable<String, String> props = new Hashtable<String, String>();
             httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, createHttpContext());
-            logger.info("Started LgTv Servlet at " + WEBAPP_ALIAS + SERVLET_NAME);
+            logger.info("Started LgTv Servlet at {}{}", WEBAPP_ALIAS, SERVLET_NAME);
         } catch (NamespaceException e) {
-            logger.error("Error during servlet startup", e);
+            logger.warn("NamespaceException occurred during servlet startup", e);
         } catch (ServletException e) {
-            logger.error("Error during servlet startup", e);
+            logger.warn("ServletException occurred during servlet startup", e);
         } catch (Exception e) {
-            logger.error("error during servlet startup", e);
+            logger.warn("Unexpected exception occurred during servlet startup", e);
         }
     }
 
     public void deactivate() {
-        httpService.unregister(WEBAPP_ALIAS + SERVLET_NAME);
-        logger.info("Stopped LgTv Servlet ");
+        try {
+            httpService.unregister(WEBAPP_ALIAS + SERVLET_NAME);
+        } catch(IllegalArgumentException e) {
+            logger.debug("LgTv Servlet '{}' was not registered. Nothing to deactivate.", WEBAPP_ALIAS + SERVLET_NAME);
+        } finally {
+            logger.info("Stopped LgTv Servlet");
+        }
     }
 
     public void startserver() throws IOException {
-
         if (status == 0) {
             activate();
             status = 1;
@@ -191,7 +196,6 @@ public class LgTvMessageReader extends HttpServlet {
     }
 
     public void stopserver() throws IOException {
-
         deactivate();
         logger.debug("LgTvMessageReader Server stopped");
         status = 0;
@@ -199,16 +203,15 @@ public class LgTvMessageReader extends HttpServlet {
 
     public void sendtohandlers(LgtvStatusUpdateEvent event, String remoteaddr, String message) {
         // send message to event listeners
-        logger.debug("sendtohandlers remoteaddr=" + remoteaddr + " message=" + message);
+        logger.debug("sendtohandlers remoteaddr={} message={}", remoteaddr, message);
         try {
             Iterator<LgtvEventListener> iterator = _listeners.iterator();
 
             while (iterator.hasNext()) {
                 iterator.next().statusUpdateReceived(event, remoteaddr, message);
             }
-
         } catch (Exception e) {
-            logger.error("Cannot send to EventListeners / maybe not initialized yet", e);
+            logger.warn("Cannot send to EventListeners. Maybe not initialized yet", e);
         }
 
     }
@@ -261,14 +264,14 @@ public class LgTvMessageReader extends HttpServlet {
                                     out.print(va);
 
                                 } catch (ItemNotFoundException e) {
-                                    logger.error("item not found");
+                                    logger.warn("Item not found");
                                 }
                             }
                         }
                     }
 
                 } else {
-                    logger.error("itemregistry=null or bindingprovider=null");
+                    logger.warn("itemregistry or bindingprovider is null");
                 }
 
             } else {
@@ -351,7 +354,7 @@ public class LgTvMessageReader extends HttpServlet {
         }
         remoteaddr = t;
 
-        logger.debug("httphandler called from remoteaddr=" + remoteaddr + " result=" + sb.toString());
+        logger.debug("httphandler called from remoteaddr={} result={}", remoteaddr, sb);
 
         LgTvEventChannelChanged myevent = new LgTvEventChannelChanged();
 
@@ -359,16 +362,15 @@ public class LgTvMessageReader extends HttpServlet {
         try {
             result = myevent.readevent(sb.toString());
         } catch (JAXBException e) {
-            logger.error("error in httphandler", e);
+            logger.warn("Error occurred in httphandler", e);
         }
-        logger.debug("eventresult=" + result);
+        logger.debug("eventresult={}", result);
 
         LgTvEventChannelChanged.envelope envel = myevent.getenvel();
 
         String eventname = envel.getchannel().geteventname();
 
         if (eventname.equals("ChannelChanged")) {
-
             String name = "CHANNEL_CURRENTNAME=" + envel.getchannel().getchname();
             String number = "CHANNEL_CURRENTNUMBER=" + envel.getchannel().getmajor();
             String set = "CHANNEL_SET=" + envel.getchannel().getmajor();
@@ -376,16 +378,12 @@ public class LgTvMessageReader extends HttpServlet {
             sendtohandlers(event, remoteaddr, name);
             sendtohandlers(event, remoteaddr, number);
             sendtohandlers(event, remoteaddr, set);
-
         } else if (eventname.equals("byebye")) {
-
             sendtohandlers(event, remoteaddr, "BYEBYE_SEEN=1");
-
         } else {
-            logger.debug("warning - unhandled event");
+            logger.debug("unhandled event: {}", eventname);
         }
 
         responseBody.close();
     }
-
 }

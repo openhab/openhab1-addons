@@ -126,7 +126,7 @@ hosts=127.0.0.1:4224:1234 192.168.1.100::secret
 
 In order to bind an item to a device, you need to provide configuration settings. The easiest way
 to do so is to add binding information in your item file.
-For location of the item file on a Linux based system see [File locations](http://docs.openhab.org/installation/linux.html#file-locations)
+For location of the item file on a Linux based system see [File locations](https://www.openhab.org/docs/installation/linux.html#file-locations)
 
 
 The configuration of the TinkerForge binding item looks like this:
@@ -168,6 +168,7 @@ A configuration line for a TinkerForge Device looks like this in services/tinker
 ```
 
 The *symbolic name* string can be used in the items configuration as an alternative for the uid and subid values.
+If you have more than one device of the same type you have to choose a unique *symbolic name* for every device.
 
 The following table lists the general available properties.
 
@@ -1525,7 +1526,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 | property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
-| subid | openHAB subid of the device | in0, in2, in3, in4 |
+| subid | openHAB subid of the device | in0, in1, in2, in3 |
 | type | openHAB type name |  |
 
 ##### tinkerforge.cfg:
@@ -1568,7 +1569,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 | property | description | values |
 |----------|--------------|--------|
 | uid | tinkerforge uid | same as bricklet |
-| subid | openHAB subid of the device | out0, out2, out3, out4 |
+| subid | openHAB subid of the device | out0, out1, out2, out3 |
 | type | openHAB type name |  |
 
 ##### tinkerforge.cfg:
@@ -2059,7 +2060,7 @@ Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/do
 
 There are three sub devices: joystick_xposition, joystick_yposition and joystick_button.
 Callback period for xy position defaults to 10 milli seconds. CallbackPeriod must be configured
-on bricklet_joystick device, because x and y position can not have
+on bricklet_joystick device, because x and y position cannot have
 different callback periods.
 
 ##### Button

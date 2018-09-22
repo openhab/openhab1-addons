@@ -12,8 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.regions.Region;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 
 /**
@@ -24,11 +26,11 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 public class DynamoDBClient {
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBClient.class);
     private DynamoDB dynamo;
-    private AmazonDynamoDBClient client;
+    private AmazonDynamoDB client;
 
-    public DynamoDBClient(AWSCredentials credentials, Region region) {
-        client = new AmazonDynamoDBClient(credentials);
-        client.setRegion(region);
+    public DynamoDBClient(AWSCredentials credentials, Regions region) {
+        client = AmazonDynamoDBClientBuilder.standard().withRegion(region)
+                .withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
         dynamo = new DynamoDB(client);
     }
 
@@ -36,7 +38,7 @@ public class DynamoDBClient {
         this(clientConfig.getCredentials(), clientConfig.getRegion());
     }
 
-    public AmazonDynamoDBClient getDynamoClient() {
+    public AmazonDynamoDB getDynamoClient() {
         return client;
     }
 

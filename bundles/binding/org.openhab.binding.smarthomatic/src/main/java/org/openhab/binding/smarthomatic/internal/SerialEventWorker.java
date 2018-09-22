@@ -17,7 +17,7 @@ package org.openhab.binding.smarthomatic.internal;
 public interface SerialEventWorker {
 
     /**
-     * fired is a event on the serial line has occured
+     * fired is a event on the serial line has occurred
      * 
      * @param message
      */

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -172,7 +172,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
     /**
      * Initialize this device and open the serial port
      *
-     * @throws PlugwiseInitializationException if port can not be opened
+     * @throws PlugwiseInitializationException if port cannot be opened
      */
     @SuppressWarnings("rawtypes")
     private void initialize() throws PlugwiseInitializationException {
@@ -738,7 +738,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
             if (target != null) {
                 result = target.processMessage(message);
             } else {
-                // if we can not find the target MAC for this message, we let the stick deal with it
+                // if we cannot find the target MAC for this message, we let the stick deal with it
                 result = stick.processMessage(message);
             }
 

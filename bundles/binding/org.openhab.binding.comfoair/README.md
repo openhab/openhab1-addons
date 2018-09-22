@@ -40,9 +40,18 @@ where `<device-command>` is replaced with the ComfoAir command from the list bel
 | incomming_fan                   | Read         |  |
 | outgoing_fan                    | Read         |  |
 | filter_running                  | Read         |  |
+| filter_error                    | Read         |  |
 | filter_error_intern             | Read         |  |
 | filter_error_extern             | Read         |  |
+| filter_reset                    | Write        | filterhours will be reset to 0 |
 | error_message                   | Read         |  |
+| ewt_temperatur                  | Read         |  |
+| ewt_temperatur_low              | Read         |  |
+| ewt_temperatur_high             | Read         |  |
+| ewt_speed                       | Read         |  |
+| ewt_mode                        | Read         |  |
+| bypass_mode                     | Read         |  |
+| error_reset                     | Write        | error messages will be reset |
 
 ## Limitations
 

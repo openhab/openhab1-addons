@@ -28,6 +28,7 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
+import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -57,8 +58,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
     /** Thread to handle messages from Open Energy Monitor devices */
     private MessageListener messageListener = null;
 
-    public OpenEnergyMonitorBinding() {
-    }
+    private ValueCache<String, State> cache = new ValueCache<String, State>();
 
     @Override
     public void activate() {
@@ -121,7 +121,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                         OpenEnergyMonitorParserRule rule = new OpenEnergyMonitorParserRule(value);
                         parsingRules.put(key, rule);
                     } catch (OpenEnergyMonitorException e) {
-                        throw new ConfigurationException(key, "invalid parser rule", e);
+                        throw new ConfigurationException(key, "invalid parser rule. ", e);
                     }
                 }
 
@@ -140,10 +140,11 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                 try {
                     messageListener.join();
                 } catch (InterruptedException e) {
-                    logger.info("Previous message listener closing interrupted", e);
+                    logger.info("Previous message listener closing interrupted. ", e);
                 }
             }
 
+            cache.clear();
             messageListener = new MessageListener();
             messageListener.start();
         }
@@ -159,6 +160,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
     private class MessageListener extends Thread {
 
         private boolean interrupted = false;
+        OpenEnergyMonitorConnector connector;
 
         MessageListener() {
         }
@@ -166,14 +168,19 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
         public void setInterrupted(boolean interrupted) {
             this.interrupted = interrupted;
             messageListener.interrupt();
+            try {
+                if (connector != null) {
+                    connector.disconnect();
+                }
+            } catch (OpenEnergyMonitorException e) {
+                logger.warn("Error occurred when closing connection. ", e);
+            }
         }
 
         @Override
         public void run() {
 
             logger.debug("Open Energy Monitor message listener started");
-
-            OpenEnergyMonitorConnector connector;
 
             if (simulate == true) {
                 connector = new OpenEnergyMonitorSimulator();
@@ -186,8 +193,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
             try {
                 connector.connect();
             } catch (OpenEnergyMonitorException e) {
-                logger.error("Error occured when connecting to Open Energy Monitor device", e);
-
+                logger.error("Error occurred when connecting to Open Energy Monitor device. ", e);
                 logger.warn("Closing Open Energy Monitor message listener");
 
                 // exit
@@ -201,75 +207,88 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                     // Wait a packet (blocking)
                     byte[] data = connector.receiveDatagram();
 
-                    logger.trace("Received data (len={}): {}", data.length, DatatypeConverter.printHexBinary(data));
+                    if (data != null) {
 
-                    HashMap<String, Number> vals = dataParser.parseData(data);
+                        logger.trace("Received data (len={}): {}", data.length, DatatypeConverter.printHexBinary(data));
 
-                    for (OpenEnergyMonitorBindingProvider provider : providers) {
-                        for (String itemName : provider.getItemNames()) {
+                        HashMap<String, Number> vals = dataParser.parseData(data);
 
-                            for (Entry<String, Number> entry : vals.entrySet()) {
-                                String key = entry.getKey();
-                                Number value = entry.getValue();
+                        for (OpenEnergyMonitorBindingProvider provider : providers) {
+                            for (String itemName : provider.getItemNames()) {
 
-                                if (key != null && value != null) {
+                                for (Entry<String, Number> entry : vals.entrySet()) {
+                                    String key = entry.getKey();
+                                    Number value = entry.getValue();
 
-                                    boolean found = false;
+                                    if (key != null && value != null) {
 
-                                    org.openhab.core.types.State state = null;
+                                        boolean found = false;
 
-                                    String variable = provider.getVariable(itemName);
+                                        org.openhab.core.types.State state = null;
 
-                                    if (variable.equals(key)) {
-                                        state = new DecimalType(value.doubleValue());
-                                        found = true;
+                                        String variable = provider.getVariable(itemName);
 
-                                    } else if (variable.contains(key) && variable.matches(".*[+-/*^%].*")) {
-                                        logger.debug("Eval key={}, variable={}", key, variable);
-
-                                        String tmp = replaceVariables(vals, variable);
-
-                                        try {
-                                            double result = new DoubleEvaluator().evaluate(tmp);
-                                            logger.debug("Eval '{}={}={}'", variable, tmp, result);
-                                            state = new DecimalType(result);
+                                        if (variable.equals(key)) {
+                                            state = new DecimalType(value.doubleValue());
                                             found = true;
 
-                                        } catch (Exception e) {
-                                            logger.error("Error occured during data evaluation", e);
+                                        } else if (variable.contains(key) && variable.matches(".*[+-/*^%].*")) {
+                                            logger.debug("Eval key={}, variable={}", key, variable);
+
+                                            String tmp = replaceVariables(vals, variable);
+
+                                            try {
+                                                double result = new DoubleEvaluator().evaluate(tmp);
+                                                logger.debug("Eval '{}={}={}'", variable, tmp, result);
+                                                state = new DecimalType(result);
+                                                found = true;
+                                            } catch (Exception e) {
+                                                logger.warn("Error occurred during data evaluation. ", e);
+                                            }
                                         }
-                                    }
 
-                                    if (found) {
+                                        if (found) {
 
-                                        state = transformData(provider.getTransformationType(itemName),
-                                                provider.getTransformationFunction(itemName), state);
+                                            state = transformData(provider.getTransformationType(itemName),
+                                                    provider.getTransformationFunction(itemName), state);
 
-                                        if (state != null) {
-                                            eventPublisher.postUpdate(itemName, state);
-                                            break;
+                                            if (state != null) {
+                                                if (cache.valueEquals(itemName, state)) {
+                                                    logger.trace("Value '{}' for {} hasn't changed, ignoring update",
+                                                            state, itemName);
+                                                } else {
+                                                    logger.trace("Value '{}' for {} changed", state, itemName);
+                                                    cache.update(itemName, state);
+                                                    eventPublisher.postUpdate(itemName, state);
+                                                }
+                                                break;
+                                            }
+
                                         }
 
                                     }
-
                                 }
                             }
-                        }
 
+                        }
                     }
 
                 } catch (OpenEnergyMonitorException e) {
-
-                    logger.error("Error occured when received data from Open Energy Monitor device", e);
+                    logger.warn("Error occurred when received data from Open Energy Monitor device. ", e);
+                    if (!interrupted) {
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException ie) {
+                            // do nothing, but exit
+                        }
+                    }
+                    try {
+                        connector.disconnect();
+                    } catch (OpenEnergyMonitorException oeme) {
+                        logger.warn("Error occurred when trying to disconnet. ", e);
+                    }
                 }
             }
-
-            try {
-                connector.disconnect();
-            } catch (OpenEnergyMonitorException e) {
-                logger.error("Error occured when disconnecting form Open Energy Monitor device", e);
-            }
-
         }
 
     }
@@ -306,7 +325,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                             transformationType);
                 }
             } catch (TransformationException te) {
-                logger.error(
+                logger.warn(
                         "transformation throws exception [transformation type=" + transformationType
                                 + ", transformation function=" + transformationFunction + ", response=" + data + "]",
                         te);

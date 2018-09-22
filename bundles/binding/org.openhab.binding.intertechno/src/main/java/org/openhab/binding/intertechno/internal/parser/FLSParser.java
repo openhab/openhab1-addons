@@ -8,7 +8,12 @@
  */
 package org.openhab.binding.intertechno.internal.parser;
 
+import java.util.List;
+
+import org.openhab.binding.intertechno.internal.CULIntertechnoBinding;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This parser is able to parse the configs for "FLS" Intertechno devices, like
@@ -17,19 +22,19 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @author Till Klocke
  * @since 1.4.0
  */
-public class FLSParser extends AbstractIntertechnoParser {
+public class FLSParser extends AbstractGroupAddressParser {
+
+    private static final Logger logger = LoggerFactory.getLogger(CULIntertechnoBinding.class);
 
     @Override
-    public String parseAddress(String... addressParts) throws BindingConfigParseException {
-        String group = addressParts[0];
-        int subAddress = 0;
-        try {
-            subAddress = Integer.parseInt(addressParts[1]);
-        } catch (NumberFormatException e) {
-            throw new BindingConfigParseException(
-                    "Sub address is not a number. Configured subaddress: " + addressParts[1]);
-        }
-        return getGroupAddress(group) + getSubAddress(subAddress) + "00";
+    public void parseConfig(List<String> configParts) throws BindingConfigParseException {
+        super.parseConfig(configParts);
+
+        commandON = getGroupAddress(group) + getSubAddress(address) + "00" + "FF";
+        commandOFF = getGroupAddress(group) + getSubAddress(address) + "00" + "F0";
+
+        logger.trace("commandON = {}", commandON);
+        logger.trace("commandOFF = {}", commandOFF);
     }
 
     private String getGroupAddress(String group) throws BindingConfigParseException {
@@ -58,16 +63,6 @@ public class FLSParser extends AbstractIntertechnoParser {
         buffer.append("FFFF");
         buffer.setCharAt(remoteId - 1, '0');
         return buffer.toString();
-    }
-
-    @Override
-    public String getCommandValueON() {
-        return "FF";
-    }
-
-    @Override
-    public String getCOmmandValueOFF() {
-        return "F0";
     }
 
 }
