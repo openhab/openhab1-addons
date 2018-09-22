@@ -115,7 +115,7 @@ public class Twitter {
         if (!checkPrerequisites()) {
             return false;
         }
-        return doSendTweet(tweetTxt, null);
+        return sendTweet(tweetTxt, (File)null);
     }
 
     /**
@@ -167,7 +167,7 @@ public class Twitter {
         }
     
         // send the Tweet
-        final boolean result = sendTweet(tweetTxt, fileToAttach);
+        boolean result = sendTweet(tweetTxt, fileToAttach);
         // delete temp file (if needed)
         if (deleteTemporaryFile) {
         	FileUtils.deleteQuietly(fileToAttach);
