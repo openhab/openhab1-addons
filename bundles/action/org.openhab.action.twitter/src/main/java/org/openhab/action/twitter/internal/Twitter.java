@@ -84,9 +84,6 @@ public class Twitter {
         // abbreviate the Tweet to meet the 140 character limit ...
         String abbreviatedTweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
         try {
-            // abbreviate the Tweet to meet the allowed character limit ...
-            tweetTxt = StringUtils.abbreviate(tweetTxt, CHARACTER_LIMIT);
-
             // send the Tweet
             StatusUpdate status = new StatusUpdate(abbreviatedTweetTxt);
             if (fileToAttach != null && fileToAttach.isFile()) {
