@@ -95,7 +95,11 @@ ctr5min.items=Item1,Item2
 ```
 
 All item- and event-related configuration is done in the file `persistence/rrd4j.persist`.
-The strategy `everyMinute` (60 seconds) has to be used, otherwise no data will be persisted (stored).
+
+**IMPORTANT**
+
+The strategy `everyMinute` (60 seconds) **MUST** be used, otherwise no data will be persisted (stored).
+Other strategies can be used too.
 
 rrd4j.persist:
 
