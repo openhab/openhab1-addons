@@ -22,6 +22,6 @@ Import-Package: javax.servlet,
  org.osgi.service.http,
  org.slf4j
 Bundle-ClassPath: .,
- lib/rrd4j-2.1.1.jar
+ lib/rrd4j-3.3.1.jar
 Service-Component: OSGI-INF/rrd4j.xml, OSGI-INF/chartservlet.xml
 Bundle-Activator: org.openhab.persistence.rrd4j.internal.RRD4jActivator
