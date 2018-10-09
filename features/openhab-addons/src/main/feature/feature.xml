@@ -435,7 +435,7 @@
     <configfile finalname="${openhab.conf}/transform/miosZWaveStatusIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-zwavestatusin</configfile>
   </feature>
 
-  <feature name="openhab-binding-mqtt1" description="MQTT Binding" version="${project.version}">
+  <feature name="openhab-binding-mqtt1" description="MQTT Binding (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.transport.mqtt/${project.version}</bundle>
