@@ -59,6 +59,6 @@ The following items switch DECT, WIFI, GUEST_WIFI and the answering machine 0 (d
 ```
 Switch DECT {fritzbox="dect"}
 Switch WIFI {fritzbox="wlan"}
-Switch GWIFI {fritzbox="guestwlan"} (Version 1.7.0)
+Switch GWIFI {fritzbox="guestwlan"} // (Version 1.7.0)
 Switch TAM0 {fritzbox="tam0"}
 ```
