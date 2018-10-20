@@ -10,6 +10,15 @@ This binding can be configured in the `services/fritzbox.cfg` file.
 | password |         |   Yes    | Password to your Fritz!Box |
 | user     |         | when user management is enabled | User of your Fritz!Box. It is a good practice to create an additional user for openHAB. |
 
+
+As a result, your config might look like the following:
+
+```
+fritzbox:ip=<ipaddress>
+fritzbox:password=<password>
+fritzbox:user=<username>
+```
+
 ## Prepare your Fritzbox
 
 * Enable Telnet ([Link](http://www.wehavemorefun.de/fritzbox/Starten_von_telnetd))<BR>
