@@ -52,6 +52,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
     private int udpPort = 9997;
     private String serialPort = null;
     private boolean simulate = false;
+    private int throttleTime = 0;
 
     private OpenEnergyMonitorDataParser dataParser = null;
 
@@ -114,6 +115,10 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                     if (StringUtils.isNotBlank(value)) {
                         simulate = Boolean.parseBoolean(value);
                     }
+                } else if ("throttleTime".equals(key)) {
+                    if (StringUtils.isNotBlank(value)) {
+                        throttleTime = Integer.parseInt(value);
+                    }
                 } else {
 
                     // process all data parsing rules
@@ -127,10 +132,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
 
             }
 
-            if (parsingRules != null) {
-
-                dataParser = new OpenEnergyMonitorDataParser(parsingRules);
-            }
+            dataParser = new OpenEnergyMonitorDataParser(parsingRules, throttleTime);
 
             if (messageListener != null) {
 

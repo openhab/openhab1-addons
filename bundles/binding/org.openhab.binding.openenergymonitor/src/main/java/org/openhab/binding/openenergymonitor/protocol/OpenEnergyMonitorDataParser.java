@@ -11,7 +11,10 @@ package org.openhab.binding.openenergymonitor.protocol;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.openhab.binding.openenergymonitor.internal.OpenEnergyMonitorBinding;
 import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorParserRule.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for parse data packets from Open Energy Monitor devices.
@@ -21,18 +24,24 @@ import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorParserRul
  */
 public class OpenEnergyMonitorDataParser {
 
+    private final Logger logger = LoggerFactory.getLogger(OpenEnergyMonitorBinding.class);
+
     private HashMap<String, OpenEnergyMonitorParserRule> parsingRules = null;
 
-    public OpenEnergyMonitorDataParser(HashMap<String, OpenEnergyMonitorParserRule> parsingRules) {
+    private HashMap<Byte, Long> throttleTimes = new HashMap<Byte, Long>();;
+    private int throttleTime = 0;
+
+    public OpenEnergyMonitorDataParser(HashMap<String, OpenEnergyMonitorParserRule> parsingRules, int throttleTime) {
 
         this.parsingRules = parsingRules;
+        this.throttleTime = throttleTime;
     }
 
     /**
      * Method to parse Open Energy Monitoring device datagram to variables by defined parsing rules.
-     * 
+     *
      * @param data datagram from Open Energy Monitoring device
-     * 
+     *
      * @return Hash table which contains all parsed variables.
      */
     public HashMap<String, Number> parseData(byte[] data) {
@@ -40,18 +49,37 @@ public class OpenEnergyMonitorDataParser {
         HashMap<String, Number> variables = new HashMap<String, Number>();
 
         byte address = data[0];
+        boolean parse = true;
 
-        for (Entry<String, OpenEnergyMonitorParserRule> entry : parsingRules.entrySet()) {
-
-            OpenEnergyMonitorParserRule rule = entry.getValue();
-
-            if (rule.getAddress() == address) {
-                Number obj = convertTo(rule.getDataType(), getBytes(rule.getParseBytes(), data));
-                variables.put(entry.getKey(), obj);
+        if (throttleTime > 0) {
+            if ((getLastUpdateTime(address) + throttleTime) > System.currentTimeMillis()) {
+                logger.debug("Throttling message for address '{}'", address);
+                parse = false;
             }
         }
 
+        if (parse) {
+            logger.debug("Parsing message for address '{}'", address);
+            for (Entry<String, OpenEnergyMonitorParserRule> entry : parsingRules.entrySet()) {
+                OpenEnergyMonitorParserRule rule = entry.getValue();
+
+                if (rule.getAddress() == address) {
+                    setLastUpdateTime(address, System.currentTimeMillis());
+                    Number obj = convertTo(rule.getDataType(), getBytes(rule.getParseBytes(), data));
+                    variables.put(entry.getKey(), obj);
+                }
+            }
+        }
         return variables;
+    }
+
+    private long getLastUpdateTime(byte address) {
+        Long throttleTime = throttleTimes.get(address);
+        return throttleTime != null ? throttleTime : 0;
+    }
+
+    private void setLastUpdateTime(byte address, long time) {
+        throttleTimes.put(address, time);
     }
 
     private byte[] getBytes(int[] byteIndexes, byte[] data) {
