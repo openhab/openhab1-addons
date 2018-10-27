@@ -28,7 +28,7 @@ public class OpenEnergyMonitorDataParser {
 
     private HashMap<String, OpenEnergyMonitorParserRule> parsingRules = null;
 
-    private HashMap<Byte, Long> throttleTimes = new HashMap<Byte, Long>();;
+    private HashMap<Byte, Long> updateTimes = new HashMap<Byte, Long>();
     private int throttleTime = 0;
 
     public OpenEnergyMonitorDataParser(HashMap<String, OpenEnergyMonitorParserRule> parsingRules, int throttleTime) {
@@ -51,20 +51,22 @@ public class OpenEnergyMonitorDataParser {
         byte address = data[0];
         boolean parse = true;
 
+        logger.debug("Received message from address '{}'", address);
+
         if (throttleTime > 0) {
             if ((getLastUpdateTime(address) + throttleTime) > System.currentTimeMillis()) {
-                logger.debug("Throttling message for address '{}'", address);
+                logger.debug("Skipping message parsing");
                 parse = false;
             }
         }
 
         if (parse) {
-            logger.debug("Parsing message for address '{}'", address);
+            logger.debug("Parsing message");
+            setLastUpdateTime(address, System.currentTimeMillis());
             for (Entry<String, OpenEnergyMonitorParserRule> entry : parsingRules.entrySet()) {
                 OpenEnergyMonitorParserRule rule = entry.getValue();
 
                 if (rule.getAddress() == address) {
-                    setLastUpdateTime(address, System.currentTimeMillis());
                     Number obj = convertTo(rule.getDataType(), getBytes(rule.getParseBytes(), data));
                     variables.put(entry.getKey(), obj);
                 }
@@ -74,12 +76,12 @@ public class OpenEnergyMonitorDataParser {
     }
 
     private long getLastUpdateTime(byte address) {
-        Long throttleTime = throttleTimes.get(address);
-        return throttleTime != null ? throttleTime : 0;
+        Long upudateTime = updateTimes.get(address);
+        return upudateTime != null ? upudateTime : 0;
     }
 
     private void setLastUpdateTime(byte address, long time) {
-        throttleTimes.put(address, time);
+        updateTimes.put(address, time);
     }
 
     private byte[] getBytes(int[] byteIndexes, byte[] data) {
