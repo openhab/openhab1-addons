@@ -8,7 +8,8 @@
  */
 package org.openhab.binding.velux.bridge;
 
-import org.openhab.binding.velux.bridge.comm.BCgetProducts;
+import org.openhab.binding.velux.bridge.comm.GetProduct;
+import org.openhab.binding.velux.bridge.comm.GetProducts;
 import org.openhab.binding.velux.internal.config.VeluxBridgeConfiguration;
 import org.openhab.binding.velux.things.VeluxExistingProducts;
 import org.openhab.binding.velux.things.VeluxProduct;
@@ -32,40 +33,76 @@ import org.slf4j.LoggerFactory;
  * @author Guenther Schreiner - Initial contribution
  */
 public class VeluxBridgeGetProducts {
-    private final Logger logger = LoggerFactory.getLogger(VeluxBridgeGetProducts.class);
+	private final Logger logger = LoggerFactory.getLogger(VeluxBridgeGetProducts.class);
 
-    /**
-     * Login into bridge, retrieve all products and logout from bridge based
-     * on a well-prepared environment of a {@link VeluxBridgeProvider}. The results
-     * are stored within a public structure {@link org.openhab.binding.velux.things.VeluxExistingProducts
-     * VeluxExistingProducts}.
-     *
-     * @param bridge Initialized Velux bridge handler.
-     * @return <b>success</b>
-     *         of type boolean describing the overall result of this interaction.
-     */
+	private final int max_nodeId=6;
 
-    public boolean getProducts(VeluxBridgeProvider bridge) {
-        logger.trace("getProducts() called.");
+	/**
+	 * Login into bridge, retrieve all products and logout from bridge based
+	 * on a well-prepared environment of a {@link VeluxBridgeProvider}. The results
+	 * are stored within a public structure {@link org.openhab.binding.velux.things.VeluxExistingProducts
+	 * VeluxExistingProducts}.
+	 *
+	 * @param bridge Initialized Velux bridge (communication) handler.
+	 * @param thisKLF Initialized Velux bridge instance.
+	 * @return <b>success</b>
+	 *         of type boolean describing the overall result of this interaction.
+	 */
 
-        BCgetProducts.Response response = bridge.bridgeCommunicate(new BCgetProducts());
-        if (response != null) {
-            for (BCgetProducts.BCproduct product : response.getDevices()) {
-                logger.trace("getProducts() found product {} (type {}).", product.getName(), product.getCategory());
+	public boolean getProducts(VeluxBridge bridge, VeluxBridgeInstance thisKLF) {
+		logger.trace("getProducts() called.");
 
-                VeluxProduct veluxProduct = new VeluxProduct(product);
-                logger.trace("getProducts() storing product {}.", veluxProduct);
-                if (!bridge.getExistingsProducts().isRegistered(veluxProduct)) {
-                    bridge.getExistingsProducts().register(veluxProduct);
-                }
-            }
-            logger.debug("getProducts() finally has found products {}.", bridge.getExistingsProducts());
-            return true;
-        } else {
-            logger.trace("getProducts() finished with failure.");
-            return false;
-        }
-    }
+		GetProducts bcp = bridge.bridgeAPI().getProducts();
+		if (! bridge.bridgeInstance.veluxBridgeConfiguration().bulkRetrieval || (bcp == null)) {
+			logger.trace("getProducts() working on step-by-step retrieval.");
+			//ToDo: check why there are any responses back in the buffer. And eliminate the following Logout.
+			//bridge.bridgeLogout();
+			GetProduct bcp2 = bridge.bridgeAPI().getProduct();
+			for(int nodeId = 0; nodeId < max_nodeId; nodeId++) {
+				logger.trace("getProducts() {}.", new String(new char[80]).replace('\0', '*'));
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException ie) {
+					logger.trace("io() wait interrupted.");
+				}
+				logger.trace("getProducts() working on product {}.", nodeId);
+				
+				//ToDo: is this really necessary: ask Velux engineering
+				//bridge.bridgeLogout();
+
+				bcp2.setProductId(nodeId);
+				if (bridge.bridgeCommunicate(bcp2)) {
+					VeluxProduct veluxProduct = bcp2.getProduct();
+					if (bcp2.isCommunicationSuccessful()) {
+						logger.trace("getProducts() found product {}.", veluxProduct);
+						if (!thisKLF.existingProducts().isRegistered(veluxProduct)) {
+							thisKLF.existingProducts().register(veluxProduct);
+						}
+					}
+				}
+			}
+			logger.debug("getProducts() finally has found products {}.", thisKLF.existingProducts());
+			return true;
+		} else {
+			logger.trace("getProducts() working on bulk retrieval.");
+			if ((bridge.bridgeCommunicate(bcp)) && (bcp.isCommunicationSuccessful())) {
+				for (VeluxProduct product : bcp.getProducts()) {
+					logger.trace("getProducts() found product {} (type {}).", product.getName(), product.getTypeId());
+
+					VeluxProduct veluxProduct = product.clone();
+					logger.trace("getProducts() storing product {}.", veluxProduct);
+					if (!thisKLF.existingProducts().isRegistered(veluxProduct)) {
+						thisKLF.existingProducts().register(veluxProduct);
+					}
+				}
+				logger.debug("getProducts() finally has found products {}.", thisKLF.existingProducts());
+				return true;
+			} else {
+				logger.trace("getProducts() finished with failure.");
+				return false;
+			}
+		}
+	}
 
 }
 /**

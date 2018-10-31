@@ -20,12 +20,12 @@ import org.slf4j.LoggerFactory;
  * <ul>
  * <li><B>bindingItemType</B>
  * <P>
- * accessable via
+ * Accessible via
  * {@link org.openhab.binding.velux.internal.VeluxBindingConfig#getBindingItemType
  * getBindingItemType} as representation of the Velux device is filed in the Velux bridge.</li>
  * <li><B>bindingConfig</B>
  * <P>
- * accessable via
+ * Accessible via
  * {@link org.openhab.binding.velux.internal.VeluxBindingConfig#getBindingConfig getBindingConfig} containing the
  * device-specific binding configuration
  * as declared in the binding configuration (possibly adapted by preprocessing).</li>

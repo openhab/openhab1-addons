@@ -8,10 +8,6 @@
  */
 package org.openhab.binding.velux.things;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.openhab.binding.velux.bridge.comm.BCgetProducts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,158 +19,236 @@ import org.slf4j.LoggerFactory;
  * @author Guenther Schreiner - initial contribution.
  */
 public class VeluxProduct {
-    private final Logger logger = LoggerFactory.getLogger(VeluxProduct.class);
+	private final Logger logger = LoggerFactory.getLogger(VeluxProduct.class);
 
-    // Type definitions
+	// Type definitions
 
-    public static class ProductName {
-        private String name;
 
-        @Override
-        public String toString() {
-            return name;
-        }
+	public static class ProductBridgeIndex {
+		private int id;
 
-        ProductName(String name) {
-            this.name = name;
-        }
-    }
+		public int toInt() {
+			return id;
+		}
 
-    public enum ProductTypeId {
-        ROLLER_SHUTTER(2, 0),
-        OTHER(3, 0),
-        WINDOW_OPENER(4, 1),
-        SOLAR_SLIDER(10, 2),
-        UNDEFTYPE(-1);
+		public ProductBridgeIndex(int id) {
+			this.id = id;
+		}
+	}
 
-        // Class internal
+	// Class internal
 
-        private int typeId;
-        private int subtype;
+	private VeluxProductName name;
+	private VeluxProductType typeId;
+	private ProductBridgeIndex bridgeProductIndex;
 
-        // Reverse-lookup map for getting a ProductTypeId from an TypeId
-        private static final Map<Integer, ProductTypeId> lookupTypeId2Enum = new HashMap<Integer, ProductTypeId>();
+	private boolean v2 = false;
+	private int order = 0;
+	private int placement = 0;
+	private int velocity = 0;
+	private int variation = 0;
+	private int powerMode = 0;
+	private String serialNumber = "";
+	private int state = 0;
+	private int currentPosition = 0;
+	private int target = 0;
+	private int remainingTime = 0;
+	private int timeStamp = 0;
 
-        static {
-            for (ProductTypeId typeId : ProductTypeId.values()) {
-                lookupTypeId2Enum.put(typeId.getTypeId(), typeId);
-            }
-        }
+	// Constructor
 
-        // Constructor
+	public VeluxProduct(VeluxProductName name, VeluxProductType typeId, ProductBridgeIndex bridgeProductIndex) {
+		logger.trace("VeluxProduct(v1) created.");
+		this.name = name;
+		this.typeId = typeId;
+		this.bridgeProductIndex = bridgeProductIndex;
+	}
 
-        ProductTypeId(int typeId) {
-            this.typeId = typeId;
-            this.subtype = 0;
-        }
+	/**
+	 * @param name			This field Name holds the name of the actuator, ex. “Window 1”. This field is 64 bytes long, formatted as UTF-8 characters.
+	 * @param typeId		This field indicates the node type, ex. Window, Roller shutter, Light etc.
+	 * @param bridgeProductIndex NodeID is an Actuator index in the system table, to get information from. It must be a value from 0 to 199.
+	 * @param order			Order can be used to store a sort order. The sort order is used in client end, when presenting a list of nodes for the user. 
+	 * @param placement		Placement can be used to store a room group index or house group index number.
+	 * @param velocity		This field indicates what velocity the node is operation with.
+	 * @param variation		More detail information like top hung, kip, flat roof or sky light window. 
+	 * @param powerMode		This field indicates the power mode of the node (ALWAYS_ALIVE/LOW_POWER_MODE).
+	 * @param serialNumber	This field tells the serial number of the node. This field is 8 bytes.
+	 * @param state			This field indicates the operating state of the node.
+	 * @param currentPosition	This field indicates the current position of the node.
+	 * @param target		This field indicates the target position of the current operation.
+	 * @param remainingTime	This field indicates the remaining time for a node activation in seconds.
+	 * @param timeStamp		UTC time stamp for last known position.
+	 */
+	public VeluxProduct(VeluxProductName name, VeluxProductType typeId, ProductBridgeIndex bridgeProductIndex,
+			int order, int placement, int velocity, int variation, int powerMode, String serialNumber,
+			int state, int currentPosition, int target, int remainingTime, int timeStamp) {
+		logger.trace("VeluxProduct(v2) created.");
+		this.name = name;
+		this.typeId = typeId;
+		this.bridgeProductIndex = bridgeProductIndex;
+		this.v2 = true;
+		this.order = order;
+		this.placement = placement;
+		this.velocity = velocity;
+		this.variation = variation;
+		this.powerMode = powerMode;
+		this.serialNumber = serialNumber;
+		this.state = state;
+		this.currentPosition = currentPosition;
+		this.target = target;
+		this.remainingTime = remainingTime;
+		this.timeStamp = timeStamp;
+	}
 
-        ProductTypeId(int typeId, int subTypeId) {
-            this.typeId = typeId;
-            this.subtype = subTypeId;
-        }
+	// Utility methods
 
-        ProductTypeId(String categoryString) {
-            try {
-                this.typeId = ProductTypeId.valueOf(categoryString).getTypeId();
-                this.subtype = ProductTypeId.valueOf(categoryString).getSubtype();
-            } catch (IllegalArgumentException e) {
-                try {
-                    this.typeId = ProductTypeId.valueOf(categoryString.replaceAll("\\p{C}", "_").toUpperCase())
-                            .getTypeId();
-                    this.subtype = ProductTypeId.valueOf(categoryString.replaceAll("\\p{C}", "_").toUpperCase())
-                            .getSubtype();
-                } catch (IllegalArgumentException e2) {
-                    this.typeId = -1;
-                }
-            }
-        }
+	public VeluxProduct clone() {
+		if (this.v2) {
+			return new VeluxProduct(this.name, this.typeId, this.bridgeProductIndex,
+					this.order, this.placement, this.velocity, this.variation, this.powerMode, this.serialNumber,
+					this.state, this.currentPosition, this.target, this.remainingTime, this.timeStamp);
+		} else {
+			return new VeluxProduct(this.name, this.typeId, this.bridgeProductIndex);
+		}
+	}
 
-        // Class access methods
+	// Class access methods
 
-        public int getTypeId() {
-            return typeId;
-        }
+	public VeluxProductName getName() {
+		return this.name;
+	}
 
-        public int getSubtype() {
-            return subtype;
-        }
+	public VeluxProductType getTypeId() {
+		return this.typeId;
+	}
 
-        public static ProductTypeId get(int typeId) {
-            return lookupTypeId2Enum.get(typeId);
-        }
+	public ProductBridgeIndex getBridgeProductIndex() {
+		return this.bridgeProductIndex;
+	}
 
-    }
+	@Override
+	public String toString() {
+		if (this.v2) {
+			return String.format("Product \"%s\"/%s (bridgeIndex=%d,serial=%s,position=%d)",
+					this.name, this.typeId,this.bridgeProductIndex.toInt(),
+					this.serialNumber,this.currentPosition);
+		} else {
+			
+		return String.format("Product \"%s\"/%s (bridgeIndex %d)", this.name, this.typeId,
+				this.bridgeProductIndex.toInt());
+		}
+	}
 
-    public static class ProductBridgeIndex {
-        private int id;
+	// Class helper methods
 
-        int toInt() {
-            return id;
-        }
+	public String getProductUniqueIndex() {
+		return this.name.toString().concat("#").concat(this.typeId.toString());
+	}
 
-        ProductBridgeIndex(int id) {
-            this.id = id;
-        }
-    }
+	// Getter and Setter methods 
 
-    // Class internal
+	/**
+	 * @return the v2
+	 */
+	public boolean isV2() {
+		return v2;
+	}
 
-    private ProductName name;
-    private ProductTypeId typeId;
-    private ProductBridgeIndex bridgeProductIndex;
+	/**
+	 * @return the order
+	 */
+	public int getOrder() {
+		return order;
+	}
 
-    // Constructor
+	/**
+	 * @return the placement
+	 */
+	public int getPlacement() {
+		return placement;
+	}
 
-    public VeluxProduct(VeluxProduct product) {
-        this.name = product.getName();
-        this.bridgeProductIndex = product.getBridgeProductIndex();
-        this.typeId = product.getTypeId();
-    }
+	/**
+	 * @return the velocity
+	 */
+	public int getVelocity() {
+		return velocity;
+	}
 
-    public VeluxProduct(BCgetProducts.BCproduct productDescr) {
-        this.name = new ProductName(productDescr.getName());
-        this.bridgeProductIndex = new ProductBridgeIndex(productDescr.getId());
-        String productTypeId = productDescr.getCategory().replaceAll("\\s", "_").toUpperCase();
+	/**
+	 * @return the variation
+	 */
+	public int getVariation() {
+		return variation;
+	}
 
-        try {
-            this.typeId = ProductTypeId.valueOf(productTypeId);
-        } catch (IllegalArgumentException iae) {
-            logger.warn(
-                    "Please report this to maintainer: VeluxProduct({},{}) has found an unregistered ProductTypeId.",
-                    productTypeId, productDescr.getTypeId());
-        }
-        if (this.getTypeId().getTypeId() != productDescr.getTypeId()) {
-            logger.warn(
-                    "Please report this to maintainer: VeluxProduct({},{}) has found two different typeIds which differ ({} vs. {}.",
-                    productTypeId, productDescr.getTypeId(), this.getTypeId().getTypeId(), productDescr.getTypeId());
-        }
-    }
+	/**
+	 * @return the powerMode
+	 */
+	public int getPowerMode() {
+		return powerMode;
+	}
 
-    // Class access methods
+	/**
+	 * @return the serialNumber
+	 */
+	public String getSerialNumber() {
+		return serialNumber;
+	}
 
-    public ProductName getName() {
-        return this.name;
-    }
+	/**
+	 * @return the state
+	 */
+	public int getState() {
+		return state;
+	}
+	/**
+	 * @param state				Update the operating state of the node.
+	 */
+	public void setState(int state) {
+		this.state = state;
+	}
 
-    public ProductTypeId getTypeId() {
-        return this.typeId;
-    }
+	/**
+	 * @return the currentPosition
+	 */
+	public int getCurrentPosition() {
+		return currentPosition;
+	}
+	/**
+	 * @param currentPosition	Update the current position of the node.
+	 */
+	public void setCurrentPosition(int currentPosition) {
+		this.currentPosition = currentPosition;
+	}
 
-    public ProductBridgeIndex getBridgeProductIndex() {
-        return this.bridgeProductIndex;
-    }
+	/**
+	 * @return the target
+	 */
+	public int getTarget() {
+		return target;
+	}
+	/**
+	 * @param target			Update the target position of the current operation.
+	 */
+	public void setTarget(int target) {
+		this.target = target;
+	}
 
-    @Override
-    public String toString() {
-        return String.format("Product \"%s\"/%s (bridgeIndex %d)", this.name, this.typeId,
-                this.bridgeProductIndex.toInt());
-    }
+	/**
+	 * @return the remainingTime
+	 */
+	public int getRemainingTime() {
+		return remainingTime;
+	}
 
-    // Class helper methods
-
-    public String getProductUniqueIndex() {
-        return this.name.toString().concat("#").concat(this.typeId.toString());
-    }
+	/**
+	 * @return the timeStamp
+	 */
+	public int getTimeStamp() {
+		return timeStamp;
+	}
 
 }
 

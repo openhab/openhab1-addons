@@ -19,39 +19,39 @@ import org.slf4j.LoggerFactory;
  */
 public final class VeluxActivator implements BundleActivator {
 
-    private static Logger logger = LoggerFactory.getLogger(VeluxActivator.class);
+	private static Logger logger = LoggerFactory.getLogger(VeluxActivator.class);
 
-    private static BundleContext context;
+	private static BundleContext context;
 
-    /**
-     * Returns the bundle context of this bundle.
-     *
-     * @return the bundle context
-     */
-    public static BundleContext getContext() {
-        logger.debug("getContext() called.");
-        return context;
-    }
+	/**
+	 * Returns the bundle context of this bundle.
+	 *
+	 * @return the bundle context
+	 */
+	public static BundleContext getContext() {
+		logger.debug("getContext() called.");
+		return context;
+	}
 
-    /**
-     * Called whenever the OSGi framework starts our bundle
-     * {@inheritDoc}
-     */
-    @Override
-    public void start(final BundleContext bc) throws Exception {
-        context = bc;
-        logger.info("Velux binding has been started.");
-    }
+	/**
+	 * Called whenever the OSGi framework starts our bundle
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void start(final BundleContext bc) throws Exception {
+		context = bc;
+		logger.info("Velux binding has been started.");
+	}
 
-    /**
-     * Called whenever the OSGi framework stops our bundle
-     * {@inheritDoc}
-     */
-    @Override
-    public void stop(final BundleContext bc) throws Exception {
-        context = null;
-        logger.info("Velux binding has been stopped.");
-    }
+	/**
+	 * Called whenever the OSGi framework stops our bundle
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void stop(final BundleContext bc) throws Exception {
+		context = null;
+		logger.info("Velux binding has been stopped.");
+	}
 
 }
 /*

@@ -8,9 +8,6 @@
  */
 package org.openhab.binding.velux.things;
 
-import org.openhab.binding.velux.bridge.comm.BCgetScenes.BCproductState;
-import org.openhab.binding.velux.things.VeluxProduct.ProductName;
-import org.openhab.binding.velux.things.VeluxProduct.ProductTypeId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,50 +21,49 @@ import org.slf4j.LoggerFactory;
  * @author Guenther Schreiner - initial contribution.
  */
 public class VeluxProductReference {
-    private final Logger logger = LoggerFactory.getLogger(VeluxProductReference.class);
+	private final Logger logger = LoggerFactory.getLogger(VeluxProductReference.class);
 
-    // Class internal
+	// Class internal
 
-    private ProductName name;
-    private ProductTypeId typeId;
+	private VeluxProductName name;
+	private VeluxProductType typeId;
 
-    // Constructor
+	// Constructor
 
-    public VeluxProductReference(BCproductState productState) {
-        this.name = new ProductName(productState.getName());
-        this.typeId = ProductTypeId.get(productState.getTypeId());
-        if (this.typeId == null) {
-            logger.warn(
-                    "Please report this to maintainer: VeluxProductReference({}) has found an unregistered ProductTypeId.",
-                    productState.getTypeId());
-        }
-    }
+	public VeluxProductReference(VeluxProduct product) {
+		this.name = product.getName();
+		this.typeId = product.getTypeId();
+	}
 
-    public VeluxProductReference(VeluxProduct product) {
-        this.name = product.getName();
-        this.typeId = product.getTypeId();
-    }
+	public VeluxProductReference(VeluxProductName name, int type) {
+		this.name = name;
+		this.typeId = VeluxProductType.get(type);
+		if (this.typeId == null) {
+			logger.warn(
+					"Please report this to maintainer: VeluxProductReference({}) has found an unregistered ProductTypeId.",
+					type);
+		}
+	}
+	// Class access methods
 
-    // Class access methods
+	public VeluxProductName getName() {
+		return this.name;
+	}
 
-    public ProductName getName() {
-        return this.name;
-    }
+	public VeluxProductType getTypeId() {
+		return this.typeId;
+	}
 
-    public ProductTypeId getTypeId() {
-        return this.typeId;
-    }
+	@Override
+	public String toString() {
+		return String.format("Prod.ref. \"%s\"/%s", this.name, this.typeId);
+	}
 
-    @Override
-    public String toString() {
-        return String.format("Prod.ref. \"%s\"/%s", this.name, this.typeId);
-    }
+	// Class helper methods
 
-    // Class helper methods
-
-    public String getProductUniqueIndex() {
-        return this.name.toString().concat("#").concat(this.typeId.toString());
-    }
+	public String getProductUniqueIndex() {
+		return this.name.toString().concat("#").concat(this.typeId.toString());
+	}
 
 }
 

@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.velux.bridge;
 
-import org.openhab.binding.velux.bridge.comm.BCcheckLostNodes;
 import org.openhab.binding.velux.internal.config.VeluxBridgeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,29 +25,27 @@ import org.slf4j.LoggerFactory;
  * @author Guenther Schreiner - Initial contribution
  */
 public class VeluxBridgeDeviceCheckLostNodes {
-    private final Logger logger = LoggerFactory.getLogger(VeluxBridgeDeviceCheckLostNodes.class);
+	private final Logger logger = LoggerFactory.getLogger(VeluxBridgeDeviceCheckLostNodes.class);
 
-    /**
-     * Login into bridge, query the bridge for device status and logout from bridge
-     * based on a well-prepared environment of a {@link VeluxBridgeProvider}.
-     *
-     * @param bridge Initialized Velux bridge handler.
-     * @return <b>status</b> of type String describing the status of the device/bridge.
-     */
+	/**
+	 * Login into bridge, query the bridge for device status and logout from bridge
+	 * based on a well-prepared environment of a {@link VeluxBridgeProvider}.
+	 *
+	 * @param bridge Initialized Velux bridge handler.
+	 * @return <b>status</b> of type String describing the status of the device/bridge.
+	 */
 
-    public String retrieve(VeluxBridgeProvider bridge) {
-        logger.trace("retrieve() called.");
-
-        logger.trace("retrieve() About to query device status.");
-        BCcheckLostNodes.Response response = bridge.bridgeCommunicate(new BCcheckLostNodes());
-        if (response == null) {
-            logger.trace("retrieve() finished with failure.");
-            return null;
-        } else {
-            logger.trace("retrieve() finished successfully with result {}.", response.getDeviceStatus());
-            return response.getDeviceStatus();
-        }
-    }
+	public String retrieve(VeluxBridge bridge) {
+		logger.trace("retrieve() called.");
+//		CheckLostNodes bcp = bridge.bridgeAPI().checkLostNodes();
+//		if ((bridge.bridgeCommunicate(bcp)) && (bcp.isCommunicationSuccessful())) {
+//			logger.trace("retrieve() finished successfully with result {}.", bcp.getDeviceStatus());
+//			return bcp.getDeviceStatus();
+//		} else {
+//			logger.trace("retrieve() finished with failure.");
+			return "";
+//		}
+	}
 }
 
 /**

@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.velux.bridge;
 
-import org.openhab.binding.velux.bridge.comm.BCgetScenes;
+import org.openhab.binding.velux.bridge.comm.GetScenes;
 import org.openhab.binding.velux.internal.config.VeluxBridgeConfiguration;
 import org.openhab.binding.velux.things.VeluxExistingScenes;
 import org.openhab.binding.velux.things.VeluxScene;
@@ -32,30 +32,31 @@ import org.slf4j.LoggerFactory;
  * @author Guenther Schreiner - Initial contribution
  */
 public class VeluxBridgeGetScenes {
-    private final Logger logger = LoggerFactory.getLogger(VeluxBridgeGetScenes.class);
+	private final Logger logger = LoggerFactory.getLogger(VeluxBridgeGetScenes.class);
 
-    public boolean getScenes(VeluxBridgeProvider bridge) {
-        logger.trace("getScenes() called.");
+	public boolean getScenes(VeluxBridge bridge, VeluxBridgeInstance thisKLF) {
+		logger.trace("getScenes() called.");
 
-        BCgetScenes.Response response = bridge.bridgeCommunicate(new BCgetScenes());
-        if (response != null) {
-            for (BCgetScenes.BCscene scene : response.getScenes()) {
-                logger.trace("getScenes() found scene {}.", scene.getName());
 
-                VeluxScene veluxScene = new VeluxScene(scene);
-                logger.trace("getScenes() storing scene {}.", veluxScene);
-                if (!bridge.getExistingsScenes().isRegistered(veluxScene)) {
-                    bridge.getExistingsScenes().register(veluxScene);
-                }
-                logger.trace("getScenes() stored scene {}.", veluxScene);
-            }
-            logger.debug("getScenes() finally has found scenes {}.", bridge.getExistingsScenes());
-            return true;
-        } else {
-            logger.trace("getScenes() finished with failure.");
-            return false;
-        }
-    }
+		GetScenes bcp = bridge.bridgeAPI().getScenes();
+		if ((bridge.bridgeCommunicate(bcp)) && (bcp.isCommunicationSuccessful())) {
+			for (VeluxScene scene : bcp.getScenes()) {
+				logger.trace("getScenes() found scene {}.", scene.toString());
+
+				VeluxScene veluxScene = new VeluxScene(scene);
+				logger.trace("getScenes() storing scene {}.", veluxScene);
+				if (!thisKLF.existingScenes().isRegistered(veluxScene)) {
+					thisKLF.existingScenes().register(veluxScene);
+				}
+				logger.trace("getScenes() stored scene {}.", veluxScene);
+			}
+			logger.debug("getScenes() finally has found scenes {}.", thisKLF.existingScenes());
+			return true;
+		} else {
+			logger.trace("getScenes() finished with failure.");
+			return false;
+		}
+	}
 
 }
 /**

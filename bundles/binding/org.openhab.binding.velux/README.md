@@ -4,7 +4,7 @@
 This binding integrates the <B>Velux</B> devices with help of a special gateway, the <B>Velux Bridge KLF200</B>.
 The Velux Binding interacts via the Velux Bridge with the Velux devices like window openers, shutters and others.
 
-For details about the feature, see the following website [Velux](http://www.velux.com) 
+For details about the feature, see the following websites [Velux](http://www.velux.com) or [Velux API](http://www.velux.com/api/klf200)
 
 ## Binding Configuration
 
@@ -13,6 +13,7 @@ The binding can be configured by parameters in the global configuration file `op
 | Property       | Default                | Required | Description                                           |
 |----------------|------------------------|:--------:|-------------------------------------------------------|
 | bridgeIPAddress|                        |   Yes    | Hostname or address for accessing the Velux Bridge.   |
+| bridgeProtocol | slip                   |    No    | Underlying communication protocol (http/https/slip).  |
 | bridgeTCPPort  | 80                     |    No    | TCP port for accessing the Velux Bridge.              |
 | bridgePassword | velux123               |    No    | Password for authentication against the Velux Bridge. |
 | timeoutMsecs   | 2000                   |    No    | Initial Connection timeout in milliseconds            |
@@ -55,6 +56,7 @@ Optionally the subtype is enhanced with parameters like the appropriate name of 
 |------------|---------------------------------------------------------------------------|
 | bridge     | The Velux KLF200 represents a gateway to all Velux devices.               |
 | scene      | Named ordered set of product states which can be activated for execution. |
+| actuator   | IO-home controlled device which can be maintained by parameter settings.  |
 
 
 ### Subtype
@@ -77,6 +79,8 @@ Optionally the subtype is enhanced with parameters like the appropriate name of 
 | scenes       | String        | List of all defined scenes                                      | bridge     | N/A       |
 | check        | String        | Checks of current item configuratio                             | bridge     | N/A       |
 | shutter      | Rollershutter | Virtual rollershutter as combination of different scenes        | bridge     | required  |
+| serial       | Rollershutter | IO-Homecontrol'ed device        				 | actuator   | required  |
+| serial       | Switch        | IO-Homecontrol'ed device        				 | actuator   | required  |
 
 ### Subtype Parameters
 
@@ -95,7 +99,7 @@ The subtype shutter requires an even pair of parameters, each defining the shutt
 As the bridge does not support a real rollershutter interaction, this binding provides a virtual rollershutter consisting of different scenes which set a specific shutter level. Therefore the item definition contains multiple pairs of rollershutter levels each followed by a scene name, which leads to this setting.
 
 
-## Full Example
+## Full Example for firmware version One
 
 
 
@@ -185,6 +189,49 @@ rule "PushButton of group gV"
     end
 ```
 
+## Full Example for firmware version Two
+
+
+
+### Items
+
+```
+// Velux Bridge parameters
+
+String  V_FIRMWARE  "Firmware [%s]"                     { velux="thing=bridge;channel=firmware" }
+String  V_STATUS    "Status [%s]"                       { velux="thing=bridge;channel=status" }
+String  V_CHECK     "Velux Config Check [%s]"           { velux="thing=bridge;channel=check" }
+
+// Velux Shutters
+
+Rollershutter V_DG_M_W	"Velux DG Window Bathroom [%d]"	{ velux="thing=actuator;channel=serial#01:52:21:3E:26:0C:1B"}
+Rollershutter V_DG_M_S	"Velux DG Shutter Bathroom [%d]"{ velux="thing=actuator;channel=serial#01:52:00:21:00:07:00"}
+Rollershutter V_DG_W_S	"Velux DG Shutter West [%d]"	{ velux="thing=actuator;channel=serial#01:53:09:40:21:0C:2A" }
+Rollershutter V_DG_E_S	"Velux DG Shutter East [%d]"	{ velux="thing=actuator;channel=serial#11:56:32:14:5A:21:1C" }
+
+//
+/
+```
+
+### Sitemap
+
+```
+sitemap velux label="Velux Environment"
+{
+    Frame label="Velux Shutter and Window" {
+        Switch  item=V_DG_W_S
+        Switch  item=V_DG_E_S
+        Switch  item=V_DG_M_S
+        Switch  item=V_DG_M_W
+    }
+    Frame label="Velux Bridge" {
+        Text    item=V_CHECK
+        Text    item=V_STATUS
+        Text    item=V_FIRMWARE
+    }
+}
+```
+
 ### Debugging
 
 For those who are interested in more detailed insight of the processing of this binding, a deeper look can be achieved by increased loglevel.
@@ -198,18 +245,14 @@ During startup of normal operations, there should be only some few messages with
 
 ## Supported/Tested Firmware Revisions
 
-The Velux Bridge in API version One (firmware version 0.1.1.*) allows to activate a set of predefined actions, so called scenes. Therefore beside the bridge, only one main thing exists, the scene element. Unfortunately even the current firmware version 0.1.1.0.44.0 does not include enhancements on this fact.
+The Velux Bridge in API version ONE (firmware version 0.1.1.*) allows to activate a set of predefined actions, so called scenes. Therefore beside the bridge, only one main thing exists, the scene element. Unfortunately the next-generation firmware version TWO is not upward compatible so that you'll loose the public web frontend due to this upgrade. On the other hand, the 2.x firmware provide full access to any IO-Home compatible devices not limited to Velux and includes many different features (which are not yet implemented in this binding).
 
 | Firmware revision | Release date | Description                                                             |
 |:-----------------:|:------------:|-------------------------------------------------------------------------|
 | 0.1.1.0.41.0      | 2016-06-01   | Default factory shipping revision.                                      |
-| 0.1.1.0.42.0      | 2017-07-01   | N/A                                                                     |
-| 0.1.1.0.44.0      | 2017-12-14   | N/A                                                                     |
+| 0.1.1.0.42.0      | 2017-07-01   | Public Web Frontend w/ JSON-API.                                        |
+| 0.1.1.0.44.0      | 2017-12-14   | Public Web Frontend w/ JSON-API.                                        |
+| 2.0.0.71	    | 2018-09-27   | Public SLIP-API w/ private-only WLAN-based Web Frontend w/ JSON-API.    |
 
-## Unknown Velux devices
+Note: There is no way back towards firmware version ONE.
 
-All known <B>Velux</B> devices can be handled by this binding. However, there might be some new ones which will be reported within the logfiles.Therefore, error messages like the one below should be reported to the maintainers so that the new Velux device type can be incorporated."
-
-```
-[ERROR] [g.velux.things.VeluxProductReference] - PLEASE REPORT THIS TO MAINTAINER: VeluxProductReference(3) has found an unregistered ProductTypeId.
-```

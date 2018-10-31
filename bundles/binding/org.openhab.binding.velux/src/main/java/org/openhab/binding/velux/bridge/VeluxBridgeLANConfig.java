@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.velux.bridge;
 
-import org.openhab.binding.velux.bridge.comm.BCgetLANConfig;
+import org.openhab.binding.velux.bridge.comm.GetLANConfig;
 import org.openhab.binding.velux.internal.config.VeluxBridgeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,21 +60,21 @@ public class VeluxBridgeLANConfig {
      * @return <b>channel</b> - or null - of type {@link VeluxBridgeLANConfig.Channel} describing the overall result of
      *         this interaction.
      */
-    public Channel retrieve(VeluxBridgeProvider bridge) {
+    public Channel retrieve(VeluxBridge bridge) {
         logger.trace("retrieve() called.");
 
         if (this.channel == null) {
             this.channel = new Channel();
         }
 
-        BCgetLANConfig.Response response = bridge.bridgeCommunicate(new BCgetLANConfig());
-        if (response != null) {
-            logger.trace("retrieve() found successfully configuration {}.", response.getLANConfig());
-            this.channel.ipAddress = response.getLANConfig().getIPAddress();
-            this.channel.subnetMask = response.getLANConfig().getSubnetMask();
-            this.channel.defaultGW = response.getLANConfig().getDefaultGateway();
-            this.channel.enabledDHCP = response.getLANConfig().getDHCP();
-            this.channel.isRetrieved = true;
+		GetLANConfig bcp = bridge.bridgeAPI().getLANConfig();
+		if ((bridge.bridgeCommunicate(bcp)) && (bcp.isCommunicationSuccessful())) {
+			logger.trace("retrieve() found successfully configuration {}.", bcp.getLANConfig());
+			channel.ipAddress = bcp.getLANConfig().getIpAddress();
+			channel.subnetMask = bcp.getLANConfig().getSubnetMask();
+			channel.defaultGW = bcp.getLANConfig().getDefaultGW();
+			channel.enabledDHCP = bcp.getLANConfig().getDHCP();
+			channel.isRetrieved = true;
             return channel;
         } else {
             logger.trace("retrieve() finished with failure.");

@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
  * <li>{@link VeluxItemType#isReadable isReadable} about a read possibility</li>
  * <li>{@link VeluxItemType#isWritable isWritable} about a write possibility</li>
  * <li>{@link VeluxItemType#isExecutable isExecutable} about an execute possibility</li>
+ * <li>{@link VeluxItemType#isToBeRefreshed isToBeRefreshed} about necessarily to be refreshed.</li>
  * </ul>
  *
  * In addition there are helper methods providing information about:
@@ -68,36 +69,39 @@ import org.slf4j.LoggerFactory;
  *
  */
 public enum VeluxItemType {
-    SCENE_ACTION(VeluxBindingConstants.THING_VELUX_SCENE, VeluxBindingConstants.CHANNEL_SCENE_ACTION, SwitchItem.class,
-            false, false, true),
-    SCENE_SILENTMODE(VeluxBindingConstants.THING_VELUX_SCENE, VeluxBindingConstants.CHANNEL_SCENE_SILENTMODE,
-            SwitchItem.class, false, true, false),
-    BRIDGE_STATUS(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_STATUS,
-            StringItem.class, true, true, true),
+    SCENE_ACTION(VeluxBindingConstants.THING_VELUX_SCENE, 		VeluxBindingConstants.CHANNEL_SCENE_ACTION,
+    		SwitchItem.class, 			false, false, true, false),
+    SCENE_SILENTMODE(VeluxBindingConstants.THING_VELUX_SCENE, 	VeluxBindingConstants.CHANNEL_SCENE_SILENTMODE,
+            SwitchItem.class, 			false, true, false, false),
+    BRIDGE_STATUS(VeluxBindingConstants.THING_VELUX_BRIDGE, 	VeluxBindingConstants.CHANNEL_BRIDGE_STATUS,
+            StringItem.class, 			true, true, true, false),
     BRIDGE_DO_DETECTION(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_DO_DETECTION,
-            SwitchItem.class, false, false, true),
-    BRIDGE_FIRMWARE(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_FIRMWARE,
-            StringItem.class, true, false, false),
-    BRIDGE_IPADDRESS(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_IPADDRESS,
-            StringItem.class, true, false, false),
+            SwitchItem.class, 			false, false, true, false),
+    BRIDGE_FIRMWARE(VeluxBindingConstants.THING_VELUX_BRIDGE, 	VeluxBindingConstants.CHANNEL_BRIDGE_FIRMWARE,
+            StringItem.class, 			true, false, false, false),
+    BRIDGE_IPADDRESS(VeluxBindingConstants.THING_VELUX_BRIDGE, 	VeluxBindingConstants.CHANNEL_BRIDGE_IPADDRESS,
+            StringItem.class, 			true, false, false, false),
     BRIDGE_SUBNETMASK(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_SUBNETMASK,
-            StringItem.class, true, false, false),
-    BRIDGE_DEFAULTGW(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_DEFAULTGW,
-            StringItem.class, true, false, false),
-    BRIDGE_DHCP(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_DHCP, SwitchItem.class,
-            true, false, false),
-    BRIDGE_WLANSSID(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_WLANSSID,
-            StringItem.class, true, false, false),
+            StringItem.class, 			true, false, false, false),
+    BRIDGE_DEFAULTGW(VeluxBindingConstants.THING_VELUX_BRIDGE, 	VeluxBindingConstants.CHANNEL_BRIDGE_DEFAULTGW,
+            StringItem.class, 			true, false, false, false),
+    BRIDGE_DHCP(VeluxBindingConstants.THING_VELUX_BRIDGE, 		VeluxBindingConstants.CHANNEL_BRIDGE_DHCP,
+    		SwitchItem.class, 			true, false, false, false),
+    BRIDGE_WLANSSID(VeluxBindingConstants.THING_VELUX_BRIDGE, 	VeluxBindingConstants.CHANNEL_BRIDGE_WLANSSID,
+            StringItem.class, 			true, false, false, false),
     BRIDGE_WLANPASSWORD(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_WLANPASSWORD,
-            SwitchItem.class, true, false, false),
-    BRIDGE_PRODUCTS(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_PRODUCTS,
-            StringItem.class, true, false, false),
-    BRIDGE_SCENES(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_SCENES,
-            StringItem.class, true, false, false),
-    BRIDGE_CHECK(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_CHECK, StringItem.class,
-            true, false, false),
-    BRIDGE_SHUTTER(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_SHUTTER,
-            RollershutterItem.class, false, true, false);
+            SwitchItem.class, 			true, false, false, false),
+    BRIDGE_PRODUCTS(VeluxBindingConstants.THING_VELUX_BRIDGE, 	VeluxBindingConstants.CHANNEL_BRIDGE_PRODUCTS,
+            StringItem.class, 			true, false, false, true),
+    BRIDGE_SCENES(VeluxBindingConstants.THING_VELUX_BRIDGE, 	VeluxBindingConstants.CHANNEL_BRIDGE_SCENES,
+            StringItem.class, 			true, false, false, false),
+    BRIDGE_CHECK(VeluxBindingConstants.THING_VELUX_BRIDGE, 		VeluxBindingConstants.CHANNEL_BRIDGE_CHECK,
+    		StringItem.class, 			true, false, false, false),
+    BRIDGE_SHUTTER(VeluxBindingConstants.THING_VELUX_BRIDGE, 	VeluxBindingConstants.CHANNEL_BRIDGE_SHUTTER,
+            RollershutterItem.class, 	false, true, false, false),
+	ACTUATOR_SERIAL(VeluxBindingConstants.THING_VELUX_ACTUATOR, VeluxBindingConstants.CHANNEL_ACTUATOR_SERIAL,
+			RollershutterItem.class, 	true, true, false, true);
+
 
     private String thingIdentifier;
     private String channelIdentifier;
@@ -105,17 +109,19 @@ public enum VeluxItemType {
     private boolean itemIsReadable;
     private boolean itemIsWritable;
     private boolean itemIsExecutable;
+    private boolean itemIsToBeRefreshed;
 
     private static Logger logger = LoggerFactory.getLogger(VeluxItemType.class);
 
     VeluxItemType(String thingIdentifier, String channelIdentifier, Class<? extends Item> itemClass, boolean isReadable,
-            boolean isWritable, boolean isExecutable) {
+            boolean isWritable, boolean isExecutable, boolean isToBeRefreshed) {
         this.thingIdentifier = thingIdentifier;
         this.channelIdentifier = channelIdentifier;
         this.itemClass = itemClass;
         this.itemIsReadable = isReadable;
         this.itemIsWritable = isWritable;
         this.itemIsExecutable = isExecutable;
+        this.itemIsToBeRefreshed = isToBeRefreshed;
     }
 
     @Override
@@ -170,6 +176,17 @@ public enum VeluxItemType {
     public boolean isExecutable() {
         logger.trace("isExecutable() returns {}.", this.itemIsExecutable);
         return this.itemIsExecutable;
+    }
+
+    
+    /**
+     * {@link VeluxItemType} access method to query the need of refresh on this type of item.
+     *
+     * @return <b>isExecute</b> of type boolean describing the ability to perform a write operation.
+     */
+    public boolean isToBeRefreshed() {
+        logger.trace("isToBeRefreshed() returns {}.", this.itemIsToBeRefreshed);
+        return this.itemIsToBeRefreshed;
     }
 
     /**

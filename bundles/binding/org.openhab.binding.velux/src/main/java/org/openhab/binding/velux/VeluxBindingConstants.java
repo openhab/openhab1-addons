@@ -26,6 +26,7 @@ public class VeluxBindingConstants {
     // List of all thing ids
     public static final String THING_VELUX_SCENE = "scene";
     public static final String THING_VELUX_BRIDGE = "bridge";
+    public static final String THING_VELUX_ACTUATOR = "actuator";
 
     // Id of support bridge
     public static final String BRIDGE_TYPE = "klf200";
@@ -48,6 +49,9 @@ public class VeluxBindingConstants {
     // List of all scene channel ids
     public static final String CHANNEL_SCENE_ACTION = "action";
     public static final String CHANNEL_SCENE_SILENTMODE = "silentMode";
+
+    // List of all actuator channel ids
+    public static final String CHANNEL_ACTUATOR_SERIAL = "serial";
 
     /** Helper definitions */
     public static final String BINDING_KVPAIR_SEPARATOR = ";";

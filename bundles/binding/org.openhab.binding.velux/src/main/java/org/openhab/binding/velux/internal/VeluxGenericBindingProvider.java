@@ -283,6 +283,24 @@ public class VeluxGenericBindingProvider extends AbstractGenericBindingProvider 
                 }
                 break;
 
+            case VeluxBindingConstants.THING_VELUX_ACTUATOR:
+                logger.trace("processBindingConfiguration() found THING_VELUX_ACTUATOR w/ channelValue={}.",
+                        thisBinding.channelValue);
+                if (thisBinding.channelValue.length() == 0) {
+                    throw new BindingConfigParseException(
+                            "Velux binding must contain a serial specified as channel subvalue.");
+                }
+                switch (thisBinding.channelIdentifier) {
+                    case VeluxBindingConstants.CHANNEL_ACTUATOR_SERIAL:
+                        config = new VeluxBindingConfig(VeluxItemType.ACTUATOR_SERIAL, thisBinding.channelValue);
+                        break;
+                    default:
+                        throw new BindingConfigParseException("Velux binding must contain one of "
+                                + VeluxItemType.getChannelIdentifiers(thisBinding.thingIdentifier)
+                                + " as channel keyword");
+                }
+                break;
+
             default:
                 throw new BindingConfigParseException("Velux binding must contain one of "
                         + VeluxItemType.getThingIdentifiers() + " as thing keyword");

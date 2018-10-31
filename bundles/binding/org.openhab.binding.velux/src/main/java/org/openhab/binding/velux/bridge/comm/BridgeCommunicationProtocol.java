@@ -9,34 +9,23 @@
 package org.openhab.binding.velux.bridge.comm;
 
 /**
- * <B>Common bridge communication message scheme supported by the </B><I>Velux</I><B> bridge.</B>
+ * Protocol independent bridge communication supported by the Velux bridge.
  * <P>
- * Message semantic will be defined by the implementation of the separate message classes.
+ * Common Message semantic: Communication with the bridge and (optionally) storing returned information within the class itself.
  * <P>
- *
- * The implementations will define the informations how to send query and receive answer
- * through the
- * {@link org.openhab.binding.velux.bridge.VeluxBridgeProvider VeluxBridgeProvider}.
- *
+ * As 2nd level interface it defines the methods to help in sending a query and
+ * processing the received answer.
+ * <P>
+ * (Methods in this interface for the appropriate interaction:
  * <UL>
- * <LI>{@link org.openhab.binding.velux.bridge.comm.BCcheckLostNodes BCcheckLostNodes}</LI>
- * <LI>{@link org.openhab.binding.velux.bridge.comm.BCdetectProducts BCdetectProducts}</LI>
- * <LI>{@link org.openhab.binding.velux.bridge.comm.BCgetDeviceStatus BCgetDeviceStatus}</LI>
- * <LI>{@link org.openhab.binding.velux.bridge.comm.BCgetFirmware BCgetFirmware}</LI>
- * <LI>{@link org.openhab.binding.velux.bridge.comm.BCgetLANConfig BCgetLANConfig}</LI>
- * <LI>{@link org.openhab.binding.velux.bridge.comm.BCgetProducts BCgetProducts}</LI>
- * <LI>{@link org.openhab.binding.velux.bridge.comm.BCgetScenes BCgetScenes}</LI>
- * <LI>{@link org.openhab.binding.velux.bridge.comm.BCgetWLANConfig BCgetWLANConfig}</LI>
- * <LI>{@link org.openhab.binding.velux.bridge.comm.BCidentifyProduct BCidentifyProduct}</LI>
- * <LI>{@link org.openhab.binding.velux.bridge.comm.BClogin BClogin}</LI>
- * <LI>{@link org.openhab.binding.velux.bridge.comm.BClogout BClogout}</LI>
- * <LI>{@link org.openhab.binding.velux.bridge.comm.BCrunScene BCrunScene}</LI>
- * <LI>{@link org.openhab.binding.velux.bridge.comm.BCsetSilentMode BCsetSilentMode}</LI>
- * </UL>
+ * <LI>{@link name} to return the name of the interaction for human interface.</LI>
+ * <LI>{@link isCommunicationSuccessful} to signal the success of the interaction (only available 
+ * after storing the response).</LI>
+* </UL>
  *
  * @author Guenther Schreiner - Initial contribution.
  */
-public interface BridgeCommunicationProtocol<T> {
+public interface BridgeCommunicationProtocol {
 
     /**
      * Returning a description of this communication pair.
@@ -47,60 +36,12 @@ public interface BridgeCommunicationProtocol<T> {
     public String name();
 
     /**
-     * Returning the URL suffix for accessing the specific service access point.
-     *
-     * @return <b>sapURL</b>
-     *         as String which is to be combined with the bridge address.
-     */
-    public String getURL();
-
-    /**
-     * Returning the request object for further JSON serialization.
-     *
-     * @return <b>ObjectOfRequest</b>
-     *         is an Object.
-     */
-    public Object getObjectOfRequest();
-
-    /**
-     * Returning the class of the object of response message for further JSON deserialization.
-     *
-     * @return <b>ClassOfResponseObject</b>
-     *         is the appropriate class Object.
-     */
-    public Class<T> getClassOfResponse();
-
-    /**
      * Returning the communication status included within the response message.
      *
-     * @param response From the bridge returned message to be examined.
      * @return <b>boolean</b> whether the operation according to the request was successful.
      */
-    public boolean isCommunicationSuccessful(T response);
+    public boolean isCommunicationSuccessful();
 
-    /**
-     * Returning the communication status included within the response message.
-     *
-     * @param response From the bridge returned message to be examined.
-     * @return <b>authentication token</b> as String which can be used for next operations.
-     */
-    public String getAuthToken(T response);
-
-    /**
-     * Returning the communication status included within the response message.
-     *
-     * @param response From the bridge returned message to be examined.
-     * @return <b>deviceStatus</b> as String describing the current status of the bridge.
-     */
-    public String getDeviceStatus(T response);
-
-    /**
-     * Returning the communication status included within the response message.
-     *
-     * @param response From the bridge returned message to be examined.
-     * @return <b>errors</b> as String[] describing the status of the operation according to the request in depth.
-     */
-    public String[] getErrors(T response);
 
 }
 

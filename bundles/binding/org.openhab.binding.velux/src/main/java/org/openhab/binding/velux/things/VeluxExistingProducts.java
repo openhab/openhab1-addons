@@ -10,6 +10,7 @@ package org.openhab.binding.velux.things;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.openhab.binding.velux.things.VeluxProduct.ProductBridgeIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,72 +33,127 @@ import org.slf4j.LoggerFactory;
  * @author Guenther Schreiner - initial contribution.
  */
 public class VeluxExistingProducts {
-    private final Logger logger = LoggerFactory.getLogger(VeluxExistingProducts.class);
+	private final Logger logger = LoggerFactory.getLogger(VeluxExistingProducts.class);
 
-    // Type definitions
+	// Type definitions
 
-    private ConcurrentHashMap<String, VeluxProduct> existingProductsByUniqueIndex;
-    private int memberCount;
+	private ConcurrentHashMap<String, VeluxProduct> existingProductsByUniqueIndex;
+	private ConcurrentHashMap<Integer, String> bridgeIndexToSerialNumber;
+	private int memberCount;
 
-    public VeluxExistingProducts() {
-        logger.trace("VeluxExistingProducts() initializing.");
-        existingProductsByUniqueIndex = new ConcurrentHashMap<String, VeluxProduct>();
-        memberCount = 0;
-    }
+	public VeluxExistingProducts() {
+		logger.trace("VeluxExistingProducts() initializing.");
+		existingProductsByUniqueIndex = new ConcurrentHashMap<String, VeluxProduct>();
+		bridgeIndexToSerialNumber = new ConcurrentHashMap<Integer, String>();
+		memberCount = 0;
+	}
 
-    // Class access methods
+	// Class access methods
 
-    public boolean isRegistered(String productUniqueIndex) {
-        logger.trace("isRegistered({}) returns {}.", productUniqueIndex,
-                existingProductsByUniqueIndex.containsKey(productUniqueIndex) ? "true" : "false");
-        return existingProductsByUniqueIndex.containsKey(productUniqueIndex);
-    }
+	public boolean isRegistered(String productUniqueIndexOrSerialNumber) {
+		logger.trace("isRegistered({}) returns {}.", productUniqueIndexOrSerialNumber,
+				existingProductsByUniqueIndex.containsKey(productUniqueIndexOrSerialNumber) ? "true" : "false");
+		return existingProductsByUniqueIndex.containsKey(productUniqueIndexOrSerialNumber);
+	}
 
-    public boolean isRegistered(VeluxProduct product) {
-        return isRegistered(product.getProductUniqueIndex());
-    }
+	public boolean isRegistered(VeluxProduct product) {
+		logger.trace("isRegistered({}) called.", product);
+		if (product.isV2()) {
+			return isRegistered(product.getProductUniqueIndex());
 
-    public boolean register(VeluxProduct newProduct) {
-        logger.trace("register({}) called.", newProduct);
-        if (isRegistered(newProduct)) {
-            return false;
-        }
-        logger.trace("register() registering new product {}.", newProduct);
-        existingProductsByUniqueIndex.put(newProduct.getProductUniqueIndex(), newProduct);
-        memberCount++;
-        return true;
-    }
+		} else {
+			return isRegistered(product.getSerialNumber());
+		}
+	}
 
-    public VeluxProduct get(String productUniqueIndex) {
-        logger.trace("get({}) called.", productUniqueIndex);
-        if (!isRegistered(productUniqueIndex)) {
-            return null;
-        }
-        return existingProductsByUniqueIndex.get(productUniqueIndex);
-    }
+	public boolean isRegistered(ProductBridgeIndex bridgeProductIndex) {
+		logger.trace("isRegistered({}) called.", bridgeProductIndex.toString());
+		if (!bridgeIndexToSerialNumber.containsKey(bridgeProductIndex.toInt())) {
+			return false;
+		}
+		return isRegistered(bridgeIndexToSerialNumber.get(bridgeProductIndex.toInt()));
+	}
 
-    public VeluxProduct[] values() {
-        return existingProductsByUniqueIndex.values().toArray(new VeluxProduct[0]);
-    }
+	public boolean register(VeluxProduct newProduct) {
+		logger.trace("register({}) called.", newProduct);
+		if (isRegistered(newProduct)) {
+			return false;
+		}
+		logger.trace("register() registering new product {}.", newProduct);
+		
+		if (newProduct.isV2()) {
+			logger.trace("register() registering by SerialNumber {}",newProduct.getSerialNumber());
+			existingProductsByUniqueIndex.put(newProduct.getSerialNumber(), newProduct);
+		} else {
+			logger.trace("register() registering by UniqueIndex {}", newProduct.getProductUniqueIndex());
+			existingProductsByUniqueIndex.put(newProduct.getProductUniqueIndex(), newProduct);
+		}
+		logger.trace("register() registering by ProductBridgeIndex {}", newProduct.getBridgeProductIndex().toInt());
+		bridgeIndexToSerialNumber.put(newProduct.getBridgeProductIndex().toInt(), newProduct.getSerialNumber());
 
-    public int getNoMembers() {
-        logger.trace("getNoMembers() returns {}.", memberCount);
-        return memberCount;
-    }
+		memberCount++;
+		return true;
+	}
+	
+	public boolean update(ProductBridgeIndex bridgeProductIndex, int productState, int productPosition, int productTarget) {
+		logger.trace("update(bridgeProductIndex={},productState={},productPosition={},productTarget={}) called.",
+				bridgeProductIndex.toInt(),productState,productPosition,productTarget);
+		if (!isRegistered(bridgeProductIndex)) {
+			return false;
+		}
+		logger.trace("update() updating product {}.", bridgeProductIndex.toInt());
+		VeluxProduct thisProduct = this.get(bridgeProductIndex);
+		thisProduct.setState(productState);
+		thisProduct.setCurrentPosition(productPosition);
+		thisProduct.setTarget(productTarget);
+		if (thisProduct.isV2()) {
+			logger.trace("update() updating by SerialNumber {}",thisProduct.getSerialNumber());
+			existingProductsByUniqueIndex.replace(thisProduct.getSerialNumber(), thisProduct);
+		} else {
+			logger.trace("update() updating by UniqueIndex {}", thisProduct.getProductUniqueIndex());
+			existingProductsByUniqueIndex.replace(thisProduct.getProductUniqueIndex(), thisProduct);
+		}
+		return true;
+	}
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
+	public VeluxProduct get(String productUniqueIndexOrSerialNumber) {
+		logger.trace("get({}) called.", productUniqueIndexOrSerialNumber);
+		if (!isRegistered(productUniqueIndexOrSerialNumber)) {
+			return null;
+		}
+		return existingProductsByUniqueIndex.get(productUniqueIndexOrSerialNumber);
+	}
 
-        sb.append(memberCount).append(" members: ");
-        for (VeluxProduct product : this.values()) {
-            sb.append(product.toString()).append(",");
-        }
-        if (sb.lastIndexOf(",") > 0) {
-            sb.deleteCharAt(sb.lastIndexOf(","));
-        }
-        return sb.toString();
-    }
+	public VeluxProduct get(ProductBridgeIndex bridgeProductIndex) {
+		logger.trace("get({}) called.", bridgeProductIndex);
+		if (!isRegistered(bridgeProductIndex)) {
+			return null;
+		}
+		return existingProductsByUniqueIndex.get(bridgeIndexToSerialNumber.get(bridgeProductIndex.toInt()));
+	}
+
+	public VeluxProduct[] values() {
+		return existingProductsByUniqueIndex.values().toArray(new VeluxProduct[0]);
+	}
+
+	public int getNoMembers() {
+		logger.trace("getNoMembers() returns {}.", memberCount);
+		return memberCount;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(memberCount).append(" members: ");
+		for (VeluxProduct product : this.values()) {
+			sb.append(product.toString()).append(",");
+		}
+		if (sb.lastIndexOf(",") > 0) {
+			sb.deleteCharAt(sb.lastIndexOf(","));
+		}
+		return sb.toString();
+	}
 }
 
 /**

@@ -17,36 +17,45 @@ package org.openhab.binding.velux.internal.config;
  * It contains the factory default values as well.
  * <ul>
  * <li>{@link VeluxBridgeConfiguration#bridgeProtocol bridgeProtocol} protocol type
- * (one of http or https),</li>
+ * (one of http or https or slip),</li>
  * <li>{@link VeluxBridgeConfiguration#bridgeIPAddress bridgeIPAddress} bridge IP address,</li>
  * <li>{@link VeluxBridgeConfiguration#bridgeTCPPort bridgeTCPPort} bridge TCP port,</li>
- * <li>{@link VeluxBridgeConfiguration#bridgePassword bridgePassword} brigde password,</li>
+ * <li>{@link VeluxBridgeConfiguration#bridgePassword bridgePassword} bridge password,</li>
  * <li>{@link VeluxBridgeConfiguration#timeoutMsecs timeoutMsecs} communication timeout in milliseconds,</li>
- * <li>{@link VeluxBridgeConfiguration#retries retries} number of retries (with exponential backoff algo),</li>
+ * <li>{@link VeluxBridgeConfiguration#retries retries} number of retries (with exponential backoff algorithm),</li>
  * <li>{@link VeluxBridgeConfiguration#refresh refresh} refresh interval for retrieval of bridge information.</li>
+ * <li>{@link VeluxBridgeConfiguration#bulkRetrieval bulkRetrieval} flag to use bulk product retrieval.</li>
  * </ul>
  * <p>
  *
  * @author Guenther Schreiner - Initial contribution
  */
 public class VeluxBridgeConfiguration {
+    public static final String BRIDGE_PROTOCOL = "bridgeProtocol";
     public static final String BRIDGE_IPADDRESS = "bridgeIPAddress";
     public static final String BRIDGE_TCPPORT = "bridgeTCPPort";
     public static final String BRIDGE_PASSWORD = "bridgePassword";
     public static final String BRIDGE_TIMEOUT_MSECS = "timeoutMsecs";
     public static final String BRIDGE_RETRIES = "retries";
     public static final String BRIDGE_REFRESH_SECS = "refreshSecs";
+    public static final String BRIDGE_BULK_RETRIEVAL = "bulkRetrieval";
 
     /*
      * Default values - should not be modified
      */
-    public String bridgeProtocol = "http";
+    public boolean configHasChanged = true;
+
+    /*
+     * Default values - should not be modified
+     */
+    public String bridgeProtocol = "slip";
     public String bridgeIPAddress = "192.168.1.1";
-    public int bridgeTCPPort = 80 ;
+    public int bridgeTCPPort = 51200;
     public String bridgePassword = "velux123";
     public int timeoutMsecs = 1000;
     public int retries = 10;
-    public long refresh = 3600000L; // one hour
+    public long refresh = 300000L; // five minutes
+    public boolean bulkRetrieval = true;
 }
 /*
  * end-of-internal/config/VeluxBridgeConfiguration.java

@@ -8,8 +8,7 @@
  */
 package org.openhab.binding.velux.bridge;
 
-import org.openhab.binding.velux.bridge.comm.BCrunScene;
-import org.openhab.binding.velux.internal.config.VeluxBridgeConfiguration;
+import org.openhab.binding.velux.bridge.comm.RunScene;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,43 +20,37 @@ import org.slf4j.LoggerFactory;
  * <UL>
  * <LI>{@link VeluxBridgeExecute#execute} for execution of a scene.
  * </UL>
- * Any parameters are controlled by {@link VeluxBridgeConfiguration}.
+ * Any parameters are controlled by {@link org.openhab.binding.velux.internal.config.VeluxBridgeConfiguration}.
  *
  * @author Guenther Schreiner - Initial contribution
  */
 public class VeluxBridgeExecute {
-    private final Logger logger = LoggerFactory.getLogger(VeluxBridgeExecute.class);
+	private final Logger logger = LoggerFactory.getLogger(VeluxBridgeExecute.class);
 
-    /**
-     * Login into bridge, executes a scene and logout from bridge based
-     * on a well-prepared environment of a {@link VeluxBridgeProvider}.
-     *
-     * @param bridge  Initialized Velux bridge handler.
-     * @param sceneNo Number of scene to be executed.
-     * @return <b>success</b>
-     *         of type boolean describing the overall result of this interaction.
-     */
-    public boolean execute(VeluxBridgeProvider bridge, int sceneNo) {
-        logger.trace("execute({}) called.", sceneNo);
+	/**
+	 * Login into bridge, executes a scene and logout from bridge based
+	 * on a well-prepared environment of a {@link VeluxBridgeProvider}.
+	 *
+	 * @param bridge  Initialized Velux bridge handler.
+	 * @param sceneNo Number of scene to be executed.
+	 * @return <b>success</b>
+	 *         of type boolean describing the overall result of this interaction.
+	 */
+	public boolean execute(VeluxBridge bridge, int sceneNo) {
+		logger.trace("execute({}) called.", sceneNo);
 
-        if (!bridge.bridgeLogin()) {
-            logger.debug("Velux bridge login sequence failed; expecting bridge is OFFLINE.");
-            return false;
-        }
-        BCrunScene.Response response = bridge.bridgeCommunicate(new BCrunScene(sceneNo));
-        if (response != null) {
-            if (response.getResult()) {
-                logger.debug("execute() finished successfully.");
-                return true;
-            }
-        }
-        if (!bridge.bridgeLogout()) {
-            logger.debug("Velux bridge logout sequence failed; expecting bridge is OFFLINE.");
-            return false;
-        }
-        logger.trace("execute() finished with failure.");
-        return false;
-    }
+		RunScene bcp = bridge.bridgeAPI().runScene();
+		bcp.setProductId(sceneNo);
+		if ((bridge.bridgeCommunicate(bcp)) && (bcp.isCommunicationSuccessful())) {
+			logger.debug("execute() finished successfully.");
+			return true;
+		}
+		else {
+			logger.trace("execute() finished with failure.");
+			return false;
+		}
+	}
+
 }
 /**
  * end-of-bridge/VeluxBridgeExecute.java

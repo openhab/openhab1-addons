@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.velux.things;
 
-import org.openhab.binding.velux.bridge.comm.BCgetScenes.BCproductState;
-
 /**
  * <B>Velux</B> product status representation.
  * <P>
@@ -48,10 +46,6 @@ public class VeluxProductState {
         this.productReference = productReference;
         this.actuator = actuator;
         this.state = new ProductState(state);
-    }
-
-    public VeluxProductState(BCproductState productState) {
-        this(new VeluxProductReference(productState), productState.getActuator(), productState.getStatus());
     }
 
     // Class access methods

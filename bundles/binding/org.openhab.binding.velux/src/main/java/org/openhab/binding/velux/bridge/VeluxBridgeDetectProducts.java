@@ -8,9 +8,10 @@
  */
 package org.openhab.binding.velux.bridge;
 
-import org.openhab.binding.velux.bridge.comm.BCdetectProducts;
-import org.openhab.binding.velux.bridge.comm.BCgetDeviceStatus;
-import org.openhab.binding.velux.internal.config.VeluxBridgeConfiguration;
+import org.openhab.binding.velux.bridge.comm.DetectProducts;
+import org.openhab.binding.velux.bridge.comm.GetDeviceStatus;
+import org.openhab.binding.velux.things.VeluxGwState;
+import org.openhab.binding.velux.things.VeluxGwState.VeluxGatewaySubState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * <UL>
  * <LI>{@link VeluxBridgeDetectProducts#detectProducts} for starting the detection.
  * </UL>
- * Any parameters are controlled by {@link VeluxBridgeConfiguration}.
+ * Any parameters are controlled by {@link org.openhab.binding.velux.internal.config.VeluxBridgeConfiguration}.
  * <P>
  * 
  * @author Guenther Schreiner - Initial contribution
@@ -41,28 +42,24 @@ public class VeluxBridgeDetectProducts {
      *         of type boolean describing the overall result of this interaction.
      */
 
-    public boolean detectProducts(VeluxBridgeProvider bridge) {
+    public boolean detectProducts(VeluxBridge bridge) {
         logger.trace("detectProducts() called.");
         boolean success = false;
-        if (!bridge.bridgeLogin()) {
-            logger.debug("Velux bridge login sequence failed; expecting bridge is OFFLINE.");
-            return false;
-        }
 
         logger.trace("detectProducts() About to activate detection.");
-        BCdetectProducts.Response detectResponse = bridge.bridgeCommunicate(new BCdetectProducts());
-        if (detectResponse != null) {
+		DetectProducts bcp1 = bridge.bridgeAPI().detectProducts();
+		if (!(bridge.bridgeCommunicate(bcp1)) || (bcp1.isCommunicationSuccessful())) {
             while (true) {
                 logger.trace("detectProducts() About to query detection status.");
-                BCgetDeviceStatus.Response response = bridge.bridgeCommunicate(new BCgetDeviceStatus());
-                if ((response == null) || (!response.getResult())) {
+        		GetDeviceStatus bcp = bridge.bridgeAPI().getDeviceStatus();
+        		if (!(bridge.bridgeCommunicate(bcp)) || (bcp.isCommunicationSuccessful())) {
                     logger.trace("detectProducts() finished with failure.");
                     break;
                 }
-                String deviceStatus = response.getDeviceStatus();
-                if (deviceStatus.equals("discovering")) {
+        		VeluxGwState deviceStatus = bcp.getState();
+                if (deviceStatus.getSubState() == (byte) VeluxGatewaySubState.GW_SS_P1.getStateValue()) {
                     logger.trace("detectProducts() bridge is still busy.");
-                } else if (deviceStatus.equals("IDLE")) {
+                } else if (deviceStatus.getSubState() == (byte) VeluxGatewaySubState.GW_SS_IDLE.getStateValue()) {
                     logger.trace("detectProducts() bridge is idle again, now.");
                     success = true;
                     break;
@@ -79,9 +76,7 @@ public class VeluxBridgeDetectProducts {
         } else {
             logger.trace("detectProducts() activate detection finished with failure.");
         }
-        if (!bridge.bridgeLogout()) {
-            logger.debug("Velux bridge logout sequence failed; expecting bridge is OFFLINE.");
-        }
+
         logger.debug("detectProducts() finished {}.", success ? "successfully" : "with failure");
         return success;
     }

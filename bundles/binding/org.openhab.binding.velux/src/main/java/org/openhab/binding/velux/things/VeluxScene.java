@@ -8,9 +8,6 @@
  */
 package org.openhab.binding.velux.things;
 
-import org.openhab.binding.velux.bridge.comm.BCgetScenes.BCproductState;
-import org.openhab.binding.velux.bridge.comm.BCgetScenes.BCscene;
-
 /**
  * <B>Velux</B> scene representation.
  * <P>
@@ -67,19 +64,6 @@ public class VeluxScene {
 
     // Constructor
 
-    public VeluxScene(BCscene sceneDescr) {
-        this.name = new SceneName(sceneDescr.getName());
-        this.bridgeSceneIndex = new SceneBridgeIndex(sceneDescr.getId());
-        this.silent = sceneDescr.getSilent();
-
-        BCproductState[] productStates = sceneDescr.getProductStates();
-        this.productStates = new VeluxProductState[productStates.length];
-
-        for (int i = 0; i < productStates.length; i++) {
-            this.productStates[i] = new VeluxProductState(productStates[i]);
-        }
-    }
-
     public VeluxScene(String name, int sceneBridgeIndex, boolean silentOperation, VeluxProductState[] actions) {
         this.name = new SceneName(name);
         this.bridgeSceneIndex = new SceneBridgeIndex(sceneBridgeIndex);
@@ -87,6 +71,12 @@ public class VeluxScene {
         this.productStates = actions;
     }
 
+    public VeluxScene(VeluxScene scene) {
+        this.name = new SceneName(scene.name.toString());
+        this.bridgeSceneIndex = new SceneBridgeIndex(scene.bridgeSceneIndex.toInt());
+        this.silent = scene.silent;
+        this.productStates = scene.productStates;
+    }
     // Class access methods
 
     public SceneName getName() {
