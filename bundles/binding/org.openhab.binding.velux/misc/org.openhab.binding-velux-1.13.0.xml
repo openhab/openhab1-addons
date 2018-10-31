@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<projectConfig>
+    <classPaths>/Users/guentherschreiner/development/openhab1-missing</classPaths>
+    <importPaths>/Users/guentherschreiner/development/git-20181007/openhab1-addons/bundles/binding/org.openhab.binding.velux/target/org.openhab.binding.velux-1.13.0-SNAPSHOT.jar</importPaths>
+</projectConfig>
