@@ -31,6 +31,7 @@ It has been tested on:
 ## Prerequisites
 
 * Enable TR064: In the webui goto "Heimnetz" - "Netzwerkeinstellungen": enable option "Zugriff für Anwendungen zulassen" (enabled by default)
+* Allow access to settings for the user you use: In the webui goto "System" - "Fritz!Box Benutzer" open the user that you use with OpenHab for editing. Under "Berechtigungen" enable "Fritz!Box Einstellungen" in order to use all the non-callmonitoring features of the binding (callmonitoring itself works w/o this option enabled). *Note* that you will be able to change the Fritz!Box settings via Openhab when using these features (e.g., switch on/off the Guest WLan).
 * Only if you want to use the call monitor feature (items starting with callmonitor_...), enable the interface by dialing #96\*5\* You may disable it again by dialing #96\*4\*
 
 ## Binding Configuration
@@ -156,3 +157,7 @@ then
     // do something with callerName
 end
 ```
+
+### Debugging
+
+You might see soap errors in the OH log including "Action not Authorized". In that case check that you set all rights as described under "Prerequisites".
