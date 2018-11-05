@@ -253,8 +253,10 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
             return;
         } else if (data.matches("^\\d+\\s+\\d+")) {
             processCreditReport(data);
+            return;
         }
         notifyDataReceived(data);
+        requestCreditReport();
     }
 
     /**
