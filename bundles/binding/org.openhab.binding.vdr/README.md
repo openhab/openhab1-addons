@@ -6,12 +6,20 @@ If you have any suggestions or questions don't hesitate to contact me ([iwow](ht
 
 ## Binding Configuration
 
-This binding can be configured in the file `services/vdr.cfg`.
+This binding must be configured in the file `services/vdr.cfg` (OpenHAB 2) or `openhab.cfg` (OpenHAB 1).
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| TBD | TBD | TBD | TBD |
+| host | none | yes | VDR's IP address or name |
+| port | 6419 | no | The port SVDRP is listening |
 
+Example:
+
+```
+vdr:<VDR-ID>.host=vdr.local
+vdr:<VDR-ID>.port=6419
+```
+The VDR-ID defined here, e.g. `"LivingRoom"`, shall be used in all items configurations and rules. 
 
 ## Item Configuration
 
@@ -30,13 +38,6 @@ Command must be one of the following:
 - `recording`: recording state; must be bound to a Switch item
 - `channel`: channel up / down; can be bound to a Switch item(ON=increase, OFF=decrease) or a number item
 - `volume`: volume up / down; can be bound to a Switch item (ON=increase, OFF=decrease) or a number item (value between 0 and 255)
-
-The VDR-Id corresponds to the configuration in openhab.cfg where one has to configure the VDRs. Which looks like this 
-
-```
-vdr:<id>.host=[host]
-vdr:<id>.port=[port]
-```
 
 ## Examples
 
@@ -62,9 +63,9 @@ As a result, your lines in the items file might look like the following:
 ```
 Switch VDR_LivingroomPower          "VDR (livingroom) Power"          (VDR) {vdr="LivingRoom:powerOff",wol="192.168.1.2#F4:6D:15:32:F3:F7" }
 String VDR_LivingroomOSDMessage     "VDR (livingroom) OSD message"           {vdr="LivingRoom:message"}
-Switch VDR_LivingroomChannelUpDown	"VDR Livingroom Channel Up/Down"  (VDR)  {vdr="LivingRoom:channel"}
+Switch VDR_LivingroomChannelUpDown  "VDR Livingroom Channel Up/Down"  (VDR)  {vdr="LivingRoom:channel"}
 Number VDR_LivingroomChannel        "VDR Livingroom Channel"          (VDR)  {vdr="LivingRoom:channel"}
-Switch VDR_LivingroomVolumeUpDown	"VDR Livingroom Volume Up/Down"   (VDR)  {vdr="LivingRoom:volume"}
+Switch VDR_LivingroomVolumeUpDown   "VDR Livingroom Volume Up/Down"   (VDR)  {vdr="LivingRoom:volume"}
 Number VDR_LivingroomVolume         "VDR Livingroom Volume"           (VDR)  {vdr="LivingRoom:volume"}
 Switch VDR_LivingroomRecording      "VDR (livingroom) Recording"      (VDR)  {vdr="LivingRoom:recording"}
 ```
