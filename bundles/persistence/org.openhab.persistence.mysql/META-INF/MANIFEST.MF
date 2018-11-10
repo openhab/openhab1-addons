@@ -18,6 +18,6 @@ Import-Package: org.apache.commons.io,
  org.osgi.service.cm,
  org.slf4j
 Bundle-ClassPath: .,
- lib/mysql-connector-java-5.1.26-bin.jar
+ lib/mysql-connector-java-8.0.13.jar
 Service-Component: OSGI-INF/mysql.xml
 Bundle-Activator: org.openhab.persistence.mysql.internal.MysqlPersistenceServiceActivator
