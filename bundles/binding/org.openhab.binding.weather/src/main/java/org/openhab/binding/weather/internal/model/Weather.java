@@ -45,7 +45,6 @@ public class Weather {
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "message"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "data.error.msg"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "response.error.type"),
-            @Provider(name = ProviderName.YAHOO, property = "error.description"),
             @Provider(name = ProviderName.METEOBLUE, property = "error_message") })
     private String error;
 
@@ -58,7 +57,6 @@ public class Weather {
             @Forecast(provider = ProviderName.WUNDERGROUND, property = "forecast.simpleforecast.forecastday"),
             @Forecast(provider = ProviderName.FORECASTIO, property = "daily.data"),
             @Forecast(provider = ProviderName.WORLDWEATHERONLINE, property = "data.weather"),
-            @Forecast(provider = ProviderName.YAHOO, property = "query.results.channel.item.forecast"),
             @Forecast(provider = ProviderName.HAMWEATHER, property = "response.responses.response.periods"),
             @Forecast(provider = ProviderName.METEOBLUE, property = "forecast") })
     private List<org.openhab.binding.weather.internal.model.Forecast> forecast = new ArrayList<org.openhab.binding.weather.internal.model.Forecast>();
