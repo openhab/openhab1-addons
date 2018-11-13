@@ -18,7 +18,7 @@ As described in the Telegram Bot API, this is the manual procedure needed in ord
 3. Get the chatId
 
 - Open a browser and invoke `https://api.telegram.org/bot<token>/getUpdates` (where `<token>` is the authentication token previously obtained)
-- Look at the JSON result to find the value behind "id": That is the chatId. Note that if using a Telegram group chat, the group chatIds are prefixed with a dash that must be included in the config file. (e.g. bot1.chatId: -22334455)
+- Look at the JSON result to find the value of `id`. That is the chatId. Note that if using a Telegram group chat, the group chatIds are prefixed with a dash that must be included in the config file. (e.g. bot1.chatId: -22334455)
 
 4. Test the bot
 
