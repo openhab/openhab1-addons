@@ -9,13 +9,22 @@ As described in the Telegram Bot API, this is the manual procedure needed in ord
 1. Create the Bot and get the Token
 
 - On a Telegram client open a chat with BotFather.
-- write `/newbot` to BotFather, fill all the needed information, write down the token. This is the authentication token needed.
+- Send `/newbot` to BotFather and fill in all the needed information. The authentication token that is given will be needed in the next steps.
 
-2. Create the destination chat and get the chatId
+2. Create the destination chat
 
-- Open a new chat with your new Bot and post a message on the chat
+- Open a chat with your new Bot and send any message to it. The next step will not work unless you send a message to your bot first.
+
+3. Get the chatId
+
 - Open a browser and invoke `https://api.telegram.org/bot<token>/getUpdates` (where `<token>` is the authentication token previously obtained)
-- Look at the JSON result and write down the value of `result[0].message.chat.id`. That is the chatId. Note that Telegram group chat chatIds are prefixed with a dash "-" that must be included in the config file. (e.g. bot1.chatId: -22334455)
+- Look at the JSON result to find the value of `id`. That is the chatId. Note that if using a Telegram group chat, the group chatIds are prefixed with a dash that must be included in the config file. (e.g. bot1.chatId: -22334455)
+
+4. Test the bot
+
+- Open this URL in your web browser, replacing <token> with the authentication token and <chatId> with the chatId:
+- `https://api.telegram.org/bot<token>/sendMessage?chat_id=<chatId>&text=testing`
+- Your Telegram-bot should send you a message with the text: `testing`
 
 ## Actions
 
