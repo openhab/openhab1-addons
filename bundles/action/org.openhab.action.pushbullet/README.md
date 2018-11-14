@@ -7,12 +7,14 @@ The Pushbullet action allows you to notify iOS, Android & Windows 10 Phone & Des
 You may define default values for parameters to action calls in the file `services/pushbullet.cfg`.
 The configuration parameter `accesstoken` is required and can be obtained as described below.
 
-| Property        | Default | Required                                                      | method to set                       | Description                                                                                                            |
-|------------------|---------|:-------------------------------------------------------------:|-------------------------------------|------------------------------------------------------------------------------------------------------------------------|
-| accesstoken       | 1234abc | Yes                                                            | -                                        | Pushbullet [API token](https://www.pushbullet.com/#settings) to send to devices                               |
-| bots              |         | No                                                             | -                                        | List multiple bots, each with its own settings below.                                                                 |
-| `<bot>`.devicename  |         | Yes, if using multiple bots                                    | String botname                          | Device name for each bot                                                                                      |
-| `<bot>`.accesstoken |         | Yes, if using multiple bots                                    | -                                       | API token for each bot                                                                                        |
+| Property            | Default | Required                        | method to set         | Description                                                                                                   |
+|---------------------|---------|:-------------------------------:|-----------------------|---------------------------------------------------------------------------------------------------------------|
+| accesstoken         | 1234abc | Yes                             | -                     | Pushbullet [API token](https://www.pushbullet.com/#settings) to send to devices       |
+| devicename          | DEFAULT | No                              | String botname        | The name of the openHAB bot                                                                                   |
+| defaultreceiver     |         | No                              | String receiver       | The name of the Recepient                                                                                     |
+| bots                |         | No                              | -                                        | List multiple bots, each with its own settings below.                                                                 |
+| `<bot>`.devicename  |         | Yes, if using multiple bots   | String botname                          | Device name for each bot                                                                                      |
+| `<bot>`.accesstoken |         | Yes, if using multiple bots   | -                                       | API token for each bot                                                                                        |
 
 #### Example Configurations
 Minimal (required):
