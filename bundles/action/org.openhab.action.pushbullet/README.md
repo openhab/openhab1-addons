@@ -2,6 +2,32 @@
 
 The Pushbullet action allows you to notify iOS, Android & Windows 10 Phone & Desktop devices of a message using the Pushbullet API web service.
 
+## Configuration
+
+You may define default values for parameters to action calls in the file `services/pushbullet.cfg`.
+The configuration parameter `accesstoken` is required and can be obtained as described below.
+
+| Property        | Default | Required                                                      | method to set                       | Description                                                                                                            |
+|------------------|---------|:-------------------------------------------------------------:|-------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| accesstoken       | 1234abc | Yes                                                            | -                                        | Pushbullet [API token](https://www.pushbullet.com/#settings) to send to devices                               |
+| bots              |         | No                                                             | -                                        | List multiple bots, each with its own settings below.                                                                 |
+| `<bot>`.devicename  |         | Yes, if using multiple bots                                    | String botname                          | Device name for each bot                                                                                      |
+| `<bot>`.accesstoken |         | Yes, if using multiple bots                                    | -                                       | API token for each bot                                                                                        |
+
+#### Example Configurations
+Minimal (required):
+```
+accesstoken=<API token>
+```
+Extended setup with 2 bots, each with its own access token (optional):
+```
+bots=bot1,bot2
+bot1.devicename=openHAB-foobar
+bot1.accesstoken=1234abc
+bot2.devicename=openHAB-tralala
+bot2.accesstoken=4711qwert
+```
+
 ## Actions
 
 The following is a valid action call that can be made when the plugin is loaded.
