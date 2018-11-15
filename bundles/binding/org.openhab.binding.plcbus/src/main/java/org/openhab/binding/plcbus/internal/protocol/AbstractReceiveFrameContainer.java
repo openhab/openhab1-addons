@@ -72,7 +72,7 @@ public abstract class AbstractReceiveFrameContainer implements IReceiveFrameCont
                 }
             }
         } catch (Exception e) {
-            logger.error("Error while parsing ReceiveFrame");
+            logger.warn("Error while parsing ReceiveFrame", e);
         }
     }
 
