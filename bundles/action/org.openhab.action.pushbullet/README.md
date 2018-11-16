@@ -5,23 +5,26 @@ The Pushbullet action allows you to notify iOS, Android & Windows 10 Phone & Des
 ## Configuration
 
 You may define default values for parameters to action calls in the file `services/pushbullet.cfg`.
-The configuration parameter `accesstoken` is required and can be obtained as described below.
+To override the default values, specify configuration parameters in the action call (using `method to set`).
 
 | Property            | Default | Required                        | method to set         | Description                                                                                                   |
 |---------------------|---------|:-------------------------------:|-----------------------|---------------------------------------------------------------------------------------------------------------|
-| accesstoken         | 1234abc | Yes                             | -                     | Pushbullet [API token](https://www.pushbullet.com/#settings) to send to devices       |
+| accesstoken         |         | Yes                             | -                     | Pushbullet [API token](https://www.pushbullet.com/#settings) to send to devices       |
 | devicename          | DEFAULT | No                              | String botname        | The name of the openHAB bot                                                                                   |
 | defaultreceiver     |         | No                              | String receiver       | The name of the Recepient                                                                                     |
-| bots                |         | No                              | -                                        | List multiple bots, each with its own settings below.                                                                 |
-| `<bot>`.devicename  |         | Yes, if using multiple bots   | String botname                          | Device name for each bot                                                                                      |
-| `<bot>`.accesstoken |         | Yes, if using multiple bots   | -                                       | API token for each bot                                                                                        |
+| bots                |         | No                              | -                                        | Comma-separated list of multiple bots, each with its own settings below.                                                                 |
+| `<bot>`.devicename  |         | Yes, if using multiple bots   | String botname                          | Device name for a single bot                                                                                      |
+| `<bot>`.accesstoken |         | Yes, if using multiple bots   | -                                       | API token for a single bot                                                                                        |
 
-#### Example Configurations
+### Example Configurations
 Minimal (required):
+
 ```
 accesstoken=<API token>
 ```
+
 Extended setup with 2 bots, each with its own access token (optional):
+
 ```
 bots=bot1,bot2
 bot1.devicename=openHAB-foobar
