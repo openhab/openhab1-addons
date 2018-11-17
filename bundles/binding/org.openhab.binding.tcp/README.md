@@ -90,6 +90,6 @@ Also for an alternative solution using MTQQ and a small python server delivering
 
 ## Unclear stuff
 
-Its unclear what many of the parameters does. For instance 'directionssharedconnections'. How can a out-going connection (openhab connects to another server) be shared with an incoming connection (remote server connects to openhab)? Ask on our [community forum][https://community.openhab.org/tags/c/add-ons/bindings/tcp] or read the [source code][https://github.com/openhab/openhab1-addons/tree/master/bundles/binding/org.openhab.binding.tcp].
+Its unclear what many of the parameters does. For instance 'directionssharedconnections'. How can a out-going connection (openhab connects to another server) be shared with an incoming connection (remote server connects to openhab)? Ask on our [community forum tcp](https://community.openhab.org/tags/c/add-ons/bindings/tcp) and [community forum tcpbinding](https://community.openhab.org/tags/c/add-ons/bindings/tcpbinding) or read the [source code](https://github.com/openhab/openhab1-addons/tree/master/bundles/binding/org.openhab.binding.tcp).
 
 If binding isn't shared, whill it then try to open two connections to the same port on the same server?
