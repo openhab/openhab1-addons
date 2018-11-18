@@ -5,16 +5,16 @@ The Pushbullet action allows you to notify iOS, Android & Windows 10 Phone & Des
 ## Configuration
 
 You may define default values for parameters to action calls in the file `services/pushbullet.cfg`.
-To override the default values, specify configuration parameters in the action call (using `method to set`).
+To override the default values, specify configuration parameters in the action call (using `Action override`).
 
-| Property            | Default | Required                        | method to set         | Description                                                                                                   |
+| Property            | Default | Required                        | Action override       | Description                                                                                                   |
 |---------------------|---------|:-------------------------------:|-----------------------|---------------------------------------------------------------------------------------------------------------|
 | accesstoken         |         | Yes                             | -                     | Pushbullet [API token](https://www.pushbullet.com/#settings) to send to devices       |
-| devicename          | DEFAULT | No                              | String botname        | The name of the openHAB bot                                                                                   |
-| defaultreceiver     |         | No                              | String receiver       | The name of the Recepient                                                                                     |
-| bots                |         | No                              | -                                        | Comma-separated list of multiple bots, each with its own settings below.                                                                 |
-| `<bot>`.devicename  |         | Yes, if using multiple bots   | String botname                          | Device name for a single bot                                                                                      |
-| `<bot>`.accesstoken |         | Yes, if using multiple bots   | -                                       | API token for a single bot                                                                                        |
+| devicename          | DEFAULT | No                              |  botname              | The name of the openHAB bot                                                                                   |
+| defaultreceiver     |         | No                              | receiver              | The name of the Recipient                                                                                     |
+| bots                |         | No                              | -                     | Comma-separated list of multiple bots, each with its own settings below.                                    |
+| `<bot>`.devicename  |         | Yes, if using multiple bots     | botname               | Device name for a single bot                                                                                 |
+| `<bot>`.accesstoken |         | Yes, if using multiple bots     | -                                       | API token for a single bot                                                                 |
 
 ### Example Configurations
 Minimal (required):
